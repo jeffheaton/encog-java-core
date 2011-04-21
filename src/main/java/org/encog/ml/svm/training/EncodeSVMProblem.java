@@ -33,14 +33,7 @@ import org.encog.ml.data.MLDataSet;
 /**
  * Encode an Encog dataset as a SVM problem.
  */
-public class EncodeSVMProblem {
-
-	/**
-	 * Private constructor.
-	 */
-	private EncodeSVMProblem() {
-
-	}
+public final class EncodeSVMProblem {
 
 	/**
 	 * Encode the Encog dataset.
@@ -49,40 +42,48 @@ public class EncodeSVMProblem {
 	 *            The training data.
 	 * @param outputIndex
 	 *            The ideal element to use, this is necessary because SVM's have
-	 *            only a single output.  This value is typically zero.
+	 *            only a single output. This value is typically zero.
 	 * @return The SVM problem.
 	 */
-	public static svm_problem encode(MLDataSet training, int outputIndex) {
+	public static svm_problem encode(final MLDataSet training,
+			final int outputIndex) {
 		try {
-		svm_problem result = new svm_problem();
+			final svm_problem result = new svm_problem();
 
-		result.l = (int) training.getRecordCount();
+			result.l = (int) training.getRecordCount();
 
-		result.y = new double[result.l];
-		result.x = new svm_node[result.l][training.getInputSize()];
+			result.y = new double[result.l];
+			result.x = new svm_node[result.l][training.getInputSize()];
 
-		int elementIndex = 0;
+			int elementIndex = 0;
 
-		for (MLDataPair pair : training) {
-			MLData input = pair.getInput();
-			MLData output = pair.getIdeal();
-			result.x[elementIndex] = new svm_node[input.size()];
+			for (final MLDataPair pair : training) {
+				final MLData input = pair.getInput();
+				final MLData output = pair.getIdeal();
+				result.x[elementIndex] = new svm_node[input.size()];
 
-			for (int i = 0; i < input.size(); i++) {
-				result.x[elementIndex][i] = new svm_node();
-				result.x[elementIndex][i].index = i + 1;
-				result.x[elementIndex][i].value = input.getData(i);
+				for (int i = 0; i < input.size(); i++) {
+					result.x[elementIndex][i] = new svm_node();
+					result.x[elementIndex][i].index = i + 1;
+					result.x[elementIndex][i].value = input.getData(i);
+				}
+
+				result.y[elementIndex] = output.getData(outputIndex);
+
+				elementIndex++;
 			}
 
-			result.y[elementIndex] = output.getData(outputIndex);
-
-			elementIndex++;
-		}
-
-		return result;
-		} catch(OutOfMemoryError e) {
+			return result;
+		} catch (final OutOfMemoryError e) {
 			throw new EncogError("SVM Model - Out of Memory");
 		}
 	}
-	
+
+	/**
+	 * Private constructor.
+	 */
+	private EncodeSVMProblem() {
+
+	}
+
 }

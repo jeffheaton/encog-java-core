@@ -30,183 +30,271 @@ import org.encog.ml.svm.KernelType;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.train.BasicTraining;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
+import org.encog.util.Format;
 
 /**
  * Provides training for Support Vector Machine networks.
  */
 public class SVMSearchTrain extends BasicTraining {
+	
+	/**
+	 * The default number of folds.
+	 */
+	public static final int DEFAULT_FOLDS = 5;
 
 	/**
 	 * The default starting number for C.
 	 */
 	public static final double DEFAULT_CONST_BEGIN = -5;
-	
+
 	/**
 	 * The default ending number for C.
 	 */
 	public static final double DEFAULT_CONST_END = 15;
-	
+
 	/**
 	 * The default step for C.
 	 */
 	public static final double DEFAULT_CONST_STEP = 2;
-	
+
 	/**
 	 * The default gamma begin.
 	 */
 	public static final double DEFAULT_GAMMA_BEGIN = -10;
-	
+
 	/**
 	 * The default gamma end.
 	 */
 	public static final double DEFAULT_GAMMA_END = 10;
-	
+
 	/**
 	 * The default gamma step.
 	 */
 	public static final double DEFAULT_GAMMA_STEP = 1;
-	
+
 	/**
 	 * The network that is to be trained.
 	 */
-	private SVM network;
-	
+	private final SVM network;
+
 	/**
 	 * The number of folds.
 	 */
-	private int fold = 5;
-	
+	private int fold = DEFAULT_FOLDS;
+
 	/**
 	 * The beginning value for C.
 	 */
-	private double constBegin = DEFAULT_CONST_BEGIN;
-	
+	private double constBegin = SVMSearchTrain.DEFAULT_CONST_BEGIN;
+
 	/**
 	 * The step value for C.
 	 */
-	private double constStep = DEFAULT_CONST_END;
-	
+	private double constStep = SVMSearchTrain.DEFAULT_CONST_END;
+
 	/**
 	 * The ending value for C.
 	 */
-	private double constEnd = DEFAULT_CONST_STEP;
-	
+	private double constEnd = SVMSearchTrain.DEFAULT_CONST_STEP;
+
 	/**
 	 * The beginning value for gamma.
 	 */
-	private double gammaBegin = DEFAULT_GAMMA_BEGIN;
-	
+	private double gammaBegin = SVMSearchTrain.DEFAULT_GAMMA_BEGIN;
+
 	/**
 	 * The ending value for gamma.
 	 */
-	private double gammaEnd = DEFAULT_GAMMA_END;
-	
+	private double gammaEnd = SVMSearchTrain.DEFAULT_GAMMA_END;
+
 	/**
 	 * The step value for gamma.
 	 */
-	private double gammaStep = DEFAULT_GAMMA_STEP;
-	
+	private double gammaStep = SVMSearchTrain.DEFAULT_GAMMA_STEP;
+
 	/**
 	 * The best values found for C.
 	 */
 	private double bestConst;
-	
+
 	/**
 	 * The best values found for gamma.
 	 */
 	private double bestGamma;
-	
+
 	/**
 	 * The best error.
 	 */
 	private double bestError;
-	
+
 	/**
 	 * The current C.
 	 */
 	private double currentConst;
-	
+
 	/**
 	 * The current gamma.
 	 */
 	private double currentGamma;
-	
+
 	/**
 	 * Is the network setup.
 	 */
 	private boolean isSetup;
-	
+
 	/**
 	 * Is the training done.
 	 */
 	private boolean trainingDone;
-	
-	private SVMTrain internalTrain;
+
+	/**
+	 * The internal training object, used for the search.
+	 */
+	private final SVMTrain internalTrain;
 
 	/**
 	 * Construct a trainer for an SVM network.
-	 * @param network The network to train.
-	 * @param training The training data for this network.
+	 * 
+	 * @param method
+	 *            The method to train.
+	 * @param training
+	 *            The training data for this network.
 	 */
-	public SVMSearchTrain(SVM network, MLDataSet training) {
+	public SVMSearchTrain(final SVM method, final MLDataSet training) {
 		super(TrainingImplementationType.Iterative);
-		this.network = (SVM) network;
-		this.setTraining(training);
+		this.network = method;
+		setTraining(training);
 		this.isSetup = false;
 		this.trainingDone = false;
-		
-		this.internalTrain = new SVMTrain(network,training);
+
+		this.internalTrain = new SVMTrain(network, training);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final boolean canContinue() {
+		return false;
+	}
 
 	/**
-	 * Setup to train the SVM.
+	 * {@inheritDoc}
 	 */
-	private void setup() {
+	@Override
+	public final void finishTraining() {
+		this.internalTrain.setGamma(this.bestGamma);
+		this.internalTrain.setC(this.bestConst);
+		this.internalTrain.iteration();
 
-			this.currentConst = this.constBegin;
-			this.currentGamma = this.gammaBegin;
-			this.bestError = Double.POSITIVE_INFINITY;
-		this.isSetup = true;
+	}
+
+	/**
+	 * @return the constBegin
+	 */
+	public final double getConstBegin() {
+		return this.constBegin;
+	}
+
+	/**
+	 * @return the constEnd
+	 */
+	public final double getConstEnd() {
+		return this.constEnd;
+	}
+
+	/**
+	 * @return the constStep
+	 */
+	public final double getConstStep() {
+		return this.constStep;
+	}
+
+	/**
+	 * @return the fold
+	 */
+	public final int getFold() {
+		return this.fold;
+	}
+
+	/**
+	 * @return the gammaBegin
+	 */
+	public final double getGammaBegin() {
+		return this.gammaBegin;
+	}
+
+	/**
+	 * @return the gammaEnd
+	 */
+	public final double getGammaEnd() {
+		return this.gammaEnd;
+	}
+
+	/**
+	 * @return the gammaStep
+	 */
+	public final double getGammaStep() {
+		return this.gammaStep;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final MLMethod getMethod() {
+		return this.network;
+	}
+
+	/**
+	 * @return True if the training is done.
+	 */
+	@Override
+	public final boolean isTrainingDone() {
+		return this.trainingDone;
 	}
 
 	/**
 	 * Perform one training iteration.
 	 */
-	public void iteration() {
+	@Override
+	public final void iteration() {
 
-		if (!trainingDone) {
-			if (!isSetup)
+		if (!this.trainingDone) {
+			if (!this.isSetup) {
 				setup();
+			}
 
 			preIteration();
 
-			if (network.getKernelType() == KernelType.RadialBasisFunction) {
+			if (this.network.getKernelType() 
+					== KernelType.RadialBasisFunction) {
 
 				double totalError = 0;
-				
-				
-					double e = this.internalTrain.crossValidate(this.currentGamma,
-							currentConst)/100;
-System.out.println( this.currentGamma + "," + this.currentConst + "," + e);
-					if (e < bestError) {
-						this.bestConst = this.currentConst;
-						this.bestGamma = this.currentGamma;
-						this.bestError = e;
-					}
 
-					this.currentConst += this.constStep;
-					if (this.currentConst > this.constEnd) {
-						this.currentConst = this.constBegin;
-						this.currentGamma += this.gammaStep;
-						if (this.currentGamma > this.gammaEnd)
-							this.trainingDone = true;
-					}
-					
-					totalError += this.bestError;
-				
+				final double e = this.internalTrain.crossValidate(
+						this.currentGamma, this.currentConst) 
+						/ Format.HUNDRED_PERCENT;
+				System.out.println(this.currentGamma + "," + this.currentConst
+						+ "," + e);
+				if (e < this.bestError) {
+					this.bestConst = this.currentConst;
+					this.bestGamma = this.currentGamma;
+					this.bestError = e;
+				}
 
-				setError(totalError/this.network.getOutputCount());
+				this.currentConst += this.constStep;
+				if (this.currentConst > this.constEnd) {
+					this.currentConst = this.constBegin;
+					this.currentGamma += this.gammaStep;
+					if (this.currentGamma > this.gammaEnd) {
+						this.trainingDone = true;
+					}
+				}
+
+				totalError += this.bestError;
+
+				setError(totalError / this.network.getOutputCount());
 			} else {
 				this.internalTrain.setGamma(this.currentGamma);
 				this.internalTrain.setC(this.currentConst);
@@ -218,148 +306,10 @@ System.out.println( this.currentGamma + "," + this.currentConst + "," + e);
 	}
 
 	/**
-	 * @return the fold
-	 */
-	public int getFold() {
-		return fold;
-	}
-
-	/**
-	 * @param fold
-	 *            the fold to set
-	 */
-	public void setFold(int fold) {
-		this.fold = fold;
-	}
-
-	/**
-	 * @return the constBegin
-	 */
-	public double getConstBegin() {
-		return constBegin;
-	}
-
-	/**
-	 * @param constBegin
-	 *            the constBegin to set
-	 */
-	public void setConstBegin(double constBegin) {
-		this.constBegin = constBegin;
-	}
-
-	/**
-	 * @return the constStep
-	 */
-	public double getConstStep() {
-		return constStep;
-	}
-
-	/**
-	 * @param constStep
-	 *            the constStep to set
-	 */
-	public void setConstStep(double constStep) {
-		this.constStep = constStep;
-	}
-
-	/**
-	 * @return the constEnd
-	 */
-	public double getConstEnd() {
-		return constEnd;
-	}
-
-	/**
-	 * @param constEnd
-	 *            the constEnd to set
-	 */
-	public void setConstEnd(double constEnd) {
-		this.constEnd = constEnd;
-	}
-
-	/**
-	 * @return the gammaBegin
-	 */
-	public double getGammaBegin() {
-		return gammaBegin;
-	}
-
-	/**
-	 * @param gammaBegin
-	 *            the gammaBegin to set
-	 */
-	public void setGammaBegin(double gammaBegin) {
-		this.gammaBegin = gammaBegin;
-	}
-
-	/**
-	 * @return the gammaEnd
-	 */
-	public double getGammaEnd() {
-		return gammaEnd;
-	}
-
-	/**
-	 * @param gammaEnd
-	 *            the gammaEnd to set
-	 */
-	public void setGammaEnd(double gammaEnd) {
-		this.gammaEnd = gammaEnd;
-	}
-
-	/**
-	 * @return the gammaStep
-	 */
-	public double getGammaStep() {
-		return gammaStep;
-	}
-
-	/**
-	 * @param gammaStep
-	 *            the gammaStep to set
-	 */
-	public void setGammaStep(double gammaStep) {
-		this.gammaStep = gammaStep;
-	}
-
-	/**
-	 * Called to finish training.
-	 */
-	public void finishTraining() {
-		this.internalTrain.setGamma(this.bestGamma);
-		this.internalTrain.setC(this.bestConst);
-		this.internalTrain.iteration();
-		
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public MLMethod getMethod() {
-		return this.network;
-	}
-
-	/**
-	 * @return True if the training is done.
-	 */
-	public boolean isTrainingDone() {
-		return this.trainingDone;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean canContinue() {
-		return false;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public TrainingContinuation pause() {
+	public final TrainingContinuation pause() {
 		return null;
 	}
 
@@ -367,9 +317,75 @@ System.out.println( this.currentGamma + "," + this.currentConst + "," + e);
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void resume(TrainingContinuation state) {
-		
+	public void resume(final TrainingContinuation state) {
+
 	}
 
+	/**
+	 * @param theConstBegin
+	 *            the constBegin to set
+	 */
+	public final void setConstBegin(final double theConstBegin) {
+		this.constBegin = theConstBegin;
+	}
+
+	/**
+	 * @param theConstEnd
+	 *            the constEnd to set
+	 */
+	public final void setConstEnd(final double theConstEnd) {
+		this.constEnd = theConstEnd;
+	}
+
+	/**
+	 * @param theConstStep
+	 *            the constStep to set
+	 */
+	public final void setConstStep(final double theConstStep) {
+		this.constStep = theConstStep;
+	}
+
+	/**
+	 * @param theFold
+	 *            the fold to set
+	 */
+	public final void setFold(final int theFold) {
+		this.fold = theFold;
+	}
+
+	/**
+	 * @param theGammaBegin
+	 *            the gammaBegin to set
+	 */
+	public final void setGammaBegin(final double theGammaBegin) {
+		this.gammaBegin = theGammaBegin;
+	}
+
+	/**
+	 * @param theGammaEnd
+	 *            the gammaEnd to set.
+	 */
+	public final void setGammaEnd(final double theGammaEnd) {
+		this.gammaEnd = theGammaEnd;
+	}
+
+	/**
+	 * @param theGammaStep
+	 *            the gammaStep to set
+	 */
+	public final void setGammaStep(final double theGammaStep) {
+		this.gammaStep = theGammaStep;
+	}
+
+	/**
+	 * Setup to train the SVM.
+	 */
+	private void setup() {
+
+		this.currentConst = this.constBegin;
+		this.currentGamma = this.gammaBegin;
+		this.bestError = Double.POSITIVE_INFINITY;
+		this.isSetup = true;
+	}
 
 }

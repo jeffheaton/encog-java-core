@@ -34,6 +34,7 @@ import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.util.simple.EncogUtility;
 
 /**
@@ -54,13 +55,49 @@ import org.encog.util.simple.EncogUtility;
  * neural network training classes will work. This class must be trained using
  * SVMTrain.
  */
-public class SVM extends BasicML implements MLRegression, MLClassification, MLError {
+public class SVM extends BasicML implements MLRegression, MLClassification,
+		MLError {
+	
+	/**
+	 * The default degree.
+	 */
+	public static final int DEFAULT_DEGREE = 3;
+	
+	/**
+	 * The default COEF0.
+	 */
+	public static final int DEFAULT_COEF0 = 0;
+	
+	/**
+	 * The default NU.
+	 */
+	public static final double DEFAULT_NU = 0.5;
+	
+	/**
+	 * The default cache size.
+	 */
+	public static final int DEFAULT_CACHE_SIZE = 100;
+	
+	/**
+	 * The default C.
+	 */
+	public static final int DEFAULT_C = 1;
+	
+	/**
+	 * The default EPS.
+	 */
+	public static final double DEFAULT_EPS = 1e-3;
+	
+	/**
+	 * The default P.
+	 */
+	public static final double DEFAULT_P = 0.1;
 
 	/**
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * The SVM model to use.
 	 */
@@ -69,27 +106,121 @@ public class SVM extends BasicML implements MLRegression, MLClassification, MLEr
 	/**
 	 * The params for the model.
 	 */
-	private svm_parameter params;
+	private final svm_parameter params;
 
 	/**
 	 * The input count.
 	 */
 	private int inputCount;
 
+	/**
+	 * Construct the SVM.
+	 */
 	public SVM() {
 		this.params = new svm_parameter();
 	}
 
-	public SVM(svm_model model) {
-		this.model = model;
+	/**
+	 * Construct an SVM network. For regression it will use an epsilon support
+	 * vector. Both types will use an RBF kernel.
+	 * 
+	 * @param theInputCount
+	 *            The input count.
+	 * @param regression
+	 *            True if this network is used for regression.
+	 */
+	public SVM(final int theInputCount, final boolean regression) {
+		this(theInputCount, regression ? SVMType.EpsilonSupportVectorRegression
+				: SVMType.SupportVectorClassification,
+				KernelType.RadialBasisFunction);
+	}
+
+	/**
+	 * Construct a SVM network.
+	 * 
+	 * @param theInputCount
+	 *            The input count.
+	 * @param svmType
+	 *            The type of SVM.
+	 * @param kernelType
+	 *            The SVM kernal type.
+	 */
+	public SVM(final int theInputCount, final SVMType svmType,
+			final KernelType kernelType) {
+		this.inputCount = theInputCount;
+
+		this.params = new svm_parameter();
+
+		switch (svmType) {
+		case SupportVectorClassification:
+			this.params.svm_type = svm_parameter.C_SVC;
+			break;
+		case NewSupportVectorClassification:
+			this.params.svm_type = svm_parameter.NU_SVC;
+			break;
+		case SupportVectorOneClass:
+			this.params.svm_type = svm_parameter.ONE_CLASS;
+			break;
+		case EpsilonSupportVectorRegression:
+			this.params.svm_type = svm_parameter.EPSILON_SVR;
+			break;
+		case NewSupportVectorRegression:
+			this.params.svm_type = svm_parameter.NU_SVR;
+			break;
+		default:
+			throw new NeuralNetworkError("Invalid svm type");
+		}
+
+		switch (kernelType) {
+		case Linear:
+			this.params.kernel_type = svm_parameter.LINEAR;
+			break;
+		case Poly:
+			this.params.kernel_type = svm_parameter.POLY;
+			break;
+		case RadialBasisFunction:
+			this.params.kernel_type = svm_parameter.RBF;
+			break;
+		case Sigmoid:
+			this.params.kernel_type = svm_parameter.SIGMOID;
+			break;
+		case Precomputed:
+			this.params.kernel_type = svm_parameter.PRECOMPUTED;
+			break;
+		default:
+			throw new NeuralNetworkError("Invalid kernel type");
+		}
+
+		// params[i].kernel_type = svm_parameter.RBF;
+		this.params.degree = DEFAULT_DEGREE;
+		this.params.coef0 = 0;
+		this.params.nu = DEFAULT_NU;
+		this.params.cache_size = DEFAULT_CACHE_SIZE;
+		this.params.C = 1;
+		this.params.eps = DEFAULT_EPS;
+		this.params.p = DEFAULT_P;
+		this.params.shrinking = 1;
+		this.params.probability = 0;
+		this.params.nr_weight = 0;
+		this.params.weight_label = new int[0];
+		this.params.weight = new double[0];
+		this.params.gamma = 1.0 / inputCount;
+
+	}
+
+	/**
+	 * Construct a SVM from a model.
+	 * @param theModel The model.
+	 */
+	public SVM(final svm_model theModel) {
+		this.model = theModel;
 		this.params = model.param;
 		this.inputCount = 0;
 
 		// determine the input count
-		for (int row = 0; row < this.model.SV.length; row++) {
-			for (int col = 0; col < this.model.SV[row].length; col++) {
-				inputCount = Math
-						.max(this.model.SV[row][col].index, inputCount);
+		for (final svm_node[] element : this.model.SV) {
+			for (int col = 0; col < element.length; col++) {
+				this.inputCount = Math.max(element[col].index, this.inputCount);
 			}
 		}
 
@@ -97,90 +228,43 @@ public class SVM extends BasicML implements MLRegression, MLClassification, MLEr
 	}
 
 	/**
-	 * Construct a SVM network.
+	 * Calculate the error for this SVM.
 	 * 
-	 * @param inputCount
-	 *            The input count.
-	 * @param outputCount
-	 *            The output count.
-	 * @param svmType
-	 *            The type of SVM.
-	 * @param kernelType
-	 *            The SVM kernal type.
+	 * @param data
+	 *            The training set.
+	 * @return The error percentage.
 	 */
-	public SVM(int inputCount, SVMType svmType, KernelType kernelType) {
-		this.inputCount = inputCount;
+	@Override
+	public final double calculateError(final MLDataSet data) {
 
-		params = new svm_parameter();
-
-		switch (svmType) {
+		switch (getSVMType()) {
 		case SupportVectorClassification:
-			params.svm_type = svm_parameter.C_SVC;
-			break;
 		case NewSupportVectorClassification:
-			params.svm_type = svm_parameter.NU_SVC;
-			break;
 		case SupportVectorOneClass:
-			params.svm_type = svm_parameter.ONE_CLASS;
-			break;
+			return EncogUtility.calculateClassificationError(this, data);
 		case EpsilonSupportVectorRegression:
-			params.svm_type = svm_parameter.EPSILON_SVR;
-			break;
 		case NewSupportVectorRegression:
-			params.svm_type = svm_parameter.NU_SVR;
-			break;
+			return EncogUtility.calculateRegressionError(this, data);
+		default:
+			return EncogUtility.calculateRegressionError(this, data);
 		}
 
-		switch (kernelType) {
-		case Linear:
-			params.kernel_type = svm_parameter.LINEAR;
-			break;
-		case Poly:
-			params.kernel_type = svm_parameter.POLY;
-			break;
-		case RadialBasisFunction:
-			params.kernel_type = svm_parameter.RBF;
-			break;
-		case Sigmoid:
-			params.kernel_type = svm_parameter.SIGMOID;
-			break;
-		case Precomputed:
-			params.kernel_type = svm_parameter.PRECOMPUTED;
-			break;
-		}
-
-		// params[i].kernel_type = svm_parameter.RBF;
-		params.degree = 3;
-		params.coef0 = 0;
-		params.nu = 0.5;
-		params.cache_size = 100;
-		params.C = 1;
-		params.eps = 1e-3;
-		params.p = 0.1;
-		params.shrinking = 1;
-		params.probability = 0;
-		params.nr_weight = 0;
-		params.weight_label = new int[0];
-		params.weight = new double[0];
-		params.gamma = 1.0 / inputCount;
-
+		
 	}
 
 	/**
-	 * Construct an SVM network. For regression it will use an epsilon support
-	 * vector. Both types will use an RBF kernel.
-	 * 
-	 * @param inputCount
-	 *            The input count.
-	 * @param outputCount
-	 *            The output count.
-	 * @param regression
-	 *            True if this network is used for regression.
+	 * {@inheritDoc}
 	 */
-	public SVM(int inputCount, boolean regression) {
-		this(inputCount, regression ? SVMType.EpsilonSupportVectorRegression
-				: SVMType.SupportVectorClassification,
-				KernelType.RadialBasisFunction);
+	@Override
+	public final int classify(final MLData input) {
+		if (this.model == null) {
+			throw new EncogError(
+					"Can't use the SVM yet, it has not been trained, " 
+					+ "and no model exists.");
+		}
+
+		final svm_node[] formattedInput = makeSparse(input);
+		return (int) svm.svm_predict(this.model, formattedInput);
 	}
 
 	/**
@@ -190,37 +274,21 @@ public class SVM extends BasicML implements MLRegression, MLClassification, MLEr
 	 *            The input to the SVM.
 	 * @return The results from the SVM.
 	 */
-	public MLData compute(MLData input) {
+	@Override
+	public final MLData compute(final MLData input) {
 
 		if (this.model == null) {
 			throw new EncogError(
-					"Can't use the SVM yet, it has not been trained, and no model exists.");
+					"Can't use the SVM yet, it has not been trained, "
+					+ "and no model exists.");
 		}
 
-		MLData result = new BasicMLData(1);
+		final MLData result = new BasicMLData(1);
 
-		svm_node[] formattedInput = makeSparse(input);
+		final svm_node[] formattedInput = makeSparse(input);
 
-		double d = svm.svm_predict(this.model, formattedInput);
+		final double d = svm.svm_predict(this.model, formattedInput);
 		result.setData(0, d);
-
-		return result;
-	}
-
-	/**
-	 * Convert regular Encog NeuralData into the "sparse" data needed by an SVM.
-	 * 
-	 * @param data
-	 *            The data to convert.
-	 * @return The SVM sparse data.
-	 */
-	public svm_node[] makeSparse(MLData data) {
-		svm_node[] result = new svm_node[data.size()];
-		for (int i = 0; i < data.size(); i++) {
-			result[i] = new svm_node();
-			result[i].index = i + 1;
-			result[i].value = data.getData(i);
-		}
 
 		return result;
 	}
@@ -228,44 +296,15 @@ public class SVM extends BasicML implements MLRegression, MLClassification, MLEr
 	/**
 	 * @return The input count.
 	 */
-	public int getInputCount() {
+	@Override
+	public final int getInputCount() {
 		return this.inputCount;
 	}
 
 	/**
-	 * @return The SVM models for each output.
+	 * @return The kernel type.
 	 */
-	public svm_model getModel() {
-		return model;
-	}
-
-	/**
-	 * @return The SVM params for each of the outputs.
-	 */
-	public svm_parameter getParams() {
-		return params;
-	}
-
-	public boolean supportsMapPersistence() {
-		return true;
-	}
-
-	@Override
-	public int getOutputCount() {
-		return 1;
-	}
-
-	public void setModel(svm_model model) {
-		this.model = model;
-
-	}
-
-	@Override
-	public void updateProperties() {
-		// unneeded
-	}
-
-	public KernelType getKernelType() {
+	public final KernelType getKernelType() {
 		switch (this.params.kernel_type) {
 		case svm_parameter.LINEAR:
 			return KernelType.Linear;
@@ -282,8 +321,33 @@ public class SVM extends BasicML implements MLRegression, MLClassification, MLEr
 		}
 	}
 
-	public SVMType getSVMType() {
-		switch (params.svm_type) {
+	/**
+	 * @return The SVM models for each output.
+	 */
+	public final svm_model getModel() {
+		return this.model;
+	}
+
+	/**
+	 * @return For a SVM, the output count is always one.
+	 */
+	@Override
+	public final int getOutputCount() {
+		return 1;
+	}
+
+	/**
+	 * @return The SVM params for each of the outputs.
+	 */
+	public final svm_parameter getParams() {
+		return this.params;
+	}
+
+	/**
+	 * @return The SVM type.
+	 */
+	public final SVMType getSVMType() {
+		switch (this.params.svm_type) {
 		case svm_parameter.C_SVC:
 			return SVMType.SupportVectorClassification;
 		case svm_parameter.NU_SVC:
@@ -299,41 +363,47 @@ public class SVM extends BasicML implements MLRegression, MLClassification, MLEr
 		}
 	}
 
-	public void setInputCount(int i) {
-		this.inputCount = i;
-		
-	}
-	
 	/**
-	 * Calculate the error for this SVM. 
+	 * Convert regular Encog MLData into the "sparse" data needed by an SVM.
 	 * 
 	 * @param data
-	 *            The training set.
-	 * @return The error percentage.
+	 *            The data to convert.
+	 * @return The SVM sparse data.
 	 */
-	public double calculateError(final MLDataSet data) {
-		
-		switch (this.getSVMType()) {
-		case SupportVectorClassification:
-		case NewSupportVectorClassification:
-		case SupportVectorOneClass:
-			return EncogUtility.calculateClassificationError(this,data);
-		case EpsilonSupportVectorRegression:
-		case NewSupportVectorRegression:
-			return EncogUtility.calculateRegressionError(this,data);
+	public final svm_node[] makeSparse(final MLData data) {
+		final svm_node[] result = new svm_node[data.size()];
+		for (int i = 0; i < data.size(); i++) {
+			result[i] = new svm_node();
+			result[i].index = i + 1;
+			result[i].value = data.getData(i);
 		}
-		
-		return EncogUtility.calculateRegressionError(this,data);
+
+		return result;
 	}
 
-	@Override
-	public int classify(MLData input) {
-		if (this.model == null) {
-			throw new EncogError(
-					"Can't use the SVM yet, it has not been trained, and no model exists.");
-		}
+	/**
+	 * Set the input count.
+	 * @param i The new input count.
+	 */
+	public final void setInputCount(final int i) {
+		this.inputCount = i;
 
-		svm_node[] formattedInput = makeSparse(input);
-		return (int)svm.svm_predict(this.model, formattedInput);
+	}
+
+	/**
+	 * Set the model.
+	 * @param theModel The model.
+	 */
+	public final void setModel(final svm_model theModel) {
+		this.model = theModel;
+
+	}
+
+	/**
+	 * Not needed, no properties to update.
+	 */
+	@Override
+	public void updateProperties() {
+		// unneeded
 	}
 }

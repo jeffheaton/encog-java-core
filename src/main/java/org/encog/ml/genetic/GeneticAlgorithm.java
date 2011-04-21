@@ -267,5 +267,5 @@ public abstract class GeneticAlgorithm {
 	/**
 	 * Perform one training iteration.
 	 */
-	public abstract void iteration ();
+	public abstract void iteration();
 }

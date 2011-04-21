@@ -31,7 +31,7 @@ public class Centroid {
 	 * The center for each dimension in the input.
 	 */
 	private final double[] centers;
-	
+
 	/**
 	 * The cluster.
 	 */
@@ -39,16 +39,18 @@ public class Centroid {
 
 	/**
 	 * Construct the centroid.
-	 * @param centers The centers.
+	 * 
+	 * @param theCenters
+	 *            The centers.
 	 */
-	public Centroid(final double[] centers) {
-		this.centers = centers;
+	public Centroid(final double[] theCenters) {
+		this.centers = theCenters;
 	}
 
 	/**
 	 * Calculate the centroid.
 	 */
-	public void calcCentroid() { // only called by CAInstance
+	public final void calcCentroid() { // only called by CAInstance
 		final int numDP = this.cluster.size();
 
 		final double[] temp = new double[this.centers.length];
@@ -70,22 +72,24 @@ public class Centroid {
 	/**
 	 * @return The centers.
 	 */
-	public double[] getCenters() {
+	public final double[] getCenters() {
 		return this.centers;
 	}
 
 	/**
 	 * @return The clusters.
 	 */
-	public KMeansCluster getCluster() {
+	public final KMeansCluster getCluster() {
 		return this.cluster;
 	}
 
 	/**
 	 * Set the cluster.
-	 * @param c The cluster.
+	 * 
+	 * @param c
+	 *            The cluster.
 	 */
-	public void setCluster(final KMeansCluster c) {
+	public final void setCluster(final KMeansCluster c) {
 		this.cluster = c;
 	}
 

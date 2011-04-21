@@ -32,9 +32,8 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
 
 /**
- * 
- * @author jheaton
- * 
+ * Holds a cluster of MLData items that have been clustered 
+ * by the KMeansClustering class.
  */
 public class KMeansCluster implements MLCluster {
 
@@ -42,15 +41,31 @@ public class KMeansCluster implements MLCluster {
 	 * The centroid.
 	 */
 	private Centroid centroid;
+	
+	/**
+	 * The sum square.
+	 */
 	private double sumSqr;
+	
+	/**
+	 * The contents of the cluster.
+	 */
 	private final List<MLData> data = new ArrayList<MLData>();
 
-	public void add(final MLData pair) { // called from CAInstance
+	/**
+	 * Add to the cluster.
+	 * @param pair The pair to add.
+	 */
+	@Override
+	public final void add(final MLData pair) {
 		this.data.add(pair);
 		calcSumOfSquares();
 	}
 
-	public void calcSumOfSquares() { // called from Centroid
+	/**
+	 * Calculate the sum of squares.
+	 */
+	public final void calcSumOfSquares() { 
 		final int size = this.data.size();
 		double temp = 0;
 		for (int i = 0; i < size; i++) {
@@ -60,42 +75,73 @@ public class KMeansCluster implements MLCluster {
 		this.sumSqr = temp;
 	}
 
-	public MLDataSet createDataSet() {
+	/**
+	 * Create a dataset from the clustered data.
+	 * @return The dataset.
+	 */
+	@Override
+	public final MLDataSet createDataSet() {
 		final MLDataSet result = new BasicMLDataSet();
 
-		for (final MLData data : this.data) {
-			result.add(data);
+		for (final MLData dataItem : this.data) {
+			result.add(dataItem);
 		}
 
 		return result;
 	}
 
-	public MLData get(final int pos) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final MLData get(final int pos) {
 		return this.data.get(pos);
 	}
 
-	public Centroid getCentroid() {
+	/**
+	 * @return The centroid.
+	 */
+	public final Centroid getCentroid() {
 		return this.centroid;
 	}
 
-	public List<MLData> getData() {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final List<MLData> getData() {
 		return this.data;
 	}
 
-	public double getSumSqr() {
+	/**
+	 * @return The sum of squares.
+	 */
+	public final double getSumSqr() {
 		return this.sumSqr;
 	}
 
-	public void remove(final MLData pair) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void remove(final MLData pair) {
 		this.data.remove(pair);
 		calcSumOfSquares();
 	}
 
-	public void setCentroid(final Centroid c) {
+	/**
+	 * Set the centroid.
+	 * @param c The new centroid.
+	 */
+	public final void setCentroid(final Centroid c) {
 		this.centroid = c;
 	}
 
-	public int size() {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int size() {
 		return this.data.size();
 	}
 

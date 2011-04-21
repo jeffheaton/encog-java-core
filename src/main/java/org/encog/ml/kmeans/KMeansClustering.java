@@ -40,6 +40,12 @@ import org.encog.ml.data.basic.BasicMLDataPair;
  */
 public class KMeansClustering implements MLClustering {
 
+	/**
+	 * Calculate the euclidean distance between a centroid and data.
+	 * @param c The centroid to use.
+	 * @param data The data to use.
+	 * @return The distance.
+	 */
 	public static double calculateEuclideanDistance(final Centroid c,
 			final MLData data) {
 		final double[] d = data.getData();
@@ -72,23 +78,23 @@ public class KMeansClustering implements MLClustering {
 	 * 
 	 * @param k
 	 *            The number of clusters to use.
-	 * @param set
+	 * @param theSet
 	 *            The dataset to cluster.
 	 */
-	public KMeansClustering(final int k, final MLDataSet set) {
+	public KMeansClustering(final int k, final MLDataSet theSet) {
 
 		this.clusters = new KMeansCluster[k];
 		for (int i = 0; i < k; i++) {
 			this.clusters[i] = new KMeansCluster();
 		}
-		this.set = set;
+		this.set = theSet;
 
 		setInitialCentroids();
 
 		// break up the data over the clusters
 		int clusterNumber = 0;
 
-		for( MLDataPair pair: set) {
+		for (final MLDataPair pair : set) {
 
 			this.clusters[clusterNumber].add(pair.getInput());
 
@@ -122,15 +128,9 @@ public class KMeansClustering implements MLClustering {
 	/**
 	 * @return The clusters.
 	 */
-	public MLCluster[] getClusters() {
+	@Override
+	public final MLCluster[] getClusters() {
 		return this.clusters;
-	}
-
-	/**
-	 * @return The number of clusters.
-	 */
-	public int numClusters() {
-		return this.clusters.length;
 	}
 
 	/**
@@ -145,8 +145,8 @@ public class KMeansClustering implements MLClustering {
 		final long count = this.set.getRecordCount();
 
 		for (int i = 0; i < count; i++) {
-			final MLDataPair pair = BasicMLDataPair.createPair(this.set
-					.getInputSize(), this.set.getIdealSize());
+			final MLDataPair pair = BasicMLDataPair.createPair(
+					this.set.getInputSize(), this.set.getIdealSize());
 			this.set.getRecord(index, pair);
 			result = Math.max(result, pair.getInputArray()[index]);
 		}
@@ -163,8 +163,8 @@ public class KMeansClustering implements MLClustering {
 	private double getMinValue(final int index) {
 		double result = Double.MAX_VALUE;
 		final long count = this.set.getRecordCount();
-		final MLDataPair pair = BasicMLDataPair.createPair(this.set
-				.getInputSize(), this.set.getIdealSize());
+		final MLDataPair pair = BasicMLDataPair.createPair(
+				this.set.getInputSize(), this.set.getIdealSize());
 
 		for (int i = 0; i < count; i++) {
 			this.set.getRecord(index, pair);
@@ -176,14 +176,15 @@ public class KMeansClustering implements MLClustering {
 	/**
 	 * @return Within-cluster sum of squares (WCSS).
 	 */
-	public double getWCSS() {
+	public final double getWCSS() {
 		return this.wcss;
 	}
 
 	/**
 	 * Perform a single training iteration.
 	 */
-	public void iteration() {
+	@Override
+	public final void iteration() {
 
 		// loop over all clusters
 		for (final KMeansCluster element : this.clusters) {
@@ -225,10 +226,19 @@ public class KMeansClustering implements MLClustering {
 	 * @param count
 	 *            The count of iterations.
 	 */
-	public void iteration(final int count) {
+	@Override
+	public final void iteration(final int count) {
 		for (int i = 0; i < count; i++) {
 			iteration();
 		}
+	}
+
+	/**
+	 * @return The number of clusters.
+	 */
+	@Override
+	public final int numClusters() {
+		return this.clusters.length;
 	}
 
 	/**
@@ -239,7 +249,8 @@ public class KMeansClustering implements MLClustering {
 
 			final double[] temp = new double[this.set.getInputSize()];
 			for (int j = 0; j < temp.length; j++) {
-				temp[j] = (((getMaxValue(j) - getMinValue(j)) / (this.clusters.length + 1)) * n)
+				temp[j] = (((getMaxValue(j) 
+						- getMinValue(j)) / (this.clusters.length + 1)) * n)
 						+ getMinValue(j);
 			}
 			final Centroid c1 = new Centroid(temp);
