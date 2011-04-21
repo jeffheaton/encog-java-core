@@ -46,7 +46,7 @@ public class FeedforwardFactory {
 	/**
 	 * Error.
 	 */
-	public final static String CANT_DEFINE_ACT 
+	public static final String CANT_DEFINE_ACT 
 		= "Can't define activation function before first layer.";
 
 	/**

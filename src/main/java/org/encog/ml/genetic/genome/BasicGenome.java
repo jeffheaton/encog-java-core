@@ -40,12 +40,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	public static final String PROPERTY_ADJUSTED_SCORE = "ascore";
-	public static final String PROPERTY_SCORE = "score";
-	public static final String PROPERTY_SPAWN_AMOUNT = "spawn";
-	public static final String PROPERTY_SPECIES = "species";
-			
+
 	/**
 	 * The adjusted score.
 	 */
@@ -80,12 +75,13 @@ public abstract class BasicGenome implements Genome, Serializable {
 	 * The score of this genome.
 	 */
 	private double score = 0;
-	
+
 	private Population population;
 
 	/**
 	 * @return The number of genes in this genome.
 	 */
+	@Override
 	public int calculateGeneCount() {
 		int result = 0;
 
@@ -99,6 +95,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public int compareTo(final Genome other) {
 
 		if (this.geneticAlgorithm.getCalculateScore().shouldMinimize()) {
@@ -118,6 +115,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	/**
 	 * @return The adjusted score, which considers bonuses.
 	 */
+	@Override
 	public double getAdjustedScore() {
 		return this.adjustedScore;
 	}
@@ -125,6 +123,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	/**
 	 * @return The amount this genome will spawn.
 	 */
+	@Override
 	public double getAmountToSpawn() {
 		return this.amountToSpawn;
 	}
@@ -132,6 +131,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	/**
 	 * @return The number of chromosomes.
 	 */
+	@Override
 	public List<Chromosome> getChromosomes() {
 		return this.chromosomes;
 	}
@@ -139,6 +139,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	/**
 	 * @return The genetic algorithm.
 	 */
+	@Override
 	public GeneticAlgorithm getGeneticAlgorithm() {
 		return this.geneticAlgorithm;
 	}
@@ -146,6 +147,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	/**
 	 * @return The genome id.
 	 */
+	@Override
 	public long getGenomeID() {
 		return this.genomeID;
 	}
@@ -153,23 +155,38 @@ public abstract class BasicGenome implements Genome, Serializable {
 	/**
 	 * @return The organism produced.
 	 */
+	@Override
 	public Object getOrganism() {
 		return this.organism;
 	}
 
 	/**
+	 * @return the population
+	 */
+	@Override
+	public Population getPopulation() {
+		return this.population;
+	}
+
+	/**
 	 * @return The score.
 	 */
+	@Override
 	public double getScore() {
 		return this.score;
 	}
 
 	/**
 	 * Mate two genomes. Will loop over all chromosomes.
-	 * @param father The father.
-	 * @param child1 The first child.
-	 * @param child2 The second child.
+	 * 
+	 * @param father
+	 *            The father.
+	 * @param child1
+	 *            The first child.
+	 * @param child2
+	 *            The second child.
 	 */
+	@Override
 	public void mate(final Genome father, final Genome child1,
 			final Genome child2) {
 		final int motherChromosomes = getChromosomes().size();
@@ -213,45 +230,51 @@ public abstract class BasicGenome implements Genome, Serializable {
 
 	/**
 	 * Set the adjusted score.
-	 *
+	 * 
 	 * @param adjustedScore
 	 *            The score.
 	 */
+	@Override
 	public void setAdjustedScore(final double adjustedScore) {
 		this.adjustedScore = adjustedScore;
 	}
 
 	/**
 	 * Set the amount to spawn.
-	 *
+	 * 
 	 * @param amountToSpawn
 	 *            The amount to spawn.
 	 */
+	@Override
 	public void setAmountToSpawn(final double amountToSpawn) {
 		this.amountToSpawn = amountToSpawn;
 	}
 
 	/**
 	 * Set the genetic algorithm to use.
-	 * @param ga The genetic algorithm to use.
+	 * 
+	 * @param ga
+	 *            The genetic algorithm to use.
 	 */
+	@Override
 	public void setGeneticAlgorithm(final GeneticAlgorithm ga) {
 		this.geneticAlgorithm = ga;
 	}
 
 	/**
 	 * Set the genome id.
-	 *
+	 * 
 	 * @param genomeID
 	 *            the genome id.
 	 */
+	@Override
 	public void setGenomeID(final long genomeID) {
 		this.genomeID = genomeID;
 	}
 
 	/**
 	 * Set the organism.
-	 *
+	 * 
 	 * @param organism
 	 *            The organism.
 	 */
@@ -260,11 +283,21 @@ public abstract class BasicGenome implements Genome, Serializable {
 	}
 
 	/**
+	 * @param population
+	 *            the population to set
+	 */
+	@Override
+	public void setPopulation(final Population population) {
+		this.population = population;
+	}
+
+	/**
 	 * Set the score.
-	 *
+	 * 
 	 * @param score
 	 *            Set the score.
 	 */
+	@Override
 	public void setScore(final double score) {
 		this.score = score;
 	}
@@ -279,21 +312,5 @@ public abstract class BasicGenome implements Genome, Serializable {
 		builder.append(getScore());
 		return builder.toString();
 	}
-
-	/**
-	 * @return the population
-	 */
-	public Population getPopulation() {
-		return population;
-	}
-
-	/**
-	 * @param population the population to set
-	 */
-	public void setPopulation(Population population) {
-		this.population = population;
-	}
-	
-	
 
 }

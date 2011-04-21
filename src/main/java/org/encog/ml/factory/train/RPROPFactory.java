@@ -32,18 +32,16 @@ import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.factory.parse.ArchitectureParse;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.flat.train.prop.RPROPConst;
-import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
-import org.encog.neural.rbf.RBFNetwork;
 import org.encog.util.ParamsHolder;
 
 /**
  * A factory that creates RPROP trainers.
- *
+ * 
  */
 public class RPROPFactory {
-	
+
 	/**
 	 * Create a RPROP trainer.
 	 * 
@@ -55,11 +53,10 @@ public class RPROPFactory {
 	 *            The arguments to use.
 	 * @return The newly created trainer.
 	 */
-	public final MLTrain create(final MLMethod method, 
-			final MLDataSet training,
-			final String argsStr) {
+	public final MLTrain create(final MLMethod method,
+			final MLDataSet training, final String argsStr) {
 
-		if (!(method instanceof ContainsFlat) ) {
+		if (!(method instanceof ContainsFlat)) {
 			throw new EncogError(
 					"RPROP training cannot be used on a method of type: "
 							+ method.getClass().getName());

@@ -202,12 +202,24 @@ public class MLTrainFactory {
 	 */
 	public static final String PROPERTY_MATE = "mate";
 
+	/**
+	 * Genetic training.
+	 */
 	public static final String TYPE_GENETIC = "genetic";
 
+	/**
+	 * Manhattan training.
+	 */
 	public static final String TYPE_MANHATTAN = "manhattan";
 
+	/**
+	 * RBF-SVD training.
+	 */
 	public static final String TYPE_SVD = "rbf-svd";
 
+	/**
+	 * PNN training.
+	 */
 	public static final String TYPE_PNN = "pnn";
 
 	/**
@@ -266,8 +278,14 @@ public class MLTrainFactory {
 	 */
 	private final ManhattanFactory manhattanFactory = new ManhattanFactory();
 	
+	/**
+	 * Factory for SVD.
+	 */
 	private final RBFSVDFactory svdFactory = new RBFSVDFactory();
 	
+	/**
+	 * Factory for PNN.
+	 */
 	private final PNNTrainFactory pnnFactory = new PNNTrainFactory();
 	
 	/**

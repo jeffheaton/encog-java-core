@@ -26,7 +26,6 @@ package org.encog.ml.factory.method;
 import java.util.List;
 
 import org.encog.EncogError;
-import org.encog.mathutil.rbf.RBFEnum;
 import org.encog.ml.MLMethod;
 import org.encog.ml.factory.parse.ArchitectureLayer;
 import org.encog.ml.factory.parse.ArchitectureParse;
@@ -34,7 +33,6 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.pnn.BasicPNN;
 import org.encog.neural.pnn.PNNKernelType;
 import org.encog.neural.pnn.PNNOutputMode;
-import org.encog.neural.rbf.RBFNetwork;
 import org.encog.util.ParamsHolder;
 
 /**
@@ -84,7 +82,8 @@ public class PNNFactory {
 		} else if (pnnLayer.getName().equalsIgnoreCase("u")) {
 			outmodel = PNNOutputMode.Unsupervised;
 		} else {
-			throw new NeuralNetworkError("Unknown model: " + pnnLayer.getName());
+			throw new NeuralNetworkError("Unknown model: " 
+					+ pnnLayer.getName());
 		}
 
 		final ParamsHolder holder = new ParamsHolder(pnnLayer.getParams());

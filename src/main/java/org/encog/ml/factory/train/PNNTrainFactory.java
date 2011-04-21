@@ -27,7 +27,6 @@ import org.encog.EncogError;
 import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
-import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.pnn.TrainBasicPNN;
 import org.encog.neural.pnn.BasicPNN;
 

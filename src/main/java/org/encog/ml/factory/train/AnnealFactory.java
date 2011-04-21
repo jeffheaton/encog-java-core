@@ -14,6 +14,9 @@ import org.encog.neural.networks.training.TrainingSetScore;
 import org.encog.neural.networks.training.anneal.NeuralSimulatedAnnealing;
 import org.encog.util.ParamsHolder;
 
+/**
+ * A factory to create simulated annealing trainers.
+ */
 public class AnnealFactory {
 	/**
 	 * Create an annealing trainer.
@@ -28,29 +31,26 @@ public class AnnealFactory {
 	 */
 	public final MLTrain create(final MLMethod method,
 			final MLDataSet training, final String argsStr) {
-		
-		if( !(method instanceof BasicNetwork) ) {
-			throw new TrainingError("Invalid method type, requires BasicNetwork");
+
+		if (!(method instanceof BasicNetwork)) {
+			throw new TrainingError(
+					"Invalid method type, requires BasicNetwork");
 		}
-		
-		CalculateScore score = new TrainingSetScore(training);
-		
+
+		final CalculateScore score = new TrainingSetScore(training);
+
 		final Map<String, String> args = ArchitectureParse.parseParams(argsStr);
 		final ParamsHolder holder = new ParamsHolder(args);
 		final double startTemp = holder.getDouble(
-				MLTrainFactory.PROPERTY_TEMPERATURE_START, false,
-				10);
+				MLTrainFactory.PROPERTY_TEMPERATURE_START, false, 10);
 		final double stopTemp = holder.getDouble(
-				MLTrainFactory.PROPERTY_TEMPERATURE_STOP, false,
-				2);
-		
-		final int cycles = holder.getInt(
-				MLTrainFactory.CYCLES, false,
-				100);
-		
+				MLTrainFactory.PROPERTY_TEMPERATURE_STOP, false, 2);
+
+		final int cycles = holder.getInt(MLTrainFactory.CYCLES, false, 100);
+
 		final MLTrain train = new NeuralSimulatedAnnealing(
-				(BasicNetwork)method, score, startTemp, stopTemp, cycles);
-		
+				(BasicNetwork) method, score, startTemp, stopTemp, cycles);
+
 		return train;
 	}
 }

@@ -56,6 +56,9 @@ public class MLMethodFactory {
 	 */
 	public static final String TYPE_SOM = "som";
 
+	/**
+	 * A probabilistic neural network. Supports both PNN & GRNN.
+	 */
 	public static final String TYPE_PNN = "pnn";
 
 	/**
