@@ -36,20 +36,70 @@ import org.encog.ml.genetic.species.Species;
  */
 public interface Population extends Serializable {
 	
-	public static final String PROPERTY_NEXT_GENE_ID = "nextGeneID";
-	public static final String PROPERTY_NEXT_GENOME_ID = "nextGenomeID";
-	public static final String PROPERTY_NEXT_INNOVATION_ID = "nextInnovationID";
-	public static final String PROPERTY_NEXT_SPECIES_ID = "nextSpeciesID";
-	public static final String PROPERTY_OLD_AGE_PENALTY = "oldAgePenalty";
-	public static final String PROPERTY_OLD_AGE_THRESHOLD = "oldAgeThreshold";
-	public static final String PROPERTY_POPULATION_SIZE = "populationSize";
-	public static final String PROPERTY_SURVIVAL_RATE = "survivalRate";
-	public static final String PROPERTY_YOUNG_AGE_BONUS = "youngAgeBonus";
-	public static final String PROPERTY_YOUNG_AGE_THRESHOLD = "youngAgeThreshold";
+	/**
+	 * Property tag for the next gene id.
+	 */
+	String PROPERTY_NEXT_GENE_ID = "nextGeneID";
+	
+	/**
+	 * Property tag for the next genome id.
+	 */
+	String PROPERTY_NEXT_GENOME_ID = "nextGenomeID";
+	
+	/**
+	 * Property tag for the next innovation id.
+	 */
+	String PROPERTY_NEXT_INNOVATION_ID = "nextInnovationID";
+	
+	/**
+	 * Property tag for the next species id.
+	 */
+	String PROPERTY_NEXT_SPECIES_ID = "nextSpeciesID";
+	
+	/**
+	 * Property tag for the old age penalty.
+	 */
+	String PROPERTY_OLD_AGE_PENALTY = "oldAgePenalty";
+	
+	/**
+	 * Property tag for the old age threshold.
+	 */
+	String PROPERTY_OLD_AGE_THRESHOLD = "oldAgeThreshold";
+	
+	/**
+	 * Property tag for the population size.
+	 */
+	String PROPERTY_POPULATION_SIZE = "populationSize";
+	
+	/**
+	 * Property tag for the survival rate.
+	 */
+	String PROPERTY_SURVIVAL_RATE = "survivalRate";
+	
+	/**
+	 * Property tag for the young age bonus.
+	 */
+	String PROPERTY_YOUNG_AGE_BONUS = "youngAgeBonus";
+	
+	/**
+	 * Property tag for the young age threshold.
+	 */
+	String PROPERTY_YOUNG_AGE_THRESHOLD = "youngAgeThreshold";
 
-	public static final String PROPERTY_GENOMES = "genomes";
-	public static final String PROPERTY_INNOVATIONS = "innovations";
-	public static final String PROPERTY_SPECIES = "species";
+	/**
+	 * Property tag for the genomes collection.
+	 */
+	String PROPERTY_GENOMES = "genomes";
+	
+	/**
+	 * Property tag for the innovations collection.
+	 */
+	String PROPERTY_INNOVATIONS = "innovations";
+	
+	/**
+	 * Property tag for the species collection.
+	 */
+	String PROPERTY_SPECIES = "species";
 
 	
 	/**

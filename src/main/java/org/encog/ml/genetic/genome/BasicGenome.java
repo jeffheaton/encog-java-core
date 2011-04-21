@@ -76,13 +76,16 @@ public abstract class BasicGenome implements Genome, Serializable {
 	 */
 	private double score = 0;
 
+	/**
+	 * The population this genome belongs to.
+	 */
 	private Population population;
 
 	/**
 	 * @return The number of genes in this genome.
 	 */
 	@Override
-	public int calculateGeneCount() {
+	public final int calculateGeneCount() {
 		int result = 0;
 
 		// sum the genes in the chromosomes.
@@ -96,7 +99,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int compareTo(final Genome other) {
+	public final int compareTo(final Genome other) {
 
 		if (this.geneticAlgorithm.getCalculateScore().shouldMinimize()) {
 			if (getScore() > other.getScore()) {
@@ -116,7 +119,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	 * @return The adjusted score, which considers bonuses.
 	 */
 	@Override
-	public double getAdjustedScore() {
+	public final double getAdjustedScore() {
 		return this.adjustedScore;
 	}
 
@@ -124,7 +127,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	 * @return The amount this genome will spawn.
 	 */
 	@Override
-	public double getAmountToSpawn() {
+	public final double getAmountToSpawn() {
 		return this.amountToSpawn;
 	}
 
@@ -132,7 +135,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	 * @return The number of chromosomes.
 	 */
 	@Override
-	public List<Chromosome> getChromosomes() {
+	public final List<Chromosome> getChromosomes() {
 		return this.chromosomes;
 	}
 
@@ -140,7 +143,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	 * @return The genetic algorithm.
 	 */
 	@Override
-	public GeneticAlgorithm getGeneticAlgorithm() {
+	public final GeneticAlgorithm getGeneticAlgorithm() {
 		return this.geneticAlgorithm;
 	}
 
@@ -148,7 +151,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	 * @return The genome id.
 	 */
 	@Override
-	public long getGenomeID() {
+	public final long getGenomeID() {
 		return this.genomeID;
 	}
 
@@ -156,7 +159,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	 * @return The organism produced.
 	 */
 	@Override
-	public Object getOrganism() {
+	public final Object getOrganism() {
 		return this.organism;
 	}
 
@@ -164,7 +167,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	 * @return the population
 	 */
 	@Override
-	public Population getPopulation() {
+	public final Population getPopulation() {
 		return this.population;
 	}
 
@@ -172,7 +175,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	 * @return The score.
 	 */
 	@Override
-	public double getScore() {
+	public final double getScore() {
 		return this.score;
 	}
 
@@ -187,7 +190,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	 *            The second child.
 	 */
 	@Override
-	public void mate(final Genome father, final Genome child1,
+	public final void mate(final Genome father, final Genome child1,
 			final Genome child2) {
 		final int motherChromosomes = getChromosomes().size();
 		final int fatherChromosomes = father.getChromosomes().size();
@@ -231,23 +234,23 @@ public abstract class BasicGenome implements Genome, Serializable {
 	/**
 	 * Set the adjusted score.
 	 * 
-	 * @param adjustedScore
+	 * @param theAdjustedScore
 	 *            The score.
 	 */
 	@Override
-	public void setAdjustedScore(final double adjustedScore) {
-		this.adjustedScore = adjustedScore;
+	public final void setAdjustedScore(final double theAdjustedScore) {
+		this.adjustedScore = theAdjustedScore;
 	}
 
 	/**
 	 * Set the amount to spawn.
 	 * 
-	 * @param amountToSpawn
+	 * @param theAmountToSpawn
 	 *            The amount to spawn.
 	 */
 	@Override
-	public void setAmountToSpawn(final double amountToSpawn) {
-		this.amountToSpawn = amountToSpawn;
+	public final void setAmountToSpawn(final double theAmountToSpawn) {
+		this.amountToSpawn = theAmountToSpawn;
 	}
 
 	/**
@@ -257,58 +260,60 @@ public abstract class BasicGenome implements Genome, Serializable {
 	 *            The genetic algorithm to use.
 	 */
 	@Override
-	public void setGeneticAlgorithm(final GeneticAlgorithm ga) {
+	public final void setGeneticAlgorithm(final GeneticAlgorithm ga) {
 		this.geneticAlgorithm = ga;
 	}
 
 	/**
 	 * Set the genome id.
 	 * 
-	 * @param genomeID
+	 * @param theGenomeID
 	 *            the genome id.
 	 */
 	@Override
-	public void setGenomeID(final long genomeID) {
-		this.genomeID = genomeID;
+	public final void setGenomeID(final long theGenomeID) {
+		this.genomeID = theGenomeID;
 	}
 
 	/**
 	 * Set the organism.
 	 * 
-	 * @param organism
+	 * @param theOrganism
 	 *            The organism.
 	 */
-	public void setOrganism(final Object organism) {
-		this.organism = organism;
+	public final void setOrganism(final Object theOrganism) {
+		this.organism = theOrganism;
 	}
 
 	/**
-	 * @param population
+	 * @param thePopulation
 	 *            the population to set
 	 */
 	@Override
-	public void setPopulation(final Population population) {
-		this.population = population;
+	public final void setPopulation(final Population thePopulation) {
+		this.population = thePopulation;
 	}
 
 	/**
 	 * Set the score.
 	 * 
-	 * @param score
+	 * @param theScore
 	 *            Set the score.
 	 */
 	@Override
-	public void setScore(final double score) {
-		this.score = score;
+	public final void setScore(final double theScore) {
+		this.score = theScore;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		final StringBuilder builder = new StringBuilder();
-		builder.append("[BasicGenome: score=");
+		builder.append("[");
+		builder.append(this.getClass().getSimpleName());
+		builder.append(": score=");
 		builder.append(getScore());
 		return builder.toString();
 	}

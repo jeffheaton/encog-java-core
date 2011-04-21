@@ -38,9 +38,34 @@ import org.encog.util.identity.GenerateID;
  * Defines the basic functionality for a population of genomes.
  */
 public class BasicPopulation implements Population {
+
+	/**
+	 * Thed default old age penalty.
+	 */
+	public static final double DEFAULT_OLD_AGE_PENALTY = 0.3;
 	
 	/**
-	 * 
+	 * The default old age threshold.
+	 */
+	public static final int DEFAULT_OLD_AGE_THRESHOLD = 50;
+	
+	/**
+	 * The default survival rate.
+	 */
+	public static final double DEFAULT_SURVIVAL_RATE = 0.2;
+	
+	/**
+	 * The default youth penalty.
+	 */
+	public static final double DEFAULT_YOUTH_BONUS = 0.3;
+	
+	/**
+	 * The default youth threshold.
+	 */
+	public static final int DEFAULT_YOUTH_THRESHOLD = 10;
+	
+	/**
+	 * The serial id.
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -72,12 +97,12 @@ public class BasicPopulation implements Population {
 	/**
 	 * The old age penalty.
 	 */
-	private double oldAgePenalty = 0.3;
+	private double oldAgePenalty = DEFAULT_OLD_AGE_PENALTY;
 
 	/**
 	 * The old age threshold.
 	 */
-	private int oldAgeThreshold = 50;
+	private int oldAgeThreshold = DEFAULT_OLD_AGE_THRESHOLD;
 
 	/**
 	 * How many genomes should be created.
@@ -97,17 +122,17 @@ public class BasicPopulation implements Population {
 	/**
 	 * The survival rate.
 	 */
-	private double survivalRate = 0.2;
+	private double survivalRate = DEFAULT_SURVIVAL_RATE;
 
 	/**
 	 * The young threshold.
 	 */
-	private int youngBonusAgeThreshold = 10;
+	private int youngBonusAgeThreshold = DEFAULT_YOUTH_THRESHOLD;
 
 	/**
 	 * The young score bonus.
 	 */
-	private double youngScoreBonus = 0.3;
+	private double youngScoreBonus = DEFAULT_YOUTH_BONUS;
 
 	/**
 	 * The object name.
@@ -124,75 +149,95 @@ public class BasicPopulation implements Population {
 	/**
 	 * Construct a population.
 	 * 
-	 * @param populationSize
+	 * @param thePopulationSize
 	 *            The population size.
 	 */
-	public BasicPopulation(final int populationSize) {
-		this.populationSize = populationSize;
+	public BasicPopulation(final int thePopulationSize) {
+		this.populationSize = thePopulationSize;
 	}
 
 	/**
-	 * Add a genome to the population.
-	 * 
-	 * @param genome
-	 *            The genome to add.
+	 * {@inheritDoc}
 	 */
-	public void add(final Genome genome) {
+	@Override
+	public final void add(final Genome genome) {
 		this.genomes.add(genome);
 		genome.setPopulation(this);
 	}
 
 	/**
-	 * @return Assign a gene id.
+	 * {@inheritDoc}
 	 */
-	public long assignGeneID() {
+	@Override
+	public final void addAll(final List<? extends Genome> newPop) {
+		this.genomes.addAll(newPop);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final long assignGeneID() {
 		return this.geneIDGenerate.generate();
 	}
 
 	/**
-	 * @return Assign a genome id.
+	 * {@inheritDoc}
 	 */
-	public long assignGenomeID() {
+	@Override
+	public final long assignGenomeID() {
 		return this.genomeIDGenerate.generate();
 	}
 
 	/**
-	 * @return Assign an innovation id.
+	 * {@inheritDoc}
 	 */
-	public long assignInnovationID() {
+	@Override
+	public final long assignInnovationID() {
 		return this.innovationIDGenerate.generate();
 	}
 
 	/**
-	 * @return Assign a species id.
+	 * {@inheritDoc}
 	 */
-	public long assignSpeciesID() {
+	@Override
+	public final long assignSpeciesID() {
 		return this.speciesIDGenerate.generate();
 	}
 
 	/**
-	 * Clear all genomes from this population.
+	 * {@inheritDoc}
 	 */
-	public void clear() {
+	@Override
+	public final void claim(final GeneticAlgorithm ga) {
+		for (final Genome genome : this.genomes) {
+			genome.setGeneticAlgorithm(ga);
+		}
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void clear() {
 		this.genomes.clear();
 
 	}
 
 	/**
-	 * Get a genome by index. Index 0 is the best genome.
-	 * 
-	 * @param i
-	 *            The genome to get.
-	 * @return The genome found at the specified index.
+	 * {@inheritDoc}
 	 */
-	public Genome get(final int i) {
+	@Override
+	public final Genome get(final int i) {
 		return this.genomes.get(i);
 	}
 
 	/**
-	 * @return The best genome in the population.
+	 * {@inheritDoc}
 	 */
-	public Genome getBest() {
+	@Override
+	public final Genome getBest() {
 		if (this.genomes.size() == 0) {
 			return null;
 		} else {
@@ -201,222 +246,202 @@ public class BasicPopulation implements Population {
 	}
 
 	/**
-	 * @return The genomes in the population.
+	 * @return the geneIDGenerate
 	 */
-	public List<Genome> getGenomes() {
+	public final GenerateID getGeneIDGenerate() {
+		return this.geneIDGenerate;
+	}
+
+	/**
+	 * @return the genomeIDGenerate
+	 */
+	public final GenerateID getGenomeIDGenerate() {
+		return this.genomeIDGenerate;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final List<Genome> getGenomes() {
 		return this.genomes;
 	}
 
 	/**
-	 * @return A list of innovations in this population.
+	 * @return the innovationIDGenerate
 	 */
-	public InnovationList getInnovations() {
+	public final GenerateID getInnovationIDGenerate() {
+		return this.innovationIDGenerate;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final InnovationList getInnovations() {
 		return this.innovations;
 	}
 
 	/**
 	 * @return The name.
 	 */
-	public String getName() {
+	public final String getName() {
 		return this.name;
 	}
 
 	/**
-	 * @return The old age penalty, or zero for none.
+	 * {@inheritDoc}
 	 */
-	public double getOldAgePenalty() {
+	@Override
+	public final double getOldAgePenalty() {
 		return this.oldAgePenalty;
 	}
 
 	/**
-	 * @return The old age threshold.
+	 * {@inheritDoc}
 	 */
-	public int getOldAgeThreshold() {
+	@Override
+	public final int getOldAgeThreshold() {
 		return this.oldAgeThreshold;
 	}
 
 	/**
-	 * Get the population size.
-	 * 
-	 * @return The population size.
+	 * {@inheritDoc}
 	 */
-	public int getPopulationSize() {
+	@Override
+	public final int getPopulationSize() {
 		return this.populationSize;
 	}
 
 	/**
-	 * @return The species in this population.
+	 * {@inheritDoc}
 	 */
-	public List<Species> getSpecies() {
+	@Override
+	public final List<Species> getSpecies() {
 		return this.species;
-	}
-
-	/**
-	 * @return The survival rate.
-	 */
-	public double getSurvivalRate() {
-		return this.survivalRate;
-	}
-
-	/**
-	 * @return The age at which a genome is considered "young".
-	 */
-	public int getYoungBonusAgeThreshold() {
-		return this.youngBonusAgeThreshold;
-	}
-
-	/**
-	 * @return The bonus applied to young genomes.
-	 */
-	public double getYoungScoreBonus() {
-		return this.youngScoreBonus;
-	}
-
-	/**
-	 * Set the innovation list.
-	 * 
-	 * @param innovations
-	 *            The innovations, or null to disable.
-	 */
-	public void setInnovations(final InnovationList innovations) {
-		this.innovations = innovations;
-	}
-
-	/**
-	 * Set the name.
-	 * @param theName The new name.
-	 */
-	public void setName(final String theName) {
-		this.name = theName;
-
-	}
-
-	/**
-	 * Set the old age penalty.
-	 * 
-	 * @param oldAgePenalty
-	 *            The percent the score is affected by.
-	 */
-	public void setOldAgePenalty(final double oldAgePenalty) {
-		this.oldAgePenalty = oldAgePenalty;
-	}
-
-	/**
-	 * Set the threshold at which a genome is considered "old".
-	 * 
-	 * @param oldAgeThreshold
-	 *            The age.
-	 */
-	public void setOldAgeThreshold(final int oldAgeThreshold) {
-		this.oldAgeThreshold = oldAgeThreshold;
-	}
-
-	/**
-	 * Set the population size.
-	 * 
-	 * @param populationSize
-	 *            The population size.
-	 */
-	public void setPopulationSize(final int populationSize) {
-		this.populationSize = populationSize;
-	}
-
-	/**
-	 * Set the survival rate.
-	 * 
-	 * @param survivalRate
-	 *            The survival rate.
-	 */
-	public void setSurvivalRate(final double survivalRate) {
-		this.survivalRate = survivalRate;
-	}
-
-	/**
-	 * Set the young bonus age threshold.
-	 * 
-	 * @param youngBonusAgeThreshold
-	 *            The age.
-	 */
-	public void setYoungBonusAgeThreshhold(final int youngBonusAgeThreshold) {
-		this.youngBonusAgeThreshold = youngBonusAgeThreshold;
-	}
-
-	/**
-	 * Set the young genome bonus.
-	 * 
-	 * @param youngScoreBonus
-	 *            The score bonus.
-	 */
-	public void setYoungScoreBonus(final double youngScoreBonus) {
-		this.youngScoreBonus = youngScoreBonus;
-	}
-
-	/**
-	 * @return The max size of the population.
-	 */
-	public int size() {
-		return this.genomes.size();
-	}
-
-	/**
-	 * Sort the population.
-	 */
-	public void sort() {
-		Collections.sort(this.genomes);
-	}
-	
-	public boolean supportsMapPersistence()
-	{
-		return true;
-	}
-
-	@Override
-	public void claim(GeneticAlgorithm ga) {
-		for(Genome genome: this.genomes) {
-			genome.setGeneticAlgorithm(ga);
-		}
-		
-	}
-
-	@Override
-	public void addAll(List<? extends Genome> newPop) {
-		this.genomes.addAll(newPop);		
-	}
-
-	/**
-	 * @return the geneIDGenerate
-	 */
-	public GenerateID getGeneIDGenerate() {
-		return geneIDGenerate;
-	}
-
-	/**
-	 * @return the genomeIDGenerate
-	 */
-	public GenerateID getGenomeIDGenerate() {
-		return genomeIDGenerate;
-	}
-
-	/**
-	 * @return the innovationIDGenerate
-	 */
-	public GenerateID getInnovationIDGenerate() {
-		return innovationIDGenerate;
 	}
 
 	/**
 	 * @return the speciesIDGenerate
 	 */
-	public GenerateID getSpeciesIDGenerate() {
-		return speciesIDGenerate;
+	public final GenerateID getSpeciesIDGenerate() {
+		return this.speciesIDGenerate;
 	}
 
 	/**
-	 * @param youngBonusAgeThreshold the youngBonusAgeThreshold to set
+	 * {@inheritDoc}
 	 */
-	public void setYoungBonusAgeThreshold(int youngBonusAgeThreshold) {
-		this.youngBonusAgeThreshold = youngBonusAgeThreshold;
+	@Override
+	public final double getSurvivalRate() {
+		return this.survivalRate;
 	}
 
-	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int getYoungBonusAgeThreshold() {
+		return this.youngBonusAgeThreshold;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final double getYoungScoreBonus() {
+		return this.youngScoreBonus;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void setInnovations(final InnovationList theInnovations) {
+		this.innovations = theInnovations;
+	}
+
+	/**
+	 * Set the name.
+	 * 
+	 * @param theName
+	 *            The new name.
+	 */
+	public final void setName(final String theName) {
+		this.name = theName;
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void setOldAgePenalty(final double theOldAgePenalty) {
+		this.oldAgePenalty = theOldAgePenalty;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void setOldAgeThreshold(final int theOldAgeThreshold) {
+		this.oldAgeThreshold = theOldAgeThreshold;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void setPopulationSize(final int thePopulationSize) {
+		this.populationSize = thePopulationSize;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void setSurvivalRate(final double theSurvivalRate) {
+		this.survivalRate = theSurvivalRate;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void setYoungBonusAgeThreshhold(
+			final int theYoungBonusAgeThreshold) {
+		this.youngBonusAgeThreshold = theYoungBonusAgeThreshold;
+	}
+
+	/**
+	 * @param theYoungBonusAgeThreshold
+	 *            the youngBonusAgeThreshold to set
+	 */
+	public final void setYoungBonusAgeThreshold(
+			final int theYoungBonusAgeThreshold) {
+		this.youngBonusAgeThreshold = theYoungBonusAgeThreshold;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void setYoungScoreBonus(final double theYoungScoreBonus) {
+		this.youngScoreBonus = theYoungScoreBonus;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int size() {
+		return this.genomes.size();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void sort() {
+		Collections.sort(this.genomes);
+	}
 }

@@ -39,17 +39,17 @@ public class MutatePerturb implements Mutate {
 
 	/**
 	 * Construct a perturb mutation.
-	 * @param perturbAmount The amount to mutate by(percent).
+	 * @param thePerturbAmount The amount to mutate by(percent).
 	 */
-	public MutatePerturb(final double perturbAmount) {
-		this.perturbAmount = perturbAmount;
+	public MutatePerturb(final double thePerturbAmount) {
+		this.perturbAmount = thePerturbAmount;
 	}
 
 	/**
 	 * Perform a perturb mutation on the specified chromosome.
 	 * @param chromosome The chromosome to mutate.
 	 */
-	public void performMutation(final Chromosome chromosome) {
+	public final void performMutation(final Chromosome chromosome) {
 		for (final Gene gene : chromosome.getGenes()) {
 			if (gene instanceof DoubleGene) {
 				final DoubleGene doubleGene = (DoubleGene) gene;

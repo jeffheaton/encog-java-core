@@ -46,7 +46,7 @@ public class BasicInnovationList implements InnovationList, Serializable {
 	 * Add an innovation.
 	 * @param innovation The innovation to add.
 	 */
-	public void add(final Innovation innovation) {
+	public final void add(final Innovation innovation) {
 		list.add(innovation);
 	}
 
@@ -55,14 +55,14 @@ public class BasicInnovationList implements InnovationList, Serializable {
 	 * @param id The innovation index id.
 	 * @return The innovation.
 	 */
-	public Innovation get(final int id) {
+	public final Innovation get(final int id) {
 		return list.get(id);
 	}
 
 	/**
 	 * @return A list of innovations.
 	 */
-	public List<Innovation> getInnovations() {
+	public final List<Innovation> getInnovations() {
 		return list;
 	}
 

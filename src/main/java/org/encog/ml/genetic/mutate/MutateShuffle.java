@@ -36,7 +36,7 @@ public class MutateShuffle implements Mutate {
 	 * Perform a shuffle mutation.
 	 * @param chromosome The chromosome to mutate.
 	 */
-	public void performMutation(final Chromosome chromosome) {
+	public final void performMutation(final Chromosome chromosome) {
 		final int length = chromosome.getGenes().size();
 		int iswap1 = (int) (Math.random() * length);
 		int iswap2 = (int) (Math.random() * length);

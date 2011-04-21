@@ -54,6 +54,7 @@ public interface Genome extends Comparable<Genome> {
 	 * Get the adjusted score, this considers old-age penalties and youth
 	 * bonuses. If there are no such bonuses or penalties, this is the same as
 	 * the score.
+	 * 
 	 * @return The adjusted score.
 	 */
 	double getAdjustedScore();
@@ -69,6 +70,12 @@ public interface Genome extends Comparable<Genome> {
 	List<Chromosome> getChromosomes();
 
 	/**
+	 * @return Get the GA used by this genome. This is normally a transient
+	 *         field and only used during training.
+	 */
+	GeneticAlgorithm getGeneticAlgorithm();
+
+	/**
 	 * @return The genome ID.
 	 */
 	long getGenomeID();
@@ -79,61 +86,73 @@ public interface Genome extends Comparable<Genome> {
 	Object getOrganism();
 
 	/**
+	 * @return The population that this genome belongs to.
+	 */
+	Population getPopulation();
+
+	/**
 	 * @return The score for this genome.
 	 */
-	double getScore();	
+	double getScore();
 
 	/**
 	 * Mate with another genome and produce two children.
-	 * @param father The father genome.
-	 * @param child1 The first child.
-	 * @param child2 The second child.
+	 * 
+	 * @param father
+	 *            The father genome.
+	 * @param child1
+	 *            The first child.
+	 * @param child2
+	 *            The second child.
 	 */
 	void mate(Genome father, Genome child1, Genome child2);
 
 	/**
 	 * Set the adjusted score.
-	 * @param adjustedScore The adjusted score.
+	 * 
+	 * @param adjustedScore
+	 *            The adjusted score.
 	 */
-	public void setAdjustedScore(double adjustedScore);
+	void setAdjustedScore(double adjustedScore);
 
 	/**
 	 * Set the amount to spawn.
-	 * @param amountToSpawn The amount to spawn.
+	 * 
+	 * @param amountToSpawn
+	 *            The amount to spawn.
 	 */
-	public void setAmountToSpawn(double amountToSpawn);
+	void setAmountToSpawn(double amountToSpawn);
+
+	/**
+	 * Set the GA used by this genome. This is normally a transient field and
+	 * only used during training.
+	 * 
+	 * @param ga
+	 *            The GA.
+	 */
+	void setGeneticAlgorithm(GeneticAlgorithm ga);
 
 	/**
 	 * Set the genome ID.
-	 * @param genomeID The genome id.
+	 * 
+	 * @param genomeID
+	 *            The genome id.
 	 */
 	void setGenomeID(long genomeID);
 
-	/** 
-	 * Set the score.
-	 * @param score The new score.
-	 */
-	void setScore(double score);
-	
-	/**
-	 * @return Get the GA used by this genome.  This is normally a transient field and only used during training.
-	 */
-	GeneticAlgorithm getGeneticAlgorithm();
-	
-	/**
-	 * Set the GA used by this genome.  This is normally a transient field and only used during training.
-	 * @param ga The GA.
-	 */
-	void setGeneticAlgorithm(GeneticAlgorithm ga);
-	
-	/**
-	 * @return The population that this genome belongs to.
-	 */
-	Population getPopulation();
-	
 	/**
 	 * Set the population that this genome belongs to.
-	 * @param population The population that this genome belongs to.
+	 * 
+	 * @param population
+	 *            The population that this genome belongs to.
 	 */
 	void setPopulation(Population population);
+
+	/**
+	 * Set the score.
+	 * 
+	 * @param score
+	 *            The new score.
+	 */
+	void setScore(double score);
 }

@@ -28,8 +28,6 @@ package org.encog.ml.genetic.innovation;
  * Provides basic functionality for an innovation.
  */
 public class BasicInnovation implements Innovation {
-
-	public final static String PROPERTY_INNOVATION_ID = "id";
 	
 	/**
 	 * The innovation id.
@@ -39,16 +37,16 @@ public class BasicInnovation implements Innovation {
 	/**
 	 * @return The innovation ID.
 	 */
-	public long getInnovationID() {
+	public final long getInnovationID() {
 		return innovationID;
 	}
 
 	/**
 	 * Set the innovation id.
-	 * @param innovationID The innovation id.
+	 * @param theInnovationID The innovation id.
 	 */
-	public void setInnovationID(final long innovationID) {
-		this.innovationID = innovationID;
+	public final void setInnovationID(final long theInnovationID) {
+		this.innovationID = theInnovationID;
 	}
 
 }

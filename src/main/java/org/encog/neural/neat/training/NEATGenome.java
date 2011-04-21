@@ -858,20 +858,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		final StringBuilder result = new StringBuilder();
-		result.append("[NEATGenome:");
-		result.append(getGenomeID());
-		result.append(",fitness=");
-		result.append(getScore());
-		result.append(")");
-		return result.toString();
-	}
-
-	/**
 	 * @return the linksChromosome
 	 */
 	public Chromosome getLinksChromosome() {
