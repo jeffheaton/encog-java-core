@@ -26,6 +26,7 @@ package org.encog.ml.factory;
 import org.encog.EncogError;
 import org.encog.ml.MLMethod;
 import org.encog.ml.factory.method.FeedforwardFactory;
+import org.encog.ml.factory.method.PNNFactory;
 import org.encog.ml.factory.method.RBFNetworkFactory;
 import org.encog.ml.factory.method.SOMFactory;
 import org.encog.ml.factory.method.SVMFactory;
@@ -55,6 +56,8 @@ public class MLMethodFactory {
 	 */
 	public static final String TYPE_SOM = "som";
 
+	public static final String TYPE_PNN = "pnn";
+
 	/**
 	 * A factory used to create feedforward neural networks.
 	 */
@@ -70,6 +73,8 @@ public class MLMethodFactory {
 	 * A factory used to create RBF networks.
 	 */
 	private final RBFNetworkFactory rbfFactory = new RBFNetworkFactory();
+	
+	private final PNNFactory pnnFactory = new PNNFactory();
 	
 	/**
 	 * A factory used to create SOM's.
@@ -95,6 +100,8 @@ public class MLMethodFactory {
 			return this.svmFactory.create(architecture, input, output);
 		} else if (MLMethodFactory.TYPE_SOM.equals(methodType)) {
 			return this.somFactory.create(architecture, input, output);
+		} else if (MLMethodFactory.TYPE_PNN.equals(methodType)) {
+			return this.pnnFactory.create(architecture, input, output);
 		}
 		throw new EncogError("Unknown method type: " + methodType);
 	}

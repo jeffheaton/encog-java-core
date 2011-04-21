@@ -23,58 +23,41 @@
  */
 package org.encog.ml.factory.train;
 
-import java.util.Map;
-
 import org.encog.EncogError;
 import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.factory.MLTrainFactory;
-import org.encog.ml.factory.parse.ArchitectureParse;
 import org.encog.ml.train.MLTrain;
-import org.encog.neural.flat.train.prop.RPROPConst;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.ContainsFlat;
-import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
-import org.encog.neural.rbf.RBFNetwork;
-import org.encog.util.ParamsHolder;
+import org.encog.neural.networks.training.pnn.TrainBasicPNN;
+import org.encog.neural.pnn.BasicPNN;
 
 /**
- * A factory that creates RPROP trainers.
+ * A factory used to create PNN trainers. 
  *
  */
-public class RPROPFactory {
+public class PNNTrainFactory {
 	
 	/**
-	 * Create a RPROP trainer.
+	 * Create a PNN trainer.
 	 * 
 	 * @param method
 	 *            The method to use.
 	 * @param training
 	 *            The training data to use.
-	 * @param argsStr
+	 * @param args
 	 *            The arguments to use.
 	 * @return The newly created trainer.
 	 */
 	public final MLTrain create(final MLMethod method, 
 			final MLDataSet training,
-			final String argsStr) {
+			final String args) {
 
-		if (!(method instanceof ContainsFlat) ) {
+		if (!(method instanceof BasicPNN)) {
 			throw new EncogError(
-					"RPROP training cannot be used on a method of type: "
+					"PNN training cannot be used on a method of type: "
 							+ method.getClass().getName());
 		}
 
-		final Map<String, String> args = ArchitectureParse.parseParams(argsStr);
-		final ParamsHolder holder = new ParamsHolder(args);
-		final double initialUpdate = holder.getDouble(
-				MLTrainFactory.PROPERTY_INITIAL_UPDATE, false,
-				RPROPConst.DEFAULT_INITIAL_UPDATE);
-		final double maxStep = holder.getDouble(
-				MLTrainFactory.PROPERTY_MAX_STEP, false,
-				RPROPConst.DEFAULT_MAX_STEP);
-
-		return new ResilientPropagation((ContainsFlat) method, training,
-				initialUpdate, maxStep);
+		return new TrainBasicPNN((BasicPNN) method, training);
 	}
 }

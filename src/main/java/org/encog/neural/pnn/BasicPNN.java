@@ -29,6 +29,7 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.encog.neural.NeuralNetworkError;
 
 /**
  * This class implements either a:
@@ -224,6 +225,9 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 			
 			for(MLDataPair pair: samples) {
 				int i = (int)pair.getIdeal().getData(0);
+				if( i>=this.countPer.length ) {
+					throw new NeuralNetworkError("Training data contains more classes than neural network has output neurons to hold.");
+				}
 				this.countPer[i]++;
 			}
 			

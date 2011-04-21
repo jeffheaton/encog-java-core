@@ -33,6 +33,8 @@ import org.encog.ml.factory.train.GeneticFactory;
 import org.encog.ml.factory.train.LMAFactory;
 import org.encog.ml.factory.train.ManhattanFactory;
 import org.encog.ml.factory.train.NeighborhoodSOMFactory;
+import org.encog.ml.factory.train.PNNTrainFactory;
+import org.encog.ml.factory.train.RBFSVDFactory;
 import org.encog.ml.factory.train.RPROPFactory;
 import org.encog.ml.factory.train.SCGFactory;
 import org.encog.ml.factory.train.SVMFactory;
@@ -204,6 +206,10 @@ public class MLTrainFactory {
 
 	public static final String TYPE_MANHATTAN = "manhattan";
 
+	public static final String TYPE_SVD = "rbf-svd";
+
+	public static final String TYPE_PNN = "pnn";
+
 	/**
 	 * The factory for backprop.
 	 */
@@ -260,6 +266,10 @@ public class MLTrainFactory {
 	 */
 	private final ManhattanFactory manhattanFactory = new ManhattanFactory();
 	
+	private final RBFSVDFactory svdFactory = new RBFSVDFactory();
+	
+	private final PNNTrainFactory pnnFactory = new PNNTrainFactory();
+	
 	/**
 	 * Create a trainer.
 	 * @param method The method to train.
@@ -301,6 +311,10 @@ public class MLTrainFactory {
 			return this.somClusterFactory.create(method, training, args2);
 		} else if (MLTrainFactory.TYPE_MANHATTAN.equalsIgnoreCase(type)) {
 			return this.manhattanFactory.create(method, training, args2);
+		}  else if (MLTrainFactory.TYPE_SVD.equalsIgnoreCase(type)) {
+			return this.svdFactory.create(method, training, args2);
+		} else if (MLTrainFactory.TYPE_PNN.equalsIgnoreCase(type)) {
+			return this.pnnFactory.create(method, training, args2);
 		} else {
 			throw new EncogError("Unknown training type: " + type);
 		}

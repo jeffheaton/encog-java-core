@@ -23,17 +23,21 @@
  */
 package org.encog.neural.networks.training.pnn;
 
+import org.encog.ml.MLMethod;
+import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.encog.ml.train.BasicTraining;
+import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.neural.pnn.BasicPNN;
 import org.encog.neural.pnn.PNNKernelType;
 import org.encog.neural.pnn.PNNOutputMode;
 
-public class TrainBasicPNN implements CalculationCriteria {
+public class TrainBasicPNN extends BasicTraining implements CalculationCriteria {
 
 	/**
 	 * The default max error.
@@ -121,6 +125,7 @@ public class TrainBasicPNN implements CalculationCriteria {
 	 * @param training The training data.
 	 */
 	public TrainBasicPNN(final BasicPNN network, final MLDataSet training) {
+		super(TrainingImplementationType.OnePass);
 		this.network = network;
 		this.training = training;
 
@@ -560,9 +565,10 @@ public class TrainBasicPNN implements CalculationCriteria {
 	}
 
 	/**
-	 * Learn.
+	 * {@inheritDoc}
 	 */
-	public void learn() {
+	@Override
+	public void iteration() {
 
 		if (!this.samplesLoaded) {
 			this.network.setSamples(new BasicMLDataSet(this.training));
@@ -661,6 +667,37 @@ public class TrainBasicPNN implements CalculationCriteria {
 	 */
 	public void setSigmaLow(final double sigmaLow) {
 		this.sigmaLow = sigmaLow;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean canContinue() {
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public TrainingContinuation pause() {
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void resume(TrainingContinuation state) {		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public MLMethod getMethod() {
+		return this.network;
 	}
 
 }
