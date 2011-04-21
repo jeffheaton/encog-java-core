@@ -139,7 +139,7 @@ public class TestTraining extends TestCase   {
 				XOR.XOR_IDEAL);
 
 		TrainBasicPNN train = new TrainBasicPNN(network, trainingSet);
-		train.learn();
+		train.iteration();
 		
 		XOR.verifyXOR(network, 0.01);
 	}
@@ -156,7 +156,7 @@ public class TestTraining extends TestCase   {
 				XOR.XOR_IDEAL);
 
 		TrainBasicPNN train = new TrainBasicPNN(network, trainingSet);
-		train.learn();
+		train.iteration();
 		
 		XOR.verifyXOR(network, 0.01);
 	}

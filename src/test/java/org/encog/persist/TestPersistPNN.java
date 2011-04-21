@@ -3,8 +3,9 @@ package org.encog.persist;
 import java.io.File;
 import java.io.IOException;
 
+import junit.framework.TestCase;
+
 import org.encog.ml.data.basic.BasicMLDataSet;
-import org.encog.neural.art.ART1;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.training.pnn.TrainBasicPNN;
 import org.encog.neural.pnn.BasicPNN;
@@ -12,8 +13,6 @@ import org.encog.neural.pnn.PNNKernelType;
 import org.encog.neural.pnn.PNNOutputMode;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
-
-import junit.framework.TestCase;
 
 public class TestPersistPNN extends TestCase {
 	
@@ -32,7 +31,7 @@ public class TestPersistPNN extends TestCase {
 		System.out.println("Learning...");
 
 		TrainBasicPNN train = new TrainBasicPNN(network, trainingSet);
-		train.learn();
+		train.iteration();
 		XOR.verifyXOR(network, 0.001);
 		return network;		
 	}
