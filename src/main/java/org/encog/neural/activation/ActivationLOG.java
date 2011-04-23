@@ -47,7 +47,7 @@ public class ActivationLOG implements ActivationFunction {
 	/**
 	 * The parameters.
 	 */
-	private double[] params;
+	private final double[] params;
 
 	/**
 	 * Construct the activation function.
@@ -57,25 +57,10 @@ public class ActivationLOG implements ActivationFunction {
 	}
 
 	/**
-	 * @return The object cloned.
-	 */
-	@Override
-	public ActivationFunction clone() {
-		return new ActivationLOG();
-	}
-
-	/**
-	 * @return Return true, log has a derivative.
-	 */
-	public boolean hasDerivative() {
-		return true;
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x, final int start, 
+	public final void activationFunction(final double[] x, final int start,
 			final int size) {
 
 		for (int i = start; i < start + size; i++) {
@@ -88,10 +73,18 @@ public class ActivationLOG implements ActivationFunction {
 	}
 
 	/**
+	 * @return The object cloned.
+	 */
+	@Override
+	public final ActivationFunction clone() {
+		return new ActivationLOG();
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double derivativeFunction(final double x) {
+	public final double derivativeFunction(final double x) {
 		if (x >= 0) {
 			return 1 / (1 + x);
 		} else {
@@ -103,7 +96,7 @@ public class ActivationLOG implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String[] getParamNames() {
+	public final String[] getParamNames() {
 		final String[] result = {};
 		return result;
 	}
@@ -112,25 +105,24 @@ public class ActivationLOG implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double[] getParams() {
+	public final double[] getParams() {
 		return this.params;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return Return true, log has a derivative.
 	 */
 	@Override
-	public void setParam(final int index, final double value) {
-		this.params[index] = value;
-
+	public final boolean hasDerivative() {
+		return true;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getOpenCLExpression(final boolean derivative) {
-		return null;
-	}
+	public final void setParam(final int index, final double value) {
+		this.params[index] = value;
 
+	}
 }

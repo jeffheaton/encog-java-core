@@ -25,7 +25,6 @@ package org.encog.neural.activation;
 
 import org.encog.EncogError;
 
-
 /**
  * An activation function that only allows a specified number, usually one, of
  * the out-bound connection to win. These connections will share in the sum of
@@ -67,21 +66,21 @@ public class ActivationCompetitive implements ActivationFunction {
 	 */
 	public ActivationCompetitive(final int winners) {
 		this.params = new double[1];
-		this.params[ActivationCompetitive.PARAM_COMPETITIVE_MAX_WINNERS] 
-		            = winners;
+		this.params[
+		    ActivationCompetitive.PARAM_COMPETITIVE_MAX_WINNERS] = winners;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x, final int start,
+	public final void activationFunction(final double[] x, final int start,
 			final int size) {
 		final boolean[] winners = new boolean[x.length];
 		double sumWinners = 0;
 
 		// find the desired number of winners
-		for (int i = 0; i < params[0]; i++) {
+		for (int i = 0; i < this.params[0]; i++) {
 			double maxFound = Double.NEGATIVE_INFINITY;
 			int winner = -1;
 
@@ -111,9 +110,10 @@ public class ActivationCompetitive implements ActivationFunction {
 	 * @return A cloned copy of this object.
 	 */
 	@Override
-	public ActivationFunction clone() {
+	public final ActivationFunction clone() {
 		return new ActivationCompetitive(
-				(int) this.params[ActivationCompetitive.PARAM_COMPETITIVE_MAX_WINNERS]);
+				(int) this.params[
+				 ActivationCompetitive.PARAM_COMPETITIVE_MAX_WINNERS]);
 	}
 
 	/**
@@ -125,25 +125,26 @@ public class ActivationCompetitive implements ActivationFunction {
 	 *            The input array to the activation function.
 	 * @return The derivative.
 	 */
-	public double derivativeFunction(final double d) {
-		throw new EncogError(
-				"Can't use the competitive activation function "
-						+ "where a derivative is required.");
+	@Override
+	public final double derivativeFunction(final double d) {
+		throw new EncogError("Can't use the competitive activation function "
+				+ "where a derivative is required.");
 
 	}
 
 	/**
 	 * @return The maximum number of winners this function supports.
 	 */
-	public int getMaxWinners() {
-		return (int) this.params[ActivationCompetitive.PARAM_COMPETITIVE_MAX_WINNERS];
+	public final int getMaxWinners() {
+		return (int) this.params[
+		      ActivationCompetitive.PARAM_COMPETITIVE_MAX_WINNERS];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String[] getParamNames() {
+	public final String[] getParamNames() {
 		final String[] result = { "maxWinners" };
 		return result;
 	}
@@ -152,7 +153,7 @@ public class ActivationCompetitive implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double[] getParams() {
+	public final double[] getParams() {
 		return this.params;
 	}
 
@@ -160,7 +161,8 @@ public class ActivationCompetitive implements ActivationFunction {
 	 * @return False, indication that no derivative is available for this
 	 *         function.
 	 */
-	public boolean hasDerivative() {
+	@Override
+	public final boolean hasDerivative() {
 		return false;
 	}
 
@@ -168,15 +170,7 @@ public class ActivationCompetitive implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setParam(final int index, final double value) {
+	public final void setParam(final int index, final double value) {
 		this.params[index] = value;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getOpenCLExpression(final boolean derivative) {
-		return null;
 	}
 }

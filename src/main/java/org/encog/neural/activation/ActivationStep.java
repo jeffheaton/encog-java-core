@@ -61,7 +61,14 @@ public class ActivationStep implements ActivationFunction {
 	/**
 	 * The parameters.
 	 */
-	private double[] params;
+	private final double[] params;
+
+	/**
+	 * Create a basic step activation with low=0, center=0, high=1.
+	 */
+	public ActivationStep() {
+		this(0.0, 0.0, 1.0);
+	}
 
 	/**
 	 * Construct a step activation function.
@@ -82,47 +89,81 @@ public class ActivationStep implements ActivationFunction {
 	}
 
 	/**
-	 * Create a basic step activation with low=0, center=0, high=1.
+	 * {@inheritDoc}
 	 */
-	public ActivationStep() {
-		this(0.0, 0.0, 1.0);
-	}
-
-	/**
-	 * @return The center.
-	 */
-	public double getCenter() {
-		return this.params[ActivationStep.PARAM_STEP_CENTER];
-	}
-
-	/**
-	 * @return The low value.
-	 */
-	public double getLow() {
-		return this.params[ActivationStep.PARAM_STEP_LOW];
-	}
-
-	/**
-	 * @return The high value.
-	 */
-	public double getHigh() {
-		return this.params[ActivationStep.PARAM_STEP_HIGH];
+	@Override
+	public final void activationFunction(final double[] x, final int start,
+			final int size) {
+		for (int i = start; i < start + size; i++) {
+			if (x[i] >= this.params[ActivationStep.PARAM_STEP_CENTER]) {
+				x[i] = this.params[ActivationStep.PARAM_STEP_HIGH];
+			} else {
+				x[i] = this.params[ActivationStep.PARAM_STEP_LOW];
+			}
+		}
 	}
 
 	/**
 	 * @return A clone of this object.
 	 */
 	@Override
-	public ActivationFunction clone() {
-		ActivationStep result = new ActivationStep(getLow(), getCenter(),
+	public final ActivationFunction clone() {
+		final ActivationStep result = new ActivationStep(getLow(), getCenter(),
 				getHigh());
 		return result;
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final double derivativeFunction(final double d) {
+		return 1.0;
+	}
+
+	/**
+	 * @return The center.
+	 */
+	public final double getCenter() {
+		return this.params[ActivationStep.PARAM_STEP_CENTER];
+	}
+
+	/**
+	 * @return The high value.
+	 */
+	public final double getHigh() {
+		return this.params[ActivationStep.PARAM_STEP_HIGH];
+	}
+
+	/**
+	 * @return The low value.
+	 */
+	public final double getLow() {
+		return this.params[ActivationStep.PARAM_STEP_LOW];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final String[] getParamNames() {
+		final String[] result = { "center", "low", "high" };
+		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final double[] getParams() {
+		return this.params;
+	}
+
+	/**
 	 * @return Returns true, this activation function has a derivative.
 	 */
-	public boolean hasDerivative() {
+	@Override
+	public final boolean hasDerivative() {
 		return true;
 	}
 
@@ -132,8 +173,8 @@ public class ActivationStep implements ActivationFunction {
 	 * @param d
 	 *            The center of this function.
 	 */
-	public void setCenter(final double d) {
-		this.setParam(ActivationStep.PARAM_STEP_CENTER, d);
+	public final void setCenter(final double d) {
+		setParam(ActivationStep.PARAM_STEP_CENTER, d);
 	}
 
 	/**
@@ -142,8 +183,8 @@ public class ActivationStep implements ActivationFunction {
 	 * @param d
 	 *            The high of this function.
 	 */
-	public void setHigh(final double d) {
-		this.setParam(ActivationStep.PARAM_STEP_HIGH, d);
+	public final void setHigh(final double d) {
+		setParam(ActivationStep.PARAM_STEP_HIGH, d);
 	}
 
 	/**
@@ -152,64 +193,15 @@ public class ActivationStep implements ActivationFunction {
 	 * @param d
 	 *            The low of this function.
 	 */
-	public void setLow(final double d) {
-		this.setParam(ActivationStep.PARAM_STEP_LOW, d);
+	public final void setLow(final double d) {
+		setParam(ActivationStep.PARAM_STEP_LOW, d);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x, final int start,
-			final int size) {
-		for (int i = start; i < start + size; i++) {
-			if (x[i] >= params[ActivationStep.PARAM_STEP_CENTER]) {
-				x[i] = params[ActivationStep.PARAM_STEP_HIGH];
-			} else {
-				x[i] = params[ActivationStep.PARAM_STEP_LOW];
-			}
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public double derivativeFunction(final double d) {
-		return 1.0;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String[] getParamNames() {
-		final String[] result = { "center", "low", "high" };
-		return result;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public double[] getParams() {
-		return this.params;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setParam(final int index, final double value) {
+	public final void setParam(final int index, final double value) {
 		this.params[index] = value;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getOpenCLExpression(final boolean derivative) {
-		return null;
-	}
-
 }

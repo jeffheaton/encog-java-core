@@ -40,7 +40,7 @@ public class ActivationBiPolar implements ActivationFunction {
 	/**
 	 * The parameters.
 	 */
-	private double[] params;
+	private final double[] params;
 
 	/**
 	 * Construct the bipolar activation function.
@@ -50,10 +50,26 @@ public class ActivationBiPolar implements ActivationFunction {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void activationFunction(final double[] x, final int start,
+			final int size) {
+
+		for (int i = start; i < start + size; i++) {
+			if (x[i] > 0) {
+				x[i] = 1;
+			} else {
+				x[i] = -1;
+			}
+		}
+	}
+
+	/**
 	 * @return The object cloned.
 	 */
 	@Override
-	public ActivationFunction clone() {
+	public final ActivationFunction clone() {
 		return new ActivationBiPolar();
 	}
 
@@ -68,39 +84,17 @@ public class ActivationBiPolar implements ActivationFunction {
 	 *            The input array to the activation function.
 	 * @return The derivative.
 	 */
-	public double derivativeFunction(final double d) {
+	@Override
+	public final double derivativeFunction(final double d) {
 		return 1;
 	}
 
 	/**
-	 * @return Return true, bipolar has a 1 for derivative.
-	 */
-	public boolean hasDerivative() {
-		return true;
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x, final int start,
-			final int size) {
-
-		for (int i = start; i < start + size; i++) {
-			if (x[i] > 0) {
-				x[i] = 1;
-			} else {
-				x[i] = -1;
-			}
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String[] getParamNames() {
-		final String[] result = { "slope" };
+	public final String[] getParamNames() {
+		final String[] result = {};
 		return result;
 	}
 
@@ -108,23 +102,23 @@ public class ActivationBiPolar implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double[] getParams() {
+	public final double[] getParams() {
 		return this.params;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return Return true, bipolar has a 1 for derivative.
 	 */
 	@Override
-	public void setParam(final int index, final double value) {
-		this.params[index] = value;
+	public final boolean hasDerivative() {
+		return true;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getOpenCLExpression(final boolean derivative) {
-		return null;
+	public final void setParam(final int index, final double value) {
+		this.params[index] = value;
 	}
 }

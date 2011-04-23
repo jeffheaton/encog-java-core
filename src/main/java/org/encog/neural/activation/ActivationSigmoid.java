@@ -40,7 +40,7 @@ public class ActivationSigmoid implements ActivationFunction {
 	/**
 	 * The parameters.
 	 */
-	private double[] params;
+	private final double[] params;
 
 	/**
 	 * Construct a basic sigmoid function, with a slope of 1.
@@ -50,26 +50,10 @@ public class ActivationSigmoid implements ActivationFunction {
 	}
 
 	/**
-	 * @return The object cloned;
-	 */
-	@Override
-	public ActivationFunction clone() {
-		return new ActivationSigmoid();
-	}
-
-	/**
-	 * @return True, sigmoid has a derivative.
-	 */
-	@Override
-	public boolean hasDerivative() {
-		return true;
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x, final int start,
+	public final void activationFunction(final double[] x, final int start,
 			final int size) {
 		for (int i = start; i < start + size; i++) {
 			x[i] = 1.0 / (1.0 + BoundMath.exp(-1 * x[i]));
@@ -77,10 +61,18 @@ public class ActivationSigmoid implements ActivationFunction {
 	}
 
 	/**
+	 * @return The object cloned;
+	 */
+	@Override
+	public final ActivationFunction clone() {
+		return new ActivationSigmoid();
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double derivativeFunction(final double x) {
+	public final double derivativeFunction(final double x) {
 		return x * (1.0 - x);
 	}
 
@@ -88,8 +80,8 @@ public class ActivationSigmoid implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String[] getParamNames() {
-		final String[] results = { };
+	public final String[] getParamNames() {
+		final String[] results = {};
 		return results;
 	}
 
@@ -97,27 +89,23 @@ public class ActivationSigmoid implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double[] getParams() {
+	public final double[] getParams() {
 		return this.params;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return True, sigmoid has a derivative.
 	 */
 	@Override
-	public void setParam(final int index, final double value) {
-		this.params[index] = value;
+	public final boolean hasDerivative() {
+		return true;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getOpenCLExpression(final boolean derivative) {
-		if (derivative) {
-			return "(x * (1.0f - x))";
-		} else {
-			return "(1.0f / (1.0f + exp(-1 * x)))";
-		}
+	public final void setParam(final int index, final double value) {
+		this.params[index] = value;
 	}
 }

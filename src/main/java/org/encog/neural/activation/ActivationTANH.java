@@ -23,7 +23,6 @@
  */
 package org.encog.neural.activation;
 
-
 /**
  * The hyperbolic tangent activation function takes the curved shape of the
  * hyperbolic tangent. This activation function produces both positive and
@@ -41,7 +40,7 @@ public class ActivationTANH implements ActivationFunction {
 	/**
 	 * The parameters.
 	 */
-	private double[] params;
+	private final double[] params;
 
 	/**
 	 * Construct a basic HTAN activation function, with a slope of 1.
@@ -51,25 +50,10 @@ public class ActivationTANH implements ActivationFunction {
 	}
 
 	/**
-	 * @return The object cloned;
-	 */
-	@Override
-	public ActivationFunction clone() {
-		return new ActivationTANH();
-	}
-
-	/**
-	 * @return Return true, TANH has a derivative.
-	 */
-	public boolean hasDerivative() {
-		return true;
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x, final int start,
+	public final void activationFunction(final double[] x, final int start,
 			final int size) {
 		for (int i = start; i < start + size; i++) {
 			x[i] = Math.tanh(x[i]);
@@ -77,10 +61,18 @@ public class ActivationTANH implements ActivationFunction {
 	}
 
 	/**
+	 * @return The object cloned;
+	 */
+	@Override
+	public final ActivationFunction clone() {
+		return new ActivationTANH();
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double derivativeFunction(final double x) {
+	public final double derivativeFunction(final double x) {
 		return (1.0 - x * x);
 	}
 
@@ -88,8 +80,8 @@ public class ActivationTANH implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String[] getParamNames() {
-		final String[] result = {  };
+	public final String[] getParamNames() {
+		final String[] result = {};
 		return result;
 	}
 
@@ -97,28 +89,24 @@ public class ActivationTANH implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double[] getParams() {
+	public final double[] getParams() {
 		return this.params;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return Return true, TANH has a derivative.
 	 */
 	@Override
-	public void setParam(final int index, final double value) {
-		this.params[index] = value;
+	public final boolean hasDerivative() {
+		return true;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getOpenCLExpression(final boolean derivative) {
-
-		if (derivative) {
-			return "(1.0f - x * x)";
-		} else {
-			return "tanh(x)";
-		}
+	public final void setParam(final int index, final double value) {
+		this.params[index] = value;
 	}
+
 }

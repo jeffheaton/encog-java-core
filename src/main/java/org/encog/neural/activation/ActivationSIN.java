@@ -53,14 +53,15 @@ public class ActivationSIN implements ActivationFunction {
 	 * @return The object cloned;
 	 */
 	@Override
-	public ActivationFunction clone() {
+	public final ActivationFunction clone() {
 		return new ActivationSIN();
 	}
 
 	/**
 	 * @return Return true, sin has a derivative.
 	 */
-	public boolean hasDerivative() {
+	@Override
+	public final boolean hasDerivative() {
 		return true;
 	}
 
@@ -68,7 +69,7 @@ public class ActivationSIN implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x, final int start,
+	public final void activationFunction(final double[] x, final int start,
 			final int size) {
 		for (int i = start; i < start + size; i++) {
 			x[i] = BoundMath.sin(x[i]);
@@ -79,7 +80,7 @@ public class ActivationSIN implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double derivativeFunction(final double x) {
+	public final double derivativeFunction(final double x) {
 		return BoundMath.cos(x);
 	}
 
@@ -87,7 +88,7 @@ public class ActivationSIN implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String[] getParamNames() {
+	public final String[] getParamNames() {
 		final String[] result = {};
 		return result;
 	}
@@ -96,7 +97,7 @@ public class ActivationSIN implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double[] getParams() {
+	public final double[] getParams() {
 		return this.params;
 	}
 
@@ -104,15 +105,8 @@ public class ActivationSIN implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setParam(final int index, final double value) {
+	public final void setParam(final int index, final double value) {
 		this.params[index] = value;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getOpenCLExpression(final boolean derivative) {
-		return null;
-	}
 }

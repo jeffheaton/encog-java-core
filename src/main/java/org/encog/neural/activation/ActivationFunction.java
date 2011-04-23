@@ -102,11 +102,5 @@ public interface ActivationFunction extends Serializable, Cloneable {
 	 * @return A cloned copy of this activation function.
 	 */
 	ActivationFunction clone();
-	
-	/**
-	 * Returns the OpenCL expression for this activation function.
-	 * @param derivative True if we want the derivative, false otherwise.
-	 * @return The OpenCL expression for this activation function.
-	 */
-	String getOpenCLExpression(final boolean derivative);
+
 }

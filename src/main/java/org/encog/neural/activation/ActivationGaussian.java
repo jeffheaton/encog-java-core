@@ -81,7 +81,7 @@ public class ActivationGaussian implements ActivationFunction {
 	 * @return The object cloned.
 	 */
 	@Override
-	public ActivationFunction clone() {
+	public final ActivationFunction clone() {
 		return new ActivationGaussian(this.getCenter(), this.getPeak(), this
 				.getWidth());
 	}
@@ -89,28 +89,28 @@ public class ActivationGaussian implements ActivationFunction {
 	/**
 	 * @return The width of the function.
 	 */
-	private double getWidth() {
+	public final double getWidth() {
 		return this.getParams()[ActivationGaussian.PARAM_GAUSSIAN_WIDTH];
 	}
 
 	/**
 	 * @return The center of the function.
 	 */
-	private double getCenter() {
+	public final double getCenter() {
 		return this.getParams()[ActivationGaussian.PARAM_GAUSSIAN_CENTER];
 	}
 
 	/**
 	 * @return The peak of the function.
 	 */
-	private double getPeak() {
+	private final double getPeak() {
 		return this.getParams()[ActivationGaussian.PARAM_GAUSSIAN_PEAK];
 	}
 
 	/**
 	 * @return Return true, gaussian has a derivative.
 	 */
-	public boolean hasDerivative() {
+	public final boolean hasDerivative() {
 		return true;
 	}
 
@@ -118,7 +118,7 @@ public class ActivationGaussian implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x, final int start, 
+	public final void activationFunction(final double[] x, final int start, 
 			final int size) {
 		for (int i = start; i < start+size ; i++) {
 			x[i] = params[ActivationGaussian.PARAM_GAUSSIAN_PEAK]
@@ -133,7 +133,7 @@ public class ActivationGaussian implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double derivativeFunction(final double x) {
+	public final double derivativeFunction(final double x) {
 		final double width = params[ActivationGaussian.PARAM_GAUSSIAN_WIDTH];
 		final double peak = params[ActivationGaussian.PARAM_GAUSSIAN_PEAK];
 		return Math.exp(-0.5 * width * width * x * x) * peak * width * width
@@ -144,7 +144,7 @@ public class ActivationGaussian implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String[] getParamNames() {
+	public final String[] getParamNames() {
 		final String[] result = { "center", "peak", "width" };
 		return result;
 	}
@@ -153,7 +153,7 @@ public class ActivationGaussian implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double[] getParams() {
+	public final double[] getParams() {
 		return params;
 	}
 
@@ -161,17 +161,8 @@ public class ActivationGaussian implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setParam(final int index, final double value) {
+	public final void setParam(final int index, final double value) {
 		this.params[index] = value;
 		
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getOpenCLExpression(final boolean derivative) {
-		return null;
-	}
-
 }

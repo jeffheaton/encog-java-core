@@ -23,7 +23,6 @@
  */
 package org.encog.neural.activation;
 
-
 /**
  * The Linear layer is really not an activation function at all. The input is
  * simply passed on, unmodified, to the output. This activation function is
@@ -36,7 +35,7 @@ public class ActivationLinear implements ActivationFunction {
 	 * The offset to the parameter that holds the linear slope.
 	 */
 	public static final int PARAM_LINEAR_SLOPE = 0;
-	
+
 	/**
 	 * Serial id for this class.
 	 */
@@ -45,8 +44,8 @@ public class ActivationLinear implements ActivationFunction {
 	/**
 	 * The parameters.
 	 */
-	private double[] params;
-	
+	private final double[] params;
+
 	/**
 	 * Construct a linear activation function, with a slope of 1.
 	 */
@@ -56,52 +55,38 @@ public class ActivationLinear implements ActivationFunction {
 	}
 
 	/**
-	 * @return The object cloned.
-	 */
-	@Override
-	public ActivationFunction clone() {
-		return new ActivationLinear();
-	}
-
-	/**
-	 * @return Return true, linear has a 1 derivative.
-	 */
-	public boolean hasDerivative() {
-		return true;
-	}
-
-	/**
-	 * @return The slope of the activation function.
-	 */
-	public double getSlope() {
-		return this.params[ActivationLinear.PARAM_LINEAR_SLOPE];
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x, final int start, 
-			final int size) {		
+	public final void activationFunction(final double[] x, final int start,
+			final int size) {
 		for (int i = start; i < start + size; i++) {
-			x[i] = x[i] * params[0];
+			x[i] = x[i] * this.params[0];
 		}
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return The object cloned.
 	 */
 	@Override
-	public double derivativeFunction(final double d) {
-		return 1;
+	public final ActivationFunction clone() {
+		return new ActivationLinear();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String[] getParamNames() {
-		final String[] result = { }; 
+	public final double derivativeFunction(final double d) {
+		return 1;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final String[] getParamNames() {
+		final String[] result = {};
 		return result;
 	}
 
@@ -109,27 +94,30 @@ public class ActivationLinear implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double[] getParams() {
+	public final double[] getParams() {
 		return this.params;
+	}
+
+	/**
+	 * @return The slope of the activation function.
+	 */
+	public final double getSlope() {
+		return this.params[ActivationLinear.PARAM_LINEAR_SLOPE];
+	}
+
+	/**
+	 * @return Return true, linear has a 1 derivative.
+	 */
+	@Override
+	public final boolean hasDerivative() {
+		return true;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setParam(final int index, final double value) {
-		this.params[index] = value;		
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getOpenCLExpression(final boolean derivative) {
-		if (derivative) {
-			return "(1.0)";
-		} else {
-			return "(x)";
-		}
+	public final void setParam(final int index, final double value) {
+		this.params[index] = value;
 	}
 }
