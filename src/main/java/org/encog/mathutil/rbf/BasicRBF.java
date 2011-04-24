@@ -23,7 +23,6 @@
  */
 package org.encog.mathutil.rbf;
 
-import org.encog.neural.flat.rbf.RadialBasisFunction;
 
 /**
  * Basic radial basis function. Defines centers for each of the RBF's. All RBF's

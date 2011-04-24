@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.flat.rbf;
+package org.encog.mathutil.rbf;
 
 import java.io.Serializable;
 
@@ -29,6 +29,7 @@ import java.io.Serializable;
  * A multi-dimension RBF.
  */
 public interface RadialBasisFunction extends Serializable {
+	
 	/**
 	 * Calculate the RBF result for the specified value.
 	 * 

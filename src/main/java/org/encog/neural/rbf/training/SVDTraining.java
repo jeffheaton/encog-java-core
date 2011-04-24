@@ -23,10 +23,10 @@
  */
 package org.encog.neural.rbf.training;
 
+import org.encog.mathutil.rbf.RadialBasisFunction;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.BasicTraining;
-import org.encog.neural.flat.rbf.RadialBasisFunction;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.neural.rbf.RBFNetwork;

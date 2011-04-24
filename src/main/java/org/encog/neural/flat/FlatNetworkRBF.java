@@ -25,8 +25,8 @@ package org.encog.neural.flat;
 
 import java.io.Serializable;
 
+import org.encog.mathutil.rbf.RadialBasisFunction;
 import org.encog.neural.activation.ActivationLinear;
-import org.encog.neural.flat.rbf.RadialBasisFunction;
 import org.encog.util.EngineArray;
 
 /**

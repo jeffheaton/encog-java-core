@@ -28,9 +28,8 @@ import org.encog.mathutil.rbf.InverseMultiquadricFunction;
 import org.encog.mathutil.rbf.MexicanHatFunction;
 import org.encog.mathutil.rbf.MultiquadricFunction;
 import org.encog.mathutil.rbf.RBFEnum;
+import org.encog.mathutil.rbf.RadialBasisFunction;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.flat.rbf.RadialBasisFunction;
-import org.encog.util.EngineArray;
 
 /**
  * A neighborhood function based on an RBF function.

@@ -23,7 +23,7 @@
  */
 package org.encog.neural.rbf.training;
 
-import org.encog.neural.flat.rbf.RadialBasisFunction;
+import org.encog.mathutil.rbf.RadialBasisFunction;
 
 /**
  * Perform a SVD decomp on a matrix.
