@@ -11,21 +11,49 @@ import org.encog.persist.EncogReadHelper;
 import org.encog.persist.EncogWriteHelper;
 import org.encog.persist.PersistConst;
 
+/**
+ * Persist a CPN network.
+ */
 public class PersistCPN implements EncogPersistor {
-	
+
+	/**
+	 * The input to instar property.
+	 */
 	final static String PROPERTY_inputToInstar = "inputToInstar";
+	
+	/**
+	 * The instar to input property.
+	 */
 	final static String PROPERTY_instarToInput = "instarToInput";
+	
+	/**
+	 * The winner count property.
+	 */
 	final static String PROPERTY_winnerCount = "winnerCount";
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public String getPersistClassString() {
+	public final int getFileVersion() {
+		return 1;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final String getPersistClassString() {
 		return "CPN";
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public Object read(InputStream is) {
-		Map<String,String> networkParams = null;
-		EncogReadHelper in = new EncogReadHelper(is);
+	public final Object read(final InputStream is) {
+		Map<String, String> networkParams = null;
+		final EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;
 		int inputCount = 0;
 		int instarCount = 0;
@@ -33,51 +61,62 @@ public class PersistCPN implements EncogPersistor {
 		int winnerCount = 0;
 		Matrix m1 = null;
 		Matrix m2 = null;
-		
-		while( (section = in.readNextSection()) != null ) {
-			if( section.getSectionName().equals("CPN") && section.getSubSectionName().equals("PARAMS") ) {
+
+		while ((section = in.readNextSection()) != null) {
+			if (section.getSectionName().equals("CPN")
+					&& section.getSubSectionName().equals("PARAMS")) {
 				networkParams = section.parseParams();
-			} if( section.getSectionName().equals("CPN") && section.getSubSectionName().equals("NETWORK") ) {
-				Map<String,String> params = section.parseParams();
-		
-				inputCount = EncogFileSection.parseInt(params,PersistConst.INPUT_COUNT);
-				instarCount = EncogFileSection.parseInt(params,PersistConst.INSTAR);
-				outputCount = EncogFileSection.parseInt(params,PersistConst.OUTPUT_COUNT);
-				winnerCount = EncogFileSection.parseInt(params,PROPERTY_winnerCount);
-				m1 = EncogFileSection.parseMatrix(params,PROPERTY_inputToInstar);
-				m2 = EncogFileSection.parseMatrix(params,PROPERTY_instarToInput);				
+			}
+			if (section.getSectionName().equals("CPN")
+					&& section.getSubSectionName().equals("NETWORK")) {
+				final Map<String, String> params = section.parseParams();
+
+				inputCount = EncogFileSection.parseInt(params,
+						PersistConst.INPUT_COUNT);
+				instarCount = EncogFileSection.parseInt(params,
+						PersistConst.INSTAR);
+				outputCount = EncogFileSection.parseInt(params,
+						PersistConst.OUTPUT_COUNT);
+				winnerCount = EncogFileSection.parseInt(params,
+						PersistCPN.PROPERTY_winnerCount);
+				m1 = EncogFileSection.parseMatrix(params,
+						PersistCPN.PROPERTY_inputToInstar);
+				m2 = EncogFileSection.parseMatrix(params,
+						PersistCPN.PROPERTY_instarToInput);
 			}
 		}
-		
-		CPN result = new CPN(inputCount,instarCount,outputCount,winnerCount);
+
+		final CPN result = new CPN(inputCount, instarCount, outputCount,
+				winnerCount);
 		result.getProperties().putAll(networkParams);
 		result.getWeightsInputToInstar().set(m1);
-		result.getWeightsInstarToOutstar().set(m2);		 
+		result.getWeightsInstarToOutstar().set(m2);
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void save(OutputStream os, Object obj) {
-		EncogWriteHelper out = new EncogWriteHelper(os);
-		CPN cpn = (CPN)obj;
+	public final void save(final OutputStream os, final Object obj) {
+		final EncogWriteHelper out = new EncogWriteHelper(os);
+		final CPN cpn = (CPN) obj;
 		out.addSection("CPN");
 		out.addSubSection("PARAMS");
 		out.addProperties(cpn.getProperties());
 		out.addSubSection("NETWORK");
-		
-		out.writeProperty(PersistConst.INPUT_COUNT, cpn.getInputCount() );
-		out.writeProperty(PersistConst.INSTAR, cpn.getInstarCount() );
-		out.writeProperty(PersistConst.OUTPUT_COUNT, cpn.getOutputCount() );
-		out.writeProperty(PROPERTY_inputToInstar, cpn.getWeightsInputToInstar() );
-		out.writeProperty(PROPERTY_instarToInput, cpn.getWeightsInstarToOutstar() );
-		out.writeProperty(PROPERTY_winnerCount, cpn.getWinnerCount() );
 
-		out.flush();		
-	}
+		out.writeProperty(PersistConst.INPUT_COUNT, cpn.getInputCount());
+		out.writeProperty(PersistConst.INSTAR, cpn.getInstarCount());
+		out.writeProperty(PersistConst.OUTPUT_COUNT, cpn.getOutputCount());
+		out.writeProperty(PersistCPN.PROPERTY_inputToInstar,
+				cpn.getWeightsInputToInstar());
+		out.writeProperty(PersistCPN.PROPERTY_instarToInput,
+				cpn.getWeightsInstarToOutstar());
+		out.writeProperty(PersistCPN.PROPERTY_winnerCount, 
+				cpn.getWinnerCount());
 
-	@Override
-	public int getFileVersion() {
-		return 1;
+		out.flush();
 	}
 
 }

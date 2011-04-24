@@ -35,145 +35,236 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.util.simple.EncogUtility;
 
-public class CPN  extends BasicML implements MLRegression, MLResettable, MLError {
+/**
+ * Counterpropagation Neural Networks (CPN) were developed by Professor 
+ * Robert Hecht-Nielsen in 1987. CPN neural networks are a hybrid neural 
+ * network, employing characteristics of both a feedforward neural 
+ * network and a self-organzing map (SOM). The CPN is composed of 
+ * three layers, the input, the instar and the outstar. The connection 
+ * from the input to the instar layer is competitive, with only one 
+ * neuron being allowed to win. The connection between the instar and 
+ * outstar is feedforward. The layers are trained separately, 
+ * using instar training and outstar training. The CPN network is 
+ * good at regression.
+ *
+ */
+public class CPN extends BasicML implements MLRegression, 
+	MLResettable, MLError {
 
 	/**
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
+	/**
+	 * The number of neurons in the input layer.
+	 */
 	private final int inputCount;
+	
+	/**
+	 * The number of neurons in the instar, or hidden, layer.
+	 */
 	private final int instarCount;
+	
+	/**
+	 * The number of neurons in the outstar, or output, layer.
+	 */
 	private final int outstarCount;
+	
+	/**
+	 * The number of winning neurons.
+	 */
 	private final int winnerCount;
 
+	/**
+	 * The weights from the input to the instar layer.
+	 */
 	private final Matrix weightsInputToInstar;
+	
+	/**
+	 * The weights from the instar to the outstar layer.
+	 */
 	private final Matrix weightsInstarToOutstar;
 
-	public CPN(int inputCount, int instarCount, int outstarCount,
-			int winnerCount) {
-		this.inputCount = inputCount;
-		this.instarCount = instarCount;
-		this.outstarCount = outstarCount;
+	/**
+	 * Construct the counterpropagation neural network.
+	 * @param theInputCount The number of input neurons.
+	 * @param theInstarCount The number of instar neurons.
+	 * @param theOutstarCount The number of outstar neurons.
+	 * @param theWinnerCount The winner count.
+	 */
+	public CPN(final int theInputCount, final int theInstarCount,
+			final int theOutstarCount, final int theWinnerCount) {
+		this.inputCount = theInputCount;
+		this.instarCount = theInstarCount;
+		this.outstarCount = theOutstarCount;
 
 		this.weightsInputToInstar = new Matrix(inputCount, instarCount);
 		this.weightsInstarToOutstar = new Matrix(instarCount, outstarCount);
-		this.winnerCount = winnerCount;
+		this.winnerCount = theWinnerCount;
 	}
 
-	public int getInputCount() {
-		return inputCount;
-	}
-
-	public int getInstarCount() {
-		return instarCount;
-	}
-
-	public int getOutstarCount() {
-		return outstarCount;
-	}
-
-	@Override
-	public int getOutputCount() {
-		return outstarCount;
-	}
-	
-	public MLData computeOutstar(MLData input)
-	{
-		MLData result = new BasicMLData(this.outstarCount);
-
-		double Sum = 0;
-		
-		for (int i = 0; i < this.outstarCount; i++) {
-			Sum = 0;
-			for (int j = 0; j < this.instarCount; j++) {
-				Sum += this.weightsInstarToOutstar.get(j, i) * input.getData(j);
-			}
-			result.setData(i, Sum);
-		}
-		return result;
-	}
-	
-	public MLData computeInstar(MLData input)
-	{
-		MLData result = new BasicMLData(this.instarCount);
-		int w, i, j;
-		double Sum, SumWinners, MaxOut;
-		int Winner = 0;
-		boolean[] winners = new boolean[this.instarCount];
-
-		for (i = 0; i < this.instarCount; i++) {
-			Sum = 0;
-			for (j = 0; j < this.inputCount; j++) {
-				Sum += this.weightsInputToInstar.get(j, i) * input.getData(j);
-			}
-			result.setData(i, Sum);
-			winners[i] = false;
-		}
-		SumWinners = 0;
-		for (w = 0; w < winnerCount; w++) {
-			MaxOut = Double.MIN_VALUE;
-			for (i = 0; i < this.instarCount; i++) {
-				if (!winners[i] && result.getData(i) > MaxOut)
-					MaxOut = result.getData(Winner = i);
-			}
-			winners[Winner] = true;
-			SumWinners += result.getData(Winner);
-		}
-		for (i = 0; i < this.instarCount; i++) {
-			if (winners[i] && Math.abs(SumWinners)>Encog.DEFAULT_DOUBLE_EQUAL) 
-				result.getData()[i] /= SumWinners;
-			else
-				result.getData()[i] = 0;
-		}		
-		
-		return result;
-	}
-
-	@Override
-	public MLData compute(MLData input) {
-		MLData temp = computeInstar(input);
-		return computeOutstar(temp);
-	}
-
-	public Matrix getWeightsInputToInstar() {
-		return weightsInputToInstar;
-	}
-
-	public Matrix getWeightsInstarToOutstar() {
-		return weightsInstarToOutstar;
-	}
-	
-	@Override
-	public void updateProperties() {
-		// unneeded
-	}
-
-	@Override
-	public void reset() {
-		reset(100);		
-	}
-
-	@Override
-	public void reset(int seed) {
-		ConsistentRandomizer randomize = new ConsistentRandomizer(-1,1,seed);
-		randomize.randomize(weightsInputToInstar);
-		randomize.randomize(weightsInstarToOutstar);		
-	}
-
-	public int getWinnerCount() {
-		return this.winnerCount;
-	}
-	
 	/**
-	 * Calculate the error for this neural network. 
+	 * Calculate the error for this neural network.
 	 * 
 	 * @param data
 	 *            The training set.
 	 * @return The error percentage.
 	 */
-	public double calculateError(final MLDataSet data) {
-		return EncogUtility.calculateRegressionError(this,data);
+	@Override
+	public final double calculateError(final MLDataSet data) {
+		return EncogUtility.calculateRegressionError(this, data);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final MLData compute(final MLData input) {
+		final MLData temp = computeInstar(input);
+		return computeOutstar(temp);
+	}
+
+	/**
+	 * Compute the instar layer.
+	 * @param input The input.
+	 * @return The output.
+	 */
+	public final MLData computeInstar(final MLData input) {
+		final MLData result = new BasicMLData(this.instarCount);
+		int w, i, j;
+		double sum, sumWinners, maxOut;
+		int winner = 0;
+		final boolean[] winners = new boolean[this.instarCount];
+
+		for (i = 0; i < this.instarCount; i++) {
+			sum = 0;
+			for (j = 0; j < this.inputCount; j++) {
+				sum += this.weightsInputToInstar.get(j, i) * input.getData(j);
+			}
+			result.setData(i, sum);
+			winners[i] = false;
+		}
+		sumWinners = 0;
+		for (w = 0; w < this.winnerCount; w++) {
+			maxOut = Double.MIN_VALUE;
+			for (i = 0; i < this.instarCount; i++) {
+				if (!winners[i] && (result.getData(i) > maxOut)) {
+					winner = i;
+					maxOut = result.getData(winner);
+				}
+			}
+			winners[winner] = true;
+			sumWinners += result.getData(winner);
+		}
+		for (i = 0; i < this.instarCount; i++) {
+			if (winners[i]
+					&& (Math.abs(sumWinners) > Encog.DEFAULT_DOUBLE_EQUAL)) {
+				result.getData()[i] /= sumWinners;
+			} else {
+				result.getData()[i] = 0;
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Compute the outstar layer.
+	 * @param input The input.
+	 * @return The output.
+	 */
+	public final MLData computeOutstar(final MLData input) {
+		final MLData result = new BasicMLData(this.outstarCount);
+
+		double sum = 0;
+
+		for (int i = 0; i < this.outstarCount; i++) {
+			sum = 0;
+			for (int j = 0; j < this.instarCount; j++) {
+				sum += this.weightsInstarToOutstar.get(j, i) * input.getData(j);
+			}
+			result.setData(i, sum);
+		}
+		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int getInputCount() {
+		return this.inputCount;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public final int getInstarCount() {
+		return this.instarCount;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int getOutputCount() {
+		return this.outstarCount;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public final int getOutstarCount() {
+		return this.outstarCount;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public final Matrix getWeightsInputToInstar() {
+		return this.weightsInputToInstar;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public final Matrix getWeightsInstarToOutstar() {
+		return this.weightsInstarToOutstar;
+	}
+
+	/**
+	 * @return The winner count.
+	 */
+	public final int getWinnerCount() {
+		return this.winnerCount;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void reset() {
+		reset(0);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void reset(final int seed) {
+		final ConsistentRandomizer randomize = new ConsistentRandomizer(-1, 1,
+				seed);
+		randomize.randomize(this.weightsInputToInstar);
+		randomize.randomize(this.weightsInstarToOutstar);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void updateProperties() {
+		// unneeded
 	}
 
 }

@@ -68,37 +68,47 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	/**
 	 * Construct the instar training object.
 	 * 
-	 * @param network
+	 * @param theNetwork
 	 *            The network to be trained.
-	 * @param training
+	 * @param theTraining
 	 *            The training data.
-	 * @param learningRate
+	 * @param theLearningRate
 	 *            The learning rate.
-	 * @param initWeights
+	 * @param theInitWeights
 	 *            True, if the weights should be initialized from the training
 	 *            data. If set to true, then you must have the same number of
 	 *            training elements as instar neurons.
 	 */
-	public TrainInstar(final CPN network, final MLDataSet training,
-			final double learningRate, boolean initWeights) {
+	public TrainInstar(final CPN theNetwork, final MLDataSet theTraining,
+			final double theLearningRate, final boolean theInitWeights) {
 		super(TrainingImplementationType.Iterative);
-		this.network = network;
-		this.training = training;
-		this.learningRate = learningRate;
-		this.mustInit = initWeights;
+		this.network = theNetwork;
+		this.training = theTraining;
+		this.learningRate = theLearningRate;
+		this.mustInit = theInitWeights;
 	}
 
 	/**
-	 * @return The learning rate.
+	 * {@inheritDoc}
 	 */
-	public double getLearningRate() {
+	@Override
+	public final boolean canContinue() {
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final double getLearningRate() {
 		return this.learningRate;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public CPN getMethod() {
+	@Override
+	public final CPN getMethod() {
 		return this.network;
 	}
 
@@ -109,7 +119,9 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 
 		if (this.training.getRecordCount() != this.network.getInstarCount()) {
 			throw new NeuralNetworkError(
-					"If the weights are to be set from the training data, then there must be one instar neuron for each training element.");
+					"If the weights are to be set from the " 
+					+ "training data, then there must be one instar " 
+					+ "neuron for each training element.");
 		}
 
 		int i = 0;
@@ -124,9 +136,10 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	}
 
 	/**
-	 * Perform one training iteration.
+	 * {@inheritDoc}
 	 */
-	public void iteration() {
+	@Override
+	public final void iteration() {
 
 		if (this.mustInit) {
 			initWeights();
@@ -135,7 +148,7 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 		double worstDistance = Double.NEGATIVE_INFINITY;
 
 		for (final MLDataPair pair : this.training) {
-			final MLData out = network.computeInstar(pair.getInput());
+			final MLData out = this.network.computeInstar(pair.getInput());
 
 			// determine winner
 			final int winner = EngineArray.indexOfLargest(out.getData());
@@ -144,7 +157,7 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 			double distance = 0;
 			for (int i = 0; i < pair.getInput().size(); i++) {
 				final double diff = pair.getInput().getData(i)
-						- network.getWeightsInputToInstar().get(i, winner);
+						- this.network.getWeightsInputToInstar().get(i, winner);
 				distance += diff * diff;
 			}
 			distance = BoundMath.sqrt(distance);
@@ -154,12 +167,12 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 			}
 
 			// train
-			for (int j = 0; j < network.getInputCount(); j++) {
+			for (int j = 0; j < this.network.getInputCount(); j++) {
 				final double delta = this.learningRate
-						* (pair.getInput().getData(j) - network
+						* (pair.getInput().getData(j) - this.network
 								.getWeightsInputToInstar().get(j, winner));
 
-				network.getWeightsInputToInstar().add(j, winner, delta);
+				this.network.getWeightsInputToInstar().add(j, winner, delta);
 
 			}
 		}
@@ -168,28 +181,26 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	}
 
 	/**
-	 * Set the learning rate.
-	 * 
-	 * @param rate
-	 *            The new learning rate.
+	 * {@inheritDoc}
 	 */
-	public void setLearningRate(final double rate) {
-		this.learningRate = rate;
-	}
-
 	@Override
-	public boolean canContinue() {
-		return false;
-	}
-
-	@Override
-	public TrainingContinuation pause() {
+	public final TrainingContinuation pause() {
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void resume(TrainingContinuation state) {
+	public void resume(final TrainingContinuation state) {
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void setLearningRate(final double rate) {
+		this.learningRate = rate;
+	}
 }

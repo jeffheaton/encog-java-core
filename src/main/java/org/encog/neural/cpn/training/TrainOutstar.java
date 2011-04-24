@@ -68,32 +68,42 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	/**
 	 * Construct the outstar trainer.
 	 * 
-	 * @param network
+	 * @param theNetwork
 	 *            The network to train.
-	 * @param training
+	 * @param theTraining
 	 *            The training data, must provide ideal outputs.
-	 * @param learningRate
+	 * @param theLearningRate
 	 *            The learning rate.
 	 */
-	public TrainOutstar(final CPN network,
-			final MLDataSet training, final double learningRate) {
+	public TrainOutstar(final CPN theNetwork, final MLDataSet theTraining,
+			final double theLearningRate) {
 		super(TrainingImplementationType.Iterative);
-		this.network = network;
-		this.training = training;
-		this.learningRate = learningRate;
+		this.network = theNetwork;
+		this.training = theTraining;
+		this.learningRate = theLearningRate;
 	}
 
 	/**
-	 * @return The learning rate.
+	 * {@inheritDoc}
 	 */
-	public double getLearningRate() {
+	@Override
+	public final boolean canContinue() {
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final double getLearningRate() {
 		return this.learningRate;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public MLMethod getMethod() {
+	@Override
+	public final MLMethod getMethod() {
 		return this.network;
 	}
 
@@ -101,11 +111,10 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	 * Approximate the weights based on the input values.
 	 */
 	private void initWeight() {
-		for (int i = 0; i 
-			< this.network.getOutstarCount(); i++) {
+		for (int i = 0; i < this.network.getOutstarCount(); i++) {
 			int j = 0;
 			for (final MLDataPair pair : this.training) {
-				network.getWeightsInstarToOutstar().set(j++, i,
+				this.network.getWeightsInstarToOutstar().set(j++, i,
 						pair.getIdeal().getData(i));
 			}
 		}
@@ -113,9 +122,10 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	}
 
 	/**
-	 * Perform one training iteration.
+	 * {@inheritDoc}
 	 */
-	public void iteration() {
+	@Override
+	public final void iteration() {
 
 		if (this.mustInit) {
 			initWeight();
@@ -124,47 +134,45 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 		final ErrorCalculation error = new ErrorCalculation();
 
 		for (final MLDataPair pair : this.training) {
-			final MLData out = network.computeInstar(
-					pair.getInput());
+			final MLData out = this.network.computeInstar(pair.getInput());
 
 			final int j = EngineArray.indexOfLargest(out.getData());
-			for (int i = 0; i 
-				< network.getOutstarCount(); i++) {
+			for (int i = 0; i < this.network.getOutstarCount(); i++) {
 				final double delta = this.learningRate
-						* (pair.getIdeal().getData(i) - network.getWeightsInstarToOutstar().get(j, i));
-				network.getWeightsInstarToOutstar().add(j, i, delta);
+						* (pair.getIdeal().getData(i) - this.network
+								.getWeightsInstarToOutstar().get(j, i));
+				this.network.getWeightsInstarToOutstar().add(j, i, delta);
 			}
-			
-			MLData out2 = this.network.computeOutstar(out);
+
+			final MLData out2 = this.network.computeOutstar(out);
 			error.updateError(out2.getData(), pair.getIdeal().getData());
 		}
-		
-		
 
 		setError(error.calculate());
 	}
 
 	/**
-	 * Set the learning rate.
-	 * @param rate The new learning rate.
+	 * {@inheritDoc}
 	 */
-	public void setLearningRate(final double rate) {
-		this.learningRate = rate;
-	}
-	
 	@Override
-	public boolean canContinue() {
-		return false;
-	}
-
-	@Override
-	public TrainingContinuation pause() {
+	public final TrainingContinuation pause() {
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void resume(TrainingContinuation state) {
-		
+	public final void resume(final TrainingContinuation state) {
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void setLearningRate(final double rate) {
+		this.learningRate = rate;
 	}
 
 }
