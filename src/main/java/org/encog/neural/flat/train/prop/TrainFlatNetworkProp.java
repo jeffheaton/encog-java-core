@@ -60,7 +60,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	/**
 	 * The last gradients, from the last training iteration.
 	 */
-	private double[] lastGradient;
+	private final double[] lastGradient;
 
 	/**
 	 * The network to train.
@@ -132,10 +132,10 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 			init();
 		}
 
-		if( this.network.getHasContext() ) {
-			this.workers[0].getNetwork().clearContext();	
+		if (this.network.getHasContext()) {
+			this.workers[0].getNetwork().clearContext();
 		}
-		
+
 		this.totalError = 0;
 
 		if (this.workers.length > 1) {
@@ -160,7 +160,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	 * Copy the contexts to keep them consistent with multithreaded training.
 	 */
 	private void copyContexts() {
-		
+
 		// copy the contexts(layer outputO from each group to the next group
 		for (int i = 0; i < (this.workers.length - 1); i++) {
 			final double[] src = this.workers[i].getNetwork().getLayerOutput();
@@ -168,16 +168,16 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 					.getLayerOutput();
 			EngineArray.arrayCopy(src, dst);
 		}
-		 
-         // copy the contexts from the final group to the real network
-         EngineArray.arrayCopy(
-             this.workers[this.workers.length - 1].getNetwork().getLayerOutput(),
-             this.network.getLayerOutput());
+
+		// copy the contexts from the final group to the real network
+		EngineArray.arrayCopy(this.workers[this.workers.length - 1]
+				.getNetwork().getLayerOutput(), this.network.getLayerOutput());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void finishTraining() {
 		// nothing to do
 	}
@@ -185,35 +185,47 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public double getError() {
+	@Override
+	public final double getError() {
 		return this.currentError;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int getIteration() {
+		return this.iteration;
 	}
 
 	/**
 	 * @return The gradients from the last iteration;
 	 */
-	public double[] getLastGradient() {
+	public final double[] getLastGradient() {
 		return this.lastGradient;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public FlatNetwork getNetwork() {
+	@Override
+	public final FlatNetwork getNetwork() {
 		return this.network;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getNumThreads() {
+	@Override
+	public final int getNumThreads() {
 		return this.numThreads;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public MLDataSet getTraining() {
+	@Override
+	public final MLDataSet getTraining() {
 		return this.training;
 	}
 
@@ -240,6 +252,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void iteration() {
 
 		this.iteration++;
@@ -257,12 +270,28 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 					worker.getWeights(), 0, this.network.getWeights().length);
 		}
 
-		if( this.network.getHasContext() ) {
-			copyContexts();	
+		if (this.network.getHasContext()) {
+			copyContexts();
 		}
-		
+
 		if (this.reportedException != null) {
 			throw (new EncogError(this.reportedException));
+		}
+	}
+
+	/**
+	 * Perform the specified number of training iterations. This is a basic
+	 * implementation that just calls iteration the specified number of times.
+	 * However, some training methods, particularly with the GPU, benefit
+	 * greatly by calling with higher numbers than 1.
+	 * 
+	 * @param count
+	 *            The number of training iterations.
+	 */
+	@Override
+	public final void iteration(final int count) {
+		for (int i = 0; i < count; i++) {
+			iteration();
 		}
 	}
 
@@ -306,7 +335,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	 * @param ex
 	 *            The exception.
 	 */
-	public void report(final double[] gradients, final double error,
+	public final void report(final double[] gradients, final double error,
 			final Throwable ex) {
 		synchronized (this) {
 			if (ex == null) {
@@ -324,6 +353,15 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
+	public void setIteration(final int iteration) {
+		this.iteration = iteration;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void setNumThreads(final int numThreads) {
 		this.numThreads = numThreads;
 	}
@@ -342,33 +380,4 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	 */
 	public abstract double updateWeight(double[] gradients,
 			double[] lastGradient, int index);
-
-	/**
-	 * Perform the specified number of training iterations. This is a basic
-	 * implementation that just calls iteration the specified number of times.
-	 * However, some training methods, particularly with the GPU, benefit
-	 * greatly by calling with higher numbers than 1.
-	 * 
-	 * @param count
-	 *            The number of training iterations.
-	 */
-	public void iteration(final int count) {
-		for (int i = 0; i < count; i++) {
-			iteration();
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getIteration() {
-		return this.iteration;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setIteration(final int iteration) {
-		this.iteration = iteration;
-	}
 }

@@ -53,38 +53,38 @@ public class TrainFlatNetworkBackPropagation extends TrainFlatNetworkProp {
 	 *            The network to train.
 	 * @param training
 	 *            The training data.
-	 * @param learningRate
+	 * @param theLearningRate
 	 *            The learning rate.
-	 * @param momentum
+	 * @param theMomentum
 	 *            The momentum.
 	 */
 	public TrainFlatNetworkBackPropagation(final FlatNetwork network,
-			final MLDataSet training, final double learningRate,
-			final double momentum) {
+			final MLDataSet training, final double theLearningRate,
+			final double theMomentum) {
 		super(network, training);
-		this.momentum = momentum;
-		this.learningRate = learningRate;
+		this.momentum = theMomentum;
+		this.learningRate = theLearningRate;
 		this.lastDelta = new double[network.getWeights().length];
 	}
 
 	/**
 	 * @return The last deltas.
 	 */
-	public double[] getLastDelta() {
+	public final double[] getLastDelta() {
 		return this.lastDelta;
 	}
 
 	/**
 	 * @return the learningRate
 	 */
-	public double getLearningRate() {
+	public final double getLearningRate() {
 		return this.learningRate;
 	}
 
 	/**
 	 * @return the momentum
 	 */
-	public double getMomentum() {
+	public final double getMomentum() {
 		return this.momentum;
 	}
 
@@ -94,7 +94,7 @@ public class TrainFlatNetworkBackPropagation extends TrainFlatNetworkProp {
 	 * @param ds
 	 *            The last delta.
 	 */
-	public void setLastDelta(final double[] ds) {
+	public final void setLastDelta(final double[] ds) {
 		this.lastDelta = ds;
 	}
 
@@ -104,7 +104,7 @@ public class TrainFlatNetworkBackPropagation extends TrainFlatNetworkProp {
 	 * @param rate
 	 *            The learning rate.
 	 */
-	public void setLearningRate(final double rate) {
+	public final void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
 
@@ -114,7 +114,7 @@ public class TrainFlatNetworkBackPropagation extends TrainFlatNetworkProp {
 	 * @param rate
 	 *            The momentum.
 	 */
-	public void setMomentum(final double rate) {
+	public final void setMomentum(final double rate) {
 		this.momentum = rate;
 	}
 
@@ -130,7 +130,7 @@ public class TrainFlatNetworkBackPropagation extends TrainFlatNetworkProp {
 	 * @return The weight delta.
 	 */
 	@Override
-	public double updateWeight(final double[] gradients,
+	public final double updateWeight(final double[] gradients,
 			final double[] lastGradient, final int index) {
 		final double delta = (gradients[index] * this.learningRate)
 				+ (this.lastDelta[index] * this.momentum);

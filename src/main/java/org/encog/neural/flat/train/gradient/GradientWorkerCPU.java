@@ -120,25 +120,25 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	/**
 	 * Construct a gradient worker.
 	 * 
-	 * @param network
+	 * @param theNetwork
 	 *            The network to train.
-	 * @param owner
+	 * @param theOwner
 	 *            The owner that is doing the training.
-	 * @param training
+	 * @param theTraining
 	 *            The training data.
-	 * @param low
+	 * @param theLow
 	 *            The low index to use in the training data.
-	 * @param high
+	 * @param theHigh
 	 *            The high index to use in the training data.
 	 */
-	public GradientWorkerCPU(final FlatNetwork network,
-			final TrainFlatNetworkProp owner,
-			final MLDataSet training, final int low, final int high) {
-		this.network = network;
-		this.training = training;
-		this.low = low;
-		this.high = high;
-		this.owner = owner;
+	public GradientWorkerCPU(final FlatNetwork theNetwork,
+			final TrainFlatNetworkProp theOwner,
+			final MLDataSet theTraining, final int theLow, final int theHigh) {
+		this.network = theNetwork;
+		this.training = theTraining;
+		this.low = theLow;
+		this.high = theHigh;
+		this.owner = theOwner;
 
 		this.layerDelta = new double[network.getLayerOutput().length];
 		this.gradients = new double[network.getWeights().length];
@@ -156,17 +156,17 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	}
 
 	/**
-	 * @return The network training.
+	 * {@inheritDoc}
 	 */
 	@Override
-	public FlatNetwork getNetwork() {
+	public final FlatNetwork getNetwork() {
 		return this.network;
 	}
 
 	/**
 	 * @return The weights for this network.
 	 */
-	public double[] getWeights() {
+	public final double[] getWeights() {
 		return this.weights;
 	}
 
@@ -235,7 +235,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	/**
 	 * Perform the gradient calculation for the specified index range.
 	 */
-	public void run() {
+	public final void run() {
 		try {
 			this.errorCalculation.reset();
 			for (int i = this.low; i <= this.high; i++) {

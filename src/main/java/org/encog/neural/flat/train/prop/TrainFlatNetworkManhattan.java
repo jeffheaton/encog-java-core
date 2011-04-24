@@ -26,7 +26,6 @@ package org.encog.neural.flat.train.prop;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.flat.FlatNetwork;
 
-
 /**
  * Train the flat network using Manhattan update rule.
  */
@@ -49,14 +48,29 @@ public class TrainFlatNetworkManhattan extends TrainFlatNetworkProp {
 	 *            The network to train.
 	 * @param training
 	 *            The training data to use.
-	 * @param learningRate
+	 * @param theLearningRate
 	 *            The learning rate to use.
 	 */
 	public TrainFlatNetworkManhattan(final FlatNetwork network,
-			final MLDataSet training, final double learningRate) {
+			final MLDataSet training, final double theLearningRate) {
 		super(network, training);
-		this.learningRate = learningRate;
+		this.learningRate = theLearningRate;
 		this.zeroTolerance = RPROPConst.DEFAULT_ZERO_TOLERANCE;
+	}
+
+	/**
+	 * @return the learningRate
+	 */
+	public final double getLearningRate() {
+		return this.learningRate;
+	}
+
+	/**
+	 * @param theLearningRate
+	 *            the learningRate to set
+	 */
+	public final void setLearningRate(final double theLearningRate) {
+		this.learningRate = theLearningRate;
 	}
 
 	/**
@@ -71,7 +85,7 @@ public class TrainFlatNetworkManhattan extends TrainFlatNetworkProp {
 	 * @return The amount to change the weight by.
 	 */
 	@Override
-	public double updateWeight(final double[] gradients,
+	public final double updateWeight(final double[] gradients,
 			final double[] lastGradient, final int index) {
 		if (Math.abs(gradients[index]) < this.zeroTolerance) {
 			return 0;
@@ -81,21 +95,5 @@ public class TrainFlatNetworkManhattan extends TrainFlatNetworkProp {
 			return -this.learningRate;
 		}
 	}
-
-	/**
-	 * @return the learningRate
-	 */
-	public double getLearningRate() {
-		return learningRate;
-	}
-
-	/**
-	 * @param learningRate the learningRate to set
-	 */
-	public void setLearningRate(double learningRate) {
-		this.learningRate = learningRate;
-	}
-	
-	
 
 }

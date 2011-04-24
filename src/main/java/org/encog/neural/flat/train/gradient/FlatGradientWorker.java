@@ -26,7 +26,6 @@ package org.encog.neural.flat.train.gradient;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.util.concurrency.EngineTask;
 
-
 /**
  * An interface used to define gradient workers for flat networks.
  *

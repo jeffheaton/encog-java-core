@@ -22,8 +22,8 @@
  * http://www.heatonresearch.com/copyright
  */
 /**
- * This package contains the classes to calculate gradients.
+ * This package contains the classes to perform propagation training.
  *  
  */
-package org.encog.neural.flat.train.gradient;
+package org.encog.neural.flat.train.prop;
 
