@@ -29,34 +29,66 @@ import org.encog.ml.data.MLData;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.NeuralDataMapping;
 
+/**
+ * Bidirectional associative memory (BAM) is a type of neural network 
+ * developed by Bart Kosko in 1988. The BAM is a recurrent neural network 
+ * that works similarly that allows patterns of different lengths to be 
+ * mapped bidirectionally to other patterns. This allows it to act as 
+ * almost a two-way hash map. During training the BAM is fed pattern pairs. 
+ * The two halves of each pattern do not have to be the to be of the 
+ * same length. However all patterns must be of the same overall structure. 
+ * The BAM can be fed a distorted pattern on either side and will attempt 
+ * to map to the correct value.
+ * 
+ * @author jheaton
+ *
+ */
 public class BAM extends BasicML {
-	
+
 	/**
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Neurons in the F1 layer.
+	 */
 	private int f1Count;
-	private int f2Count;
 	
+	/**
+	 * Neurons in the F2 layer.
+	 */
+	private int f2Count;
+
+	/**
+	 * The weights between the F1 and F2 layers.
+	 */
 	private Matrix weightsF1toF2;
+	
+	/**
+	 * The weights between the F1 and F2 layers.
+	 */
 	private Matrix weightsF2toF1;
 
-	public BAM()
-	{
-	
-	}
-	
-	public BAM(int f1Count,int f2Count)
-	{
-		this.f1Count = f1Count;
-		this.f2Count = f2Count;
-		
-		this.weightsF1toF2 = new Matrix(f1Count,f2Count);
-		this.weightsF2toF1 = new Matrix(f2Count,f1Count);		
+	/**
+	 * Default constructor, used mainly for persistence.
+	 */
+	public BAM() {
+
 	}
 
+	/**
+	 * Construct the BAM network.
+	 * @param theF1Count The F1 count.
+	 * @param theF2Count The F2 count.
+	 */
+	public BAM(final int theF1Count, final int theF2Count) {
+		this.f1Count = theF1Count;
+		this.f2Count = theF2Count;
 
+		this.weightsF1toF2 = new Matrix(f1Count, f2Count);
+		this.weightsF2toF1 = new Matrix(f2Count, f1Count);
+	}
 
 	/**
 	 * Add a pattern to the neural network.
@@ -66,7 +98,7 @@ public class BAM extends BasicML {
 	 * @param outputPattern
 	 *            The output pattern(for this input).
 	 */
-	public void addPattern(final MLData inputPattern,
+	public final void addPattern(final MLData inputPattern, 
 			final MLData outputPattern) {
 
 		int weight;
@@ -75,8 +107,8 @@ public class BAM extends BasicML {
 			for (int j = 0; j < this.f2Count; j++) {
 				weight = (int) (inputPattern.getData(i) * outputPattern
 						.getData(j));
-				weightsF1toF2.add(i, j, weight);
-				weightsF2toF1.add(j, i, weight);
+				this.weightsF1toF2.add(i, j, weight);
+				this.weightsF2toF1.add(j, i, weight);
 			}
 		}
 
@@ -85,7 +117,7 @@ public class BAM extends BasicML {
 	/**
 	 * Clear any connection weights.
 	 */
-	public void clear() {
+	public final void clear() {
 		this.weightsF1toF2.clear();
 		this.weightsF2toF1.clear();
 	}
@@ -98,9 +130,10 @@ public class BAM extends BasicML {
 	 *            NOT USED
 	 * @return NOT USED
 	 */
-	public MLData compute(final MLData input) {
-		throw new NeuralNetworkError("Compute on BasicNetwork cannot be used, rather call"
-				+ " the compute(NeuralData) method on the BAMLogic.");
+	public final MLData compute(final MLData input) {
+		throw new NeuralNetworkError(
+				"Compute on BasicNetwork cannot be used, rather call"
+						+ " the compute(NeuralData) method on the BAMLogic.");
 
 	}
 
@@ -111,26 +144,39 @@ public class BAM extends BasicML {
 	 *            The input to the network.
 	 * @return The output from the network.
 	 */
-	public NeuralDataMapping compute(final NeuralDataMapping input) {
+	public final NeuralDataMapping compute(final NeuralDataMapping input) {
 
 		boolean stable1 = true, stable2 = true;
 
 		do {
 
-			stable1 = propagateLayer(weightsF1toF2, input.getFrom(), input
-					.getTo());
-			stable2 = propagateLayer(weightsF2toF1, input.getTo(), input
-					.getFrom());
+			stable1 = propagateLayer(this.weightsF1toF2, input.getFrom(),
+					input.getTo());
+			stable2 = propagateLayer(this.weightsF2toF1, input.getTo(),
+					input.getFrom());
 
 		} while (!stable1 && !stable2);
 		return null;
 	}
 
 	/**
+	 * @return the f1Count
+	 */
+	public final int getF1Count() {
+		return this.f1Count;
+	}
+
+	/**
+	 * @return the f2Count
+	 */
+	public final int getF2Count() {
+		return this.f2Count;
+	}
+
+	/**
 	 * Get the specified weight.
 	 * 
-	 * @param synapse
-	 *            The synapse to get the weight from.
+	 * @param matrix The matrix to use.
 	 * @param input
 	 *            The input, to obtain the size from.
 	 * @param x
@@ -150,20 +196,33 @@ public class BAM extends BasicML {
 		}
 	}
 
+	/**
+	 * @return the weightsF1toF2
+	 */
+	public final Matrix getWeightsF1toF2() {
+		return this.weightsF1toF2;
+	}
+
+	/**
+	 * @return the weightsF2toF1
+	 */
+	public final Matrix getWeightsF2toF1() {
+		return this.weightsF2toF1;
+	}
 
 	/**
 	 * Propagate the layer.
 	 * 
-	 * @param synapse
-	 *            The synapse for this layer.
+	 * @param matrix
+	 *            The matrix for this layer.
 	 * @param input
 	 *            The input pattern.
 	 * @param output
 	 *            The output pattern.
 	 * @return True if the network has become stable.
 	 */
-	private boolean propagateLayer(final Matrix matrix,
-			final MLData input, final MLData output) {
+	private boolean propagateLayer(final Matrix matrix, final MLData input,
+			final MLData output) {
 		int i, j;
 		int sum, out = 0;
 		boolean stable;
@@ -191,54 +250,42 @@ public class BAM extends BasicML {
 	}
 
 	/**
-	 * @return the f1Count
+	 * Set the F1 neuron count.
+	 * @param i The count.
 	 */
-	public int getF1Count() {
-		return f1Count;
+	public final void setF1Count(final int i) {
+		this.f1Count = i;
 	}
 
 	/**
-	 * @return the f2Count
+	 * Set the F2 neuron count.
+	 * @param i The count.
 	 */
-	public int getF2Count() {
-		return f2Count;
+	public final void setF2Count(final int i) {
+		this.f2Count = i;
 	}
 
 	/**
-	 * @return the weightsF1toF2
+	 * Set the weights for F1 to F2.
+	 * @param matrix The weight matrix.
 	 */
-	public Matrix getWeightsF1toF2() {
-		return weightsF1toF2;
+	public final void setWeightsF1toF2(final Matrix matrix) {
+		this.weightsF1toF2 = matrix;
 	}
 
 	/**
-	 * @return the weightsF2toF1
+	 * Set the weights for F2 to F1.
+	 * @param matrix The weight matrix.
 	 */
-	public Matrix getWeightsF2toF1() {
-		return weightsF2toF1;
+	public final void setWeightsF2toF1(final Matrix matrix) {
+		this.weightsF2toF1 = matrix;
 	}
-	
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void updateProperties() {
 		// TODO Auto-generated method stub
-		
 	}
-
-	public void setF1Count(int i) {
-		this.f1Count = i;		
-	}
-	
-	public void setF2Count(int i) {
-		this.f2Count = i;		
-	}
-
-	public void setWeightsF1toF2(Matrix matrix) {
-		this.weightsF1toF2 = matrix;		
-	}
-
-	public void setWeightsF2toF1(Matrix matrix) {
-		this.weightsF2toF1 = matrix;		
-	}
-
 }
