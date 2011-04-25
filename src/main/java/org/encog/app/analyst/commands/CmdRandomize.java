@@ -26,9 +26,9 @@ package org.encog.app.analyst.commands;
 import java.io.File;
 
 import org.encog.app.analyst.EncogAnalyst;
+import org.encog.app.analyst.csv.shuffle.ShuffleCSV;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
-import org.encog.app.csv.shuffle.ShuffleCSV;
 import org.encog.util.csv.CSVFormat;
 
 /**

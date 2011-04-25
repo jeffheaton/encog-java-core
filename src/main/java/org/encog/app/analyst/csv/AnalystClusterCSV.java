@@ -31,6 +31,7 @@ import java.io.PrintWriter;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.csv.basic.BasicFile;
 import org.encog.app.analyst.csv.basic.LoadedRow;
+import org.encog.app.analyst.csv.normalize.AnalystNormalizeCSV;
 import org.encog.app.analyst.util.CSVHeaders;
 import org.encog.app.quant.QuantError;
 import org.encog.ml.MLCluster;

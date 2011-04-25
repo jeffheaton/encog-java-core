@@ -26,11 +26,11 @@ package org.encog.app.analyst.commands;
 import java.io.File;
 
 import org.encog.app.analyst.EncogAnalyst;
+import org.encog.app.analyst.csv.segregate.SegregateCSV;
+import org.encog.app.analyst.csv.segregate.SegregateTargetPercent;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.util.AnalystReportBridge;
-import org.encog.app.csv.segregate.SegregateCSV;
-import org.encog.app.csv.segregate.SegregateTargetPercent;
 import org.encog.util.csv.CSVFormat;
 
 /**

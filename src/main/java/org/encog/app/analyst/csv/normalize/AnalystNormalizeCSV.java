@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.app.analyst.csv;
+package org.encog.app.analyst.csv.normalize;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -30,6 +30,7 @@ import java.io.PrintWriter;
 
 import org.encog.EncogError;
 import org.encog.app.analyst.EncogAnalyst;
+import org.encog.app.analyst.csv.TimeSeriesUtil;
 import org.encog.app.analyst.csv.basic.BasicFile;
 import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.util.CSVHeaders;
