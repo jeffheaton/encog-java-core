@@ -505,9 +505,9 @@ public class NormalizedField {
 			final int classFrom, final int classTo, final int high,
 			final int low) {
 
-		if ((action != NormalizationAction.Equilateral)
-				&& (action != NormalizationAction.OneOf)
-				&& (action != NormalizationAction.SingleField)) {
+		if ((theAction != NormalizationAction.Equilateral)
+				&& (theAction != NormalizationAction.OneOf)
+				&& (theAction != NormalizationAction.SingleField)) {
 			throw new EncogCSVError("Unsupported normalization type");
 		}
 

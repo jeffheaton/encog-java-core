@@ -23,6 +23,8 @@
  */
 package org.encog.mathutil;
 
+import org.encog.EncogError;
+
 /**
  * Used to produce an array of activations to classify data into groups. This
  * class is provided the number of groups, as well as the range that the
@@ -84,6 +86,9 @@ public class Equilateral {
 	 * @return The activations for the specified sets.
 	 */
 	public final double[] encode(final int set) {
+		if( set>this.matrix.length ) {
+			throw new EncogError("Class out of range for equilateral: " + set);
+		}
 		return this.matrix[set];
 	}
 
