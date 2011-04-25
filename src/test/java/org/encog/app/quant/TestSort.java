@@ -9,9 +9,9 @@ import java.io.PrintWriter;
 
 import junit.framework.TestCase;
 
-import org.encog.app.csv.sort.SortCSV;
-import org.encog.app.csv.sort.SortType;
-import org.encog.app.csv.sort.SortedField;
+import org.encog.app.analyst.csv.sort.SortCSV;
+import org.encog.app.analyst.csv.sort.SortType;
+import org.encog.app.analyst.csv.sort.SortedField;
 import org.encog.util.csv.CSVFormat;
 import org.junit.Assert;
 

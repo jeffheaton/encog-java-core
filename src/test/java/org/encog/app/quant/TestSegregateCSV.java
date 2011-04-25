@@ -10,8 +10,8 @@ import java.io.PrintWriter;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.encog.app.csv.segregate.SegregateCSV;
-import org.encog.app.csv.segregate.SegregateTargetPercent;
+import org.encog.app.analyst.csv.segregate.SegregateCSV;
+import org.encog.app.analyst.csv.segregate.SegregateTargetPercent;
 import org.encog.util.csv.CSVFormat;
 
 public class TestSegregateCSV extends TestCase {

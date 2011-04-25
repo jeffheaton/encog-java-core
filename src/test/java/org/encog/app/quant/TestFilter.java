@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.encog.app.csv.filter.FilterCSV;
+import org.encog.app.analyst.csv.filter.FilterCSV;
 import org.encog.util.csv.CSVFormat;
 
 public class TestFilter extends TestCase {

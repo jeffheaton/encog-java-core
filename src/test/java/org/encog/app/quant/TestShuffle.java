@@ -11,7 +11,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.encog.app.csv.shuffle.ShuffleCSV;
+import org.encog.app.analyst.csv.shuffle.ShuffleCSV;
 import org.encog.util.csv.CSVFormat;
 import org.junit.Assert;
 
