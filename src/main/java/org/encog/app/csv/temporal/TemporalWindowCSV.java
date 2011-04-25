@@ -29,8 +29,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import org.encog.EncogError;
+import org.encog.app.analyst.csv.basic.BasicFile;
 import org.encog.app.csv.EncogCSVError;
-import org.encog.app.csv.basic.BasicFile;
 import org.encog.app.csv.util.BarBuffer;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;

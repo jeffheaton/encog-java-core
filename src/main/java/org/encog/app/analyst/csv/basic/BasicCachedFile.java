@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.app.csv.basic;
+package org.encog.app.analyst.csv.basic;
 
 import java.io.BufferedReader;
 import java.io.File;

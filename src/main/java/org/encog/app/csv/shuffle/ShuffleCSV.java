@@ -26,8 +26,8 @@ package org.encog.app.csv.shuffle;
 import java.io.File;
 import java.io.PrintWriter;
 
-import org.encog.app.csv.basic.BasicFile;
-import org.encog.app.csv.basic.LoadedRow;
+import org.encog.app.analyst.csv.basic.BasicFile;
+import org.encog.app.analyst.csv.basic.LoadedRow;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;

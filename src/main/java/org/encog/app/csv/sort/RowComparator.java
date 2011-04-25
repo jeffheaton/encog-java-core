@@ -25,8 +25,8 @@ package org.encog.app.csv.sort;
 
 import java.util.Comparator;
 
+import org.encog.app.analyst.csv.basic.LoadedRow;
 import org.encog.app.csv.EncogCSVError;
-import org.encog.app.csv.basic.LoadedRow;
 
 /**
  * Used to compare two LoadedRow objects.

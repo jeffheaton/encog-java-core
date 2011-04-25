@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.Encog;
+import org.encog.app.analyst.csv.basic.BasicFile;
 import org.encog.app.csv.EncogCSVError;
-import org.encog.app.csv.basic.BasicFile;
 import org.encog.mathutil.Equilateral;
 import org.encog.util.EngineArray;
 import org.encog.util.csv.CSVFormat;

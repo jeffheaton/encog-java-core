@@ -1,4 +1,4 @@
-package org.encog.app.csv.basic;
+package org.encog.app.analyst.csv.basic;
 
 /**
  * A column that is based off of a column in a CSV file.

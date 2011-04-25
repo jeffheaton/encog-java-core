@@ -30,7 +30,7 @@ import java.io.PrintWriter;
 
 import org.encog.Encog;
 import org.encog.EncogError;
-import org.encog.app.csv.basic.BasicFile;
+import org.encog.app.analyst.csv.basic.BasicFile;
 import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.ml.MLClassification;
 import org.encog.ml.MLContext;

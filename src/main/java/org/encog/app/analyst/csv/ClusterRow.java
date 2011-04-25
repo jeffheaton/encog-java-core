@@ -1,6 +1,6 @@
 package org.encog.app.analyst.csv;
 
-import org.encog.app.csv.basic.LoadedRow;
+import org.encog.app.analyst.csv.basic.LoadedRow;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
 

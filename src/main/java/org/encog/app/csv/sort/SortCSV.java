@@ -30,8 +30,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.encog.app.csv.basic.BasicFile;
-import org.encog.app.csv.basic.LoadedRow;
+import org.encog.app.analyst.csv.basic.BasicFile;
+import org.encog.app.analyst.csv.basic.LoadedRow;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 

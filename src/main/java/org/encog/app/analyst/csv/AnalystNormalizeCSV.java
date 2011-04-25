@@ -30,9 +30,9 @@ import java.io.PrintWriter;
 
 import org.encog.EncogError;
 import org.encog.app.analyst.EncogAnalyst;
+import org.encog.app.analyst.csv.basic.BasicFile;
 import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.util.CSVHeaders;
-import org.encog.app.csv.basic.BasicFile;
 import org.encog.app.csv.normalize.NormalizationAction;
 import org.encog.app.quant.QuantError;
 import org.encog.util.csv.CSVFormat;

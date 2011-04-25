@@ -22,8 +22,7 @@
  * http://www.heatonresearch.com/copyright
  */
 /**
- * This package is used to balance CSV files, this keeps one class from 
- * having too many items.
+ * This package provides basic CSV file handling for many of the CSV classes.
  */
-package org.encog.app.csv.balance;
+package org.encog.app.analyst.csv.basic;
 

@@ -21,15 +21,15 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.app.csv.balance;
+package org.encog.app.analyst.csv.balance;
 
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.encog.app.csv.basic.BasicFile;
-import org.encog.app.csv.basic.LoadedRow;
+import org.encog.app.analyst.csv.basic.BasicFile;
+import org.encog.app.analyst.csv.basic.LoadedRow;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 

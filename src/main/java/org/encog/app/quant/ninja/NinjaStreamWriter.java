@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.encog.Encog;
-import org.encog.app.csv.basic.FileData;
+import org.encog.app.analyst.csv.basic.FileData;
 import org.encog.app.quant.QuantError;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.time.NumericDateUtil;
