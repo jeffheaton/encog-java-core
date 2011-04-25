@@ -26,7 +26,7 @@ package org.encog.app.analyst.commands;
 import java.io.File;
 
 import org.encog.app.analyst.EncogAnalyst;
-import org.encog.app.analyst.evaluate.AnalystEvaluateCSV;
+import org.encog.app.analyst.csv.AnalystEvaluateCSV;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.ml.MLMethod;

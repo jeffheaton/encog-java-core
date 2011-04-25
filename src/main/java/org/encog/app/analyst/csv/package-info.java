@@ -24,5 +24,5 @@
 /**
  * This package contains all of the evaluation classes for the Encog analyst.
  */
-package org.encog.app.analyst.evaluate;
+package org.encog.app.analyst.csv;
 

@@ -26,7 +26,7 @@ package org.encog.app.analyst.commands;
 import java.io.File;
 
 import org.encog.app.analyst.EncogAnalyst;
-import org.encog.app.analyst.evaluate.AnalystEvaluateRawCSV;
+import org.encog.app.analyst.csv.AnalystEvaluateRawCSV;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.ml.MLRegression;

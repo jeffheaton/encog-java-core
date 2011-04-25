@@ -1,4 +1,4 @@
-package org.encog.app.analyst.evaluate;
+package org.encog.app.analyst.csv;
 
 import org.encog.app.csv.basic.LoadedRow;
 import org.encog.ml.data.basic.BasicMLData;
