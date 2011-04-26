@@ -23,6 +23,11 @@
  */
 package org.encog.mathutil.rbf;
 
+import org.encog.Encog;
+import org.encog.util.Format;
+import org.encog.util.csv.CSVFormat;
+import org.encog.util.csv.NumberList;
+
 
 /**
  * Basic radial basis function. Defines centers for each of the RBF's. All RBF's
@@ -115,5 +120,21 @@ public abstract class BasicRBF implements RadialBasisFunction {
 	@Override
 	public final void setWidth(final double theWidth) {
 		this.width = theWidth;
+	}
+	
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[");
+		result.append(this.getClass().getSimpleName());
+		result.append(":width=");
+		result.append(Format.formatDouble(this.getWidth(), Encog.DEFAULT_PRECISION));
+		result.append(",peak=");
+		result.append(Format.formatDouble(this.getPeak(), Encog.DEFAULT_PRECISION));
+		result.append(",center=");
+		StringBuilder list = new StringBuilder();
+		NumberList.toList(CSVFormat.EG_FORMAT, list, this.getCenters());
+		result.append(list);
+		result.append("]");
+		return result.toString();
 	}
 }

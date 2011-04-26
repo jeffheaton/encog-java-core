@@ -167,6 +167,9 @@ public class RBFNetwork  extends BasicML implements MLError, MLRegression, Conta
 		double cmp = Math.pow(totalNumHiddenNeurons,
 				1.0 / dimensions);
 		
+		System.out.println(expectedSideLength);
+		System.out.println(cmp);
+		
 		if (expectedSideLength != cmp) {
 			throw new NeuralNetworkError(
 					"Total number of RBF neurons must be some integer to the power of 'dimensions'.\n"+Format.formatDouble(expectedSideLength,5)+" <> " + Format.formatDouble(cmp, 5));
