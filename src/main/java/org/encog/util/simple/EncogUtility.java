@@ -51,6 +51,7 @@ import org.encog.ml.train.MLTrain;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.pattern.FeedForwardPattern;
@@ -310,7 +311,7 @@ public final class EncogUtility {
 		if (method instanceof SVM) {
 			train = new SVMTrain((SVM)method, dataSet);
 		} else {
-			train = new ResilientPropagation((BasicNetwork)method, dataSet);
+			train = new ResilientPropagation((ContainsFlat)method, dataSet);
 		}
 		EncogUtility.trainToError(train, error);
 	}
