@@ -82,7 +82,7 @@ public class RBFNetwork  extends BasicML implements MLError, MLRegression, Conta
 		
 		try {
 			// try this
-			this.setRBFCentersAndWidthsEqualSpacing(-1, 1, t, inputCount, volumeNeuronWidth, false);
+			this.setRBFCentersAndWidthsEqualSpacing(-1, 1, t, volumeNeuronWidth, false);
 		} catch(EncogError ex) {
 			// if we have the wrong number of hidden neurons, try this
 			this.randomizeRBFCentersAndWidths(inputCount, -1, 1, t);
@@ -153,10 +153,11 @@ public class RBFNetwork  extends BasicML implements MLError, MLRegression, Conta
 	 */
 	public void setRBFCentersAndWidthsEqualSpacing(final double minPosition,
 			final double maxPosition, final RBFEnum t,
-			final int dimensions, final double volumeNeuronRBFWidth,
+			final double volumeNeuronRBFWidth,
 			final boolean useWideEdgeRBFs) {
 		final int totalNumHiddenNeurons = this.flat.getRBF().length;
 
+		final int dimensions = this.getInputCount();
 		final double disMinMaxPosition = Math.abs(maxPosition - minPosition);
 
 		// Check to make sure we have the correct number of neurons for the
@@ -213,8 +214,6 @@ public class RBFNetwork  extends BasicML implements MLError, MLRegression, Conta
 			} else {
 				widths[i] = volumeNeuronRBFWidth;
 			}
-
-			// centers[i] = (double)(1 / (double)(neuronCount - 1)) * (double)i;
 		}
 
 		setRBFCentersAndWidths(centers, widths, t);
