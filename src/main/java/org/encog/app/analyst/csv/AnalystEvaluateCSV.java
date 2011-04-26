@@ -34,13 +34,13 @@ import org.encog.app.analyst.csv.basic.LoadedRow;
 import org.encog.app.analyst.csv.normalize.AnalystNormalizeCSV;
 import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.util.CSVHeaders;
-import org.encog.app.csv.normalize.ClassItem;
 import org.encog.app.quant.QuantError;
 import org.encog.ml.MLClassification;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLData;
+import org.encog.util.arrayutil.ClassItem;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 

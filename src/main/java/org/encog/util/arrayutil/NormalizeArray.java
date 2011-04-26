@@ -21,7 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.app.csv.normalize;
+package org.encog.util.arrayutil;
+
 
 /**
  * Normalization is the process where data is adjusted to be inside a range.

@@ -33,6 +33,7 @@ import java.util.List;
 import org.encog.EncogError;
 import org.encog.app.analyst.csv.basic.BasicFile;
 import org.encog.app.csv.EncogCSVError;
+import org.encog.util.arrayutil.NormalizedField;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 import org.encog.util.csv.ReadCSV;

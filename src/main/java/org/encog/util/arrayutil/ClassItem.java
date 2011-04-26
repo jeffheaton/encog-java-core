@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.app.csv.normalize;
+package org.encog.util.arrayutil;
 
 /**
  * A class item.

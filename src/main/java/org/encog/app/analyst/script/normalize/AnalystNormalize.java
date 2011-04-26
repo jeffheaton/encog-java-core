@@ -30,8 +30,8 @@ import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
-import org.encog.app.csv.normalize.ClassItem;
 import org.encog.app.csv.normalize.NormalizationAction;
+import org.encog.util.arrayutil.ClassItem;
 
 /**
  * This class holds information about the fields that the Encog Analyst will

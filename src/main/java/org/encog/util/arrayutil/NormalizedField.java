@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.app.csv.normalize;
+package org.encog.util.arrayutil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +31,8 @@ import java.util.Map;
 import org.encog.Encog;
 import org.encog.app.analyst.csv.basic.BasicFile;
 import org.encog.app.csv.EncogCSVError;
+import org.encog.app.csv.normalize.NormalizationAction;
+import org.encog.app.csv.normalize.NormalizationStats;
 import org.encog.mathutil.Equilateral;
 import org.encog.util.EngineArray;
 import org.encog.util.csv.CSVFormat;

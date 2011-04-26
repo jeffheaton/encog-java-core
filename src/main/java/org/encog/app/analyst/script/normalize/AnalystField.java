@@ -32,11 +32,11 @@ import org.encog.Encog;
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.csv.basic.BasicFile;
 import org.encog.app.analyst.util.CSVHeaders;
-import org.encog.app.csv.normalize.ClassItem;
 import org.encog.app.csv.normalize.NormalizationAction;
 import org.encog.app.quant.QuantError;
 import org.encog.mathutil.Equilateral;
 import org.encog.util.EngineArray;
+import org.encog.util.arrayutil.ClassItem;
 import org.encog.util.csv.CSVFormat;
 
 /**

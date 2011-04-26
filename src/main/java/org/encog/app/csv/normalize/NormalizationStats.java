@@ -24,6 +24,7 @@
 package org.encog.app.csv.normalize;
 
 import org.encog.Encog;
+import org.encog.util.arrayutil.NormalizedField;
 import org.encog.util.csv.CSVFormat;
 
 /**
