@@ -217,7 +217,6 @@ public class RBFNetwork  extends BasicML implements MLError, MLRegression, Conta
 		}
 
 		setRBFCentersAndWidths(centers, widths, t);
-		// SaveOutNeuronCentersAndWeights(centers, widths);
 	}
 
 	/**
