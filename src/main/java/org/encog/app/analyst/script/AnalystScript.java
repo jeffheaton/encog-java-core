@@ -308,7 +308,7 @@ public class AnalystScript {
 	public final File resolveFilename(final String sourceID) {
 		final String name = getProperties().getFilename(sourceID);
 
-		if (this.basePath != null) {
+		if( new File(name).getParent()==null && this.basePath!=null ) {
 			return new File(this.basePath, name);
 		} else {
 			return new File(name);
