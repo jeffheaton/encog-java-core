@@ -494,24 +494,24 @@ public class AnalystWizard {
 	private void generateFilenames(final File rawFile) {
 		this.filenameRaw = rawFile.getName();
 		this.filenameNorm = FileUtil.addFilenameBase(rawFile, "_norm")
-				.toString();
+				.getName();
 		this.filenameRandom = FileUtil.addFilenameBase(rawFile, "_random")
-				.toString();
+				.getName();
 		this.filenameTrain = FileUtil.addFilenameBase(rawFile, "_train")
-				.toString();
+				.getName();
 		this.filenameEval = FileUtil.addFilenameBase(rawFile, "_eval")
-				.toString();
+				.getName();
 		this.filenameEvalNorm = FileUtil.addFilenameBase(rawFile, "_eval_norm")
-				.toString();
+				.getName();
 		this.filenameTrainSet = FileUtil.forceExtension(this.filenameTrain,
 				"egb");
 		this.filenameML = FileUtil.forceExtension(this.filenameTrain, "eg");
 		this.filenameOutput = FileUtil.addFilenameBase(rawFile, "_output")
-				.toString();
+				.getName();
 		this.filenameBalance = FileUtil.addFilenameBase(rawFile, "_balance")
-				.toString();
+				.getName();
 		this.filenameCluster = FileUtil.addFilenameBase(rawFile, "_cluster")
-				.toString();
+				.getName();
 
 		final ScriptProperties p = this.script.getProperties();
 
@@ -1115,6 +1115,8 @@ public class AnalystWizard {
 			final File analyzeFile, final boolean b,
 			final AnalystFileFormat format) {
 
+		this.script.setBasePath(saveFile.getParent());
+		
 		this.script.getProperties().setProperty(
 				ScriptProperties.HEADER_DATASOURCE_SOURCE_FILE, url);
 		this.script.getProperties().setProperty(

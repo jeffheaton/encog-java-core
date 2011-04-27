@@ -110,7 +110,7 @@ public class RequiredImprovementStrategy implements Strategy {
 	 * @param cycles
 	 */
 	public RequiredImprovementStrategy(final int cycles) {
-		this(0.01, 0.10, 5);
+		this(0.01, 0.10, cycles);
 	}
 
 	/**

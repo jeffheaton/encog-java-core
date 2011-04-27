@@ -302,8 +302,8 @@ public class EncogAnalyst {
 
 		final String rawFile = this.script.getProperties().getPropertyFile(
 				ScriptProperties.HEADER_DATASOURCE_RAW_FILE);
-		final File rawFilename = new File(this.script.getProperties()
-				.getFilename(rawFile));
+		
+		final File rawFilename = getScript().resolveFilename(rawFile);
 
 		if (!rawFilename.exists()) {
 			downloadPage(sourceURL, rawFilename);

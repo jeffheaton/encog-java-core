@@ -30,12 +30,12 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.factory.parse.ArchitectureLayer;
 import org.encog.ml.factory.parse.ArchitectureParse;
 import org.encog.neural.NeuralNetworkError;
+import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.layers.Layer;
 
 /**
  * A factor to create feedforward networks.
@@ -60,7 +60,7 @@ public class FeedforwardFactory {
 			final int output) {
 		final BasicNetwork result = new BasicNetwork();
 		final List<String> layers = ArchitectureParse.parseLayers(architecture);
-		Layer lastLayerUsed = null;
+		ActivationFunction af = new ActivationLinear();
 
 		int questionPhase = 0;
 		for (final String layerStr : layers) {
@@ -84,20 +84,11 @@ public class FeedforwardFactory {
 			}
 			
 			if ("tanh".equalsIgnoreCase(part)) {
-				if (lastLayerUsed == null) {
-					throw new NeuralNetworkError(CANT_DEFINE_ACT);
-				}
-				lastLayerUsed.setActivation(new ActivationTANH());
+				af = new ActivationTANH();
 			} else if ("linear".equalsIgnoreCase(part)) {
-				if (lastLayerUsed == null) {
-					throw new NeuralNetworkError(CANT_DEFINE_ACT);
-				}
-				lastLayerUsed.setActivation(new ActivationLinear());
+				af = new ActivationLinear();
 			} else if ("sigmoid".equalsIgnoreCase(part)) {
-				if (lastLayerUsed == null) {
-					throw new NeuralNetworkError(CANT_DEFINE_ACT);
-				}
-				lastLayerUsed.setActivation(new ActivationSigmoid());
+				af = new ActivationSigmoid();
 			} else {
 				if (layer.isUsedDefault()) {
 					questionPhase++;
@@ -110,9 +101,9 @@ public class FeedforwardFactory {
 					throw new EncogError("Unknown architecture element: "
 							+ architecture + ", can't parse: " + part);
 				}
-				lastLayerUsed = new BasicLayer(new ActivationLinear(), bias,
-						layer.getCount());
-				result.addLayer(lastLayerUsed);
+
+				result.addLayer(new BasicLayer(af, bias,
+						layer.getCount()));
 
 			}
 		}
