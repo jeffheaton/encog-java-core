@@ -316,7 +316,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 		final double limit = this.network.getConnectionLimit();
 		final double[] weights = this.network.getWeights();
 		for (int i = 0; i < this.gradients.length; i++) {
-			if (weights[i] < limit) {
+			if ( Math.abs(weights[i]) < limit) {
 				weights[i] = 0;
 			} else {
 				weights[i] += updateWeight(this.gradients, this.lastGradient, i);
