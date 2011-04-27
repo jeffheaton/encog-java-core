@@ -234,6 +234,8 @@ public class ScriptLoad {
 					des = NormalizationAction.SingleField;
 				} else if (action.equals("oneof")) {
 					des = NormalizationAction.OneOf;
+				} else {
+					throw new AnalystError("Unknown field type:" + action );
 				}
 
 				final AnalystField nf = new AnalystField(name, des, high, low);
