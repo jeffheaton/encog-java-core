@@ -58,7 +58,7 @@ public final class Encog {
 	/**
 	 * Default point at which two doubles are equal.
 	 */
-	public static final double DEFAULT_DOUBLE_EQUAL = 0.0000001;
+	public static final double DEFAULT_DOUBLE_EQUAL = 0.0000000000001;
 
 	/**
 	 * The version of the Encog JAR we are working with. Given in the form

@@ -680,7 +680,7 @@ public class FlatNetwork implements Serializable {
 	 */
 	public void setConnectionLimit(double connectionLimit) {
 		this.connectionLimit = connectionLimit;
-		if ( Math.abs(this.connectionLimit - BasicNetwork.DEFAULT_CONNECTION_LIMIT)>Encog.DEFAULT_DOUBLE_EQUAL )
+		if ( Math.abs(this.connectionLimit - BasicNetwork.DEFAULT_CONNECTION_LIMIT)<Encog.DEFAULT_DOUBLE_EQUAL )
 			this.isLimited = true;
 	}
 

@@ -235,6 +235,7 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 			if (!this.structure.isConnectionLimited()) {
 				this.setProperty(BasicNetwork.TAG_LIMIT,
 						BasicNetwork.DEFAULT_CONNECTION_LIMIT);
+				this.structure.updateProperties();
 				
 			}
 			this.setWeight(fromLayer, fromNeuron, toNeuron, 0);
