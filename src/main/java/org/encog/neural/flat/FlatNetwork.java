@@ -34,6 +34,7 @@ import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.neural.activation.ActivationFunction;
+import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
@@ -203,20 +204,21 @@ public class FlatNetwork implements Serializable {
 	public FlatNetwork(final int input, final int hidden1, final int hidden2,
 			final int output, final boolean tanh) {
 
+		ActivationFunction linearAct = new ActivationLinear();
 		FlatLayer[] layers;
 		final ActivationFunction act = tanh ? new ActivationTANH()
 				: new ActivationSigmoid();
 
 		if ((hidden1 == 0) && (hidden2 == 0)) {
 			layers = new FlatLayer[2];
-			layers[0] = new FlatLayer(act, input,
+			layers[0] = new FlatLayer(linearAct, input,
 					FlatNetwork.DEFAULT_BIAS_ACTIVATION);
 			layers[1] = new FlatLayer(act, output,
 					FlatNetwork.NO_BIAS_ACTIVATION);
 		} else if ((hidden1 == 0) || (hidden2 == 0)) {
 			final int count = Math.max(hidden1, hidden2);
 			layers = new FlatLayer[3];
-			layers[0] = new FlatLayer(act, input,
+			layers[0] = new FlatLayer(linearAct, input,
 					FlatNetwork.DEFAULT_BIAS_ACTIVATION);
 			layers[1] = new FlatLayer(act, count,
 					FlatNetwork.DEFAULT_BIAS_ACTIVATION);
@@ -224,7 +226,7 @@ public class FlatNetwork implements Serializable {
 					FlatNetwork.NO_BIAS_ACTIVATION);
 		} else {
 			layers = new FlatLayer[4];
-			layers[0] = new FlatLayer(act, input,
+			layers[0] = new FlatLayer(linearAct, input,
 					FlatNetwork.DEFAULT_BIAS_ACTIVATION);
 			layers[1] = new FlatLayer(act, hidden1,
 					FlatNetwork.DEFAULT_BIAS_ACTIVATION);
