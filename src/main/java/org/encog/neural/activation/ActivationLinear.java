@@ -32,11 +32,6 @@ package org.encog.neural.activation;
 public class ActivationLinear implements ActivationFunction {
 
 	/**
-	 * The offset to the parameter that holds the linear slope.
-	 */
-	public static final int PARAM_LINEAR_SLOPE = 0;
-
-	/**
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = -5356580554235104944L;
@@ -50,8 +45,7 @@ public class ActivationLinear implements ActivationFunction {
 	 * Construct a linear activation function, with a slope of 1.
 	 */
 	public ActivationLinear() {
-		this.params = new double[1];
-		this.params[ActivationLinear.PARAM_LINEAR_SLOPE] = 1;
+		this.params = new double[0];
 	}
 
 	/**
@@ -60,9 +54,6 @@ public class ActivationLinear implements ActivationFunction {
 	@Override
 	public final void activationFunction(final double[] x, final int start,
 			final int size) {
-		for (int i = start; i < start + size; i++) {
-			x[i] = x[i] * this.params[0];
-		}
 	}
 
 	/**
@@ -96,13 +87,6 @@ public class ActivationLinear implements ActivationFunction {
 	@Override
 	public final double[] getParams() {
 		return this.params;
-	}
-
-	/**
-	 * @return The slope of the activation function.
-	 */
-	public final double getSlope() {
-		return this.params[ActivationLinear.PARAM_LINEAR_SLOPE];
 	}
 
 	/**
