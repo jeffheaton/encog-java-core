@@ -99,7 +99,7 @@ public class NeighborhoodRBF implements NeighborhoodFunction {
 	/**
 	 * Construct a multi-dimensional neighborhood function.
 	 * @param size The sizes of each dimension.
-	 * @param rbf The multi-dimensional RBF to use.
+	 * @param type The RBF type to use.
 	 */
 	public NeighborhoodRBF(final int[] size, final RBFEnum type) {
 		switch (type) {

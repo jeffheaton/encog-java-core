@@ -90,8 +90,6 @@ public class ResilientPropagation extends Propagation {
 	 *            The network to train.
 	 * @param training
 	 *            The training data to use.
-	 * @param profile
-	 *            The profile to use.
 	 */
 	public ResilientPropagation(final ContainsFlat network,
 			final MLDataSet training) {

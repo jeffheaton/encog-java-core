@@ -107,7 +107,6 @@ public abstract class TrainingJob {
 
 	/**
 	 * Create a trainer to use.
-	 * @param profile The OpenCL training profile to use.
 	 */
 	public abstract void createTrainer(boolean singleThreaded);
 

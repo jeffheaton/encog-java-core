@@ -364,8 +364,7 @@ public class NormalizedField {
 
 	/**
 	 * Init any internal structures.
-	 * 
-	 * @param theOwner The owner.
+	 *
 	 */
 	public final void init() {
 

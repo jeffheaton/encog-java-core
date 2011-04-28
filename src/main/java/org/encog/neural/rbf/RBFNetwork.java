@@ -96,8 +96,6 @@ public class RBFNetwork  extends BasicML implements MLError, MLRegression, Conta
 	/**
 	 * Set the RBF components to random values.
 	 * 
-	 * @param dimensions
-	 *            The number of dimensions in the network.
 	 * @param min
 	 *            Minimum random value.
 	 * @param max
@@ -145,8 +143,6 @@ public class RBFNetwork  extends BasicML implements MLError, MLRegression, Conta
 	 *            The minimum position neurons should be centered. Typically 0.
 	 * @param maxPosition
 	 *            The maximum position neurons should be centered. Typically 1
-	 * @param dimensions
-	 *            The number of dimensions.
 	 * @param volumeNeuronRBFWidth
 	 *            The neuron width of neurons within the mesh.
 	 * @param useWideEdgeRBFs

@@ -62,8 +62,6 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 *            The training data to use.
 	 * @param learnRate
 	 *            The learning rate.
-	 * @param profile
-	 *            The OpenCL profile to use, null for CPU.
 	 */
 	public ManhattanPropagation(final ContainsFlat network,
 			final MLDataSet training, 

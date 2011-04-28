@@ -58,7 +58,6 @@ public class ParamsHolder {
 	/**
 	 * Construct the object. Allow the format to be specified.
 	 * @param theParams The params to be used.
-	 * @param theFormat The format to be used.
 	 */
 	public ParamsHolder(Map<String,String> theParams) {
 		this(theParams,CSVFormat.EG_FORMAT);

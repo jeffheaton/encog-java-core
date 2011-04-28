@@ -56,7 +56,7 @@ public class BestMatchingUnit {
 
 	/**
 	 * Construct a BestMatchingUnit class.  The training class must be provided.
-	 * @param training The parent class.
+	 * @param som The SOM to evaluate.
 	 */
 	public BestMatchingUnit(final SOM som) {
 		this.som = som;
@@ -66,8 +66,6 @@ public class BestMatchingUnit {
 	 * Calculate the best matching unit (BMU). This is the output neuron that
 	 * has the lowest Euclidean distance to the input vector.
 	 * 
-	 * @param matrix
-	 *            The matrix to calculate for.
 	 * @param input
 	 *            The input vector.
 	 * @return The output neuron number that is the BMU.

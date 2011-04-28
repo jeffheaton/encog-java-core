@@ -49,7 +49,6 @@ public class NeuralGenome extends BasicGenome {
 
 	/**
 	 * Construct a neural genome.
-	 * @param nga The NeuralGeneticAlgorithm class to use.
 	 * @param network The network to use.
 	 */
 	public NeuralGenome(
