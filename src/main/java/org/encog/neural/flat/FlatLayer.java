@@ -87,7 +87,7 @@ public class FlatLayer {
 	/**
 	 * @return The number of neurons our context is fed by.
 	 */
-	public int getContectCount() {
+	public int getContextCount() {
 		if (this.contextFedBy == null) {
 			return 0;
 		} else {

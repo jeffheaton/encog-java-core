@@ -571,7 +571,7 @@ public class FlatNetwork implements Serializable {
 			this.biasActivation[index] = layer.getBiasActivation();
 			this.layerCounts[index] = layer.getTotalCount();
 			this.layerFeedCounts[index] = layer.getCount();
-			this.layerContextCount[index] = layer.getContectCount();
+			this.layerContextCount[index] = layer.getContextCount();
 			this.activationFunctions[index] = layer.getActivation();
 
 			neuronCount += layer.getTotalCount();
@@ -594,8 +594,8 @@ public class FlatNetwork implements Serializable {
 			for (int j = layers.length - 1; j >= 0; j--) {
 				if (layers[j].getContextFedBy() == layer) {
 					this.hasContext = true;
-					this.contextTargetSize[i] = layers[j].getContectCount();
-					this.contextTargetOffset[i] = this.layerIndex[j]+(this.layerCounts[j]-layers[j].getContectCount());
+					this.contextTargetSize[index] = layers[j].getContextCount();
+					this.contextTargetOffset[index] = neuronIndex+(layers[j].getTotalCount()-layers[j].getContextCount());
 				}
 				neuronIndex += layers[j].getTotalCount();
 			}
