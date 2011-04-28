@@ -595,9 +595,7 @@ public class FlatNetwork implements Serializable {
 				if (layers[j].getContextFedBy() == layer) {
 					this.hasContext = true;
 					this.contextTargetSize[i] = layers[j].getContectCount();
-					this.contextTargetOffset[i] = neuronIndex
-							+ layers[j].getTotalCount()
-							- layers[j].getContectCount();
+					this.contextTargetOffset[i] = this.layerIndex[j]+(this.layerCounts[j]-layers[j].getContectCount());
 				}
 				neuronIndex += layers[j].getTotalCount();
 			}
