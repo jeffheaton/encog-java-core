@@ -32,7 +32,6 @@ import org.encog.Encog;
 import org.encog.app.analyst.csv.basic.BasicFile;
 import org.encog.app.csv.EncogCSVError;
 import org.encog.app.csv.normalize.NormalizationAction;
-import org.encog.app.csv.normalize.NormalizationStats;
 import org.encog.mathutil.Equilateral;
 import org.encog.util.EngineArray;
 import org.encog.util.csv.CSVFormat;
@@ -88,11 +87,6 @@ public class NormalizedField {
 	 * Allows the index of a field to be looked up.
 	 */
 	private final Map<String, Integer> lookup = new HashMap<String, Integer>();
-
-	/**
-	 * The owner.
-	 */
-	private NormalizationStats owner;
 
 	/**
 	 * Construct the object with a range of 1 and -1.
@@ -230,58 +224,6 @@ public class NormalizedField {
 	}
 
 	/**
-	 * Encode the class.
-	 * 
-	 * @param classNumber
-	 *            The class number.
-	 * @return The encoded class.
-	 */
-	public final String encode(final int classNumber) {
-		switch (this.action) {
-		case OneOf:
-			return encodeOneOf(classNumber);
-		case Equilateral:
-			return encodeEquilateral(classNumber);
-		case SingleField:
-			return encodeSingleField(classNumber);
-		default:
-			return null;
-		}
-	}
-
-	/**
-	 * Encode the class string.
-	 * @param str The class string.
-	 * @return A string containing a numeric list of the encode.
-	 */
-	public final Object encode(final String str) {
-		int classNumber = lookup(str);
-		if (classNumber == -1) {
-			try {
-				classNumber = Integer.parseInt(str);
-			} catch (final NumberFormatException ex) {
-				throw new EncogCSVError("Can't determine class for: " + str);
-			}
-		}
-		return encode(classNumber);
-	}
-
-	/**
-	 * Perform an equilateral encode.
-	 * 
-	 * @param classNumber
-	 *            The class number.
-	 * @return The class to encode.
-	 */
-	public final String encodeEquilateral(final int classNumber) {
-		final StringBuilder result = new StringBuilder();
-		final double[] d = this.eq.encode(classNumber);
-		NumberList.toList(this.owner.getFormat(), this.owner.getPrecision(),
-				result, d);
-		return result.toString();
-	}
-
-	/**
 	 * Encode the headers used by this field.
 	 * @return A string containing a comma separated list with the headers.
 	 */
@@ -318,29 +260,6 @@ public class NormalizedField {
 			return null;
 		}
 		return line.toString();
-	}
-
-	/**
-	 * Perform the encoding for "one of".
-	 * 
-	 * @param classNumber
-	 *            The class number.
-	 * @return The encoded columns.
-	 */
-	public final String encodeOneOf(final int classNumber) {
-		final StringBuilder result = new StringBuilder();
-		for (int i = 0; i < this.classes.size(); i++) {
-			if (i > 0) {
-				result.append(this.owner.getFormat().getSeparator());
-			}
-
-			if (i == classNumber) {
-				result.append(this.normalizedHigh);
-			} else {
-				result.append(this.normalizedLow);
-			}
-		}
-		return result.toString();
 	}
 
 	/**
@@ -450,9 +369,8 @@ public class NormalizedField {
 	 * 
 	 * @param theOwner The owner.
 	 */
-	public final void init(final NormalizationStats theOwner) {
+	public final void init() {
 
-		this.owner = theOwner;
 		if (this.action == NormalizationAction.Equilateral) {
 			if (this.classes.size() < Equilateral.MIN_EQ) {
 				throw new EncogCSVError(
