@@ -37,9 +37,9 @@ import org.encog.app.analyst.script.prop.PropertyConstraints;
 import org.encog.app.analyst.script.prop.PropertyEntry;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
-import org.encog.app.csv.normalize.NormalizationAction;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogReadHelper;
+import org.encog.util.arrayutil.NormalizationAction;
 
 /**
  * Used to load an Encog Analyst script.

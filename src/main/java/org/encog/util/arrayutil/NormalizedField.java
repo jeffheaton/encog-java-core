@@ -30,12 +30,10 @@ import java.util.Map;
 
 import org.encog.Encog;
 import org.encog.app.analyst.csv.basic.BasicFile;
-import org.encog.app.csv.EncogCSVError;
-import org.encog.app.csv.normalize.NormalizationAction;
+import org.encog.app.quant.QuantError;
 import org.encog.mathutil.Equilateral;
 import org.encog.util.EngineArray;
 import org.encog.util.csv.CSVFormat;
-import org.encog.util.csv.NumberList;
 
 /**
  * This object holds the normalization stats for a column. This includes the
@@ -217,7 +215,7 @@ public class NormalizedField {
 			resultIndex = (int) data[0];
 			break;
 		default: 
-			throw new EncogCSVError("Unknown action: " + action);
+			throw new QuantError("Unknown action: " + action);
 		}
 
 		return this.classes.get(resultIndex);
@@ -373,7 +371,7 @@ public class NormalizedField {
 
 		if (this.action == NormalizationAction.Equilateral) {
 			if (this.classes.size() < Equilateral.MIN_EQ) {
-				throw new EncogCSVError(
+				throw new QuantError(
 						"There must be at least three classes " 
 						+ "to make use of equilateral normalization.");
 			}
@@ -428,7 +426,7 @@ public class NormalizedField {
 		if ((theAction != NormalizationAction.Equilateral)
 				&& (theAction != NormalizationAction.OneOf)
 				&& (theAction != NormalizationAction.SingleField)) {
-			throw new EncogCSVError("Unsupported normalization type");
+			throw new QuantError("Unsupported normalization type");
 		}
 
 		this.action = theAction;
@@ -458,7 +456,7 @@ public class NormalizedField {
 		if ((theAction != NormalizationAction.Equilateral)
 				&& (theAction != NormalizationAction.OneOf)
 				&& (theAction != NormalizationAction.SingleField)) {
-			throw new EncogCSVError("Unsupported normalization type");
+			throw new QuantError("Unsupported normalization type");
 		}
 
 		this.action = theAction;

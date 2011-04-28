@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.app.csv.util;
+package org.encog.app.quant.util;
 
 import java.util.ArrayList;
 import java.util.List;

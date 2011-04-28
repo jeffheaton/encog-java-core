@@ -26,7 +26,7 @@ package org.encog.app.analyst.csv.sort;
 import java.util.Comparator;
 
 import org.encog.app.analyst.csv.basic.LoadedRow;
-import org.encog.app.csv.EncogCSVError;
+import org.encog.app.quant.QuantError;
 
 /**
  * Used to compare two LoadedRow objects.
@@ -87,7 +87,7 @@ public class RowComparator implements Comparator<LoadedRow> {
 				}
 				break;
 			default:
-				throw new EncogCSVError("Unknown sort method: " 
+				throw new QuantError("Unknown sort method: " 
 						+ t.getSortType());
 			}
 		}

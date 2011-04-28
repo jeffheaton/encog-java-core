@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.encog.app.csv.EncogCSVError;
+import org.encog.app.quant.QuantError;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 import org.encog.util.logging.EncogLogging;
@@ -99,14 +99,14 @@ public class BasicCachedFile extends BasicFile {
 			}
 			setRecordCount(recordCount);
 		} catch (final IOException ex) {
-			throw new EncogCSVError(ex);
+			throw new QuantError(ex);
 		} finally {
 			reportDone(true);
 			if (reader != null) {
 				try {
 					reader.close();
 				} catch (final IOException e) {
-					throw new EncogCSVError(e);
+					throw new QuantError(e);
 				}
 			}
 			setInputFilename(input);
@@ -119,7 +119,7 @@ public class BasicCachedFile extends BasicFile {
 		try {
 			csv = new ReadCSV(input.toString(), headers, format);
 			if (!csv.next()) {
-				throw new EncogCSVError("File is empty");
+				throw new QuantError("File is empty");
 			}
 
 			for (int i = 0; i < csv.getColumnCount(); i++) {

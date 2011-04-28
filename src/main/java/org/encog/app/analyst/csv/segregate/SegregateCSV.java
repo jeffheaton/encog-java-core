@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.encog.app.analyst.csv.basic.BasicFile;
 import org.encog.app.analyst.csv.basic.LoadedRow;
-import org.encog.app.csv.EncogCSVError;
+import org.encog.app.quant.QuantError;
 import org.encog.util.Format;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
@@ -151,11 +151,11 @@ public class SegregateCSV extends BasicFile {
 		validateAnalyzed();
 
 		if (this.targets.size() < 1) {
-			throw new EncogCSVError("There are no segregation targets.");
+			throw new QuantError("There are no segregation targets.");
 		}
 
 		if (this.targets.size() < 2) {
-			throw new EncogCSVError(
+			throw new QuantError(
 					"There must be at least two segregation targets.");
 		}
 
@@ -165,7 +165,7 @@ public class SegregateCSV extends BasicFile {
 		}
 
 		if (total != TOTAL_PCT) {
-			throw new EncogCSVError("Target percents must equal 100.");
+			throw new QuantError("Target percents must equal 100.");
 		}
 	}
 }
