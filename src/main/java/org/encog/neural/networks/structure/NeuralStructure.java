@@ -159,11 +159,10 @@ public class NeuralStructure implements Serializable {
 		for(int i=0;i<this.layers.size();i++)
 		{
 			BasicLayer layer = (BasicLayer)this.layers.get(i);	
-			ActivationFunction act = layer.getActivationFunction();
-			if( act==null )
-				act = new ActivationLinear();
+			if( layer.getActivation()==null )
+				layer.setActivation(new ActivationLinear());
 
-			flatLayers[i] = new FlatLayer(act,layer.getNeuronCount(),layer.getBiasActivation());
+			flatLayers[i] = layer;
 		}
 				
 		this.flat = new FlatNetwork(flatLayers);
