@@ -198,7 +198,7 @@ public class CPN extends BasicML implements MLRegression,
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return The instar count, same as the input count.
 	 */
 	public final int getInstarCount() {
 		return this.instarCount;
@@ -213,21 +213,21 @@ public class CPN extends BasicML implements MLRegression,
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return The outstar count, same as the output count.
 	 */
 	public final int getOutstarCount() {
 		return this.outstarCount;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return The weights between the input and instar.
 	 */
 	public final Matrix getWeightsInputToInstar() {
 		return this.weightsInputToInstar;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return The weights between the instar and outstar.
 	 */
 	public final Matrix getWeightsInstarToOutstar() {
 		return this.weightsInstarToOutstar;

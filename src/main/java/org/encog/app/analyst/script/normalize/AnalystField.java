@@ -492,7 +492,6 @@ public class AnalystField {
 	/**
 	 * Init any internal structures.
 	 * 
-	 * @param owner
 	 */
 	public final void init() {
 

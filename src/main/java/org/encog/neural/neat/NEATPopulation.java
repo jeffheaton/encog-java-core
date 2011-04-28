@@ -47,8 +47,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 	/**
 	 * Construct a starting NEAT population.
 	 * 
-	 * @param calculateScore
-	 *            The score calculation object.
 	 * @param inputCount
 	 *            The input neuron count.
 	 * @param outputCount
