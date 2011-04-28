@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.persist;
 
 import java.io.BufferedReader;
@@ -7,100 +30,139 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Used to read an Encog EG/EGA file. EG files are used to hold Encog objects.
+ * EGA files are used to hold Encog Analyst scripts.
+ * 
+ */
 public class EncogReadHelper {
 
-	private BufferedReader reader;
+	/**
+	 * The file being read.
+	 */
+	private final BufferedReader reader;
 
-	private List<String> lines = new ArrayList<String>();
+	/**
+	 * The lines read from the file.
+	 */
+	private final List<String> lines = new ArrayList<String>();
+
+	/**
+	 * The current section name.
+	 */
 	private String currentSectionName = "";
+
+	/**
+	 * The current subsection name.
+	 */
 	private String currentSubSectionName = "";
+
+	/**
+	 * The current section name.
+	 */
 	private EncogFileSection section;
 
-	public EncogReadHelper(InputStream is) {
+	/**
+	 * Construct the object.
+	 * @param is The input stream.
+	 */
+	public EncogReadHelper(final InputStream is) {
 		this.reader = new BufferedReader(new InputStreamReader(is));
 	}
 
-	public EncogFileSection readNextSection() {
+	/**
+	 * Close the file.
+	 */
+	public final void close() {
+		try {
+			this.reader.close();
+		} catch (final IOException e) {
+			throw new PersistError(e);
+		}
+	}
+
+	/**
+	 * Read the next section.
+	 * 
+	 * @return The next section.
+	 */
+	public final EncogFileSection readNextSection() {
 
 		try {
 			String line;
 
-			while ((line = reader.readLine()) != null) {
+			while ((line = this.reader.readLine()) != null) {
 				line = line.trim();
 
 				// is it a comment
 				if (line.startsWith("//")) {
-					continue;
+					continue; 
 				}
 
 				// is it a section or subsection
 				else if (line.startsWith("[")) {
 					// handle previous section
-					this.section = new EncogFileSection(currentSectionName,
-							currentSubSectionName);
+					this.section = new EncogFileSection(
+							this.currentSectionName, this.currentSubSectionName);
 					this.section.getLines().addAll(this.lines);
 
 					// now begin the new section
-					lines.clear();
+					this.lines.clear();
 					String s = line.substring(1).trim();
-					if (!s.endsWith("]"))
+					if (!s.endsWith("]")) {
 						throw new PersistError("Invalid section: " + line);
+					}
 					s = s.substring(0, line.length() - 2);
-					int idx = s.indexOf(':');
+					final int idx = s.indexOf(':');
 					if (idx == -1) {
-						currentSectionName = s;
-						currentSubSectionName = "";
+						this.currentSectionName = s;
+						this.currentSubSectionName = "";
 					} else {
-						if (currentSectionName.length() < 1) {
+						if (this.currentSectionName.length() < 1) {
 							throw new PersistError(
 									"Can't begin subsection when a section has not yet been defined: "
 											+ line);
 						}
 
-						String newSection = s.substring(0, idx);
-						String newSubSection = s.substring(idx + 1);
+						final String newSection = s.substring(0, idx);
+						final String newSubSection = s.substring(idx + 1);
 
-						if (!newSection.equals(currentSectionName)) {
+						if (!newSection.equals(this.currentSectionName)) {
 							throw new PersistError("Can't begin subsection "
 									+ line
 									+ ", while we are still in the section: "
-									+ currentSectionName);
+									+ this.currentSectionName);
 						}
 
-						currentSubSectionName = newSubSection;
+						this.currentSubSectionName = newSubSection;
 					}
 					return this.section;
 				} else if (line.length() < 1) {
 					continue;
 				} else {
-					if (currentSectionName.length() < 1) {
+					if (this.currentSectionName.length() < 1) {
 						throw new PersistError(
 								"Unknown command before first section: " + line);
 					}
 
-					lines.add(line);
+					this.lines.add(line);
 				}
 
 			}
-			
-			if( this.currentSectionName.length()==0 )
+
+			if (this.currentSectionName.length() == 0) {
 				return null;
-			
-			this.section = new EncogFileSection(currentSectionName,currentSubSectionName);
+			}
+
+			this.section = new EncogFileSection(this.currentSectionName,
+					this.currentSubSectionName);
 			this.section.getLines().addAll(this.lines);
-			this.currentSectionName = this.currentSubSectionName = "";
+			this.currentSectionName = ""; 
+			this.currentSubSectionName = "";
 			return this.section;
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			throw new PersistError(ex);
 		}
 
-	}
-
-	public void close() {
-		try {
-			reader.close();
-		} catch (IOException e) {
-			throw new PersistError(e);
-		}
 	}
 }
