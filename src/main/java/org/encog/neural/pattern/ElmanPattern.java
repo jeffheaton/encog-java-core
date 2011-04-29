@@ -101,13 +101,13 @@ public class ElmanPattern implements NeuralNetworkPattern {
 	 * @return The Elman neural network.
 	 */
 	public MLMethod generate() {
-		BasicLayer hidden;
+		BasicLayer hidden,input;
 		
 		BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(this.activation, true,this.inputNeurons));
+		network.addLayer(input = new BasicLayer(this.activation, true,this.inputNeurons));
 		network.addLayer(hidden = new BasicLayer(this.activation, true,this.hiddenNeurons));
 		network.addLayer(new BasicLayer(null, false,this.outputNeurons));
-		hidden.setContextFedBy(hidden);
+		input.setContextFedBy(hidden);
 		network.getStructure().finalizeStructure();
 		network.reset();
 		return network;
