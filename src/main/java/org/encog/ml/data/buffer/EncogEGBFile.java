@@ -611,9 +611,13 @@ public class EncogEGBFile {
 
 			this.recordCount = this.inputCount + this.idealCount;
 			this.recordSize = this.recordCount * EncogEGBFile.DOUBLE_SIZE;
-			this.numberOfRecords 
-				= (int) ((this.file.length() - EncogEGBFile.HEADER_SIZE) 
+			if( this.recordSize==0 ) {
+				this.numberOfRecords = 0;
+			} else {
+				this.numberOfRecords 
+					= (int) ((this.file.length() - EncogEGBFile.HEADER_SIZE) 
 						/ this.recordSize);
+			}
 
 			this.recordBuffer = ByteBuffer.allocate(this.recordSize);
 		} catch (final IOException ex) {
