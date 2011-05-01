@@ -88,7 +88,7 @@ public class AnalyzedField extends DataField {
 
 		boolean accountedFor = false;
 
-		if (str.trim().length() == 0) {
+		if (str.trim().length() == 0 || str.equals("?")) {
 			setComplete(false);
 			return;
 		}
@@ -162,8 +162,10 @@ public class AnalyzedField extends DataField {
 		}
 
 		if (isReal() || isInteger()) {
-			final double d = Double.parseDouble(str);
-			this.devTotal += Math.pow((d - getMean()), 2);
+			if( !str.equals("") && !str.equals("?") ) {
+				final double d = Double.parseDouble(str);
+				this.devTotal += Math.pow((d - getMean()), 2);
+			}
 		}
 	}
 

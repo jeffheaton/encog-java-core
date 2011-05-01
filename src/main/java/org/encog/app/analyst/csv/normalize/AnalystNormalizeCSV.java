@@ -64,6 +64,10 @@ public class AnalystNormalizeCSV extends BasicFile {
 		for (final AnalystField stat : analyst.getScript().getNormalize()
 				.getNormalizedFields()) {
 
+			if( stat.getAction()==NormalizationAction.Ignore ) {
+				continue;
+			}
+			
 			if (stat.isOutput() && skipOutput) {
 				continue;
 			}
