@@ -76,6 +76,7 @@ public class CmdNormalize extends Cmd {
 
 		// prepare to normalize
 		final AnalystNormalizeCSV norm = new AnalystNormalizeCSV();
+		norm.setScript(getScript());
 		getAnalyst().setCurrentQuantTask(norm);
 		norm.setReport(new AnalystReportBridge(getAnalyst()));
 

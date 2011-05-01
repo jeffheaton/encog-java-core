@@ -79,6 +79,7 @@ public class CmdEvaluateRaw extends Cmd {
 		final boolean headers = getScript().expectInputHeaders(evalID);
 
 		final AnalystEvaluateRawCSV eval = new AnalystEvaluateRawCSV();
+		eval.setScript(getScript());
 		getAnalyst().setCurrentQuantTask(eval);
 		eval.setReport(new AnalystReportBridge(getAnalyst()));
 		eval.analyze(getAnalyst(), evalFile, headers, getProp()

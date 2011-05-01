@@ -81,6 +81,7 @@ public class CmdEvaluate extends Cmd {
 		final boolean headers = getScript().expectInputHeaders(evalID);
 
 		final AnalystEvaluateCSV eval = new AnalystEvaluateCSV();
+		eval.setScript(getScript());
 		getAnalyst().setCurrentQuantTask(eval);
 		eval.setReport(new AnalystReportBridge(getAnalyst()));
 		eval.analyze(getAnalyst(), evalFile, headers, getProp()

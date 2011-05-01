@@ -174,7 +174,11 @@ public class CSVFormat {
 	 */
 	public synchronized double parse(final String str) {
 		try {
-			return this.numberFormatter.parse(str).doubleValue();
+			if( str.equals("?")) { 
+				return Double.NaN;
+			} else {
+				return this.numberFormatter.parse(str).doubleValue();
+			}
 		} catch (final Exception e) {
 			throw new CSVError("Error:" + e.getMessage() + " on [" + str + "], decimal:" + this.decimal + ",sep: " + this.separator);
 		}

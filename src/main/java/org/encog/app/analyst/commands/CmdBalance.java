@@ -98,6 +98,7 @@ public class CmdBalance extends Cmd {
 
 		// prepare to normalize
 		final BalanceCSV balance = new BalanceCSV();
+		balance.setScript(getScript());
 		getAnalyst().setCurrentQuantTask(balance);
 		balance.setReport(new AnalystReportBridge(getAnalyst()));
 

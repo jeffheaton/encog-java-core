@@ -31,6 +31,8 @@ import java.io.PrintWriter;
 import org.encog.Encog;
 import org.encog.NullStatusReportable;
 import org.encog.StatusReportable;
+import org.encog.app.analyst.script.AnalystScript;
+import org.encog.app.analyst.script.DataField;
 import org.encog.app.quant.QuantError;
 import org.encog.app.quant.QuantTask;
 import org.encog.util.csv.CSVFormat;
@@ -42,7 +44,7 @@ import org.encog.util.csv.ReadCSV;
  * CSV file processing.
  */
 public class BasicFile implements QuantTask {
-	
+
 	/**
 	 * The default report interval.
 	 */
@@ -143,6 +145,11 @@ public class BasicFile implements QuantTask {
 	 * The output format, usually, the same as the input format.
 	 */
 	private CSVFormat outputFormat;
+
+	/**
+	 * The Encog script to use.
+	 */
+	private AnalystScript script;
 
 	/**
 	 * Construct the object, and set the defaults.
@@ -277,7 +284,7 @@ public class BasicFile implements QuantTask {
 	 *            The name of the output file.
 	 * @return The output stream for the text file.
 	 */
-	public final  PrintWriter prepareOutputFile(final File outputFile) {
+	public final PrintWriter prepareOutputFile(final File outputFile) {
 		try {
 			final PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
 			if (this.outputFormat == null) {
@@ -330,8 +337,15 @@ public class BasicFile implements QuantTask {
 			}
 		} else {
 			this.inputHeadings = new String[csv.getColumnCount()];
-			for (int i = 0; i < csv.getColumnCount(); i++) {
-				this.inputHeadings[i] = "field:" + (i + 1);
+			
+			int i = 0;
+			for (DataField field : this.getScript().getFields()) {
+				this.inputHeadings[i++] = field.getName();
+			}
+			
+			while( i<csv.getColumnCount() ) {
+				this.inputHeadings[i] = "field:" + i;
+				i++;
 			}
 		}
 	}
@@ -403,8 +417,7 @@ public class BasicFile implements QuantTask {
 	 * 
 	 * @param theExpectInputHeaders Are input headers expected?
 	 */
-	public final void setExpectInputHeaders(
-			final boolean theExpectInputHeaders) {
+	public final void setExpectInputHeaders(final boolean theExpectInputHeaders) {
 		this.expectInputHeaders = theExpectInputHeaders;
 	}
 
@@ -582,6 +595,20 @@ public class BasicFile implements QuantTask {
 		}
 
 		tw.println(line.toString());
+	}
+
+	/**
+	 * @return the script
+	 */
+	public AnalystScript getScript() {
+		return script;
+	}
+
+	/**
+	 * @param script the script to set
+	 */
+	public void setScript(AnalystScript script) {
+		this.script = script;
 	}
 
 }

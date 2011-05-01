@@ -73,6 +73,7 @@ public class CmdSegregate extends Cmd {
 		// prepare to segregate
 		final boolean headers = getScript().expectInputHeaders(sourceID);
 		final SegregateCSV seg = new SegregateCSV();
+		seg.setScript(getScript());
 		getAnalyst().setCurrentQuantTask(seg);
 		for (final AnalystSegregateTarget target : getScript().getSegregate()
 				.getSegregateTargets()) {

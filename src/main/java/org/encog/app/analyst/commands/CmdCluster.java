@@ -84,6 +84,7 @@ public class CmdCluster extends Cmd {
 
 		// prepare to normalize
 		final AnalystClusterCSV cluster = new AnalystClusterCSV();
+		cluster.setScript(getScript());
 		getAnalyst().setCurrentQuantTask(cluster);
 		cluster.setReport(new AnalystReportBridge(getAnalyst()));
 		final boolean headers = getScript().expectInputHeaders(sourceID);

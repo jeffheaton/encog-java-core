@@ -74,6 +74,7 @@ public class CmdRandomize extends Cmd {
 
 		// prepare to normalize
 		final ShuffleCSV norm = new ShuffleCSV();
+		norm.setScript(getScript());
 		getAnalyst().setCurrentQuantTask(norm);
 		norm.setReport(new AnalystReportBridge(getAnalyst()));
 		final boolean headers = getScript().expectInputHeaders(sourceID);
