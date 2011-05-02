@@ -339,8 +339,10 @@ public class BasicFile implements QuantTask {
 			this.inputHeadings = new String[csv.getColumnCount()];
 			
 			int i = 0;
-			for (DataField field : this.getScript().getFields()) {
-				this.inputHeadings[i++] = field.getName();
+			if (this.getScript() != null) {
+				for (DataField field : this.getScript().getFields()) {
+					this.inputHeadings[i++] = field.getName();
+				}
 			}
 			
 			while( i<csv.getColumnCount() ) {
