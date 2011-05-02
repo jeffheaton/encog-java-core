@@ -273,8 +273,7 @@ public class SVMSearchTrain extends BasicTraining {
 				double totalError = 0;
 
 				final double e = this.internalTrain.crossValidate(
-						this.currentGamma, this.currentConst) 
-						/ Format.HUNDRED_PERCENT;
+						this.currentGamma, this.currentConst);
 				System.out.println(this.currentGamma + "," + this.currentConst
 						+ "," + e);
 				if (e < this.bestError) {
