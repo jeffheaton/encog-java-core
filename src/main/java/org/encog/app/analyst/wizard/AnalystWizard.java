@@ -790,7 +790,7 @@ public class AnalystWizard {
 				arch.toString());
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
-				"svm-train");
+				MLTrainFactory.TYPE_SVM_SEARCH);
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_TRAIN_TARGET_ERROR, DEFAULT_TRAIN_ERROR);
 	}
