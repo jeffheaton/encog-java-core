@@ -28,6 +28,7 @@ import java.util.Map;
 import org.encog.EncogError;
 import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.factory.parse.ArchitectureParse;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.training.SVMSearchTrain;
@@ -38,6 +39,36 @@ import org.encog.util.ParamsHolder;
  * A factory that creates SVM-search trainers.
  */
 public class SVMSearchFactory {
+	
+	/**
+	 * Property for gamma.
+	 */
+	public static final String PROPERTY_GAMMA1 = "GAMMA1";
+	
+	/**
+	 * Property for constant.
+	 */
+	public static final String PROPERTY_C1 = "C1";
+	
+	/**
+	 * Property for gamma.
+	 */
+	public static final String PROPERTY_GAMMA2 = "GAMMA2";
+	
+	/**
+	 * Property for constant.
+	 */
+	public static final String PROPERTY_C2 = "C2";
+	
+	/**
+	 * Property for gamma.
+	 */
+	public static final String PROPERTY_GAMMA_STEP = "GAMMASTEP";
+	
+	/**
+	 * Property for constant.
+	 */
+	public static final String PROPERTY_C_STEP = "CSTEP";
 
 	/**
 	 * Create a SVM trainer.
@@ -59,15 +90,27 @@ public class SVMSearchFactory {
 					"SVM Train training cannot be used on a method of type: "
 							+ method.getClass().getName());
 		}
-
-		final SVMSearchTrain result 
-			= new SVMSearchTrain((SVM) method, training);
-
+		
 		final Map<String, String> args = ArchitectureParse.parseParams(argsStr);
 		new ParamsHolder(args);
 
-		// double gamma = holder.getDouble(MLTrainFactory.PROPERTY_GAMMA, false,
-		// defaultGamma);
+		final ParamsHolder holder = new ParamsHolder(args);
+		final double gammaStart = holder.getDouble(SVMSearchFactory.PROPERTY_GAMMA1, false, SVMSearchTrain.DEFAULT_GAMMA_BEGIN);
+		final double cStart = holder.getDouble(SVMSearchFactory.PROPERTY_C1, false, SVMSearchTrain.DEFAULT_CONST_BEGIN);
+		final double gammaStop = holder.getDouble(SVMSearchFactory.PROPERTY_GAMMA2, false, SVMSearchTrain.DEFAULT_GAMMA_END);
+		final double cStop = holder.getDouble(SVMSearchFactory.PROPERTY_C2, false, SVMSearchTrain.DEFAULT_CONST_END);
+		final double gammaStep = holder.getDouble(SVMSearchFactory.PROPERTY_GAMMA_STEP, false, SVMSearchTrain.DEFAULT_GAMMA_STEP);
+		final double cStep = holder.getDouble(SVMSearchFactory.PROPERTY_C_STEP, false, SVMSearchTrain.DEFAULT_CONST_STEP);
+		
+		final SVMSearchTrain result 
+			= new SVMSearchTrain((SVM) method, training);
+		
+		result.setGammaBegin(gammaStart);
+		result.setGammaEnd(gammaStop);
+		result.setGammaStep(gammaStep);
+		result.setConstBegin(cStart);
+		result.setConstEnd(cStop);
+		result.setConstStep(cStep);
 
 		return result;
 	}

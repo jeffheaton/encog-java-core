@@ -83,7 +83,7 @@ public class SVMTrain extends BasicTraining {
 	/**
 	 * The number of folds.
 	 */
-	private int fold = SVMSearchTrain.DEFAULT_FOLDS;
+	private int fold = 0;
 
 	/**
 	 * Is the training done.
@@ -114,8 +114,6 @@ public class SVMTrain extends BasicTraining {
 		setTraining(dataSet);
 		this.trainingDone = false;
 
-		this.problem = new svm_problem();
-
 		this.problem = EncodeSVMProblem.encode(dataSet, 0);
 		this.gamma = 1.0 / this.network.getInputCount();
 		this.c = 1.0;
@@ -127,27 +125,6 @@ public class SVMTrain extends BasicTraining {
 	@Override
 	public final boolean canContinue() {
 		return false;
-	}
-
-	/**
-	 * Cross validate and check the specified index/gamma.
-	 * 
-	 * @param theGamma
-	 *            The gamma to check.
-	 * @param theC
-	 *            The C to check.
-	 * @return The calculated error.
-	 */
-	public final double crossValidate(final double theGamma, 
-			final double theC) {
-
-		final double[] target = new double[this.problem.l];
-
-		this.network.getParams().C = c;
-		this.network.getParams().gamma = gamma;
-		svm.svm_cross_validation(this.problem, this.network.getParams(),
-				this.fold, target);
-		return evaluate(this.network.getParams(), this.problem, target);
 	}
 
 	/**
@@ -231,8 +208,12 @@ public class SVMTrain extends BasicTraining {
 	}
 
 	/**
-	 * Quickly train all outputs with a C of 1.0 and a gamma equal to 1/(num
-	 * inputs).
+	 * Perform either a train or a cross validation.  If the folds property is 
+	 * greater than 1 then cross validation will be done.  Cross validation does 
+	 * not produce a usable model, but it does set the error. 
+	 * 
+	 * If you are cross validating try C and Gamma values until you have a good 
+	 * error rate.  Then use those values to train, producing the final model.
 	 */
 	@Override
 	public final void iteration() {
@@ -240,10 +221,23 @@ public class SVMTrain extends BasicTraining {
 		this.network.getParams().C = this.c;
 		this.network.getParams().gamma = this.gamma;
 
-		this.network.setModel(svm.svm_train(this.problem,
-				this.network.getParams()));
+		if (this.fold > 1) {
+			// cross validate
+			final double[] target = new double[this.problem.l];
 
-		setError(this.network.calculateError(getTraining()));
+			svm.svm_cross_validation(this.problem, this.network.getParams(),
+					this.fold, target);
+			this.network.setModel(null);
+
+			setError(evaluate(this.network.getParams(), this.problem, target));
+		} else {
+			// train
+			this.network.setModel(svm.svm_train(this.problem,
+					this.network.getParams()));
+
+			setError(this.network.calculateError(getTraining()));
+		}
+
 		this.trainingDone = true;
 	}
 

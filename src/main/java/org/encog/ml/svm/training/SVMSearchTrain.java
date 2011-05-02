@@ -36,11 +36,6 @@ import org.encog.util.Format;
  * Provides training for Support Vector Machine networks.
  */
 public class SVMSearchTrain extends BasicTraining {
-	
-	/**
-	 * The default number of folds.
-	 */
-	public static final int DEFAULT_FOLDS = 5;
 
 	/**
 	 * The default starting number for C.
@@ -80,7 +75,7 @@ public class SVMSearchTrain extends BasicTraining {
 	/**
 	 * The number of folds.
 	 */
-	private int fold = DEFAULT_FOLDS;
+	private int fold = 0;
 
 	/**
 	 * The beginning value for C.
@@ -90,12 +85,12 @@ public class SVMSearchTrain extends BasicTraining {
 	/**
 	 * The step value for C.
 	 */
-	private double constStep = SVMSearchTrain.DEFAULT_CONST_END;
+	private double constStep = SVMSearchTrain.DEFAULT_CONST_STEP;
 
 	/**
 	 * The ending value for C.
 	 */
-	private double constEnd = SVMSearchTrain.DEFAULT_CONST_STEP;
+	private double constEnd = SVMSearchTrain.DEFAULT_CONST_END;
 
 	/**
 	 * The beginning value for gamma.
@@ -267,21 +262,28 @@ public class SVMSearchTrain extends BasicTraining {
 
 			preIteration();
 
-			if (this.network.getKernelType() 
-					== KernelType.RadialBasisFunction) {
+			this.internalTrain.setFold(this.fold);
 
-				double totalError = 0;
+			if (this.network.getKernelType() == KernelType.RadialBasisFunction) {
 
-				final double e = this.internalTrain.crossValidate(
-						this.currentGamma, this.currentConst);
-				System.out.println(this.currentGamma + "," + this.currentConst
-						+ "," + e);
-				if (e < this.bestError) {
-					this.bestConst = this.currentConst;
-					this.bestGamma = this.currentGamma;
-					this.bestError = e;
+				this.internalTrain.setGamma(this.currentGamma);
+				this.internalTrain.setC(this.currentConst);
+				this.internalTrain.iteration();
+				double e = this.internalTrain.getError();
+
+				//System.out.println(this.currentGamma + "," + this.currentConst
+				//		+ "," + e);
+
+				// new best error?
+				if (!Double.isNaN(e)) {
+					if (e < this.bestError) {
+						this.bestConst = this.currentConst;
+						this.bestGamma = this.currentGamma;
+						this.bestError = e;
+					}
 				}
 
+				// advance
 				this.currentConst += this.constStep;
 				if (this.currentConst > this.constEnd) {
 					this.currentConst = this.constBegin;
@@ -289,11 +291,10 @@ public class SVMSearchTrain extends BasicTraining {
 					if (this.currentGamma > this.gammaEnd) {
 						this.trainingDone = true;
 					}
+
 				}
 
-				totalError += this.bestError;
-
-				setError(totalError / this.network.getOutputCount());
+				setError(this.bestError);
 			} else {
 				this.internalTrain.setGamma(this.currentGamma);
 				this.internalTrain.setC(this.currentConst);
