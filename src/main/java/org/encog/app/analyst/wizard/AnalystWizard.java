@@ -528,7 +528,7 @@ public class AnalystWizard {
 			p.setFilename(AnalystWizard.FILE_CLUSTER, this.filenameCluster);	
 		}
 		
-		if( this.taskBalance ) {
+		if( this.taskSegregate ) {
 			p.setFilename(AnalystWizard.FILE_TRAIN, this.filenameTrain);
 			p.setFilename(AnalystWizard.FILE_EVAL, this.filenameEval);
 			p.setFilename(AnalystWizard.FILE_EVAL_NORM, this.filenameEvalNorm);			
