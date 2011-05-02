@@ -704,4 +704,17 @@ public class EncogAnalyst {
 		}
 	}
 
+	/**
+	 * @return True, if any field has a time slice.
+	 */
+	public final boolean isTimeSeries() {
+		for (AnalystField field : this.script.getNormalize()
+				.getNormalizedFields()) {
+			if (field.getTimeSlice() != 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
