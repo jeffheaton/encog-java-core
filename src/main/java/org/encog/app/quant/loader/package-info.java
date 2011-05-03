@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains the loader, used to load financial data.
+ */
 package org.encog.app.quant.loader;
 

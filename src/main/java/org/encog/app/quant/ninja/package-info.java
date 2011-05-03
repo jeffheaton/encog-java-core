@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains the Ninjatrader package.
+ */
 package org.encog.app.quant.ninja;
 

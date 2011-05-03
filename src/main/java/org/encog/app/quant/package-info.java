@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains the Encog Quant application.
+ */
 package org.encog.app.quant;
 
