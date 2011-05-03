@@ -29,22 +29,36 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.specific.BiPolarNeuralData;
 import org.encog.util.EngineArray;
 
+/**
+ * Implements a Boltzmann machine.
+ *
+ */
 public class BoltzmannMachine extends ThermalNetwork {
 
 	/**
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
+	/**
+	 * The property for run cycles.
+	 */
 	public static final String RUN_CYCLES = "runCycles";
-	public static final String ANNEAL_CYCLES = "annealCycles";
 	
+	/**
+	 * The property for anneal cycles.
+	 */
+	public static final String ANNEAL_CYCLES = "annealCycles";
+
 	/**
 	 * The current temperature of the neural network. The higher the
 	 * temperature, the more random the network will behave.
 	 */
 	private double temperature;
-	
+
+	/**
+	 * The thresholds.
+	 */
 	private double[] threshold;
 
 	/**
@@ -66,17 +80,42 @@ public class BoltzmannMachine extends ThermalNetwork {
 	 * The number of cycles to run the network through before annealing.
 	 */
 	private int runCycles = 1000;
-	
-	public BoltzmannMachine()
-	{
+
+	/**
+	 * Default constructors.
+	 */
+	public BoltzmannMachine() {
 		super();
 	}
-	
-	public BoltzmannMachine(int neuronCount)
-	{
+
+	/**
+	 * Construct a Boltzmann machine with the specified number of neurons.
+	 * @param neuronCount The number of neurons.
+	 */
+	public BoltzmannMachine(final int neuronCount) {
 		super(neuronCount);
 
 		this.threshold = new double[neuronCount];
+	}
+
+	/**
+	 * Note: for Boltzmann networks, you will usually want to call the "run"
+	 * method to compute the output.
+	 * 
+	 * This method can be used to copy the input data to the current state. A
+	 * single iteration is then run, and the new current state is returned.
+	 * 
+	 * @param input
+	 *            The input pattern.
+	 * @return The new current state.
+	 */
+	@Override
+	public final MLData compute(final MLData input) {
+		final BiPolarNeuralData result = new BiPolarNeuralData(input.size());
+		EngineArray.arrayCopy(input.getData(), getCurrentState().getData());
+		run();
+		EngineArray.arrayCopy(getCurrentState().getData(), result.getData());
+		return result;
 	}
 
 	/**
@@ -85,17 +124,17 @@ public class BoltzmannMachine extends ThermalNetwork {
 	 * @param d
 	 *            The amount to decrease by.
 	 */
-	public void decreaseTemperature(final double d) {
+	public final void decreaseTemperature(final double d) {
 		this.temperature *= d;
 	}
 
 	/**
 	 * Run the network until thermal equilibrium is established.
 	 */
-	public void establishEquilibrium() {		
+	public final void establishEquilibrium() {
 		final int count = getNeuronCount();
-		
-		if( this.on==null ) {
+
+		if (this.on == null) {
 			this.on = new int[count];
 			this.off = new int[count];
 		}
@@ -109,7 +148,7 @@ public class BoltzmannMachine extends ThermalNetwork {
 			run((int) RangeRandomizer.randomize(0, count - 1));
 		}
 		for (int n = 0; n < this.annealCycles * count; n++) {
-			int i = (int) RangeRandomizer.randomize(0, count - 1);
+			final int i = (int) RangeRandomizer.randomize(0, count - 1);
 			run(i);
 			if (getCurrentState().getBoolean(i)) {
 				this.on[i]++;
@@ -124,16 +163,53 @@ public class BoltzmannMachine extends ThermalNetwork {
 	}
 
 	/**
+	 * @return the annealCycles
+	 */
+	public final int getAnnealCycles() {
+		return this.annealCycles;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getInputCount() {
+		return getNeuronCount();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int getOutputCount() {
+		return getNeuronCount();
+	}
+
+	/**
+	 * @return the runCycles
+	 */
+	public final int getRunCycles() {
+		return this.runCycles;
+	}
+
+	/**
 	 * @return The temperature the network is currently operating at.
 	 */
-	public double getTemperature() {
+	public final double getTemperature() {
 		return this.temperature;
+	}
+
+	/**
+	 * @return the threshold
+	 */
+	public final double[] getThreshold() {
+		return this.threshold;
 	}
 
 	/**
 	 * Run the network for all neurons present.
 	 */
-	public void run() {
+	public final void run() {
 		final int count = getNeuronCount();
 		for (int i = 0; i < count; i++) {
 			run(i);
@@ -146,7 +222,7 @@ public class BoltzmannMachine extends ThermalNetwork {
 	 * @param i
 	 *            The neuron to run for.
 	 */
-	void run(final int i) {
+	public final void run(final int i) {
 		int j;
 		double sum, probability;
 
@@ -154,10 +230,9 @@ public class BoltzmannMachine extends ThermalNetwork {
 
 		sum = 0;
 		for (j = 0; j < count; j++) {
-			sum += getWeight(i, j)
-					* (getCurrentState().getBoolean(j) ? 1 : 0);
+			sum += getWeight(i, j) * (getCurrentState().getBoolean(j) ? 1 : 0);
 		}
-		sum -= threshold[i];
+		sum -= this.threshold[i];
 		probability = 1 / (1 + BoundMath.exp(-sum / this.temperature));
 		if (RangeRandomizer.randomize(0, 1) <= probability) {
 			getCurrentState().setData(i, true);
@@ -167,93 +242,46 @@ public class BoltzmannMachine extends ThermalNetwork {
 	}
 
 	/**
+	 * @param annealCycles
+	 *            the annealCycles to set
+	 */
+	public final void setAnnealCycles(final int annealCycles) {
+		this.annealCycles = annealCycles;
+	}
+
+	/**
+	 * @param runCycles
+	 *            the runCycles to set
+	 */
+	public final void setRunCycles(final int runCycles) {
+		this.runCycles = runCycles;
+	}
+
+	/**
 	 * Set the network temperature.
 	 * 
 	 * @param temperature
 	 *            The temperature to operate the network at.
 	 */
-	public void setTemperature(final double temperature) {
+	public final void setTemperature(final double temperature) {
 		this.temperature = temperature;
 	}
 
 	/**
-	 * @return the threshold
+	 * Set the thresholds.
+	 * @param t The thresholds.
 	 */
-	public double[] getThreshold() {
-		return threshold;
-	}
-	
-	public boolean supportsMapPersistence()
-	{
-		return true;
-	}
-	
-	/**
-	 * @return the annealCycles
-	 */
-	public int getAnnealCycles() {
-		return annealCycles;
+	public final void setThreshold(final double[] t) {
+		this.threshold = t;
+
 	}
 
 	/**
-	 * @param annealCycles the annealCycles to set
+	 * {@inheritDoc}
 	 */
-	public void setAnnealCycles(int annealCycles) {
-		this.annealCycles = annealCycles;
-	}
-
-	/**
-	 * @return the runCycles
-	 */
-	public int getRunCycles() {
-		return runCycles;
-	}
-
-	/**
-	 * @param runCycles the runCycles to set
-	 */
-	public void setRunCycles(int runCycles) {
-		this.runCycles = runCycles;
-	}
-
-	/**
-	 * Note: for Boltzmann networks, you will usually want to call the "run" method to 
-	 * compute the output.
-	 * 
-	 * This method can be used to copy the input data to the current state.  A single 
-	 * iteration is then run, and the new current state is returned.
-	 * @param input The input pattern.
-	 * @return The new current state.
-	 */
-	@Override
-	public MLData compute(MLData input) {
-		BiPolarNeuralData result = new BiPolarNeuralData(input.size());
-		EngineArray
-				.arrayCopy(input.getData(), this.getCurrentState().getData());
-		run();
-		EngineArray.arrayCopy(this.getCurrentState().getData(),
-				result.getData());
-		return result;
-	}
-
-	@Override
-	public int getInputCount() {
-		return this.getNeuronCount();
-	}
-
-	@Override
-	public int getOutputCount() {
-		return this.getNeuronCount();
-	}
-
 	@Override
 	public void updateProperties() {
-		// nothing needed here		
+		// nothing needed here
 	}
 
-	public void setThreshold(double[] t) {
-		this.threshold = t;
-		
-	}
-	
 }

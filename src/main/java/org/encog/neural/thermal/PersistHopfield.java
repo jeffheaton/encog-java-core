@@ -35,51 +35,74 @@ import org.encog.persist.PersistConst;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 
+/**
+ * Persist the Hopfield network.
+ * 
+ */
 public class PersistHopfield implements EncogPersistor {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public String getPersistClassString() {
+	public final int getFileVersion() {
+		return 1;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final String getPersistClassString() {
 		return HopfieldNetwork.class.getSimpleName();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public Object read(InputStream is) {
-		HopfieldNetwork result = new HopfieldNetwork();
-		EncogReadHelper in = new EncogReadHelper(is);
+	public final Object read(final InputStream is) {
+		final HopfieldNetwork result = new HopfieldNetwork();
+		final EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;
-		
-		while( (section = in.readNextSection()) != null ) {
-			if( section.getSectionName().equals("HOPFIELD") && section.getSubSectionName().equals("PARAMS") ) {
-				Map<String,String> params = section.parseParams();
+
+		while ((section = in.readNextSection()) != null) {
+			if (section.getSectionName().equals("HOPFIELD")
+					&& section.getSubSectionName().equals("PARAMS")) {
+				final Map<String, String> params = section.parseParams();
 				result.getProperties().putAll(params);
-			} if( section.getSectionName().equals("HOPFIELD") && section.getSubSectionName().equals("NETWORK") ) {
-				Map<String,String> params = section.parseParams();
-				result.setWeights(NumberList.fromList(CSVFormat.EG_FORMAT, params.get(PersistConst.WEIGHTS)));
-				result.setCurrentState(NumberList.fromList(CSVFormat.EG_FORMAT, params.get(PersistConst.OUTPUT)));
-				result.setNeuronCount(EncogFileSection.parseInt(params, PersistConst.NEURON_COUNT));
+			}
+			if (section.getSectionName().equals("HOPFIELD")
+					&& section.getSubSectionName().equals("NETWORK")) {
+				final Map<String, String> params = section.parseParams();
+				result.setWeights(NumberList.fromList(CSVFormat.EG_FORMAT,
+						params.get(PersistConst.WEIGHTS)));
+				result.setCurrentState(NumberList.fromList(CSVFormat.EG_FORMAT,
+						params.get(PersistConst.OUTPUT)));
+				result.setNeuronCount(EncogFileSection.parseInt(params,
+						PersistConst.NEURON_COUNT));
 			}
 		}
-		 
+
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void save(OutputStream os, Object obj) {
-		EncogWriteHelper out = new EncogWriteHelper(os);
-		HopfieldNetwork hopfield = (HopfieldNetwork)obj;
+	public final void save(final OutputStream os, final Object obj) {
+		final EncogWriteHelper out = new EncogWriteHelper(os);
+		final HopfieldNetwork hopfield = (HopfieldNetwork) obj;
 		out.addSection("HOPFIELD");
 		out.addSubSection("PARAMS");
 		out.addProperties(hopfield.getProperties());
 		out.addSubSection("NETWORK");
 		out.writeProperty(PersistConst.WEIGHTS, hopfield.getWeights());
-		out.writeProperty(PersistConst.OUTPUT, hopfield.getCurrentState().getData());
+		out.writeProperty(PersistConst.OUTPUT, hopfield.getCurrentState()
+				.getData());
 		out.writeProperty(PersistConst.NEURON_COUNT, hopfield.getNeuronCount());
 		out.flush();
-	}
-
-	@Override
-	public int getFileVersion() {
-		return 1;
 	}
 
 }

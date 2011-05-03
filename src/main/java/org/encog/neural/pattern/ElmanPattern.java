@@ -79,11 +79,13 @@ public class ElmanPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of neurons in this hidden layer.
 	 */
-	public void addHiddenLayer(final int count) {
+	@Override
+	public final void addHiddenLayer(final int count) {
 		if (this.hiddenNeurons != -1) {
-			throw new PatternError( "An Elman neural network should have only one hidden layer.");
+			throw new PatternError(
+					"An Elman neural network should have only one hidden layer.");
 		}
-		
+
 		this.hiddenNeurons = count;
 
 	}
@@ -91,7 +93,8 @@ public class ElmanPattern implements NeuralNetworkPattern {
 	/**
 	 * Clear out any hidden neurons.
 	 */
-	public void clear() {
+	@Override
+	public final void clear() {
 		this.hiddenNeurons = -1;
 	}
 
@@ -100,13 +103,16 @@ public class ElmanPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return The Elman neural network.
 	 */
-	public MLMethod generate() {
-		BasicLayer hidden,input;
-		
-		BasicNetwork network = new BasicNetwork();
-		network.addLayer(input = new BasicLayer(this.activation, true,this.inputNeurons));
-		network.addLayer(hidden = new BasicLayer(this.activation, true,this.hiddenNeurons));
-		network.addLayer(new BasicLayer(null, false,this.outputNeurons));
+	@Override
+	public final MLMethod generate() {
+		BasicLayer hidden, input;
+
+		final BasicNetwork network = new BasicNetwork();
+		network.addLayer(input = new BasicLayer(this.activation, true,
+				this.inputNeurons));
+		network.addLayer(hidden = new BasicLayer(this.activation, true,
+				this.hiddenNeurons));
+		network.addLayer(new BasicLayer(null, false, this.outputNeurons));
 		input.setContextFedBy(hidden);
 		network.getStructure().finalizeStructure();
 		network.reset();
@@ -119,7 +125,8 @@ public class ElmanPattern implements NeuralNetworkPattern {
 	 * @param activation
 	 *            The activation function.
 	 */
-	public void setActivationFunction(final ActivationFunction activation) {
+	@Override
+	public final void setActivationFunction(final ActivationFunction activation) {
 		this.activation = activation;
 	}
 
@@ -129,7 +136,8 @@ public class ElmanPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            Neuron count.
 	 */
-	public void setInputNeurons(final int count) {
+	@Override
+	public final void setInputNeurons(final int count) {
 		this.inputNeurons = count;
 	}
 
@@ -139,9 +147,9 @@ public class ElmanPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            Neuron count.
 	 */
-	public void setOutputNeurons(final int count) {
+	@Override
+	public final void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
 	}
 
 }
-

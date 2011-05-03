@@ -55,7 +55,7 @@ public class SOMPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of hidden neurons.
 	 */
-	public void addHiddenLayer(final int count) {
+	public final void addHiddenLayer(final int count) {
 		throw new PatternError( "A SOM network does not have hidden layers." );
 	}
 
@@ -70,7 +70,7 @@ public class SOMPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return The neural network.
 	 */
-	public MLMethod generate() {
+	public final MLMethod generate() {
 		SOM som = new SOM(this.inputNeurons,this.outputNeurons);
 		som.reset();
 		return som;
@@ -83,7 +83,7 @@ public class SOMPattern implements NeuralNetworkPattern {
 	 * @param activation
 	 *            The activation function to use.
 	 */
-	public void setActivationFunction(final ActivationFunction activation) {
+	public final void setActivationFunction(final ActivationFunction activation) {
 		throw new PatternError( "A SOM network can't define an activation function.");
 
 	}
@@ -94,7 +94,7 @@ public class SOMPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of neurons.
 	 */
-	public void setInputNeurons(final int count) {
+	public final void setInputNeurons(final int count) {
 		this.inputNeurons = count;
 
 	}
@@ -105,7 +105,7 @@ public class SOMPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of neurons.
 	 */
-	public void setOutputNeurons(final int count) {
+	public final void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
 	}
 }

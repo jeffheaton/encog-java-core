@@ -60,14 +60,14 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            Not used.
 	 */
-	public void addHiddenLayer(final int count) {
+	public final void addHiddenLayer(final int count) {
 		throw new PatternError("A Boltzmann network has no hidden layers.");
 	}
 
 	/**
 	 * Clear any properties set on this network.
 	 */
-	public void clear() {
+	public final void clear() {
 		this.neuronCount = 0;
 
 	}
@@ -77,7 +77,7 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return The generated network.
 	 */
-	public MLMethod generate() {
+	public final MLMethod generate() {
 		BoltzmannMachine boltz = new BoltzmannMachine(this.neuronCount);
 		boltz.setTemperature(this.temperature);
 		boltz.setRunCycles(this.runCycles);
@@ -88,21 +88,21 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	/**
 	 * @return The number of annealing cycles per run.
 	 */
-	public int getAnnealCycles() {
+	public final int getAnnealCycles() {
 		return this.annealCycles;
 	}
 
 	/**
 	 * @return The number of cycles per run.
 	 */
-	public int getRunCycles() {
+	public final int getRunCycles() {
 		return this.runCycles;
 	}
 
 	/**
 	 * @return The temperature.
 	 */
-	public double getTemperature() {
+	public final double getTemperature() {
 		return this.temperature;
 	}
 
@@ -112,7 +112,7 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	 * @param activation
 	 *            Not used.
 	 */
-	public void setActivationFunction(final ActivationFunction activation) {
+	public final void setActivationFunction(final ActivationFunction activation) {
 		throw new PatternError( "A Boltzmann network will use the BiPolar activation "
 				+ "function, no activation function needs to be specified.");
 	}
@@ -123,7 +123,7 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	 * @param annealCycles
 	 *            The new value.
 	 */
-	public void setAnnealCycles(final int annealCycles) {
+	public final void setAnnealCycles(final int annealCycles) {
 		this.annealCycles = annealCycles;
 	}
 
@@ -134,7 +134,7 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of input neurons.
 	 */
-	public void setInputNeurons(final int count) {
+	public final void setInputNeurons(final int count) {
 		this.neuronCount = count;
 
 	}
@@ -146,7 +146,7 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of output neurons.
 	 */
-	public void setOutputNeurons(final int count) {
+	public final void setOutputNeurons(final int count) {
 		this.neuronCount = count;
 	}
 
@@ -156,7 +156,7 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	 * @param runCycles
 	 *            The new value.
 	 */
-	public void setRunCycles(final int runCycles) {
+	public final void setRunCycles(final int runCycles) {
 		this.runCycles = runCycles;
 	}
 
@@ -166,7 +166,7 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	 * @param temperature
 	 *            The new value.
 	 */
-	public void setTemperature(final double temperature) {
+	public final void setTemperature(final double temperature) {
 		this.temperature = temperature;
 	}
 }

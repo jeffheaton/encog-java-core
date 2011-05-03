@@ -65,7 +65,7 @@ public class CPNPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            NOT USED
 	 */
-	public void addHiddenLayer(final int count) {
+	public final void addHiddenLayer(final int count) {
 		throw new PatternError("A CPN already has a predefined hidden layer.  No additional"
 				+ "specification is needed.");
 	}
@@ -73,7 +73,7 @@ public class CPNPattern implements NeuralNetworkPattern {
 	/**
 	 * Clear any parameters that were set.
 	 */
-	public void clear() {
+	public final void clear() {
 		this.inputCount = 0;
 		this.instarCount = 0;
 		this.outstarCount = 0;
@@ -84,7 +84,7 @@ public class CPNPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return The generated network.
 	 */
-	public MLMethod generate() {
+	public final MLMethod generate() {
 		return new CPN(inputCount,instarCount,outstarCount,1);
 	}
 
@@ -95,7 +95,7 @@ public class CPNPattern implements NeuralNetworkPattern {
 	 * @param activation
 	 *            NOT USED
 	 */
-	public void setActivationFunction(final ActivationFunction activation) {
+	public final void setActivationFunction(final ActivationFunction activation) {
 		throw new PatternError("A CPN network will use the BiPolar & competitive activation "
 				+ "functions, no activation function needs to be specified.");
 	}
@@ -106,7 +106,7 @@ public class CPNPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The input neuron count.
 	 */
-	public void setInputNeurons(final int count) {
+	public final void setInputNeurons(final int count) {
 		this.inputCount = count;
 
 	}
@@ -118,7 +118,7 @@ public class CPNPattern implements NeuralNetworkPattern {
 	 * @param instarCount
 	 *            The instar count.
 	 */
-	public void setInstarCount(final int instarCount) {
+	public final void setInstarCount(final int instarCount) {
 		this.instarCount = instarCount;
 	}
 
@@ -129,7 +129,7 @@ public class CPNPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The count.
 	 */
-	public void setOutputNeurons(final int count) {
+	public final void setOutputNeurons(final int count) {
 		this.outstarCount = count;
 
 	}
@@ -141,7 +141,7 @@ public class CPNPattern implements NeuralNetworkPattern {
 	 * @param outstarCount
 	 *            The outstar count.
 	 */
-	public void setOutstarCount(final int outstarCount) {
+	public final void setOutstarCount(final int outstarCount) {
 		this.outstarCount = outstarCount;
 	}
 

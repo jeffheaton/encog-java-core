@@ -29,11 +29,22 @@ import org.encog.neural.pnn.BasicPNN;
 import org.encog.neural.pnn.PNNKernelType;
 import org.encog.neural.pnn.PNNOutputMode;
 
+/**
+ * Pattern to create a PNN.
+ * 
+ */
 public class PNNPattern implements NeuralNetworkPattern {
 
+	/**
+	 * The kernel type.
+	 */
 	private PNNKernelType kernel = PNNKernelType.Gaussian;
+
+	/**
+	 * The output model.
+	 */
 	private PNNOutputMode outmodel = PNNOutputMode.Regression;
-	
+
 	/**
 	 * The number of input neurons.
 	 */
@@ -51,13 +62,15 @@ public class PNNPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of hidden neurons.
 	 */
-	public void addHiddenLayer(final int count) {
-		throw new PatternError( "A PNN network does not have hidden layers." );
+	@Override
+	public final void addHiddenLayer(final int count) {
+		throw new PatternError("A PNN network does not have hidden layers.");
 	}
 
 	/**
 	 * Clear out any hidden neurons.
 	 */
+	@Override
 	public void clear() {
 	}
 
@@ -66,9 +79,39 @@ public class PNNPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return The neural network.
 	 */
-	public MLMethod generate() {
-		BasicPNN pnn = new BasicPNN(this.kernel, this.outmodel, this.inputNeurons,this.outputNeurons);
+	@Override
+	public final MLMethod generate() {
+		final BasicPNN pnn = new BasicPNN(this.kernel, this.outmodel,
+				this.inputNeurons, this.outputNeurons);
 		return pnn;
+	}
+
+	/**
+	 * @return The number of input neurons.
+	 */
+	public final int getInputNeurons() {
+		return this.inputNeurons;
+	}
+
+	/**
+	 * @return The kernel.
+	 */
+	public final PNNKernelType getKernel() {
+		return this.kernel;
+	}
+
+	/**
+	 * @return The output model.
+	 */
+	public final PNNOutputMode getOutmodel() {
+		return this.outmodel;
+	}
+
+	/**
+	 * @return The number of output neurons.
+	 */
+	public final int getOutputNeurons() {
+		return this.outputNeurons;
 	}
 
 	/**
@@ -78,8 +121,10 @@ public class PNNPattern implements NeuralNetworkPattern {
 	 * @param activation
 	 *            The activation function to use.
 	 */
-	public void setActivationFunction(final ActivationFunction activation) {
-		throw new PatternError( "A SOM network can't define an activation function.");
+	@Override
+	public final void setActivationFunction(final ActivationFunction activation) {
+		throw new PatternError(
+				"A SOM network can't define an activation function.");
 
 	}
 
@@ -89,9 +134,28 @@ public class PNNPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of neurons.
 	 */
-	public void setInputNeurons(final int count) {
+	@Override
+	public final void setInputNeurons(final int count) {
 		this.inputNeurons = count;
 
+	}
+
+	/**
+	 * Set the kernel type.
+	 * 
+	 * @param kernel
+	 *            The kernel type.
+	 */
+	public final void setKernel(final PNNKernelType kernel) {
+		this.kernel = kernel;
+	}
+
+	/**
+	 * Set the output model.
+	 * @param outmodel The output model.
+	 */
+	public final void setOutmodel(final PNNOutputMode outmodel) {
+		this.outmodel = outmodel;
 	}
 
 	/**
@@ -100,33 +164,9 @@ public class PNNPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of neurons.
 	 */
-	public void setOutputNeurons(final int count) {
+	@Override
+	public final void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
 	}
 
-	public PNNKernelType getKernel() {
-		return kernel;
-	}
-
-	public void setKernel(PNNKernelType kernel) {
-		this.kernel = kernel;
-	}
-
-	public PNNOutputMode getOutmodel() {
-		return outmodel;
-	}
-
-	public void setOutmodel(PNNOutputMode outmodel) {
-		this.outmodel = outmodel;
-	}
-
-	public int getInputNeurons() {
-		return inputNeurons;
-	}
-
-	public int getOutputNeurons() {
-		return outputNeurons;
-	}
-	
-	
 }

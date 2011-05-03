@@ -51,7 +51,7 @@ public class HopfieldPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of neurons.
 	 */
-	public void addHiddenLayer(final int count) {
+	public final void addHiddenLayer(final int count) {
 		throw new PatternError("A Hopfield network has no hidden layers.");
 	}
 
@@ -66,7 +66,7 @@ public class HopfieldPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return The generated network.
 	 */
-	public MLMethod generate() {
+	public final MLMethod generate() {
 		HopfieldNetwork logic = new HopfieldNetwork(this.neuronCount);
 		return logic;
 	}
@@ -78,7 +78,7 @@ public class HopfieldPattern implements NeuralNetworkPattern {
 	 * @param activation
 	 *            The activation function to use.
 	 */
-	public void setActivationFunction(final ActivationFunction activation) {
+	public final void setActivationFunction(final ActivationFunction activation) {
 		throw new PatternError( "A Hopfield network will use the BiPolar activation "
 				+ "function, no activation function needs to be specified.");
 
@@ -90,7 +90,7 @@ public class HopfieldPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of neurons.
 	 */
-	public void setInputNeurons(final int count) {
+	public final void setInputNeurons(final int count) {
 		this.neuronCount = count;
 
 	}
@@ -103,7 +103,7 @@ public class HopfieldPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of neurons.
 	 */
-	public void setOutputNeurons(final int count) {
+	public final void setOutputNeurons(final int count) {
 		throw new PatternError( "A Hopfield network has a single layer, so no need "
 				+ "to specify the output count.");
 

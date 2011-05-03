@@ -31,46 +31,79 @@ import org.encog.ml.data.specific.BiPolarNeuralData;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.util.EngineArray;
 
-public abstract class ThermalNetwork extends BasicML implements MLMethod, MLAutoAssocation, MLResettable {
+/**
+ * The thermal network forms the base class for Hopfield and Boltzmann machines.
+ * @author jheaton
+ *
+ */
+public abstract class ThermalNetwork extends BasicML implements MLMethod,
+		MLAutoAssocation, MLResettable {
 
 	/**
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * The current state of the thermal network.
 	 */
 	private BiPolarNeuralData currentState;
-	
+
+	/**
+	 * The weights.
+	 */
 	private double[] weights;
-	
+
+	/**
+	 * The neuron count.
+	 */
 	private int neuronCount;
-	
-	public ThermalNetwork()
-	{
-		
+
+	/**
+	 * Default constructor.
+	 */
+	public ThermalNetwork() {
+
 	}
-	
-	public ThermalNetwork(int neuronCount) {
+
+	/**
+	 * Construct the network with the specicified neuron count.
+	 * @param neuronCount The number of neurons.
+	 */
+	public ThermalNetwork(final int neuronCount) {
 		this.neuronCount = neuronCount;
-		this.weights = new double[neuronCount*neuronCount];
-		this.currentState = new BiPolarNeuralData(neuronCount);		
+		this.weights = new double[neuronCount * neuronCount];
+		this.currentState = new BiPolarNeuralData(neuronCount);
+	}
+
+	/**
+	 * Add to the specified weight.
+	 * @param fromNeuron The from neuron.
+	 * @param toNeuron The to neuron.
+	 * @param value The value to add.
+	 */
+	public final void addWeight(final int fromNeuron, final int toNeuron,
+			final double value) {
+		final int index = (toNeuron * this.neuronCount) + fromNeuron;
+		if (index >= this.weights.length) {
+			throw new NeuralNetworkError("Out of range: fromNeuron:"
+					+ fromNeuron + ", toNeuron: " + toNeuron);
+		}
+		this.weights[index] += value;
 	}
 
 	/**
 	 * @return Calculate the current energy for the network. The network will
 	 *         seek to lower this value.
 	 */
-	public double calculateEnergy() {
+	public final double calculateEnergy() {
 		double tempE = 0;
 		final int neuronCount = getNeuronCount();
 
 		for (int i = 0; i < neuronCount; i++) {
 			for (int j = 0; j < neuronCount; j++) {
 				if (i != j) {
-					tempE += this.getWeight(i, j)
-							* this.currentState.getData(i)
+					tempE += getWeight(i, j) * this.currentState.getData(i)
 							* this.currentState.getData(j);
 				}
 			}
@@ -82,102 +115,130 @@ public abstract class ThermalNetwork extends BasicML implements MLMethod, MLAuto
 	/**
 	 * Clear any connection weights.
 	 */
-	public void clear() {
+	public final void clear() {
 		EngineArray.fill(this.weights, 0);
 	}
 
 	/**
 	 * @return The current state of the network.
 	 */
-	public BiPolarNeuralData getCurrentState() {
+	public final BiPolarNeuralData getCurrentState() {
 		return this.currentState;
 	}
 
 	/**
 	 * @return Get the neuron count for the network.
 	 */
-	public int getNeuronCount() {
+	public final int getNeuronCount() {
 		return this.neuronCount;
+	}
+
+	/**
+	 * Get a weight.
+	 * @param fromNeuron The from neuron.
+	 * @param toNeuron The to neuron.
+	 * @return The weight.
+	 */
+	public final double getWeight(final int fromNeuron, final int toNeuron) {
+		final int index = (toNeuron * this.neuronCount) + fromNeuron;
+		return this.weights[index];
+	}
+
+	/**
+	 * @return The weights.
+	 */
+	public final double[] getWeights() {
+		return this.weights;
+	}
+
+	/**
+	 * Init the network.
+	 * @param neuronCount The neuron count.
+	 * @param weights The weights.
+	 * @param output The toutpu
+	 */
+	public final void init(final int neuronCount, final double[] weights,
+			final double[] output) {
+		if (neuronCount != output.length) {
+			throw new NeuralNetworkError("Neuron count(" + neuronCount
+					+ ") must match output count(" + output.length + ").");
+		}
+
+		if ((neuronCount * neuronCount) != weights.length) {
+			throw new NeuralNetworkError("Weight count(" + weights.length
+					+ ") must be the square of the neuron count(" + neuronCount
+					+ ").");
+		}
+
+		this.neuronCount = neuronCount;
+		this.weights = weights;
+		this.currentState = new BiPolarNeuralData(neuronCount);
+		this.currentState.setData(output);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void reset() {
+		reset(0);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void reset(final int seed) {
+		getCurrentState().clear();
+		EngineArray.fill(this.weights, 0.0);
 	}
 
 	/**
 	 * @param state
 	 *            The current state for the network.
 	 */
-	public void setCurrentState(final BiPolarNeuralData state) {
+	public final void setCurrentState(final BiPolarNeuralData state) {
 		for (int i = 0; i < state.size(); i++) {
 			this.currentState.setData(i, state.getData(i));
 		}
 	}
-	
-	public double[] getWeights()
-	{
-		return this.weights;
-	}
-	
-	public double getWeight(int fromNeuron, int toNeuron)
-	{
-		int index = (toNeuron*neuronCount) + fromNeuron;
-		return weights[index];
-	}
-	
-	public void setWeight(int fromNeuron, int toNeuron, double value)
-	{
-		int index = (toNeuron*neuronCount) + fromNeuron;
-		weights[index] = value;
-	}
-	
-	public void addWeight(int fromNeuron, int toNeuron, double value)
-	{
-		int index = (toNeuron*neuronCount) + fromNeuron;
-		if( index>=weights.length ) {
-			throw new NeuralNetworkError("Out of range: fromNeuron:" 
-					+ fromNeuron 
-					+ ", toNeuron: " 
-					+ toNeuron);
-		}
-		weights[index] += value;
-	}
-	
-	public void init(int neuronCount, double[] weights, double[] output)
-	{
-		if( neuronCount!=output.length )
-		{
-			throw new NeuralNetworkError("Neuron count(" + neuronCount + ") must match output count("+output.length+").");
-		}
-		
-		if( (neuronCount*neuronCount)!=weights.length )
-		{
-			throw new NeuralNetworkError("Weight count(" + weights.length + ") must be the square of the neuron count("+neuronCount+").");
-		}
-		
-		this.neuronCount = neuronCount;
-		this.weights = weights;
-		this.currentState = new BiPolarNeuralData(neuronCount);
-		this.currentState.setData(output);
-	}
-	
-	public void reset(int seed) {
-		this.getCurrentState().clear();
-		EngineArray.fill(this.weights, 0.0);
-	}
-	
-	public void reset() {
-		reset(0);
-	}
-	
-	public void setWeights(double[] w) {
-		this.weights = w;		
-	}
-	
-	public void setCurrentState(double[] s) {
+
+	/**
+	 * Set the current state.
+	 * @param s The current state array.
+	 */
+	public final void setCurrentState(final double[] s) {
 		this.currentState = new BiPolarNeuralData(s.length);
-		EngineArray.arrayCopy(s, this.currentState.getData());		
+		EngineArray.arrayCopy(s, this.currentState.getData());
 	}
-	
-	public void setNeuronCount(int c) {
+
+	/**
+	 * Set the neuron count.
+	 * @param c The neuron count.
+	 */
+	public final void setNeuronCount(final int c) {
 		this.neuronCount = c;
-		
+
 	}
-	
+
+	/**
+	 * Set the weight.
+	 * @param fromNeuron The from neuron.
+	 * @param toNeuron The to neuron.
+	 * @param value The value.
+	 */
+	public final void setWeight(final int fromNeuron, final int toNeuron,
+			final double value) {
+		final int index = (toNeuron * this.neuronCount) + fromNeuron;
+		this.weights[index] = value;
+	}
+
+	/**
+	 * Set the weight array.
+	 * @param w The weight array.
+	 */
+	public final void setWeights(final double[] w) {
+		this.weights = w;
+	}
+
 }

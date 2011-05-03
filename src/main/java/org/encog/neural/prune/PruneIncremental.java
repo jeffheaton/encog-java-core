@@ -214,7 +214,7 @@ public class PruneIncremental extends ConcurrentJob {
 	 * @param max
 	 *            The maximum number of neurons for this layer.
 	 */
-	public void addHiddenLayer(final int min, final int max) {
+	public final void addHiddenLayer(final int min, final int max) {
 		final HiddenLayerParams param = new HiddenLayerParams(min, max);
 		this.hidden.add(param);
 	}
@@ -239,84 +239,84 @@ public class PruneIncremental extends ConcurrentJob {
 	/**
 	 * @return The network being processed.
 	 */
-	public BasicNetwork getBestNetwork() {
+	public final BasicNetwork getBestNetwork() {
 		return this.bestNetwork;
 	}
 
 	/**
 	 * @return The hidden layer max and min.
 	 */
-	public List<HiddenLayerParams> getHidden() {
+	public final List<HiddenLayerParams> getHidden() {
 		return this.hidden;
 	}
 
 	/**
 	 * @return The size of the first hidden layer.
 	 */
-	public int getHidden1Size() {
+	public final int getHidden1Size() {
 		return this.hidden1Size;
 	}
 
 	/**
 	 * @return The size of the second hidden layer.
 	 */
-	public int getHidden2Size() {
+	public final int getHidden2Size() {
 		return this.hidden2Size;
 	}
 
 	/**
 	 * @return The higest error so far.
 	 */
-	public double getHigh() {
+	public final double getHigh() {
 		return this.high;
 	}
 
 	/**
 	 * @return The number of training iterations to try for each network.
 	 */
-	public int getIterations() {
+	public final int getIterations() {
 		return this.iterations;
 	}
 
 	/**
 	 * @return The lowest error so far.
 	 */
-	public double getLow() {
+	public final double getLow() {
 		return this.low;
 	}
 
 	/**
 	 * @return The network pattern to use.
 	 */
-	public NeuralNetworkPattern getPattern() {
+	public final NeuralNetworkPattern getPattern() {
 		return this.pattern;
 	}
 
 	/**
 	 * @return The error results.
 	 */
-	public double[][] getResults() {
+	public final double[][] getResults() {
 		return this.results;
 	}
 
 	/**
 	 * @return the topErrors
 	 */
-	public double[] getTopErrors() {
+	public final double[] getTopErrors() {
 		return this.topErrors;
 	}
 
 	/**
 	 * @return the topNetworks
 	 */
-	public BasicNetwork[] getTopNetworks() {
+	public final BasicNetwork[] getTopNetworks() {
 		return this.topNetworks;
 	}
 
 	/**
 	 * @return The training set to use.
 	 */
-	public MLDataSet getTraining() {
+	public final MLDataSet getTraining() {
 		return this.training;
 	}
 
@@ -352,7 +352,7 @@ public class PruneIncremental extends ConcurrentJob {
 	/**
 	 * Init for prune.
 	 */
-	public void init() {
+	public final void init() {
 		// handle display for one layer
 		if (this.hidden.size() == 1) {
 			this.hidden1Size = (this.hidden.get(0).getMax() - this.hidden
@@ -386,7 +386,7 @@ public class PruneIncremental extends ConcurrentJob {
 	 * @return The amount of work to be processed by this.
 	 */
 	@Override
-	public int loadWorkload() {
+	public final int loadWorkload() {
 		int result = 1;
 
 		for (final HiddenLayerParams param : this.hidden) {
@@ -406,7 +406,7 @@ public class PruneIncremental extends ConcurrentJob {
 	 *            Contains information about the job unit.
 	 */
 	@Override
-	public void performJobUnit(final JobUnitContext context) {
+	public final void performJobUnit(final JobUnitContext context) {
 
 		final BasicNetwork network = (BasicNetwork) context.getJobUnit();
 		BufferedNeuralDataSet buffer = null;
@@ -438,8 +438,9 @@ public class PruneIncremental extends ConcurrentJob {
 			error = Math.min(error, train.getError());
 		}
 
-		if (buffer != null)
+		if (buffer != null) {
 			buffer.close();
+		}
 
 		if (!getShouldStop()) {
 			// update min and max
@@ -469,7 +470,7 @@ public class PruneIncremental extends ConcurrentJob {
 					col = networkHidden2Count - this.hidden.get(1).getMin();
 				}
 
-				if (row < 0 || col < 0) {
+				if ((row < 0) || (col < 0)) {
 					System.out.println("STOP");
 				}
 				this.results[row][col] = error;
@@ -494,7 +495,7 @@ public class PruneIncremental extends ConcurrentJob {
 	 * Begin the prune process.
 	 */
 	@Override
-	public void process() {
+	public final void process() {
 
 		if (this.hidden.size() == 0) {
 			throw new EncogError(
@@ -529,7 +530,7 @@ public class PruneIncremental extends ConcurrentJob {
 	 * @return The next network to train.
 	 */
 	@Override
-	public Object requestNextTask() {
+	public final Object requestNextTask() {
 		if (this.done || getShouldStop()) {
 			return null;
 		}
@@ -604,7 +605,7 @@ public class PruneIncremental extends ConcurrentJob {
 					"Prune found new best network: error=" + error
 							+ ", network=" + choice);
 		}
-		
+
 	}
 
 }

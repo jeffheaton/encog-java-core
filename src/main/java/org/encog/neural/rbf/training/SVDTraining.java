@@ -38,51 +38,73 @@ import org.encog.util.simple.TrainingSetUtil;
  * 
  * Contributed to Encog By M.Fletcher and M.Dean University of Cambridge, Dept.
  * of Physics, UK
- *
+ * 
  */
 public class SVDTraining extends BasicTraining {
 
 	/**
 	 * The network that is to be trained.
 	 */
-	private RBFNetwork network;
+	private final RBFNetwork network;
 
 	/**
 	 * Construct the training object.
-	 * @param network The network to train. Must have a single output
-	 * neuron.
-	 * @param training The training data to use. Must be
-	 * indexable.
+	 * 
+	 * @param network
+	 *            The network to train. Must have a single output neuron.
+	 * @param training
+	 *            The training data to use. Must be indexable.
 	 */
-	public SVDTraining(RBFNetwork network, MLDataSet training) {
+	public SVDTraining(final RBFNetwork network, final MLDataSet training) {
 		super(TrainingImplementationType.OnePass);
 		if (network.getOutputCount() != 1) {
 			throw new TrainingError(
 					"SVD requires an output layer with a single neuron.");
 		}
 
-		this.setTraining(training);
+		setTraining(training);
 		this.network = network;
+	}
+
+	@Override
+	public boolean canContinue() {
+		return false;
+	}
+
+	public void flatToMatrix(final double[] flat, final int start,
+			final double[][] matrix) {
+		final int rows = matrix.length;
+		final int cols = matrix[0].length;
+
+		int index = start;
+
+		for (int r = 0; r < rows; r++) {
+			for (int c = 0; c < cols; c++) {
+				matrix[r][c] = flat[index++];
+			}
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public RBFNetwork getMethod() {
+	@Override
+	public final RBFNetwork getMethod() {
 		return this.network;
 	}
 
 	/**
 	 * Perform one iteration.
 	 */
-	public void iteration() {
-		int length = network.getRBF().length;
-		
-		RadialBasisFunction[] funcs = new RadialBasisFunction[length];
+	@Override
+	public final void iteration() {
+		final int length = this.network.getRBF().length;
+
+		final RadialBasisFunction[] funcs = new RadialBasisFunction[length];
 
 		// Iteration over neurons and determine the necessaries
 		for (int i = 0; i < length; i++) {
-			RadialBasisFunction basisFunc = network.getRBF()[i];
+			final RadialBasisFunction basisFunc = this.network.getRBF()[i];
 
 			funcs[i] = basisFunc;
 
@@ -91,62 +113,51 @@ public class SVDTraining extends BasicTraining {
 			// network.Structure.Synapses[0].WeightMatrix.Data[i][j];
 		}
 
-		ObjectPair<double[][], double[][]> data = TrainingSetUtil
+		final ObjectPair<double[][], double[][]> data = TrainingSetUtil
 				.trainingToArray(getTraining());
 
-		
-		double[][] matrix = new double[length][network.getOutputCount()];
+		final double[][] matrix = new double[length][this.network
+				.getOutputCount()];
 
-		flatToMatrix( this.network.getFlat().getWeights(), 0, matrix );
+		flatToMatrix(this.network.getFlat().getWeights(), 0, matrix);
 		setError(SVD.svdfit(data.getA(), data.getB(), matrix, funcs));
-		matrixToFlat( matrix, this.network.getFlat().getWeights(), 0);
+		matrixToFlat(matrix, this.network.getFlat().getWeights(), 0);
 	}
-	
-	public void flatToMatrix(double[] flat, int start, double[][] matrix)
-	{
-		int rows = matrix.length;
-		int cols = matrix[0].length;
-		
+
+	/**
+	 * Convert the matrix to flat.
+	 * @param matrix The matrix.
+	 * @param flat Flat array.
+	 * @param start WHere to start.
+	 */
+	public void matrixToFlat(final double[][] matrix, final double[] flat,
+			final int start) {
+		final int rows = matrix.length;
+		final int cols = matrix[0].length;
+
 		int index = start;
-		
-		for(int r = 0; r<rows; r++)
-		{
-			for(int c = 0; c< cols; c++)
-			{
-				matrix[r][c] = flat[index++];
-			}
-		}
-	}
-	
-	public void matrixToFlat(double[][] matrix, double[] flat, int start)
-	{
-		int rows = matrix.length;
-		int cols = matrix[0].length;
-		
-		int index = start;
-		
-		for(int r = 0; r<rows; r++)
-		{
-			for(int c = 0; c< cols; c++)
-			{
+
+		for (int r = 0; r < rows; r++) {
+			for (int c = 0; c < cols; c++) {
 				flat[index++] = matrix[r][c];
 			}
 		}
 	}
-	
-	@Override
-	public boolean canContinue() {
-		return false;
-	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public TrainingContinuation pause() {
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void resume(TrainingContinuation state) {
-		
+	public void resume(final TrainingContinuation state) {
+
 	}
 
 }

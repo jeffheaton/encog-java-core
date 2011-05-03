@@ -59,14 +59,14 @@ public class HiddenLayerParams {
 	/**
 	 * @return The maximum number of neurons.
 	 */
-	public int getMax() {
+	public final int getMax() {
 		return this.max;
 	}
 
 	/**
 	 * @return The minimum number of neurons.
 	 */
-	public int getMin() {
+	public final int getMin() {
 		return this.min;
 	}
 

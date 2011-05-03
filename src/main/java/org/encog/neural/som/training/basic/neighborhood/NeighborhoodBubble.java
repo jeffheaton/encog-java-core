@@ -62,7 +62,9 @@ public class NeighborhoodBubble implements NeighborhoodFunction {
 	 *            The winning neuron.
 	 * @return The ratio for this neuron's adjustment.
 	 */
-	public double function(final int currentNeuron, final int bestNeuron) {
+	@Override
+	public final double function(final int currentNeuron, 
+			final int bestNeuron) {
 		final int distance = Math.abs(bestNeuron - currentNeuron);
 		if (distance <= this.radius) {
 			return 1.0;
@@ -74,7 +76,8 @@ public class NeighborhoodBubble implements NeighborhoodFunction {
 	/**
 	 * @return The radius.
 	 */
-	public double getRadius() {
+	@Override
+	public final double getRadius() {
 		return this.radius;
 	}
 
@@ -84,7 +87,8 @@ public class NeighborhoodBubble implements NeighborhoodFunction {
 	 * @param radius
 	 *            The new radius.
 	 */
-	public void setRadius(final double radius) {
+	@Override
+	public final void setRadius(final double radius) {
 		this.radius = radius;
 	}
 

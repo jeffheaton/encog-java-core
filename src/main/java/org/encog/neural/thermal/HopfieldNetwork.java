@@ -31,19 +31,30 @@ import org.encog.ml.data.specific.BiPolarNeuralData;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.util.EngineArray;
 
+/**
+ * Implements a Hopfield network.
+ * 
+ */
 public class HopfieldNetwork extends ThermalNetwork {
 
 	/**
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	public HopfieldNetwork(int neuronCount) {
-		super(neuronCount);
-	}
 
+	/**
+	 * Default constructor.
+	 */
 	public HopfieldNetwork() {
 
+	}
+
+	/**
+	 * Construct a Hopfield with the specified neuron count.
+	 * @param neuronCount The neuron count.
+	 */
+	public HopfieldNetwork(final int neuronCount) {
+		super(neuronCount);
 	}
 
 	/**
@@ -54,12 +65,14 @@ public class HopfieldNetwork extends ThermalNetwork {
 	 * @param pattern
 	 *            The pattern to train for.
 	 */
-	public void addPattern(final MLData pattern) {
+	public final void addPattern(final MLData pattern) {
 
-		if( pattern.size()!=this.getNeuronCount() ) {
-			throw new NeuralNetworkError("Network with " + getNeuronCount() + " neurons, cannot learn a pattern of size " + pattern.size());
+		if (pattern.size() != getNeuronCount()) {
+			throw new NeuralNetworkError("Network with " + getNeuronCount()
+					+ " neurons, cannot learn a pattern of size "
+					+ pattern.size());
 		}
-		
+
 		// Create a row matrix from the input, convert boolean to bipolar
 		final Matrix m2 = Matrix.createRowMatrix(pattern.getData());
 		// Transpose the matrix and multiply by the original input matrix
@@ -79,6 +92,31 @@ public class HopfieldNetwork extends ThermalNetwork {
 	}
 
 	/**
+	 * Note: for Hopfield networks, you will usually want to call the "run"
+	 * method to compute the output.
+	 * 
+	 * This method can be used to copy the input data to the current state. A
+	 * single iteration is then run, and the new current state is returned.
+	 * 
+	 * @param input
+	 *            The input pattern.
+	 * @return The new current state.
+	 */
+	@Override
+	public final MLData compute(final MLData input) {
+		final BiPolarNeuralData result = new BiPolarNeuralData(input.size());
+		EngineArray.arrayCopy(input.getData(), getCurrentState().getData());
+		run();
+
+		for (int i = 0; i < getCurrentState().size(); i++) {
+			result.setData(i,
+					BiPolarUtil.double2bipolar(getCurrentState().getData(i)));
+		}
+		EngineArray.arrayCopy(getCurrentState().getData(), result.getData());
+		return result;
+	}
+
+	/**
 	 * Update the Hopfield weights after training.
 	 * 
 	 * @param delta
@@ -94,9 +132,25 @@ public class HopfieldNetwork extends ThermalNetwork {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int getInputCount() {
+		return super.getNeuronCount();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int getOutputCount() {
+		return super.getNeuronCount();
+	}
+
+	/**
 	 * Perform one Hopfield iteration.
 	 */
-	public void run() {
+	public final void run() {
 
 		for (int toNeuron = 0; toNeuron < getNeuronCount(); toNeuron++) {
 			double sum = 0;
@@ -116,7 +170,7 @@ public class HopfieldNetwork extends ThermalNetwork {
 	 *            The maximum number of cycles to run before giving up.
 	 * @return The number of cycles that were run.
 	 */
-	public int runUntilStable(final int max) {
+	public final int runUntilStable(final int max) {
 		boolean done = false;
 		String lastStateStr = getCurrentState().toString();
 		String currentStateStr = getCurrentState().toString();
@@ -143,52 +197,12 @@ public class HopfieldNetwork extends ThermalNetwork {
 		return cycle;
 	}
 
-	public boolean supportsMapPersistence() {
-		return true;
-	}
-
-	@Override
-	public int getInputCount() {
-		return super.getNeuronCount();
-	}
-
-	@Override
-	public int getOutputCount() {
-		return super.getNeuronCount();
-	}
-
 	/**
-	 * Note: for Hopfield networks, you will usually want to call the "run" method to 
-	 * compute the output.
-	 * 
-	 * This method can be used to copy the input data to the current state.  A single 
-	 * iteration is then run, and the new current state is returned.
-	 * @param input The input pattern.
-	 * @return The new current state.
+	 * {@inheritDoc}
 	 */
 	@Override
-	public MLData compute(MLData input) {
-		BiPolarNeuralData result = new BiPolarNeuralData(input.size());
-		EngineArray
-				.arrayCopy(input.getData(), this.getCurrentState().getData());
-		run();
-		
-		for(int i=0;i<this.getCurrentState().size();i++) {
-			result.setData(i, BiPolarUtil.double2bipolar(this.getCurrentState().getData(i)));
-		}
-		EngineArray.arrayCopy(this.getCurrentState().getData(),
-				result.getData());
-		return result;
-	}
-	
-	@Override
 	public void updateProperties() {
-		// nothing needed here		
+		// nothing needed here
 	}
-
-
-
-
-
 
 }

@@ -32,16 +32,55 @@ import org.encog.ml.train.BasicTraining;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.neural.som.SOM;
 
+/**
+ * SOM cluster copy is a very simple trainer for SOM's. Using this triner all of
+ * the training data is copied to the SOM weights. This can provide a functional
+ * SOM, or can be used as a starting point for training.
+ * 
+ */
 public class SOMClusterCopyTraining extends BasicTraining {
 
-	private SOM network;
-	
-	public SOMClusterCopyTraining(SOM network, MLDataSet training) {
+	/**
+	 * The SOM to train.
+	 */
+	private final SOM network;
+
+	/**
+	 * Construct the object.
+	 * @param network The network to train.
+	 * @param training The training data.
+	 */
+	public SOMClusterCopyTraining(final SOM network, final MLDataSet training) {
 		super(TrainingImplementationType.OnePass);
 		this.network = network;
 		setTraining(training);
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final boolean canContinue() {
+		return false;
+	}
+
+	/**
+	 * Copy the specified input pattern to the weight matrix. This causes an
+	 * output neuron to learn this pattern "exactly". This is useful when a
+	 * winner is to be forced.
+	 *
+	 * @param outputNeuron
+	 *            The output neuron to set.
+	 * @param input
+	 *            The input pattern to copy.
+	 */
+	private void copyInputPattern(final int outputNeuron, final MLData input) {
+		for (int inputNeuron = 0; inputNeuron < this.network.getInputCount(); inputNeuron++) {
+			this.network.getWeights().set(inputNeuron, outputNeuron,
+					input.getData(inputNeuron));
+		}
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -49,47 +88,31 @@ public class SOMClusterCopyTraining extends BasicTraining {
 	public final MLMethod getMethod() {
 		return this.network;
 	}
-	
+
 	/**
-	 * Copy the specified input pattern to the weight matrix. This causes an
-	 * output neuron to learn this pattern "exactly". This is useful when a
-	 * winner is to be forced.
-	 *
-	 * @param synapse
-	 *            The synapse that is the target of the copy.
-	 * @param outputNeuron
-	 *            The output neuron to set.
-	 * @param input
-	 *            The input pattern to copy.
+	 * {@inheritDoc}
 	 */
-	private void copyInputPattern(final int outputNeuron, final MLData input) {
-		for (int inputNeuron = 0; inputNeuron < this.network.getInputCount();
-			inputNeuron++) {
-			this.network.getWeights().set(inputNeuron, outputNeuron,
-					input.getData(inputNeuron));
-		}
-	}
-
 	@Override
-	public void iteration() {
+	public final void iteration() {
 		int outputNeuron = 0;
-		for(MLDataPair pair: this.getTraining() ) {
-			copyInputPattern(outputNeuron++,pair.getInput());
+		for (final MLDataPair pair : getTraining()) {
+			copyInputPattern(outputNeuron++, pair.getInput());
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public boolean canContinue() {
-		return false;
-	}
-
-	@Override
-	public TrainingContinuation pause() {
+	public final TrainingContinuation pause() {
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void resume(TrainingContinuation state) {
+	public void resume(final TrainingContinuation state) {
 	}
 
 }

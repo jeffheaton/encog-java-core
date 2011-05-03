@@ -79,10 +79,12 @@ public class JordanPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of neurons in this hidden layer.
 	 */
-	public void addHiddenLayer(final int count) {
+	@Override
+	public final void addHiddenLayer(final int count) {
 		if (this.hiddenNeurons != -1) {
-			throw new PatternError("A Jordan neural network should have only one hidden "
-					+ "layer.");
+			throw new PatternError(
+					"A Jordan neural network should have only one hidden "
+							+ "layer.");
 		}
 
 		this.hiddenNeurons = count;
@@ -92,7 +94,8 @@ public class JordanPattern implements NeuralNetworkPattern {
 	/**
 	 * Clear out any hidden neurons.
 	 */
-	public void clear() {
+	@Override
+	public final void clear() {
 		this.hiddenNeurons = -1;
 	}
 
@@ -101,14 +104,18 @@ public class JordanPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return A Jordan neural network.
 	 */
-	public MLMethod generate() {
-		
-		BasicLayer hidden,output;
-		
-		BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(this.activation, true,this.inputNeurons));
-		network.addLayer(hidden = new BasicLayer(this.activation, true,this.hiddenNeurons));
-		network.addLayer(output = new BasicLayer(null, false,this.outputNeurons));
+	@Override
+	public final MLMethod generate() {
+
+		BasicLayer hidden, output;
+
+		final BasicNetwork network = new BasicNetwork();
+		network.addLayer(new BasicLayer(this.activation, true,
+				this.inputNeurons));
+		network.addLayer(hidden = new BasicLayer(this.activation, true,
+				this.hiddenNeurons));
+		network.addLayer(output = new BasicLayer(null, false,
+				this.outputNeurons));
 		hidden.setContextFedBy(output);
 		network.getStructure().finalizeStructure();
 		network.reset();
@@ -121,7 +128,8 @@ public class JordanPattern implements NeuralNetworkPattern {
 	 * @param activation
 	 *            The activation function.
 	 */
-	public void setActivationFunction(final ActivationFunction activation) {
+	@Override
+	public final void setActivationFunction(final ActivationFunction activation) {
 		this.activation = activation;
 	}
 
@@ -131,7 +139,8 @@ public class JordanPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            Neuron count.
 	 */
-	public void setInputNeurons(final int count) {
+	@Override
+	public final void setInputNeurons(final int count) {
 		this.inputNeurons = count;
 	}
 
@@ -141,7 +150,8 @@ public class JordanPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            Neuron count.
 	 */
-	public void setOutputNeurons(final int count) {
+	@Override
+	public final void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
 	}
 

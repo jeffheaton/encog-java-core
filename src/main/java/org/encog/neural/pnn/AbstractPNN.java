@@ -26,6 +26,9 @@ package org.encog.neural.pnn;
 import org.encog.ml.BasicML;
 import org.encog.ml.data.MLData;
 
+/**
+ * Abstract class to build PNN networks upon.
+ */
 public abstract class AbstractPNN  extends BasicML {
 
 	/**
@@ -69,7 +72,7 @@ public abstract class AbstractPNN  extends BasicML {
 	private final double[] deriv;
 
 	/**
-	 * Second derivative
+	 * Second derivative.
 	 */
 	private final double[] deriv2;
 
@@ -190,7 +193,7 @@ public abstract class AbstractPNN  extends BasicML {
 	 * @param error
 	 *            the error to set
 	 */
-	public void setError(final double error) {
+	public final void setError(final double error) {
 		this.error = error;
 	}
 
@@ -198,7 +201,7 @@ public abstract class AbstractPNN  extends BasicML {
 	 * @param exclude
 	 *            the exclude to set
 	 */
-	public void setExclude(final int exclude) {
+	public final void setExclude(final int exclude) {
 		this.exclude = exclude;
 	}
 
@@ -206,7 +209,7 @@ public abstract class AbstractPNN  extends BasicML {
 	 * @param trained
 	 *            the trained to set
 	 */
-	public void setTrained(final boolean trained) {
+	public final void setTrained(final boolean trained) {
 		this.trained = trained;
 	}
 
@@ -214,14 +217,14 @@ public abstract class AbstractPNN  extends BasicML {
 	/**
 	 * @return the separateClass
 	 */
-	public boolean isSeparateClass() {
+	public final boolean isSeparateClass() {
 		return separateClass;
 	}
 
 	/**
 	 * @param separateClass the separateClass to set
 	 */
-	public void setSeparateClass(boolean separateClass) {
+	public final void setSeparateClass(boolean separateClass) {
 		this.separateClass = separateClass;
 	}
 	

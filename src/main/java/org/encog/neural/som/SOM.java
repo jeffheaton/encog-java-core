@@ -36,14 +36,18 @@ import org.encog.ml.data.basic.BasicMLData;
 import org.encog.neural.som.training.basic.BestMatchingUnit;
 import org.encog.util.EngineArray;
 
+/**
+ * A self organizing map neural network.
+ *
+ */
 public class SOM extends BasicML implements MLClassification, MLResettable,
 		MLError {
-	
+
 	/**
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * Do not allow patterns to go below this very small number.
 	 */
@@ -53,18 +57,21 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 * The weights of the output neurons base on the input from the input
 	 * neurons.
 	 */
-	Matrix weights;
+	private Matrix weights;
 
 	/**
-	 * Number of input neurons
+	 * Number of input neurons.
 	 */
 	protected int inputNeuronCount;
 
 	/**
-	 * Number of output neurons
+	 * Number of output neurons.
 	 */
 	protected int outputNeuronCount;
 
+	/**
+	 * Default constructor.
+	 */
 	public SOM() {
 
 	}
@@ -85,43 +92,45 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	}
 
 	/**
-	 * Get the input neuron count.
-	 * @return The input neuron count.
+	 * {@inheritDoc}
 	 */
-	public int getInputNeuronCount() {
-		return this.inputNeuronCount;
+	@Override
+	public final double calculateError(final MLDataSet data) {
+
+		final BestMatchingUnit bmu = new BestMatchingUnit(this);
+
+		bmu.reset();
+
+		// Determine the BMU for each training element.
+		for (final MLDataPair pair : data) {
+			final MLData input = pair.getInput();
+			bmu.calculateBMU(input);
+		}
+
+		// update the error
+		return bmu.getWorstDistance() / 100.0;
 	}
 
 	/**
-	 * Get the output neuron count.
-	 * @return The output neuron count.
+	 * {@inheritDoc}
 	 */
-	public int getOutputNeuronCount() {
-		return this.outputNeuronCount;
+	@Override
+	public final int classify(final MLData input) {
+		final MLData result = compute(input);
+		return EngineArray.maxIndex(result.getData());
 	}
 
 	/**
 	 * Determine the winner for the specified input. This is the number of the
 	 * winning neuron.
-	 * @param input The input pattern.
+	 * 
+	 * @param input
+	 *            The input pattern.
 	 * @return The winning neuron.
 	 */
-	public int winner(final MLData input) {
+	public final MLData compute(final MLData input) {
 
-		MLData output = compute(input);
-		int win = EngineArray.indexOfLargest(output.getData());
-		return win;
-	}
-
-	/**
-	 * Determine the winner for the specified input. This is the number of the
-	 * winning neuron.
-	 * @param input The input pattern.
-	 * @return The winning neuron.
-	 */
-	public MLData compute(final MLData input) {
-
-		MLData result = new BasicMLData(this.outputNeuronCount);
+		final MLData result = new BasicMLData(this.outputNeuronCount);
 
 		for (int i = 0; i < this.outputNeuronCount; i++) {
 			final Matrix optr = this.weights.getCol(i);
@@ -133,80 +142,109 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	}
 
 	/**
-	 * @return the weights
+	 * {@inheritDoc}
 	 */
-	public Matrix getWeights() {
-		return weights;
+	@Override
+	public final int getInputCount() {
+		return this.inputNeuronCount;
 	}
 
 	/**
-	 * @param weights the weights to set
+	 * Get the input neuron count.
+	 * 
+	 * @return The input neuron count.
 	 */
-	public void setWeights(Matrix weights) {
-		this.weights = weights;
+	public final int getInputNeuronCount() {
+		return this.inputNeuronCount;
 	}
 
-	public boolean supportsMapPersistence() {
-		return true;
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int getOutputCount() {
+		return 1;
 	}
 
+	/**
+	 * Get the output neuron count.
+	 * 
+	 * @return The output neuron count.
+	 */
+	public final int getOutputNeuronCount() {
+		return this.outputNeuronCount;
+	}
 
-	public void reset() {
+	/**
+	 * @return the weights
+	 */
+	public final Matrix getWeights() {
+		return this.weights;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void reset() {
 		this.weights.randomize(-1, 1);
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void updateProperties() {
-		// unneeded
-	}
-
-	@Override
-	public int classify(MLData input) {
-		MLData result = this.compute(input);
-		return EngineArray.maxIndex(result.getData());
-	}
-
-	@Override
-	public int getInputCount() {
-		return this.inputNeuronCount;
-	}
-
-	@Override
-	public int getOutputCount() {
-		return 1;
-	}
-
-	@Override
-	public void reset(int seed) {
+	public final void reset(final int seed) {
 		reset();
 	}
 
-	@Override
-	public double calculateError(MLDataSet data) {
-
-		BestMatchingUnit bmu = new BestMatchingUnit(this);
-
-		bmu.reset();
-
-		// Determine the BMU for each training element.
-		for (final MLDataPair pair : data) {
-			final MLData input = pair.getInput();
-			bmu.calculateBMU(input);
-		}
-
-		// update the error
-		return bmu.getWorstDistance()/100.0;
+	/**
+	 * Set the input count.
+	 * @param i The input count.
+	 */
+	public final void setInputCount(final int i) {
+		this.inputNeuronCount = i;
 	}
 
-	
-	public void setOutputNeuronCount(int i) {
+	/**
+	 * Set the output count.
+	 * @param i The output count.
+	 */
+	public final void setOutputNeuronCount(final int i) {
 		this.outputNeuronCount = i;
-		
+
 	}
 
-	public void setInputCount(int i) {
-		this.inputNeuronCount = i;		
+	/**
+	 * @param weights
+	 *            the weights to set
+	 */
+	public final void setWeights(final Matrix weights) {
+		this.weights = weights;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void updateProperties() {
+		// unneeded
+	}
+
+	/**
+	 * Determine the winner for the specified input. This is the number of the
+	 * winning neuron.
+	 * 
+	 * @param input
+	 *            The input pattern.
+	 * @return The winning neuron.
+	 */
+	public final int winner(final MLData input) {
+
+		final MLData output = compute(input);
+		final int win = EngineArray.indexOfLargest(output.getData());
+		return win;
 	}
 
 }

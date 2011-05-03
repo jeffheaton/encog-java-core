@@ -33,38 +33,64 @@ import org.encog.persist.EncogReadHelper;
 import org.encog.persist.EncogWriteHelper;
 import org.encog.persist.PersistConst;
 
+/**
+ * Persist the SOM.
+ */
 public class PersistSOM implements EncogPersistor {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public String getPersistClassString() {
+	public final int getFileVersion() {
+		return 1;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final String getPersistClassString() {
 		return "SOM";
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public Object read(InputStream is) {
-		SOM result = new SOM();
-		EncogReadHelper in = new EncogReadHelper(is);
+	public final Object read(final InputStream is) {
+		final SOM result = new SOM();
+		final EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;
-		
-		while( (section = in.readNextSection()) != null ) {
-			if( section.getSectionName().equals("SOM") && section.getSubSectionName().equals("PARAMS") ) {
-				Map<String,String> params = section.parseParams();
+
+		while ((section = in.readNextSection()) != null) {
+			if (section.getSectionName().equals("SOM")
+					&& section.getSubSectionName().equals("PARAMS")) {
+				final Map<String, String> params = section.parseParams();
 				result.getProperties().putAll(params);
-			} if( section.getSectionName().equals("SOM") && section.getSubSectionName().equals("NETWORK") ) {
-				Map<String,String> params = section.parseParams();
-				result.setWeights(EncogFileSection.parseMatrix(params,PersistConst.WEIGHTS));
-				result.setOutputNeuronCount(EncogFileSection.parseInt(params,PersistConst.OUTPUT_COUNT));
-				result.setInputCount(EncogFileSection.parseInt(params,PersistConst.INPUT_COUNT));
+			}
+			if (section.getSectionName().equals("SOM")
+					&& section.getSubSectionName().equals("NETWORK")) {
+				final Map<String, String> params = section.parseParams();
+				result.setWeights(EncogFileSection.parseMatrix(params,
+						PersistConst.WEIGHTS));
+				result.setOutputNeuronCount(EncogFileSection.parseInt(params,
+						PersistConst.OUTPUT_COUNT));
+				result.setInputCount(EncogFileSection.parseInt(params,
+						PersistConst.INPUT_COUNT));
 			}
 		}
-		 
+
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void save(OutputStream os, Object obj) {
-		EncogWriteHelper out = new EncogWriteHelper(os);
-		SOM som = (SOM)obj;
+	public final void save(final OutputStream os, final Object obj) {
+		final EncogWriteHelper out = new EncogWriteHelper(os);
+		final SOM som = (SOM) obj;
 		out.addSection("SOM");
 		out.addSubSection("PARAMS");
 		out.addProperties(som.getProperties());
@@ -75,9 +101,4 @@ public class PersistSOM implements EncogPersistor {
 		out.flush();
 	}
 
-	@Override
-	public int getFileVersion() {
-		return 1;
-	}
-	
 }

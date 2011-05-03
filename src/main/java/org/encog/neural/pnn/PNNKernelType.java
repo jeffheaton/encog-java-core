@@ -26,13 +26,12 @@ package org.encog.neural.pnn;
 /**
  * Specifies the kernel type for the PNN.
  */
-public enum PNNKernelType 
-{
+public enum PNNKernelType {
 	/**
-	 * A Gaussian curved kernel.  The usual choice.
+	 * A Gaussian curved kernel. The usual choice.
 	 */
 	Gaussian,
-	
+
 	/**
 	 * A steep kernel.
 	 */

@@ -29,6 +29,10 @@ import org.encog.ml.svm.KernelType;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.SVMType;
 
+/**
+ * A pattern to create support vector machines.
+ *
+ */
 public class SVMPattern implements NeuralNetworkPattern {
 	/**
 	 * The number of neurons in the first layer.
@@ -40,25 +44,37 @@ public class SVMPattern implements NeuralNetworkPattern {
 	 */
 	private int outputNeurons;
 
+	/**
+	 * True, if using regression.
+	 */
 	private boolean regression = true;
-	
+
+	/**
+	 * The kernel type.
+	 */
 	private KernelType kernelType = KernelType.RadialBasisFunction;
-	private SVMType svmType = SVMType.EpsilonSupportVectorRegression;
 	
+	/**
+	 * The SVM type.
+	 */
+	private SVMType svmType = SVMType.EpsilonSupportVectorRegression;
+
 	/**
 	 * Unused, a BAM has no hidden layers.
 	 * 
 	 * @param count
 	 *            Not used.
 	 */
-	public void addHiddenLayer(final int count) {
-		throw new PatternError( "A SVM network has no hidden layers.");
+	@Override
+	public final void addHiddenLayer(final int count) {
+		throw new PatternError("A SVM network has no hidden layers.");
 	}
 
 	/**
 	 * Clear any settings on the pattern.
 	 */
-	public void clear() {
+	@Override
+	public final void clear() {
 		this.inputNeurons = 0;
 		this.outputNeurons = 0;
 
@@ -67,12 +83,35 @@ public class SVMPattern implements NeuralNetworkPattern {
 	/**
 	 * @return The generated network.
 	 */
-	public MLMethod generate() {
-		if( this.outputNeurons!=1) {
+	@Override
+	public final MLMethod generate() {
+		if (this.outputNeurons != 1) {
 			throw new PatternError("A SVM may only have one output.");
 		}
-		final SVM network = new SVM(this.inputNeurons,svmType,kernelType);
+		final SVM network = new SVM(this.inputNeurons, this.svmType,
+				this.kernelType);
 		return network;
+	}
+
+	/**
+	 * @return The input neuron count.
+	 */
+	public final int getInputNeurons() {
+		return this.inputNeurons;
+	}
+
+	/**
+	 * @return The input output count.
+	 */
+	public final int getOutputNeurons() {
+		return this.outputNeurons;
+	}
+
+	/**
+	 * @return True, if this is regression.
+	 */
+	public final boolean isRegression() {
+		return this.regression;
 	}
 
 	/**
@@ -81,27 +120,11 @@ public class SVMPattern implements NeuralNetworkPattern {
 	 * @param activation
 	 *            Not used.
 	 */
-	public void setActivationFunction(final ActivationFunction activation) {
-		throw new PatternError( "A SVM network can't specify a custom activation function.");
-	}
-
-	
-
-
-	public boolean isRegression() {
-		return regression;
-	}
-
-	public void setRegression(boolean regression) {
-		this.regression = regression;
-	}
-
-	public int getInputNeurons() {
-		return inputNeurons;
-	}
-
-	public int getOutputNeurons() {
-		return outputNeurons;
+	@Override
+	public final void setActivationFunction(
+			final ActivationFunction activation) {
+		throw new PatternError(
+				"A SVM network can't specify a custom activation function.");
 	}
 
 	/**
@@ -110,8 +133,17 @@ public class SVMPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of input neurons.
 	 */
-	public void setInputNeurons(final int count) {
-			this.inputNeurons = count;
+	@Override
+	public final void setInputNeurons(final int count) {
+		this.inputNeurons = count;
+	}
+
+	/**
+	 * Set the kernel type.
+	 * @param kernelType The kernel type.
+	 */
+	public final void setKernelType(final KernelType kernelType) {
+		this.kernelType = kernelType;
 	}
 
 	/**
@@ -120,15 +152,24 @@ public class SVMPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The output neuron count.
 	 */
-	public void setOutputNeurons(final int count) {
+	@Override
+	public final void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
 	}
 
-	public void setKernelType(KernelType kernelType) {
-		this.kernelType = kernelType;
+	/**
+	 * Set if regression is used.
+	 * @param regression True if regression is used.
+	 */
+	public final void setRegression(final boolean regression) {
+		this.regression = regression;
 	}
 
-	public void setSVMType(SVMType svmType) {
+	/**
+	 * Set the SVM type.
+	 * @param svmType The SVM type.
+	 */
+	public final void setSVMType(final SVMType svmType) {
 		this.svmType = svmType;
 	}
 }

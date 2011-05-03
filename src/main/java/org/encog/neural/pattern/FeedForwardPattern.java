@@ -73,14 +73,14 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of neurons to add.
 	 */
-	public void addHiddenLayer(final int count) {
+	public final void addHiddenLayer(final int count) {
 		this.hidden.add(count);
 	}
 
 	/**
 	 * Clear out any hidden neurons.
 	 */
-	public void clear() {
+	public final void clear() {
 		this.hidden.clear();
 	}
 
@@ -89,7 +89,7 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return The feedforward neural network.
 	 */
-	public MLMethod generate() {
+	public final MLMethod generate() {
 
 		if( this.activationOutput==null )
 			this.activationOutput = this.activationHidden;
@@ -124,7 +124,7 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 	 * @param activation
 	 *            The activation function.
 	 */
-	public void setActivationFunction(final ActivationFunction activation) {
+	public final void setActivationFunction(final ActivationFunction activation) {
 		this.activationHidden = activation;
 	}
 
@@ -134,7 +134,7 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            Neuron count.
 	 */
-	public void setInputNeurons(final int count) {
+	public final void setInputNeurons(final int count) {
 		this.inputNeurons = count;
 	}
 
@@ -144,21 +144,21 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            Neuron count.
 	 */
-	public void setOutputNeurons(final int count) {
+	public final void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
 	}
 
 	/**
 	 * @return the activationOutput
 	 */
-	public ActivationFunction getActivationOutput() {
+	public final ActivationFunction getActivationOutput() {
 		return activationOutput;
 	}
 
 	/**
 	 * @param activationOutput the activationOutput to set
 	 */
-	public void setActivationOutput(ActivationFunction activationOutput) {
+	public final void setActivationOutput(ActivationFunction activationOutput) {
 		this.activationOutput = activationOutput;
 	}
 

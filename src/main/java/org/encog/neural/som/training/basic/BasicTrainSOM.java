@@ -42,30 +42,30 @@ import org.encog.util.logging.EncogLogging;
  * winner-take-all neural network, such as the self organizing map (SOM). This
  * is an unsupervised training method, no ideal data is needed on the training
  * set. If ideal data is provided, it will be ignored.
- *
+ * 
  * Training is done by looping over all of the training elements and calculating
  * a "best matching unit" (BMU). This BMU output neuron is then adjusted to
  * better "learn" this pattern. Additionally, this training may be applied to
  * other "nearby" output neurons. The degree to which nearby neurons are update
  * is defined by the neighborhood function.
- *
+ * 
  * A neighborhood function is required to determine the degree to which
  * neighboring neurons (to the winning neuron) are updated by each training
  * iteration.
- *
+ * 
  * Because this is unsupervised training, calculating an error to measure
  * progress by is difficult. The error is defined to be the "worst", or longest,
  * Euclidean distance of any of the BMU's. This value should be minimized, as
  * learning progresses.
- *
+ * 
  * Because only the BMU neuron and its close neighbors are updated, you can end
  * up with some output neurons that learn nothing. By default these neurons are
  * not forced to win patterns that are not represented well. This spreads out
  * the workload among all output neurons. This feature is not used by default,
  * but can be enabled by setting the "forceWinner" property.
- *
+ * 
  * @author jheaton
- *
+ * 
  */
 public class BasicTrainSOM extends BasicTraining implements LearningRate {
 
@@ -148,7 +148,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 
 	/**
 	 * Create an instance of competitive training.
-	 *
+	 * 
 	 * @param network
 	 *            The network to train.
 	 * @param learningRate
@@ -158,9 +158,8 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * @param neighborhood
 	 *            The neighborhood function to use.
 	 */
-	public BasicTrainSOM(final SOM network,
-			final double learningRate, final MLDataSet training,
-			final NeighborhoodFunction neighborhood) {
+	public BasicTrainSOM(final SOM network, final double learningRate,
+			final MLDataSet training, final NeighborhoodFunction neighborhood) {
 		super(TrainingImplementationType.Iterative);
 		this.neighborhood = neighborhood;
 		setTraining(training);
@@ -172,7 +171,8 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 		setError(0);
 
 		// setup the correction matrix
-		this.correctionMatrix = new Matrix(this.inputNeuronCount,this.outputNeuronCount);
+		this.correctionMatrix = new Matrix(this.inputNeuronCount,
+				this.outputNeuronCount);
 
 		// create the BMU class
 		this.bmuUtil = new BestMatchingUnit(network);
@@ -189,7 +189,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	/**
 	 * Should be called each iteration if autodecay is desired.
 	 */
-	public void autoDecay() {
+	public final void autoDecay() {
 		if (this.radius > this.endRadius) {
 			this.radius += this.autoDecayRadius;
 		}
@@ -201,41 +201,52 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final boolean canContinue() {
+		return false;
+	}
+
+	/**
 	 * Copy the specified input pattern to the weight matrix. This causes an
 	 * output neuron to learn this pattern "exactly". This is useful when a
 	 * winner is to be forced.
-	 *
-	 * @param synapse
-	 *            The synapse that is the target of the copy.
+	 * 
+	 * @param matrix
+	 *            The matrix that is the target of the copy.
 	 * @param outputNeuron
 	 *            The output neuron to set.
 	 * @param input
 	 *            The input pattern to copy.
 	 */
-	private void copyInputPattern(final Matrix matrix,
-			final int outputNeuron, final MLData input) {
-		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount;
-			inputNeuron++) {
-			matrix.set(inputNeuron, outputNeuron,
-					input.getData(inputNeuron));
+	private void copyInputPattern(final Matrix matrix, final int outputNeuron,
+			final MLData input) {
+		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; inputNeuron++) {
+			matrix.set(inputNeuron, outputNeuron, input.getData(inputNeuron));
 		}
 	}
 
 	/**
 	 * Called to decay the learning rate and radius by the specified amount.
-	 * @param d The percent to decay by.
+	 * 
+	 * @param d
+	 *            The percent to decay by.
 	 */
-	public void decay(final double d) {
+	public final void decay(final double d) {
 		this.radius *= (1.0 - d);
 		this.learningRate *= (1.0 - d);
 	}
 
 	/**
 	 * Decay the learning rate and radius by the specified amount.
-	 * @param decayRate The percent to decay the learning rate by.
-	 * @param decayRadius The percent to decay the radius by.
+	 * 
+	 * @param decayRate
+	 *            The percent to decay the learning rate by.
+	 * @param decayRadius
+	 *            The percent to decay the radius by.
 	 */
-	public void decay(final double decayRate, final double decayRadius) {
+	public final void decay(final double decayRate, final double decayRadius) {
 		this.radius *= (1.0 - decayRadius);
 		this.learningRate *= (1.0 - decayRate);
 		getNeighborhood().setRadius(this.radius);
@@ -244,7 +255,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	/**
 	 * Determine the weight adjustment for a single neuron during a training
 	 * iteration.
-	 *
+	 * 
 	 * @param weight
 	 *            The starting weight.
 	 * @param input
@@ -267,14 +278,14 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	/**
 	 * Force any neurons that did not win to off-load patterns from overworked
 	 * neurons.
-	 *
+	 * 
 	 * @param won
 	 *            An array that specifies how many times each output neuron has
 	 *            "won".
 	 * @param leastRepresented
 	 *            The training pattern that is the least represented by this
 	 *            neural network.
-	 * @param synapse
+	 * @param matrix
 	 *            The synapse to modify.
 	 * @return True if a winner was forced.
 	 */
@@ -313,35 +324,37 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	/**
 	 * @return The input neuron count.
 	 */
-	public int getInputNeuronCount() {
+	public final int getInputNeuronCount() {
 		return this.inputNeuronCount;
 	}
 
 	/**
 	 * @return The learning rate. This was set when the object was created.
 	 */
-	public double getLearningRate() {
+	@Override
+	public final double getLearningRate() {
 		return this.learningRate;
-	}
-
-	/**
-	 * @return The network neighborhood function.
-	 */
-	public NeighborhoodFunction getNeighborhood() {
-		return this.neighborhood;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public BasicNetwork getMethod() {
+	@Override
+	public final BasicNetwork getMethod() {
 		return null;
+	}
+
+	/**
+	 * @return The network neighborhood function.
+	 */
+	public final NeighborhoodFunction getNeighborhood() {
+		return this.neighborhood;
 	}
 
 	/**
 	 * @return The output neuron count.
 	 */
-	public int getOutputNeuronCount() {
+	public final int getOutputNeuronCount() {
 		return this.outputNeuronCount;
 	}
 
@@ -349,16 +362,18 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * @return Is a winner to be forced of neurons that do not learn. See class
 	 *         description for more info.
 	 */
-	public boolean isForceWinner() {
+	public final boolean isForceWinner() {
 		return this.forceWinner;
 	}
 
 	/**
 	 * Perform one training iteration.
 	 */
-	public void iteration() {
+	@Override
+	public final void iteration() {
 
-		EncogLogging.log(EncogLogging.LEVEL_INFO,"Performing SOM Training iteration.");
+		EncogLogging.log(EncogLogging.LEVEL_INFO,
+				"Performing SOM Training iteration.");
 
 		preIteration();
 
@@ -368,39 +383,38 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 		double leastRepresentedActivation = Double.MAX_VALUE;
 		MLData leastRepresented = null;
 
+		// Reset the correction matrix for this synapse and iteration.
+		this.correctionMatrix.clear();
 
-			// Reset the correction matrix for this synapse and iteration.
-			this.correctionMatrix.clear();
+		// Determine the BMU for each training element.
+		for (final MLDataPair pair : getTraining()) {
+			final MLData input = pair.getInput();
 
-			// Determine the BMU for each training element.
-			for (final MLDataPair pair : getTraining()) {
-				final MLData input = pair.getInput();
+			final int bmu = this.bmuUtil.calculateBMU(input);
 
-				final int bmu = this.bmuUtil.calculateBMU(input);
+			// If we are to force a winner each time, then track how many
+			// times each output neuron becomes the BMU (winner).
+			if (this.forceWinner) {
+				won[bmu]++;
 
-				// If we are to force a winner each time, then track how many
-				// times each output neuron becomes the BMU (winner).
-				if (this.forceWinner) {
-					won[bmu]++;
+				// Get the "output" from the network for this pattern. This
+				// gets the activation level of the BMU.
+				final MLData output = this.network.compute(pair.getInput());
 
-					// Get the "output" from the network for this pattern. This
-					// gets the activation level of the BMU.
-					final MLData output = this.network.compute(pair
-							.getInput());
-
-					// Track which training entry produces the least BMU. This
-					// pattern is the least represented by the network.
-					if (output.getData(bmu) < leastRepresentedActivation) {
-						leastRepresentedActivation = output.getData(bmu);
-						leastRepresented = pair.getInput();
-					}
+				// Track which training entry produces the least BMU. This
+				// pattern is the least represented by the network.
+				if (output.getData(bmu) < leastRepresentedActivation) {
+					leastRepresentedActivation = output.getData(bmu);
+					leastRepresented = pair.getInput();
 				}
+			}
 
-				train(bmu, this.network.getWeights(), input);
+			train(bmu, this.network.getWeights(), input);
 
 			if (this.forceWinner) {
 				// force any non-winning neurons to share the burden somewhat\
-				if (!forceWinners(this.network.getWeights(), won, leastRepresented)) {
+				if (!forceWinners(this.network.getWeights(), won,
+						leastRepresented)) {
 					applyCorrection();
 				}
 			} else {
@@ -409,22 +423,44 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 		}
 
 		// update the error
-		setError(this.bmuUtil.getWorstDistance()/100.0);
+		setError(this.bmuUtil.getWorstDistance() / 100.0);
 
 		postIteration();
 	}
 
 	/**
-	 * Setup autodecay.  This will decrease the radius and learning rate from
-	 * the start values to the end values.
-	 * @param plannedIterations The number of iterations that are planned.
-	 * This allows the decay rate to be determined.
-	 * @param startRate The starting learning rate.
-	 * @param endRate The ending learning rate.
-	 * @param startRadius The starting radius.
-	 * @param endRadius The ending radius.
+	 * {@inheritDoc}
 	 */
-	public void setAutoDecay(final int plannedIterations,
+	@Override
+	public final TrainingContinuation pause() {
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void resume(final TrainingContinuation state) {
+
+	}
+
+	/**
+	 * Setup autodecay. This will decrease the radius and learning rate from the
+	 * start values to the end values.
+	 * 
+	 * @param plannedIterations
+	 *            The number of iterations that are planned. This allows the
+	 *            decay rate to be determined.
+	 * @param startRate
+	 *            The starting learning rate.
+	 * @param endRate
+	 *            The ending learning rate.
+	 * @param startRadius
+	 *            The starting radius.
+	 * @param endRadius
+	 *            The ending radius.
+	 */
+	public final void setAutoDecay(final int plannedIterations,
 			final double startRate, final double endRate,
 			final double startRadius, final double endRadius) {
 		this.startRate = startRate;
@@ -439,30 +475,34 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	/**
 	 * Determine if a winner is to be forced. See class description for more
 	 * info.
-	 *
+	 * 
 	 * @param forceWinner
 	 *            True if a winner is to be forced.
 	 */
-	public void setForceWinner(final boolean forceWinner) {
+	public final void setForceWinner(final boolean forceWinner) {
 		this.forceWinner = forceWinner;
 	}
 
 	/**
 	 * Set the learning rate. This is the rate at which the weights are changed.
-	 *
+	 * 
 	 * @param rate
 	 *            The learning rate.
 	 */
-	public void setLearningRate(final double rate) {
+	@Override
+	public final void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
 
 	/**
 	 * Set the learning rate and radius.
-	 * @param rate The new learning rate.
-	 * @param radius The new radius.
+	 * 
+	 * @param rate
+	 *            The new learning rate.
+	 * @param radius
+	 *            The new radius.
 	 */
-	public void setParams(final double rate, final double radius) {
+	public final void setParams(final double rate, final double radius) {
 		this.radius = radius;
 		this.learningRate = rate;
 		getNeighborhood().setRadius(radius);
@@ -472,7 +512,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		final StringBuilder result = new StringBuilder();
 		result.append("Rate=");
 		result.append(Format.formatPercent(this.learningRate));
@@ -483,41 +523,25 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 
 	/**
 	 * Train for the specified synapse and BMU.
-	 *
+	 * 
 	 * @param bmu
 	 *            The best matching unit for this input.
-	 * @param synapse
+	 * @param matrix
 	 *            The synapse to train.
 	 * @param input
 	 *            The input to train for.
 	 */
-	private void train(final int bmu, final Matrix matrix,
-			final MLData input) {
+	private void train(final int bmu, final Matrix matrix, final MLData input) {
 		// adjust the weight for the BMU and its neighborhood
-		for (int outputNeuron = 0; outputNeuron < this.outputNeuronCount;
-			outputNeuron++) {
+		for (int outputNeuron = 0; outputNeuron < this.outputNeuronCount; outputNeuron++) {
 			trainPattern(matrix, input, outputNeuron, bmu);
 		}
 	}
 
 	/**
-	 * Train the specified pattern.  Find a winning neuron and adjust all
-	 * neurons according to the neighborhood function.
-	 * @param pattern The pattern to train.
-	 */
-	public void trainPattern(final MLData pattern) {
-
-		final MLData input = pattern;
-		final int bmu = this.bmuUtil.calculateBMU(input);
-		train(bmu, this.network.getWeights(), input);
-		applyCorrection();
-
-	}
-
-	/**
 	 * Train for the specified pattern.
-	 *
-	 * @param synapse
+	 * 
+	 * @param matrix
 	 *            The synapse to train.
 	 * @param input
 	 *            The input pattern to train for.
@@ -529,11 +553,9 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	private void trainPattern(final Matrix matrix, final MLData input,
 			final int current, final int bmu) {
 
-		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount;
-			inputNeuron++) {
+		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; inputNeuron++) {
 
-			final double currentWeight = matrix.get(inputNeuron,
-					current);
+			final double currentWeight = matrix.get(inputNeuron, current);
 			final double inputValue = input.getData(inputNeuron);
 
 			final double newWeight = determineNewWeight(currentWeight,
@@ -542,21 +564,21 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 			this.correctionMatrix.set(inputNeuron, current, newWeight);
 		}
 	}
-	
-	@Override
-	public boolean canContinue() {
-		return false;
-	}
 
-	@Override
-	public TrainingContinuation pause() {
-		return null;
-	}
+	/**
+	 * Train the specified pattern. Find a winning neuron and adjust all neurons
+	 * according to the neighborhood function.
+	 * 
+	 * @param pattern
+	 *            The pattern to train.
+	 */
+	public final void trainPattern(final MLData pattern) {
 
-	@Override
-	public void resume(TrainingContinuation state) {
-		
-	}
+		final MLData input = pattern;
+		final int bmu = this.bmuUtil.calculateBMU(input);
+		train(bmu, this.network.getWeights(), input);
+		applyCorrection();
 
+	}
 
 }

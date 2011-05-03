@@ -43,56 +43,130 @@ import org.encog.neural.networks.ContainsFlat;
 import org.encog.util.Format;
 import org.encog.util.simple.EncogUtility;
 
-public class RBFNetwork  extends BasicML implements MLError, MLRegression, ContainsFlat  {
-	
+/**
+ * RBF neural network.
+ *
+ */
+public class RBFNetwork extends BasicML implements MLError, MLRegression,
+		ContainsFlat {
+
 	/**
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	private FlatNetworkRBF flat;	
-	
-	
+
+	/**
+	 * The underlying flat network.
+	 */
+	private final FlatNetworkRBF flat;
+
+	/**
+	 * Construct RBF network.
+	 */
 	public RBFNetwork() {
 		this.flat = new FlatNetworkRBF();
 	}
-	
-	public RBFNetwork(final int inputCount, 
-			final int outputCount, final RadialBasisFunction[] rbf)
-	{
-		this.flat = new FlatNetworkRBF(inputCount,rbf.length,outputCount,rbf);
-		this.flat.setRBF(rbf);
-	}
-	
-	public RBFNetwork(final int inputCount, int hiddenCount, 
-			final int outputCount, RBFEnum t)
-	{
-		
-		if( hiddenCount==0) {
-			throw new NeuralNetworkError("RBF network cannot have zero hidden neurons.");
+
+	/**
+	 * Construct RBF network.
+	 * @param inputCount The input count.
+	 * @param hiddenCount The hidden count.
+	 * @param outputCount The output count.
+	 * @param t The RBF type.
+	 */
+	public RBFNetwork(final int inputCount, final int hiddenCount,
+			final int outputCount, final RBFEnum t) {
+
+		if (hiddenCount == 0) {
+			throw new NeuralNetworkError(
+					"RBF network cannot have zero hidden neurons.");
 		}
-		
-		RadialBasisFunction[] rbf = new RadialBasisFunction[hiddenCount];
-		
+
+		final RadialBasisFunction[] rbf = new RadialBasisFunction[hiddenCount];
+
 		// Set the standard RBF neuron width.
 		// Literature seems to suggest this is a good default value.
-		double volumeNeuronWidth = 2.0 / hiddenCount;
-		
-		this.flat = new FlatNetworkRBF(inputCount,rbf.length,outputCount,rbf);
-		
+		final double volumeNeuronWidth = 2.0 / hiddenCount;
+
+		this.flat = new FlatNetworkRBF(inputCount, rbf.length, outputCount, rbf);
+
 		try {
 			// try this
-			this.setRBFCentersAndWidthsEqualSpacing(-1, 1, t, volumeNeuronWidth, false);
-		} catch(EncogError ex) {
+			setRBFCentersAndWidthsEqualSpacing(-1, 1, t, volumeNeuronWidth,
+					false);
+		} catch (final EncogError ex) {
 			// if we have the wrong number of hidden neurons, try this
-			this.randomizeRBFCentersAndWidths(-1, 1, t);
+			randomizeRBFCentersAndWidths(-1, 1, t);
 		}
-		
-				
-		
+
 	}
-	
-	
+
+	/**
+	 * Construct RBF network.
+	 * @param inputCount The input count.
+	 * @param outputCount The output count.
+	 * @param rbf The RBF type.
+	 */
+	public RBFNetwork(final int inputCount, final int outputCount,
+			final RadialBasisFunction[] rbf) {
+		this.flat = new FlatNetworkRBF(inputCount, rbf.length, outputCount, rbf);
+		this.flat.setRBF(rbf);
+	}
+
+	/**
+	 * Calculate the error for this neural network.
+	 * 
+	 * @param data
+	 *            The training set.
+	 * @return The error percentage.
+	 */
+	@Override
+	public final double calculateError(final MLDataSet data) {
+		return EncogUtility.calculateRegressionError(this, data);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final MLData compute(final MLData input) {
+		final MLData output = new BasicMLData(getOutputCount());
+		this.flat.compute(input.getData(), output.getData());
+		return output;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final FlatNetwork getFlat() {
+		return this.flat;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int getInputCount() {
+		return this.flat.getInputCount();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int getOutputCount() {
+		return this.flat.getOutputCount();
+	}
+
+	/**
+	 * Get the RBF's.
+	 * @return The RBF's.
+	 */
+	public final RadialBasisFunction[] getRBF() {
+		return this.flat.getRBF();
+	}
+
 	/**
 	 * Set the RBF components to random values.
 	 * 
@@ -103,9 +177,9 @@ public class RBFNetwork  extends BasicML implements MLError, MLRegression, Conta
 	 * @param t
 	 *            The type of RBF to use.
 	 */
-	public void randomizeRBFCentersAndWidths(
-			final double min, final double max, final RBFEnum t) {
-		final int dimensions = this.getInputCount();
+	public final void randomizeRBFCentersAndWidths(final double min,
+			final double max, final RBFEnum t) {
+		final int dimensions = getInputCount();
 		final double[] centers = new double[dimensions];
 
 		for (int i = 0; i < dimensions; i++) {
@@ -118,17 +192,26 @@ public class RBFNetwork  extends BasicML implements MLError, MLRegression, Conta
 	}
 
 	/**
+	 * Set the RBF's.
+	 * @param rbf The RBF's.
+	 */
+	public final void setRBF(final RadialBasisFunction[] rbf) {
+		this.flat.setRBF(rbf);
+	}
+
+	/**
 	 * Array containing center position. Row n contains centers for neuron n.
 	 * Row n contains x elements for x number of dimensions.
 	 * 
-	 * @param centers The centers.
+	 * @param centers
+	 *            The centers.
 	 * @param widths
 	 *            Array containing widths. Row n contains widths for neuron n.
 	 *            Row n contains x elements for x number of dimensions.
 	 * @param t
 	 *            The RBF Function to use for this layer.
 	 */
-	public void setRBFCentersAndWidths(final double[][] centers,
+	public final void setRBFCentersAndWidths(final double[][] centers,
 			final double[] widths, final RBFEnum t) {
 		for (int i = 0; i < this.flat.getRBF().length; i++) {
 			setRBFFunction(i, t, centers[i], widths[i]);
@@ -148,25 +231,25 @@ public class RBFNetwork  extends BasicML implements MLError, MLRegression, Conta
 	 * @param useWideEdgeRBFs
 	 *            Enables wider RBF's around the boundary of the neuron mesh.
 	 */
-	public void setRBFCentersAndWidthsEqualSpacing(final double minPosition,
+	public final void setRBFCentersAndWidthsEqualSpacing(final double minPosition,
 			final double maxPosition, final RBFEnum t,
-			final double volumeNeuronRBFWidth,
-			final boolean useWideEdgeRBFs) {
+			final double volumeNeuronRBFWidth, final boolean useWideEdgeRBFs) {
 		final int totalNumHiddenNeurons = this.flat.getRBF().length;
 
-		final int dimensions = this.getInputCount();
+		final int dimensions = getInputCount();
 		final double disMinMaxPosition = Math.abs(maxPosition - minPosition);
 
 		// Check to make sure we have the correct number of neurons for the
 		// provided dimensions
 		final int expectedSideLength = (int) Math.pow(totalNumHiddenNeurons,
 				1.0 / dimensions);
-		double cmp = Math.pow(totalNumHiddenNeurons,
-				1.0 / dimensions);		
-		
+		final double cmp = Math.pow(totalNumHiddenNeurons, 1.0 / dimensions);
+
 		if (expectedSideLength != cmp) {
 			throw new NeuralNetworkError(
-					"Total number of RBF neurons must be some integer to the power of 'dimensions'.\n"+Format.formatDouble(expectedSideLength,5)+" <> " + Format.formatDouble(cmp, 5));
+					"Total number of RBF neurons must be some integer to the power of 'dimensions'.\n"
+							+ Format.formatDouble(expectedSideLength, 5)
+							+ " <> " + Format.formatDouble(cmp, 5));
 		}
 
 		final double edgeNeuronRBFWidth = 2.5 * volumeNeuronRBFWidth;
@@ -228,73 +311,25 @@ public class RBFNetwork  extends BasicML implements MLError, MLRegression, Conta
 	 * @param width
 	 *            The width.
 	 */
-	public void setRBFFunction(final int index, final RBFEnum t,
+	public final void setRBFFunction(final int index, final RBFEnum t,
 			final double[] centers, final double width) {
 		if (t == RBFEnum.Gaussian) {
-			this.flat.getRBF()[index] = new GaussianFunction(0.5,
-					centers, width);
+			this.flat.getRBF()[index] = new GaussianFunction(0.5, centers,
+					width);
 		} else if (t == RBFEnum.Multiquadric) {
-			this.flat.getRBF()[index] = new MultiquadricFunction(0.5,
-					centers, width);
+			this.flat.getRBF()[index] = new MultiquadricFunction(0.5, centers,
+					width);
 		} else if (t == RBFEnum.InverseMultiquadric) {
-			this.flat.getRBF()[index] = new InverseMultiquadricFunction(
-					0.5, centers, width);
+			this.flat.getRBF()[index] = new InverseMultiquadricFunction(0.5,
+					centers, width);
 		}
 	}
 
-
-	@Override
-	public int getInputCount() {
-		return this.flat.getInputCount();
-	}
-
-
-	@Override
-	public int getOutputCount() {
-		return this.flat.getOutputCount();
-	}
-	
-	public RadialBasisFunction[] getRBF()
-	{
-		return this.flat.getRBF();
-	}
-
-	@Override
-	public MLData compute(MLData input) {
-		MLData output = new BasicMLData(getOutputCount());
-		this.flat.compute(input.getData(), output.getData());
-		return output;
-	}
-	
-	public boolean supportsMapPersistence()
-	{
-		return true;
-	}
-	
-
-	public void setRBF(RadialBasisFunction[] rbf) {
-		this.flat.setRBF(rbf);
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void updateProperties() {
 		// unneeded
-	}
-
-	@Override
-	public FlatNetwork getFlat() {
-		return this.flat;
-	}
-
-	/**
-	 * Calculate the error for this neural network. 
-	 * 
-	 * @param data
-	 *            The training set.
-	 * @return The error percentage.
-	 */
-	@Override
-	public double calculateError(final MLDataSet data) {
-		return EncogUtility.calculateRegressionError(this,data);
 	}
 }

@@ -34,7 +34,7 @@ import org.encog.neural.NeuralNetworkError;
 /**
  * This class implements either a:
  * 
- * Probabilistic Neural Network (PNN) 
+ * Probabilistic Neural Network (PNN)
  * 
  * General Regression Neural Network (GRNN)
  * 
@@ -47,17 +47,22 @@ import org.encog.neural.NeuralNetworkError;
  * 
  * The following book was very helpful in implementing PNN/GRNN's in Encog.
  * 
- * Advanced Algorithms for Neural Networks: A C++ Sourcebook 
+ * Advanced Algorithms for Neural Networks: A C++ Sourcebook
  * 
- * by Timothy Masters, PhD (http://www.timothymasters.info/)
- * John Wiley & Sons Inc (Computers); April 3, 1995, ISBN: 0471105880
+ * by Timothy Masters, PhD (http://www.timothymasters.info/) John Wiley & Sons
+ * Inc (Computers); April 3, 1995, ISBN: 0471105880
  */
 public class BasicPNN extends AbstractPNN implements MLRegression {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7990707837655024635L;
+
+	/**
 	 * The sigma's specify the widths of each kernel used.
 	 */
-	private double[] sigma;
+	private final double[] sigma;
 
 	/**
 	 * The training samples that form the memory of this network.
@@ -70,40 +75,47 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 	private int[] countPer;
 
 	/**
-	 * The prior probability weights. 
+	 * The prior probability weights.
 	 */
 	private double[] priors;
 
 	/**
 	 * Construct a BasicPNN network.
-	 * @param kernel The kernel to use.
-	 * @param outmodel The output model for this network.
-	 * @param inputCount The number of inputs in this network.
-	 * @param outputCount The number of outputs in this network.
+	 * 
+	 * @param kernel
+	 *            The kernel to use.
+	 * @param outmodel
+	 *            The output model for this network.
+	 * @param inputCount
+	 *            The number of inputs in this network.
+	 * @param outputCount
+	 *            The number of outputs in this network.
 	 */
 	public BasicPNN(final PNNKernelType kernel, final PNNOutputMode outmodel,
 			final int inputCount, final int outputCount) {
 		super(kernel, outmodel, inputCount, outputCount);
 
-		this.setSeparateClass(false);
+		setSeparateClass(false);
 
 		this.sigma = new double[inputCount];
 	}
 
 	/**
 	 * Compute the output from this network.
-	 * @param input The input to the network.
+	 * 
+	 * @param input
+	 *            The input to the network.
 	 * @return The output from the network.
 	 */
 	@Override
-	public MLData compute(final MLData input) {
+	public final MLData compute(final MLData input) {
 
 		final double[] out = new double[getOutputCount()];
 
 		double psum = 0.0;
 
 		int r = -1;
-		for (MLDataPair pair : this.samples) {
+		for (final MLDataPair pair : this.samples) {
 			r++;
 
 			if (r == getExclude()) {
@@ -128,7 +140,7 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 			}
 
 			if (getOutputMode() == PNNOutputMode.Classification) {
-				int pop = (int) pair.getIdeal().getData(0);
+				final int pop = (int) pair.getIdeal().getData(0);
 				out[pop] += dist;
 			} else if (getOutputMode() == PNNOutputMode.Unsupervised) {
 				for (int i = 0; i < getInputCount(); i++) {
@@ -165,15 +177,11 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 			final MLData result = new BasicMLData(1);
 			result.setData(0, EncogMath.maxIndex(out));
 			return result;
-		}
-
-		else if (getOutputMode() == PNNOutputMode.Unsupervised) {
+		} else if (getOutputMode() == PNNOutputMode.Unsupervised) {
 			for (int i = 0; i < getInputCount(); i++) {
 				out[i] /= psum;
 			}
-		}
-
-		else if (getOutputMode() == PNNOutputMode.Regression) {
+		} else if (getOutputMode() == PNNOutputMode.Regression) {
 			for (int i = 0; i < getOutputCount(); i++) {
 				out[i] /= psum;
 			}
@@ -183,38 +191,38 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 	}
 
 	/**
-	 * @return the sigma
-	 */
-	public double[] getSigma() {
-		return sigma;
-	}
-
-	/**
-	 * @return the samples
-	 */
-	public BasicMLDataSet getSamples() {
-		return samples;
-	}
-
-	/**
 	 * @return the countPer
 	 */
-	public int[] getCountPer() {
-		return countPer;
+	public final int[] getCountPer() {
+		return this.countPer;
 	}
 
 	/**
 	 * @return the priors
 	 */
-	public double[] getPriors() {
-		return priors;
+	public final double[] getPriors() {
+		return this.priors;
+	}
+
+	/**
+	 * @return the samples
+	 */
+	public final BasicMLDataSet getSamples() {
+		return this.samples;
+	}
+
+	/**
+	 * @return the sigma
+	 */
+	public final double[] getSigma() {
+		return this.sigma;
 	}
 
 	/**
 	 * @param samples
 	 *            the samples to set
 	 */
-	public void setSamples(BasicMLDataSet samples) {
+	public final void setSamples(final BasicMLDataSet samples) {
 		this.samples = samples;
 
 		// update counts per
@@ -222,16 +230,17 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 
 			this.countPer = new int[getOutputCount()];
 			this.priors = new double[getOutputCount()];
-			
-			for(MLDataPair pair: samples) {
-				int i = (int)pair.getIdeal().getData(0);
-				if( i>=this.countPer.length ) {
-					throw new NeuralNetworkError("Training data contains more classes than neural network has output neurons to hold.");
+
+			for (final MLDataPair pair : samples) {
+				final int i = (int) pair.getIdeal().getData(0);
+				if (i >= this.countPer.length) {
+					throw new NeuralNetworkError(
+							"Training data contains more classes than neural network has output neurons to hold.");
 				}
 				this.countPer[i]++;
 			}
-			
-			for(int i=0;i<this.priors.length;i++) {
+
+			for (int i = 0; i < this.priors.length; i++) {
 				this.priors[i] = -1;
 			}
 
@@ -241,6 +250,6 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 	@Override
 	public void updateProperties() {
 		// unneeded
-		
+
 	}
 }

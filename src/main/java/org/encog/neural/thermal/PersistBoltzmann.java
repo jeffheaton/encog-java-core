@@ -35,64 +35,91 @@ import org.encog.persist.PersistConst;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 
+/**
+ * Persist the Boltzmann machine.
+ *
+ */
 public class PersistBoltzmann implements EncogPersistor {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public String getPersistClassString() {
+	public final int getFileVersion() {
+		return 1;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final String getPersistClassString() {
 		return "BoltzmannMachine";
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public Object read(InputStream is) {
-		BoltzmannMachine result = new BoltzmannMachine();
-		EncogReadHelper in = new EncogReadHelper(is);
+	public final Object read(final InputStream is) {
+		final BoltzmannMachine result = new BoltzmannMachine();
+		final EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;
-		
-		while( (section = in.readNextSection()) != null ) {
-			if( section.getSectionName().equals("BOLTZMANN") && section.getSubSectionName().equals("PARAMS") ) {
-				Map<String,String> params = section.parseParams();
+
+		while ((section = in.readNextSection()) != null) {
+			if (section.getSectionName().equals("BOLTZMANN")
+					&& section.getSubSectionName().equals("PARAMS")) {
+				final Map<String, String> params = section.parseParams();
 				result.getProperties().putAll(params);
-			} if( section.getSectionName().equals("BOLTZMANN") && section.getSubSectionName().equals("NETWORK") ) {
-				Map<String,String> params = section.parseParams();
-				result.setWeights(NumberList.fromList(CSVFormat.EG_FORMAT, params.get(PersistConst.WEIGHTS)));
-				result.setCurrentState(NumberList.fromList(CSVFormat.EG_FORMAT, params.get(PersistConst.OUTPUT)));
-				result.setNeuronCount(EncogFileSection.parseInt(params, PersistConst.NEURON_COUNT));
-				
-				result.setThreshold(NumberList.fromList(CSVFormat.EG_FORMAT, params.get(PersistConst.THRESHOLDS)));
-				result.setAnnealCycles(EncogFileSection.parseInt(params, BoltzmannMachine.ANNEAL_CYCLES));
-				result.setRunCycles(EncogFileSection.parseInt(params, BoltzmannMachine.RUN_CYCLES) );
-				result.setTemperature(EncogFileSection.parseDouble(params, PersistConst.TEMPERATURE));				
+			}
+			if (section.getSectionName().equals("BOLTZMANN")
+					&& section.getSubSectionName().equals("NETWORK")) {
+				final Map<String, String> params = section.parseParams();
+				result.setWeights(NumberList.fromList(CSVFormat.EG_FORMAT,
+						params.get(PersistConst.WEIGHTS)));
+				result.setCurrentState(NumberList.fromList(CSVFormat.EG_FORMAT,
+						params.get(PersistConst.OUTPUT)));
+				result.setNeuronCount(EncogFileSection.parseInt(params,
+						PersistConst.NEURON_COUNT));
+
+				result.setThreshold(NumberList.fromList(CSVFormat.EG_FORMAT,
+						params.get(PersistConst.THRESHOLDS)));
+				result.setAnnealCycles(EncogFileSection.parseInt(params,
+						BoltzmannMachine.ANNEAL_CYCLES));
+				result.setRunCycles(EncogFileSection.parseInt(params,
+						BoltzmannMachine.RUN_CYCLES));
+				result.setTemperature(EncogFileSection.parseDouble(params,
+						PersistConst.TEMPERATURE));
 			}
 		}
-		 
+
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void save(OutputStream os, Object obj) {
-		EncogWriteHelper out = new EncogWriteHelper(os);
-		BoltzmannMachine boltz = (BoltzmannMachine)obj;
+	public final void save(final OutputStream os, final Object obj) {
+		final EncogWriteHelper out = new EncogWriteHelper(os);
+		final BoltzmannMachine boltz = (BoltzmannMachine) obj;
 		out.addSection("BOLTZMANN");
 		out.addSubSection("PARAMS");
 		out.addProperties(boltz.getProperties());
 		out.addSubSection("NETWORK");
 		out.writeProperty(PersistConst.WEIGHTS, boltz.getWeights());
-		out.writeProperty(PersistConst.OUTPUT, boltz.getCurrentState().getData());
+		out.writeProperty(PersistConst.OUTPUT, boltz.getCurrentState()
+				.getData());
 		out.writeProperty(PersistConst.NEURON_COUNT, boltz.getNeuronCount());
-		
-		out.writeProperty(PersistConst.THRESHOLDS,boltz.getThreshold()); 
-		out.writeProperty(BoltzmannMachine.ANNEAL_CYCLES,boltz.getAnnealCycles());
-		out.writeProperty(BoltzmannMachine.RUN_CYCLES,boltz.getRunCycles()); 
-		out.writeProperty(PersistConst.TEMPERATURE,boltz.getTemperature()); 
-		
-		
-		out.flush();
-		
-	}
 
-	@Override
-	public int getFileVersion() {
-		return 1;
+		out.writeProperty(PersistConst.THRESHOLDS, boltz.getThreshold());
+		out.writeProperty(BoltzmannMachine.ANNEAL_CYCLES,
+				boltz.getAnnealCycles());
+		out.writeProperty(BoltzmannMachine.RUN_CYCLES, boltz.getRunCycles());
+		out.writeProperty(PersistConst.TEMPERATURE, boltz.getTemperature());
+
+		out.flush();
+
 	}
 
 }
