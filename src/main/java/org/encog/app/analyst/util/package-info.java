@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains basic utilities for the Encog analyst.
+ */
 package org.encog.app.analyst.util;
 

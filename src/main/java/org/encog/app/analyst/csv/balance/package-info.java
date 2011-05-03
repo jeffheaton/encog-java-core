@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains the classes used to balance CSV files.
+ */
 package org.encog.app.analyst.csv.balance;
 

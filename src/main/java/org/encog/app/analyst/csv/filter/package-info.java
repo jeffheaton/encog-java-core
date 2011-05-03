@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains all of the classes used by the analyst to filter.
+ */
 package org.encog.app.analyst.csv.filter;
 

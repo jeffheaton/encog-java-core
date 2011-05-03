@@ -43,7 +43,6 @@ import org.encog.util.logging.EncogLogging;
 
 /**
  * Normalize, or denormalize, a CSV file.
- * 
  */
 public class AnalystNormalizeCSV extends BasicFile {
 
@@ -64,7 +63,7 @@ public class AnalystNormalizeCSV extends BasicFile {
 		for (final AnalystField stat : analyst.getScript().getNormalize()
 				.getNormalizedFields()) {
 
-			if( stat.getAction()==NormalizationAction.Ignore ) {
+			if (stat.getAction() == NormalizationAction.Ignore) {
 				continue;
 			}
 			

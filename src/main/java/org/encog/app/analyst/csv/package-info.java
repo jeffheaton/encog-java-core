@@ -21,5 +21,9 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains all of the classes for directly working with CSV 
+ * files, used by the analyst.
+ */
 package org.encog.app.analyst.csv;
 

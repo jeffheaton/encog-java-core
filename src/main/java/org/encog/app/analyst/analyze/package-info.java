@@ -21,5 +21,9 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains all if the classes used to analyze data for 
+ * the analyst.
+ */
 package org.encog.app.analyst.analyze;
 

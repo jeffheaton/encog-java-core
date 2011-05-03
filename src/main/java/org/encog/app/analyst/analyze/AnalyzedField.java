@@ -162,7 +162,7 @@ public class AnalyzedField extends DataField {
 		}
 
 		if (isReal() || isInteger()) {
-			if( !str.equals("") && !str.equals("?") ) {
+			if (!str.equals("") && !str.equals("?")) {
 				final double d = Double.parseDouble(str);
 				this.devTotal += Math.pow((d - getMean()), 2);
 			}

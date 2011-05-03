@@ -22,7 +22,7 @@
  * http://www.heatonresearch.com/copyright
  */
 /**
- * This package contains classes used by the Encog Analyst Wizard.
+ * This package contains all of the classes used by the analyst to normalize.
  */
-package org.encog.app.analyst.wizard;
+package org.encog.app.analyst.csv.normalize;
 

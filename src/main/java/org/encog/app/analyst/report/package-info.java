@@ -21,5 +21,9 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains the classes used to produce a simple report about 
+ * the analyst file.
+ */
 package org.encog.app.analyst.report;
 

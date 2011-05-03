@@ -21,5 +21,9 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains the basic subclasses for all of the CSV handling 
+ * done by the Encog analyst.
+ */
 package org.encog.app.analyst.csv.basic;
 

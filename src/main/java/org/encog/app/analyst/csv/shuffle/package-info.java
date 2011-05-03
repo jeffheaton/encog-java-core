@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains all of the classes used by the analyst to shuffle.
+ */
 package org.encog.app.analyst.csv.shuffle;
 

@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains all of the analyst commands.
+ */
 package org.encog.app.analyst.commands;
 

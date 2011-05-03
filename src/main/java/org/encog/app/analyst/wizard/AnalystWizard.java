@@ -516,25 +516,25 @@ public class AnalystWizard {
 		final ScriptProperties p = this.script.getProperties();
 
 		p.setFilename(AnalystWizard.FILE_RAW, this.filenameRaw);
-		if( this.taskNormalize ) {
+		if (this.taskNormalize) {
 			p.setFilename(AnalystWizard.FILE_NORMALIZE, this.filenameNorm);
 		}
-		
-		if( this.taskRandomize ) {
+
+		if (this.taskRandomize) {
 			p.setFilename(AnalystWizard.FILE_RANDOM, this.filenameRandom);
 		}
-		
-		if( this.taskCluster) {
-			p.setFilename(AnalystWizard.FILE_CLUSTER, this.filenameCluster);	
+
+		if (this.taskCluster) {
+			p.setFilename(AnalystWizard.FILE_CLUSTER, this.filenameCluster);
 		}
-		
-		if( this.taskSegregate ) {
+
+		if (this.taskSegregate) {
 			p.setFilename(AnalystWizard.FILE_TRAIN, this.filenameTrain);
 			p.setFilename(AnalystWizard.FILE_EVAL, this.filenameEval);
-			p.setFilename(AnalystWizard.FILE_EVAL_NORM, this.filenameEvalNorm);			
+			p.setFilename(AnalystWizard.FILE_EVAL_NORM, this.filenameEvalNorm);
 		}
-		
-		if( this.taskBalance ) {
+
+		if (this.taskBalance) {
 			p.setFilename(AnalystWizard.FILE_BALANCE, this.filenameBalance);
 		}
 
@@ -717,16 +717,15 @@ public class AnalystWizard {
 		}
 
 		// normalize
-		if( this.taskNormalize ) {
+		if (this.taskNormalize) {
 			this.script.getProperties().setProperty(
-				ScriptProperties.NORMALIZE_CONFIG_SOURCE_FILE, target);
+					ScriptProperties.NORMALIZE_CONFIG_SOURCE_FILE, target);
 			target = AnalystWizard.FILE_NORMALIZE;
 			this.script.getProperties().setProperty(
-				ScriptProperties.NORMALIZE_CONFIG_TARGET_FILE,
-				target);
+					ScriptProperties.NORMALIZE_CONFIG_TARGET_FILE, target);
 		}
-		
-		if( this.taskSegregate ) {
+
+		if (this.taskSegregate) {
 			evalSource = AnalystWizard.FILE_EVAL;
 		} else {
 			evalSource = target;

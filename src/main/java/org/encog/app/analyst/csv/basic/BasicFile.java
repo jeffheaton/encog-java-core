@@ -345,7 +345,7 @@ public class BasicFile implements QuantTask {
 				}
 			}
 			
-			while( i<csv.getColumnCount() ) {
+			while (i < csv.getColumnCount()) {
 				this.inputHeadings[i] = "field:" + i;
 				i++;
 			}
@@ -419,7 +419,8 @@ public class BasicFile implements QuantTask {
 	 * 
 	 * @param theExpectInputHeaders Are input headers expected?
 	 */
-	public final void setExpectInputHeaders(final boolean theExpectInputHeaders) {
+	public final void setExpectInputHeaders(
+			final boolean theExpectInputHeaders) {
 		this.expectInputHeaders = theExpectInputHeaders;
 	}
 
@@ -602,15 +603,15 @@ public class BasicFile implements QuantTask {
 	/**
 	 * @return the script
 	 */
-	public AnalystScript getScript() {
+	public final AnalystScript getScript() {
 		return script;
 	}
 
 	/**
-	 * @param script the script to set
+	 * @param theScript the script to set
 	 */
-	public void setScript(AnalystScript script) {
-		this.script = script;
+	public final void setScript(final AnalystScript theScript) {
+		this.script = theScript;
 	}
 
 }

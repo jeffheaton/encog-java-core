@@ -21,5 +21,9 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains the classes used to store information about 
+ * normalization for the script.
+ */
 package org.encog.app.analyst.script.normalize;
 
