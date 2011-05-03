@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains all of the data units for Encog's browser.
+ */
 package org.encog.bot.dataunit;
 

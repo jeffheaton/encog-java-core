@@ -21,5 +21,9 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains all of the classes that represent ranges 
+ * in an HTML document.
+ */
 package org.encog.bot.browse.range;
 

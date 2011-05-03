@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains all of the classes used for Encog's RSS functions.
+ */
 package org.encog.bot.rss;
 

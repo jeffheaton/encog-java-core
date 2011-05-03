@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This class contains Encog's browser functions.  
+ */
 package org.encog.bot.browse;
 

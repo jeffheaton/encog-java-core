@@ -21,5 +21,9 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains all of the classes and packages for Encog's 
+ * bot functions.
+ */
 package org.encog.bot;
 
