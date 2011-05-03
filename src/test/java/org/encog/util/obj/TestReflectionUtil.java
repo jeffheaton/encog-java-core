@@ -1,6 +1,6 @@
 package org.encog.util.obj;
 
-import org.encog.neural.activation.ActivationSigmoid;
+import org.encog.engine.network.activation.ActivationSigmoid;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;

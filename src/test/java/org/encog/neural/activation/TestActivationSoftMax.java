@@ -25,7 +25,7 @@ package org.encog.neural.activation;
 
 import junit.framework.TestCase;
 
-import org.encog.neural.activation.ActivationSoftMax;
+import org.encog.engine.network.activation.ActivationSoftMax;
 import org.junit.Assert;
 import org.junit.Test;
 
