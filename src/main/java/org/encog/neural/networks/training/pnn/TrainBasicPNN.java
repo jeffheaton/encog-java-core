@@ -157,7 +157,7 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 	 * @return The error.
 	 */
 	@Override
-	public double calcErrorWithMultipleSigma(final double[] x,
+	public final double calcErrorWithMultipleSigma(final double[] x,
 			final double[] der1, final double[] der2, final boolean der) {
 		int ivar;
 		double err;
@@ -188,7 +188,7 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 	 * @return The training error.
 	 */
 	@Override
-	public double calcErrorWithSingleSigma(final double sig) {
+	public final double calcErrorWithSingleSigma(final double sig) {
 		int ivar;
 
 		for (ivar = 0; ivar < this.network.getInputCount(); ivar++) {
@@ -207,11 +207,12 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 	 *            Should we find the derivative.
 	 * @return The error.
 	 */
-	public double calculateError(final MLDataSet training, final boolean deriv) {
+	public final double calculateError(final MLDataSet training, 
+			final boolean deriv) {
 
-		double err, tot_err;
+		double err, totErr;
 		double diff;
-		tot_err = 0.0;
+		totErr = 0.0;
 
 		if (deriv) {
 			final int num = (this.network.isSeparateClass()) ? this.network
@@ -255,9 +256,7 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 					diff = input.getData(i) - out[i];
 					err += diff * diff;
 				}
-			}
-
-			else if (this.network.getOutputMode() == PNNOutputMode.Classification) {
+			} else if (this.network.getOutputMode() == PNNOutputMode.Classification) {
 				final int tclass = (int) target.getData(0);
 				MLData output;
 
@@ -299,12 +298,12 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 				}
 			}
 
-			tot_err += err;
+			totErr += err;
 		}
 
 		this.network.setExclude(-1);
 
-		this.network.setError(tot_err / training.getRecordCount());
+		this.network.setError(totErr / training.getRecordCount());
 		if (deriv) {
 			for (int i = 0; i < this.network.getDeriv().length; i++) {
 				this.network.getDeriv()[i] /= training.getRecordCount();
@@ -332,7 +331,7 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean canContinue() {
+	public final boolean canContinue() {
 		return false;
 	}
 
@@ -345,7 +344,8 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 	 *            The target data.
 	 * @return The output.
 	 */
-	public MLData computeDeriv(final MLData input, final MLData target) {
+	public final MLData computeDeriv(final MLData input, 
+			final MLData target) {
 		int pop, ivar;
 		final int ibest = 0;
 		int outvar;
@@ -554,7 +554,7 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 	/**
 	 * @return the maxError
 	 */
-	public double getMaxError() {
+	public final double getMaxError() {
 		return this.maxError;
 	}
 
@@ -562,35 +562,35 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 	 * {@inheritDoc}
 	 */
 	@Override
-	public MLMethod getMethod() {
+	public final MLMethod getMethod() {
 		return this.network;
 	}
 
 	/**
 	 * @return the minImprovement
 	 */
-	public double getMinImprovement() {
+	public final double getMinImprovement() {
 		return this.minImprovement;
 	}
 
 	/**
 	 * @return the numSigmas
 	 */
-	public int getNumSigmas() {
+	public final int getNumSigmas() {
 		return this.numSigmas;
 	}
 
 	/**
 	 * @return the sigmaHigh
 	 */
-	public double getSigmaHigh() {
+	public final double getSigmaHigh() {
 		return this.sigmaHigh;
 	}
 
 	/**
 	 * @return the sigmaLow
 	 */
-	public double getSigmaLow() {
+	public final double getSigmaLow() {
 		return this.sigmaLow;
 	}
 
@@ -598,7 +598,7 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void iteration() {
+	public final void iteration() {
 
 		if (!this.samplesLoaded) {
 			this.network.setSamples(new BasicMLDataSet(this.training));
@@ -663,7 +663,7 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 	 * {@inheritDoc}
 	 */
 	@Override
-	public TrainingContinuation pause() {
+	public final TrainingContinuation pause() {
 		return null;
 	}
 
@@ -678,7 +678,7 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 	 * @param maxError
 	 *            the maxError to set
 	 */
-	public void setMaxError(final double maxError) {
+	public final void setMaxError(final double maxError) {
 		this.maxError = maxError;
 	}
 
@@ -686,7 +686,7 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 	 * @param minImprovement
 	 *            the minImprovement to set
 	 */
-	public void setMinImprovement(final double minImprovement) {
+	public final void setMinImprovement(final double minImprovement) {
 		this.minImprovement = minImprovement;
 	}
 
@@ -694,7 +694,7 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 	 * @param numSigmas
 	 *            the numSigmas to set
 	 */
-	public void setNumSigmas(final int numSigmas) {
+	public final void setNumSigmas(final int numSigmas) {
 		this.numSigmas = numSigmas;
 	}
 
@@ -702,7 +702,7 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 	 * @param sigmaHigh
 	 *            the sigmaHigh to set
 	 */
-	public void setSigmaHigh(final double sigmaHigh) {
+	public final void setSigmaHigh(final double sigmaHigh) {
 		this.sigmaHigh = sigmaHigh;
 	}
 
@@ -710,7 +710,7 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 	 * @param sigmaLow
 	 *            the sigmaLow to set
 	 */
-	public void setSigmaLow(final double sigmaLow) {
+	public final void setSigmaLow(final double sigmaLow) {
 		this.sigmaLow = sigmaLow;
 	}
 

@@ -48,7 +48,6 @@ import org.encog.util.csv.NumberList;
 import org.encog.util.obj.ObjectCloner;
 import org.encog.util.simple.EncogUtility;
 
-
 /**
  * This class implements a neural network. This class works in conjunction the
  * Layer classes. Layers are added to the BasicNetwork to specify the structure
@@ -65,33 +64,82 @@ import org.encog.util.simple.EncogUtility;
  * Once the neural network has been completely constructed.
  * 
  */
-public class BasicNetwork extends BasicML implements ContainsFlat,
-		MLContext, MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
+public class BasicNetwork extends BasicML implements ContainsFlat, MLContext,
+		MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 
 	/**
 	 * Tag used for the connection limit.
 	 */
 	public static final String TAG_LIMIT = "CONNECTION_LIMIT";
 
+	/**
+	 * The default connection limit.
+	 */
 	public static final double DEFAULT_CONNECTION_LIMIT = 0.0000000001;
 
 	/**
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = -136440631687066461L;
-	
+
+	/**
+	 * The property for connection limit.
+	 */
 	public static final String TAG_CONNECTION_LIMIT = "connectionLimit";
+	
+	/**
+	 * The property for begin training.
+	 */
 	public static final String TAG_BEGIN_TRAINING = "beginTraining";
+	
+	/**
+	 * The property for context target offset.
+	 */
 	public static final String TAG_CONTEXT_TARGET_OFFSET = "contextTargetOffset";
+	
+	/**
+	 * The property for context target size.
+	 */
 	public static final String TAG_CONTEXT_TARGET_SIZE = "contextTargetSize";
+	
+	/**
+	 * The property for end training.
+	 */
 	public static final String TAG_END_TRAINING = "endTraining";
+	
+	/**
+	 * The property for has context.
+	 */
 	public static final String TAG_HAS_CONTEXT = "hasContext";
+	
+	/**
+	 * The property for layer counts.
+	 */
 	public static final String TAG_LAYER_COUNTS = "layerCounts";
+	
+	/**
+	 * The property for layer feed counts.
+	 */
 	public static final String TAG_LAYER_FEED_COUNTS = "layerFeedCounts";
+	
+	/**
+	 * The property for layer index.
+	 */
 	public static final String TAG_LAYER_INDEX = "layerIndex";
+	
+	/**
+	 * The property for weight index.
+	 */
 	public static final String TAG_WEIGHT_INDEX = "weightIndex";
+	
+	/**
+	 * The property for bias activation.
+	 */
 	public static final String TAG_BIAS_ACTIVATION = "biasActivation";
 
+	/**
+	 * The property for layer context count.
+	 */
 	public static final String TAG_LAYER_CONTEXT_COUNT = "layerContextCount";
 
 	/**
@@ -115,20 +163,35 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	 * @param layer
 	 *            The layer to be added to the network.
 	 */
-	public void addLayer(final Layer layer) {
+	public final void addLayer(final Layer layer) {
 		layer.setNetwork(this);
 		this.structure.getLayers().add(layer);
 	}
 
 	/**
-	 * Calculate the error for this neural network. 
+	 * Add to a weight.
+	 * @param fromLayer The from layer.
+	 * @param fromNeuron The from neuron.
+	 * @param toNeuron The to neuron.
+	 * @param value The value to add.
+	 */
+	public final void addWeight(final int fromLayer, 
+			final int fromNeuron,
+			final int toNeuron, final double value) {
+		final double old = getWeight(fromLayer, fromNeuron, toNeuron);
+		setWeight(fromLayer, fromNeuron, toNeuron, old + value);
+	}
+
+	/**
+	 * Calculate the error for this neural network.
 	 * 
 	 * @param data
 	 *            The training set.
 	 * @return The error percentage.
 	 */
-	public double calculateError(final MLDataSet data) {
-		return EncogUtility.calculateRegressionError(this,data);
+	@Override
+	public final double calculateError(final MLDataSet data) {
+		return EncogUtility.calculateRegressionError(this, data);
 	}
 
 	/**
@@ -136,7 +199,7 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	 * 
 	 * @return The neuron count.
 	 */
-	public int calculateNeuronCount() {
+	public final int calculateNeuronCount() {
 		int result = 0;
 		for (final Layer layer : this.structure.getLayers()) {
 			result += layer.getNeuronCount();
@@ -145,9 +208,18 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int classify(final MLData input) {
+		return winner(input);
+	}
+
+	/**
 	 * Clear any data from any context layers.
 	 */
-	public void clearContext() {
+	@Override
+	public final void clearContext() {
 
 		if (this.structure.getFlat() != null) {
 			this.structure.getFlat().clearContext();
@@ -161,17 +233,20 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	 * @return A cloned copy of the neural network.
 	 */
 	@Override
-	public Object clone() {
+	public final Object clone() {
 		final BasicNetwork result = (BasicNetwork) ObjectCloner.deepCopy(this);
 		return result;
 	}
 
 	/**
 	 * Compute the output for this network.
-	 * @param input The input.
-	 * @param output The output.
+	 * 
+	 * @param input
+	 *            The input.
+	 * @param output
+	 *            The output.
 	 */
-	public void compute(final double[] input, final double[] output) {
+	public final void compute(final double[] input, final double[] output) {
 		final BasicMLData input2 = new BasicMLData(input);
 		final MLData output2 = this.compute(input2);
 		EngineArray.arrayCopy(output2.getData(), output);
@@ -184,9 +259,10 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	 *            The input to the neural network.
 	 * @return The output from the neural network.
 	 */
-	public MLData compute(final MLData input) {
+	@Override
+	public final MLData compute(final MLData input) {
 		try {
-			MLData result = new BasicMLData(this.structure.getFlat()
+			final MLData result = new BasicMLData(this.structure.getFlat()
 					.getOutputCount());
 			this.structure.getFlat().compute(input.getData(), result.getData());
 			return result;
@@ -197,12 +273,26 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void decodeFromArray(final double[] encoded) {
+		this.structure.requireFlat();
+		final double[] weights = this.structure.getFlat().getWeights();
+		if (weights.length != encoded.length) {
+			throw new NeuralNetworkError(
+					"Size mismatch, encoded array should be of length "
+							+ weights.length);
+		}
 
+		EngineArray.arrayCopy(encoded, weights);
+	}
 
 	/**
 	 * @return The weights as a comma separated list.
 	 */
-	public String dumpWeights() {
+	public final String dumpWeights() {
 
 		final StringBuilder result = new StringBuilder();
 		NumberList.toList(CSVFormat.EG_FORMAT, result, this.structure.getFlat()
@@ -212,15 +302,21 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 
 	/**
 	 * Enable, or disable, a connection.
-	 * @param fromLayer The layer that contains the from neuron.
-	 * @param fromNeuron The source neuron.
-	 * @param toNeuron The target connection.
-	 * @param enable True to enable, false to disable.
+	 * 
+	 * @param fromLayer
+	 *            The layer that contains the from neuron.
+	 * @param fromNeuron
+	 *            The source neuron.
+	 * @param toNeuron
+	 *            The target connection.
+	 * @param enable
+	 *            True to enable, false to disable.
 	 */
-	public void enableConnection(final int fromLayer, final int fromNeuron,
+	public final void enableConnection(final int fromLayer, 
+			final int fromNeuron,
 			final int toNeuron, final boolean enable) {
 
-		final double value = this.getWeight(fromLayer, fromNeuron, toNeuron);
+		final double value = getWeight(fromLayer, fromNeuron, toNeuron);
 
 		if (enable) {
 			if (!this.structure.isConnectionLimited()) {
@@ -228,7 +324,7 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 			}
 
 			if (Math.abs(value) < this.structure.getConnectionLimit()) {
-				this.setWeight(fromLayer, fromNeuron, toNeuron, 
+				setWeight(fromLayer, fromNeuron, toNeuron,
 						RangeRandomizer.randomize(-1, 1));
 			}
 		} else {
@@ -236,10 +332,35 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 				this.setProperty(BasicNetwork.TAG_LIMIT,
 						BasicNetwork.DEFAULT_CONNECTION_LIMIT);
 				this.structure.updateProperties();
-				
+
 			}
-			this.setWeight(fromLayer, fromNeuron, toNeuron, 0);
+			setWeight(fromLayer, fromNeuron, toNeuron, 0);
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int encodedArrayLength() {
+		this.structure.requireFlat();
+		return this.structure.getFlat().getEncodeLength();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void encodeToArray(final double[] encoded) {
+		this.structure.requireFlat();
+		final double[] weights = this.structure.getFlat().getWeights();
+		if (weights.length != encoded.length) {
+			throw new NeuralNetworkError(
+					"Size mismatch, encoded array should be of length "
+							+ weights.length);
+		}
+
+		EngineArray.arrayCopy(weights, encoded);
 	}
 
 	/**
@@ -250,7 +371,7 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	 *            The other neural network.
 	 * @return True if the two networks are equal.
 	 */
-	public boolean equals(final BasicNetwork other) {
+	public final boolean equals(final BasicNetwork other) {
 		return equals(other, Encog.DEFAULT_PRECISION);
 	}
 
@@ -265,20 +386,159 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	 *            The number of decimal places to compare to.
 	 * @return True if the two neural networks are equal.
 	 */
-	public boolean equals(final BasicNetwork other, final int precision) {
+	public final boolean equals(final BasicNetwork other, final int precision) {
 		return NetworkCODEC.equals(this, other, precision);
 	}
 
+	/**
+	 * Get the activation function for the specified layer.
+	 * @param layer The layer.
+	 * @return The activation function.
+	 */
+	public final ActivationFunction getActivation(final int layer) {
+		this.structure.requireFlat();
+		final int layerNumber = getLayerCount() - layer - 1;
+		return this.structure.getFlat().getActivationFunctions()[layerNumber];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final FlatNetwork getFlat() {
+		return getStructure().getFlat();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int getInputCount() {
+		this.structure.requireFlat();
+		return getStructure().getFlat().getInputCount();
+	}
+
+	/**
+	 * Get the bias activation for the specified layer.
+	 * @param l The layer.
+	 * @return The bias activation.
+	 */
+	public final double getLayerBiasActivation(final int l) {
+		if (!isLayerBiased(l)) {
+			throw new NeuralNetworkError(
+					"Error, the specified layer does not have a bias: " + l);
+		}
+
+		this.structure.requireFlat();
+		final int layerNumber = getLayerCount() - l - 1;
+
+		final int layerOutputIndex 
+			= this.structure.getFlat().getLayerIndex()[layerNumber];
+		final int count 
+			= this.structure.getFlat().getLayerCounts()[layerNumber];
+		return this.structure.getFlat().getLayerOutput()[layerOutputIndex
+				+ count - 1];
+	}
+
+	/**
+	 * @return The layer count.
+	 */
+	public final int getLayerCount() {
+		this.structure.requireFlat();
+		return this.structure.getFlat().getLayerCounts().length;
+	}
+
+	/**
+	 * Get the neuron count.
+	 * @param l The layer.
+	 * @return The neuron count.
+	 */
+	public final int getLayerNeuronCount(final int l) {
+		this.structure.requireFlat();
+		final int layerNumber = getLayerCount() - l - 1;
+		return this.structure.getFlat().getLayerFeedCounts()[layerNumber];
+	}
+
+	/**
+	 * Get the layer output for the specified neuron.
+	 * @param layer The layer.
+	 * @param neuronNumber The neuron number.
+	 * @return The output from the last call to compute.
+	 */
+	public final double getLayerOutput(final int layer, 
+				final int neuronNumber) {
+		this.structure.requireFlat();
+		final int layerNumber = getLayerCount() - layer - 1;
+		final int index = this.structure.getFlat().getLayerIndex()[layerNumber]
+				+ neuronNumber;
+		final double[] output = this.structure.getFlat().getLayerOutput();
+		if (index >= output.length) {
+			throw new NeuralNetworkError("The layer index: " + index
+					+ " specifies an output index larger than the network has.");
+		}
+		return output[index];
+	}
+
+	/**
+	 * Get the total (including bias and context) neuron cont for a layer.
+	 * @param l The layer.
+	 * @return The count.
+	 */
+	public final int getLayerTotalNeuronCount(final int l) {
+		this.structure.requireFlat();
+		final int layerNumber = getLayerCount() - l - 1;
+		return this.structure.getFlat().getLayerCounts()[layerNumber];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int getOutputCount() {
+		this.structure.requireFlat();
+		return getStructure().getFlat().getOutputCount();
+	}
 
 	/**
 	 * @return Get the structure of the neural network. The structure allows you
 	 *         to quickly obtain synapses and layers without traversing the
 	 *         network.
 	 */
-	public NeuralStructure getStructure() {
+	public final NeuralStructure getStructure() {
 		return this.structure;
 	}
 
+	/**
+	 * Get the weight between the two layers.
+	 * @param fromLayer The from layer.
+	 * @param fromNeuron The from neuron.
+	 * @param toNeuron The to neuron.
+	 * @return The weight value.
+	 */
+	public final double getWeight(final int fromLayer, 
+			final int fromNeuron,
+			final int toNeuron) {
+		this.structure.requireFlat();
+		validateNeuron(fromLayer, fromNeuron);
+		validateNeuron(fromLayer + 1, toNeuron);
+		final int fromLayerNumber = getLayerCount() - fromLayer - 1;
+		final int toLayerNumber = fromLayerNumber - 1;
+
+		if (toLayerNumber < 0) {
+			throw new NeuralNetworkError(
+					"The specified layer is not connected to another layer: "
+							+ fromLayer);
+		}
+
+		final int weightBaseIndex 
+			= this.structure.getFlat().getWeightIndex()[toLayerNumber];
+		final int count 
+			= this.structure.getFlat().getLayerCounts()[fromLayerNumber];
+		final int weightIndex = weightBaseIndex + fromNeuron
+				+ (toNeuron * count);
+
+		return this.structure.getFlat().getWeights()[weightIndex];
+	}
 
 	/**
 	 * Generate a hash code.
@@ -286,26 +546,43 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	 * @return THe hash code.
 	 */
 	@Override
-	public int hashCode() {
+	public final int hashCode() {
 		return super.hashCode();
 	}
 
 	/**
 	 * Determine if the specified connection is enabled.
-	 * @param layer The layer to check.
-	 * @param fromNeuron The source neuron.
-	 * @param toNeuron THe target neuron.
+	 * 
+	 * @param layer
+	 *            The layer to check.
+	 * @param fromNeuron
+	 *            The source neuron.
+	 * @param toNeuron
+	 *            THe target neuron.
 	 * @return True, if the connection is enabled, false otherwise.
 	 */
-	public boolean isConnected(final int layer, final int fromNeuron,
+	public final boolean isConnected(final int layer, final int fromNeuron,
 			final int toNeuron) {
-		/*if (!this.structure.isConnectionLimited()) {
-			return true;
-		}
-		final double value = synapse.getMatrix().get(fromNeuron, toNeuron);
-
-		return (Math.abs(value) > this.structure.getConnectionLimit());*/
+		/*
+		 * if (!this.structure.isConnectionLimited()) { return true; } final
+		 * double value = synapse.getMatrix().get(fromNeuron, toNeuron);
+		 * 
+		 * return (Math.abs(value) > this.structure.getConnectionLimit());
+		 */
 		return false;
+	}
+
+	/**
+	 * Determine if the specified layer is biased.
+	 * @param l The layer number.
+	 * @return True, if the layer is biased.
+	 */
+	public final boolean isLayerBiased(final int l) {
+		this.structure.requireFlat();
+		final int layerNumber = getLayerCount() - l - 1;
+		return this.structure.getFlat().getLayerCounts()[layerNumber] 
+		                                                 != this.structure
+				.getFlat().getLayerFeedCounts()[layerNumber];
 	}
 
 	/**
@@ -316,13 +593,29 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	 * used.
 	 * 
 	 */
-	public void reset() {
+	@Override
+	public final void reset() {
 
-		if (this.getLayerCount()<3) {
+		if (getLayerCount() < 3) {
 			(new RangeRandomizer(-1, 1)).randomize(this);
 		} else {
 			(new NguyenWidrowRandomizer(-1, 1)).randomize(this);
 		}
+	}
+
+	/**
+	 * Reset the weight matrix and the bias values. This will use a
+	 * Nguyen-Widrow randomizer with a range between -1 and 1. If the network
+	 * does not have an input, output or hidden layers, then Nguyen-Widrow
+	 * cannot be used and a simple range randomize between -1 and 1 will be
+	 * used.
+	 * 
+	 * Use the specified seed.
+	 * 
+	 */
+	@Override
+	public final void reset(final int seed) {
+		reset();
 	}
 
 	/**
@@ -332,8 +625,9 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	 * @param activation
 	 *            THe new activation.
 	 */
-	public void setBiasActivation(final double activation) {
-		// first, see what mode we are on.  If the network has not been finalized, set the layers
+	public final void setBiasActivation(final double activation) {
+		// first, see what mode we are on. If the network has not been
+		// finalized, set the layers
 		if (this.structure.getFlat() == null) {
 			for (final Layer layer : this.structure.getLayers()) {
 				if (layer.hasBias()) {
@@ -341,146 +635,102 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 				}
 			}
 		} else {
-			for(int i=0;i<getLayerCount();i++)
-			{
-				if( this.isLayerBiased(i) )
-				{
-					setLayerBiasActivation(i,activation);
+			for (int i = 0; i < getLayerCount(); i++) {
+				if (isLayerBiased(i)) {
+					setLayerBiasActivation(i, activation);
 				}
 			}
 		}
 	}
-	
-	public int getLayerCount()
-	{
-		this.structure.requireFlat();
-		return this.structure.getFlat().getLayerCounts().length;
-	}
-	
-	public int getLayerTotalNeuronCount(int l)
-	{
-		this.structure.requireFlat();
-		int layerNumber = getLayerCount()-l-1;
-		return this.structure.getFlat().getLayerCounts()[layerNumber];
-	}
-	
-	public int getLayerNeuronCount(int l)
-	{
-		this.structure.requireFlat();
-		int layerNumber = getLayerCount()-l-1;
-		return this.structure.getFlat().getLayerFeedCounts()[layerNumber];
-	}
-	
-	public boolean isLayerBiased(int l)
-	{
-		this.structure.requireFlat();
-		int layerNumber = getLayerCount()-l-1;
-		return this.structure.getFlat().getLayerCounts()[layerNumber]!=this.structure.getFlat().getLayerFeedCounts()[layerNumber];
-	}
-	
-	public double getLayerBiasActivation(int l)
-	{
-		if( !isLayerBiased(l) )
-		{
-			throw new NeuralNetworkError("Error, the specified layer does not have a bias: " + l);
+
+	/**
+	 * Set the bias activation for the specified layer.
+	 * @param l The layer to use.
+	 * @param value The bias activation.
+	 */
+	public final void setLayerBiasActivation(final int l, 
+				final double value) {
+		if (!isLayerBiased(l)) {
+			throw new NeuralNetworkError(
+					"Error, the specified layer does not have a bias: " + l);
 		}
-		
+
 		this.structure.requireFlat();
-		int layerNumber = getLayerCount()-l-1;
-		
-		int layerOutputIndex = this.structure.getFlat().getLayerIndex()[layerNumber];
-		int count = this.structure.getFlat().getLayerCounts()[layerNumber];		
-		return this.structure.getFlat().getLayerOutput()[layerOutputIndex+count-1];
-	}
-	
-	public void setLayerBiasActivation(int l, double value)
-	{
-		if( !isLayerBiased(l) )
-		{
-			throw new NeuralNetworkError("Error, the specified layer does not have a bias: " + l);
-		}
-		
-		this.structure.requireFlat();
-		int layerNumber = getLayerCount()-l-1;
-		
-		int layerOutputIndex = this.structure.getFlat().getLayerIndex()[layerNumber];
-		int count = this.structure.getFlat().getLayerCounts()[layerNumber];		
-		this.structure.getFlat().getLayerOutput()[layerOutputIndex+count-1] = value;
-	}
-	
-	public double getWeight(int fromLayer, int fromNeuron, int toNeuron)
-	{
-		this.structure.requireFlat();
-		this.validateNeuron(fromLayer, fromNeuron);
-		this.validateNeuron(fromLayer+1, toNeuron);
-		int fromLayerNumber = getLayerCount()-fromLayer-1;
-		int toLayerNumber = fromLayerNumber-1;
-		
-		if( toLayerNumber<0 )
-		{
-			throw new NeuralNetworkError("The specified layer is not connected to another layer: " + fromLayer);
-		}
-		
-		int weightBaseIndex = this.structure.getFlat().getWeightIndex()[toLayerNumber];
-		int count = this.structure.getFlat().getLayerCounts()[fromLayerNumber];
-		int weightIndex = weightBaseIndex + fromNeuron + (toNeuron*count);
-		
-		return this.structure.getFlat().getWeights()[weightIndex];
-	}
-	
-	public void setWeight(int fromLayer, int fromNeuron, int toNeuron, double value)
-	{
-		this.structure.requireFlat();
-		int fromLayerNumber = getLayerCount()-fromLayer-1;
-		int toLayerNumber = fromLayerNumber-1;
-		
-		if( toLayerNumber<0 )
-		{
-			throw new NeuralNetworkError("The specified layer is not connected to another layer: " + fromLayer);
-		}
-		
-		int weightBaseIndex = this.structure.getFlat().getWeightIndex()[toLayerNumber];
-		int count = this.structure.getFlat().getLayerCounts()[fromLayerNumber];
-		int weightIndex = weightBaseIndex + fromNeuron + (toNeuron*count);
-		
-		this.structure.getFlat().getWeights()[weightIndex] = value;
-	}
-	
-	public double getLayerOutput(int layer, int neuronNumber)
-	{
-		this.structure.requireFlat();
-		int layerNumber = getLayerCount()-layer-1;
-		int index = this.structure.getFlat().getLayerIndex()[layerNumber] + neuronNumber;
-		double[] output = this.structure.getFlat().getLayerOutput();
-		if( index >= output.length)
-			throw new NeuralNetworkError("The layer index: " + index + " specifies an output index larger than the network has.");
-		return output[index];
-	}
-	
-	public ActivationFunction getActivation(int layer) {
-		this.structure.requireFlat();
-		int layerNumber = getLayerCount()-layer-1;
-		return this.structure.getFlat().getActivationFunctions()[layerNumber];
-	}
-	
-	public void addWeight(int fromLayer, int fromNeuron, int toNeuron, double value)
-	{
-		double old = getWeight(fromLayer,fromNeuron,toNeuron);
-		setWeight(fromLayer,fromNeuron,toNeuron,old+value);
+		final int layerNumber = getLayerCount() - l - 1;
+
+		final int layerOutputIndex 
+			= this.structure.getFlat().getLayerIndex()[layerNumber];
+		final int count 
+			= this.structure.getFlat().getLayerCounts()[layerNumber];
+		this.structure.getFlat().getLayerOutput()[layerOutputIndex + count - 1] 
+		                                          = value;
 	}
 
 	/**
+	 * Set the weight between the two specified neurons.
+	 * @param fromLayer The from layer.
+	 * @param fromNeuron The from neuron.
+	 * @param toNeuron The to neuron.
+	 * @param value The to value.
+	 */
+	public final void setWeight(final int fromLayer, final int fromNeuron,
+			final int toNeuron, final double value) {
+		this.structure.requireFlat();
+		final int fromLayerNumber = getLayerCount() - fromLayer - 1;
+		final int toLayerNumber = fromLayerNumber - 1;
+
+		if (toLayerNumber < 0) {
+			throw new NeuralNetworkError(
+					"The specified layer is not connected to another layer: "
+							+ fromLayer);
+		}
+
+		final int weightBaseIndex 
+			= this.structure.getFlat().getWeightIndex()[toLayerNumber];
+		final int count 
+			= this.structure.getFlat().getLayerCounts()[fromLayerNumber];
+		final int weightIndex = weightBaseIndex + fromNeuron
+				+ (toNeuron * count);
+
+		this.structure.getFlat().getWeights()[weightIndex] = value;
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		final StringBuilder builder = new StringBuilder();
 		builder.append("[BasicNetwork: Layers=");
 		final int layers = this.structure.getLayers().size();
 		builder.append(layers);
 		builder.append("]");
 		return builder.toString();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void updateProperties() {
+		this.structure.updateProperties();
+
+	}
+
+	/**
+	 * Validate the the specified targetLayer and neuron are valid.
+	 * @param targetLayer The target layer.
+	 * @param neuron The target neuron.
+	 */
+	public final void validateNeuron(final int targetLayer, final int neuron) {
+		if ((targetLayer < 0) || (targetLayer >= getLayerCount())) {
+			throw new NeuralNetworkError("Invalid layer count: " + targetLayer);
+		}
+
+		if ((neuron < 0) || (neuron >= getLayerTotalNeuronCount(targetLayer))) {
+			throw new NeuralNetworkError("Invalid neuron number: " + neuron);
+		}
 	}
 
 	/**
@@ -491,89 +741,8 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	 *            The input patter to present to the neural network.
 	 * @return The winning neuron.
 	 */
-	public int winner(final MLData input) {
+	public final int winner(final MLData input) {
 		final MLData output = compute(input);
 		return EngineArray.maxIndex(output.getData());
-	}
-
-	@Override
-	public int encodedArrayLength() {
-		this.structure.requireFlat();
-		return this.structure.getFlat().getEncodeLength();
-	}
-
-	@Override
-	public void decodeFromArray(double[] encoded) {
-		this.structure.requireFlat();
-		double[] weights = this.structure.getFlat().getWeights();
-		if (weights.length != encoded.length) {
-			throw new NeuralNetworkError(
-					"Size mismatch, encoded array should be of length "
-							+ weights.length);
-		}
-
-		EngineArray.arrayCopy(encoded, weights);
-	}
-
-	@Override
-	public void encodeToArray(double[] encoded) {
-		this.structure.requireFlat();
-		double[] weights = this.structure.getFlat().getWeights();
-		if (weights.length != encoded.length) {
-			throw new NeuralNetworkError(
-					"Size mismatch, encoded array should be of length "
-							+ weights.length);
-		}
-
-		EngineArray.arrayCopy(weights, encoded);
-	}
-
-	@Override
-	public void reset(int seed) {
-		reset();
-	}
-
-	@Override
-	public int getInputCount() {
-		this.structure.requireFlat();
-		return this.getStructure().getFlat().getInputCount();
-	}
-
-	@Override
-	public int getOutputCount() {
-		this.structure.requireFlat();
-		return this.getStructure().getFlat().getOutputCount();
-	}
-
-	public void validateNeuron(int targetLayer, int neuron) {
-		if( targetLayer<0 || targetLayer>=getLayerCount()) {
-			throw new NeuralNetworkError("Invalid layer count: " + targetLayer);
-		}
-		
-		if( neuron<0 || neuron>=this.getLayerTotalNeuronCount(targetLayer)) {
-			throw new NeuralNetworkError("Invalid neuron number: " + neuron);
-		}
-	}
-	
-	public boolean supportsMapPersistence()
-	{
-		return true;
-	}
-	
-
-	@Override
-	public void updateProperties() {
-		this.structure.updateProperties();
-		
-	}
-
-	@Override
-	public int classify(MLData input) {
-		return winner(input);
-	}
-
-	@Override
-	public FlatNetwork getFlat() {
-		return this.getStructure().getFlat();
 	}
 }

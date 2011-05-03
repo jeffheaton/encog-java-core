@@ -28,6 +28,7 @@ import org.encog.neural.flat.train.prop.TrainFlatNetworkManhattan;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.propagation.Propagation;
+import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
 /**
  * One problem that the backpropagation technique has is that the magnitude of
@@ -76,7 +77,7 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	/**
 	 * @return The learning rate that was specified in the constructor.
 	 */
-	public double getLearningRate() {
+	public final double getLearningRate() {
 		return ((TrainFlatNetworkManhattan) getFlatTraining())
 				.getLearningRate();
 	}
@@ -87,9 +88,36 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 * @param rate
 	 *            The new learning rate.
 	 */
-	public void setLearningRate(final double rate) {
+	public final void setLearningRate(final double rate) {
 		((TrainFlatNetworkManhattan) getFlatTraining())
 				.setLearningRate(rate);
+	}
+
+	/**
+	 * This training type does not support training continue.
+	 * @return Always returns false.
+	 */
+	@Override
+	public final boolean canContinue() {
+		return false;
+	}
+
+	/**
+	 * This training type does not support training continue.
+	 * @return Always returns null.
+	 */
+	@Override
+	public final TrainingContinuation pause() {
+		return null;
+	}
+
+	/**
+	 * This training type does not support training continue.
+	 * @param state Not used.
+	 */
+	@Override
+	public final void resume(final TrainingContinuation state) {
+		
 	}
 
 }

@@ -52,14 +52,14 @@ public class TrainingContinuation  {
 	 * @param name The name of the object.
 	 * @return The object requested.
 	 */
-	public Object get(final String name) {
+	public final Object get(final String name) {
 		return this.contents.get(name);
 	}
 
 	/**
 	 * @return The contents.
 	 */
-	public Map<String, Object> getContents() {
+	public final Map<String, Object> getContents() {
 		return this.contents;
 	}
 
@@ -68,7 +68,7 @@ public class TrainingContinuation  {
 	 * @param key The key to save them under.
 	 * @param list The list of doubles.
 	 */
-	public void put(final String key, final double[] list) {
+	public final void put(final String key, final double[] list) {
 		this.contents.put(key, list);
 	}
 
@@ -77,21 +77,21 @@ public class TrainingContinuation  {
 	 * @param name The value to set.
 	 * @param value The value.
 	 */
-	public void set(final String name, final Object value) {
+	public final void set(final String name, final Object value) {
 		this.contents.put(name, value);
 	}
 
 	/**
 	 * @return the trainingType
 	 */
-	public String getTrainingType() {
+	public final String getTrainingType() {
 		return trainingType;
 	}
 
 	/**
 	 * @param trainingType the trainingType to set
 	 */
-	public void setTrainingType(String trainingType) {
+	public final void setTrainingType(String trainingType) {
 		this.trainingType = trainingType;
 	}
 	

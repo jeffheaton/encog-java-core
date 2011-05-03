@@ -27,6 +27,7 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.neural.flat.train.prop.TrainFlatNetworkSCG;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.propagation.Propagation;
+import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
 /**
  * This is a training class that makes use of scaled conjugate gradient methods.
@@ -50,6 +51,33 @@ public class ScaledConjugateGradient extends Propagation {
 		final TrainFlatNetworkSCG rpropFlat = new TrainFlatNetworkSCG(network
 				.getFlat(), getTraining());
 		setFlatTraining(rpropFlat);
+	}
+	
+	/**
+	 * This training type does not support training continue.
+	 * @return Always returns false.
+	 */
+	@Override
+	public final boolean canContinue() {
+		return false;
+	}
+
+	/**
+	 * This training type does not support training continue.
+	 * @return Always returns null.
+	 */
+	@Override
+	public final TrainingContinuation pause() {
+		return null;
+	}
+
+	/**
+	 * This training type does not support training continue.
+	 * @param state Not used.
+	 */
+	@Override
+	public final void resume(final TrainingContinuation state) {
+		
 	}
 
 }

@@ -78,7 +78,7 @@ public class SmartLearningRate implements Strategy {
 	 * @param train
 	 *            The training algorithm.
 	 */
-	public void init(final MLTrain train) {
+	public final void init(final MLTrain train) {
 		this.train = train;
 		this.ready = false;
 		this.setter = (LearningRate) train;
@@ -92,7 +92,7 @@ public class SmartLearningRate implements Strategy {
 	/**
 	 * Called just after a training iteration.
 	 */
-	public void postIteration() {
+	public final void postIteration() {
 		if (this.ready) {
 			if (this.train.getError() > this.lastError) {
 				this.currentLearningRate *= SmartLearningRate.LEARNING_DECAY;
@@ -109,7 +109,7 @@ public class SmartLearningRate implements Strategy {
 	/**
 	 * Called just before a training iteration.
 	 */
-	public void preIteration() {
+	public final void preIteration() {
 		this.lastError = this.train.getError();
 	}
 

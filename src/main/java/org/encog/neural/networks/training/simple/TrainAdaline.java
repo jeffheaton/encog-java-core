@@ -65,8 +65,8 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 	 * @param learningRate
 	 *            The learning rate.
 	 */
-	public TrainAdaline(final BasicNetwork network,
-			final MLDataSet training, final double learningRate) {
+	public TrainAdaline(final BasicNetwork network, final MLDataSet training,
+			final double learningRate) {
 		super(TrainingImplementationType.Iterative);
 		if (network.getLayerCount() > 2) {
 			throw new NeuralNetworkError(
@@ -79,23 +79,34 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 	}
 
 	/**
-	 * @return The learning rate.
+	 * {@inheritDoc}
 	 */
-	public double getLearningRate() {
+	@Override
+	public final boolean canContinue() {
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final double getLearningRate() {
 		return this.learningRate;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public MLMethod getMethod() {
+	@Override
+	public final MLMethod getMethod() {
 		return this.network;
 	}
 
 	/**
-	 * Perform a training iteration.
+	 * {@inheritDoc}
 	 */
-	public void iteration() {
+	@Override
+	public final void iteration() {
 
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 
@@ -103,30 +114,47 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 			// calculate the error
 			final MLData output = this.network.compute(pair.getInput());
 
-			for (int currentAdaline = 0; currentAdaline < output.size(); 
-				currentAdaline++) {
+			for (int currentAdaline = 0; currentAdaline < output.size(); currentAdaline++) {
 				final double diff = pair.getIdeal().getData(currentAdaline)
 						- output.getData(currentAdaline);
 
 				// weights
 				for (int i = 0; i <= this.network.getInputCount(); i++) {
 					final double input;
-					
-					if( i==this.network.getInputCount() )
+
+					if (i == this.network.getInputCount()) {
 						input = 1.0;
-					else
+					} else {
 						input = pair.getInput().getData(i);
-					
+					}
+
 					this.network.addWeight(0, i, currentAdaline,
 							this.learningRate * diff * input);
 				}
 			}
-			
-			errorCalculation.updateError(output.getData(), pair.getIdeal().getData());
+
+			errorCalculation.updateError(output.getData(), pair.getIdeal()
+					.getData());
 		}
 
 		// set the global error
 		setError(errorCalculation.calculate());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final TrainingContinuation pause() {
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void resume(final TrainingContinuation state) {
+
 	}
 
 	/**
@@ -135,23 +163,9 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 	 * @param rate
 	 *            The new learning rate.
 	 */
-	public void setLearningRate(final double rate) {
+	@Override
+	public final void setLearningRate(final double rate) {
 		this.learningRate = rate;
-	}
-
-	@Override
-	public boolean canContinue() {
-		return false;
-	}
-
-	@Override
-	public TrainingContinuation pause() {
-		return null;
-	}
-
-	@Override
-	public void resume(TrainingContinuation state) {
-		
 	}
 
 }

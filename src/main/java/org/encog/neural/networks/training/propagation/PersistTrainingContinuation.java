@@ -32,29 +32,47 @@ import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
 import org.encog.persist.EncogWriteHelper;
 
+/**
+ * Persist the training continuation.
+ * 
+ */
 public class PersistTrainingContinuation implements EncogPersistor {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public String getPersistClassString() {
+	public final int getFileVersion() {
+		return 1;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final String getPersistClassString() {
 		return "TrainingContinuation";
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public Object read(InputStream is) {
-		TrainingContinuation result = new TrainingContinuation();
-		EncogReadHelper in = new EncogReadHelper(is);
+	public final Object read(final InputStream is) {
+		final TrainingContinuation result = new TrainingContinuation();
+		final EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;
 
 		while ((section = in.readNextSection()) != null) {
 			if (section.getSectionName().equals("CONT")
 					&& section.getSubSectionName().equals("PARAMS")) {
-				Map<String, String> params = section.parseParams();
-				for (String key : params.keySet()) {
+				final Map<String, String> params = section.parseParams();
+				for (final String key : params.keySet()) {
 					if (key.equalsIgnoreCase("type")) {
 						result.setTrainingType(params.get(key));
 					} else {
-						double[] list = EncogFileSection.parseDoubleArray(
-								params, key);
+						final double[] list = EncogFileSection
+								.parseDoubleArray(params, key);
 						result.put(key, list);
 					}
 				}
@@ -64,23 +82,21 @@ public class PersistTrainingContinuation implements EncogPersistor {
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void save(OutputStream os, Object obj) {
-		EncogWriteHelper out = new EncogWriteHelper(os);
-		TrainingContinuation cont = (TrainingContinuation) obj;
+	public final void save(final OutputStream os, final Object obj) {
+		final EncogWriteHelper out = new EncogWriteHelper(os);
+		final TrainingContinuation cont = (TrainingContinuation) obj;
 		out.addSection("CONT");
 		out.addSubSection("PARAMS");
 		out.writeProperty("type", cont.getTrainingType());
-		for (String key : cont.getContents().keySet()) {
-			double[] list = (double[]) cont.get(key);
+		for (final String key : cont.getContents().keySet()) {
+			final double[] list = (double[]) cont.get(key);
 			out.writeProperty(key, list);
 		}
 		out.flush();
-	}
-
-	@Override
-	public int getFileVersion() {
-		return 1;
 	}
 
 }

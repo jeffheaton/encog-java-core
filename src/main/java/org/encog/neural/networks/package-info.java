@@ -21,20 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains the neural network machine learning methods.
+ */
 package org.encog.neural.networks;
 
-import org.encog.ml.MLMethod;
-import org.encog.neural.flat.FlatNetwork;
-
-/**
- * Interface that specifies that a machine learning method contains a 
- * flat network.
- *
- */
-public interface ContainsFlat extends MLMethod {
-	/**
-	 * @return The flat network associated with this neural network.
-	 */
-	FlatNetwork getFlat();
-
-}

@@ -78,18 +78,11 @@ public abstract class Propagation extends BasicTraining implements Train {
 	}
 
 	/**
-	 * @return True if this training can be continued.
-	 */
-	public boolean canContinue() {
-		return false;
-	}
-
-	/**
 	 * Should be called after training has completed and the iteration method
 	 * will not be called any further.
 	 */
 	@Override
-	public void finishTraining() {
+	public final void finishTraining() {
 		super.finishTraining();
 		this.flatTraining.finishTraining();
 	}
@@ -97,47 +90,35 @@ public abstract class Propagation extends BasicTraining implements Train {
 	/**
 	 * @return the currentFlatNetwork
 	 */
-	public FlatNetwork getCurrentFlatNetwork() {
+	public final FlatNetwork getCurrentFlatNetwork() {
 		return this.currentFlatNetwork;
 	}
 
 	/**
 	 * @return the flatTraining
 	 */
-	public TrainFlatNetwork getFlatTraining() {
+	public final TrainFlatNetwork getFlatTraining() {
 		return this.flatTraining;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public MLMethod getMethod() {
+	public final MLMethod getMethod() {
 		return this.network;
 	}
 
 	/**
 	 * @return The number of threads.
 	 */
-	public int getNumThreads() {
+	public final int getNumThreads() {
 		return this.flatTraining.getNumThreads();
-	}
-
-	/**
-	 * Determine if this specified training continuation object is valid for
-	 * this training method.
-	 * 
-	 * @param state
-	 *            The training continuation object to check.
-	 * @return True if the continuation object is valid.
-	 */
-	public boolean isValidResume(final TrainingContinuation state) {
-		return false;
 	}
 
 	/**
 	 * Perform one training iteration.
 	 */
-	public void iteration() {
+	public final void iteration() {
 		try {		
 			preIteration();
 
@@ -164,7 +145,7 @@ public abstract class Propagation extends BasicTraining implements Train {
 	 *            The number of training iterations.
 	 */
 	@Override
-	public void iteration(final int count) {
+	public final void iteration(final int count) {
 		try {
 			preIteration();
 
@@ -185,29 +166,10 @@ public abstract class Propagation extends BasicTraining implements Train {
 	}
 
 	/**
-	 * Pause the training to continue later.
-	 * 
-	 * @return A training continuation object.
-	 */
-	public TrainingContinuation pause() {
-		throw new TrainingError("This training type does not support pause.");
-	}
-
-	/**
-	 * Resume training.
-	 * 
-	 * @param state
-	 *            The training continuation object to use to continue.
-	 */
-	public void resume(final TrainingContinuation state) {
-		throw new TrainingError("This training type does not support resume.");
-	}
-
-	/**
 	 * @param flatTraining
 	 *            the flatTraining to set
 	 */
-	public void setFlatTraining(final TrainFlatNetwork flatTraining) {
+	public final void setFlatTraining(final TrainFlatNetwork flatTraining) {
 		this.flatTraining = flatTraining;
 	}
 
@@ -219,7 +181,7 @@ public abstract class Propagation extends BasicTraining implements Train {
 	 * @param numThreads
 	 *            The number of threads.
 	 */
-	public void setNumThreads(final int numThreads) {
+	public final void setNumThreads(final int numThreads) {
 		this.flatTraining.setNumThreads(numThreads);
 	}
 

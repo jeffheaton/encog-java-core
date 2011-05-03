@@ -23,22 +23,19 @@
  */
 package org.encog.neural.networks.training.pnn;
 
-
 /**
- * Search sigma's for a global minimum. First do a rough search, and then
- * use the "Brent Method" to refine the search for an optimal sigma.  
- * This class uses the same sigma for each kernel.  Multiple sigmas
- * will be introduced in a later step.  
- *
+ * Search sigma's for a global minimum. First do a rough search, and then use
+ * the "Brent Method" to refine the search for an optimal sigma. This class uses
+ * the same sigma for each kernel. Multiple sigmas will be introduced in a later
+ * step.
+ * 
  * Some of the algorithms in this class are based on C++ code from:
  * 
- * Advanced Algorithms for Neural Networks: A C++ Sourcebook
- * by Timothy Masters
- * John Wiley & Sons Inc (Computers); April 3, 1995
- * ISBN: 0471105880
+ * Advanced Algorithms for Neural Networks: A C++ Sourcebook by Timothy Masters
+ * John Wiley & Sons Inc (Computers); April 3, 1995 ISBN: 0471105880
  */
 public class GlobalMinimumSearch {
-	
+
 	/**
 	 * The golden section.
 	 */
@@ -76,40 +73,42 @@ public class GlobalMinimumSearch {
 
 	/**
 	 * Use the "Brent Method" to find a better minimum.
-	 * @param maxIterations THe maximum number of iterations.
-	 * @param maxError We can stop if we reach this error.
-	 * @param eps The approximate machine precision.
-	 * @param tol Brent's tolerance, must be >= sqrt( eps )
-	 * @param network The network to obtain the error from.
-	 * @param y The error at x2.
+	 * 
+	 * @param maxIterations
+	 *            THe maximum number of iterations.
+	 * @param maxError
+	 *            We can stop if we reach this error.
+	 * @param eps
+	 *            The approximate machine precision.
+	 * @param tol
+	 *            Brent's tolerance, must be >= sqrt( eps )
+	 * @param network
+	 *            The network to obtain the error from.
+	 * @param y
+	 *            The error at x2.
 	 * @return The best error.
 	 */
-	public double brentmin(final int maxIterations, 
-			final double maxError, 
-			final double eps, 
-			final double tol, 
-			final CalculationCriteria network, 
-			final double y 
-	) {
+	public final double brentmin(final int maxIterations,
+			final double maxError, final double eps, final double tol,
+			final CalculationCriteria network, final double y) {
 		double prevdist = 0.0;
 		double step = 0.0;
-	
+
 		// xBest is the minimum function ordinate thus far.
 		// also keep 2nd and 3rd
 		double xbest = this.x2;
 		double x2ndBest = this.x2;
 		double x3rdBest = this.x2;
 		// Keep the minimum bracketed between xlow and xhigh.
-		
+
 		// Get the low and high from our previous "crude" search.
 		double xlow = this.x1;
 		double xhigh = this.x3;
 
-		double fbest = y; 
-		double fsecbest = y; 
+		double fbest = y;
+		double fsecbest = y;
 		double fthirdbest = y;
 
-		
 		// Main loop.
 		// We will go up to the specified number of iterations.
 		// Hopefully we will "break out" long before that happens!
@@ -120,12 +119,12 @@ public class GlobalMinimumSearch {
 				break;
 			}
 
-			double xmid = 0.5 * (xlow + xhigh);
-			double tol1 = tol * (Math.abs(xbest) + eps);
-			double tol2 = 2. * tol1;
+			final double xmid = 0.5 * (xlow + xhigh);
+			final double tol1 = tol * (Math.abs(xbest) + eps);
+			final double tol2 = 2. * tol1;
 
-			// See if xlow is close relative to tol2, 
-			// Also, that that xbest is near the midpoint.			
+			// See if xlow is close relative to tol2,
+			// Also, that that xbest is near the midpoint.
 			if (Math.abs(xbest - xmid) <= (tol2 - 0.5 * (xhigh - xlow))) {
 				break;
 			}
@@ -134,44 +133,44 @@ public class GlobalMinimumSearch {
 			if ((iter >= 2) && ((fthirdbest - fbest) < eps)) {
 				break;
 			}
-						
+
 			double xrecent = 0;
 
 			// Try parabolic fit, if we moved far enough.
-			if (Math.abs(prevdist) > tol1) { 
+			if (Math.abs(prevdist) > tol1) {
 				// Temps holders for the parabolic estimate
-				double t1 = (xbest - x2ndBest) * (fbest - fthirdbest); 
-				double t2 = (xbest - x3rdBest) * (fbest - fsecbest); 
-				double numer = (xbest - x3rdBest) * t2 - (xbest - x2ndBest) * t1;			
-				double denom = 2. * (t1 - t2); 
-				double testdist = prevdist; 
-				prevdist = step; 
+				final double t1 = (xbest - x2ndBest) * (fbest - fthirdbest);
+				final double t2 = (xbest - x3rdBest) * (fbest - fsecbest);
+				final double numer = (xbest - x3rdBest) * t2
+						- (xbest - x2ndBest) * t1;
+				final double denom = 2. * (t1 - t2);
+				final double testdist = prevdist;
+				prevdist = step;
 				// This is the parabolic estimate to min.
 				if (denom != 0.0) {
-					step = numer / denom; 
+					step = numer / denom;
 				} else {
 					// test failed.
-					step = 1.e30; 
-				}		
+					step = 1.e30;
+				}
 
-				// If shrinking, and within bounds, then use the parabolic estimate.
+				// If shrinking, and within bounds, then use the parabolic
+				// estimate.
 				if ((Math.abs(step) < Math.abs(0.5 * testdist))
-						&& (step + xbest > xlow) 
-						&& (step + xbest < xhigh)) { 
-					xrecent = xbest + step; 
+						&& (step + xbest > xlow) && (step + xbest < xhigh)) {
+					xrecent = xbest + step;
 					// If very close to known bounds.
-					if ((xrecent - xlow < tol2) || 
-							(xhigh - xrecent < tol2)) { 
+					if ((xrecent - xlow < tol2) || (xhigh - xrecent < tol2)) {
 						if (xbest < xmid) {
 							step = tol1;
 						} else {
 							step = -tol1;
 						}
 					}
-				} else { 
+				} else {
 					// Parabolic estimate poor, so use golden section
-					prevdist = (xbest >= xmid) ? xlow - xbest : xhigh - xbest; 
-					step = CGOLD * prevdist;
+					prevdist = (xbest >= xmid) ? xlow - xbest : xhigh - xbest;
+					step = GlobalMinimumSearch.CGOLD * prevdist;
 				}
 			} else { // prevdist did not exceed tol1: we did not move far
 				// enough
@@ -195,7 +194,7 @@ public class GlobalMinimumSearch {
 			 * function.
 			 */
 
-			double frecent = network.calcErrorWithSingleSigma(xrecent);
+			final double frecent = network.calcErrorWithSingleSigma(xrecent);
 
 			if (frecent < 0.0) {
 				break;
@@ -213,31 +212,27 @@ public class GlobalMinimumSearch {
 				fthirdbest = fsecbest;
 				fsecbest = fbest;
 				fbest = frecent;
-			}
-
-			else { // We did not improve
+			} else { // We did not improve
 				if (xrecent < xbest) {
 					xlow = xrecent; // replacing the appropriate endpoint
 				} else {
 					xhigh = xrecent;
 				}
 
-				if ((frecent <= fsecbest) 
-						|| (x2ndBest == xbest)) { 
-					x3rdBest = x2ndBest; 
+				if ((frecent <= fsecbest) || (x2ndBest == xbest)) {
+					x3rdBest = x2ndBest;
 
-					x2ndBest = xrecent; 
-					fthirdbest = fsecbest; 
-					fsecbest = frecent; 
-				} else if ((frecent <= fthirdbest) 
-						|| (x3rdBest == xbest) 
-						|| (x3rdBest == x2ndBest)) { 
-					x3rdBest = xrecent; 
-					fthirdbest = frecent; 
+					x2ndBest = xrecent;
+					fthirdbest = fsecbest;
+					fsecbest = frecent;
+				} else if ((frecent <= fthirdbest) || (x3rdBest == xbest)
+						|| (x3rdBest == x2ndBest)) {
+					x3rdBest = xrecent;
+					fthirdbest = frecent;
 				}
 			}
 		}
-		
+
 		// update the three sigmas.
 
 		this.x1 = xlow;
@@ -249,9 +244,9 @@ public class GlobalMinimumSearch {
 	}
 
 	/**
-	 * Find the best common gamma. Use the same gamma for all kernels.
-	 * This is a crude brute-force search.  The range found should be
-	 * refined using the "Brent Method", also provided in this class.
+	 * Find the best common gamma. Use the same gamma for all kernels. This is a
+	 * crude brute-force search. The range found should be refined using the
+	 * "Brent Method", also provided in this class.
 	 * 
 	 * @param low
 	 *            The low gamma to begin the search with.
@@ -269,7 +264,7 @@ public class GlobalMinimumSearch {
 	 * @param network
 	 *            The network to evaluate.
 	 */
-	public void findBestRange(final double low, final double high,
+	public final void findBestRange(final double low, final double high,
 			int numberOfPoints, final boolean useLog, final double minError,
 			final CalculationCriteria network) {
 		int i, ibest;
@@ -390,7 +385,7 @@ public class GlobalMinimumSearch {
 
 				// Shift the points for the new range, as we have
 				// extended to the right.
-				this.x1 = this.x2; 
+				this.x1 = this.x2;
 				this.y1 = this.y2;
 				this.x2 = this.x3;
 				this.y2 = this.y3;
@@ -434,7 +429,7 @@ public class GlobalMinimumSearch {
 
 				// Shift the points for the new range, as we have
 				// extended to the left.
-				this.x3 = this.x2; 
+				this.x3 = this.x2;
 				this.y3 = this.y2;
 				this.x2 = this.x1;
 				this.y2 = this.y1;
@@ -454,86 +449,98 @@ public class GlobalMinimumSearch {
 	}
 
 	/**
-	 * @return X1, which is a gamma to the left(lower) of the best(middle) gamma.
+	 * @return X1, which is a gamma to the left(lower) of the best(middle)
+	 *         gamma.
 	 */
-	public double getX1() {
+	public final double getX1() {
 		return this.x1;
 	}
 
 	/**
 	 * @return X2, which is the middle(best) gamma.
 	 */
-	public double getX2() {
+	public final double getX2() {
 		return this.x2;
 	}
 
 	/**
-	 * @return  X3, which is a gamma to the right(higher) of the middle(best) gamma.
+	 * @return X3, which is a gamma to the right(higher) of the middle(best)
+	 *         gamma.
 	 */
-	public double getX3() {
+	public final double getX3() {
 		return this.x3;
 	}
 
 	/**
 	 * @return Y1, which is the value y1 is the error for x1.
 	 */
-	public double getY1() {
+	public final double getY1() {
 		return this.y1;
 	}
 
 	/**
-	 * @return Y2, which is the value y2 is the error for x2. This is the best(middle) error.
+	 * @return Y2, which is the value y2 is the error for x2. This is the
+	 *         best(middle) error.
 	 */
-	public double getY2() {
+	public final double getY2() {
 		return this.y2;
 	}
 
 	/**
 	 * @return Y3, which is the value y1 is the error for x1.
 	 */
-	public double getY3() {
+	public final double getY3() {
 		return this.y3;
 	}
 
 	/**
-	 * @param x1 Set X1, which is a gamma to the left(lower) of the best(middle) gamma.
+	 * @param x1
+	 *            Set X1, which is a gamma to the left(lower) of the
+	 *            best(middle) gamma.
 	 */
-	public void setX1(final double x1) {
+	public final void setX1(final double x1) {
 		this.x1 = x1;
 	}
 
 	/**
-	 * @param x2 Set X2, which is the middle(best) gamma.
+	 * @param x2
+	 *            Set X2, which is the middle(best) gamma.
 	 */
-	public void setX2(final double x2) {
+	public final void setX2(final double x2) {
 		this.x2 = x2;
 	}
 
 	/**
-	 * @param x3 Set X3, which is a gamma to the right(higher) of the middle(best) gamma.
+	 * @param x3
+	 *            Set X3, which is a gamma to the right(higher) of the
+	 *            middle(best) gamma.
 	 */
-	public void setX3(final double x3) {
+	public final void setX3(final double x3) {
 		this.x3 = x3;
 	}
 
 	/**
-	 * @param y1 Set Y1, which is the value y1 is the error for x1.
+	 * @param y1
+	 *            Set Y1, which is the value y1 is the error for x1.
 	 */
-	public void setY1(final double y1) {
+	public final void setY1(final double y1) {
 		this.y1 = y1;
 	}
 
 	/**
-	 * @param y2 Set Y2, which is the value y2 is the error for x2. This is the best(middle) error.
+	 * @param y2
+	 *            Set Y2, which is the value y2 is the error for x2. This is the
+	 *            best(middle) error.
 	 */
-	public void setY2(final double y2) {
+	public final void setY2(final double y2) {
 		this.y2 = y2;
 	}
 
 	/**
-	 * @param y3 Set Y3, which is the value y3 is the error for x3.
+	 * @param y3
+	 *            Set Y3, which is the value y3 is the error for x3.
 	 */
-	public void setY3(final double y3) {
+	public final void setY3(final double y3) {
 		this.y3 = y3;
 	}
 

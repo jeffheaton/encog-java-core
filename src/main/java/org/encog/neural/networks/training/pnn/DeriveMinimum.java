@@ -41,6 +41,8 @@ public class DeriveMinimum {
 	/**
 	 * Derive the minimum, using a conjugate gradient method.
 	 * 
+	 * @param maxIterations
+	 * 	The max iterations.
 	 * @param maxError
 	 *            Stop at this error rate.
 	 * @param eps

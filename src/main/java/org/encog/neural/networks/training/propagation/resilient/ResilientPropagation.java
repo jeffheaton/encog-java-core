@@ -107,8 +107,6 @@ public class ResilientPropagation extends Propagation {
 	 *            The network to train.
 	 * @param training
 	 *            The training set to use.
-	 * @param profile
-	 *            Optional EncogCL profile to execute on.
 	 * @param initialUpdate
 	 *            The initial update values, this is the amount that the deltas
 	 *            are all initially set to.
@@ -116,20 +114,22 @@ public class ResilientPropagation extends Propagation {
 	 *            The maximum that a delta can reach.
 	 */
 	public ResilientPropagation(final ContainsFlat network,
-			final MLDataSet training, 
-			final double initialUpdate, final double maxStep) {
+			final MLDataSet training, final double initialUpdate,
+			final double maxStep) {
 
 		super(network, training);
 
-		TrainFlatNetworkResilient rpropFlat = new TrainFlatNetworkResilient(
-				network.getFlat(), this.getTraining(), RPROPConst.DEFAULT_ZERO_TOLERANCE, initialUpdate, maxStep);
-		this.setFlatTraining(rpropFlat);
+		final TrainFlatNetworkResilient rpropFlat = new TrainFlatNetworkResilient(
+				network.getFlat(), getTraining(),
+				RPROPConst.DEFAULT_ZERO_TOLERANCE, initialUpdate, maxStep);
+		setFlatTraining(rpropFlat);
 	}
 
 	/**
 	 * @return True, as RPROP can continue.
 	 */
-	public boolean canContinue() {
+	@Override
+	public final boolean canContinue() {
 		return true;
 	}
 
@@ -141,21 +141,21 @@ public class ResilientPropagation extends Propagation {
 	 * @return True if the specified continuation object is valid for this
 	 *         training method and network.
 	 */
-	public boolean isValidResume(final TrainingContinuation state) {
+	public final boolean isValidResume(final TrainingContinuation state) {
 		if (!state.getContents().containsKey(
 				ResilientPropagation.LAST_GRADIENTS)
 				|| !state.getContents().containsKey(
 						ResilientPropagation.UPDATE_VALUES)) {
 			return false;
 		}
-		
-		if( !state.getTrainingType().equals(getClass().getSimpleName())) {
+
+		if (!state.getTrainingType().equals(getClass().getSimpleName())) {
 			return false;
 		}
 
 		final double[] d = (double[]) state
 				.get(ResilientPropagation.LAST_GRADIENTS);
-		return d.length == ((ContainsFlat)getMethod()).getFlat().getWeights().length;
+		return d.length == ((ContainsFlat) getMethod()).getFlat().getWeights().length;
 	}
 
 	/**
@@ -163,16 +163,17 @@ public class ResilientPropagation extends Propagation {
 	 * 
 	 * @return A training continuation object to continue with.
 	 */
-	public TrainingContinuation pause() {
+	@Override
+	public final TrainingContinuation pause() {
 		final TrainingContinuation result = new TrainingContinuation();
-		
+
 		result.setTrainingType(this.getClass().getSimpleName());
 
 		result.set(ResilientPropagation.LAST_GRADIENTS,
-				((TrainFlatNetworkResilient) this.getFlatTraining())
+				((TrainFlatNetworkResilient) getFlatTraining())
 						.getLastGradient());
 		result.set(ResilientPropagation.UPDATE_VALUES,
-				((TrainFlatNetworkResilient) this.getFlatTraining())
+				((TrainFlatNetworkResilient) getFlatTraining())
 						.getUpdateValues());
 
 		return result;
@@ -184,20 +185,21 @@ public class ResilientPropagation extends Propagation {
 	 * @param state
 	 *            The training state to return to.
 	 */
-	public void resume(final TrainingContinuation state) {
+	@Override
+	public final void resume(final TrainingContinuation state) {
 		if (!isValidResume(state)) {
 			throw new TrainingError("Invalid training resume data length");
 		}
-		double[] lastGradient = (double[]) state
+		final double[] lastGradient = (double[]) state
 				.get(ResilientPropagation.LAST_GRADIENTS);
-		double[] updateValues = (double[]) state
+		final double[] updateValues = (double[]) state
 				.get(ResilientPropagation.UPDATE_VALUES);
 
 		EngineArray.arrayCopy(lastGradient,
-				((TrainFlatNetworkResilient) this.getFlatTraining())
+				((TrainFlatNetworkResilient) getFlatTraining())
 						.getLastGradient());
 		EngineArray.arrayCopy(updateValues,
-				((TrainFlatNetworkResilient) this.getFlatTraining())
+				((TrainFlatNetworkResilient) getFlatTraining())
 						.getUpdateValues());
 
 	}
