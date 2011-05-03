@@ -25,17 +25,35 @@ package org.encog.neural.networks.training.concurrent.performers;
 
 import org.encog.util.concurrency.EngineTask;
 
+/**
+ * A task to be performed.
+ * 
+ * @author jheaton
+ * 
+ */
 public class PerformerTask implements EngineTask {
 
-	private ConcurrentTrainingPerformer owner;
-	
-	public PerformerTask(ConcurrentTrainingPerformer owner) {
+	/**
+	 * The owner.
+	 */
+	private final ConcurrentTrainingPerformer owner;
+
+	/**
+	 * Construct the object.
+	 * 
+	 * @param owner
+	 *            The owner.
+	 */
+	public PerformerTask(final ConcurrentTrainingPerformer owner) {
 		this.owner = owner;
 	}
-	
+
+	/**
+	 * Run the task.
+	 */
 	@Override
-	public void run() {
-		this.owner.run();		
+	public final void run() {
+		this.owner.run();
 	}
 
 }

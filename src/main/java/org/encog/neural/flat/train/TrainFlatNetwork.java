@@ -53,6 +53,7 @@ public interface TrainFlatNetwork {
 	
 	/**
 	 * Perform one training iteration.
+	 * @param count The number of iterations.
 	 */
 	void iteration(int count);
 	

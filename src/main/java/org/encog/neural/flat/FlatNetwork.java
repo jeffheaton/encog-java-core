@@ -162,7 +162,7 @@ public class FlatNetwork implements Serializable {
 	 * The limit, under which, all a cconnection is not considered to exist.
 	 */
 	private double connectionLimit;
-	
+
 	/**
 	 * True if the network has context.
 	 */
@@ -204,7 +204,7 @@ public class FlatNetwork implements Serializable {
 	public FlatNetwork(final int input, final int hidden1, final int hidden2,
 			final int output, final boolean tanh) {
 
-		ActivationFunction linearAct = new ActivationLinear();
+		final ActivationFunction linearAct = new ActivationLinear();
 		FlatLayer[] layers;
 		final ActivationFunction act = tanh ? new ActivationTANH()
 				: new ActivationSigmoid();
@@ -250,7 +250,7 @@ public class FlatNetwork implements Serializable {
 	 *            The training set.
 	 * @return The error percentage.
 	 */
-	public double calculateError(final MLDataSet data) {
+	public final double calculateError(final MLDataSet data) {
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 
 		final double[] actual = new double[this.outputCount];
@@ -266,9 +266,17 @@ public class FlatNetwork implements Serializable {
 	}
 
 	/**
+	 * Clear any connection limits.
+	 */
+	public final void clearConnectionLimit() {
+		this.connectionLimit = 0.0;
+		this.isLimited = false;
+	}
+
+	/**
 	 * Clear any context neurons.
 	 */
-	public void clearContext() {
+	public final void clearContext() {
 		int index = 0;
 
 		for (int i = 0; i < this.layerIndex.length; i++) {
@@ -304,7 +312,13 @@ public class FlatNetwork implements Serializable {
 		return result;
 	}
 
-	public void cloneFlatNetwork(FlatNetwork result) {
+	/**
+	 * Clone into the flat network passed in.
+	 * 
+	 * @param result
+	 *            The network to copy into.
+	 */
+	public final void cloneFlatNetwork(final FlatNetwork result) {
 		result.inputCount = this.inputCount;
 		result.layerCounts = EngineArray.arrayCopy(this.layerCounts);
 		result.layerIndex = EngineArray.arrayCopy(this.layerIndex);
@@ -379,7 +393,8 @@ public class FlatNetwork implements Serializable {
 			this.layerOutput[x] = sum;
 		}
 
-		this.activationFunctions[currentLayer-1].activationFunction(this.layerOutput,outputIndex, outputSize);
+		this.activationFunctions[currentLayer - 1].activationFunction(
+				this.layerOutput, outputIndex, outputSize);
 
 		// update context values
 		final int offset = this.contextTargetOffset[currentLayer];
@@ -413,14 +428,42 @@ public class FlatNetwork implements Serializable {
 	 * 
 	 * @return The encoded network.
 	 */
-	public double[] encodeNetwork() {
+	public final double[] encodeNetwork() {
 		return this.weights;
+	}
+
+	/**
+	 * @return The activation functions.
+	 */
+	public final ActivationFunction[] getActivationFunctions() {
+		return this.activationFunctions;
+	}
+
+	/**
+	 * @return the beginTraining
+	 */
+	public final int getBeginTraining() {
+		return this.beginTraining;
+	}
+
+	/**
+	 * @return The bias activation.
+	 */
+	public final double[] getBiasActivation() {
+		return this.biasActivation;
+	}
+
+	/**
+	 * @return the connectionLimit
+	 */
+	public final double getConnectionLimit() {
+		return this.connectionLimit;
 	}
 
 	/**
 	 * @return The offset of the context target for each layer.
 	 */
-	public int[] getContextTargetOffset() {
+	public final int[] getContextTargetOffset() {
 		return this.contextTargetOffset;
 	}
 
@@ -428,28 +471,49 @@ public class FlatNetwork implements Serializable {
 	 * @return The context target size for each layer. Zero if the layer does
 	 *         not feed a context layer.
 	 */
-	public int[] getContextTargetSize() {
+	public final int[] getContextTargetSize() {
 		return this.contextTargetSize;
 	}
 
 	/**
 	 * @return The length of the array the network would encode to.
 	 */
-	public int getEncodeLength() {
+	public final int getEncodeLength() {
 		return this.weights.length;
+	}
+
+	/**
+	 * @return the endTraining
+	 */
+	public final int getEndTraining() {
+		return this.endTraining;
+	}
+
+	/**
+	 * @return True if this network has context.
+	 */
+	public final boolean getHasContext() {
+		return this.hasContext;
 	}
 
 	/**
 	 * @return The number of input neurons.
 	 */
-	public int getInputCount() {
+	public final int getInputCount() {
 		return this.inputCount;
+	}
+
+	/**
+	 * @return The layer context count.
+	 */
+	public final int[] getLayerContextCount() {
+		return this.layerContextCount;
 	}
 
 	/**
 	 * @return The number of neurons in each layer.
 	 */
-	public int[] getLayerCounts() {
+	public final int[] getLayerCounts() {
 		return this.layerCounts;
 	}
 
@@ -457,28 +521,28 @@ public class FlatNetwork implements Serializable {
 	 * @return The number of neurons in each layer that are fed by the previous
 	 *         layer.
 	 */
-	public int[] getLayerFeedCounts() {
+	public final int[] getLayerFeedCounts() {
 		return this.layerFeedCounts;
 	}
 
 	/**
 	 * @return Indexes into the weights for the start of each layer.
 	 */
-	public int[] getLayerIndex() {
+	public final int[] getLayerIndex() {
 		return this.layerIndex;
 	}
 
 	/**
 	 * @return The output for each layer.
 	 */
-	public double[] getLayerOutput() {
+	public final double[] getLayerOutput() {
 		return this.layerOutput;
 	}
 
 	/**
 	 * @return The neuron count.
 	 */
-	public int getNeuronCount() {
+	public final int getNeuronCount() {
 		int result = 0;
 		for (final int element : this.layerCounts) {
 			result += element;
@@ -489,21 +553,21 @@ public class FlatNetwork implements Serializable {
 	/**
 	 * @return The number of output neurons.
 	 */
-	public int getOutputCount() {
+	public final int getOutputCount() {
 		return this.outputCount;
 	}
 
 	/**
 	 * @return The index of each layer in the weight and threshold array.
 	 */
-	public int[] getWeightIndex() {
+	public final int[] getWeightIndex() {
 		return this.weightIndex;
 	}
 
 	/**
 	 * @return The index of each layer in the weight and threshold array.
 	 */
-	public double[] getWeights() {
+	public final double[] getWeights() {
 		return this.weights;
 	}
 
@@ -516,7 +580,7 @@ public class FlatNetwork implements Serializable {
 	 *         no activation functions or more than one type of activation
 	 *         function.
 	 */
-	public Class<?> hasSameActivationFunction() {
+	public final Class<?> hasSameActivationFunction() {
 		final List<Class<?>> map = new ArrayList<Class<?>>();
 
 		for (final ActivationFunction activation : this.activationFunctions) {
@@ -538,7 +602,7 @@ public class FlatNetwork implements Serializable {
 	 * @param layers
 	 *            The layers of the network to create.
 	 */
-	public void init(final FlatLayer[] layers) {
+	public final void init(final FlatLayer[] layers) {
 
 		final int layerCount = layers.length;
 
@@ -595,7 +659,9 @@ public class FlatNetwork implements Serializable {
 				if (layers[j].getContextFedBy() == layer) {
 					this.hasContext = true;
 					this.contextTargetSize[index] = layers[j].getContextCount();
-					this.contextTargetOffset[index] = neuronIndex+(layers[j].getTotalCount()-layers[j].getContextCount());
+					this.contextTargetOffset[index] = neuronIndex
+							+ (layers[j].getTotalCount() - layers[j]
+									.getContextCount());
 				}
 				neuronIndex += layers[j].getTotalCount();
 			}
@@ -613,10 +679,17 @@ public class FlatNetwork implements Serializable {
 	}
 
 	/**
+	 * @return the isLimited
+	 */
+	public final boolean isLimited() {
+		return this.isLimited;
+	}
+
+	/**
 	 * Perform a simple randomization of the weights of the neural network
 	 * between -1 and 1.
 	 */
-	public void randomize() {
+	public final void randomize() {
 		randomize(1, -1);
 	}
 
@@ -629,152 +702,151 @@ public class FlatNetwork implements Serializable {
 	 * @param lo
 	 *            The network low.
 	 */
-	public void randomize(final double hi, final double lo) {
+	public final void randomize(final double hi, final double lo) {
 		for (int i = 0; i < this.weights.length; i++) {
 			this.weights[i] = (Math.random() * (hi - lo)) + lo;
 		}
 	}
 
 	/**
-	 * @return the beginTraining
+	 * Set the activation functions.
+	 * @param af The activation functions.
 	 */
-	public int getBeginTraining() {
-		return beginTraining;
+	public final void setActivationFunctions(final ActivationFunction[] af) {
+		this.activationFunctions = af;
+
 	}
 
 	/**
 	 * @param beginTraining
 	 *            the beginTraining to set
 	 */
-	public void setBeginTraining(int beginTraining) {
+	public final void setBeginTraining(final int beginTraining) {
 		this.beginTraining = beginTraining;
 	}
 
 	/**
-	 * @return the endTraining
+	 * Set the bias activation.
+	 * @param biasActivation The bias activation.
 	 */
-	public int getEndTraining() {
-		return endTraining;
-	}
-
-	/**
-	 * @param endTraining
-	 *            the endTraining to set
-	 */
-	public void setEndTraining(int endTraining) {
-		this.endTraining = endTraining;
-	}
-
-	/**
-	 * @return the connectionLimit
-	 */
-	public double getConnectionLimit() {
-		return connectionLimit;
+	public final void setBiasActivation(final double[] biasActivation) {
+		this.biasActivation = biasActivation;
 	}
 
 	/**
 	 * @param connectionLimit
 	 *            the connectionLimit to set
 	 */
-	public void setConnectionLimit(double connectionLimit) {
+	public final void setConnectionLimit(final double connectionLimit) {
 		this.connectionLimit = connectionLimit;
-		if ( Math.abs(this.connectionLimit - BasicNetwork.DEFAULT_CONNECTION_LIMIT)<Encog.DEFAULT_DOUBLE_EQUAL )
+		if (Math.abs(this.connectionLimit
+				- BasicNetwork.DEFAULT_CONNECTION_LIMIT) < Encog.DEFAULT_DOUBLE_EQUAL) {
 			this.isLimited = true;
+		}
 	}
 
 	/**
-	 * @return the isLimited
+	 * Set the context target offset.
+	 * @param contextTargetOffset The context target offset.
 	 */
-	public boolean isLimited() {
-		return isLimited;
-	}
-
-	public void clearConnectionLimit() {
-		this.connectionLimit = 0.0;
-		this.isLimited = false;
-	}
-
-	/**
-	 * @return The activation functions.
-	 */
-	public ActivationFunction[] getActivationFunctions() {
-		return activationFunctions;
-	}
-	
-	/**
-	 * @return True if this network has context.
-	 */
-	public boolean getHasContext() {
-		return this.hasContext;
-	}
-
-	public void setWeights(double[] weights) {
-		this.weights = weights;		
-	}
-
-	public void setLayerOutput(double[] layerOutput) {
-		this.layerOutput = layerOutput;		
-	}
-
-	public void setContextTargetOffset(int[] contextTargetOffset) {
+	public final void setContextTargetOffset(final int[] contextTargetOffset) {
 		this.contextTargetOffset = contextTargetOffset;
-		
+
 	}
 
-	public void setHasContext(boolean hasContext) {
-		this.hasContext = hasContext;		
-	}
-
-	public void setInputCount(int inputCount) {
-		this.inputCount = inputCount;	
-	}
-
-	public void setLayerCounts(int[] layerCounts) {
-		this.layerCounts = layerCounts;
-		
-	}
-
-	public void setLayerFeedCounts(int[] layerFeedCounts) {
-		this.layerFeedCounts = layerFeedCounts;
-		
-	}
-
-	public void setLayerIndex(int[] i) {
-		this.layerIndex = i;		
-	}
-
-	public void setWeightIndex(int[] weightIndex) {
-		this.weightIndex = weightIndex;
-		
-	}
-
-	public void setActivationFunctions(ActivationFunction[] af) {
-		this.activationFunctions = af;
-		
-	}
-
-	public void setContextTargetSize(int[] contextTargetSize) {
+	/**
+	 * Set the context target size.
+	 * @param contextTargetSize The context target size.
+	 */
+	public final void setContextTargetSize(final int[] contextTargetSize) {
 		this.contextTargetSize = contextTargetSize;
-		
+
 	}
 
-	public void setOutputCount(int outputCount) {
-		this.outputCount = outputCount;		
+	/**
+	 * @param endTraining
+	 *            the endTraining to set
+	 */
+	public void setEndTraining(final int endTraining) {
+		this.endTraining = endTraining;
 	}
 
-	public double[] getBiasActivation() {
-		return biasActivation;
+	/**
+	 * Set the hasContext property.
+	 * @param hasContext True if the network has context.
+	 */
+	public final void setHasContext(final boolean hasContext) {
+		this.hasContext = hasContext;
 	}
 
-	public void setBiasActivation(double[] biasActivation) {
-		this.biasActivation = biasActivation;
+	/**
+	 * Set the input count.
+	 * @param inputCount The input count.
+	 */
+	public final void setInputCount(final int inputCount) {
+		this.inputCount = inputCount;
 	}
 
-	public int[] getLayerContextCount() {
-		return layerContextCount;
-	}
-
-	public void setLayerContextCount(int[] layerContextCount) {
+	/**
+	 * Set the layer context count.
+	 * @param layerContextCount The layer context count.
+	 */
+	public final void setLayerContextCount(final int[] layerContextCount) {
 		this.layerContextCount = layerContextCount;
+	}
+
+	/**
+	 * Set the layer counts.
+	 * @param layerCounts The layer counts.
+	 */
+	public final void setLayerCounts(final int[] layerCounts) {
+		this.layerCounts = layerCounts;
+
+	}
+
+	public final void setLayerFeedCounts(final int[] layerFeedCounts) {
+		this.layerFeedCounts = layerFeedCounts;
+
+	}
+
+	/**
+	 * Set the layer index.
+	 * @param i The layer index.
+	 */
+	public final void setLayerIndex(final int[] i) {
+		this.layerIndex = i;
+	}
+
+	/**
+	 * Set the layer output.
+	 * @param layerOutput The layer output.
+	 */
+	public final void setLayerOutput(final double[] layerOutput) {
+		this.layerOutput = layerOutput;
+	}
+
+	/**
+	 * Set the output count.
+	 * @param outputCount The output count.
+	 */
+	public final void setOutputCount(final int outputCount) {
+		this.outputCount = outputCount;
+	}
+
+	/**
+	 * Set the weight index.
+	 * @param weightIndex The weight index.
+	 */
+	public final void setWeightIndex(final int[] weightIndex) {
+		this.weightIndex = weightIndex;
+
+	}
+
+	/**
+	 * Set the weights.
+	 * @param weights The weights.
+	 */
+	public final void setWeights(final double[] weights) {
+		this.weights = weights;
 	}
 }

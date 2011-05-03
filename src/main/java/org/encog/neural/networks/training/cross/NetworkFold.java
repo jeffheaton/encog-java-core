@@ -54,7 +54,7 @@ public class NetworkFold {
 	 * Copy weights and output to the network.
 	 * @param target The network to copy to.
 	 */
-	public void copyToNetwork(final FlatNetwork target) {
+	public final void copyToNetwork(final FlatNetwork target) {
 		EngineArray.arrayCopy(this.weights, target.getWeights());
 		EngineArray.arrayCopy(this.output, target.getLayerOutput());		
 	}
@@ -63,7 +63,7 @@ public class NetworkFold {
 	 * Copy the weights and output from the network.
 	 * @param source The network to copy from.
 	 */
-	public void copyFromNetwork(final FlatNetwork source) {
+	public final void copyFromNetwork(final FlatNetwork source) {
 		EngineArray.arrayCopy(source.getWeights(), this.weights);
 		EngineArray.arrayCopy(source.getLayerOutput(), this.output);
 	}
@@ -71,14 +71,14 @@ public class NetworkFold {
 	/**
 	 * @return The network weights.
 	 */
-	public double[] getWeights() {
+	public final double[] getWeights() {
 		return weights;
 	}
 
 	/**
 	 * @return The network output.
 	 */
-	public double[] getOutput() {
+	public final double[] getOutput() {
 		return output;
 	}
 

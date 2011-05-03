@@ -21,44 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.data.basic;
-
-import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.neural.data.NeuralData;
-
 /**
- * This is an alias class for Encog 2.5 compatibility. This class aliases
- * BasicMLDataPair. Newer code should use BasicMLDataPair in place of this
- * class.
+ * This package provides PNN training.
  */
-public class BasicNeuralDataPair extends BasicMLDataPair {
+package org.encog.neural.networks.training.pnn;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 93850721522898707L;
-
-	/**
-	 * Construct with input only.
-	 * 
-	 * @param theInput
-	 *            The input.
-	 */
-	public BasicNeuralDataPair(final NeuralData theInput) {
-		super(theInput);
-	}
-
-	/**
-	 * Construct from input and ideal.
-	 * 
-	 * @param theInput
-	 *            The input.
-	 * @param theIdeal
-	 *            The ideal.
-	 */
-	public BasicNeuralDataPair(final NeuralData theInput,
-			final NeuralData theIdeal) {
-		super(theInput, theIdeal);
-	}
-
-}

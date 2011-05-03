@@ -50,20 +50,6 @@ public final class ConcurrentTrainingManager implements Runnable {
 	private static ConcurrentTrainingManager instance;
 
 	/**
-	 * The event used to sync waiting for tasks to stop.
-	 */
-	private final Lock accessLock = new ReentrantLock();
-
-	/**
-	 * Condition used to check if we are done.
-	 */
-	private final Condition mightBeDone = this.accessLock.newCondition();
-	
-	private int jobNumber;
-
-	private boolean singleThreaded;
-	
-	/**
 	 * @return The singleton instance.
 	 */
 	public static ConcurrentTrainingManager getInstance() {
@@ -72,6 +58,26 @@ public final class ConcurrentTrainingManager implements Runnable {
 		}
 		return ConcurrentTrainingManager.instance;
 	}
+
+	/**
+	 * The event used to sync waiting for tasks to stop.
+	 */
+	private final Lock accessLock = new ReentrantLock();
+
+	/**
+	 * Condition used to check if we are done.
+	 */
+	private final Condition mightBeDone = this.accessLock.newCondition();
+
+	/**
+	 * The job number.
+	 */
+	private int jobNumber;
+
+	/**
+	 * Single threaded?
+	 */
+	private boolean singleThreaded;
 
 	/**
 	 * The performers to use.
@@ -133,8 +139,6 @@ public final class ConcurrentTrainingManager implements Runnable {
 
 	}
 
-
-
 	/**
 	 * Clear all of the performers.
 	 */
@@ -166,7 +170,7 @@ public final class ConcurrentTrainingManager implements Runnable {
 	 * do not create another CPU performer.
 	 */
 	public void detectPerformers() {
-		detectPerformers(false,0);
+		detectPerformers(false, 0);
 	}
 
 	/**
@@ -177,26 +181,28 @@ public final class ConcurrentTrainingManager implements Runnable {
 	 * @param splitCores
 	 *            True, if a CPU performer should be created for each core.
 	 */
-	public void detectPerformers(final boolean splitCores, int forceCoreCount) {
+	public void detectPerformers(final boolean splitCores,
+			final int forceCoreCount) {
 		try {
 			this.accessLock.lock();
-			boolean useCPU = true;
+			final boolean useCPU = true;
 			clearPerformers();
-			
+
 			int cpuCount = 1;
-			
-			this.setSingleThreaded(splitCores);
+
+			setSingleThreaded(splitCores);
 
 			// now create CPU performers
-			if (useCPU && forceCoreCount>=0 ) {
+			if (useCPU && (forceCoreCount >= 0)) {
 				int threads;
 
 				if (splitCores) {
 					final Runtime runtime = Runtime.getRuntime();
-					if( forceCoreCount>0 )
+					if (forceCoreCount > 0) {
 						threads = forceCoreCount;
-					else
+					} else {
 						threads = runtime.availableProcessors();
+					}
 				} else {
 					threads = 1;
 				}
@@ -205,6 +211,31 @@ public final class ConcurrentTrainingManager implements Runnable {
 					addPerformer(new ConcurrentTrainingPerformerCPU(cpuCount++));
 				}
 			}
+		} finally {
+			this.accessLock.unlock();
+		}
+	}
+
+	/**
+	 * @return True, if single threaded.
+	 */
+	public boolean isSingleThreaded() {
+		return this.singleThreaded;
+	}
+
+	/**
+	 * Wait for job to finish.
+	 * @param time The time to wait.
+	 * @param perf The performer.
+	 */
+	public void jobDone(final long time,
+			final ConcurrentTrainingPerformerCPU perf) {
+		try {
+			this.jobNumber++;
+			reportStatus("Job finished in " + time + "ms, on "
+					+ perf.toString());
+			this.accessLock.lock();
+			this.mightBeDone.signal();
 		} finally {
 			this.accessLock.unlock();
 		}
@@ -233,9 +264,15 @@ public final class ConcurrentTrainingManager implements Runnable {
 		}
 	}
 
+	private void reportStatus(final String str) {
+		this.report.report(this.queue.size(), this.jobNumber, str);
+
+	}
+
 	/**
 	 * Perform the training.
 	 */
+	@Override
 	public void run() {
 
 		this.jobNumber = 0;
@@ -281,11 +318,6 @@ public final class ConcurrentTrainingManager implements Runnable {
 		this.report.report(this.queue.size(), count, "All training done.");
 	}
 
-	private void reportStatus(String str) {
-		this.report.report(this.queue.size(), jobNumber, str); 
-		
-	}
-
 	/**
 	 * Setup the object to report status to.
 	 * 
@@ -296,12 +328,33 @@ public final class ConcurrentTrainingManager implements Runnable {
 		this.report = report;
 	}
 
+	public void setSingleThreaded(final boolean singleThreaded) {
+		this.singleThreaded = singleThreaded;
+	}
+
 	/**
 	 * Start the manager.
 	 */
 	public void start() {
 		this.thread = new Thread(this);
 		this.thread.start();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
+		int index = 1;
+		for (final ConcurrentTrainingPerformer performer : this.performers) {
+			builder.append("Performer ");
+			builder.append(index++);
+			builder.append(": ");
+			builder.append(performer.toString());
+			builder.append("\n");
+		}
+		return builder.toString();
 	}
 
 	/**
@@ -325,7 +378,7 @@ public final class ConcurrentTrainingManager implements Runnable {
 				if (result == null) {
 					try {
 						this.mightBeDone.await();
-					} catch (InterruptedException e) {
+					} catch (final InterruptedException e) {
 						return null;
 					}
 				}
@@ -337,42 +390,5 @@ public final class ConcurrentTrainingManager implements Runnable {
 		}
 
 	}
-
-	public void jobDone(long time, ConcurrentTrainingPerformerCPU perf) {
-		try {
-			this.jobNumber++;
-			this.reportStatus("Job finished in " + time + "ms, on " + perf.toString() );
-			this.accessLock.lock();
-			this.mightBeDone.signal();
-		} finally {
-			this.accessLock.unlock();
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		int index = 1;
-		for (ConcurrentTrainingPerformer performer : this.performers) {
-			builder.append("Performer ");
-			builder.append(index++);
-			builder.append(": ");
-			builder.append(performer.toString());
-			builder.append("\n");
-		}
-		return builder.toString();
-	}
-
-	public boolean isSingleThreaded() {
-		return singleThreaded;
-	}
-
-	public void setSingleThreaded(boolean singleThreaded) {
-		this.singleThreaded = singleThreaded;
-	}
-
-
 
 }

@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains the classes for CPN networks.
+ */
 package org.encog.neural.cpn;
 

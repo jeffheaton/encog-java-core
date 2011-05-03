@@ -79,55 +79,52 @@ public class AnalyzeNetwork {
 
 	/**
 	 * Construct a network analyze class. Analyze the specified network.
-	 *
+	 * 
 	 * @param network
 	 *            The network to analyze.
 	 */
 	public AnalyzeNetwork(final BasicNetwork network) {
-		int assignDisabled = 0;
-		int assignedTotal = 0;
+		final int assignDisabled = 0;
+		final int assignedTotal = 0;
 		final List<Double> biasList = new ArrayList<Double>();
 		final List<Double> weightList = new ArrayList<Double>();
 		final List<Double> allList = new ArrayList<Double>();
 
-		for(int layerNumber=0;layerNumber<network.getLayerCount()-1;layerNumber++)
-		{
-			int fromCount = network.getLayerNeuronCount(layerNumber);
-			int fromBiasCount = network.getLayerTotalNeuronCount(layerNumber);
-			int toCount = network.getLayerNeuronCount(layerNumber+1);
-			
+		for (int layerNumber = 0; layerNumber < network.getLayerCount() - 1; layerNumber++) {
+			final int fromCount = network.getLayerNeuronCount(layerNumber);
+			final int fromBiasCount = network
+					.getLayerTotalNeuronCount(layerNumber);
+			final int toCount = network.getLayerNeuronCount(layerNumber + 1);
+
 			// weights
-			for(int fromNeuron = 0; fromNeuron<fromCount; fromNeuron++)
-			{
-				for(int toNeuron = 0; toNeuron<toCount; toNeuron++)
-				{
-					double v = network.getWeight(layerNumber, fromNeuron, toNeuron);
+			for (int fromNeuron = 0; fromNeuron < fromCount; fromNeuron++) {
+				for (int toNeuron = 0; toNeuron < toCount; toNeuron++) {
+					final double v = network.getWeight(layerNumber, fromNeuron,
+							toNeuron);
 					weightList.add(v);
 					allList.add(v);
 				}
 			}
-			
+
 			// bias
-			if( fromCount!=fromBiasCount ) {
-				int biasNeuron = fromCount;
-				for(int toNeuron = 0; toNeuron<toCount; toNeuron++)
-				{
-					double v = network.getWeight(layerNumber, biasNeuron, toNeuron);
+			if (fromCount != fromBiasCount) {
+				final int biasNeuron = fromCount;
+				for (int toNeuron = 0; toNeuron < toCount; toNeuron++) {
+					final double v = network.getWeight(layerNumber, biasNeuron,
+							toNeuron);
 					biasList.add(v);
 					allList.add(v);
 				}
 			}
 		}
-		
+
 		for (final Layer layer : network.getStructure().getLayers()) {
 			if (layer.hasBias()) {
 				for (int i = 0; i < layer.getNeuronCount(); i++) {
-					
+
 				}
 			}
 		}
-
-		
 
 		this.disabledConnections = assignDisabled;
 		this.totalConnections = assignedTotal;
@@ -142,56 +139,56 @@ public class AnalyzeNetwork {
 	/**
 	 * @return All of the values in the neural network.
 	 */
-	public double[] getAllValues() {
+	public final double[] getAllValues() {
 		return this.allValues;
 	}
 
 	/**
 	 * @return The numeric range of the bias values.
 	 */
-	public NumericRange getBias() {
+	public final NumericRange getBias() {
 		return this.bias;
 	}
 
 	/**
 	 * @return The bias values in the neural network.
 	 */
-	public double[] getBiasValues() {
+	public final double[] getBiasValues() {
 		return this.biasValues;
 	}
 
 	/**
 	 * @return The number of disabled connections in the network.
 	 */
-	public int getDisabledConnections() {
+	public final int getDisabledConnections() {
 		return this.disabledConnections;
 	}
 
 	/**
 	 * @return The total number of connections in the network.
 	 */
-	public int getTotalConnections() {
+	public final int getTotalConnections() {
 		return this.totalConnections;
 	}
 
 	/**
 	 * @return The numeric range of the weights values.
 	 */
-	public NumericRange getWeights() {
+	public final NumericRange getWeights() {
 		return this.weights;
 	}
 
 	/**
 	 * @return The numeric range of the weights and bias values.
 	 */
-	public NumericRange getWeightsAndBias() {
+	public final NumericRange getWeightsAndBias() {
 		return this.weightsAndBias;
 	}
 
 	/**
 	 * @return The weight values in the neural network.
 	 */
-	public double[] getWeightValues() {
+	public final double[] getWeightValues() {
 		return this.weightValues;
 	}
 
@@ -199,7 +196,7 @@ public class AnalyzeNetwork {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		final StringBuilder result = new StringBuilder();
 		result.append("All Values : ");
 		result.append(this.weightsAndBias.toString());

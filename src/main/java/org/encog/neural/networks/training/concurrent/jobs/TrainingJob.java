@@ -66,43 +66,23 @@ public abstract class TrainingJob {
 	 * Holds any errors that occur during training.
 	 */
 	private Throwable error;
-	
-	/**
-	 * The number of iterations per cycle.
-	 */
-	private int iterationsPer;
-	
-	/**
-	 * The local ratio.
-	 */
-	private double localRatio;
-	
-	/**
-	 * The global ratio.
-	 */
-	private int globalRatio;
-	
-	/**
-	 * The segmentation ratio.
-	 */
-	private double segmentationRatio;
 
 	/**
 	 * Construct a training job.
-	 * @param network The network to train.
-	 * @param training The training data to use.
-	 * @param loadToMemory True, if binary data should be loaded to memory.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param training
+	 *            The training data to use.
+	 * @param loadToMemory
+	 *            True, if binary data should be loaded to memory.
 	 */
-	public TrainingJob(final BasicNetwork network,
-			final MLDataSet training, final boolean loadToMemory) {
+	public TrainingJob(final BasicNetwork network, final MLDataSet training,
+			final boolean loadToMemory) {
 		super();
 		this.network = network;
 		this.training = training;
 		this.loadToMemory = loadToMemory;
-		this.iterationsPer = 1;
-		this.localRatio = 1.0;
-		this.globalRatio = 1;
-		this.segmentationRatio = 1.0;
 	}
 
 	/**
@@ -113,42 +93,42 @@ public abstract class TrainingJob {
 	/**
 	 * @return the error
 	 */
-	public Throwable getError() {
+	public final Throwable getError() {
 		return this.error;
 	}
 
 	/**
 	 * @return the network
 	 */
-	public BasicNetwork getNetwork() {
+	public final BasicNetwork getNetwork() {
 		return this.network;
 	}
 
 	/**
 	 * @return the strategies
 	 */
-	public List<Strategy> getStrategies() {
+	public final List<Strategy> getStrategies() {
 		return this.strategies;
 	}
 
 	/**
 	 * @return the train
 	 */
-	public MLTrain getTrain() {
+	public final MLTrain getTrain() {
 		return this.train;
 	}
 
 	/**
 	 * @return the training
 	 */
-	public MLDataSet getTraining() {
+	public final MLDataSet getTraining() {
 		return this.training;
 	}
 
 	/**
 	 * @return the loadToMemory
 	 */
-	public boolean isLoadToMemory() {
+	public final boolean isLoadToMemory() {
 		return this.loadToMemory;
 	}
 
@@ -156,7 +136,7 @@ public abstract class TrainingJob {
 	 * @param error
 	 *            the error to set
 	 */
-	public void setError(final Throwable error) {
+	public final void setError(final Throwable error) {
 		this.error = error;
 	}
 
@@ -164,7 +144,7 @@ public abstract class TrainingJob {
 	 * @param loadToMemory
 	 *            the loadToMemory to set
 	 */
-	public void setLoadToMemory(final boolean loadToMemory) {
+	public final void setLoadToMemory(final boolean loadToMemory) {
 		this.loadToMemory = loadToMemory;
 	}
 
@@ -172,7 +152,7 @@ public abstract class TrainingJob {
 	 * @param network
 	 *            the network to set
 	 */
-	public void setNetwork(final BasicNetwork network) {
+	public final void setNetwork(final BasicNetwork network) {
 		this.network = network;
 	}
 
@@ -180,7 +160,7 @@ public abstract class TrainingJob {
 	 * @param train
 	 *            the train to set
 	 */
-	public void setTrain(final MLTrain train) {
+	public final void setTrain(final MLTrain train) {
 		this.train = train;
 	}
 
@@ -188,14 +168,14 @@ public abstract class TrainingJob {
 	 * @param training
 	 *            the training to set
 	 */
-	public void setTraining(final MLDataSet training) {
+	public final void setTraining(final MLDataSet training) {
 		this.training = training;
 	}
 
 	/**
 	 * @return True, if training should continue.
 	 */
-	public boolean shouldContinue() {
+	public final boolean shouldContinue() {
 		for (final Strategy strategy : this.train.getStrategies()) {
 			if (strategy instanceof EndTrainingStrategy) {
 				final EndTrainingStrategy end = (EndTrainingStrategy) strategy;
@@ -207,46 +187,4 @@ public abstract class TrainingJob {
 		}
 		return true;
 	}
-
-	/**
-	 * @return the iterationsPer
-	 */
-	public int getIterationsPer() {
-		return iterationsPer;
-	}
-
-	/**
-	 * @param iterationsPer the iterationsPer to set
-	 */
-	public void setIterationsPer(int iterationsPer) {
-		this.iterationsPer = iterationsPer;
-	}
-
-	public double getLocalRatio() {
-		return localRatio;
-	}
-
-	public void setLocalRatio(double localRatio) {
-		this.localRatio = localRatio;
-	}
-
-	public int getGlobalRatio() {
-		return globalRatio;
-	}
-
-	public void setGlobalRatio(int globalRatio) {
-		this.globalRatio = globalRatio;
-	}
-
-	public double getSegmentationRatio() {
-		return segmentationRatio;
-	}
-
-	public void setSegmentationRatio(double segmentationRatio) {
-		this.segmentationRatio = segmentationRatio;
-	}
-
-	
-	
-
 }

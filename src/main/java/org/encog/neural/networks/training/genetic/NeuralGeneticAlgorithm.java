@@ -27,7 +27,6 @@ import org.encog.mathutil.randomize.Randomizer;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.genetic.BasicGeneticAlgorithm;
-import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.crossover.Splice;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.mutate.MutatePerturb;
@@ -67,7 +66,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 		/**
 		 * @return The error from the last iteration.
 		 */
-		public double getError() {
+		public final double getError() {
 			final Genome genome = getPopulation().getBest();
 			return genome.getScore();
 		}
@@ -77,7 +76,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 		 * 
 		 * @return The current best neural network.
 		 */
-		public MLMethod getMethod() {
+		public final MLMethod getMethod() {
 			final Genome genome = getPopulation().getBest();
 			return (BasicNetwork) genome.getOrganism();
 		}
@@ -135,29 +134,56 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final boolean canContinue() {
+		return false;
+	}
+
+	/**
 	 * @return The genetic algorithm implementation.
 	 */
-	public NeuralGeneticAlgorithmHelper getGenetic() {
+	public final NeuralGeneticAlgorithmHelper getGenetic() {
 		return this.genetic;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public MLMethod getMethod() {
+	@Override
+	public final MLMethod getMethod() {
 		return getGenetic().getMethod();
 	}
 
 	/**
 	 * Perform one training iteration.
 	 */
-	public void iteration() {
+	@Override
+	public final void iteration() {
 
-		EncogLogging.log(EncogLogging.LEVEL_INFO, "Performing Genetic iteration.");
+		EncogLogging.log(EncogLogging.LEVEL_INFO,
+				"Performing Genetic iteration.");
 		preIteration();
 		getGenetic().iteration();
 		setError(getGenetic().getError());
 		postIteration();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final TrainingContinuation pause() {
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void resume(final TrainingContinuation state) {
+
 	}
 
 	/**
@@ -166,23 +192,8 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 	 * @param genetic
 	 *            The genetic helper class.
 	 */
-	public void setGenetic(final NeuralGeneticAlgorithmHelper genetic) {
+	public final void setGenetic(final NeuralGeneticAlgorithmHelper genetic) {
 		this.genetic = genetic;
-	}
-	
-	@Override
-	public boolean canContinue() {
-		return false;
-	}
-
-	@Override
-	public TrainingContinuation pause() {
-		return null;
-	}
-
-	@Override
-	public void resume(TrainingContinuation state) {
-		
 	}
 
 }

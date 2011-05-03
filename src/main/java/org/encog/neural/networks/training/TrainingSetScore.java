@@ -54,7 +54,7 @@ public class TrainingSetScore implements CalculateScore {
 	 * @param method The network to calculate for.
 	 * @return The score.
 	 */
-	public double calculateScore(final MLRegression method) {
+	public final double calculateScore(final MLRegression method) {
 		return CalculateRegressionError.calculateError(method, this.training);
 	}
 
@@ -63,7 +63,7 @@ public class TrainingSetScore implements CalculateScore {
 	 * as a result, this method always returns true.
 	 * @return Returns true.
 	 */
-	public boolean shouldMinimize() {
+	public final boolean shouldMinimize() {
 		return true;
 	}
 

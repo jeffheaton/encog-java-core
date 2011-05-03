@@ -23,6 +23,10 @@
  */
 package org.encog.neural.networks.training.pnn;
 
+/**
+ * Calculate criteria.
+ *
+ */
 public interface CalculationCriteria {
 
 	/**

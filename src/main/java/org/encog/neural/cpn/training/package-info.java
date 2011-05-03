@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains the instar and outstar training for the network.
+ */
 package org.encog.neural.cpn.training;
 

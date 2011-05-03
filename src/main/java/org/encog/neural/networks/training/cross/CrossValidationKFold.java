@@ -115,18 +115,27 @@ public class CrossValidationKFold extends CrossTraining {
 		setError(error / getFolded().getNumFolds());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public boolean canContinue() {
+	public final boolean canContinue() {
 		return false;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public TrainingContinuation pause() {
+	public final TrainingContinuation pause() {
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void resume(TrainingContinuation state) {
+	public final void resume(TrainingContinuation state) {
 		
 	}
 

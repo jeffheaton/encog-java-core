@@ -46,7 +46,7 @@ public class BPROPJob extends TrainingJob {
 
 	/**
 	 * Construct a job definition for RPROP. For more information on backprop,
-	 * see the Backpropagation class.  Use OpenCLratio of 1.0 and process one
+	 * see the Backpropagation class. Use OpenCLratio of 1.0 and process one
 	 * iteration per cycle.
 	 * 
 	 * @param network
@@ -63,56 +63,25 @@ public class BPROPJob extends TrainingJob {
 	public BPROPJob(final BasicNetwork network, final MLDataSet training,
 			final boolean loadToMemory, final double learningRate,
 			final double momentum) {
-		this(network,training,loadToMemory,learningRate,momentum,1.0,1,1.0,1);
-	}
-	
-	/**
-	 * Construct a job definition for RPROP. For more information on backprop,
-	 * see the Backpropagation class.
-	 * 
-	 * @param network
-	 *            The network to use.
-	 * @param training
-	 *            The training data to use.
-	 * @param loadToMemory
-	 *            Should binary data be loaded to memory?
-	 * @param learningRate
-	 *            THe learning rate to use.
-	 * @param momentum
-	 *            The momentum to use.
-	 * @param localRatio
-	 * 		The local ratio, used if this job is performed by an OpenCL Device.
-	 * @param globalRatio
-	 * 		The global ratio, used if this job is performed by an OpenCL Device.
-	 * @param segmentationRatio
-	 * 		The segmentation ratio, used if this job is performed by an OpenCL Device.
-	 * @param iterationsPer
-	 * 			How many iterations to process per cycle.
-	 */
-	public BPROPJob(final BasicNetwork network, final MLDataSet training,
-			final boolean loadToMemory, final double learningRate,
-			final double momentum, final double localRatio, final int globalRatio, final double segmentationRatio, final int iterationsPer) {
 		super(network, training, loadToMemory);
 		this.learningRate = learningRate;
 		this.momentum = momentum;
-		this.setLocalRatio(localRatio);
-		this.setGlobalRatio(globalRatio);
-		this.setSegmentationRatio(segmentationRatio);
-		this.setIterationsPer(iterationsPer);
+
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void createTrainer(boolean singleThreaded) {
-		final Propagation train = new Backpropagation(getNetwork(), getTraining(),
-				getLearningRate(), getMomentum());
-		
-		if( singleThreaded )
+	public final void createTrainer(final boolean singleThreaded) {
+		final Propagation train = new Backpropagation(getNetwork(),
+				getTraining(), getLearningRate(), getMomentum());
+
+		if (singleThreaded) {
 			train.setNumThreads(1);
-		else
+		} else {
 			train.setNumThreads(0);
+		}
 
 		for (final Strategy strategy : getStrategies()) {
 			train.addStrategy(strategy);
@@ -124,14 +93,14 @@ public class BPROPJob extends TrainingJob {
 	/**
 	 * @return the learningRate
 	 */
-	public double getLearningRate() {
+	public final double getLearningRate() {
 		return this.learningRate;
 	}
 
 	/**
 	 * @return the momentum
 	 */
-	public double getMomentum() {
+	public final double getMomentum() {
 		return this.momentum;
 	}
 
@@ -139,7 +108,7 @@ public class BPROPJob extends TrainingJob {
 	 * @param learningRate
 	 *            the learningRate to set
 	 */
-	public void setLearningRate(final double learningRate) {
+	public final void setLearningRate(final double learningRate) {
 		this.learningRate = learningRate;
 	}
 
@@ -147,7 +116,7 @@ public class BPROPJob extends TrainingJob {
 	 * @param momentum
 	 *            the momentum to set
 	 */
-	public void setMomentum(final double momentum) {
+	public final void setMomentum(final double momentum) {
 		this.momentum = momentum;
 	}
 

@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains the flat training methods.
+ */
 package org.encog.neural.flat.train;
 

@@ -45,7 +45,7 @@ public class FlatLayer {
 	/**
 	 * The bias activation, usually 1 for bias or 0 for no bias.
 	 */
-	private final double biasActivation;
+	private double biasActivation;
 
 	/**
 	 * The layer that feeds this layer's context.
@@ -54,7 +54,7 @@ public class FlatLayer {
 
 	/**
 	 * Construct a flat layer.
-	 *
+	 * 
 	 * @param activation
 	 *            The activation function.
 	 * @param count
@@ -73,21 +73,25 @@ public class FlatLayer {
 	/**
 	 * @return the activation
 	 */
-	public ActivationFunction getActivation() {
+	public final ActivationFunction getActivation() {
 		return this.activation;
 	}
 
 	/**
 	 * @return Get the bias activation.
 	 */
-	public double getBiasActivation() {
-		return this.biasActivation;
+	public final double getBiasActivation() {
+		if (hasBias()) {
+			return this.biasActivation;
+		} else {
+			return 0;
+		}
 	}
 
 	/**
 	 * @return The number of neurons our context is fed by.
 	 */
-	public int getContextCount() {
+	public final int getContextCount() {
 		if (this.contextFedBy == null) {
 			return 0;
 		} else {
@@ -98,14 +102,14 @@ public class FlatLayer {
 	/**
 	 * @return The layer that feeds this layer's context.
 	 */
-	public FlatLayer getContextFedBy() {
+	public final FlatLayer getContextFedBy() {
 		return this.contextFedBy;
 	}
 
 	/**
 	 * @return the count
 	 */
-	public int getCount() {
+	public final int getCount() {
 		return this.count;
 	}
 
@@ -113,11 +117,11 @@ public class FlatLayer {
 	 * @return The total number of neurons on this layer, includes context, bias
 	 *         and regular.
 	 */
-	public int getTotalCount() {
+	public final int getTotalCount() {
 		if (this.contextFedBy == null) {
-			return getCount() + (isBias() ? 1 : 0);
+			return getCount() + (hasBias() ? 1 : 0);
 		} else {
-			return getCount() + (isBias() ? 1 : 0)
+			return getCount() + (hasBias() ? 1 : 0)
 					+ this.contextFedBy.getCount();
 		}
 	}
@@ -125,17 +129,35 @@ public class FlatLayer {
 	/**
 	 * @return the bias
 	 */
-	public boolean isBias() {
+	public final boolean hasBias() {
 		return Math.abs(this.biasActivation) > Encog.DEFAULT_DOUBLE_EQUAL;
 	}
 
 	/**
+	 * @param activation
+	 *            the activation to set
+	 */
+	public final void setActivation(final ActivationFunction activation) {
+		this.activation = activation;
+	}
+
+	/**
+	 * Set the bias activation.
+	 * 
+	 * @param a
+	 *            The bias activation.
+	 */
+	public void setBiasActivation(final double a) {
+		this.biasActivation = a;
+	}
+
+	/**
 	 * Set the layer that this layer's context is fed by.
-	 *
+	 * 
 	 * @param from
 	 *            The layer feeding.
 	 */
-	public void setContextFedBy(final FlatLayer from) {
+	public final void setContextFedBy(final FlatLayer from) {
 		this.contextFedBy = from;
 	}
 
@@ -143,13 +165,15 @@ public class FlatLayer {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		final StringBuilder result = new StringBuilder();
-		result.append("[FlatLayer: count=");
+		result.append("[");
+		result.append(this.getClass().getSimpleName());
+		result.append(": count=");
 		result.append(this.count);
 		result.append(",bias=");
 
-		if (isBias()) {
+		if (hasBias()) {
 			result.append(this.biasActivation);
 		} else {
 			result.append("false");
@@ -166,12 +190,4 @@ public class FlatLayer {
 		return result.toString();
 	}
 
-	/**
-	 * @param activation the activation to set
-	 */
-	public final void setActivation(ActivationFunction activation) {
-		this.activation = activation;
-	}
-	
-	
 }

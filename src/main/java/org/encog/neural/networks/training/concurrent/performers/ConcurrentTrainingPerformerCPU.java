@@ -48,21 +48,42 @@ public class ConcurrentTrainingPerformerCPU implements
 	 * The current job.
 	 */
 	private TrainingJob currentJob;
-	
-	private ConcurrentTrainingManager manager;
-	
-	private int number;
 
-	public ConcurrentTrainingPerformerCPU(int number)
-	{
+	/**
+	 * The manager.
+	 */
+	private ConcurrentTrainingManager manager;
+
+	/**
+	 * The job number.
+	 */
+	private final int number;
+
+	/**
+	 * Construct the performer.
+	 * @param number
+	 */
+	public ConcurrentTrainingPerformerCPU(final int number) {
 		this.number = number;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void perform(final TrainingJob job) {
+	public final ConcurrentTrainingManager getManager() {
+		return this.manager;
+	}
+
+	public final int getNumber() {
+		return this.number;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void perform(final TrainingJob job) {
 		if (!this.ready.get()) {
 			throw new NeuralNetworkError(
 					"Performer is already performing a job.");
@@ -71,7 +92,7 @@ public class ConcurrentTrainingPerformerCPU implements
 		this.ready.set(false);
 		this.currentJob = job;
 
-		PerformerTask task = new PerformerTask(this);
+		final PerformerTask task = new PerformerTask(this);
 		EngineConcurrency.getInstance().processTask(task);
 	}
 
@@ -79,24 +100,25 @@ public class ConcurrentTrainingPerformerCPU implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean ready() {
+	public final boolean ready() {
 		return this.ready.get();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void run() {
-		Stopwatch watch = new Stopwatch();
+	@Override
+	public final void run() {
+		final Stopwatch watch = new Stopwatch();
 		try {
 			watch.start();
-			
-			this.currentJob.createTrainer(manager.isSingleThreaded());
+
+			this.currentJob.createTrainer(this.manager.isSingleThreaded());
 			final MLTrain train = this.currentJob.getTrain();
 			int interation = 1;
 
 			while (this.currentJob.shouldContinue()) {
-				train.iteration(this.currentJob.getIterationsPer());
+				train.iteration();
 				interation++;
 			}
 			watch.stop();
@@ -104,36 +126,24 @@ public class ConcurrentTrainingPerformerCPU implements
 			this.currentJob.setError(t);
 		} finally {
 			this.ready.set(true);
-			this.manager.jobDone(watch.getElapsedMilliseconds(),this);
+			this.manager.jobDone(watch.getElapsedMilliseconds(), this);
 		}
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public String toString()
-	{
-		return "[CPU-Performer: " + this.number + "]";
-	}
-
-	public int getNumber() {
-		return number;
-	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public ConcurrentTrainingManager getManager() {
-		return manager;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setManager(ConcurrentTrainingManager manager) {
+	@Override
+	public final void setManager(final ConcurrentTrainingManager manager) {
 		this.manager = manager;
 	}
-	
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final String toString() {
+		return "[CPU-Performer: " + this.number + "]";
+	}
 
 }

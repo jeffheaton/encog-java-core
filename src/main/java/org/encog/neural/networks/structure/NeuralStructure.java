@@ -27,7 +27,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.flat.FlatLayer;
@@ -52,7 +51,6 @@ public class NeuralStructure implements Serializable {
 	 */
 	private static final long serialVersionUID = -2929683885395737817L;
 
-
 	/**
 	 * The layers in this neural network.
 	 */
@@ -72,11 +70,6 @@ public class NeuralStructure implements Serializable {
 	 * Are connections limited?
 	 */
 	private boolean connectionLimited;
-
-	/**
-	 * The next ID to be assigned to a layer.
-	 */
-	private int nextID = 1;
 
 	/**
 	 * The flattened form of the network.
@@ -99,23 +92,22 @@ public class NeuralStructure implements Serializable {
 	 * 
 	 * @return The size of the calculated array.
 	 */
-	public int calculateSize() {
+	public final int calculateSize() {
 		return NetworkCODEC.networkSize(this.network);
 	}
-
 
 	/**
 	 * Enforce that all connections are above the connection limit. Any
 	 * connections below this limit will be severed.
 	 */
-	public void enforceLimit() {
+	public final void enforceLimit() {
 		if (!this.connectionLimited) {
 			return;
 		}
-		
-		double[] weights = this.flat.getWeights();
-		
-		for(int i=0;i<weights.length;i++) {
+
+		final double[] weights = this.flat.getWeights();
+
+		for (int i = 0; i < weights.length; i++) {
 			if (Math.abs(weights[i]) < this.connectionLimit) {
 				weights[i] = 0;
 			}
@@ -148,25 +140,26 @@ public class NeuralStructure implements Serializable {
 	 * you are done adding layers to a network, or change the network's logic
 	 * property.
 	 */
-	public void finalizeStructure() {
-		
-		if( this.layers.size()<2 ) {
-			throw new NeuralNetworkError("There must be at least two layers before the structure is finalized.");
-		}
-		
-		FlatLayer[] flatLayers = new FlatLayer[this.layers.size()];		
+	public final void finalizeStructure() {
 
-		for(int i=0;i<this.layers.size();i++)
-		{
-			BasicLayer layer = (BasicLayer)this.layers.get(i);	
-			if( layer.getActivation()==null )
+		if (this.layers.size() < 2) {
+			throw new NeuralNetworkError(
+					"There must be at least two layers before the structure is finalized.");
+		}
+
+		final FlatLayer[] flatLayers = new FlatLayer[this.layers.size()];
+
+		for (int i = 0; i < this.layers.size(); i++) {
+			final BasicLayer layer = (BasicLayer) this.layers.get(i);
+			if (layer.getActivation() == null) {
 				layer.setActivation(new ActivationLinear());
+			}
 
 			flatLayers[i] = layer;
 		}
-				
+
 		this.flat = new FlatNetwork(flatLayers);
-		
+
 		finalizeLimit();
 		this.layers.clear();
 		enforceLimit();
@@ -175,14 +168,14 @@ public class NeuralStructure implements Serializable {
 	/**
 	 * @return The connection limit.
 	 */
-	public double getConnectionLimit() {
+	public final double getConnectionLimit() {
 		return this.connectionLimit;
 	}
 
 	/**
 	 * @return The flat network.
 	 */
-	public FlatNetwork getFlat() {
+	public final FlatNetwork getFlat() {
 		requireFlat();
 		return this.flat;
 	}
@@ -190,58 +183,59 @@ public class NeuralStructure implements Serializable {
 	/**
 	 * @return The layers in this neural network.
 	 */
-	public List<Layer> getLayers() {
+	public final List<Layer> getLayers() {
 		return this.layers;
 	}
 
 	/**
 	 * @return The network this structure belongs to.
 	 */
-	public BasicNetwork getNetwork() {
+	public final BasicNetwork getNetwork() {
 		return this.network;
 	}
 
 	/**
-	 * Get the next layer id.
-	 * 
-	 * @return The next layer id.
-	 */
-	public int getNextID() {
-		return this.nextID++;
-	}
-
-
-	/**
 	 * @return True if this is not a fully connected feedforward network.
 	 */
-	public boolean isConnectionLimited() {
+	public final boolean isConnectionLimited() {
 		return this.connectionLimited;
 	}
 
-	public void requireFlat() {
-		if( this.flat==null ) {
-			throw new NeuralNetworkError("Must call finalizeStructure before using this network.");
-		}		
+	/**
+	 * Throw an error if there is no flat network.
+	 */
+	public final void requireFlat() {
+		if (this.flat == null) {
+			throw new NeuralNetworkError(
+					"Must call finalizeStructure before using this network.");
+		}
 	}
 
-	public void updateProperties() {
-		if( this.network.getProperties().containsKey(BasicNetwork.TAG_LIMIT) ) {			
-			this.connectionLimit = this.network.getPropertyDouble(BasicNetwork.TAG_LIMIT);
+	/**
+	 * Set the flat network.
+	 * @param flat The flat network.
+	 */
+	public final void setFlat(final FlatNetwork flat) {
+		this.flat = flat;
+	}
+
+	/**
+	 * Update any properties from the property map.
+	 */
+	public final void updateProperties() {
+		if (this.network.getProperties().containsKey(BasicNetwork.TAG_LIMIT)) {
+			this.connectionLimit = this.network
+					.getPropertyDouble(BasicNetwork.TAG_LIMIT);
 			this.connectionLimited = true;
 		} else {
 			this.connectionLimited = false;
 			this.connectionLimit = 0;
 		}
-		
-		if( this.flat!=null ) {
+
+		if (this.flat != null) {
 			this.flat.setConnectionLimit(this.connectionLimit);
 		}
-		
-	}
 
-	public void setFlat(FlatNetwork flat) {
-		this.flat = flat;
-		
 	}
 
 }

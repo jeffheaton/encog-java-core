@@ -103,7 +103,8 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	private transient boolean[] inhibitF2;
 
 	/**
-	 * Tracks if there was no winner.
+	 * This is the value that is returned if there is no winner.  
+	 * This value is generally set to the number of classes, plus 1.
 	 */
 	private int noWinner;
 
@@ -378,6 +379,13 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 		return this.l;
 	}
 
+	/**
+	 * @return This is the value that is returned if there is no winner.  
+	 * This value is generally set to the index of the last classes, plus 1.
+	 * For example, if there were 3 classes, the network would return 0-2 to
+	 * represent what class was found, in this case the no winner property
+	 * would be set to 3.
+	 */
 	public final int getNoWinner() {
 		return this.noWinner;
 	}

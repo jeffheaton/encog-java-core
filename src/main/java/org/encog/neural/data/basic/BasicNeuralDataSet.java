@@ -26,15 +26,20 @@ package org.encog.neural.data.basic;
 import java.util.List;
 
 import org.encog.ml.data.MLDataPair;
-import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.data.NeuralDataSet;
 
 /**
- * This is an alias class for Encog 2.5 compatibility.  This class aliases 
- * BasicMLDataSet.  Newer code should use BasicMLDataSet in place of this class.
+ * This is an alias class for Encog 2.5 compatibility. This class aliases
+ * BasicMLDataSet. Newer code should use BasicMLDataSet in place of this class.
  */
-public class BasicNeuralDataSet extends BasicMLDataSet implements NeuralDataSet {
+public class BasicNeuralDataSet extends BasicMLDataSet 
+	implements NeuralDataSet {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8916242559498280598L;
 
 	/**
 	 * Construct empty.
@@ -45,26 +50,33 @@ public class BasicNeuralDataSet extends BasicMLDataSet implements NeuralDataSet 
 
 	/**
 	 * Construct from 2d arrays.
-	 * @param input The input.
-	 * @param ideal The ideal.
+	 * 
+	 * @param input
+	 *            The input.
+	 * @param ideal
+	 *            The ideal.
 	 */
-	public BasicNeuralDataSet(double[][] input, double[][] ideal) {
+	public BasicNeuralDataSet(final double[][] input, final double[][] ideal) {
 		super(input, ideal);
 	}
 
 	/**
 	 * Construct from another list.
-	 * @param theData The other list.
+	 * 
+	 * @param theData
+	 *            The other list.
 	 */
-	public BasicNeuralDataSet(List<MLDataPair> theData) {
+	public BasicNeuralDataSet(final List<MLDataPair> theData) {
 		super(theData);
 	}
 
 	/**
 	 * Construct from another object.
-	 * @param set The other object.
+	 * 
+	 * @param set
+	 *            The other object.
 	 */
-	public BasicNeuralDataSet(NeuralDataSet set) {
+	public BasicNeuralDataSet(final NeuralDataSet set) {
 		super(set);
 	}
 

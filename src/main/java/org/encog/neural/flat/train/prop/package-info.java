@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains the propagation training for flat networks.
+ */
 package org.encog.neural.flat.train.prop;
 

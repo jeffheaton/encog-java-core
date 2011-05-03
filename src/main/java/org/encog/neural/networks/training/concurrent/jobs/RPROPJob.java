@@ -38,12 +38,12 @@ public class RPROPJob extends TrainingJob {
 	/**
 	 * The initial update value.
 	 */
-	private double initialUpdate;
+	private double initialUpdate = RPROPConst.DEFAULT_INITIAL_UPDATE;
 
 	/**
 	 * The maximum step value.
 	 */
-	private double maxStep;
+	private double maxStep = RPROPConst.DEFAULT_MAX_STEP;
 
 	/**
 	 * Construct an RPROP job. For more information on RPROP see the
@@ -58,85 +58,23 @@ public class RPROPJob extends TrainingJob {
 	 */
 	public RPROPJob(final BasicNetwork network, final MLDataSet training,
 			final boolean loadToMemory) {
-		this(network,training,loadToMemory,RPROPConst.DEFAULT_INITIAL_UPDATE,RPROPConst.DEFAULT_MAX_STEP,1,1,1,1);
-	}
-
-	/**
-	 * Construct an RPROP job. For more information on RPROP see the
-	 * ResilientPropagation class.
-	 * 
-	 * @param network
-	 *            The network to train.
-	 * @param training
-	 *            The training data to use.
-	 * @param loadToMemory
-	 *            True if binary training data should be loaded to memory.
-	 * @param localRatio
-	 * 		The local ratio, used if this job is performed by an OpenCL Device.
-	 * @param globalRatio
-	 * 		The global ratio, used if this job is performed by an OpenCL Device.
-	 * @param segmentationRatio
-	 * 		The segmentation ratio, used if this job is performed by an OpenCL Device.
-	 * @param iterationsPer
-	 * 			How many iterations to process per cycle.
-	 */
-	public RPROPJob(final BasicNetwork network, final MLDataSet training,
-			final boolean loadToMemory, final double localRatio, final int globalRatio, final double segmentationRatio, final int iterationsPer) {
-		
-		this(network,training,
-			loadToMemory,RPROPConst.DEFAULT_INITIAL_UPDATE,
-			RPROPConst.DEFAULT_MAX_STEP,localRatio,globalRatio,segmentationRatio,iterationsPer);
-	}
-	
-	/**
-	 * Construct an RPROP job. For more information on RPROP see the
-	 * ResilientPropagation class.
-	 * 
-	 * @param network
-	 *            The network to train.
-	 * @param training
-	 *            The training data to use.
-	 * @param loadToMemory
-	 *            True if binary training data should be loaded to memory.
-	 * @param initialUpdate
-	 *            The initial update.
-	 * @param maxStep
-	 *            The max step.
-	 * @param localRatio
-	 * 		The local ratio, used if this job is performed by an OpenCL Device.
-	 * @param globalRatio
-	 * 		The global ratio, used if this job is performed by an OpenCL Device.
-	 * @param segmentationRatio
-	 * 		The segmentation ratio, used if this job is performed by an OpenCL Device.
-	 * @param iterationsPer
-	 * 			How many iterations to process per cycle.
-	 */
-	public RPROPJob(final BasicNetwork network, final MLDataSet training,
-			final boolean loadToMemory, final double initialUpdate,
-			final double maxStep, final double localRatio, final int globalRatio, final double segmentationRatio, final int iterationsPer) {
 		super(network, training, loadToMemory);
-		this.initialUpdate = initialUpdate;
-		this.maxStep = maxStep;
-		this.setLocalRatio(localRatio);
-		this.setGlobalRatio(globalRatio);
-		this.setSegmentationRatio(segmentationRatio);
-		this.setIterationsPer(iterationsPer);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void createTrainer(boolean singleThreaded) {
+	public final void createTrainer(final boolean singleThreaded) {
 		final Propagation train = new ResilientPropagation(getNetwork(),
 				getTraining(), getInitialUpdate(), getMaxStep());
 
-		if( singleThreaded )
+		if (singleThreaded) {
 			train.setNumThreads(1);
-		else
+		} else {
 			train.setNumThreads(0);
-			
-		
+		}
+
 		for (final Strategy strategy : getStrategies()) {
 			train.addStrategy(strategy);
 		}
@@ -147,14 +85,14 @@ public class RPROPJob extends TrainingJob {
 	/**
 	 * @return the initialUpdate
 	 */
-	public double getInitialUpdate() {
+	public final double getInitialUpdate() {
 		return this.initialUpdate;
 	}
 
 	/**
 	 * @return the maxStep
 	 */
-	public double getMaxStep() {
+	public final double getMaxStep() {
 		return this.maxStep;
 	}
 
@@ -162,7 +100,7 @@ public class RPROPJob extends TrainingJob {
 	 * @param initialUpdate
 	 *            the initialUpdate to set
 	 */
-	public void setInitialUpdate(final double initialUpdate) {
+	public final void setInitialUpdate(final double initialUpdate) {
 		this.initialUpdate = initialUpdate;
 	}
 
@@ -170,7 +108,7 @@ public class RPROPJob extends TrainingJob {
 	 * @param maxStep
 	 *            the maxStep to set
 	 */
-	public void setMaxStep(final double maxStep) {
+	public final void setMaxStep(final double maxStep) {
 		this.maxStep = maxStep;
 	}
 

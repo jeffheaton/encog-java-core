@@ -21,5 +21,9 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * Flat neural networks are Encog's higher performance implementation 
+ * of multi-layer networks.
+ */
 package org.encog.neural.flat;
 

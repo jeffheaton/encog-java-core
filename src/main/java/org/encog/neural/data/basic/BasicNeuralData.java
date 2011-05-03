@@ -27,32 +27,43 @@ import org.encog.ml.data.basic.BasicMLData;
 import org.encog.neural.data.NeuralData;
 
 /**
- * This is an alias class for Encog 2.5 compatibility.  This class aliases 
- * BasicMLData.  Newer code should use BasicMLData in place of this class.
+ * This is an alias class for Encog 2.5 compatibility. This class aliases
+ * BasicMLData. Newer code should use BasicMLData in place of this class.
  */
 public class BasicNeuralData extends BasicMLData {
 
 	/**
-	 * Construct from a double array.
-	 * @param d A double array.
+	 * 
 	 */
-	public BasicNeuralData(double[] d) {
+	private static final long serialVersionUID = 1524371205985251772L;
+
+	/**
+	 * Construct from a double array.
+	 * 
+	 * @param d
+	 *            A double array.
+	 */
+	public BasicNeuralData(final double[] d) {
 		super(d);
 	}
 
 	/**
 	 * Construct to a specific size.
-	 * @param size The size to use.
+	 * 
+	 * @param size
+	 *            The size to use.
 	 */
-	public BasicNeuralData(int size) {
+	public BasicNeuralData(final int size) {
 		super(size);
 	}
 
 	/**
 	 * Construct from another object.
-	 * @param d The other object.
+	 * 
+	 * @param d
+	 *            The other object.
 	 */
-	public BasicNeuralData(NeuralData d) {
+	public BasicNeuralData(final NeuralData d) {
 		super(d);
 	}
 

@@ -74,8 +74,6 @@ public class BasicLayer extends FlatLayer implements Layer, Serializable {
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = -5682296868750703898L;
-	
-	private double biasActivation = 1.0;
 
 	/**
 	 * The network that this layer belongs to.
@@ -118,14 +116,6 @@ public class BasicLayer extends FlatLayer implements Layer, Serializable {
 	}
 
 	/**
-	 * @return True if a bias is present.
-	 */
-	public boolean hasBias() {		
-		return super.isBias();
-	}
-
-
-	/**
 	 * Set the network for this layer.
 	 *
 	 * @param network
@@ -137,39 +127,6 @@ public class BasicLayer extends FlatLayer implements Layer, Serializable {
 	
 	public int getNeuronCount() {
 		return this.getCount();
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		final StringBuilder result = new StringBuilder();
-		result.append("[");
-		result.append(this.getClass().getSimpleName());
-		result.append(": neuronCount=");
-		result.append(this.getNeuronCount());
-		result.append(']');
-		return result.toString();
-	}
-
-	/**
-	 * @return The bias activation, usually 1.  See Layer for more info.
-	 */
-	public double getBiasActivation() {
-		if( this.hasBias() )
-			return this.biasActivation;
-		else
-			return 0;
-	}
-
-	/**
-	 * Set the bias activation.  Generally 1, see Layer for more info.
-	 * @param activation The activation.
-	 */
-	public void setBiasActivation(final double activation) {
-		this.biasActivation = activation;
 	}
 
 	@Override

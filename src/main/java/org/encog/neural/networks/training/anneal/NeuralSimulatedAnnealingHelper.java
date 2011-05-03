@@ -62,7 +62,7 @@ public class NeuralSimulatedAnnealingHelper extends SimulatedAnnealing<Double> {
 	 * @return The error returned by the owner.
 	 */
 	@Override
-	public double calculateScore() {
+	public final double calculateScore() {
 		return owner.getCalculateScore().calculateScore(
 				this.owner.getMethod());
 	}
@@ -73,7 +73,7 @@ public class NeuralSimulatedAnnealingHelper extends SimulatedAnnealing<Double> {
 	 * @return The array returned by the owner.
 	 */
 	@Override
-	public Double[] getArray() {
+	public final Double[] getArray() {
 		return EngineArray.doubleToObject(owner.getArray());
 	}
 
@@ -83,7 +83,7 @@ public class NeuralSimulatedAnnealingHelper extends SimulatedAnnealing<Double> {
 	 * @return The array copy created by the owner.
 	 */
 	@Override
-	public Double[] getArrayCopy() {
+	public final Double[] getArrayCopy() {
 		return EngineArray.doubleToObject(owner.getArrayCopy());
 	}
 
@@ -92,7 +92,7 @@ public class NeuralSimulatedAnnealingHelper extends SimulatedAnnealing<Double> {
 	 * @param array The array.
 	 */
 	@Override
-	public void putArray(final Double[] array) {
+	public final void putArray(final Double[] array) {
 		owner.putArray(EngineArray.objectToDouble(array));
 	}
 
@@ -100,7 +100,7 @@ public class NeuralSimulatedAnnealingHelper extends SimulatedAnnealing<Double> {
 	 * Call the owner's randomize method.
 	 */
 	@Override
-	public void randomize() {
+	public final void randomize() {
 		owner.randomize();
 	}
 

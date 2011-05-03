@@ -32,23 +32,22 @@ import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.util.logging.EncogLogging;
 
 /**
- * This class implements a simulated annealing training algorithm for
- * neural networks. It is based on the generic SimulatedAnnealing class.
- * It is used in the same manner as any other training class that implements the
- * Train interface.  There are essentially two ways you can make use of this
- * class.
- *
- * Either way, you will need a score object.  The score object tells the
+ * This class implements a simulated annealing training algorithm for neural
+ * networks. It is based on the generic SimulatedAnnealing class. It is used in
+ * the same manner as any other training class that implements the Train
+ * interface. There are essentially two ways you can make use of this class.
+ * 
+ * Either way, you will need a score object. The score object tells the
  * simulated annealing algorithm how well suited a neural network is.
- *
- * If you would like to use simulated annealing with a training set you
- * should make use TrainingSetScore class.  This score object uses a training
- * set to score your neural network.
- *
- * If you would like to be more abstract, and not use a training set, you
- * can create your own implementation of the CalculateScore method.  This
- * class can then score the networks any way that you like.
- *
+ * 
+ * If you would like to use simulated annealing with a training set you should
+ * make use TrainingSetScore class. This score object uses a training set to
+ * score your neural network.
+ * 
+ * If you would like to be more abstract, and not use a training set, you can
+ * create your own implementation of the CalculateScore method. This class can
+ * then score the networks any way that you like.
+ * 
  */
 public class NeuralSimulatedAnnealing extends BasicTraining {
 
@@ -74,11 +73,11 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 
 	/**
 	 * Construct a simulated annleaing trainer for a feedforward neural network.
-	 *
+	 * 
 	 * @param network
 	 *            The neural network to be trained.
 	 * @param calculateScore
-	 * 			  Used to calculate the score for a neural network.
+	 *            Used to calculate the score for a neural network.
 	 * @param startTemp
 	 *            The starting temperature.
 	 * @param stopTemp
@@ -87,10 +86,8 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	 *            The number of cycles in a training iteration.
 	 */
 	public NeuralSimulatedAnnealing(final BasicNetwork network,
-			final CalculateScore calculateScore,
-			final double startTemp,
-			final double stopTemp,
-			final int cycles) {
+			final CalculateScore calculateScore, final double startTemp,
+			final double stopTemp, final int cycles) {
 		super(TrainingImplementationType.Iterative);
 		this.network = network;
 		this.calculateScore = calculateScore;
@@ -104,27 +101,17 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	/**
 	 * {@inheritDoc}
 	 */
-	public BasicNetwork getMethod() {
-		return this.network;
-	}
-
-	/**
-	 * Perform one iteration of simulated annealing.
-	 */
-	public void iteration() {
-		EncogLogging.log(EncogLogging.LEVEL_INFO, "Performing Simulated Annealing iteration.");
-		preIteration();
-		this.anneal.iteration();
-		setError(this.anneal.calculateScore());
-		postIteration();
+	@Override
+	public final boolean canContinue() {
+		return false;
 	}
 
 	/**
 	 * Get the network as an array of doubles.
-	 *
+	 * 
 	 * @return The network as an array of doubles.
 	 */
-	public double[] getArray() {
+	public final double[] getArray() {
 		return NetworkCODEC
 				.networkToArray(NeuralSimulatedAnnealing.this.network);
 	}
@@ -132,17 +119,50 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	/**
 	 * @return A copy of the annealing array.
 	 */
-	public double[] getArrayCopy() {
+	public final double[] getArrayCopy() {
 		return getArray();
 	}
 
 	/**
+	 * @return The object used to calculate the score.
+	 */
+	public final CalculateScore getCalculateScore() {
+		return this.calculateScore;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final BasicNetwork getMethod() {
+		return this.network;
+	}
+
+	/**
+	 * Perform one iteration of simulated annealing.
+	 */
+	@Override
+	public final void iteration() {
+		EncogLogging.log(EncogLogging.LEVEL_INFO,
+				"Performing Simulated Annealing iteration.");
+		preIteration();
+		this.anneal.iteration();
+		setError(this.anneal.calculateScore());
+		postIteration();
+	}
+
+	@Override
+	public TrainingContinuation pause() {
+		return null;
+	}
+
+	/**
 	 * Convert an array of doubles to the current best network.
-	 *
+	 * 
 	 * @param array
 	 *            An array.
 	 */
-	public void putArray(final double[] array) {
+	public final void putArray(final double[] array) {
 		NetworkCODEC.arrayToNetwork(array,
 				NeuralSimulatedAnnealing.this.network);
 	}
@@ -150,10 +170,10 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	/**
 	 * Randomize the weights and bias values. This function does most of the
 	 * work of the class. Each call to this class will randomize the data
-	 * according to the current temperature. The higher the temperature the
-	 * more randomness.
+	 * according to the current temperature. The higher the temperature the more
+	 * randomness.
 	 */
-	public void randomize() {
+	public final void randomize() {
 		final double[] array = NetworkCODEC
 				.networkToArray(NeuralSimulatedAnnealing.this.network);
 
@@ -169,27 +189,11 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	}
 
 	/**
-	 * @return The object used to calculate the score.
+	 * {@inheritDoc}
 	 */
-	public CalculateScore getCalculateScore() {
-		return calculateScore;
-	}
-
 	@Override
-	public boolean canContinue() {
-		return false;
+	public void resume(final TrainingContinuation state) {
+
 	}
-
-	@Override
-	public TrainingContinuation pause() {
-		return null;
-	}
-
-	@Override
-	public void resume(TrainingContinuation state) {
-		
-	}
-
-
 
 }
