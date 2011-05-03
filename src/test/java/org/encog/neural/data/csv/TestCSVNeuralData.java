@@ -1,5 +1,5 @@
 /*
- * Encog(tm) Core v3.0 Unit Test - Java Version
+ * Encog(tm) Core Unit Tests v3.0 - Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  
