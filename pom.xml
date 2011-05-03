@@ -77,27 +77,7 @@ Authors of this POM file: iirekm, jheaton
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-			
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2.1</version>
-				<configuration>
-					<descriptors>
-						<descriptor>src/main/assembly/release.xml</descriptor>
-          			</descriptors>
-        		</configuration>
-        		<executions>
-        			<execution>
-            			<id>make-assembly</id>
-            			<phase>package</phase>
-            			<goals>
-                			<goal>single</goal>
-            			</goals>
-        			</execution>
-    			</executions>        		
-        	</plugin>
-			
-
+		
 			<!-- build also source jar - useful for working in Eclipse -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -126,6 +106,25 @@ Authors of this POM file: iirekm, jheaton
 					</execution>
 				</executions>
 			</plugin>
+			
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2.1</version>
+				<configuration>
+					<descriptors>
+						<descriptor>src/main/assembly/release.xml</descriptor>
+          			</descriptors>
+        		</configuration>
+        		<executions>
+        			<execution>
+            			<id>make-assembly</id>
+            			<phase>package</phase>
+            			<goals>
+                			<goal>single</goal>
+            			</goals>
+        			</execution>
+    			</executions>        		
+        	</plugin>			
 			
 			<plugin>
         			<groupId>org.apache.maven.plugins</groupId>
