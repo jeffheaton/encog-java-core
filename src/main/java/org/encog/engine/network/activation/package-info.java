@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains all of the classes for activation functions.
+ */
 package org.encog.engine.network.activation;
 
