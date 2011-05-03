@@ -21,8 +21,14 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package defines the activation functions used by Encog neural networks.
- */
-package org.encog.neural.activation;
+package org.encog.neural.networks.training;
 
+import org.encog.ml.train.MLTrain;
+
+/**
+ * This is an alias class for Encog 2.5 compatibility.  This class aliases 
+ * MLTrain.  Newer code should use MLTrain in place of this class.
+ */
+public interface Train extends MLTrain {
+
+}

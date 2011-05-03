@@ -27,9 +27,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.activation.ActivationFunction;
-import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.flat.FlatLayer;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.networks.BasicNetwork;

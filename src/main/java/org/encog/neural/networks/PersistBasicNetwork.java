@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
-import org.encog.neural.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;

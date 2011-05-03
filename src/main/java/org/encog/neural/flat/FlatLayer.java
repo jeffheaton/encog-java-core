@@ -24,7 +24,7 @@
 package org.encog.neural.flat;
 
 import org.encog.Encog;
-import org.encog.neural.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationFunction;
 
 /**
  * Used to configure a flat layer. Flat layers are not kept by a Flat Network,

@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.Encog;
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.matrices.Matrix;
-import org.encog.neural.activation.ActivationFunction;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 

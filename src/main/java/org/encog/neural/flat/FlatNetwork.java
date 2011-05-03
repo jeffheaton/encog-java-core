@@ -29,14 +29,14 @@ import java.util.List;
 
 import org.encog.Encog;
 import org.encog.EncogError;
+import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationLinear;
+import org.encog.engine.network.activation.ActivationSigmoid;
+import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.neural.activation.ActivationFunction;
-import org.encog.neural.activation.ActivationLinear;
-import org.encog.neural.activation.ActivationSigmoid;
-import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.util.EngineArray;
 

@@ -30,8 +30,8 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.encog.app.analyst.AnalystError;
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.matrices.Matrix;
-import org.encog.neural.activation.ActivationFunction;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 

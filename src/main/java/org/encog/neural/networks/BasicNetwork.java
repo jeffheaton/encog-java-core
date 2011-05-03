@@ -24,6 +24,7 @@
 package org.encog.neural.networks;
 
 import org.encog.Encog;
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.BasicML;
@@ -37,7 +38,6 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.structure.NetworkCODEC;

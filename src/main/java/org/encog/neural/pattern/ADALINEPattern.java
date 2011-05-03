@@ -23,10 +23,10 @@
  */
 package org.encog.neural.pattern;
 
+import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.MLMethod;
-import org.encog.neural.activation.ActivationFunction;
-import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;

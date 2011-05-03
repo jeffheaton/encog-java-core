@@ -26,6 +26,8 @@ package org.encog.neural.neat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.BasicML;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLError;
@@ -34,8 +36,6 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.activation.ActivationFunction;
-import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.util.simple.EncogUtility;
 
 /**

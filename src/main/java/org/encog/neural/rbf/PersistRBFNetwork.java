@@ -5,8 +5,8 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.rbf.RadialBasisFunction;
-import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.flat.FlatNetworkRBF;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.persist.EncogFileSection;

@@ -2,11 +2,11 @@ package org.encog.neural.neat;
 
 import java.io.Serializable;
 
+import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationLinear;
+import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.genetic.population.BasicPopulation;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.activation.ActivationFunction;
-import org.encog.neural.activation.ActivationLinear;
-import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATInnovationList;
 

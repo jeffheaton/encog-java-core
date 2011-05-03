@@ -26,14 +26,14 @@ package org.encog.ml.factory.method;
 import java.util.List;
 
 import org.encog.EncogError;
+import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationLinear;
+import org.encog.engine.network.activation.ActivationSigmoid;
+import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.ml.MLMethod;
 import org.encog.ml.factory.parse.ArchitectureLayer;
 import org.encog.ml.factory.parse.ArchitectureParse;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.activation.ActivationFunction;
-import org.encog.neural.activation.ActivationLinear;
-import org.encog.neural.activation.ActivationSigmoid;
-import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 

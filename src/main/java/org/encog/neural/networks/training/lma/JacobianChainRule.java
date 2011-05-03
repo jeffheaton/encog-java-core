@@ -23,11 +23,11 @@
  */
 package org.encog.neural.networks.training.lma;
 
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.networks.BasicNetwork;
 
 /**
