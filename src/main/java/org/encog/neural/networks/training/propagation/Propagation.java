@@ -31,6 +31,7 @@ import org.encog.ml.train.BasicTraining;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.flat.train.TrainFlatNetwork;
 import org.encog.neural.networks.ContainsFlat;
+import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.util.EncogValidate;
 import org.encog.util.logging.EncogLogging;
@@ -43,7 +44,7 @@ import org.encog.util.logging.EncogLogging;
  * @author jheaton
  * 
  */
-public abstract class Propagation extends BasicTraining {
+public abstract class Propagation extends BasicTraining implements Train {
 
 	/**
 	 * The network.

@@ -58,6 +58,16 @@ public class FeedforwardFactory {
 	 */
 	public final MLMethod create(final String architecture, final int input,
 			final int output) {
+		
+		if( input<=0 ) {
+			throw new EncogError("Must have at least one input for feedforward.");
+		}
+		
+		if( output<=0 ) {
+			throw new EncogError("Must have at least one output for feedforward.");
+		}
+		
+		
 		final BasicNetwork result = new BasicNetwork();
 		final List<String> layers = ArchitectureParse.parseLayers(architecture);
 		ActivationFunction af = new ActivationLinear();

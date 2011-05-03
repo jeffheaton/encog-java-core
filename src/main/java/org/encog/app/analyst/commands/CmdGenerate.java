@@ -27,6 +27,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
@@ -81,7 +82,7 @@ public class CmdGenerate extends Cmd {
 			final AnalystField field = getAnalyst().getScript()
 					.findNormalizedField(baseName, slice);
 
-			if (field.isOutput()) {
+			if (field!=null && field.isOutput()) {
 				fields.add(currentIndex);
 			}
 		}
@@ -109,8 +110,8 @@ public class CmdGenerate extends Cmd {
 			final int slice = headerList.getSlice(currentIndex);
 			final AnalystField field = getAnalyst().getScript()
 					.findNormalizedField(baseName, slice);
-
-			if (field.isInput()) {
+			
+			if ( field!=null && field.isInput()) {
 				fields.add(currentIndex);
 			}
 		}
