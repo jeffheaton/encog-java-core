@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains data classes to get data from specific locations.
+ */
 package org.encog.ml.data.specific;
 

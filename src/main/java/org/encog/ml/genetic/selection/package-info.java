@@ -21,5 +21,9 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package is used for Encog Genetic Algorithms.  
+ * It holds selection methods.
+ */
 package org.encog.ml.genetic.selection;
 

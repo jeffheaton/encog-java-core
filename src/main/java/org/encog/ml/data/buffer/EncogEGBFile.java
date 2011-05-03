@@ -39,12 +39,12 @@ public class EncogEGBFile {
 	/**
 	 * The size of a double.
 	 */
-	public final static int DOUBLE_SIZE = Double.SIZE / 8;
+	public static final int DOUBLE_SIZE = Double.SIZE / 8;
 
 	/**
 	 * The size of the file header.
 	 */
-	public final static int HEADER_SIZE = EncogEGBFile.DOUBLE_SIZE * 3;
+	public static final int HEADER_SIZE = EncogEGBFile.DOUBLE_SIZE * 3;
 
 	/**
 	 * The file that we are working with.

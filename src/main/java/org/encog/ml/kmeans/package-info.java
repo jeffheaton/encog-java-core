@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package holds the classes used to implement kmeans clustering.
+ */
 package org.encog.ml.kmeans;
 

@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains all of the classes for support vector machines.
+ */
 package org.encog.ml.svm;
 

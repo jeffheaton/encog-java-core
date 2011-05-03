@@ -21,5 +21,9 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains classes used to allow images to be 
+ * Machine Learning Data.
+ */
 package org.encog.ml.data.image;
 

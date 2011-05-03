@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * THis package contains the classes for simulated annealing.
+ */
 package org.encog.ml.anneal;
 

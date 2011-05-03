@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package holds the classes used for SVM training.
+ */
 package org.encog.ml.svm.training;
 

@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package is used to create trainers.
+ */
 package org.encog.ml.factory.train;
 

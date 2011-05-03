@@ -21,5 +21,9 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package implements a folded data set.  This is useful for 
+ * cross validation.
+ */
 package org.encog.ml.data.buffer;
 

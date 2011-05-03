@@ -21,5 +21,9 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package is used to hold the classes used to implement genetic 
+ * algorithms for Encog.
+ */
 package org.encog.ml.genetic;
 

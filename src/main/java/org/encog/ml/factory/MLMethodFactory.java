@@ -77,6 +77,9 @@ public class MLMethodFactory {
 	 */
 	private final RBFNetworkFactory rbfFactory = new RBFNetworkFactory();
 	
+	/**
+	 * The factory for PNN's.
+	 */
 	private final PNNFactory pnnFactory = new PNNFactory();
 	
 	/**

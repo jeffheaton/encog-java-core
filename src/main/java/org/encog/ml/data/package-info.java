@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains classes to provide data to the Machine Learning Methods.
+ */
 package org.encog.ml.data;
 

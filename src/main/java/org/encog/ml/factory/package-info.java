@@ -21,5 +21,9 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains the Encog Machine Learning Factory.  This Factory 
+ * can create machine learning methods and trainers.
+ */
 package org.encog.ml.factory;
 

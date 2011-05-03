@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package implements a folded data set.
+ */
 package org.encog.ml.data.folded;
 

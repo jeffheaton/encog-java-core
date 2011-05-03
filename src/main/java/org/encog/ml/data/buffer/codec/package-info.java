@@ -21,5 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains classes used to encode/decode from the EGB format.
+ */
 package org.encog.ml.data.buffer.codec;
 
