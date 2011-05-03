@@ -21,9 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package defines many different interfaces that define how the
- * various Machine Learning methods work.
- */
 package org.encog.ml;
 

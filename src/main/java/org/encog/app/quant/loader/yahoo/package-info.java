@@ -21,9 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package contains all of the classes to download financial info 
- * from Yahoo.
- */
 package org.encog.app.quant.loader.yahoo;
 

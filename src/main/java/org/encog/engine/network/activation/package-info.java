@@ -21,8 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package defines the activation functions used by Encog neural networks.
- */
 package org.encog.engine.network.activation;
 

@@ -21,8 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package provides a method to sort a CSV.
- */
 package org.encog.app.analyst.csv.sort;
 

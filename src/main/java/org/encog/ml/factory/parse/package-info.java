@@ -21,8 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package provides classes used to parse architecture strings.
- */
 package org.encog.ml.factory.parse;
 

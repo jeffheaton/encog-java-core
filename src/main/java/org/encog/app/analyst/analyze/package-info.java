@@ -21,10 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-
-/**
- * This package contains all of the classes that the Encog analyst uses 
- * to analyze a CSV file. 
- */
 package org.encog.app.analyst.analyze;
 

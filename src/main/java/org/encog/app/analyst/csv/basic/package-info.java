@@ -21,8 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package provides basic CSV file handling for many of the CSV classes.
- */
 package org.encog.app.analyst.csv.basic;
 

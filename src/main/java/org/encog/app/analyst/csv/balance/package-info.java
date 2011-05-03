@@ -21,9 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package is used to balance CSV files, this keeps one class from 
- * having too many items.
- */
 package org.encog.app.analyst.csv.balance;
 

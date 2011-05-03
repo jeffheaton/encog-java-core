@@ -21,8 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package contains the script for the Encog analyst.
- */
 package org.encog.app.analyst.script;
 

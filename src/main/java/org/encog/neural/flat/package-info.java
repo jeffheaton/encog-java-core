@@ -21,14 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package contains the classes for flat networks.  Encog flat networks 
- * are a set of utility classes that are used by the higher level 
- * BasicNetwork and RBFNetwork classes.  The flat networks provide higher 
- * speed calculations than could be achieved with an object based network.  
- * The flat networks are also very useful for integration of GPU processing 
- * into Encog.
- *  
- */
 package org.encog.neural.flat;
 

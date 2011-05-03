@@ -21,21 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package contains the classes for adaptive resonance theory (ART) 
- * networks.
- * 
- * Adaptive Resonance Theory (ART) is a form of neural network developed 
- * by Stephen Grossberg and Gail Carpenter. There are several versions 
- * of the ART neural network, which are numbered ART-1, ART-2 and ART-3. 
- * The ART neural network is trained using either a supervised or 
- * unsupervised learning algorithm, depending on the version of ART being 
- * used. ART neural networks are used for pattern recognition and prediction.
- *
- * Plasticity is an important part for all Adaptive Resonance Theory (ART) 
- * neural networks. Unlike most neural networks, ART networks do not have 
- * a distinct training and usage stage. The ART network will learn as it is 
- * used. 
- */
 package org.encog.neural.art;
 

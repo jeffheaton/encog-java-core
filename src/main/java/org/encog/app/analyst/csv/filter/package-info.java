@@ -21,8 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package provides basic CSV files to be filtered based on fields.
- */
 package org.encog.app.analyst.csv.filter;
 

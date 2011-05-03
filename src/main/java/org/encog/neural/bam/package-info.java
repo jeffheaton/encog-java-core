@@ -21,9 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package contains the classes for BAM networks.
- *  
- */
 package org.encog.neural.bam;
 

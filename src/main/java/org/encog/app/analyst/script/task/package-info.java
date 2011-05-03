@@ -21,8 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package contains classes used to hold task info by the script.
- */
 package org.encog.app.analyst.script.task;
 

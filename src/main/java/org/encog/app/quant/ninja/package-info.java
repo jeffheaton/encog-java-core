@@ -21,9 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package contains all of the classes necessary to extract financial
- * information from NinjaTrader.
- */
 package org.encog.app.quant.ninja;
 

@@ -21,9 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package provides a method to segregate a CSV file into several 
- * other CSV files.
- */
 package org.encog.app.analyst.csv.segregate;
 

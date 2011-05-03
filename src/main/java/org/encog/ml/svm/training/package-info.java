@@ -21,9 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package provides classes to encode Encog datasets to libsvm,
- * as well as the SVM search trainer.
- */
 package org.encog.ml.svm.training;
 

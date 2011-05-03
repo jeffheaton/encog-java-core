@@ -21,9 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package provides classes to allow genetic algorithms to 
- * implement crossover.
- */
 package org.encog.ml.genetic.crossover;
 

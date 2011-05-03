@@ -21,9 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package contains Encog analyst wizard. The wizard can be used to 
- * automatically create an EGA (Encog Analyst) file for a CSV file.
- */
 package org.encog.app.analyst.wizard;
 

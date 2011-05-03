@@ -21,10 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package contains the training classes for the counter propagation 
- * neural network.
- *  
- */
 package org.encog.neural.cpn.training;
 

@@ -21,8 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package provides SVM support in Encog.
- */
 package org.encog.ml.svm;
 

@@ -21,8 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package contains subpackages for downloading financial information.
- */
 package org.encog.app.quant.loader;
 

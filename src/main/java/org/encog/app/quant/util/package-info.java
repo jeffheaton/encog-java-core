@@ -21,8 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package provides basic utilities for Encog CSV processing.
- */
 package org.encog.app.quant.util;
 

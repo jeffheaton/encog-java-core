@@ -21,8 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package provides classes to create training methods.
- */
 package org.encog.ml.factory.train;
 

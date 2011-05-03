@@ -21,8 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package contains all of the evaluation classes for the Encog analyst.
- */
 package org.encog.app.analyst.csv;
 

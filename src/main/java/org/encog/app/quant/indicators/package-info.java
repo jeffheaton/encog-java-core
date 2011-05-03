@@ -21,8 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * This package holds indicators.
- */
 package org.encog.app.quant.indicators;
 

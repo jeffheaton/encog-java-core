@@ -21,9 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-/**
- * Package basic implementations of MLData, MLDataPair and MLDataSet.
- * These implementations will be fine for most uses.
- */
 package org.encog.ml.data.basic;
 
