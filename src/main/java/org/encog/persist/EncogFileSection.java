@@ -60,7 +60,7 @@ public class EncogFileSection {
 			ActivationFunction af = null;
 			final String[] cols = value.split("\\|");
 
-			final String afName = "org.encog.neural.activation." + cols[0];
+			final String afName = "org.encog.engine.network.activation." + cols[0];
 			try {
 				final Class<?> clazz = Class.forName(afName);
 				af = (ActivationFunction) clazz.newInstance();

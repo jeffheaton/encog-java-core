@@ -61,7 +61,7 @@ public class PersistBasicNetwork implements EncogPersistor {
 				for(String line : section.getLines()) {
 					ActivationFunction af =  null;
 					List<String> cols = EncogFileSection.splitColumns(line);
-					String name = "org.encog.neural.activation." + cols.get(0);
+					String name = "org.encog.engine.network.activation." + cols.get(0);
 					try {
 						Class<?> clazz = Class.forName(name);
 						af = (ActivationFunction) clazz.newInstance();
