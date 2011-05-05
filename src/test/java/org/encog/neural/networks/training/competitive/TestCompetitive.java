@@ -33,7 +33,6 @@ import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.som.SOM;
 import org.encog.neural.som.training.basic.BasicTrainSOM;
 import org.encog.neural.som.training.basic.neighborhood.NeighborhoodSingle;
-import org.encog.util.logging.Logging;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -52,7 +51,6 @@ public class TestCompetitive extends TestCase  {
 	
 	@Test
 	public void testSOM() {
-		Logging.stopConsoleLogging();
 
 		// create the training set
 		final MLDataSet training = new BasicMLDataSet(

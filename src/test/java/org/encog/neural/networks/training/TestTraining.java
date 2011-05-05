@@ -43,7 +43,6 @@ import org.encog.neural.networks.training.propagation.scg.ScaledConjugateGradien
 import org.encog.neural.pnn.BasicPNN;
 import org.encog.neural.pnn.PNNKernelType;
 import org.encog.neural.pnn.PNNOutputMode;
-import org.encog.util.logging.Logging;
 import org.junit.Test;
 
 public class TestTraining extends TestCase   {
@@ -52,7 +51,6 @@ public class TestTraining extends TestCase   {
 	@Test
 	public void testRPROP() throws Throwable
 	{
-		Logging.stopConsoleLogging();
 		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
@@ -63,7 +61,6 @@ public class TestTraining extends TestCase   {
 	@Test
 	public void testLMA() throws Throwable
 	{
-		Logging.stopConsoleLogging();
 		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
@@ -74,7 +71,6 @@ public class TestTraining extends TestCase   {
 	@Test
 	public void testBPROP() throws Throwable
 	{
-		Logging.stopConsoleLogging();
 		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
@@ -86,7 +82,6 @@ public class TestTraining extends TestCase   {
 	@Test
 	public void testManhattan() throws Throwable
 	{
-		Logging.stopConsoleLogging();
 		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
@@ -97,7 +92,6 @@ public class TestTraining extends TestCase   {
 	@Test
 	public void testSCG() throws Throwable
 	{
-		Logging.stopConsoleLogging();
 		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
@@ -108,7 +102,6 @@ public class TestTraining extends TestCase   {
 	@Test
 	public void testAnneal() throws Throwable
 	{
-		Logging.stopConsoleLogging();
 		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		CalculateScore score = new TrainingSetScore(trainingData);
@@ -119,7 +112,6 @@ public class TestTraining extends TestCase   {
 	@Test
 	public void testGenetic() throws Throwable
 	{
-		Logging.stopConsoleLogging();
 		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		CalculateScore score = new TrainingSetScore(trainingData);
@@ -130,7 +122,6 @@ public class TestTraining extends TestCase   {
 	@Test
 	public void testRegPNN() throws Throwable
 	{
-		Logging.stopConsoleLogging();
 		
 		PNNOutputMode mode = PNNOutputMode.Regression;
 		BasicPNN network = new BasicPNN(PNNKernelType.Gaussian, mode, 2, 1);
@@ -147,7 +138,6 @@ public class TestTraining extends TestCase   {
 	@Test
 	public void testClassifyPNN() throws Throwable
 	{
-		Logging.stopConsoleLogging();
 		
 		PNNOutputMode mode = PNNOutputMode.Classification;
 		BasicPNN network = new BasicPNN(PNNKernelType.Gaussian, mode, 2, 2);

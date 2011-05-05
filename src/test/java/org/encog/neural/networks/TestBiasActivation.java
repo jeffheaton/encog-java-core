@@ -36,7 +36,6 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
-import org.encog.util.logging.Logging;
 
 public class TestBiasActivation extends TestCase {
 	
@@ -47,6 +46,8 @@ public class TestBiasActivation extends TestCase {
 		network.addLayer(layer1 = new BasicLayer(null, true,2));
 		network.addLayer(layer2 = new BasicLayer(new ActivationSigmoid(), true,4));
 		network.addLayer(new BasicLayer(new ActivationSigmoid(), false,1));
+		int i = 0;
+		i++;
 		layer1.setBiasActivation(0.5);
 		layer2.setBiasActivation(-1.0);
 		network.getStructure().finalizeStructure();
@@ -56,8 +57,8 @@ public class TestBiasActivation extends TestCase {
 		
 		Assert.assertNotNull(flat);
 		double[] layerOutput = flat.getLayerOutput();
-		Assert.assertEquals(layerOutput[5], -1.0);
-		Assert.assertEquals(layerOutput[8], 0.5);	
+		Assert.assertEquals(-1, layerOutput[5], 2 );
+		Assert.assertEquals(0.5, layerOutput[8], 2 );	
 	}
 	
 	public void testLayerOutputPostFinalize()
@@ -83,7 +84,6 @@ public class TestBiasActivation extends TestCase {
 	
 	public void testTrain()
 	{
-		Logging.stopConsoleLogging();
 		BasicNetwork network1 = NetworkUtil.createXORNetworkUntrained();
 		BasicNetwork network2 = (BasicNetwork)network1.clone();
 		BasicNetwork network3 = (BasicNetwork)network1.clone();

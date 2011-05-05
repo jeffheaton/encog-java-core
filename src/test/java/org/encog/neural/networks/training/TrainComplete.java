@@ -34,14 +34,12 @@ import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
-import org.encog.util.logging.Logging;
 import org.encog.util.simple.EncogUtility;
 
 public class TrainComplete extends TestCase {
 	
 	public void testCompleteTrain()
 	{
-		Logging.stopConsoleLogging();
 		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = EncogUtility.simpleFeedForward(2, 5, 7, 1, true);
