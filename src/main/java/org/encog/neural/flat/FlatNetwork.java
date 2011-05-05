@@ -381,7 +381,15 @@ public class FlatNetwork implements Serializable {
 
 		int index = this.weightIndex[currentLayer - 1];
 
-		final int limitX = outputIndex + outputSize;
+		index = Encog.getInstance().getCalculationPlugin().calculateLayer(
+				weights, 
+				layerOutput, 
+				index, 
+				outputIndex, 
+				outputSize, 
+				inputIndex, 
+				inputSize);
+		/*final int limitX = outputIndex + outputSize;
 		final int limitY = inputIndex + inputSize;
 
 		// weight values
@@ -391,7 +399,7 @@ public class FlatNetwork implements Serializable {
 				sum += this.weights[index++] * this.layerOutput[y];
 			}
 			this.layerOutput[x] = sum;
-		}
+		}*/
 
 		this.activationFunctions[currentLayer - 1].activationFunction(
 				this.layerOutput, outputIndex, outputSize);

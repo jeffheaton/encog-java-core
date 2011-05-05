@@ -23,6 +23,7 @@
  */
 package org.encog.neural.flat.train.gradient;
 
+import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.ml.data.MLDataPair;
@@ -212,6 +213,18 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 		final ActivationFunction activation = this.network
 				.getActivationFunctions()[currentLevel + 1];
 
+		Encog.getInstance().getCalculationPlugin().calculateGradient(
+				gradients, 
+				layerOutput, 
+				weights, 
+				layerDelta, 
+				activation, 
+				index, 
+				fromLayerIndex, 
+				fromLayerSize, 
+				toLayerIndex, 
+				toLayerSize);
+		/*
 		// handle weights
 		int yi = fromLayerIndex;
 		for (int y = 0; y < fromLayerSize; y++) {
@@ -229,7 +242,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 			this.layerDelta[yi] = sum
 					* activation.derivativeFunction(this.layerOutput[yi]);
 			yi++;
-		}
+		}*/
 	}
 
 	/**

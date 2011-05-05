@@ -25,9 +25,7 @@ package org.encog.plugin;
 
 public interface EncogPluginBase {
 	int getPluginType();
-	int getPluginFrameworkVersion();
-	int getPluginVersion();
+	int getPluginServiceType();
 	String getPluginName();
 	String getPluginDescription();
-	Object[] execute(String command,Object[] args);
 }
