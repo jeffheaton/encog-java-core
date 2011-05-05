@@ -31,7 +31,6 @@ import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.data.buffer.BufferedNeuralDataSet;
 import org.encog.util.Format;
-import org.encog.util.logging.Logging;
 
 /**
  * Benchmark Encog with several network types.
@@ -89,7 +88,6 @@ public class EncogBenchmark {
 	 * @return The total time, which is the final Encog benchmark score.
 	 */
 	public String process() {
-		Logging.stopConsoleLogging();
 		this.report.report(EncogBenchmark.STEPS, 0, "Beginning benchmark");
 
 		evalCPU();

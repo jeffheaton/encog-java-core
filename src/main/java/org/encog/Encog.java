@@ -23,12 +23,15 @@
  */
 package org.encog;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.encog.plugin.EncogPluginBase;
 import org.encog.plugin.EncogPluginType1;
 import org.encog.plugin.system.SystemCalculationPlugin;
+import org.encog.plugin.system.SystemLoggingPlugin;
 import org.encog.util.concurrency.EngineConcurrency;
 
 /**
@@ -76,8 +79,6 @@ public final class Encog {
 	 * The instance.
 	 */
 	private static Encog instance;
-	
-	private EncogPluginType1 calculationPlugin = new SystemCalculationPlugin();
 
 	/**
 	 * Get the instance to the singleton.
@@ -87,17 +88,33 @@ public final class Encog {
 	public static Encog getInstance() {
 		if (Encog.instance == null) {
 			Encog.instance = new Encog();
+			Encog.instance.registerPlugin(new SystemCalculationPlugin());
+			Encog.instance.registerPlugin(new SystemLoggingPlugin());
 		}
 		return Encog.instance;
 	}
+
+	/**
+	 * The current calculation plugin.
+	 */
+	private EncogPluginType1 calculationPlugin;
+
+	/**
+	 * The current logging plugin.
+	 */
+	private EncogPluginType1 loggingPlugin;
+
+	/**
+	 * The plugins.
+	 */
+	private final List<EncogPluginBase> plugins = new ArrayList<EncogPluginBase>();
 
 	/**
 	 * Get the properties as a Map.
 	 * 
 	 * @return The requested value.
 	 */
-	private final Map<String, String> properties 
-		= new HashMap<String, String>();
+	private final Map<String, String> properties = new HashMap<String, String>();
 
 	/**
 	 * Private constructor.
@@ -108,12 +125,67 @@ public final class Encog {
 	}
 
 	/**
+	 * @return the calculationPlugin
+	 */
+	public final EncogPluginType1 getCalculationPlugin() {
+		return this.calculationPlugin;
+	}
+
+	/**
 	 * @return the properties
 	 */
 	public Map<String, String> getProperties() {
 		return this.properties;
 	}
 
+	/**
+	 * Register a plugin. If this plugin provides a core service, such as
+	 * calculation or logging, this will remove the old plugin.
+	 * 
+	 * @param plugin
+	 *            The plugin to register.
+	 */
+	public void registerPlugin(final EncogPluginBase plugin) {
+		// is it not a general plugin?
+		if (plugin.getPluginServiceType() != EncogPluginType1.SERVICE_TYPE_GENERAL) {
+			if (plugin.getPluginServiceType() == EncogPluginType1.SERVICE_TYPE_CALCULATION) {
+				// remove the old calc plugin
+				if (this.calculationPlugin != null) {
+					this.plugins.remove(this.calculationPlugin);
+				}
+				this.calculationPlugin = (EncogPluginType1) plugin;
+			} else if (plugin.getPluginServiceType() == EncogPluginType1.SERVICE_TYPE_LOGGING) {
+				// remove the old logging plugin
+				if (this.loggingPlugin != null) {
+					this.plugins.remove(this.loggingPlugin);
+				}
+				this.loggingPlugin = (EncogPluginType1) plugin;
+			}
+		}
+		// add to the plugins
+		this.plugins.add(plugin);
+	}
+
+	/**
+	 * Unregister a plugin. If you unregister the current logging or calc
+	 * plugin, a new system one will be created. Encog will crash without a
+	 * logging or system plugin.
+	 * 
+	 * @param plugin The plugin.
+	 */
+	public void unregisterPlugin(final EncogPluginBase plugin) {
+
+		// is it a special plugin?
+		// if so, replace with the system, Encog will crash without these
+		if (plugin == this.loggingPlugin) {
+			this.loggingPlugin = new SystemLoggingPlugin();
+		} else if (plugin == this.calculationPlugin) {
+			this.calculationPlugin = new SystemCalculationPlugin();
+		}
+
+		// remove it
+		this.plugins.remove(plugin);
+	}
 
 	/**
 	 * Provides any shutdown that Encog may need. Currently this shuts down the
@@ -124,9 +196,11 @@ public final class Encog {
 	}
 
 	/**
-	 * @return the calculationPlugin
+	 * @return the loggingPlugin
 	 */
-	public final EncogPluginType1 getCalculationPlugin() {
-		return calculationPlugin;
+	public final EncogPluginType1 getLoggingPlugin() {
+		return loggingPlugin;
 	}
+	
+	
 }

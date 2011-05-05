@@ -99,4 +99,29 @@ public class SystemCalculationPlugin implements EncogPluginType1 {
 	public final int getPluginType() {
 		return 1;
 	}
+
+	@Override
+	public int getLogLevel() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	/**
+	 * Note used for this type of plug in.
+	 * @param level Not used.
+	 * @param message Not used.
+	 */
+	@Override
+	public void log(int level, String message) {
+		
+	}
+
+	/**
+	 * Note used for this type of plug in.
+	 * @param level Not used.
+	 * @param t Not used.
+	 */
+	@Override
+	public void log(int level, Throwable t) {		
+	}
 }

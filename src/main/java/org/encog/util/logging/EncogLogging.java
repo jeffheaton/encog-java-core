@@ -23,36 +23,82 @@
  */
 package org.encog.util.logging;
 
+import org.encog.Encog;
 
+/**
+ * This class provides logging for Encog. Programs using Encog can make use of
+ * it as well. All logging is passed on to the current logging plugin. By
+ * default the SystemLoggingPlugin is used.
+ * 
+ */
 public class EncogLogging {
-	
+
+	/**
+	 * The lowest level log type. Debug logging provides low-level Encog
+	 * diagnostics that may slow performance, but allow you to peer into the
+	 * inner workings.
+	 */
 	public static final int LEVEL_DEBUG = 0;
+
+	/**
+	 * Info logging tells you when major processes start and stop.
+	 */
 	public static final int LEVEL_INFO = 1;
+
+	/**
+	 * Error level tells you about errors, less important to critical.
+	 */
 	public static final int LEVEL_ERROR = 2;
+
+	/**
+	 * Critical logging logs errors that cannot be recovered from.
+	 */
 	public static final int LEVEL_CRITICAL = 3;
 	
-	public static int currentLevel;
-	
-	public synchronized int getCurrentLevel() {
-		return currentLevel;
-	}
-	
-	public synchronized void setCurrentLevel(int level) {
-		this.currentLevel = level;
-	}
-	
-	public static void log(int level, String message) {
-		
-	}
-	
-	public static void log(int level, Throwable t) { 
-		
+	/**
+	 * Logging is disabled at this level.
+	 */
+	public static final int LEVEL_DISABLE = 4;
+
+	/**
+	 * Log the message.
+	 * 
+	 * @param level
+	 *            The level to log at.
+	 * @param message
+	 *            The message to log.
+	 */
+	public static final void log(final int level, final String message) {
+		Encog.getInstance().getLoggingPlugin().log(level, message);
 	}
 
-	public static void log(Throwable t) {
-		log(LEVEL_ERROR,t);
-		
+	/**
+	 * Log the error.
+	 * 
+	 * @param level
+	 *            The level to log at.
+	 * @param t
+	 *            The exception to log.
+	 */
+	public static final void log(final int level, final Throwable t) {
+		Encog.getInstance().getLoggingPlugin().log(level, t);
 	}
-	
-	
+
+	/**
+	 * Log the error at ERROR level.
+	 * 
+	 * @param t
+	 *            The exception to log.
+	 */
+	public static final void log(final Throwable t) {
+		EncogLogging.log(EncogLogging.LEVEL_ERROR, t);
+	}
+
+	/**
+	 * @return The current logging level.
+	 */
+	public final int getCurrentLevel() {
+		return Encog.getInstance().getLoggingPlugin().getLogLevel();
+	}
+
 }

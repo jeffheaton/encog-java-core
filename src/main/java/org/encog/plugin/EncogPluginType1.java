@@ -50,4 +50,10 @@ public interface EncogPluginType1 extends EncogPluginBase {
 			int toLayerIndex,
 			int toLayerSize);
 	
+	int getLogLevel();
+	
+	void log(int level, String message);
+	
+	void log(int level, Throwable t);
+	
 }
