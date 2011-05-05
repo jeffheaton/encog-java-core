@@ -21,30 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package holds classes to implement plugins.
+ */
 package org.encog.plugin;
 
-/**
- * The base plugin for Encog.
- */
-public interface EncogPluginBase {
-	
-	/**
-	 * @return The type number for this plugin.
-	 */
-	int getPluginType();
-	
-	/**
-	 * @return The service type provided by this plugin.
-	 */
-	int getPluginServiceType();
-	
-	/**
-	 * @return The name of the plugin.
-	 */
-	String getPluginName();
-	
-	/**
-	 * @return The plugin description.
-	 */
-	String getPluginDescription();
-}

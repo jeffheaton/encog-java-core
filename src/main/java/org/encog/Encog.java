@@ -107,14 +107,16 @@ public final class Encog {
 	/**
 	 * The plugins.
 	 */
-	private final List<EncogPluginBase> plugins = new ArrayList<EncogPluginBase>();
+	private final List<EncogPluginBase> plugins 
+		= new ArrayList<EncogPluginBase>();
 
 	/**
 	 * Get the properties as a Map.
 	 * 
 	 * @return The requested value.
 	 */
-	private final Map<String, String> properties = new HashMap<String, String>();
+	private final Map<String, String> properties 
+		= new HashMap<String, String>();
 
 	/**
 	 * Private constructor.
@@ -127,7 +129,7 @@ public final class Encog {
 	/**
 	 * @return the calculationPlugin
 	 */
-	public final EncogPluginType1 getCalculationPlugin() {
+	public EncogPluginType1 getCalculationPlugin() {
 		return this.calculationPlugin;
 	}
 
@@ -147,14 +149,17 @@ public final class Encog {
 	 */
 	public void registerPlugin(final EncogPluginBase plugin) {
 		// is it not a general plugin?
-		if (plugin.getPluginServiceType() != EncogPluginType1.SERVICE_TYPE_GENERAL) {
-			if (plugin.getPluginServiceType() == EncogPluginType1.SERVICE_TYPE_CALCULATION) {
+		if (plugin.getPluginServiceType() 
+				!= EncogPluginType1.SERVICE_TYPE_GENERAL) {
+			if (plugin.getPluginServiceType() 
+					== EncogPluginType1.SERVICE_TYPE_CALCULATION) {
 				// remove the old calc plugin
 				if (this.calculationPlugin != null) {
 					this.plugins.remove(this.calculationPlugin);
 				}
 				this.calculationPlugin = (EncogPluginType1) plugin;
-			} else if (plugin.getPluginServiceType() == EncogPluginType1.SERVICE_TYPE_LOGGING) {
+			} else if (plugin.getPluginServiceType() 
+					== EncogPluginType1.SERVICE_TYPE_LOGGING) {
 				// remove the old logging plugin
 				if (this.loggingPlugin != null) {
 					this.plugins.remove(this.loggingPlugin);

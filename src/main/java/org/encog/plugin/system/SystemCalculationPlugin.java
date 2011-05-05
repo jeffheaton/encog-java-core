@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.plugin.system;
 
 import org.encog.engine.network.activation.ActivationFunction;
@@ -9,6 +32,33 @@ import org.encog.plugin.EncogPluginType1;
  * 
  */
 public class SystemCalculationPlugin implements EncogPluginType1 {
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void calculateGradient(final double[] gradients,
+			final double[] layerOutput, final double[] weights,
+			final double[] layerDelta, final ActivationFunction af,
+			final int index, final int fromLayerIndex, final int fromLayerSize,
+			final int toLayerIndex, final int toLayerSize) {
+		int yi = fromLayerIndex;
+		for (int y = 0; y < fromLayerSize; y++) {
+			final double output = layerOutput[yi];
+			double sum = 0;
+			int xi = toLayerIndex;
+			int wi = index + y;
+			for (int x = 0; x < toLayerSize; x++) {
+				gradients[wi] += output * layerDelta[xi];
+				sum += weights[wi] * layerDelta[xi];
+				wi += fromLayerSize;
+				xi++;
+			}
+
+			layerDelta[yi] = sum * af.derivativeFunction(layerOutput[yi]);
+			yi++;
+		}
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -34,35 +84,14 @@ public class SystemCalculationPlugin implements EncogPluginType1 {
 
 		return index;
 	}
-	
-	public void calculateGradient(
-			double[] gradients, 
-			double[] layerOutput, 
-			double[] weights,
-			double[] layerDelta,
-			ActivationFunction af,
-			int index,
-			int fromLayerIndex,
-			int fromLayerSize,
-			int toLayerIndex,
-			int toLayerSize) {
-		int yi = fromLayerIndex;
-		for (int y = 0; y < fromLayerSize; y++) {
-			final double output = layerOutput[yi];
-			double sum = 0;
-			int xi = toLayerIndex;
-			int wi = index + y;
-			for (int x = 0; x < toLayerSize; x++) {
-				gradients[wi] += output * layerDelta[xi];
-				sum += weights[wi] * layerDelta[xi];
-				wi += fromLayerSize;
-				xi++;
-			}
 
-			layerDelta[yi] = sum
-					* af.derivativeFunction(layerOutput[yi]);
-			yi++;
-		}
+	/**
+	 * Not used for this type of plugin.
+	 * @return Not used.
+	 */
+	@Override
+	public final int getLogLevel() {
+		return 0;
 	}
 
 	/**
@@ -100,28 +129,28 @@ public class SystemCalculationPlugin implements EncogPluginType1 {
 		return 1;
 	}
 
+	/**
+	 * Note used for this type of plug in.
+	 * 
+	 * @param level
+	 *            Not used.
+	 * @param message
+	 *            Not used.
+	 */
 	@Override
-	public int getLogLevel() {
-		// TODO Auto-generated method stub
-		return 0;
+	public void log(final int level, final String message) {
+
 	}
 
 	/**
 	 * Note used for this type of plug in.
-	 * @param level Not used.
-	 * @param message Not used.
+	 * 
+	 * @param level
+	 *            Not used.
+	 * @param t
+	 *            Not used.
 	 */
 	@Override
-	public void log(int level, String message) {
-		
-	}
-
-	/**
-	 * Note used for this type of plug in.
-	 * @param level Not used.
-	 * @param t Not used.
-	 */
-	@Override
-	public void log(int level, Throwable t) {		
+	public void log(final int level, final Throwable t) {
 	}
 }

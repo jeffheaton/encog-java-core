@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.plugin.system;
 
 import java.io.PrintWriter;
@@ -9,13 +32,35 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.plugin.EncogPluginType1;
 import org.encog.util.logging.EncogLogging;
 
+/**
+ * This is the built-in logging plugin for Encog. This plugin provides simple
+ * file and console logging.
+ * 
+ */
 public class SystemLoggingPlugin implements EncogPluginType1 {
+
+	/**
+	 * Create a stack trace.
+	 * 
+	 * @param aThrowable
+	 *            The throwable to create the trace for.
+	 * @return The stack trace as a string.
+	 */
+	public static String getStackTrace(final Throwable aThrowable) {
+		final Writer result = new StringWriter();
+		final PrintWriter printWriter = new PrintWriter(result);
+		aThrowable.printStackTrace(printWriter);
+		return result.toString();
+	}
 
 	/**
 	 * The current level.
 	 */
 	private int currentLevel = EncogLogging.LEVEL_DISABLE;
 
+	/**
+	 * True if we are logging to the console.
+	 */
 	private boolean logConsole = false;
 
 	/**
@@ -43,7 +88,7 @@ public class SystemLoggingPlugin implements EncogPluginType1 {
 	 *            Not used.
 	 */
 	@Override
-	public void calculateGradient(final double[] gradients,
+	public final void calculateGradient(final double[] gradients,
 			final double[] layerOutput, final double[] weights,
 			final double[] layerDelta, final ActivationFunction af,
 			final int index, final int fromLayerIndex, final int fromLayerSize,
@@ -82,7 +127,7 @@ public class SystemLoggingPlugin implements EncogPluginType1 {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getLogLevel() {
+	public final int getLogLevel() {
 		return this.currentLevel;
 	}
 
@@ -121,12 +166,20 @@ public class SystemLoggingPlugin implements EncogPluginType1 {
 		return 1;
 	}
 
+	/**
+	 * Log the message.
+	 * 
+	 * @param level
+	 *            The logging level.
+	 * @param message
+	 *            The logging message.
+	 */
 	@Override
-	public void log(final int level, final String message) {
+	public final void log(final int level, final String message) {
 
 		if (this.currentLevel < level) {
-			Date now = new Date();
-			StringBuilder line = new StringBuilder();
+			final Date now = new Date();
+			final StringBuilder line = new StringBuilder();
 			line.append(now.toString());
 			line.append(" [");
 			switch (this.currentLevel) {
@@ -141,6 +194,9 @@ public class SystemLoggingPlugin implements EncogPluginType1 {
 				break;
 			case EncogLogging.LEVEL_DEBUG:
 				line.append("DEBUG");
+				break;
+			default:
+				line.append("?");
 				break;
 			}
 			line.append("][");
@@ -158,32 +214,39 @@ public class SystemLoggingPlugin implements EncogPluginType1 {
 			}
 		}
 	}
-	
-	  public static String getStackTrace(Throwable aThrowable) {
-		    final Writer result = new StringWriter();
-		    final PrintWriter printWriter = new PrintWriter(result);
-		    aThrowable.printStackTrace(printWriter);
-		    return result.toString();
-		  }
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void log(final int level, final Throwable t) {
-		log(level,getStackTrace(t));
+	public final void log(final int level, final Throwable t) {
+		log(level, SystemLoggingPlugin.getStackTrace(t));
 	}
 
-	public void setLogLevel(final int level) {
+	/**
+	 * Set the logging level.
+	 * 
+	 * @param level
+	 *            The logging level.
+	 */
+	public final void setLogLevel(final int level) {
 		this.currentLevel = level;
 	}
-	
-	public void stopLogging() {
-		
-	}
-	
-	public void startConsoleLogging() {
+
+	/**
+	 * Start logging to the console.
+	 */
+	public final void startConsoleLogging() {
 		stopLogging();
 		this.logConsole = true;
 		setLogLevel(EncogLogging.LEVEL_DEBUG);
+	}
+
+	/**
+	 * Stop any console or file logging.
+	 */
+	public final void stopLogging() {
+		this.logConsole = false;
 	}
 
 }
