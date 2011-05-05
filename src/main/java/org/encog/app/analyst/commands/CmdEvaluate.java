@@ -31,6 +31,7 @@ import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.ml.MLMethod;
 import org.encog.persist.EncogDirectoryPersistence;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * This class is used to evaluate a machine learning method. Evaluation data is
@@ -68,6 +69,13 @@ public class CmdEvaluate extends Cmd {
 
 		final String outputID = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_OUTPUT_FILE);
+		
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
+			"Beginning evaluate");
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
+				"evaluate file:" + evalID);
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
+				"resource file:" + resourceID);
 
 		final File evalFile = getScript().resolveFilename(evalID);
 		final File resourceFile = getScript().resolveFilename(resourceID);

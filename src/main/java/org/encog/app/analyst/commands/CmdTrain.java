@@ -35,6 +35,7 @@ import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.training.cross.CrossValidationKFold;
 import org.encog.persist.EncogDirectoryPersistence;
+import org.encog.util.logging.EncogLogging;
 import org.encog.util.simple.EncogUtility;
 import org.encog.util.validate.ValidateNetwork;
 
@@ -78,6 +79,10 @@ public class CmdTrain extends Cmd {
 				ScriptProperties.ML_TRAIN_TYPE);
 		final String args = getProp().getPropertyString(
 				ScriptProperties.ML_TRAIN_ARGUMENTS);
+		
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "training type:" + type);
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "training args:" + args);
+
 
 		MLTrain train = factory.create(method, trainingSet, type, args);
 
@@ -98,6 +103,8 @@ public class CmdTrain extends Cmd {
 		final MLDataSet trainingSet = obtainTrainingSet();
 		final MLMethod method = obtainMethod();
 		final MLTrain trainer = createTrainer(method, trainingSet);
+		
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Beginning training");
 
 		performTraining(trainer, method, trainingSet);
 
@@ -106,6 +113,7 @@ public class CmdTrain extends Cmd {
 		final File resourceFile = getAnalyst().getScript().resolveFilename(
 				resourceID);
 		EncogDirectoryPersistence.saveObject(resourceFile, method);
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "save to:" + resourceID);
 
 		return getAnalyst().shouldStopCommand();
 	}

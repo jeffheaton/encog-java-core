@@ -30,6 +30,7 @@ import org.encog.app.analyst.csv.normalize.AnalystNormalizeCSV;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.util.csv.CSVFormat;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * The normalize command is used to normalize data. Data normalization generally
@@ -46,7 +47,8 @@ public class CmdNormalize extends Cmd {
 	/**
 	 * Construct the normalize command.
 	 * 
-	 * @param theAnalyst The analyst to use.
+	 * @param theAnalyst
+	 *            The analyst to use.
 	 */
 	public CmdNormalize(final EncogAnalyst theAnalyst) {
 		super(theAnalyst);
@@ -65,6 +67,10 @@ public class CmdNormalize extends Cmd {
 
 		final File sourceFile = getScript().resolveFilename(sourceID);
 		final File targetFile = getScript().resolveFilename(targetID);
+
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Beginning normalize");
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "source file:" + sourceID);
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "target file:" + targetID);
 
 		// mark generated
 		getScript().markGenerated(targetID);

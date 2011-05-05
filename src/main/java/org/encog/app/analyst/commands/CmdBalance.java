@@ -32,6 +32,7 @@ import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.util.csv.CSVFormat;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * Performs the balance command. This allows large classes to have members
@@ -65,6 +66,13 @@ public class CmdBalance extends Cmd {
 				ScriptProperties.BALANCE_CONFIG_SOURCE_FILE);
 		final String targetID = getProp().getPropertyString(
 				ScriptProperties.BALANCE_CONFIG_TARGET_FILE);
+		
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
+			"Beginning balance");
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
+			"source file:" + sourceID);
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
+			"target file:" + targetID);
 
 		final File sourceFile = getScript().resolveFilename(sourceID);
 		final File targetFile = getScript().resolveFilename(targetID);

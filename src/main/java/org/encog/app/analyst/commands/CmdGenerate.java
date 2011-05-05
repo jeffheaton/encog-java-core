@@ -33,6 +33,7 @@ import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.CSVHeaders;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.util.csv.CSVFormat;
+import org.encog.util.logging.EncogLogging;
 import org.encog.util.simple.EncogUtility;
 
 /**
@@ -49,7 +50,9 @@ public class CmdGenerate extends Cmd {
 
 	/**
 	 * Construct this generate command.
-	 * @param analyst The analyst to use.
+	 * 
+	 * @param analyst
+	 *            The analyst to use.
 	 */
 	public CmdGenerate(final EncogAnalyst analyst) {
 		super(analyst);
@@ -57,7 +60,9 @@ public class CmdGenerate extends Cmd {
 
 	/**
 	 * Determine the ideal fields.
-	 * @param headerList The headers.
+	 * 
+	 * @param headerList
+	 *            The headers.
 	 * @return The indexes of the ideal fields.
 	 */
 	private int[] determineIdealFields(final CSVHeaders headerList) {
@@ -74,8 +79,7 @@ public class CmdGenerate extends Cmd {
 
 		final List<Integer> fields = new ArrayList<Integer>();
 
-		for (int currentIndex = 0; currentIndex < headerList.size(); 
-			currentIndex++) {
+		for (int currentIndex = 0; currentIndex < headerList.size(); currentIndex++) {
 			final String baseName = headerList.getBaseHeader(currentIndex);
 			final int slice = headerList.getSlice(currentIndex);
 			final AnalystField field = getAnalyst().getScript()
@@ -97,19 +101,20 @@ public class CmdGenerate extends Cmd {
 
 	/**
 	 * Determine the input fields.
-	 * @param headerList The headers.
+	 * 
+	 * @param headerList
+	 *            The headers.
 	 * @return The indexes of the input fields.
 	 */
 	private int[] determineInputFields(final CSVHeaders headerList) {
 		final List<Integer> fields = new ArrayList<Integer>();
 
-		for (int currentIndex = 0; currentIndex < headerList.size(); 
-			currentIndex++) {
+		for (int currentIndex = 0; currentIndex < headerList.size(); currentIndex++) {
 			final String baseName = headerList.getBaseHeader(currentIndex);
 			final int slice = headerList.getSlice(currentIndex);
 			final AnalystField field = getAnalyst().getScript()
 					.findNormalizedField(baseName, slice);
-			
+
 			if (field != null && field.isInput()) {
 				fields.add(currentIndex);
 			}
@@ -136,6 +141,10 @@ public class CmdGenerate extends Cmd {
 				ScriptProperties.GENERATE_CONFIG_TARGET_FILE);
 		final CSVFormat format = getAnalyst().getScript().determineInputFormat(
 				sourceID);
+
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Beginning generate");
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "source file:" + sourceID);
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "target file:" + targetID);
 
 		final File sourceFile = getScript().resolveFilename(sourceID);
 		final File targetFile = getScript().resolveFilename(targetID);

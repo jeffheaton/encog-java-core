@@ -30,6 +30,7 @@ import org.encog.app.analyst.csv.AnalystClusterCSV;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.util.csv.CSVFormat;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * This command is used to randomize the lines in a CSV file.
@@ -70,6 +71,15 @@ public class CmdCluster extends Cmd {
 		final int clusters = getProp().getPropertyInt(
 				ScriptProperties.CLUSTER_CONFIG_CLUSTERS);
 		getProp().getPropertyString(ScriptProperties.CLUSTER_CONFIG_TYPE);
+		
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
+			"Beginning cluster");
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
+				"source file:" + sourceID);
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
+				"target file:" + targetID);
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
+				"clusters:" + clusters);
 
 		final File sourceFile = getScript().resolveFilename(sourceID);
 		final File targetFile = getScript().resolveFilename(targetID);

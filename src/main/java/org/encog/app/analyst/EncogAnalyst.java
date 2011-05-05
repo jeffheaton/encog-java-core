@@ -59,6 +59,7 @@ import org.encog.app.quant.QuantTask;
 import org.encog.bot.BotUtil;
 import org.encog.ml.train.MLTrain;
 import org.encog.util.Format;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * The Encog Analyst runs Encog Analyst Script files (EGA) to perform many
@@ -396,6 +397,8 @@ public class EncogAnalyst {
 		final int total = task.getLines().size();
 		int current = 1;
 		for (String line : task.getLines()) {
+			EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
+					"Execute analyst line: " + line);
 			reportCommandBegin(total, current, line);
 			line = line.trim();
 			boolean canceled = false;
@@ -435,6 +438,8 @@ public class EncogAnalyst {
 	 * @param name The name of the task to execute.
 	 */
 	public final void executeTask(final String name) {
+		EncogLogging.log(EncogLogging.LEVEL_INFO, 
+				"Analyst execute task:" + name);
 		final AnalystTask task = this.script.getTask(name);
 		if (task == null) {
 			throw new AnalystError("Can't find task: " + name);

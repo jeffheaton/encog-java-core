@@ -203,7 +203,7 @@ public final class Encog {
 	/**
 	 * @return the loggingPlugin
 	 */
-	public final EncogPluginType1 getLoggingPlugin() {
+	public EncogPluginType1 getLoggingPlugin() {
 		return loggingPlugin;
 	}
 	

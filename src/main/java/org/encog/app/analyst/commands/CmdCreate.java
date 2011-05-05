@@ -31,6 +31,7 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.data.buffer.EncogEGBFile;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.persist.EncogDirectoryPersistence;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * The Encog Analyst create command. This command is used to create a Machine
@@ -70,6 +71,17 @@ public class CmdCreate extends Cmd {
 				ScriptProperties.ML_CONFIG_TYPE);
 		final String arch = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_ARCHITECTURE);
+				
+			EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
+				"Beginning create");
+			EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
+					"training file:" + trainingID);
+			EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
+					"resource file:" + resourceID);	
+			EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
+					"type:" + type);
+			EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
+					"arch:" + arch);	
 
 		final EncogEGBFile egb = new EncogEGBFile(trainingFile);
 		egb.open();

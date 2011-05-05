@@ -30,6 +30,7 @@ import org.encog.app.analyst.csv.shuffle.ShuffleCSV;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.util.csv.CSVFormat;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * This command is used to randomize the lines in a CSV file.
@@ -44,7 +45,9 @@ public class CmdRandomize extends Cmd {
 
 	/**
 	 * Construct the randomize command.
-	 * @param analyst The analyst to use.
+	 * 
+	 * @param analyst
+	 *            The analyst to use.
 	 */
 	public CmdRandomize(final EncogAnalyst analyst) {
 		super(analyst);
@@ -60,6 +63,10 @@ public class CmdRandomize extends Cmd {
 				ScriptProperties.RANDOMIZE_CONFIG_SOURCE_FILE);
 		final String targetID = getProp().getPropertyString(
 				ScriptProperties.RANDOMIZE_CONFIG_TARGET_FILE);
+
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Beginning randomize");
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "source file:" + sourceID);
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "target file:" + targetID);
 
 		final File sourceFile = getScript().resolveFilename(sourceID);
 		final File targetFile = getScript().resolveFilename(targetID);

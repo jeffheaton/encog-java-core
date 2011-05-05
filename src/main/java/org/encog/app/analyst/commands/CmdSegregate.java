@@ -31,7 +31,9 @@ import org.encog.app.analyst.csv.segregate.SegregateTargetPercent;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.util.AnalystReportBridge;
+import org.encog.util.Format;
 import org.encog.util.csv.CSVFormat;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * This command is used to segregate one CSV file into several. This can be
@@ -48,7 +50,8 @@ public class CmdSegregate extends Cmd {
 	/**
 	 * Construct the segregate command.
 	 * 
-	 * @param analyst The analyst to use.
+	 * @param analyst
+	 *            The analyst to use.
 	 */
 	public CmdSegregate(final EncogAnalyst analyst) {
 		super(analyst);
@@ -64,6 +67,9 @@ public class CmdSegregate extends Cmd {
 				ScriptProperties.SEGREGATE_CONFIG_SOURCE_FILE);
 
 		final File sourceFile = getScript().resolveFilename(sourceID);
+
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Beginning segregate");
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "source file:" + sourceID);
 
 		// get formats
 		final CSVFormat inputFormat = getScript()
@@ -82,6 +88,10 @@ public class CmdSegregate extends Cmd {
 					new SegregateTargetPercent(filename, target.getPercent()));
 			// mark generated
 			getScript().markGenerated(target.getFile());
+			EncogLogging.log(EncogLogging.LEVEL_DEBUG, "target file:"
+					+ target.getFile() + ", Percent: " 
+					+ Format.formatPercent(target.getPercent()));
+
 		}
 
 		seg.setReport(new AnalystReportBridge(getAnalyst()));
