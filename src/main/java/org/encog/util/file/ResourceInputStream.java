@@ -23,6 +23,7 @@
  */
 package org.encog.util.file;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.encog.EncogError;
@@ -49,6 +50,17 @@ public class ResourceInputStream  {
 		}		
 		
 		return result;
+	}
+
+	public static String readResourceAsString(String resource) {
+		try {
+			InputStream is = openResourceInputStream(resource);
+			String result = FileUtil.readStreamAsString(is);
+			is.close();
+			return result;
+		} catch (IOException ex) {
+			throw new EncogError(ex);
+		}
 	}
 
 }
