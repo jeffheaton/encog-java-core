@@ -25,11 +25,13 @@ package org.encog.neural.networks;
 
 import junit.framework.TestCase;
 
+import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
+import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.structure.NetworkCODEC;
@@ -113,5 +115,20 @@ public class XOR {
 			network.getStructure().finalizeStructure();
 			network.reset();
 			return network;
+		}
+
+		public static MLDataSet createNoisyXORDataSet(int count) {
+			MLDataSet result = new BasicMLDataSet();
+			for(int i=0;i<count;i++) {
+				for(int j=0;j<4;j++) {
+					MLData inputData = new BasicMLData(XOR_INPUT[j]);
+					MLData idealData = new BasicMLData(XOR_IDEAL[j]);
+					MLDataPair pair = new BasicMLDataPair(inputData,idealData);
+					inputData.setData(0, inputData.getData(0)+RangeRandomizer.randomize(-0.1, 0.1));
+					inputData.setData(1, inputData.getData(1)+RangeRandomizer.randomize(-0.1, 0.1));
+					result.add(pair);
+				}
+			}
+			return result;
 		}
 }
