@@ -29,6 +29,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.encog.EncogError;
 import org.encog.NullStatusReportable;
 import org.encog.StatusReportable;
 import org.encog.neural.NeuralNetworkError;
@@ -130,6 +131,9 @@ public final class ConcurrentTrainingManager implements Runnable {
 	 *            The training job to add.
 	 */
 	public void addTrainingJob(final TrainingJob job) {
+		if( job.getStrategies().size()==0 ) {
+			throw new EncogError("Job has no strategies, it will have no way to know when to end.");
+		}
 		try {
 			this.accessLock.lock();
 			this.queue.add(job);
@@ -170,7 +174,7 @@ public final class ConcurrentTrainingManager implements Runnable {
 	 * do not create another CPU performer.
 	 */
 	public void detectPerformers() {
-		detectPerformers(false, 0);
+		detectPerformers(false);
 	}
 
 	/**
@@ -181,36 +185,26 @@ public final class ConcurrentTrainingManager implements Runnable {
 	 * @param splitCores
 	 *            True, if a CPU performer should be created for each core.
 	 */
-	public void detectPerformers(final boolean splitCores,
-			final int forceCoreCount) {
+	public void detectPerformers(final boolean splitCores) {
 		try {
+			int threads = 1;
 			this.accessLock.lock();
-			final boolean useCPU = true;
 			clearPerformers();
-
-			int cpuCount = 1;
 
 			setSingleThreaded(splitCores);
 
-			// now create CPU performers
-			if (useCPU && (forceCoreCount >= 0)) {
-				int threads;
-
-				if (splitCores) {
-					final Runtime runtime = Runtime.getRuntime();
-					if (forceCoreCount > 0) {
-						threads = forceCoreCount;
-					} else {
-						threads = runtime.availableProcessors();
-					}
-				} else {
-					threads = 1;
-				}
-
-				for (int i = 0; i < threads; i++) {
-					addPerformer(new ConcurrentTrainingPerformerCPU(cpuCount++));
-				}
+			if (splitCores) {
+				final Runtime runtime = Runtime.getRuntime();
+				threads = runtime.availableProcessors();
+			} else {
+				threads = 1;
 			}
+
+			int cpuCount = 0;
+			for (int i = 0; i < threads; i++) {
+				addPerformer(new ConcurrentTrainingPerformerCPU(cpuCount++));
+			}
+			
 		} finally {
 			this.accessLock.unlock();
 		}
