@@ -106,6 +106,11 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	 * The flat spot constants.
 	 */
 	private double[] flatSpot;
+	
+	/**
+	 * Should we fix flat spots.
+	 */
+	private boolean shouldFixFlatSpot;
 
 	/**
 	 * Train a flat network multithreaded.
@@ -127,6 +132,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 		this.indexable = training;
 		this.numThreads = 0;
 		this.reportedException = null;
+		this.shouldFixFlatSpot = true;
 	}
 
 	/**
@@ -234,10 +240,20 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 		return this.training;
 	}
 
-	public void fixFlatSpot(final boolean e) {
+	public void fixFlatSpot(final boolean e) {	
+		this.shouldFixFlatSpot = e;
+	}
+	
+
+	/**
+	 * Init the process.
+	 */
+	private void init() {
+
+		// fix flat spot, if needed
 		this.flatSpot = new double[this.network.getActivationFunctions().length];
 
-		if (e) {
+		if (this.shouldFixFlatSpot) {
 			for (int i = 0; i < this.network.getActivationFunctions().length; i++) {
 				final ActivationFunction af = this.network
 						.getActivationFunctions()[i];
@@ -257,15 +273,9 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 		} else {
 			EngineArray.fill(this.flatSpot, 0.0);
 		}
-	}
-
-	/**
-	 * Init the process.
-	 */
-	private void init() {
-
-		fixFlatSpot(true);
-
+		
+		
+		// setup workers
 		final DetermineWorkload determine = new DetermineWorkload(
 				this.numThreads, (int) this.indexable.getRecordCount());
 
