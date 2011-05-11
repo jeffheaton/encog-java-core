@@ -30,9 +30,9 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.BasicTraining;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.flat.train.TrainFlatNetwork;
+import org.encog.neural.flat.train.prop.TrainFlatNetworkProp;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.Train;
-import org.encog.neural.networks.training.TrainingError;
 import org.encog.util.EncogValidate;
 import org.encog.util.logging.EncogLogging;
 
@@ -183,6 +183,20 @@ public abstract class Propagation extends BasicTraining implements Train {
 	 */
 	public final void setNumThreads(final int numThreads) {
 		this.flatTraining.setNumThreads(numThreads);
+	}
+
+	/**
+	 * Default is true.  Call this with false to disable flat spot fix.
+	 * 
+	 * For more info on flat spot:
+	 * 
+	 * http://www.heatonresearch.com/wiki/Flat_Spot
+	 * 
+	 * @param b True to fix flat spots, false otherwise.
+	 */
+	public void fixFlatSpot(boolean b) {
+		((TrainFlatNetworkProp) this.flatTraining).fixFlatSpot(b);
+		
 	}
 
 }

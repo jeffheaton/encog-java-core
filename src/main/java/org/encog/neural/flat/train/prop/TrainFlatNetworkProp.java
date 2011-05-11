@@ -101,7 +101,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	 * The iteration.
 	 */
 	private int iteration;
-	
+
 	/**
 	 * The flat spot constants.
 	 */
@@ -234,13 +234,38 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 		return this.training;
 	}
 
+	public void fixFlatSpot(final boolean e) {
+		this.flatSpot = new double[this.network.getActivationFunctions().length];
+
+		if (e) {
+			for (int i = 0; i < this.network.getActivationFunctions().length; i++) {
+				final ActivationFunction af = this.network
+						.getActivationFunctions()[i];
+				// if the diriv tends to 0 on either -1, 0.0 or 1, then 
+				// add a flat-spot const.
+				final double t1 = af.derivativeFunction(-1.0);
+				final double t2 = af.derivativeFunction(0.0);
+				final double t3 = af.derivativeFunction(1.0);
+				if ((Math.abs(t1) < Encog.DEFAULT_DOUBLE_EQUAL)
+						|| (Math.abs(t2) < Encog.DEFAULT_DOUBLE_EQUAL)
+						|| (Math.abs(t3) < Encog.DEFAULT_DOUBLE_EQUAL)) {
+					this.flatSpot[i] = 0.1;
+				} else {
+					this.flatSpot[i] = 0.0;
+				}
+			}
+		} else {
+			EngineArray.fill(this.flatSpot, 0.0);
+		}
+	}
+
 	/**
 	 * Init the process.
 	 */
 	private void init() {
 
-		handleFlatSpot(true);
-		
+		fixFlatSpot(true);
+
 		final DetermineWorkload determine = new DetermineWorkload(
 				this.numThreads, (int) this.indexable.getRecordCount());
 
@@ -252,32 +277,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 		for (final IntRange r : determine.calculateWorkers()) {
 			this.workers[index++] = new GradientWorker(this.network.clone(),
 					this, this.indexable.openAdditional(), r.getLow(),
-					r.getHigh(),this.flatSpot);
-		}
-	}
-	
-	public void handleFlatSpot(boolean e) {
-		this.flatSpot = new double[this.network.getActivationFunctions().length];
-		
-		if( e ) {
-			for(int i=0;i<this.network.getActivationFunctions().length;i++) {
-				ActivationFunction af = this.network.getActivationFunctions()[i];
-				// if the diriv tends to 0 on either -1, 0.0 or 1, then 
-				// add a flat-spot const.
-				double t1 = af.derivativeFunction(-1.0);
-				double t2 = af.derivativeFunction(0.0);
-				double t3 = af.derivativeFunction(1.0);
-				if( (Math.abs(t1)<Encog.DEFAULT_DOUBLE_EQUAL) ||
-					(Math.abs(t2)<Encog.DEFAULT_DOUBLE_EQUAL) ||
-					(Math.abs(t3)<Encog.DEFAULT_DOUBLE_EQUAL) ) {
-						this.flatSpot[i] = 0.1;	
-					}
-					else {
-						this.flatSpot[i] = 0.0;
-					}
-			}
-		} else {
-			EngineArray.fill(this.flatSpot, 0.0);
+					r.getHigh(), this.flatSpot);
 		}
 	}
 
@@ -348,7 +348,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 		final double limit = this.network.getConnectionLimit();
 		final double[] weights = this.network.getWeights();
 		for (int i = 0; i < this.gradients.length; i++) {
-			if ( Math.abs(weights[i]) < limit) {
+			if (Math.abs(weights[i]) < limit) {
 				weights[i] = 0;
 			} else {
 				weights[i] += updateWeight(this.gradients, this.lastGradient, i);
