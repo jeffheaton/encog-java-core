@@ -28,8 +28,6 @@ import org.encog.mathutil.IntRange;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.flat.train.TrainFlatNetwork;
-import org.encog.neural.flat.train.gradient.FlatGradientWorker;
-import org.encog.neural.flat.train.gradient.GradientWorkerCPU;
 import org.encog.util.EngineArray;
 import org.encog.util.concurrency.DetermineWorkload;
 import org.encog.util.concurrency.EngineConcurrency;
@@ -80,7 +78,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	/**
 	 * The workers.
 	 */
-	private FlatGradientWorker[] workers;
+	private GradientWorker[] workers;
 
 	/**
 	 * The total error. Used to take the average of.
@@ -143,7 +141,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 			final TaskGroup group = EngineConcurrency.getInstance()
 					.createTaskGroup();
 
-			for (final FlatGradientWorker worker : this.workers) {
+			for (final GradientWorker worker : this.workers) {
 				EngineConcurrency.getInstance().processTask(worker, group);
 			}
 
@@ -237,13 +235,13 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 		final DetermineWorkload determine = new DetermineWorkload(
 				this.numThreads, (int) this.indexable.getRecordCount());
 
-		this.workers = new FlatGradientWorker[determine.getThreadCount()];
+		this.workers = new GradientWorker[determine.getThreadCount()];
 
 		int index = 0;
 
 		// handle CPU
 		for (final IntRange r : determine.calculateWorkers()) {
-			this.workers[index++] = new GradientWorkerCPU(this.network.clone(),
+			this.workers[index++] = new GradientWorker(this.network.clone(),
 					this, this.indexable.openAdditional(), r.getLow(),
 					r.getHigh());
 		}
@@ -265,7 +263,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 			learn();
 		}
 
-		for (final FlatGradientWorker worker : this.workers) {
+		for (final GradientWorker worker : this.workers) {
 			EngineArray.arrayCopy(this.network.getWeights(), 0,
 					worker.getWeights(), 0, this.network.getWeights().length);
 		}

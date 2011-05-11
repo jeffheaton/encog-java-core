@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.flat.train.gradient;
+package org.encog.neural.flat.train.prop;
 
 import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationFunction;
@@ -30,13 +30,13 @@ import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.neural.flat.FlatNetwork;
-import org.encog.neural.flat.train.prop.TrainFlatNetworkProp;
 import org.encog.util.EngineArray;
+import org.encog.util.concurrency.EngineTask;
 
 /**
  * Worker class for the mulithreaded training of flat networks.
  */
-public class GradientWorkerCPU implements FlatGradientWorker {
+public class GradientWorker implements EngineTask {
 
 	/**
 	 * The network to train.
@@ -132,7 +132,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	 * @param theHigh
 	 *            The high index to use in the training data.
 	 */
-	public GradientWorkerCPU(final FlatNetwork theNetwork,
+	public GradientWorker(final FlatNetwork theNetwork,
 			final TrainFlatNetworkProp theOwner,
 			final MLDataSet theTraining, final int theLow, final int theHigh) {
 		this.network = theNetwork;
@@ -157,9 +157,8 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return The network being processed.
 	 */
-	@Override
 	public final FlatNetwork getNetwork() {
 		return this.network;
 	}
