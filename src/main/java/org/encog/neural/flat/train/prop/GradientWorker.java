@@ -117,6 +117,11 @@ public class GradientWorker implements EngineTask {
 	 * The owner.
 	 */
 	private final TrainFlatNetworkProp owner;
+	
+	/**
+	 * Derivative add constant.  Used to combat flat spot.
+	 */
+	private double[] flatSpot;
 
 	/**
 	 * Construct a gradient worker.
@@ -134,12 +139,14 @@ public class GradientWorker implements EngineTask {
 	 */
 	public GradientWorker(final FlatNetwork theNetwork,
 			final TrainFlatNetworkProp theOwner,
-			final MLDataSet theTraining, final int theLow, final int theHigh) {
+			final MLDataSet theTraining, final int theLow, 
+			final int theHigh, final double[] flatSpot) {
 		this.network = theNetwork;
 		this.training = theTraining;
 		this.low = theLow;
 		this.high = theHigh;
 		this.owner = theOwner;
+		this.flatSpot = flatSpot;
 
 		this.layerDelta = new double[network.getLayerOutput().length];
 		this.gradients = new double[network.getWeights().length];
@@ -185,8 +192,8 @@ public class GradientWorker implements EngineTask {
 
 		for (int i = 0; i < this.actual.length; i++) {
 
-			this.layerDelta[i] = this.network.getActivationFunctions()[0]
-					.derivativeFunction(this.actual[i])
+			this.layerDelta[i] = (this.network.getActivationFunctions()[0]
+					.derivativeFunction(this.actual[i]) + this.flatSpot[0])
 					* (ideal[i] - this.actual[i]);
 		}
 
@@ -211,19 +218,8 @@ public class GradientWorker implements EngineTask {
 		final int index = this.weightIndex[currentLevel];
 		final ActivationFunction activation = this.network
 				.getActivationFunctions()[currentLevel + 1];
+		final double currentFlatSpot = this.flatSpot[currentLevel + 1];
 
-		Encog.getInstance().getCalculationPlugin().calculateGradient(
-				gradients, 
-				layerOutput, 
-				weights, 
-				layerDelta, 
-				activation, 
-				index, 
-				fromLayerIndex, 
-				fromLayerSize, 
-				toLayerIndex, 
-				toLayerSize);
-		/*
 		// handle weights
 		int yi = fromLayerIndex;
 		for (int y = 0; y < fromLayerSize; y++) {
@@ -239,9 +235,9 @@ public class GradientWorker implements EngineTask {
 			}
 
 			this.layerDelta[yi] = sum
-					* activation.derivativeFunction(this.layerOutput[yi]);
+					* (activation.derivativeFunction(this.layerOutput[yi]+currentFlatSpot));
 			yi++;
-		}*/
+		}
 	}
 
 	/**
