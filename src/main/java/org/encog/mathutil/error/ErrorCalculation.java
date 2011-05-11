@@ -90,8 +90,6 @@ public class ErrorCalculation {
 			return calculateRMS();
 		case MSE:
 			return calculateMSE();
-		case ARCTAN:
-			return calculateARCTAN();
 		default:
 			return calculateMSE();
 		}
@@ -154,10 +152,6 @@ public class ErrorCalculation {
 
 		double delta = ideal - actual;
 
-		if (ErrorCalculation.mode == ErrorCalculationMode.ARCTAN) {
-			delta = Math.atan(delta);
-		}
-
 		this.globalError += delta * delta;
 
 		this.setSize++;
@@ -175,10 +169,6 @@ public class ErrorCalculation {
 	public final void updateError(final double[] actual, final double[] ideal) {
 		for (int i = 0; i < actual.length; i++) {
 			double delta = ideal[i] - actual[i];
-
-			if (ErrorCalculation.mode == ErrorCalculationMode.ARCTAN) {
-				delta = Math.atan(delta);
-			}
 
 			this.globalError += delta * delta;
 		}

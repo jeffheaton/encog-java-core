@@ -37,10 +37,4 @@ public enum ErrorCalculationMode {
 	 */
 	MSE,
 
-	/**
-	 * Used for QuickProp, an exaggerated error function. Fahlman suggests using
-	 * a function that exaggerates the difference the larger the error is in a
-	 * non-linear fashion.
-	 */
-	ARCTAN
 }
