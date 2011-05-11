@@ -321,4 +321,38 @@ public final class EngineArray {
 		}
 		return result;
 	}
+
+	public static int max(int[] data) {
+		int result = Integer.MIN_VALUE;
+		for(int i=0;i<data.length;i++) {
+			result = Math.max(result, data[i]);
+		}
+		return result;
+	}
+	
+	public static int min(int[] data) {
+		int result = Integer.MAX_VALUE;
+		for(int i=0;i<data.length;i++) {
+			result = Math.min(result, data[i]);
+		}
+		return result;
+	}
+
+	public static double mean(int[] data) {
+		double result = 0;
+		for(int i=0;i<data.length;i++) {
+			result+=(double)data[i];
+		}
+		return result/(double)data.length;
+	}
+
+	public static double sdev(int[] data) {
+		double avg = mean(data);
+		double result = 0;
+		for (int i = 0; i < data.length; i++) {
+			double diff = data[i] - avg;
+			result += diff * diff;
+		}
+		return Math.sqrt(result/(double)data.length);
+	}
 }
