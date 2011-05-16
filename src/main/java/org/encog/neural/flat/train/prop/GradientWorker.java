@@ -23,7 +23,6 @@
  */
 package org.encog.neural.flat.train.prop;
 
-import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.ml.data.MLDataPair;
