@@ -60,7 +60,7 @@ public class ConsistentRandomizer extends BasicRandomizer {
 	 *            The maximum random value.
 	 */
 	public ConsistentRandomizer(final double min, final double max) {
-		this(max, min, 1000);
+		this(min, max, 1000);
 	}
 
 	/**

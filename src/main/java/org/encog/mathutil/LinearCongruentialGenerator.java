@@ -153,7 +153,8 @@ public class LinearCongruentialGenerator {
 	 * @return The next random number as a double between 0 and 1.
 	 */
 	public final double nextDouble() {
-		return (double) nextLong() / LinearCongruentialGenerator.MAX_RAND;
+		double result = (double) nextLong() / LinearCongruentialGenerator.MAX_RAND; 
+		return result;
 	}
 
 	/**
@@ -175,8 +176,8 @@ public class LinearCongruentialGenerator {
 	 * @return The generated random number.
 	 */
 	public final double range(final double min, final double max) {
-		final double range = max - min;
-		return (range * nextDouble()) - min;
+        double range = max - min;
+        return (range*nextDouble()) + min;
 	}
 
 	/**
