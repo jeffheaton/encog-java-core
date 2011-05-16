@@ -34,6 +34,7 @@ import org.encog.ml.factory.train.LMAFactory;
 import org.encog.ml.factory.train.ManhattanFactory;
 import org.encog.ml.factory.train.NeighborhoodSOMFactory;
 import org.encog.ml.factory.train.PNNTrainFactory;
+import org.encog.ml.factory.train.QuickPropFactory;
 import org.encog.ml.factory.train.RBFSVDFactory;
 import org.encog.ml.factory.train.RPROPFactory;
 import org.encog.ml.factory.train.SCGFactory;
@@ -221,6 +222,11 @@ public class MLTrainFactory {
 	 * PNN training.
 	 */
 	public static final String TYPE_PNN = "pnn";
+	
+	/**
+	 * QPROP training.
+	 */
+	public static final String TYPE_QPROP = "qprop";
 
 	/**
 	 * The factory for backprop.
@@ -287,6 +293,11 @@ public class MLTrainFactory {
 	 * Factory for PNN.
 	 */
 	private final PNNTrainFactory pnnFactory = new PNNTrainFactory();
+
+	/**
+	 * Factory for quickprop.
+	 */
+	private final QuickPropFactory qpropFactory = new QuickPropFactory(); 
 	
 	/**
 	 * Create a trainer.
@@ -333,6 +344,8 @@ public class MLTrainFactory {
 			return this.svdFactory.create(method, training, args2);
 		} else if (MLTrainFactory.TYPE_PNN.equalsIgnoreCase(type)) {
 			return this.pnnFactory.create(method, training, args2);
+		} else if (MLTrainFactory.TYPE_QPROP.equalsIgnoreCase(type)) {
+			return this.qpropFactory.create(method, training, args2);
 		} else {
 			throw new EncogError("Unknown training type: " + type);
 		}
