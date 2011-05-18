@@ -78,15 +78,15 @@ public class ParamsHolder {
 	 * @return The value.
 	 */
 	public String getString(String name, boolean required, String defaultValue) {
-		if( !this.params.containsKey(name) && required) {
-			if( required ) {
+		if (this.params.containsKey(name)) {
+			return this.params.get(name);
+		} else {
+			if (required) {
 				throw new EncogError("Missing property: " + name);
 			} else {
 				return defaultValue;
-			}			
+			}
 		}
-		
-		return this.params.get(name);
 	}
 	
 	/**
