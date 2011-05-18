@@ -37,6 +37,11 @@ public final class NumberList {
 	 * @return An array of doubles parsed from the string.
 	 */
 	public static synchronized double[] fromList(final CSVFormat format, final String str) {
+		// handle empty string
+		if( str.trim().length()==0 ) {
+			return new double[0];
+		}
+		
 		// first count the numbers
 		int count = 0;
 		final StringTokenizer tok = new StringTokenizer(str, ""
@@ -83,6 +88,12 @@ public final class NumberList {
 	}
 
 	public static int[] fromListInt(CSVFormat format, String str) {
+		
+		// handle empty string
+		if( str.trim().length()==0 ) {
+			return new int[0];
+		}
+		
 		// first count the numbers
 		int count = 0;
 		final StringTokenizer tok = new StringTokenizer(str, ""
