@@ -145,10 +145,10 @@ public class FileUtil {
 			do {
 				length = is.read(buffer);
 
-				if (length >= 0) {
+				if (length > 0) {
 					os.write(buffer, 0, length);
 				}
-			} while (length >= 0);
+			} while (length > 0);
 		} catch(IOException ex) {
 			throw new EncogError(ex);
 		}
