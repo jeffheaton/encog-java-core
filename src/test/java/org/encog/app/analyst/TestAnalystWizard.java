@@ -28,6 +28,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.net.URL;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.app.analyst.report.AnalystReport;
@@ -46,10 +47,10 @@ public class TestAnalystWizard extends TestCase {
 		
 		EncogAnalyst encog = new EncogAnalyst();
 		encog.setMaxIteration(1);
-		//encog.addAnalystListener(new ConsoleAnalystListener());
-		AnalystWizard wiz = new AnalystWizard(encog);
+		AnalystWizard wiz = new AnalystWizard(encog);		
+		wiz.setGoal(AnalystGoal.Classification);
+		wiz.wizard(rawFile, true, AnalystFileFormat.DECPNT_COMMA);
 		
-		wiz.wizard(rawFile, false, AnalystFileFormat.DECPNT_COMMA);
 
 		encog.executeTask("task-full");
 		
@@ -59,6 +60,15 @@ public class TestAnalystWizard extends TestCase {
 		AnalystReport report = new AnalystReport(encog);
 		report.produceReport(TEMP_DIR.createFile("report.html"));
 		
+		Assert.assertEquals(5,encog.getScript().getNormalize().getNormalizedFields().size());
+		Assert.assertEquals(4.3,encog.getScript().getFields()[0].getMin(),0.001);
+		Assert.assertEquals(7.9,encog.getScript().getFields()[0].getMax(),0.001);
+		Assert.assertEquals(5.84333,encog.getScript().getFields()[0].getMean(),0.001);
+		Assert.assertEquals(encog.getScript().getFields()[0].isClass(),false);
+		Assert.assertEquals(encog.getScript().getFields()[0].isReal(),true);
+		Assert.assertEquals(encog.getScript().getFields()[0].isInteger(),false);
+		Assert.assertEquals(encog.getScript().getFields()[0].isComplete(),true);
+		Assert.assertEquals(-3.38833, encog.getScript().getNormalize().getNormalizedFields().get(0).normalize(0.001),0.001);
 	}
 	
 	@Override
