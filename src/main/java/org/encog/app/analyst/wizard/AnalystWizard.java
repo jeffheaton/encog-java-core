@@ -382,7 +382,7 @@ public class AnalystWizard {
 				.getNormalizedFields()) {
 			if ((field.getAction() != NormalizationAction.Ignore)
 					&& field.getName().equalsIgnoreCase(this.targetField)) {
-				if ((af == null) || (af.getTimeSlice() < af.getTimeSlice())) {
+				if ((af == null) || (af.getTimeSlice() < field.getTimeSlice())) {
 					af = field;
 				}
 			}
