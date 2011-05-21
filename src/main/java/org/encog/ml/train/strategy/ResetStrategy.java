@@ -60,6 +60,9 @@ public class ResetStrategy implements Strategy {
 	 */
 	private int badCycleCount;
 	
+	/**
+	 * The method that is being trained.
+	 */
 	private MLResettable method;
 
 	/**
@@ -85,7 +88,7 @@ public class ResetStrategy implements Strategy {
 	public void init(final MLTrain train) {
 		this.train = train;
 		
-		if( !(train.getMethod() instanceof MLMethod) ) {
+		if( !(train.getMethod() instanceof MLResettable) ) {
 			throw new TrainingError("To use the reset strategy the machine learning method must support MLResettable.");
 		}
 		
