@@ -362,6 +362,13 @@ public class FlatNetwork implements Serializable {
 		for (int i = this.layerIndex.length - 1; i > 0; i--) {
 			computeLayer(i);
 		}
+		
+		// update context values
+		final int offset = this.contextTargetOffset[0];
+
+		for (int x = 0; x < this.contextTargetSize[0]; x++) {
+			this.layerOutput[offset + x] = this.layerOutput[0 + x];
+		}
 
 		EngineArray.arrayCopy(this.layerOutput, 0, output, 0, this.outputCount);
 	}
