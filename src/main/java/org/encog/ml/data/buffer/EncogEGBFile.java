@@ -252,8 +252,8 @@ public class EncogEGBFile {
 	 *            The row to calculate for.
 	 * @return The index.
 	 */
-	private int calculateIndex(final int row) {
-		return EncogEGBFile.HEADER_SIZE + (row * this.recordSize);
+	private long calculateIndex(final long row) {
+		return (long)EncogEGBFile.HEADER_SIZE + (row * (long)this.recordSize);
 	}
 
 	/**
