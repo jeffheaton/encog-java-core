@@ -30,7 +30,6 @@ import java.util.Map;
 
 import org.encog.plugin.EncogPluginBase;
 import org.encog.plugin.EncogPluginType1;
-import org.encog.plugin.system.SystemCalculationPlugin;
 import org.encog.plugin.system.SystemLoggingPlugin;
 import org.encog.util.concurrency.EngineConcurrency;
 
@@ -88,16 +87,10 @@ public final class Encog {
 	public static Encog getInstance() {
 		if (Encog.instance == null) {
 			Encog.instance = new Encog();
-			Encog.instance.registerPlugin(new SystemCalculationPlugin());
 			Encog.instance.registerPlugin(new SystemLoggingPlugin());
 		}
 		return Encog.instance;
 	}
-
-	/**
-	 * The current calculation plugin.
-	 */
-	private EncogPluginType1 calculationPlugin;
 
 	/**
 	 * The current logging plugin.
@@ -127,13 +120,6 @@ public final class Encog {
 	}
 
 	/**
-	 * @return the calculationPlugin
-	 */
-	public EncogPluginType1 getCalculationPlugin() {
-		return this.calculationPlugin;
-	}
-
-	/**
 	 * @return the properties
 	 */
 	public Map<String, String> getProperties() {
@@ -152,13 +138,6 @@ public final class Encog {
 		if (plugin.getPluginServiceType() 
 				!= EncogPluginType1.SERVICE_TYPE_GENERAL) {
 			if (plugin.getPluginServiceType() 
-					== EncogPluginType1.SERVICE_TYPE_CALCULATION) {
-				// remove the old calc plugin
-				if (this.calculationPlugin != null) {
-					this.plugins.remove(this.calculationPlugin);
-				}
-				this.calculationPlugin = (EncogPluginType1) plugin;
-			} else if (plugin.getPluginServiceType() 
 					== EncogPluginType1.SERVICE_TYPE_LOGGING) {
 				// remove the old logging plugin
 				if (this.loggingPlugin != null) {
@@ -184,8 +163,6 @@ public final class Encog {
 		// if so, replace with the system, Encog will crash without these
 		if (plugin == this.loggingPlugin) {
 			this.loggingPlugin = new SystemLoggingPlugin();
-		} else if (plugin == this.calculationPlugin) {
-			this.calculationPlugin = new SystemCalculationPlugin();
 		}
 
 		// remove it
