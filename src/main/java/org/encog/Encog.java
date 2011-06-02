@@ -31,6 +31,7 @@ import java.util.Map;
 
 import org.encog.plugin.EncogPluginBase;
 import org.encog.plugin.EncogPluginLogging1;
+import org.encog.plugin.system.SystemActivationPlugin;
 import org.encog.plugin.system.SystemLoggingPlugin;
 import org.encog.plugin.system.SystemMethodsPlugin;
 import org.encog.plugin.system.SystemTrainingPlugin;
@@ -93,6 +94,7 @@ public final class Encog {
 			Encog.instance.registerPlugin(new SystemLoggingPlugin());
 			Encog.instance.registerPlugin(new SystemMethodsPlugin());
 			Encog.instance.registerPlugin(new SystemTrainingPlugin());
+			Encog.instance.registerPlugin(new SystemActivationPlugin());
 		}
 		return Encog.instance;
 	}

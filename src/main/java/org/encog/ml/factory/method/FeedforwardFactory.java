@@ -31,6 +31,7 @@ import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.ml.MLMethod;
+import org.encog.ml.factory.MLActivationFactory;
 import org.encog.ml.factory.parse.ArchitectureLayer;
 import org.encog.ml.factory.parse.ArchitectureParse;
 import org.encog.neural.NeuralNetworkError;
@@ -49,6 +50,11 @@ public class FeedforwardFactory {
 	public static final String CANT_DEFINE_ACT 
 		= "Can't define activation function before first layer.";
 
+	/**
+	 * The activation function factory to use.
+	 */
+	private MLActivationFactory factory = new MLActivationFactory();
+	
 	/**
 	 * Create a feed forward network.
 	 * @param architecture The architecture string to use.
@@ -93,12 +99,10 @@ public class FeedforwardFactory {
 				part = "";
 			}
 			
-			if ("tanh".equalsIgnoreCase(part)) {
-				af = new ActivationTANH();
-			} else if ("linear".equalsIgnoreCase(part)) {
-				af = new ActivationLinear();
-			} else if ("sigmoid".equalsIgnoreCase(part)) {
-				af = new ActivationSigmoid();
+			ActivationFunction lookup = this.factory.create(part);
+			
+			if (lookup!=null) {
+				af = lookup;
 			} else {
 				if (layer.isUsedDefault()) {
 					questionPhase++;

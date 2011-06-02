@@ -77,6 +77,10 @@ public class ActivationGaussian implements ActivationFunction {
 		this.params[ActivationGaussian.PARAM_GAUSSIAN_WIDTH] = width;
 	}
 
+	public ActivationGaussian() {
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * @return The object cloned.
 	 */
