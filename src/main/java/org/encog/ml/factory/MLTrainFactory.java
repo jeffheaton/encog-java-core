@@ -23,6 +23,7 @@
  */
 package org.encog.ml.factory;
 
+import org.encog.Encog;
 import org.encog.EncogError;
 import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
@@ -41,6 +42,8 @@ import org.encog.ml.factory.train.SCGFactory;
 import org.encog.ml.factory.train.SVMFactory;
 import org.encog.ml.factory.train.SVMSearchFactory;
 import org.encog.ml.train.MLTrain;
+import org.encog.plugin.EncogPluginBase;
+import org.encog.plugin.EncogPluginService1;
 
 /**
  * This factory is used to create trainers for machine learning methods.
@@ -228,76 +231,6 @@ public class MLTrainFactory {
 	 */
 	public static final String TYPE_QPROP = "qprop";
 
-	/**
-	 * The factory for backprop.
-	 */
-	private final BackPropFactory backpropFactory = new BackPropFactory();
-	
-	/**
-	 * The factory for LMA.
-	 */
-	private final LMAFactory lmaFactory = new LMAFactory();
-	
-	/**
-	 * The factory for RPROP.
-	 */
-	private final RPROPFactory rpropFactory = new RPROPFactory();
-	
-	/**
-	 * THe factory for basic SVM.
-	 */
-	private final SVMFactory svmFactory = new SVMFactory();
-	
-	/**
-	 * The factory for SVM-Search.
-	 */
-	private final SVMSearchFactory svmSearchFactory = new SVMSearchFactory();
-	
-	/**
-	 * The factory for SCG.
-	 */
-	private final SCGFactory scgFactory = new SCGFactory();
-	
-	/**
-	 * The factory for simulated annealing.
-	 */
-	private final AnnealFactory annealFactory = new AnnealFactory();
-	
-	/**
-	 * The factory for neighborhood SOM.
-	 */
-	private final NeighborhoodSOMFactory neighborhoodFactory 
-		= new NeighborhoodSOMFactory();
-	
-	/**
-	 * The factory for SOM cluster.
-	 */
-	private final ClusterSOMFactory somClusterFactory = new ClusterSOMFactory();
-
-	/**
-	 * The factory for genetic.
-	 */
-	private final GeneticFactory geneticFactory = new GeneticFactory();
-	
-	/**
-	 * The factory for Manhattan networks.
-	 */
-	private final ManhattanFactory manhattanFactory = new ManhattanFactory();
-	
-	/**
-	 * Factory for SVD.
-	 */
-	private final RBFSVDFactory svdFactory = new RBFSVDFactory();
-	
-	/**
-	 * Factory for PNN.
-	 */
-	private final PNNTrainFactory pnnFactory = new PNNTrainFactory();
-
-	/**
-	 * Factory for quickprop.
-	 */
-	private final QuickPropFactory qpropFactory = new QuickPropFactory(); 
 	
 	/**
 	 * Create a trainer.
@@ -310,44 +243,16 @@ public class MLTrainFactory {
 	public final MLTrain create(final MLMethod method, 
 			final MLDataSet training,
 			final String type, final String args) {
-
-		String args2 = args;
-
-		if (args2 == null) {
-			args2 = "";
+		
+		for (EncogPluginBase plugin : Encog.getInstance().getPlugins()) {
+			if (plugin instanceof EncogPluginService1) {
+				MLTrain result = ((EncogPluginService1) plugin).createTraining(
+						method, training, type, args);
+				if (result != null) {
+					return result;
+				}
+			}
 		}
-
-		if (MLTrainFactory.TYPE_RPROP.equalsIgnoreCase(type)) {
-			return this.rpropFactory.create(method, training, args2);
-		} else if (MLTrainFactory.TYPE_BACKPROP.equalsIgnoreCase(type)) {
-			return this.backpropFactory.create(method, training, args2);
-		} else if (MLTrainFactory.TYPE_SCG.equalsIgnoreCase(type)) {
-			return this.scgFactory.create(method, training, args2);
-		} else if (MLTrainFactory.TYPE_LMA.equalsIgnoreCase(type)) {
-			return this.lmaFactory.create(method, training, args2);
-		} else if (MLTrainFactory.TYPE_SVM.equalsIgnoreCase(type)) {
-			return this.svmFactory.create(method, training, args2);
-		} else if (MLTrainFactory.TYPE_SVM_SEARCH.equalsIgnoreCase(type)) {
-			return this.svmSearchFactory.create(method, training, args2);
-		} else if (MLTrainFactory.TYPE_SOM_NEIGHBORHOOD.equalsIgnoreCase(
-				type)) {
-			return this.neighborhoodFactory.create(method, training, args2);
-		} else if (MLTrainFactory.TYPE_ANNEAL.equalsIgnoreCase(type)) {
-			return this.annealFactory.create(method, training, args2);
-		} else if (MLTrainFactory.TYPE_GENETIC.equalsIgnoreCase(type)) {
-			return this.geneticFactory.create(method, training, args2);
-		} else if (MLTrainFactory.TYPE_SOM_CLUSTER.equalsIgnoreCase(type)) {
-			return this.somClusterFactory.create(method, training, args2);
-		} else if (MLTrainFactory.TYPE_MANHATTAN.equalsIgnoreCase(type)) {
-			return this.manhattanFactory.create(method, training, args2);
-		}  else if (MLTrainFactory.TYPE_SVD.equalsIgnoreCase(type)) {
-			return this.svdFactory.create(method, training, args2);
-		} else if (MLTrainFactory.TYPE_PNN.equalsIgnoreCase(type)) {
-			return this.pnnFactory.create(method, training, args2);
-		} else if (MLTrainFactory.TYPE_QPROP.equalsIgnoreCase(type)) {
-			return this.qpropFactory.create(method, training, args2);
-		} else {
-			throw new EncogError("Unknown training type: " + type);
-		}
+		throw new EncogError("Unknown training type: " + type);
 	}
 }

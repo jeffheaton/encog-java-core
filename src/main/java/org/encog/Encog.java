@@ -24,13 +24,16 @@
 package org.encog;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.encog.plugin.EncogPluginBase;
-import org.encog.plugin.EncogPluginType1;
+import org.encog.plugin.EncogPluginLogging1;
 import org.encog.plugin.system.SystemLoggingPlugin;
+import org.encog.plugin.system.SystemMethodsPlugin;
+import org.encog.plugin.system.SystemTrainingPlugin;
 import org.encog.util.concurrency.EngineConcurrency;
 
 /**
@@ -88,6 +91,8 @@ public final class Encog {
 		if (Encog.instance == null) {
 			Encog.instance = new Encog();
 			Encog.instance.registerPlugin(new SystemLoggingPlugin());
+			Encog.instance.registerPlugin(new SystemMethodsPlugin());
+			Encog.instance.registerPlugin(new SystemTrainingPlugin());
 		}
 		return Encog.instance;
 	}
@@ -95,7 +100,7 @@ public final class Encog {
 	/**
 	 * The current logging plugin.
 	 */
-	private EncogPluginType1 loggingPlugin;
+	private EncogPluginLogging1 loggingPlugin;
 
 	/**
 	 * The plugins.
@@ -136,14 +141,14 @@ public final class Encog {
 	public void registerPlugin(final EncogPluginBase plugin) {
 		// is it not a general plugin?
 		if (plugin.getPluginServiceType() 
-				!= EncogPluginType1.SERVICE_TYPE_GENERAL) {
+				!= EncogPluginBase.TYPE_SERVICE) {
 			if (plugin.getPluginServiceType() 
-					== EncogPluginType1.SERVICE_TYPE_LOGGING) {
+					== EncogPluginBase.TYPE_LOGGING) {
 				// remove the old logging plugin
 				if (this.loggingPlugin != null) {
 					this.plugins.remove(this.loggingPlugin);
 				}
-				this.loggingPlugin = (EncogPluginType1) plugin;
+				this.loggingPlugin = (EncogPluginLogging1) plugin;
 			}
 		}
 		// add to the plugins
@@ -180,8 +185,16 @@ public final class Encog {
 	/**
 	 * @return the loggingPlugin
 	 */
-	public EncogPluginType1 getLoggingPlugin() {
+	public EncogPluginLogging1 getLoggingPlugin() {
 		return loggingPlugin;
+	}
+
+	/**
+	 * Get a list of the registered plugins.
+	 * @return The registered plugins.
+	 */
+	public Collection<EncogPluginBase> getPlugins() {
+		return this.plugins;
 	}
 	
 	

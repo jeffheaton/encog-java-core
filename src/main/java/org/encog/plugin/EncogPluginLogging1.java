@@ -23,31 +23,32 @@
  */
 package org.encog.plugin;
 
+import org.encog.engine.network.activation.ActivationFunction;
+
 /**
- * The base plugin for Encog.
+ * A type-1 plugin. Currently, type-1 is the only type of plugin. This interface
+ * should never change, to maximize compatability with future versions.
+ * 
  */
-public interface EncogPluginBase {
-	
-	public int TYPE_LOGGING = 1;
-	public int TYPE_SERVICE = 0;
-	
+public interface EncogPluginLogging1 extends EncogPluginBase {
+
 	/**
-	 * @return The type number for this plugin.
+	 * @return The current log level.
 	 */
-	int getPluginType();
-	
+	int getLogLevel();
+
 	/**
-	 * @return The service type provided by this plugin.
+	 * Log a message at the specified level.
+	 * @param level The level to log at.
+	 * @param message The message to log.
 	 */
-	int getPluginServiceType();
-	
+	void log(int level, String message);
+
 	/**
-	 * @return The name of the plugin.
+	 * Log a throwable at the specified level.
+	 * @param level The level to log at.
+	 * @param t The error to log.
 	 */
-	String getPluginName();
-	
-	/**
-	 * @return The plugin description.
-	 */
-	String getPluginDescription();
+	void log(int level, Throwable t);
+
 }

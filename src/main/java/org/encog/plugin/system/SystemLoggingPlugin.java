@@ -29,7 +29,8 @@ import java.io.Writer;
 import java.util.Date;
 
 import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.plugin.EncogPluginType1;
+import org.encog.plugin.EncogPluginBase;
+import org.encog.plugin.EncogPluginLogging1;
 import org.encog.util.logging.EncogLogging;
 
 /**
@@ -37,7 +38,7 @@ import org.encog.util.logging.EncogLogging;
  * file and console logging.
  * 
  */
-public class SystemLoggingPlugin implements EncogPluginType1 {
+public class SystemLoggingPlugin implements EncogPluginLogging1 {
 
 	/**
 	 * Create a stack trace.
@@ -63,65 +64,6 @@ public class SystemLoggingPlugin implements EncogPluginType1 {
 	 */
 	private boolean logConsole = false;
 
-	/**
-	 * Not used for this type of plugin.
-	 * 
-	 * @param gradients
-	 *            Not used.
-	 * @param layerOutput
-	 *            Not used.
-	 * @param weights
-	 *            Not used.
-	 * @param layerDelta
-	 *            Not used.
-	 * @param af
-	 *            Not used.
-	 * @param index
-	 *            Not used.
-	 * @param fromLayerIndex
-	 *            Not used.
-	 * @param fromLayerSize
-	 *            Not used.
-	 * @param toLayerIndex
-	 *            Not used.
-	 * @param toLayerSize
-	 *            Not used.
-	 */
-	@Override
-	public final void calculateGradient(final double[] gradients,
-			final double[] layerOutput, final double[] weights,
-			final double[] layerDelta, final ActivationFunction af,
-			final int index, final int fromLayerIndex, final int fromLayerSize,
-			final int toLayerIndex, final int toLayerSize) {
-
-	}
-
-	/**
-	 * Not used for this type of plugin.
-	 * 
-	 * @param weights
-	 *            Not used.
-	 * @param layerOutput
-	 *            Not used.
-	 * @param startIndex
-	 *            Not used.
-	 * @param outputIndex
-	 *            Not used.
-	 * @param outputSize
-	 *            Not used.
-	 * @param inputIndex
-	 *            Not used.
-	 * @param inputSize
-	 *            Not used.
-	 * @return Not used.
-	 */
-	@Override
-	public final int calculateLayer(final double[] weights,
-			final double[] layerOutput, final int startIndex,
-			final int outputIndex, final int outputSize, final int inputIndex,
-			final int inputSize) {
-		return 0;
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -146,16 +88,6 @@ public class SystemLoggingPlugin implements EncogPluginType1 {
 	@Override
 	public final String getPluginName() {
 		return "HRI-System-Logging";
-	}
-
-	/**
-	 * @return Returns the service type for this plugin. This plugin provides
-	 *         the system calculation for layers and gradients. Therefore, this
-	 *         plugin returns SERVICE_TYPE_CALCULATION.
-	 */
-	@Override
-	public final int getPluginServiceType() {
-		return EncogPluginType1.SERVICE_TYPE_LOGGING;
 	}
 
 	/**
@@ -247,6 +179,12 @@ public class SystemLoggingPlugin implements EncogPluginType1 {
 	 */
 	public final void stopLogging() {
 		this.logConsole = false;
+	}
+
+	@Override
+	public int getPluginServiceType() {
+		// TODO Auto-generated method stub
+		return EncogPluginBase.TYPE_LOGGING;
 	}
 
 }

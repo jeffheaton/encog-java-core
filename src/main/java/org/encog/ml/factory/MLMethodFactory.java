@@ -23,13 +23,11 @@
  */
 package org.encog.ml.factory;
 
+import org.encog.Encog;
 import org.encog.EncogError;
 import org.encog.ml.MLMethod;
-import org.encog.ml.factory.method.FeedforwardFactory;
-import org.encog.ml.factory.method.PNNFactory;
-import org.encog.ml.factory.method.RBFNetworkFactory;
-import org.encog.ml.factory.method.SOMFactory;
-import org.encog.ml.factory.method.SVMFactory;
+import org.encog.plugin.EncogPluginBase;
+import org.encog.plugin.EncogPluginService1;
 
 /**
  * This factory is used to create machine learning methods.
@@ -40,17 +38,17 @@ public class MLMethodFactory {
 	 * String constant for feedforward neural networks.
 	 */
 	public static final String TYPE_FEEDFORWARD = "feedforward";
-	
+
 	/**
 	 * String constant for RBF neural networks.
 	 */
 	public static final String TYPE_RBFNETWORK = "rbfnetwork";
-	
+
 	/**
 	 * String constant for support vector machines.
 	 */
 	public static final String TYPE_SVM = "svm";
-	
+
 	/**
 	 * String constant for SOMs.
 	 */
@@ -62,53 +60,30 @@ public class MLMethodFactory {
 	public static final String TYPE_PNN = "pnn";
 
 	/**
-	 * A factory used to create feedforward neural networks.
-	 */
-	private final FeedforwardFactory feedforwardFactory 
-		= new FeedforwardFactory();
-	
-	/**
-	 * A factory used to create support vector machines.
-	 */
-	private final SVMFactory svmFactory = new SVMFactory();
-	
-	/**
-	 * A factory used to create RBF networks.
-	 */
-	private final RBFNetworkFactory rbfFactory = new RBFNetworkFactory();
-	
-	/**
-	 * The factory for PNN's.
-	 */
-	private final PNNFactory pnnFactory = new PNNFactory();
-	
-	/**
-	 * A factory used to create SOM's.
-	 */
-	private final SOMFactory somFactory = new SOMFactory();
-
-	/**
 	 * Create a new machine learning method.
-	 * @param methodType The method to create.
-	 * @param architecture The architecture string.
-	 * @param input The input count.
-	 * @param output The output count.
+	 * 
+	 * @param methodType
+	 *            The method to create.
+	 * @param architecture
+	 *            The architecture string.
+	 * @param input
+	 *            The input count.
+	 * @param output
+	 *            The output count.
 	 * @return The newly created machine learning method.
 	 */
-	public final MLMethod create(final String methodType, 
-			final String architecture,
-			final int input, final int output) {
-		if (MLMethodFactory.TYPE_FEEDFORWARD.equals(methodType)) {
-			return this.feedforwardFactory.create(architecture, input, output);
-		} else if (MLMethodFactory.TYPE_RBFNETWORK.equals(methodType)) {
-			return this.rbfFactory.create(architecture, input, output);
-		} else if (MLMethodFactory.TYPE_SVM.equals(methodType)) {
-			return this.svmFactory.create(architecture, input, output);
-		} else if (MLMethodFactory.TYPE_SOM.equals(methodType)) {
-			return this.somFactory.create(architecture, input, output);
-		} else if (MLMethodFactory.TYPE_PNN.equals(methodType)) {
-			return this.pnnFactory.create(architecture, input, output);
+	public final MLMethod create(final String methodType,
+			final String architecture, final int input, final int output) {
+		for (EncogPluginBase plugin : Encog.getInstance().getPlugins()) {
+			if (plugin instanceof EncogPluginService1) {
+				MLMethod result = ((EncogPluginService1) plugin).createMethod(
+						methodType, architecture, input, output);
+				if (result != null) {
+					return result;
+				}
+			}
 		}
+
 		throw new EncogError("Unknown method type: " + methodType);
 	}
 
