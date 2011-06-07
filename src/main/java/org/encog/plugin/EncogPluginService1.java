@@ -28,6 +28,11 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
 
+/**
+ * A service plugin provides services, such as the creation of activation 
+ * functions, machine learning methods and training methods.
+ *
+ */
 public interface EncogPluginService1 extends EncogPluginBase {
 	
 	/**

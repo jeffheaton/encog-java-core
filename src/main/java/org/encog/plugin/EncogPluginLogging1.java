@@ -23,11 +23,9 @@
  */
 package org.encog.plugin;
 
-import org.encog.engine.network.activation.ActivationFunction;
 
 /**
- * A type-1 plugin. Currently, type-1 is the only type of plugin. This interface
- * should never change, to maximize compatability with future versions.
+ * A plugin that supports logging.  This is a version 1 plugin.
  * 
  */
 public interface EncogPluginLogging1 extends EncogPluginBase {
