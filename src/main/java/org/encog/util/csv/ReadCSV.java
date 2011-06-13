@@ -406,16 +406,23 @@ public class ReadCSV {
 		final StringBuilder item = new StringBuilder();
 		final List<String> result = new ArrayList<String>();
 		boolean quoted = false;
+		boolean hadQuotes = false;
 
 		for (int i = 0; i < line.length(); i++) {
 			final char ch = line.charAt(i);
 			if ((ch == this.format.getSeparator()) && !quoted) {
-				result.add(item.toString());
+				String s = item.toString();
+				if( !hadQuotes ) {
+					s = s.trim();
+				}
+				result.add(s);
 				item.setLength(0);
 				quoted = false;
+				hadQuotes = false;
 			} else if ((ch == '\"') && quoted) {
 				quoted = false;
 			} else if ((ch == '\"') && (item.length() == 0)) {
+				hadQuotes = true;
 				quoted = true;
 			} else {
 				item.append(ch);
@@ -423,7 +430,11 @@ public class ReadCSV {
 		}
 
 		if (item.length() > 0) {
-			result.add(item.toString());
+			String s = item.toString();
+			if( !hadQuotes ) {
+				s = s.trim();
+			}
+			result.add(s);
 		}
 
 		return result;
