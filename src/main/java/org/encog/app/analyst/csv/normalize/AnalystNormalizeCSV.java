@@ -72,16 +72,24 @@ public class AnalystNormalizeCSV extends BasicFile {
 			}
 
 			int index = headers.find(stat.getName());
-			final String str = csv.get(index);
-
-			if (stat.getAction() == NormalizationAction.Normalize) {
-				double d = csv.getFormat().parse(str.trim());
-				d = stat.normalize(d);
-				output[outputIndex++] = d;
+			final String str = csv.get(index).trim();
+			
+			// is this an unknown value?
+			if( str.equals("?") || str.length()==0 ) {
+				for(int i=0;i<stat.getColumnsNeeded();i++) {
+					output[outputIndex++] = 0;
+				}
 			} else {
-				final double[] d = stat.encode(str.trim());
-				for (final double element : d) {
-					output[outputIndex++] = element;
+			// known value
+				if (stat.getAction() == NormalizationAction.Normalize) {
+					double d = csv.getFormat().parse(str);
+					d = stat.normalize(d);
+					output[outputIndex++] = d;
+				} else {
+					final double[] d = stat.encode(str);
+					for (final double element : d) {
+						output[outputIndex++] = element;
+					}
 				}
 			}
 		}
