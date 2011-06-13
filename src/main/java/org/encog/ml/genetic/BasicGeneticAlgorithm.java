@@ -75,12 +75,18 @@ public class BasicGeneticAlgorithm extends GeneticAlgorithm {
 			final MateWorker worker = new MateWorker(mother, father, child1,
 					child2);
 
-			EngineConcurrency.getInstance().processTask(worker, group);
-
+			if( this.isMultiThreaded() ) {
+				EngineConcurrency.getInstance().processTask(worker, group);
+			} else {
+				worker.run();
+			}
+			
 			offspringIndex += 2;
 		}
 
-		group.waitForComplete();
+		if( this.isMultiThreaded() ) {
+			group.waitForComplete();
+		}
 
 		// sort the next generation
 		getPopulation().sort();

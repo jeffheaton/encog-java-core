@@ -83,6 +83,11 @@ public abstract class GeneticAlgorithm {
 	 * The population.
 	 */
 	private Population population;
+	
+	/**
+	 * Should this run multi-threaded.
+	 */
+	private boolean multiThreaded = true;
 
 	/**
 	 * Add a genome.
@@ -268,4 +273,21 @@ public abstract class GeneticAlgorithm {
 	 * Perform one training iteration.
 	 */
 	public abstract void iteration();
+
+	/**
+	 * @return True, if multi-threaded genetic training is being used.
+	 */
+	public final boolean isMultiThreaded() {
+		return multiThreaded;
+	}
+
+	/**
+	 * Set if multi-threaded training should be used.  By default, it will
+	 * be used.  However, if your evaluation function is not thread safe,
+	 * do not use multi-threaded training.
+	 * @param multiThreaded True, if multi-threaded training is used.
+	 */
+	public final void setMultiThreaded(boolean multiThreaded) {
+		this.multiThreaded = multiThreaded;
+	}	
 }
