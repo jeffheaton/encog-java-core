@@ -75,11 +75,11 @@ public class AnalystNormalizeCSV extends BasicFile {
 			final String str = csv.get(index);
 
 			if (stat.getAction() == NormalizationAction.Normalize) {
-				double d = csv.getFormat().parse(str);
+				double d = csv.getFormat().parse(str.trim());
 				d = stat.normalize(d);
 				output[outputIndex++] = d;
 			} else {
-				final double[] d = stat.encode(str);
+				final double[] d = stat.encode(str.trim());
 				for (final double element : d) {
 					output[outputIndex++] = element;
 				}

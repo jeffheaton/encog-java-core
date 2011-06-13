@@ -84,9 +84,10 @@ public class AnalyzedField extends DataField {
 	 * Perform a pass one analysis of this field.
 	 * @param str The current value.
 	 */
-	public final void analyze1(final String str) {
+	public final void analyze1(final String v) {
 
 		boolean accountedFor = false;
+		String str = v.trim();
 
 		if (str.trim().length() == 0 || str.equals("?")) {
 			setComplete(false);

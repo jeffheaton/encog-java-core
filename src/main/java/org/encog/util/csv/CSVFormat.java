@@ -177,7 +177,7 @@ public class CSVFormat {
 			if( str.equals("?")) { 
 				return Double.NaN;
 			} else {
-				return this.numberFormatter.parse(str).doubleValue();
+				return this.numberFormatter.parse(str.trim()).doubleValue();
 			}
 		} catch (final Exception e) {
 			throw new CSVError("Error:" + e.getMessage() + " on [" + str + "], decimal:" + this.decimal + ",sep: " + this.separator);
