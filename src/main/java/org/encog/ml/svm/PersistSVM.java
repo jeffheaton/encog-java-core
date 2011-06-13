@@ -107,11 +107,6 @@ public class PersistSVM implements EncogPersistor {
 	public static final String PARAM_SHRINKING = "shrinking";
 	
 	/**
-	 * The parameter to hold the statIterations.
-	 */
-	public static final String PARAM_START_ITERATIONS = "statIterations";
-	
-	/**
 	 * The parameter to hold the SVM type.
 	 */
 	public static final String PARAM_SVM_TYPE = "svmType";
@@ -186,8 +181,6 @@ public class PersistSVM implements EncogPersistor {
 						params, PersistSVM.PARAM_PROBABILITY);
 				result.getParams().shrinking = EncogFileSection.parseInt(
 						params, PersistSVM.PARAM_SHRINKING);
-				result.getParams().statIterations = EncogFileSection.parseInt(
-						params, PersistSVM.PARAM_START_ITERATIONS);
 				result.getParams().svm_type = EncogFileSection.parseInt(params,
 						PersistSVM.PARAM_SVM_TYPE);
 				result.getParams().weight = EncogFileSection.parseDoubleArray(
@@ -242,8 +235,6 @@ public class PersistSVM implements EncogPersistor {
 				svm2.getParams().probability);
 		out.writeProperty(PersistSVM.PARAM_SHRINKING,
 				svm2.getParams().shrinking);
-		out.writeProperty(PersistSVM.PARAM_START_ITERATIONS,
-				svm2.getParams().statIterations);
 		out.writeProperty(PersistSVM.PARAM_SVM_TYPE, svm2.getParams().svm_type);
 		out.writeProperty(PersistSVM.PARAM_WEIGHT, svm2.getParams().weight);
 		out.writeProperty(PersistSVM.PARAM_WEIGHT_LABEL,

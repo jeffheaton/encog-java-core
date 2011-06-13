@@ -1,76 +1,10 @@
-/*
- * Encog(tm) Core v3.0 - Java Version
- * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
- 
- * Copyright 2008-2011 Heaton Research, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *   
- * For more information on Heaton Research copyrights, licenses 
- * and trademarks visit:
- * http://www.heatonresearch.com/copyright
- */
+
+
+
+
 package org.encog.mathutil.libsvm;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.StringTokenizer;
-
-import org.encog.util.logging.EncogLogging;
-
-/**
- * This class was taken from the libsvm package.  We have made some
- * modifications for use in Encog.
- *
- * The libsvm Copyright/license is listed here.
- * 
- * Copyright (c) 2000-2010 Chih-Chung Chang and Chih-Jen Lin
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 
- * 1. Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- * 
- * 2. Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *
- * 3. Neither name of copyright holders nor the names of its contributors
- * may be used to endorse or promote products derived from this software
- * without specific prior written permission.
- * 
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- */
-
+import java.io.*;
+import java.util.*;
 
 //
 // Kernel Cache
@@ -194,7 +128,7 @@ class Cache {
 //
 abstract class QMatrix {
 	abstract float[] get_Q(int column, int len);
-	abstract float[] get_QD();
+	abstract double[] get_QD();
 	abstract void swap_index(int i, int j);
 };
 
@@ -209,7 +143,7 @@ abstract class Kernel extends QMatrix {
 	private final double coef0;
 
 	abstract float[] get_Q(int column, int len);
-	abstract float[] get_QD();
+	abstract double[] get_QD();
 
 	void swap_index(int i, int j)
 	{
@@ -375,7 +309,7 @@ class Solver {
 	byte[] alpha_status;	// LOWER_BOUND, UPPER_BOUND, FREE
 	double[] alpha;
 	QMatrix Q;
-	float[] QD;
+	double[] QD;
 	double eps;
 	double Cp,Cn;
 	double[] p;
@@ -466,7 +400,7 @@ class Solver {
 		}
 	}
 
-	int Solve(int l, QMatrix Q, double[] p_, byte[] y_,
+	void Solve(int l, QMatrix Q, double[] p_, byte[] y_,
 		   double[] alpha_, double Cp, double Cn, double eps, SolutionInfo si, int shrinking)
 	{
 		this.l = l;
@@ -553,8 +487,6 @@ class Solver {
 			int j = working_set[1];
 
 			++iter;
-			if( iter>1000)
-				break;
 
 			// update alpha[i] and alpha[j], handle bounds carefully
 
@@ -569,7 +501,7 @@ class Solver {
 
 			if(y[i]!=y[j])
 			{
-				double quad_coef = Q_i[i]+Q_j[j]+2*Q_i[j];
+				double quad_coef = QD[i]+QD[j]+2*Q_i[j];
 				if (quad_coef <= 0)
 					quad_coef = 1e-12;
 				double delta = (-G[i]-G[j])/quad_coef;
@@ -612,7 +544,7 @@ class Solver {
 			}
 			else
 			{
-				double quad_coef = Q_i[i]+Q_j[j]-2*Q_i[j];
+				double quad_coef = QD[i]+QD[j]-2*Q_i[j];
 				if (quad_coef <= 0)
 					quad_coef = 1e-12;
 				double delta = (G[i]-G[j])/quad_coef;
@@ -721,7 +653,6 @@ class Solver {
 		si.upper_bound_n = Cn;
 
 		svm.info("\noptimization finished, #iter = "+iter+"\n");
-		return iter;
 	}
 
 	// return 1 if already optimal, return 0 otherwise
@@ -776,7 +707,7 @@ class Solver {
 					if (grad_diff > 0)
 					{
 						double obj_diff; 
-						double quad_coef=Q_i[i]+QD[j]-2.0*y[i]*Q_i[j];
+						double quad_coef = QD[i]+QD[j]-2.0*y[i]*Q_i[j];
 						if (quad_coef > 0)
 							obj_diff = -(grad_diff*grad_diff)/quad_coef;
 						else
@@ -800,7 +731,7 @@ class Solver {
 					if (grad_diff > 0)
 					{
 						double obj_diff; 
-						double quad_coef=Q_i[i]+QD[j]+2.0*y[i]*Q_i[j];
+						double quad_coef = QD[i]+QD[j]+2.0*y[i]*Q_i[j];
 						if (quad_coef > 0)
 							obj_diff = -(grad_diff*grad_diff)/quad_coef;
 						else
@@ -953,12 +884,12 @@ final class Solver_NU extends Solver
 {
 	private SolutionInfo si;
 
-	int Solve(int l, QMatrix Q, double[] p, byte[] y,
+	void Solve(int l, QMatrix Q, double[] p, byte[] y,
 		   double[] alpha, double Cp, double Cn, double eps,
 		   SolutionInfo si, int shrinking)
 	{
 		this.si = si;
-		return super.Solve(l,Q,p,y,alpha,Cp,Cn,eps,si,shrinking);
+		super.Solve(l,Q,p,y,alpha,Cp,Cn,eps,si,shrinking);
 	}
 
 	// return 1 if already optimal, return 0 otherwise
@@ -1022,7 +953,7 @@ final class Solver_NU extends Solver
 					if (grad_diff > 0)
 					{
 						double obj_diff; 
-						double quad_coef = Q_ip[ip]+QD[j]-2*Q_ip[j];
+						double quad_coef = QD[ip]+QD[j]-2*Q_ip[j];
 						if (quad_coef > 0)
 							obj_diff = -(grad_diff*grad_diff)/quad_coef;
 						else
@@ -1046,7 +977,7 @@ final class Solver_NU extends Solver
 					if (grad_diff > 0)
 					{
 						double obj_diff; 
-						double quad_coef = Q_in[in]+QD[j]-2*Q_in[j];
+						double quad_coef = QD[in]+QD[j]-2*Q_in[j];
 						if (quad_coef > 0)
 							obj_diff = -(grad_diff*grad_diff)/quad_coef;
 						else
@@ -1204,16 +1135,16 @@ class SVC_Q extends Kernel
 {
 	private final byte[] y;
 	private final Cache cache;
-	private final float[] QD;
+	private final double[] QD;
 
 	SVC_Q(svm_problem prob, svm_parameter param, byte[] y_)
 	{
 		super(prob.l, prob.x, param);
 		y = (byte[])y_.clone();
 		cache = new Cache(prob.l,(long)(param.cache_size*(1<<20)));
-		QD = new float[prob.l];
+		QD = new double[prob.l];
 		for(int i=0;i<prob.l;i++)
-			QD[i]= (float)kernel_function(i,i);
+			QD[i] = kernel_function(i,i);
 	}
 
 	float[] get_Q(int i, int len)
@@ -1228,7 +1159,7 @@ class SVC_Q extends Kernel
 		return data[0];
 	}
 
-	float[] get_QD()
+	double[] get_QD()
 	{
 		return QD;
 	}
@@ -1238,22 +1169,22 @@ class SVC_Q extends Kernel
 		cache.swap_index(i,j);
 		super.swap_index(i,j);
 		do {byte _=y[i]; y[i]=y[j]; y[j]=_;} while(false);
-		do {float _=QD[i]; QD[i]=QD[j]; QD[j]=_;} while(false);
+		do {double _=QD[i]; QD[i]=QD[j]; QD[j]=_;} while(false);
 	}
 }
 
 class ONE_CLASS_Q extends Kernel
 {
 	private final Cache cache;
-	private final float[] QD;
+	private final double[] QD;
 
 	ONE_CLASS_Q(svm_problem prob, svm_parameter param)
 	{
 		super(prob.l, prob.x, param);
 		cache = new Cache(prob.l,(long)(param.cache_size*(1<<20)));
-		QD = new float[prob.l];
+		QD = new double[prob.l];
 		for(int i=0;i<prob.l;i++)
-			QD[i]= (float)kernel_function(i,i);
+			QD[i] = kernel_function(i,i);
 	}
 
 	float[] get_Q(int i, int len)
@@ -1268,7 +1199,7 @@ class ONE_CLASS_Q extends Kernel
 		return data[0];
 	}
 
-	float[] get_QD()
+	double[] get_QD()
 	{
 		return QD;
 	}
@@ -1277,7 +1208,7 @@ class ONE_CLASS_Q extends Kernel
 	{
 		cache.swap_index(i,j);
 		super.swap_index(i,j);
-		do {float _=QD[i]; QD[i]=QD[j]; QD[j]=_;} while(false);
+		do {double _=QD[i]; QD[i]=QD[j]; QD[j]=_;} while(false);
 	}
 }
 
@@ -1289,14 +1220,14 @@ class SVR_Q extends Kernel
 	private final int[] index;
 	private int next_buffer;
 	private float[][] buffer;
-	private final float[] QD;
+	private final double[] QD;
 
 	SVR_Q(svm_problem prob, svm_parameter param)
 	{
 		super(prob.l, prob.x, param);
 		l = prob.l;
 		cache = new Cache(l,(long)(param.cache_size*(1<<20)));
-		QD = new float[2*l];
+		QD = new double[2*l];
 		sign = new byte[2*l];
 		index = new int[2*l];
 		for(int k=0;k<l;k++)
@@ -1305,7 +1236,7 @@ class SVR_Q extends Kernel
 			sign[k+l] = -1;
 			index[k] = k;
 			index[k+l] = k;
-			QD[k] = (float)kernel_function(k,k);
+			QD[k] = kernel_function(k,k);
 			QD[k+l] = QD[k];
 		}
 		buffer = new float[2][2*l];
@@ -1316,7 +1247,7 @@ class SVR_Q extends Kernel
 	{
 		do {byte _=sign[i]; sign[i]=sign[j]; sign[j]=_;} while(false);
 		do {int _=index[i]; index[i]=index[j]; index[j]=_;} while(false);
-		do {float _=QD[i]; QD[i]=QD[j]; QD[j]=_;} while(false);
+		do {double _=QD[i]; QD[i]=QD[j]; QD[j]=_;} while(false);
 	}
 
 	float[] get_Q(int i, int len)
@@ -1338,7 +1269,7 @@ class SVR_Q extends Kernel
 		return buf;
 	}
 
-	float[] get_QD()
+	double[] get_QD()
 	{
 		return QD;
 	}
@@ -1348,13 +1279,15 @@ public class svm {
 	//
 	// construct and solve various formulations
 	//
-	public static final int LIBSVM_VERSION=291; 
+	public static final int LIBSVM_VERSION=310; 
+	public static final Random rand = new Random();
 
 	private static svm_print_interface svm_print_stdout = new svm_print_interface()
-	{		
+	{
 		public void print(String s)
 		{
-			EncogLogging.log(EncogLogging.LEVEL_INFO,s);
+			System.out.print(s);
+			System.out.flush();
 		}
 	};
 
@@ -1379,11 +1312,11 @@ public class svm {
 		{
 			alpha[i] = 0;
 			minus_ones[i] = -1;
-			if(prob.y[i] > 0) y[i] = +1; else y[i]=-1;
+			if(prob.y[i] > 0) y[i] = +1; else y[i] = -1;
 		}
 
 		Solver s = new Solver();
-		param.statIterations = s.Solve(l, new SVC_Q(prob,param,y), minus_ones, y,
+		s.Solve(l, new SVC_Q(prob,param,y), minus_ones, y,
 			alpha, Cp, Cn, param.eps, si, param.shrinking);
 
 		double sum_alpha=0;
@@ -1472,7 +1405,7 @@ public class svm {
 		}
 
 		Solver s = new Solver();
-		param.statIterations = s.Solve(l, new ONE_CLASS_Q(prob,param), zeros, ones,
+		s.Solve(l, new ONE_CLASS_Q(prob,param), zeros, ones,
 			alpha, 1.0, 1.0, param.eps, si, param.shrinking);
 	}
 
@@ -1497,7 +1430,7 @@ public class svm {
 		}
 
 		Solver s = new Solver();
-		param.statIterations = s.Solve(2*l, new SVR_Q(prob,param), linear_term, y,
+		s.Solve(2*l, new SVR_Q(prob,param), linear_term, y,
 			alpha2, param.C, param.C, param.eps, si, param.shrinking);
 
 		double sum_alpha = 0;
@@ -1737,7 +1670,7 @@ public class svm {
 		int t,j;
 		int iter = 0, max_iter=Math.max(100,k);
 		double[][] Q=new double[k][k];
-		double[] Qp= new double[k];
+		double[] Qp=new double[k];
 		double pQp, eps=0.005/k;
 	
 		for (t=0;t<k;t++)
@@ -1803,7 +1736,7 @@ public class svm {
 		for(i=0;i<prob.l;i++) perm[i]=i;
 		for(i=0;i<prob.l;i++)
 		{
-			int j = i+(int)(Math.random()*(prob.l-i));
+			int j = i+rand.nextInt(prob.l-i);
 			do {int _=perm[i]; perm[i]=perm[j]; perm[j]=_;} while(false);
 		}
 		for(i=0;i<nr_fold;i++)
@@ -2225,7 +2158,7 @@ public class svm {
 			for (c=0; c<nr_class; c++)
 				for(i=0;i<count[c];i++)
 				{
-					int j = i+(int)(Math.random()*(count[c]-i));
+					int j = i+rand.nextInt(count[c]-i);
 					do {int _=index[start[c]+j]; index[start[c]+j]=index[start[c]+i]; index[start[c]+i]=_;} while(false);
 				}
 			for(i=0;i<nr_fold;i++)
@@ -2257,7 +2190,7 @@ public class svm {
 			for(i=0;i<l;i++) perm[i]=i;
 			for(i=0;i<l;i++)
 			{
-				int j = i+(int)(Math.random()*(l-i));
+				int j = i+rand.nextInt(l-i);
 				do {int _=perm[i]; perm[i]=perm[j]; perm[j]=_;} while(false);
 			}
 			for(i=0;i<=nr_fold;i++)
@@ -2465,7 +2398,9 @@ public class svm {
 	public static void svm_save_model(String model_file_name, svm_model model) throws IOException
 	{
 		DataOutputStream fp = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(model_file_name)));
+
 		svm_save_model(fp,model);
+
 		fp.close();
 	}
 	
@@ -2548,8 +2483,6 @@ public class svm {
 					fp.writeBytes(p[j].index+":"+p[j].value+" ");
 			fp.writeBytes("\n");
 		}
-
-		fp.close();
 	}
 
 	private static double atof(String s)
