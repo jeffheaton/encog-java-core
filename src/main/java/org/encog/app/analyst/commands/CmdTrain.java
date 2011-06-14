@@ -101,7 +101,7 @@ public class CmdTrain extends Cmd {
 
 		this.kfold = obtainCross();
 		final MLDataSet trainingSet = obtainTrainingSet();
-		final MLMethod method = obtainMethod();
+		MLMethod method = obtainMethod();
 		final MLTrain trainer = createTrainer(method, trainingSet);
 		
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Beginning training");
