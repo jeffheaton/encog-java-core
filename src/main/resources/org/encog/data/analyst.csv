@@ -17,6 +17,7 @@ SETUP:FILENAMES,FILE_RANDOMIZE,string
 DATA:CONFIG,goal,string
 NORMALIZE:CONFIG,sourceFile,string
 NORMALIZE:CONFIG,targetFile,string
+NORMALIZE:CONFIG,missingValues,string
 BALANCE:CONFIG,sourceFile,string
 BALANCE:CONFIG,targetFile,string
 BALANCE:CONFIG,balanceField,string
