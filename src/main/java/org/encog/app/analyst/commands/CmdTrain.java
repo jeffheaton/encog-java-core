@@ -112,6 +112,7 @@ public class CmdTrain extends Cmd {
 				ScriptProperties.ML_CONFIG_MACHINE_LEARNING_FILE);
 		final File resourceFile = getAnalyst().getScript().resolveFilename(
 				resourceID);
+		method = trainer.getMethod();
 		EncogDirectoryPersistence.saveObject(resourceFile, method);
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "save to:" + resourceID);
 
