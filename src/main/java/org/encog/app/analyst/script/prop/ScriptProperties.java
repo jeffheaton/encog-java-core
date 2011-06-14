@@ -112,7 +112,7 @@ public class ScriptProperties {
 		= "NORMALIZE:CONFIG_targetFile";
 	
 	/**
-	 * Property for: "NORMALIZE:CONFIG_targetFile". 
+	 * Property for: "NORMALIZE:CONFIG_missingValues". 
 	 */
 	public static final String NORMALIZE_MISSING_VALUES 
 		= "NORMALIZE:CONFIG_missingValues";
