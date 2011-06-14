@@ -26,12 +26,12 @@ package org.encog.ml.factory.train;
 import java.util.Map;
 
 import org.encog.EncogError;
+import org.encog.NullStatusReportable;
 import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.factory.parse.ArchitectureParse;
 import org.encog.ml.svm.SVM;
-import org.encog.ml.svm.training.SVMSearchTrain;
+import org.encog.ml.svm.training.search.SVMSearchJob;
 import org.encog.ml.train.MLTrain;
 import org.encog.util.ParamsHolder;
 
@@ -95,15 +95,15 @@ public class SVMSearchFactory {
 		new ParamsHolder(args);
 
 		final ParamsHolder holder = new ParamsHolder(args);
-		final double gammaStart = holder.getDouble(SVMSearchFactory.PROPERTY_GAMMA1, false, SVMSearchTrain.DEFAULT_GAMMA_BEGIN);
-		final double cStart = holder.getDouble(SVMSearchFactory.PROPERTY_C1, false, SVMSearchTrain.DEFAULT_CONST_BEGIN);
-		final double gammaStop = holder.getDouble(SVMSearchFactory.PROPERTY_GAMMA2, false, SVMSearchTrain.DEFAULT_GAMMA_END);
-		final double cStop = holder.getDouble(SVMSearchFactory.PROPERTY_C2, false, SVMSearchTrain.DEFAULT_CONST_END);
-		final double gammaStep = holder.getDouble(SVMSearchFactory.PROPERTY_GAMMA_STEP, false, SVMSearchTrain.DEFAULT_GAMMA_STEP);
-		final double cStep = holder.getDouble(SVMSearchFactory.PROPERTY_C_STEP, false, SVMSearchTrain.DEFAULT_CONST_STEP);
+		final double gammaStart = holder.getDouble(SVMSearchFactory.PROPERTY_GAMMA1, false, SVMSearchJob.DEFAULT_GAMMA_BEGIN);
+		final double cStart = holder.getDouble(SVMSearchFactory.PROPERTY_C1, false, SVMSearchJob.DEFAULT_CONST_BEGIN);
+		final double gammaStop = holder.getDouble(SVMSearchFactory.PROPERTY_GAMMA2, false, SVMSearchJob.DEFAULT_GAMMA_END);
+		final double cStop = holder.getDouble(SVMSearchFactory.PROPERTY_C2, false, SVMSearchJob.DEFAULT_CONST_END);
+		final double gammaStep = holder.getDouble(SVMSearchFactory.PROPERTY_GAMMA_STEP, false, SVMSearchJob.DEFAULT_GAMMA_STEP);
+		final double cStep = holder.getDouble(SVMSearchFactory.PROPERTY_C_STEP, false, SVMSearchJob.DEFAULT_CONST_STEP);
 		
-		final SVMSearchTrain result 
-			= new SVMSearchTrain((SVM) method, training);
+		final SVMSearchJob result 
+		= new SVMSearchJob((SVM)method, training, new NullStatusReportable());
 		
 		result.setGammaBegin(gammaStart);
 		result.setGammaEnd(gammaStop);

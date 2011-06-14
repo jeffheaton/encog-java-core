@@ -138,7 +138,7 @@ public class SVMTrain extends BasicTraining {
 	 *            The output values from the SVN.
 	 * @return The calculated error.
 	 */
-	private double evaluate(final svm_parameter param, final svm_problem prob,
+	public static double evaluate(final svm_parameter param, final svm_problem prob,
 			final double[] target) {
 		int totalCorrect = 0;
 
