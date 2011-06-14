@@ -27,9 +27,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.app.analyst.AnalystError;
+import org.encog.app.analyst.missing.DiscardMissing;
+import org.encog.app.analyst.missing.HandleMissingValues;
+import org.encog.app.analyst.missing.MeanAndModeMissing;
+import org.encog.app.analyst.missing.NegateMissing;
 import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
+import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.util.arrayutil.ClassItem;
 import org.encog.util.arrayutil.NormalizationAction;
 
@@ -46,7 +51,20 @@ public class AnalystNormalize {
 	 */
 	private final List<AnalystField> normalizedFields 
 		= new ArrayList<AnalystField>();
+	
+	/**
+	 * The parent script.
+	 */
+	private AnalystScript script;
 
+	/**
+	 * Construct the object.
+	 * @param theScript The script.
+	 */
+	public AnalystNormalize(AnalystScript theScript) {
+		this.script = theScript;
+	}
+	
 	/**
 	 * @return Calculate the input columns.
 	 */
@@ -142,4 +160,30 @@ public class AnalystNormalize {
 		result.append("]");
 		return result.toString();
 	}
+
+	/**
+	 * @return the missingValues
+	 */
+	public HandleMissingValues getMissingValues() {
+		final String type = this.script.getProperties().getPropertyString(
+				ScriptProperties.ML_CONFIG_TYPE);
+
+		if( type.equals("DiscardMissing") ) {
+			return new DiscardMissing();
+		} else if( type.equals("MeanAndModeMissing") ) {
+			return new MeanAndModeMissing();
+		} else if( type.equals("NegateMissing") ) {
+			return new NegateMissing();
+		} else {
+			return new DiscardMissing();
+		}
+	}
+
+	/**
+	 * @param missingValues the missingValues to set
+	 */
+	public void setMissingValues(HandleMissingValues missingValues) {
+		this.script.getProperties().setProperty(
+				ScriptProperties.NORMALIZE_MISSING_VALUES, missingValues.getClass().getSimpleName());		
+	}	
 }

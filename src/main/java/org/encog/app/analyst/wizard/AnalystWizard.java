@@ -32,6 +32,8 @@ import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.AnalystFileFormat;
 import org.encog.app.analyst.AnalystGoal;
 import org.encog.app.analyst.EncogAnalyst;
+import org.encog.app.analyst.missing.DiscardMissing;
+import org.encog.app.analyst.missing.HandleMissingValues;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.normalize.AnalystField;
@@ -270,6 +272,8 @@ public class AnalystWizard {
 	 * The normalization range.
 	 */
 	private NormalizeRange range = NormalizeRange.NegOne2One;
+	
+	private HandleMissingValues missing = new DiscardMissing();
 
 	/**
 	 * Construct the analyst wizard.
@@ -723,6 +727,8 @@ public class AnalystWizard {
 			target = AnalystWizard.FILE_NORMALIZE;
 			this.script.getProperties().setProperty(
 					ScriptProperties.NORMALIZE_CONFIG_TARGET_FILE, target);
+			
+			this.script.getNormalize().setMissingValues(this.missing);
 		}
 
 		if (this.taskSegregate) {
@@ -1157,5 +1163,21 @@ public class AnalystWizard {
 
 		wizard(analyzeFile, b, format);
 	}
+
+	/**
+	 * @return the missing
+	 */
+	public HandleMissingValues getMissing() {
+		return missing;
+	}
+
+	/**
+	 * @param missing the missing to set
+	 */
+	public void setMissing(HandleMissingValues missing) {
+		this.missing = missing;
+	}
+	
+	
 
 }

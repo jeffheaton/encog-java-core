@@ -34,6 +34,8 @@ import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.util.Format;
 import org.encog.util.HTMLReport;
+import org.encog.util.csv.CSVFormat;
+import org.encog.util.csv.ReadCSV;
 import org.encog.util.file.FileUtil;
 
 /**
@@ -52,11 +54,20 @@ public class AnalystReport {
 	 */
 	public static final int EIGHT_SPAN = 5;
 	
-	
 	/**
 	 * The analyst to use.
 	 */
 	private final EncogAnalyst analyst;
+	
+	/**
+	 * The row count.
+	 */
+	private int rowCount;
+	
+	/**
+	 * The missing count.
+	 */
+	private int missingCount;
 
 	/**
 	 * Construct the report.
@@ -64,6 +75,31 @@ public class AnalystReport {
 	 */
 	public AnalystReport(final EncogAnalyst theAnalyst) {
 		this.analyst = theAnalyst;
+	}
+	
+	private void analyzeFile() {
+		ScriptProperties prop = this.analyst.getScript().getProperties();
+		
+		// get filenames, headers & format
+		String sourceID = prop.getPropertyString(
+				ScriptProperties.HEADER_DATASOURCE_RAW_FILE);
+
+		File sourceFile = this.analyst.getScript().resolveFilename(sourceID);
+		CSVFormat inputFormat = this.analyst.getScript().determineInputFormat(sourceID);	
+		boolean headers = this.analyst.getScript().expectInputHeaders(sourceID);
+			
+		// read the file
+		this.rowCount = 0;
+		this.missingCount = 0;
+		
+		ReadCSV csv = new ReadCSV(sourceFile.toString(),headers,inputFormat);
+		while(csv.next()) {
+			rowCount++;
+			if( csv.hasMissing() )
+				missingCount++;
+		}
+		csv.close();
+
 	}
 
 	/**
@@ -73,9 +109,16 @@ public class AnalystReport {
 	public final String produceReport() {
 		final HTMLReport report = new HTMLReport();
 
+		analyzeFile();
 		report.beginHTML();
 		report.title("Encog Analyst Report");
 		report.beginBody();
+		
+		report.h1("General Statistics");
+		report.beginTable();
+		report.tablePair("Total row count", Format.formatInteger(this.rowCount));
+		report.tablePair("Missing row count", Format.formatInteger(this.missingCount));
+		report.endTable();
 
 		report.h1("Field Ranges");
 		report.beginTable();
@@ -107,7 +150,7 @@ public class AnalystReport {
 
 			if (df.getClassMembers().size() > 0) {
 				report.beginRow();
-				report.cell("&nbsp;");
+				report.cell(" ");
 				report.beginTableInCell(EIGHT_SPAN);
 				report.beginRow();
 				report.header("Code");

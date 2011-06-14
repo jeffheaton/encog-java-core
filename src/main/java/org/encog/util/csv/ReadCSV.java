@@ -448,4 +448,14 @@ public class ReadCSV {
 		return this.format;
 	}
 
+	public boolean hasMissing() {
+		for(int i=0;i<this.data.length;i++ ) {
+			String s = this.data[i].trim();
+			if( s.length()==0 || s.equals("?") ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

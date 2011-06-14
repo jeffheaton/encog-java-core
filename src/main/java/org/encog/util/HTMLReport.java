@@ -50,13 +50,13 @@ public class HTMLReport {
 
 	public void bold(String str) {
 		text.append("<b>");
-		text.append(str);
+		text.append(encode(str));
 		text.append("</b>");
 	}
 
 	public void para(String str) {
 		text.append("<p>");
-		text.append(str);
+		text.append(encode(str));
 		text.append("</p>");
 	}
 
@@ -78,7 +78,7 @@ public class HTMLReport {
 
 	public void h1(String title) {
 		text.append("<h1>");
-		text.append(title);
+		text.append(encode(title));
 		text.append("</h1>");
 	}
 
@@ -100,7 +100,7 @@ public class HTMLReport {
 
 	public void header(String head) {
 		text.append("<th>");
-		text.append(head);
+		text.append(encode(head));
 		text.append("</th>");
 	}
 	
@@ -116,28 +116,47 @@ public class HTMLReport {
 			text.append("\"");
 		}
 		text.append(">");
-		text.append(head);
+		text.append(encode(head));
 		text.append("</td>");
 	}
 
 	public void tablePair(String name, String value) {
 		beginRow();
-		cell("<b>" + name + "</b>");
+		text.append("<td><b>" + encode(name) + "</b></td>");
 		cell(value);
 		endRow();
 		
 		
 	}
 	
+	public static String encode(String str) {
+		StringBuilder result = new StringBuilder();
+		for(int i=0;i<str.length();i++) {
+			char ch = str.charAt(i);
+			
+			if( ch=='<' ) {
+				result.append("&lt;");				
+			} else if( ch=='>' ) {
+				result.append("&gt;");				
+			}  else if( ch=='&' ) {
+				result.append("&amp;");				
+			} else {
+				result.append(ch);
+			}
+				
+		}
+		return result.toString();
+	}
+	
 	public void h2(String title) {
 		text.append("<h2>");
-		text.append(title);
+		text.append(encode(title));
 		text.append("</h2>");
 	}
 
 	public void h3(String title) {
 		text.append("<h3>");
-		text.append(title);
+		text.append(encode(title));
 		text.append("</h3>");
 	}
 
@@ -147,7 +166,7 @@ public class HTMLReport {
 
 	public void listItem(String str) {
 		text.append("<li>");
-		text.append(str);
+		text.append(encode(str));
 		
 	}
 

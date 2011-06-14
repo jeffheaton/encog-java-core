@@ -32,6 +32,7 @@ import org.encog.EncogError;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.csv.TimeSeriesUtil;
 import org.encog.app.analyst.csv.basic.BasicFile;
+import org.encog.app.analyst.missing.HandleMissingValues;
 import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.util.CSVHeaders;
 import org.encog.app.quant.QuantError;
@@ -75,9 +76,18 @@ public class AnalystNormalizeCSV extends BasicFile {
 			final String str = csv.get(index).trim();
 			
 			// is this an unknown value?
-			if( str.equals("?") || str.length()==0 ) {
-				for(int i=0;i<stat.getColumnsNeeded();i++) {
-					output[outputIndex++] = 0;
+			if( str.equals("?") || str.length()==0 ) {				
+				HandleMissingValues handler = analyst.getScript().getNormalize().getMissingValues();
+				double[] d = handler.handleMissing(analyst ,stat);
+				
+				// should we skip the entire row
+				if( d==null ) {
+					return null;
+				}
+				
+				// copy the returned values in place of the missing values
+				for(int i=0;i<d.length;i++) {
+					output[outputIndex++] = d[i];
 				}
 			} else {
 			// known value

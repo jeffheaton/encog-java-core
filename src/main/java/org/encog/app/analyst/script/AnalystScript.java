@@ -58,7 +58,7 @@ public class AnalystScript {
 	/**
 	 * Information about how to normalize.
 	 */
-	private final AnalystNormalize normalize = new AnalystNormalize();
+	private final AnalystNormalize normalize = new AnalystNormalize(this);
 	
 	/**
 	 * Information about how to segregate.

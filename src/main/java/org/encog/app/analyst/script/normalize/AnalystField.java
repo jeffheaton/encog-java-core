@@ -30,7 +30,10 @@ import java.util.Map;
 
 import org.encog.Encog;
 import org.encog.app.analyst.AnalystError;
+import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.csv.basic.BasicFile;
+import org.encog.app.analyst.script.AnalystClassItem;
+import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.util.CSVHeaders;
 import org.encog.app.quant.QuantError;
 import org.encog.mathutil.Equilateral;
@@ -732,5 +735,31 @@ public class AnalystField {
 
 		result.append("]");
 		return result.toString();
+	}
+
+	/**
+	 * Determine the mode, this is the class item that has the most instances.
+	 * @param analyst
+	 * @return
+	 */
+	public int determineMode(EncogAnalyst analyst) {
+		if( !this.isClassify() ) {
+			throw new AnalystError("Can only calculate the mode for a class.");
+		}
+		
+		DataField df = analyst.getScript().findDataField(this.name);
+		AnalystClassItem m = null;
+		int result = 0;
+		int idx = 0;
+		for( AnalystClassItem item: df.getClassMembers() )
+		{
+			if( m==null || m.getCount()<item.getCount() ) {
+				m = item;
+				result = idx;
+			}
+			idx++;
+		}
+		
+		return result;
 	}
 }
