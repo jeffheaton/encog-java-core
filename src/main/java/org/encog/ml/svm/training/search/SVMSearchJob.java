@@ -124,7 +124,7 @@ public class SVMSearchJob extends ConcurrentJob implements MLTrain {
 	/**
 	 * The number of folds.
 	 */
-	private int fold = 5;
+	private int fold = 0;
 
 	/**
 	 * Is the network setup.
@@ -349,16 +349,24 @@ public class SVMSearchJob extends ConcurrentJob implements MLTrain {
 		pack.getSvm().getParams().gamma = pack.getGamma();
 		pack.getSvm().getParams().C = pack.getC();
 
-		// cross validate it
-		svm.svm_cross_validation(this.problem, pack.getSvm().getParams(),
-				this.fold, target);
-
-		// determine the error
-		final double error = SVMTrain.evaluate(pack.getSvm().getParams(),
-				this.problem, target);
-
-		/*System.out.println(pack.getGamma() + "," + pack.getC() + ","
-				+ Format.formatPercent(error));*/
+		double error;
+		
+		pack.getSvm().getParams().C = this.currentConst;
+		pack.getSvm().getParams().gamma = this.currentGamma;
+		
+		if( fold==0 ) {
+			// train it			
+			pack.getSvm().setModel(svm.svm_train(this.problem, pack.getSvm().getParams()));
+			error = pack.getSvm().calculateError(getTraining());
+		} else {
+			// cross validate it
+			svm.svm_cross_validation(this.problem, pack.getSvm().getParams(),
+					this.fold, target);
+			
+			error = SVMTrain.evaluate(pack.getSvm().getParams(),
+					this.problem, target);
+		}
+		
 		// new best error?
 		if (!Double.isNaN(error)) {
 			if (error < this.bestError) {
