@@ -295,22 +295,16 @@ public class SVMSearchJob extends ConcurrentJob implements MLTrain {
 		return this.training;
 	}
 
-	/**
-	 * @return the done
-	 */
-	public final boolean isDone() {
-		return this.done;
-	}
-
 	@Override
 	public boolean isTrainingDone() {
-		return this.done;
+		return this.done && !this.isRunning();
 	}
 
 	@Override
 	public void iteration() {
 		if (!this.started) {
-			process();
+			processBackground();
+			this.started = true;
 			this.iterationCount++;
 		} else {
 			try {

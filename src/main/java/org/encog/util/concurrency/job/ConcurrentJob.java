@@ -30,7 +30,7 @@ import org.encog.util.concurrency.TaskGroup;
 /**
  * This class forms the basis for a job that can be run concurrently.
  */
-public abstract class ConcurrentJob {
+public abstract class ConcurrentJob implements Runnable {
 
 	/**
 	 * The class to report status to.
@@ -51,6 +51,11 @@ public abstract class ConcurrentJob {
 	 * Flag to note that the job should stop.
 	 */
 	private boolean shouldStop = false;
+	
+	/**
+	 * Is the job running.
+	 */
+	private boolean running;
 
 	/**
 	 * Construct a concurrent job.
@@ -84,6 +89,7 @@ public abstract class ConcurrentJob {
 	public void process() {
 		Object task;
 
+		this.running = true;
 		this.totalTasks = loadWorkload();
 		int currentTask = 0;
 		TaskGroup group = EngineConcurrency.getInstance().createTaskGroup();
@@ -100,8 +106,13 @@ public abstract class ConcurrentJob {
 		}
 
 		group.waitForComplete();
-
-		EngineConcurrency.getInstance().checkError();
+		this.running = false;
+		EngineConcurrency.getInstance().checkError();		
+	}
+	
+	public void processBackground() {
+		Thread t = new Thread(this);
+		t.start();
 	}
 
 	/**
@@ -137,4 +148,17 @@ public abstract class ConcurrentJob {
 	public void stop() {
 		this.shouldStop = true;
 	}
+	
+	public void run() {
+		process();
+	}
+
+	/**
+	 * @return the running
+	 */
+	public boolean isRunning() {
+		return running;
+	}
+	
+	
 }
