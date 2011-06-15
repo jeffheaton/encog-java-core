@@ -28,6 +28,8 @@ import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.IntRange;
 import org.encog.ml.data.MLDataSet;
+import org.encog.neural.error.ErrorFunction;
+import org.encog.neural.error.LinearErrorFunction;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.flat.train.TrainFlatNetwork;
 import org.encog.util.EngineArray;
@@ -111,6 +113,11 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	 * Should we fix flat spots.
 	 */
 	private boolean shouldFixFlatSpot;
+	
+	/**
+	 * The error function.
+	 */
+	private ErrorFunction ef = new LinearErrorFunction();
 
 	/**
 	 * Train a flat network multithreaded.
@@ -287,7 +294,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 		for (final IntRange r : determine.calculateWorkers()) {
 			this.workers[index++] = new GradientWorker(this.network.clone(),
 					this, this.indexable.openAdditional(), r.getLow(),
-					r.getHigh(), this.flatSpot);
+					r.getHigh(), this.flatSpot, this.ef);
 		}
 	}
 
@@ -422,4 +429,19 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	 */
 	public abstract double updateWeight(double[] gradients,
 			double[] lastGradient, int index);
+	
+	/**
+	 * Set the error function.
+	 * @param ef The error function.
+	 */
+	public void setErrorFunction(ErrorFunction ef) {
+		this.ef = ef;
+	}
+	
+	/**
+	 * @return The error function.
+	 */
+	public ErrorFunction getErrorFunction() {
+		return this.ef;
+	}
 }

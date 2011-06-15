@@ -28,6 +28,7 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.BasicTraining;
+import org.encog.neural.error.ErrorFunction;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.flat.train.TrainFlatNetwork;
 import org.encog.neural.flat.train.prop.TrainFlatNetworkProp;
@@ -197,6 +198,10 @@ public abstract class Propagation extends BasicTraining implements Train {
 	public void fixFlatSpot(boolean b) {
 		((TrainFlatNetworkProp) this.flatTraining).fixFlatSpot(b);
 		
+	}
+	
+	public void setErrorFunction(ErrorFunction ef) {
+		((TrainFlatNetworkProp) this.flatTraining).setErrorFunction(ef);
 	}
 
 }
