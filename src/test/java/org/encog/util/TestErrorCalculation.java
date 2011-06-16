@@ -53,7 +53,7 @@ public class TestErrorCalculation extends TestCase {
 		
 		for(int i=0;i<ideal.length;i++)
 		{
-			error.updateError(actual_good[i], ideal[i]);
+			error.updateError(actual_good[i], ideal[i], 1.0);
 		}
 		TestCase.assertEquals(0.0,error.calculateRMS());
 		
@@ -61,7 +61,7 @@ public class TestErrorCalculation extends TestCase {
 		
 		for(int i=0;i<ideal.length;i++)
 		{
-			error.updateError(actual_bad[i], ideal[i]);
+			error.updateError(actual_bad[i], ideal[i], 1.0);
 		}
 		TestCase.assertEquals(250,(int)(error.calculateRMS()*1000));
 		
