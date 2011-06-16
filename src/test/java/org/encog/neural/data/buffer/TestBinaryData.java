@@ -70,11 +70,11 @@ public class TestBinaryData extends TestCase {
 		BinaryDataLoader loader = new BinaryDataLoader(codec);
 		loader.external2Binary(new File("encog.bin"));
 	
-		CSVDataCODEC codec2 = new CSVDataCODEC(new File("encog.csv"), CSVFormat.ENGLISH);
+		CSVDataCODEC codec2 = new CSVDataCODEC(new File("encog.csv"), CSVFormat.ENGLISH, false);
 		BinaryDataLoader loader2 = new BinaryDataLoader(codec2);
 		loader2.binary2External(new File("encog.bin"));
 		
-		CSVDataCODEC codec3 = new CSVDataCODEC(new File("encog.csv"), CSVFormat.ENGLISH, false, 2, 1);
+		CSVDataCODEC codec3 = new CSVDataCODEC(new File("encog.csv"), CSVFormat.ENGLISH, false, 2, 1, false);
 		BinaryDataLoader loader3 = new BinaryDataLoader(codec3);
 		loader3.external2Binary(new File("encog.bin"));
 
