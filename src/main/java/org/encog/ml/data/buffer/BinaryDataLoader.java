@@ -81,8 +81,9 @@ public class BinaryDataLoader {
 		int index = 3;
 		int currentRecord = 0;
 		int lastUpdate = 0;
+		double[] significance = new double[1];
 
-		while (codec.read(input, ideal)) {
+		while (codec.read(input, ideal, significance)) {
 
 			egb.write(input);
 			egb.write(ideal);
@@ -96,7 +97,7 @@ public class BinaryDataLoader {
 				this.status.report(0, currentRecord, "Importing...");
 			}
 			
-			egb.write(1.0);
+			egb.write(significance[0]);
 		}
 
 		egb.close();
@@ -143,7 +144,7 @@ public class BinaryDataLoader {
 			
 			double significance = egb.read();
 
-			this.codec.write(input, ideal);
+			this.codec.write(input, ideal, significance);
 
 			currentRecord++;
 			lastUpdate++;

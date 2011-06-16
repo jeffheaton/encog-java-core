@@ -75,7 +75,7 @@ public class CSVNeuralDataSet extends BasicMLDataSet {
 			final int theIdealSize, 
 			final boolean theHeaders) {
 		this(theFilename, theInputSize, theIdealSize, theHeaders, 
-				CSVFormat.ENGLISH);
+				CSVFormat.ENGLISH,false);
 	}
 
 	/**
@@ -91,18 +91,21 @@ public class CSVNeuralDataSet extends BasicMLDataSet {
 	 *            True if headers are present on the first line.
 	 * @param theFormat
 	 *            What CSV format to use.
+	 * @param theFormat
+	 *            True, if there is a significance column.
 	 */
 	public CSVNeuralDataSet(
 			final String theFilename, 
 			final int theInputSize,
 			final int theIdealSize, 
 			final boolean theHeaders, 
-			final CSVFormat theFormat) {
+			final CSVFormat theFormat,
+			final boolean significance) {
 		this.filename = theFilename;
 		this.format = theFormat;
 
 		final DataSetCODEC codec = new CSVDataCODEC(new File(filename), format,
-				theHeaders, theInputSize, theIdealSize);
+				theHeaders, theInputSize, theIdealSize, significance);
 		final MemoryDataLoader load = new MemoryDataLoader(codec);
 		load.setResult(this);
 		load.external2Memory();

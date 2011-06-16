@@ -314,7 +314,7 @@ public class ExcelCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean read(final double[] input, final double[] ideal) {
+	public final boolean read(final double[] input, final double[] ideal, double[] significance) {
 
 		int ch;
 
@@ -327,6 +327,7 @@ public class ExcelCODEC implements DataSetCODEC {
 			}
 		}
 
+		significance[0] = 1.0;
 		return false;
 	}
 
@@ -381,7 +382,8 @@ public class ExcelCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void write(final double[] input, final double[] ideal) {
+	public final void write(final double[] input, final double[] ideal, 
+			final double significance) {
 		final StringBuilder builder = new StringBuilder();
 		builder.append("1");
 		builder.append(":");

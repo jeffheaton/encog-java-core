@@ -97,12 +97,13 @@ public class ArrayDataCODEC implements DataSetCODEC {
 	 */
 	@Override
 	public final boolean read(final double[] theInput, 
-			final double[] theIdeal) {
+			final double[] theIdeal, final double[] significance) {
 		if (index >= this.input.length) {
 			return false;
 		} else {
 			EngineArray.arrayCopy(this.input[index], theInput);
 			EngineArray.arrayCopy(this.ideal[index], theIdeal);
+			significance[0] = 1.0;
 			index++;
 			return true;
 		}
@@ -113,7 +114,7 @@ public class ArrayDataCODEC implements DataSetCODEC {
 	 */
 	@Override
 	public final void write(final double[] theInput, 
-			final double[] theIdeal) {
+			final double[] theIdeal,final double significance) {
 		EngineArray.arrayCopy(theInput, this.input[index]);
 		EngineArray.arrayCopy(theIdeal, this.ideal[index]);
 		index++;

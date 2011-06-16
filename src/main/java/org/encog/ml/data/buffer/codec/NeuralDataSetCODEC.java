@@ -85,13 +85,14 @@ public class NeuralDataSetCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean read(final double[] input, final double[] ideal) {
+	public final boolean read(final double[] input, final double[] ideal, final double[] significance) {
 		if (!iterator.hasNext()) {
 			return false;
 		} else {
 			MLDataPair pair = iterator.next();
 			EngineArray.arrayCopy(pair.getInputArray(), input);
 			EngineArray.arrayCopy(pair.getIdealArray(), ideal);
+			significance[0] = pair.getSignificance();
 			return true;
 		}
 	}
@@ -100,11 +101,12 @@ public class NeuralDataSetCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void write(final double[] input, final double[] ideal) {
+	public final void write(final double[] input, final double[] ideal, double significance) {
 		MLDataPair pair = BasicMLDataPair.createPair(inputSize,
 				idealSize);
 		EngineArray.arrayCopy(input, pair.getIdealArray());
 		EngineArray.arrayCopy(ideal, pair.getIdealArray());
+		pair.setSignificance(significance);
 	}
 
 	/**

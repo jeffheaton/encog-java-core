@@ -211,7 +211,7 @@ public class SQLCODEC implements DataSetCODEC {
 	 */
 	@Override
 	public final boolean read(final double[] input, 
-			final double[] ideal) {
+			final double[] ideal, double[] significance) {
 		try {
 			if (!this.results.next()) {
 				return false;
@@ -231,6 +231,7 @@ public class SQLCODEC implements DataSetCODEC {
 				}
 			}
 
+			significance[0] = 1;
 			return true;
 		} catch (final SQLException e) {
 			throw new MLlDataError(e);
@@ -241,7 +242,7 @@ public class SQLCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void write(final double[] input, final double[] ideal) {
+	public final void write(final double[] input, final double[] ideal, double significance) {
 		throw new MLlDataError("Write not supported.");
 	}
 

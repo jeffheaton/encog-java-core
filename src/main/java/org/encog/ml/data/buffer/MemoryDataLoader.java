@@ -79,13 +79,14 @@ public class MemoryDataLoader {
 
 		final double[] input = new double[this.codec.getInputSize()];
 		final double[] ideal = new double[this.codec.getIdealSize()];
+		final double[] significance = new double[1];
 
 		this.codec.prepareRead();
 
 		int currentRecord = 0;
 		int lastUpdate = 0;
 
-		while (this.codec.read(input, ideal)) {
+		while (this.codec.read(input, ideal, significance)) {
 			MLData a = null, b = null;
 
 			a = new BasicMLData(input);
@@ -95,6 +96,7 @@ public class MemoryDataLoader {
 			}
 
 			final MLDataPair pair = new BasicMLDataPair(a, b);
+			pair.setSignificance(significance[0]);
 			this.result.add(pair);
 
 			currentRecord++;

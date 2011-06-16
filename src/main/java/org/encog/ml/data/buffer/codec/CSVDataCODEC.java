@@ -216,7 +216,8 @@ public class CSVDataCODEC implements DataSetCODEC {
 	 * @return True, if there is more data to be read.
 	 */
 	@Override
-	public final boolean read(final double[] input, final double[] ideal) {
+	public final boolean read(final double[] input, final double[] ideal,
+			double[] significance) {
 		if (this.readCSV.next()) {
 			int index = 0;
 			for (int i = 0; i < input.length; i++) {
@@ -228,7 +229,7 @@ public class CSVDataCODEC implements DataSetCODEC {
 			}
 			
 			if( this.expectSignificance ) {
-				
+				significance[0] = this.readCSV.getDouble(index++);
 			}
 			return true;
 		} else {
@@ -245,10 +246,12 @@ public class CSVDataCODEC implements DataSetCODEC {
 	 *            The ideal data array.
 	 */
 	@Override
-	public final void write(final double[] input, final double[] ideal) {
-		final double[] record = new double[input.length + ideal.length];
+	public final void write(final double[] input, final double[] ideal,
+			double significance) {
+		final double[] record = new double[input.length + ideal.length+1];
 		EngineArray.arrayCopy(input, record);
 		EngineArray.arrayCopy(ideal, 0, record, input.length, ideal.length);
+		record[record.length-1] = significance;
 		final StringBuilder result = new StringBuilder();
 		NumberList.toList(this.format, result, record);
 		this.output.println(result.toString());

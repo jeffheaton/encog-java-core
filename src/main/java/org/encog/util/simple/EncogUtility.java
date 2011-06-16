@@ -99,11 +99,12 @@ public final class EncogUtility {
      * @param ideal The ideal count.
      * @param headers True, if headers are present.
      * @param format The loaded dataset.
+     * @param significance True, if there is a significance column.
      * @return The loaded dataset.
      */
-    public static MLDataSet loadCSV2Memory(String filename, int input, int ideal, boolean headers, CSVFormat format)
+    public static MLDataSet loadCSV2Memory(String filename, int input, int ideal, boolean headers, CSVFormat format, boolean significance)
     {
-        DataSetCODEC codec = new CSVDataCODEC(new File(filename), format, headers, input, ideal);
+        DataSetCODEC codec = new CSVDataCODEC(new File(filename), format, headers, input, ideal, significance);
         MemoryDataLoader load = new MemoryDataLoader(codec);
         MLDataSet dataset = load.external2Memory();
         return dataset;
