@@ -45,7 +45,7 @@ public class CalculateRegressionError {
 		for (final MLDataPair pair : data) {
 			final MLData actual = method.compute(pair.getInput());
 			errorCalculation.updateError(actual.getData(), pair.getIdeal()
-					.getData());
+					.getData(),pair.getSignificance());
 		}
 		return errorCalculation.calculate();
 	}

@@ -95,6 +95,8 @@ public class BinaryDataLoader {
 				lastUpdate = 0;
 				this.status.report(0, currentRecord, "Importing...");
 			}
+			
+			egb.write(1.0);
 		}
 
 		egb.close();
@@ -138,6 +140,8 @@ public class BinaryDataLoader {
 			for (int j = 0; j < idealCount; j++) {
 				ideal[j] = egb.read();
 			}
+			
+			double significance = egb.read();
 
 			this.codec.write(input, ideal);
 

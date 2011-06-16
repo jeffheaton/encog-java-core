@@ -134,7 +134,7 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 			}
 
 			errorCalculation.updateError(output.getData(), pair.getIdeal()
-					.getData());
+					.getData(),pair.getSignificance());
 		}
 
 		// set the global error

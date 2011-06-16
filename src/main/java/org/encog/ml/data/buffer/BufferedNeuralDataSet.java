@@ -162,6 +162,8 @@ public class BufferedNeuralDataSet implements
 			double[] idealTarget = pair.getIdealArray();
 			this.egb.read(idealTarget);
 		}
+		
+		this.egb.read();
 	}
 
 	/**
@@ -206,6 +208,7 @@ public class BufferedNeuralDataSet implements
 
 		this.egb.write(inputData.getData());
 		this.egb.write(idealData.getData());
+		this.egb.write((double)1.0);
 	}
 
 	/**
@@ -221,6 +224,7 @@ public class BufferedNeuralDataSet implements
 
 		this.egb.write(pair.getInputArray());
 		this.egb.write(pair.getIdealArray());
+		this.egb.write(pair.getSignificance());
 
 	}
 

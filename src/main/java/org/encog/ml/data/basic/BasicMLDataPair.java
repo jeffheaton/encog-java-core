@@ -27,6 +27,7 @@ import java.io.Serializable;
 
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
+import org.encog.util.Format;
 
 /**
  * A basic implementation of the MLDataPair interface. This implementation
@@ -46,6 +47,11 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 	 * The serial ID.
 	 */
 	private static final long serialVersionUID = -9068229682273861359L;
+	
+	/**
+	 * The significance.
+	 */
+	private double significance = 1.0;
 
 	/**
 	 * Create a new data pair object of the correct size for the machine
@@ -181,8 +187,27 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 		builder.append(getInput());
 		builder.append("Ideal:");
 		builder.append(getIdeal());
+		builder.append(",");
+		builder.append("Significance:");
+		builder.append(Format.formatPercent(this.significance));
 		builder.append("]");
 		return builder.toString();
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public double getSignificance() {
+		return significance;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setSignificance(double significance) {
+		this.significance = significance;
+	}
+	
+	
 
 }

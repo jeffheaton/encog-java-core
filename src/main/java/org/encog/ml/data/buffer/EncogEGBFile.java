@@ -195,7 +195,7 @@ public class EncogEGBFile {
 				this.recordCount++;
 			}
 
-			this.recordCount = this.inputCount + this.idealCount;
+			this.recordCount = this.inputCount + this.idealCount + 1;
 			this.recordSize = this.recordCount * EncogEGBFile.DOUBLE_SIZE;
 
 			// adjust file size
@@ -232,9 +232,10 @@ public class EncogEGBFile {
 			}
 
 			clear();
-			for (int i = 0; i < this.recordCount; i++) {
+			for (int i = 0; i < this.recordCount-1; i++) {
 				this.recordBuffer.putDouble(0);
 			}
+			this.recordBuffer.putDouble(1.0);
 			this.recordBuffer.flip();
 			this.fc.write(this.recordBuffer, EncogEGBFile.HEADER_SIZE
 					+ (this.recordSize * row));
@@ -359,7 +360,7 @@ public class EncogEGBFile {
 			this.headerBuffer.putDouble(ideal.length);
 
 			this.numberOfRecords = 0;
-			this.recordCount = this.inputCount + this.idealCount;
+			this.recordCount = this.inputCount + this.idealCount + 1;
 			this.recordSize = this.recordCount * EncogEGBFile.DOUBLE_SIZE;
 			this.recordBuffer = ByteBuffer.allocate(this.recordSize);
 
@@ -451,7 +452,7 @@ public class EncogEGBFile {
 				this.recordCount--;
 			}
 
-			this.recordCount = this.inputCount + this.idealCount;
+			this.recordCount = this.inputCount + this.idealCount + 1;
 			this.recordSize = this.recordCount * EncogEGBFile.DOUBLE_SIZE;
 
 			// adjust file size
@@ -609,7 +610,7 @@ public class EncogEGBFile {
 			this.inputCount = (int) this.headerBuffer.getDouble();
 			this.idealCount = (int) this.headerBuffer.getDouble();
 
-			this.recordCount = this.inputCount + this.idealCount;
+			this.recordCount = this.inputCount + this.idealCount + 1;
 			this.recordSize = this.recordCount * EncogEGBFile.DOUBLE_SIZE;
 			if( this.recordSize==0 ) {
 				this.numberOfRecords = 0;
@@ -796,6 +797,17 @@ public class EncogEGBFile {
 			this.recordBuffer.putDouble(v);
 			this.recordBuffer.flip();
 			this.fc.write(this.recordBuffer, calculateIndex(row, col));
+		} catch (final IOException ex) {
+			throw new BufferedDataError(ex);
+		}
+	}
+
+	public void write(double d) {
+		try {
+			clear();
+			this.recordBuffer.putDouble(d);
+			this.recordBuffer.flip();
+			this.fc.write(this.recordBuffer);
 		} catch (final IOException ex) {
 			throw new BufferedDataError(ex);
 		}

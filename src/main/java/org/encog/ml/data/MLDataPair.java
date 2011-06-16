@@ -84,5 +84,17 @@ public interface MLDataPair {
 	 * @return The input that the neural network
 	 */
 	MLData getInput();
+	
+	/**
+	 * Get the significance, 1.0 is neutral.
+	 * @return The significance.
+	 */
+	double getSignificance();
+	
+	/**
+	 * Set the significance, 1.0 is neutral.
+	 * @param s The significance.
+	 */
+	void setSignificance(double s);
 
 }

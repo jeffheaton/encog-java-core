@@ -29,7 +29,6 @@ import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.neural.error.ErrorFunction;
-import org.encog.neural.error.LinearErrorFunction;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.util.EngineArray;
 import org.encog.util.concurrency.EngineTask;
@@ -191,19 +190,20 @@ public class GradientWorker implements EngineTask {
 	 * @param input
 	 *            The network input.
 	 * @param ideal
-	 *            The ideal values.
+	 *            The ideal values.      
+	 * @param s   The significance.
 	 */
-	private void process(final double[] input, final double[] ideal) {
+	private void process(final double[] input, final double[] ideal, double s) {
 		this.network.compute(input, this.actual);
 
-		this.errorCalculation.updateError(this.actual, ideal);
+		this.errorCalculation.updateError(this.actual, ideal, s);
 		this.errorFunction.calculateError(ideal, actual, this.layerDelta);
 
 		for (int i = 0; i < this.actual.length; i++) {
 
 			this.layerDelta[i] = ((this.network.getActivationFunctions()[0]
 					.derivativeFunction(this.actual[i]) + this.flatSpot[0]))
-					* this.layerDelta[i];
+					* (this.layerDelta[i] * s);
 		}
 
 		for (int i = this.network.getBeginTraining(); i < this.network
@@ -257,7 +257,7 @@ public class GradientWorker implements EngineTask {
 			this.errorCalculation.reset();
 			for (int i = this.low; i <= this.high; i++) {
 				this.training.getRecord(i, this.pair);
-				process(this.pair.getInputArray(), this.pair.getIdealArray());
+				process(this.pair.getInputArray(), this.pair.getIdealArray(),pair.getSignificance());
 			}
 			final double error = this.errorCalculation.calculate();
 			this.owner.report(this.gradients, error, null);

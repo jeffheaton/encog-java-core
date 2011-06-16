@@ -145,7 +145,7 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 			}
 
 			final MLData out2 = this.network.computeOutstar(out);
-			error.updateError(out2.getData(), pair.getIdeal().getData());
+			error.updateError(out2.getData(), pair.getIdeal().getData(), pair.getSignificance());
 		}
 
 		setError(error.calculate());

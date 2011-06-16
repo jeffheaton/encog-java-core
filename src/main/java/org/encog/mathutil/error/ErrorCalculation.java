@@ -166,9 +166,9 @@ public class ErrorCalculation {
 	 * @param ideal
 	 *            The ideal number.
 	 */
-	public final void updateError(final double[] actual, final double[] ideal) {
+	public final void updateError(final double[] actual, final double[] ideal, final double significance) {
 		for (int i = 0; i < actual.length; i++) {
-			double delta = ideal[i] - actual[i];
+			double delta = (ideal[i] - actual[i]) * significance;
 
 			this.globalError += delta * delta;
 		}

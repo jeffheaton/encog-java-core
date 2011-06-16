@@ -260,7 +260,7 @@ public class FlatNetwork implements Serializable {
 		for (int i = 0; i < data.getRecordCount(); i++) {
 			data.getRecord(i, pair);
 			compute(pair.getInputArray(), actual);
-			errorCalculation.updateError(actual, pair.getIdealArray());
+			errorCalculation.updateError(actual, pair.getIdealArray(), pair.getSignificance());
 		}
 		return errorCalculation.calculate();
 	}
