@@ -78,6 +78,11 @@ public class CSVDataCODEC implements DataSetCODEC {
 	 * A file used to output the CSV file.
 	 */
 	private PrintStream output;
+		
+	/**
+	 * True, if a significance column is expected.
+	 */
+	private boolean expectSignificance;
 
 	/**
 	 * Constructor to create CSV from binary..
@@ -86,10 +91,14 @@ public class CSVDataCODEC implements DataSetCODEC {
 	 *            The CSV file to create.
 	 * @param theFormat
 	 *            The format for that CSV file.
+	 * @param theExpectSignificance
+	 * 			  True, if a significance column is expected.
 	 */
-	public CSVDataCODEC(final File theFile, final CSVFormat theFormat) {
+	public CSVDataCODEC(final File theFile, final CSVFormat theFormat,
+			final boolean theExpectSignificance) {
 		this.file = theFile;
 		this.format = theFormat;
+		this.expectSignificance = theExpectSignificance;
 	}
 
 	/**
@@ -105,12 +114,15 @@ public class CSVDataCODEC implements DataSetCODEC {
 	 *            The number of input columns.
 	 * @param theIdealCount
 	 *            The number of ideal columns.
+	 * @param theExpectSignificance
+	 * 			  True, if a significance column is expected.
 	 */
 	public CSVDataCODEC(final File theFile, 
 			final CSVFormat theFormat,
 			final boolean theHeaders, 
 			final int theInputCount, 
-			final int theIdealCount) {
+			final int theIdealCount,
+			final boolean theExpectSignificance) {
 		if (this.inputCount != 0) {
 			throw new BufferedDataError(
 					"To export CSV, you must use the CSVDataCODEC " 
@@ -121,6 +133,7 @@ public class CSVDataCODEC implements DataSetCODEC {
 		this.inputCount = theInputCount;
 		this.idealCount = theIdealCount;
 		this.headers = theHeaders;
+		this.expectSignificance = theExpectSignificance;
 	}
 
 	/**
@@ -212,6 +225,10 @@ public class CSVDataCODEC implements DataSetCODEC {
 
 			for (int i = 0; i < ideal.length; i++) {
 				ideal[i] = this.readCSV.getDouble(index++);
+			}
+			
+			if( this.expectSignificance ) {
+				
 			}
 			return true;
 		} else {
