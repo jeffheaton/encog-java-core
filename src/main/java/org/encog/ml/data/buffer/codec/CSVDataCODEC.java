@@ -230,6 +230,8 @@ public class CSVDataCODEC implements DataSetCODEC {
 			
 			if( this.expectSignificance ) {
 				significance[0] = this.readCSV.getDouble(index++);
+			} else {
+				significance[0] = 1.0;
 			}
 			return true;
 		} else {
