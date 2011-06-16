@@ -190,6 +190,7 @@ public class BufferedNeuralDataSet implements
 		}
 
 		egb.write(data1.getData());
+		egb.write(1.0);
 	}
 
 	/**
