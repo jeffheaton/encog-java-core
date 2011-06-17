@@ -78,7 +78,7 @@ public class CSVDataCODEC implements DataSetCODEC {
 	 * A file used to output the CSV file.
 	 */
 	private PrintStream output;
-		
+
 	/**
 	 * True, if a significance column is expected.
 	 */
@@ -117,16 +117,13 @@ public class CSVDataCODEC implements DataSetCODEC {
 	 * @param theExpectSignificance
 	 * 			  True, if a significance column is expected.
 	 */
-	public CSVDataCODEC(final File theFile, 
-			final CSVFormat theFormat,
-			final boolean theHeaders, 
-			final int theInputCount, 
-			final int theIdealCount,
-			final boolean theExpectSignificance) {
+	public CSVDataCODEC(final File theFile, final CSVFormat theFormat,
+			final boolean theHeaders, final int theInputCount,
+			final int theIdealCount, final boolean theExpectSignificance) {
 		if (this.inputCount != 0) {
 			throw new BufferedDataError(
-					"To export CSV, you must use the CSVDataCODEC " 
-			+ "constructor that does not specify input or ideal sizes.");
+					"To export CSV, you must use the CSVDataCODEC "
+							+ "constructor that does not specify input or ideal sizes.");
 		}
 		this.file = theFile;
 		this.format = theFormat;
@@ -175,8 +172,7 @@ public class CSVDataCODEC implements DataSetCODEC {
 	@Override
 	public final void prepareRead() {
 		if (this.inputCount == 0) {
-			throw new BufferedDataError(
-					"To import CSV, you must use the " 
+			throw new BufferedDataError("To import CSV, you must use the "
 					+ "CSVDataCODEC constructor that specifies input and "
 					+ "ideal sizes.");
 		}
@@ -227,8 +223,8 @@ public class CSVDataCODEC implements DataSetCODEC {
 			for (int i = 0; i < ideal.length; i++) {
 				ideal[i] = this.readCSV.getDouble(index++);
 			}
-			
-			if( this.expectSignificance ) {
+
+			if (this.expectSignificance) {
 				significance[0] = this.readCSV.getDouble(index++);
 			} else {
 				significance[0] = 1.0;
@@ -250,12 +246,21 @@ public class CSVDataCODEC implements DataSetCODEC {
 	@Override
 	public final void write(final double[] input, final double[] ideal,
 			double significance) {
-		final double[] record = new double[input.length + ideal.length+1];
-		EngineArray.arrayCopy(input, record);
-		EngineArray.arrayCopy(ideal, 0, record, input.length, ideal.length);
-		record[record.length-1] = significance;
-		final StringBuilder result = new StringBuilder();
-		NumberList.toList(this.format, result, record);
-		this.output.println(result.toString());
+		if (this.expectSignificance) {
+			final double[] record = new double[input.length + ideal.length + 1];
+			EngineArray.arrayCopy(input, record);
+			EngineArray.arrayCopy(ideal, 0, record, input.length, ideal.length);
+			record[record.length - 1] = significance;
+			final StringBuilder result = new StringBuilder();
+			NumberList.toList(this.format, result, record);
+			this.output.println(result.toString());
+		} else {
+			final double[] record = new double[input.length + ideal.length];
+			EngineArray.arrayCopy(input, record);
+			EngineArray.arrayCopy(ideal, 0, record, input.length, ideal.length);
+			final StringBuilder result = new StringBuilder();
+			NumberList.toList(this.format, result, record);
+			this.output.println(result.toString());
+		}
 	}
 }
