@@ -208,7 +208,7 @@ public class GradientWorker implements EngineTask {
 		for (int i = 0; i < this.actual.length; i++) {
 
 			this.layerDelta[i] = ((this.network.getActivationFunctions()[0]
-					.derivativeFunction(this.actual[i],this.actual[i]) + this.flatSpot[0]))
+					.derivativeFunction(this.layerSums[i],this.layerOutput[i]) + this.flatSpot[0]))
 					* (this.layerDelta[i] * s);
 		}
 
