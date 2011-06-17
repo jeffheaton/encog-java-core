@@ -48,7 +48,7 @@ public class TestActivationSoftMax extends TestCase {
 		Assert.assertEquals(0.25,input[1],0.1);
 		
 		// test derivative
-		input[0] = activation.derivativeFunction(input[0]);
+		input[0] = activation.derivativeFunction(input[0],input[0]);
 		
 	}
 	
