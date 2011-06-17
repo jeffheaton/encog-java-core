@@ -273,6 +273,11 @@ public final class PersistConst {
 	 * Instar.
 	 */
 	public static final String INSTAR = "instar";
+
+	/**
+	 * Sums
+	 */
+	public static final String SUMS = "sums";
 	
 	/**
 	 * Private constructor.

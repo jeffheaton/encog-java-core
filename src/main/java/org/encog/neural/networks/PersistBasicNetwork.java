@@ -104,6 +104,7 @@ public class PersistBasicNetwork implements EncogPersistor {
 						BasicNetwork.TAG_LAYER_INDEX));
 				flat.setLayerOutput(EncogFileSection.parseDoubleArray(params,
 						PersistConst.OUTPUT));
+				flat.setLayerSums(new double[flat.getLayerOutput().length]);
 				flat.setOutputCount(EncogFileSection.parseInt(params,
 						PersistConst.OUTPUT_COUNT));
 				flat.setWeightIndex(EncogFileSection.parseIntArray(params,

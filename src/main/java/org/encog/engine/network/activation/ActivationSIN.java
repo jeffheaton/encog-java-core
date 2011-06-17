@@ -80,8 +80,8 @@ public class ActivationSIN implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double derivativeFunction(final double x) {
-		return BoundMath.cos(x);
+	public final double derivativeFunction(final double b, final double a) {
+		return BoundMath.cos(b);
 	}
 
 	/**

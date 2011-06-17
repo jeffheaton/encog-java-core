@@ -126,7 +126,7 @@ public class ActivationCompetitive implements ActivationFunction {
 	 * @return The derivative.
 	 */
 	@Override
-	public final double derivativeFunction(final double d) {
+	public final double derivativeFunction(final double b, final double a) {
 		throw new EncogError("Can't use the competitive activation function "
 				+ "where a derivative is required.");
 

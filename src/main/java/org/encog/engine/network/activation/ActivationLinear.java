@@ -68,7 +68,7 @@ public class ActivationLinear implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double derivativeFunction(final double d) {
+	public final double derivativeFunction(final double b, final double a) {
 		return 1;
 	}
 

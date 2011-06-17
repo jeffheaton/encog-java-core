@@ -72,8 +72,8 @@ public class ActivationTANH implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double derivativeFunction(final double x) {
-		return (1.0 - x * x);
+	public final double derivativeFunction(final double b, final double a) {
+		return (1.0 - a * a);
 	}
 
 	/**

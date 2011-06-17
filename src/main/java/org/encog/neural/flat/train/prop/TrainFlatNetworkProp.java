@@ -266,9 +266,9 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 						.getActivationFunctions()[i];
 				// if the diriv tends to 0 on either -1, 0.0 or 1, then 
 				// add a flat-spot const.
-				final double t1 = af.derivativeFunction(-1.0);
-				final double t2 = af.derivativeFunction(0.0);
-				final double t3 = af.derivativeFunction(1.0);
+				final double t1 = af.derivativeFunction(-1.0,-1.0);
+				final double t2 = af.derivativeFunction(0.0,0.0);
+				final double t3 = af.derivativeFunction(1.0,1.0);
 				if ((Math.abs(t1) < Encog.DEFAULT_DOUBLE_EQUAL)
 						|| (Math.abs(t2) < Encog.DEFAULT_DOUBLE_EQUAL)
 						|| (Math.abs(t3) < Encog.DEFAULT_DOUBLE_EQUAL)) {

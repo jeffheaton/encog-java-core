@@ -72,8 +72,8 @@ public class ActivationSigmoid implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double derivativeFunction(final double x) {
-		return x * (1.0 - x);
+	public final double derivativeFunction(final double b, final double a) {
+		return a * (1.0 - a);
 	}
 
 	/**

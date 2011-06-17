@@ -59,22 +59,28 @@ public interface ActivationFunction extends Serializable, Cloneable {
 	void activationFunction(double[] d, int start, int size);
 
 	/**
-	 * Calculate the derivative of the activation. It is assumed that the value
-	 * d, which is passed to this method, was the output from this activation.
-	 * This prevents this method from having to recalculate the activation, just
-	 * to recalculate the derivative.
+	 * Calculate the derivative.  For performance reasons two numbers are provided.
+	 * First, the value "b" is simply the number that we would like to calculate
+	 * the derivative of.
 	 * 
-	 * The array is modified according derivative of the activation function
-	 * being used. See the class description for more specific information on
-	 * this type of activation function. Propagation training requires the
-	 * derivative. Some activation functions do not support a derivative and
-	 * will throw an error.
+	 * Second, the value "a", which is the value returned by the activation function,
+	 * when presented with "b".  
 	 * 
-	 * @param d
-	 *            The input array to the activation function.
+	 * We use two values because some of the most common activation functions make 
+	 * use of the result of the activation function.  It is bad for performance to
+	 * calculate this value twice.  Yet, not all derivatives are calculated this way.
+	 * By providing both the value before the activation function is applied ("b"), 
+	 * and after the activation function is applied("a"), the class can be constructed
+	 * to use whichever value will be the most efficient.
+	 * 
+	 * @param b
+	 *            The number to calculate the derivative of, the number "before" the
+	 *            activation function was applied.
+	 * @param a
+	 *            The number "after" an activation function has been applied.
 	 * @return The derivative.
 	 */
-	double derivativeFunction(double d);
+	double derivativeFunction(double b, double a);
 
 	/**
 	 * @return Return true if this function has a derivative.

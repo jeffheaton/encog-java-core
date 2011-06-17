@@ -84,11 +84,11 @@ public class ActivationLOG implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double derivativeFunction(final double x) {
-		if (x >= 0) {
-			return 1 / (1 + x);
+	public final double derivativeFunction(final double b, final double a) {
+		if (b >= 0) {
+			return 1 / (1 + b);
 		} else {
-			return 1 / (1 - x);
+			return 1 / (1 - b);
 		}
 	}
 

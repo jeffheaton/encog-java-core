@@ -137,11 +137,11 @@ public class ActivationGaussian implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double derivativeFunction(final double x) {
+	public final double derivativeFunction(final double b, final double a) {
 		final double width = params[ActivationGaussian.PARAM_GAUSSIAN_WIDTH];
 		final double peak = params[ActivationGaussian.PARAM_GAUSSIAN_PEAK];
-		return Math.exp(-0.5 * width * width * x * x) * peak * width * width
-				* (width * width * x * x - 1);
+		return Math.exp(-0.5 * width * width * b * b) * peak * width * width
+				* (width * width * b * b - 1);
 	}
 
 	/**

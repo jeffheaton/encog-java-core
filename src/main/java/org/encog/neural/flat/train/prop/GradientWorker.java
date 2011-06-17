@@ -82,6 +82,11 @@ public class GradientWorker implements EngineTask {
 	 * The output from each layer.
 	 */
 	private final double[] layerOutput;
+	
+	/**
+	 * The sums.
+	 */
+	private final double[] layerSums;
 
 	/**
 	 * The gradients.
@@ -164,6 +169,7 @@ public class GradientWorker implements EngineTask {
 		this.layerCounts = network.getLayerCounts();
 		this.weightIndex = network.getWeightIndex();
 		this.layerOutput = network.getLayerOutput();
+		this.layerSums = network.getLayerSums();
 		this.layerFeedCounts = network.getLayerFeedCounts();
 
 		this.pair = BasicMLDataPair.createPair(network.getInputCount(), network
@@ -202,7 +208,7 @@ public class GradientWorker implements EngineTask {
 		for (int i = 0; i < this.actual.length; i++) {
 
 			this.layerDelta[i] = ((this.network.getActivationFunctions()[0]
-					.derivativeFunction(this.actual[i]) + this.flatSpot[0]))
+					.derivativeFunction(this.actual[i],this.actual[i]) + this.flatSpot[0]))
 					* (this.layerDelta[i] * s);
 		}
 
@@ -244,7 +250,7 @@ public class GradientWorker implements EngineTask {
 			}
 
 			this.layerDelta[yi] = sum
-					* (activation.derivativeFunction(this.layerOutput[yi])+currentFlatSpot);
+					* (activation.derivativeFunction(this.layerSums[yi],this.layerOutput[yi])+currentFlatSpot);
 			yi++;
 		}
 	}

@@ -85,7 +85,7 @@ public class ActivationBiPolar implements ActivationFunction {
 	 * @return The derivative.
 	 */
 	@Override
-	public final double derivativeFunction(final double d) {
+	public final double derivativeFunction(double b, double a) {
 		return 1;
 	}
 

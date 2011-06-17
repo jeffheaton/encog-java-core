@@ -101,6 +101,11 @@ public class FlatNetwork implements Serializable {
 	 * The outputs from each of the neurons.
 	 */
 	private double[] layerOutput;
+	
+	/**
+	 * The sum of the layer, before the activation function is applied, producing the layerOutput.
+	 */
+	private double[] layerSums;
 
 	/**
 	 * The number of output neurons in this network.
@@ -323,6 +328,7 @@ public class FlatNetwork implements Serializable {
 		result.layerCounts = EngineArray.arrayCopy(this.layerCounts);
 		result.layerIndex = EngineArray.arrayCopy(this.layerIndex);
 		result.layerOutput = EngineArray.arrayCopy(this.layerOutput);
+		result.layerSums = EngineArray.arrayCopy(this.layerSums);
 		result.layerFeedCounts = EngineArray.arrayCopy(this.layerFeedCounts);
 		result.contextTargetOffset = EngineArray
 				.arrayCopy(this.contextTargetOffset);
@@ -397,6 +403,7 @@ public class FlatNetwork implements Serializable {
 			for (int y = inputIndex; y < limitY; y++) {
 				sum += this.weights[index++] * this.layerOutput[y];
 			}
+			this.layerSums[x] = sum;
 			this.layerOutput[x] = sum;
 		}
 
@@ -681,6 +688,7 @@ public class FlatNetwork implements Serializable {
 
 		this.weights = new double[weightCount];
 		this.layerOutput = new double[neuronCount];
+		this.layerSums = new double[neuronCount];
 
 		clearContext();
 	}
@@ -856,4 +864,22 @@ public class FlatNetwork implements Serializable {
 	public final void setWeights(final double[] weights) {
 		this.weights = weights;
 	}
+
+	/**
+	 * @return the layerSums
+	 */
+	public double[] getLayerSums() {
+		return layerSums;
+	}
+
+	/**
+	 * Set the layer sums.
+	 * @param d The layer sums.
+	 */
+	public void setLayerSums(double[] d) {
+		this.layerSums = d;
+		
+	}
+	
+	
 }

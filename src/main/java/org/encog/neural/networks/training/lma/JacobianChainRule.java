@@ -129,7 +129,7 @@ public class JacobianChainRule implements ComputeJacobian {
 	 */
 	private double calcDerivative(final ActivationFunction a, final double d) {
 
-		return a.derivativeFunction(d);
+		return a.derivativeFunction(d, d);
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class JacobianChainRule implements ComputeJacobian {
 		final double[] temp = new double[1];
 		temp[0] = d;
 		a.activationFunction(temp,0,temp.length);
-		temp[0] = a.derivativeFunction(temp[0]);
+		temp[0] = a.derivativeFunction(temp[0],temp[0]);
 		return temp[0];
 	}
 
