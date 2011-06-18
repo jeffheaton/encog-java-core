@@ -125,6 +125,23 @@ public final class EncogMath {
 	public static double rad2deg(final double rad) {
 		return rad * (MathConst.DEG_SEMICIRCLE / Math.PI);
 	}
+	
+	/**
+	 * Calculate x!.
+	 * @param x The number to calculate for.
+	 * @return The factorial of x.
+	 */
+	public static double factorial(int x)
+    {
+        double result = 1.0;
+
+        for (int i = 1; i <= x; i++)
+        {
+            result *= (double)i;
+        }
+
+        return result;
+    }
 
 	/**
 	 * Private constructor.
