@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.util.simple;
+package org.encog.platformspecific.j2se;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -34,7 +34,13 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.encog.ml.data.MLDataSet;
+import org.encog.ml.train.MLTrain;
+import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.training.propagation.Propagation;
+import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.util.Format;
+import org.encog.util.simple.EncogUtility;
 
 
 /**
@@ -135,6 +141,52 @@ public class TrainingDialog extends JDialog implements ActionListener {
 	 */
 	public boolean shouldStop() {
 		return this.shouldStop;
+	}
+	
+	/**
+	 * Train, using the specified training method, display progress to a dialog
+	 * box.
+	 * 
+	 * @param train
+	 *            The training method to use.
+	 * @param network
+	 *            The network to train.
+	 * @param trainingSet
+	 *            The training set to use.
+	 */
+	public static void trainDialog(final MLTrain train,
+			final BasicNetwork network, final MLDataSet trainingSet) {
+
+		final TrainingDialog dialog = new TrainingDialog();
+		dialog.setVisible(true);
+
+		final long start = System.currentTimeMillis();
+		do {
+			train.iteration();
+			int iteration = train.getIteration();
+			final long current = System.currentTimeMillis();
+			final long elapsed = (current - start) / 1000;// seconds
+			dialog.setIterations(iteration);
+			dialog.setError(train.getError());
+			dialog.setTime((int) elapsed);
+		} while (!dialog.shouldStop());
+		train.finishTraining();
+		dialog.dispose();
+	}
+
+	/**
+	 * Train using SCG and display progress to a dialog box.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param trainingSet
+	 *            The training set to use.
+	 */
+	public static void trainDialog(final BasicNetwork network,
+			final MLDataSet trainingSet) {
+		final Propagation train = new ResilientPropagation(network, trainingSet);
+		train.setNumThreads(0);
+		TrainingDialog.trainDialog(train, network, trainingSet);
 	}
 
 }

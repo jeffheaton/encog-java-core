@@ -25,5 +25,5 @@
  * This package contains classes used to allow images to be 
  * Machine Learning Data.
  */
-package org.encog.ml.data.image;
+package org.encog.platformspecific.j2se.data.image;
 

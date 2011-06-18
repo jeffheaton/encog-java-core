@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.ml.data.specific;
+package org.encog.platformspecific.j2se.data;
 
 import java.sql.Connection;
 

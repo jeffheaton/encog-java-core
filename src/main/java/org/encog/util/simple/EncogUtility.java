@@ -55,6 +55,7 @@ import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.pattern.FeedForwardPattern;
+import org.encog.platformspecific.j2se.TrainingDialog;
 import org.encog.util.Format;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
@@ -246,52 +247,6 @@ public final class EncogUtility {
 
 		} while (remaining > 0);
 		train.finishTraining();
-	}
-
-	/**
-	 * Train using SCG and display progress to a dialog box.
-	 * 
-	 * @param network
-	 *            The network to train.
-	 * @param trainingSet
-	 *            The training set to use.
-	 */
-	public static void trainDialog(final BasicNetwork network,
-			final MLDataSet trainingSet) {
-		final Propagation train = new ResilientPropagation(network, trainingSet);
-		train.setNumThreads(0);
-		EncogUtility.trainDialog(train, network, trainingSet);
-	}
-
-	/**
-	 * Train, using the specified training method, display progress to a dialog
-	 * box.
-	 * 
-	 * @param train
-	 *            The training method to use.
-	 * @param network
-	 *            The network to train.
-	 * @param trainingSet
-	 *            The training set to use.
-	 */
-	public static void trainDialog(final MLTrain train,
-			final BasicNetwork network, final MLDataSet trainingSet) {
-
-		final TrainingDialog dialog = new TrainingDialog();
-		dialog.setVisible(true);
-
-		final long start = System.currentTimeMillis();
-		do {
-			train.iteration();
-			int iteration = train.getIteration();
-			final long current = System.currentTimeMillis();
-			final long elapsed = (current - start) / 1000;// seconds
-			dialog.setIterations(iteration);
-			dialog.setError(train.getError());
-			dialog.setTime((int) elapsed);
-		} while (!dialog.shouldStop());
-		train.finishTraining();
-		dialog.dispose();
 	}
 
 	/**
