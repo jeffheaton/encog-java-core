@@ -35,8 +35,8 @@ import junit.framework.TestCase;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLData;
-import org.encog.ml.data.image.ImageNeuralData;
-import org.encog.ml.data.image.ImageNeuralDataSet;
+import org.encog.platformspecific.j2se.data.image.ImageNeuralData;
+import org.encog.platformspecific.j2se.data.image.ImageNeuralDataSet;
 import org.encog.util.downsample.Downsample;
 import org.encog.util.downsample.SimpleIntensityDownsample;
 
