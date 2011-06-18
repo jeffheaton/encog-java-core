@@ -35,7 +35,7 @@ public abstract class ConcurrentJob implements Runnable {
 	/**
 	 * The class to report status to.
 	 */
-	private final StatusReportable report;
+	private StatusReportable report;
 
 	/**
 	 * The number of tasks in this job.
@@ -158,6 +158,10 @@ public abstract class ConcurrentJob implements Runnable {
 	 */
 	public boolean isRunning() {
 		return running;
+	}
+	
+	public void setReport(StatusReportable r) {
+		this.report = r;		
 	}
 	
 	

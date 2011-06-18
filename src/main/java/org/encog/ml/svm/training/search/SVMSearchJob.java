@@ -377,7 +377,7 @@ public class SVMSearchJob extends ConcurrentJob implements MLTrain {
 		message.append(Format.formatDouble(this.currentGamma, 2));
 		message.append("; Const: ");
 		message.append(Format.formatDouble(this.currentConst, 2));
-		message.append("; Best Error: " + Format.formatPercent(error));
+		message.append("; Best Error: " + Format.formatPercent(this.bestError));
 
 		reportStatus(context, message.toString());
 
@@ -482,5 +482,4 @@ public class SVMSearchJob extends ConcurrentJob implements MLTrain {
 	public void setIteration(final int iteration) {
 		this.iterationCount = iteration;
 	}
-
 }

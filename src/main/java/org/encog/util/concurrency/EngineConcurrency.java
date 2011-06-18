@@ -81,6 +81,11 @@ public class EngineConcurrency {
         	threads++;
 		this.executor = Executors.newFixedThreadPool(threads);
 	}
+	
+	public void setThreadCount(int t) {
+		this.executor.shutdown();
+		this.executor = Executors.newFixedThreadPool(t);
+	}
 
 	/**
 	 * Check to see if one of the threads has thrown an error. If so, then throw
