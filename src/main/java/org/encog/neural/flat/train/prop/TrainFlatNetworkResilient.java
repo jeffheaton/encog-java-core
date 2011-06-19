@@ -25,6 +25,7 @@ package org.encog.neural.flat.train.prop;
 
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.flat.FlatNetwork;
+import org.encog.neural.networks.training.TrainingError;
 
 
 /**
@@ -35,6 +36,8 @@ public class TrainFlatNetworkResilient extends TrainFlatNetworkProp {
 	 * The update values, for the weights and thresholds.
 	 */
 	private final double[] updateValues;
+	
+	private final double[] lastDelta;
 
 	/**
 	 * The zero tolerance.
@@ -45,6 +48,8 @@ public class TrainFlatNetworkResilient extends TrainFlatNetworkProp {
 	 * The maximum step value for rprop.
 	 */
 	private final double maxStep;
+	
+	private RPROPType type = RPROPType.RPROPm;
 
 	/**
 	 * Construct a resilient trainer for flat networks.
@@ -65,11 +70,13 @@ public class TrainFlatNetworkResilient extends TrainFlatNetworkProp {
 			final double initialUpdate, final double maxStep) {
 		super(network, training);
 		this.updateValues = new double[network.getWeights().length];
+		this.lastDelta = new double[network.getWeights().length];
 		this.zeroTolerance = zeroTolerance;
 		this.maxStep = maxStep;
 
 		for (int i = 0; i < this.updateValues.length; i++) {
 			this.updateValues[i] = initialUpdate;
+			this.lastDelta[i] = 0;
 		}
 	}
 
@@ -116,6 +123,88 @@ public class TrainFlatNetworkResilient extends TrainFlatNetworkProp {
 	 */
 	@Override
 	public double updateWeight(final double[] gradients,
+			final double[] lastGradient, final int index) {
+		switch(this.type) {
+			case RPROPp:
+				return updateWeightPlus(gradients,lastGradient,index);
+			case RPROPm:
+				return updateWeightMinus(gradients,lastGradient,index);
+			case iRPROPp:
+				return updateiWeightPlus(gradients,lastGradient,index);
+			default:
+				throw new TrainingError("Unknown RPROP type: " + this.type);
+		}
+	}
+	
+	
+	public double updateWeightPlus(final double[] gradients,
+			final double[] lastGradient, final int index) {
+		// multiply the current and previous gradient, and take the
+		// sign. We want to see if the gradient has changed its sign.
+		final int change = sign(gradients[index] * lastGradient[index]);
+		double weightChange = 0;
+
+		// if the gradient has retained its sign, then we increase the
+		// delta so that it will converge faster
+		if (change > 0) {
+			double delta = this.updateValues[index]
+					* RPROPConst.POSITIVE_ETA;
+			delta = Math.min(delta, this.maxStep);
+			weightChange = sign(gradients[index]) * delta;
+			this.updateValues[index] = delta;
+			lastGradient[index] = gradients[index];
+		} else if (change < 0) {
+			// if change<0, then the sign has changed, and the last
+			// delta was too big
+			double delta = this.updateValues[index]
+					* RPROPConst.NEGATIVE_ETA;
+			delta = Math.max(delta, RPROPConst.DELTA_MIN);
+			this.updateValues[index] = delta;
+			// set the previous gradent to zero so that there will be no
+			// adjustment the next iteration
+			lastGradient[index] = 0;
+		} else if (change == 0) {
+			// if change==0 then there is no change to the delta
+			final double delta = this.updateValues[index];
+			weightChange = sign(gradients[index]) * delta;
+			lastGradient[index] = gradients[index];
+		}
+
+		// apply the weight change, if any
+		return weightChange;
+	}
+	
+	public double updateWeightMinus(final double[] gradients,
+			final double[] lastGradient, final int index) {
+		// multiply the current and previous gradient, and take the
+		// sign. We want to see if the gradient has changed its sign.
+		final int change = sign(gradients[index] * lastGradient[index]);
+		double weightChange = 0;
+		double delta;
+
+		// if the gradient has retained its sign, then we increase the
+		// delta so that it will converge faster
+		if (change > 0) {
+			delta = this.lastDelta[index]
+					* RPROPConst.POSITIVE_ETA;
+			delta = Math.min(delta, this.maxStep);			
+		} else {
+			// if change<0, then the sign has changed, and the last
+			// delta was too big
+			delta = this.lastDelta[index]
+					* RPROPConst.NEGATIVE_ETA;
+			delta = Math.max(delta, RPROPConst.DELTA_MIN);
+		}
+
+		lastGradient[index] = gradients[index];
+		weightChange = sign(gradients[index]) * delta;
+		this.lastDelta[index] = delta;
+
+		// apply the weight change, if any
+		return weightChange;
+	}
+	
+	public double updateiWeightPlus(final double[] gradients,
 			final double[] lastGradient, final int index) {
 		// multiply the current and previous gradient, and take the
 		// sign. We want to see if the gradient has changed its sign.
