@@ -57,6 +57,7 @@ import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.analyst.wizard.AnalystWizard;
 import org.encog.app.quant.QuantTask;
 import org.encog.bot.BotUtil;
+import org.encog.ml.MLMethod;
 import org.encog.ml.train.MLTrain;
 import org.encog.util.Format;
 import org.encog.util.logging.EncogLogging;
@@ -112,6 +113,12 @@ public class EncogAnalyst {
 	 * Holds a copy of the original property data, used to revert.
 	 */
 	private Map<String, String> revertData;
+	
+	/**
+	 * The method currently being trained, or null if that method should not 
+	 * be modified, or we are not training.
+	 */
+	private MLMethod method;
 
 	/**
 	 * Construct the Encog analyst.
@@ -721,5 +728,21 @@ public class EncogAnalyst {
 		}
 		return false;
 	}
+
+	/**
+	 * @return the method
+	 */
+	public MLMethod getMethod() {
+		return method;
+	}
+
+	/**
+	 * @param method the method to set
+	 */
+	public void setMethod(MLMethod method) {
+		this.method = method;
+	}
+	
+	
 
 }

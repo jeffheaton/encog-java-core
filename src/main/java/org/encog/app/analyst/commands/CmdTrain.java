@@ -29,6 +29,7 @@ import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.ml.MLMethod;
+import org.encog.ml.MLResettable;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.folded.FoldedDataSet;
 import org.encog.ml.factory.MLTrainFactory;
@@ -82,6 +83,10 @@ public class CmdTrain extends Cmd {
 		
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "training type:" + type);
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "training args:" + args);
+		
+		if( method instanceof MLResettable ) {
+			this.getAnalyst().setMethod(method);
+		}
 
 
 		MLTrain train = factory.create(method, trainingSet, type, args);
@@ -214,6 +219,7 @@ public class CmdTrain extends Cmd {
 		train.finishTraining();
 
 		getAnalyst().reportTrainingEnd();
+		getAnalyst().setMethod(train.getMethod());
 	}
 
 }
