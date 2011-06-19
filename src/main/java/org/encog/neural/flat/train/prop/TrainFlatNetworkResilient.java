@@ -49,7 +49,7 @@ public class TrainFlatNetworkResilient extends TrainFlatNetworkProp {
 	 */
 	private final double maxStep;
 	
-	private RPROPType type = RPROPType.RPROPm;
+	private RPROPType rpropType = RPROPType.RPROPp;
 
 	/**
 	 * Construct a resilient trainer for flat networks.
@@ -124,15 +124,17 @@ public class TrainFlatNetworkResilient extends TrainFlatNetworkProp {
 	@Override
 	public double updateWeight(final double[] gradients,
 			final double[] lastGradient, final int index) {
-		switch(this.type) {
+		switch(this.rpropType) {
 			case RPROPp:
 				return updateWeightPlus(gradients,lastGradient,index);
 			case RPROPm:
 				return updateWeightMinus(gradients,lastGradient,index);
 			case iRPROPp:
 				return updateiWeightPlus(gradients,lastGradient,index);
+			case iRPROPm:
+				return updateiWeightMinus(gradients,lastGradient,index);
 			default:
-				throw new TrainingError("Unknown RPROP type: " + this.type);
+				throw new TrainingError("Unknown RPROP type: " + this.rpropType);
 		}
 	}
 	
@@ -227,6 +229,11 @@ public class TrainFlatNetworkResilient extends TrainFlatNetworkProp {
 					* RPROPConst.NEGATIVE_ETA;
 			delta = Math.max(delta, RPROPConst.DELTA_MIN);
 			this.updateValues[index] = delta;
+			
+			if( this.currentError>this.lastError ) {
+				weightChange = -sign(gradients[index]) * delta;
+			}
+			
 			// set the previous gradent to zero so that there will be no
 			// adjustment the next iteration
 			lastGradient[index] = 0;
@@ -240,6 +247,37 @@ public class TrainFlatNetworkResilient extends TrainFlatNetworkProp {
 		// apply the weight change, if any
 		return weightChange;
 	}
+	
+	public double updateiWeightMinus(final double[] gradients,
+			final double[] lastGradient, final int index) {
+		// multiply the current and previous gradient, and take the
+		// sign. We want to see if the gradient has changed its sign.
+		final int change = sign(gradients[index] * lastGradient[index]);
+		double weightChange = 0;
+		double delta;
+
+		// if the gradient has retained its sign, then we increase the
+		// delta so that it will converge faster
+		if (change > 0) {
+			delta = this.lastDelta[index]
+					* RPROPConst.POSITIVE_ETA;
+			delta = Math.min(delta, this.maxStep);			
+		} else {
+			// if change<0, then the sign has changed, and the last
+			// delta was too big
+			delta = this.lastDelta[index]
+					* RPROPConst.NEGATIVE_ETA;
+			delta = Math.max(delta, RPROPConst.DELTA_MIN);
+			lastGradient[index] = 0;
+		}
+
+		lastGradient[index] = gradients[index];
+		weightChange = sign(gradients[index]) * delta;
+		this.lastDelta[index] = delta;
+
+		// apply the weight change, if any
+		return weightChange;
+	}	
 
 	/**
 	 * @return The RPROP update values.
@@ -247,5 +285,21 @@ public class TrainFlatNetworkResilient extends TrainFlatNetworkProp {
 	public double[] getUpdateValues() {
 		return updateValues;
 	}
+
+	/**
+	 * @return the rpropType
+	 */
+	public RPROPType getRpropType() {
+		return rpropType;
+	}
+
+	/**
+	 * @param rpropType the rpropType to set
+	 */
+	public void setRpropType(RPROPType rpropType) {
+		this.rpropType = rpropType;
+	}
+	
+	
 
 }

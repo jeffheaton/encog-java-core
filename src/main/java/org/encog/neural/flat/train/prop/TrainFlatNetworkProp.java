@@ -93,6 +93,11 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	 * The current error is the average error over all of the threads.
 	 */
 	protected double currentError;
+	
+	/**
+	 * The last error.
+	 */
+	protected double lastError;
 
 	/**
 	 * Reported exception from the threads.
@@ -313,6 +318,8 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 		} else {
 			learn();
 		}
+		
+		this.lastError = this.currentError;
 
 		for (final GradientWorker worker : this.workers) {
 			EngineArray.arrayCopy(this.network.getWeights(), 0,

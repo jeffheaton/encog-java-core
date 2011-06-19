@@ -25,6 +25,7 @@ package org.encog.neural.networks.training.propagation.resilient;
 
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.flat.train.prop.RPROPConst;
+import org.encog.neural.flat.train.prop.RPROPType;
 import org.encog.neural.flat.train.prop.TrainFlatNetworkResilient;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.TrainingError;
@@ -201,7 +202,21 @@ public class ResilientPropagation extends Propagation {
 		EngineArray.arrayCopy(updateValues,
 				((TrainFlatNetworkResilient) getFlatTraining())
 						.getUpdateValues());
+	}
+	
+	/**
+	 * Set the type of RPROP to use.  The default is RPROPp (RPROP+), or classic RPROP.
+	 * @param t The type.
+	 */
+	public void setRPROPType(RPROPType t) {
+		((TrainFlatNetworkResilient) getFlatTraining()).setRpropType(t);
+	}
 
+	/**
+	 * @return The type of RPROP used.
+	 */
+	public RPROPType getRPROPType() {
+		return ((TrainFlatNetworkResilient) getFlatTraining()).getRpropType();
 	}
 
 }
