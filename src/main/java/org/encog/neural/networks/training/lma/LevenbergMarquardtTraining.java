@@ -141,12 +141,6 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	private final double[][] hessian;
 
 	/**
-	 * The alpha is multiplied by sum squared of weights. This scales the effect
-	 * that the sum squared of the weights has.
-	 */
-	private double alpha;
-
-	/**
 	 * The beta is multiplied by the sum squared of the errors.
 	 */
 	private double beta;
@@ -181,11 +175,6 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	 * The training elements.
 	 */
 	private final MLDataPair pair;
-
-	/**
-	 * Should we use Bayesian regularization.
-	 */
-	private boolean useBayesianRegularization;
 	
 	private final double[] derivativeStepSize;
 	private final double[][][] differentialCoefficients;
@@ -217,7 +206,6 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 		this.hessianMatrix = new Matrix(this.parametersLength,
 				this.parametersLength);
 		this.hessian = this.hessianMatrix.getData();
-		this.alpha = 0.0;
 		this.beta = 1.0;
 		this.lambda = 0.1;
 		this.deltas = new double[this.parametersLength];
@@ -299,13 +287,6 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	}
 
 	/**
-	 * @return True, if Bayesian regularization is used.
-	 */
-	public boolean isUseBayesianRegularization() {
-		return this.useBayesianRegularization;
-	}
-
-	/**
 	 * Perform one iteration.
 	 */
 	public void iteration() {
@@ -319,15 +300,12 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 
 		double sumOfSquaredErrors = jacobianByFiniteDifference();
 
-		double sumOfSquaredWeights = calculateSumOfSquaredWeights();
-
 		// this.setError(j.getError());
 		calculateHessian();
 
 		// Define the objective function
 		// bayesian regularization objective function
-		final double objective = this.beta * sumOfSquaredErrors + this.alpha
-				* sumOfSquaredWeights;
+		final double objective = this.beta * sumOfSquaredErrors;
 		double current = objective + 1.0;
 
 		// Start the main Levenberg-Macquardt method
@@ -341,8 +319,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 
 			// Update diagonal (Levenberg-Marquardt formula)
 			for (int i = 0; i < this.parametersLength; i++) {
-				this.hessian[i][i] = this.diagonal[i]
-						+ (this.lambda + this.alpha);
+				this.hessian[i][i] = this.diagonal[i] + this.lambda;
 			}
 
 			// Decompose to solve the linear system
@@ -357,7 +334,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 			this.deltas = decomposition.Solve(this.gradient);
 
 			// Update weights using the calculated deltas
-			sumOfSquaredWeights = updateWeights();
+			updateWeights();
 
 			// Calculate the new error
 			sumOfSquaredErrors = 0.0;
@@ -372,8 +349,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 			sumOfSquaredErrors /= 2.0;
 
 			// Update the objective function
-			current = this.beta * sumOfSquaredErrors + this.alpha
-					* sumOfSquaredWeights;
+			current = this.beta * sumOfSquaredErrors;
 
 			// If the object function is bigger than before, the method
 			// is tried again using a greater dumping factor.
@@ -383,30 +359,9 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 		// will use a smaller damping factor.
 		this.lambda /= LevenbergMarquardtTraining.SCALE_LAMBDA;
 
-		if (this.useBayesianRegularization && (decomposition != null)) {
-			// Compute the trace for the inverse Hessian
-			trace = LevenbergMarquardtTraining.trace(decomposition.inverse());
-
-			// Poland update's formula:
-			this.gamma = this.parametersLength - (this.alpha * trace);
-			this.alpha = this.parametersLength
-					/ (2.0 * sumOfSquaredWeights + trace);
-			this.beta = Math.abs((this.trainingLength - this.gamma)
-					/ (2.0 * sumOfSquaredErrors));
-		}
-
 		setError(sumOfSquaredErrors);
 
 		postIteration();
-	}
-
-	/**
-	 * Set if Bayesian regularization should be used.
-	 * @param useBayesianRegularization True to use Bayesian regularization.
-	 */
-	public void setUseBayesianRegularization(
-			final boolean useBayesianRegularization) {
-		this.useBayesianRegularization = useBayesianRegularization;
 	}
 
 	/**
@@ -414,18 +369,14 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	 * 
 	 * @return The sum squared of the weights.
 	 */
-	public double updateWeights() {
-		double result = 0;
+	public void updateWeights() {
 		final double[] w = this.weights.clone();
 
 		for (int i = 0; i < w.length; i++) {
 			w[i] += this.deltas[i];
-			result += w[i] * w[i];
 		}
 
 		NetworkCODEC.arrayToNetwork(w, this.network);
-
-		return result / 2.0;
 	}
 	
 	@Override

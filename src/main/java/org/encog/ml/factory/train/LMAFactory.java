@@ -69,7 +69,7 @@ public class LMAFactory {
 		final LevenbergMarquardtTraining result 
 			= new LevenbergMarquardtTraining(
 				(BasicNetwork) method, training);
-		result.setUseBayesianRegularization(useReg);
+		///result.setUseBayesianRegularization(useReg);
 		return result;
 	}
 }
