@@ -63,13 +63,10 @@ public class LMAFactory {
 
 		final Map<String, String> args = ArchitectureParse.parseParams(argsStr);
 		final ParamsHolder holder = new ParamsHolder(args);
-		final boolean useReg = holder.getBoolean(
-				MLTrainFactory.PROPERTY_BAYESIAN_REGULARIZATION, false, false);
 
 		final LevenbergMarquardtTraining result 
 			= new LevenbergMarquardtTraining(
 				(BasicNetwork) method, training);
-		///result.setUseBayesianRegularization(useReg);
 		return result;
 	}
 }
