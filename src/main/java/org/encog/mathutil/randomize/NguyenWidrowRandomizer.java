@@ -82,7 +82,7 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 
 		for(int i=1;i<network.getLayerCount()-1;i++)
 		{
-			hiddenNeurons+=network.getLayerTotalNeuronCount(i);
+			hiddenNeurons+=network.getLayerNeuronCount(i);
 		}
 
 		// can't really do much, use regular randomization
@@ -106,13 +106,22 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 		int fromCount = network.getLayerTotalNeuronCount(fromLayer);
 		int toCount = network.getLayerNeuronCount(fromLayer+1);
 		
-		for(int fromNeuron = 0; fromNeuron<fromCount; fromNeuron++)
+		for(int toNeuron = 0; toNeuron<toCount; toNeuron++)
 		{
-			for(int toNeuron = 0; toNeuron<toCount; toNeuron++)
+			double n = 0.0;
+            for (int fromNeuron = 0; fromNeuron < fromCount; fromNeuron++)
+            {
+            	double w = network.getWeight(fromLayer, fromNeuron, toNeuron);
+                n += w*w;
+            }
+            n = Math.sqrt(n);
+			
+			
+            for (int fromNeuron = 0; fromNeuron < fromCount; fromNeuron++)
 			{
-				double v = network.getWeight(fromLayer, fromNeuron, toNeuron);
-				v = (this.beta * v) / this.inputCount;
-				network.setWeight(fromLayer, fromNeuron, toNeuron, v);
+            	double w = network.getWeight(fromLayer, fromNeuron, toNeuron);
+            	w = beta * w / n;
+				network.setWeight(fromLayer, fromNeuron, toNeuron, w);
 			}
 		}
 	}
