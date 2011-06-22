@@ -36,23 +36,55 @@ public class TrainFlatNetworkQPROP extends TrainFlatNetworkProp {
 	 */
 	private double learningRate;
 
+	/**
+	 * The last delta values.
+	 */
+	private final double[] lastDelta;
 
 	/**
-	 * Construct a backprop trainer for flat networks.
+	 * This factor times the current weight is added to the slope 
+	 * at the start of each output epoch. Keeps weights from growing 
+	 * too big.
+	 */
+	private final double decay = 0.0001d;
+
+	/**
+	 * Used to scale for the size of the training set.
+	 */
+	private final double eps;
+
+	/**
+	 * Controls the amount of linear gradient descent 
+     * to use in updating output weights.
+	 */
+	private final double outputEpsilon = 0.35;
+
+	/**
+	 * Used in computing whether the proposed step is 
+     * too large.  Related to learningRate.
+	 */
+	private final double shrink;
+
+	/**
+	 * Construct a QPROP trainer for flat networks.
 	 * 
 	 * @param network
 	 *            The network to train.
 	 * @param training
 	 *            The training data.
 	 * @param theLearningRate
-	 *            The learning rate.
-	 * @param theMomentum
-	 *            The momentum.
+	 *            The learning rate.  2 is a good suggestion as 
+	 *            a learning rate to start with.  If it fails to converge, 
+	 *            then drop it.  Just like backprop, except QPROP can 
+	 *            take higher learning rates.
 	 */
 	public TrainFlatNetworkQPROP(final FlatNetwork network,
 			final MLDataSet training, final double theLearningRate) {
 		super(network, training);
 		this.learningRate = theLearningRate;
+		this.eps = this.outputEpsilon / training.getRecordCount();
+		this.shrink = this.learningRate / (1.0 + this.learningRate);
+		this.lastDelta = new double[this.network.getWeights().length];
 	}
 
 	/**
@@ -71,8 +103,6 @@ public class TrainFlatNetworkQPROP extends TrainFlatNetworkProp {
 	public final void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
-	
-	
 
 	/**
 	 * Update a weight.
@@ -89,10 +119,51 @@ public class TrainFlatNetworkQPROP extends TrainFlatNetworkProp {
 	public final double updateWeight(final double[] gradients,
 			final double[] lastGradient, final int index) {
 
-		final double delta = (this.gradients[index] / (lastGradient[index] - gradients[index]))
-				* this.network.getWeights()[index];
+		final double w = this.network.getWeights()[index];
+		final double d = this.lastDelta[index];
+		final double s = -this.gradients[index] + this.decay * w;
+		final double p = -lastGradient[index];
+		double nextStep = 0.0;
 
-		return delta * this.learningRate;
+		// The step must always be in direction opposite to the slope.
+		if (d < 0.0) {
+			// If last step was negative...
+			if (s > 0.0) {
+				// Add in linear term if current slope is still positive.
+				nextStep -= this.eps * s;
+			}
+			// If current slope is close to or larger than prev slope...
+			if (s >= (this.shrink * p)) {
+				// Take maximum size negative step.
+				nextStep += this.learningRate * d;
+			} else {
+				// Else, use quadratic estimate.
+				nextStep += d * s / (p - s);
+			}
+		} else if (d > 0.0) {
+			// If last step was positive...
+			if (s < 0.0) {
+				// Add in linear term if current slope is still negative.
+				nextStep -= this.eps * s;
+			}
+			// If current slope is close to or more neg than prev slope...
+			if (s <= (this.shrink * p)) {
+				// Take maximum size negative step.
+				nextStep += this.learningRate * d; 
+			} else {
+				// Else, use quadratic estimate.
+				nextStep += d * s / (p - s); 
+			}
+		} else {
+			// Last step was zero, so use only linear term. 
+			nextStep -= this.eps * s;
+		}
+
+		// update global data arrays
+		this.lastDelta[index] = nextStep;
+		getLastGradient()[index] = gradients[index];
+
+		return nextStep;
 	}
 
 }

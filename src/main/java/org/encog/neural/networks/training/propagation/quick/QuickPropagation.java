@@ -47,13 +47,12 @@ public class QuickPropagation extends Propagation implements
 	public static final String LAST_GRADIENTS = "LAST_GRADIENTS";
 
 	/**
-	 * Create a class to train using backpropagation. Use auto learn rate and
-	 * momentum. Use the CPU to train.
+	 * Construct a QPROP trainer for flat networks.  Uses a learning rate of 2.
 	 * 
 	 * @param network
-	 *            The network that is to be trained.
+	 *            The network to train.
 	 * @param training
-	 *            The training data to be used for backpropagation.
+	 *            The training data.
 	 */
 	public QuickPropagation(final ContainsFlat network, final MLDataSet training) {
 		this(network, training, 0);
@@ -61,14 +60,17 @@ public class QuickPropagation extends Propagation implements
 	}
 
 	/**
+	 * Construct a QPROP trainer for flat networks.
 	 * 
 	 * @param network
-	 *            The network that is to be trained
+	 *            The network to train.
 	 * @param training
-	 *            The training set
-	 * @param learnRate
-	 *            The rate at which the weight matrix will be adjusted based on
-	 *            learning.
+	 *            The training data.
+	 * @param theLearningRate
+	 *            The learning rate.  2 is a good suggestion as 
+	 *            a learning rate to start with.  If it fails to converge, 
+	 *            then drop it.  Just like backprop, except QPROP can 
+	 *            take higher learning rates.
 	 */
 	public QuickPropagation(final ContainsFlat network,
 			final MLDataSet training, final double learnRate) {
@@ -89,7 +91,7 @@ public class QuickPropagation extends Propagation implements
 	}
 
 	/**
-	 * @return Ther last delta values.
+	 * @return The last delta values.
 	 */
 	public final double[] getLastDelta() {
 		return ((TrainFlatNetworkBackPropagation) getFlatTraining())

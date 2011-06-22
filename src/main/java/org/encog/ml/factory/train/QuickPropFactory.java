@@ -58,7 +58,7 @@ public class QuickPropFactory {
 		final ParamsHolder holder = new ParamsHolder(args);
 
 		final double learningRate = holder.getDouble(
-				MLTrainFactory.PROPERTY_LEARNING_RATE, false, 0.7);
+				MLTrainFactory.PROPERTY_LEARNING_RATE, false, 2.0);
 		
 		return new QuickPropagation((BasicNetwork) method, training, learningRate);
 	}
