@@ -83,7 +83,10 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	 * The max amount for the LAMBDA.
 	 */
 	public static final double LAMBDA_MAX = 1e25;
-	
+
+	/**
+	 * Number of points for finite difference.
+	 */
 	public final static int NUM_POINTS = 3;
 
 	/**
@@ -132,8 +135,11 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	 * The "hessian" matrix, used by the LMA.
 	 */
 	private final Matrix hessianMatrix;
-	
-	private double[][] jacobian;
+
+	/**
+	 * The jacobian, a matrix of partial derivatives.
+	 */
+	private final double[][] jacobian;
 
 	/**
 	 * The "hessian" matrix as a 2d array.
@@ -143,7 +149,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	/**
 	 * The beta is multiplied by the sum squared of the errors.
 	 */
-	private double beta;
+	private final double beta;
 
 	/**
 	 * The lambda, or damping factor. This is increased until a desirable
@@ -175,10 +181,25 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	 * The training elements.
 	 */
 	private final MLDataPair pair;
-	
+
+	/**
+	 * The derivative step size for finite difference.
+	 */
 	private final double[] derivativeStepSize;
+	
+	/**
+	 * The coefficients for finite difference.
+	 */
 	private final double[][][] differentialCoefficients;
+	
+	/**
+	 * The derivitive step size.
+	 */
 	private final double DERIV_STEP = 1e-2;
+	
+	/**
+	 * The errors.
+	 */
 	private final double[] errors;
 
 	/**
@@ -219,33 +240,27 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 		final BasicMLData ideal = new BasicMLData(
 				this.indexableTraining.getIdealSize());
 		this.pair = new BasicMLDataPair(input, ideal);
-		
-		// setup coefficient arrays for finite difference method
-        // create differential coefficient arrays
-        this.differentialCoefficients = CreateCoefficients(NUM_POINTS);
-        this.derivativeStepSize = new double[parametersLength];
 
-        // initialize arrays
-        for (int i = 0; i < parametersLength; i++)
-        {
-            this.derivativeStepSize[i] = DERIV_STEP;
-        }
+		// setup coefficient arrays for finite difference method
+		// create differential coefficient arrays
+		this.differentialCoefficients = CreateCoefficients(LevenbergMarquardtTraining.NUM_POINTS);
+		this.derivativeStepSize = new double[this.parametersLength];
+
+		// initialize arrays
+		for (int i = 0; i < this.parametersLength; i++) {
+			this.derivativeStepSize[i] = this.DERIV_STEP;
+		}
 	}
 
 	/**
 	 * Calculate the Hessian matrix.
-	 * 
-	 * @param jacobian
-	 *            The Jacobian matrix.
-	 * @param errors
-	 *            The errors.
 	 */
 	public void calculateHessian() {
 		for (int i = 0; i < this.parametersLength; i++) {
 			// Compute Jacobian Matrix Errors
 			double s = 0.0;
 			for (int j = 0; j < this.trainingLength; j++) {
-				s += jacobian[j][i] * errors[j];
+				s += this.jacobian[j][i] * this.errors[j];
 			}
 			this.gradient[i] = s;
 
@@ -253,7 +268,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 			for (int j = 0; j < this.parametersLength; j++) {
 				double c = 0.0;
 				for (int k = 0; k < this.trainingLength; k++) {
-					c += jacobian[k][i] * jacobian[k][j];
+					c += this.jacobian[k][i] * this.jacobian[k][j];
 				}
 				this.hessian[i][j] = this.beta * c;
 			}
@@ -279,9 +294,95 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 		return result / 2.0;
 	}
 
+	@Override
+	public boolean canContinue() {
+		return false;
+	}
+
+	private double computeDerivative(final MLData inputData, final int layer,
+			final int neuron, final int weight, final double[] stepSize,
+			final double networkOutput, final int jj) {
+		final int numPoints = this.differentialCoefficients.length;
+		double ret = 0.0;
+		double originalValue;
+
+		// Saves a copy of the original value in the neuron
+		originalValue = this.network.getWeight(layer, weight, neuron);
+
+		final double[] points = new double[numPoints];
+
+		if (originalValue != 0.0) {
+			stepSize[jj] = this.DERIV_STEP * Math.abs(originalValue);
+		} else {
+			stepSize[jj] = this.DERIV_STEP;
+		}
+
+		final int centerPoint = (numPoints - 1) / 2;
+
+		for (int i = 0; i < numPoints; i++) {
+			if (i != centerPoint) {
+				final double newValue = originalValue + ((i - centerPoint))
+						* stepSize[jj];
+
+				this.network.setWeight(layer, weight, neuron, newValue);
+
+				final MLData output = this.network.compute(inputData);
+				points[i] = output.getData(0);
+			} else {
+				points[i] = networkOutput;
+			}
+		}
+
+		ret = 0.0;
+		for (int i = 0; i < this.differentialCoefficients.length; i++) {
+			ret += this.differentialCoefficients[centerPoint][1][i] * points[i];
+		}
+
+		ret /= Math.pow(stepSize[jj], 1);
+
+		// Changes back the modified value
+		this.network.setWeight(layer, weight, neuron, originalValue);
+
+		return ret;
+	}
+
+	private double[][][] CreateCoefficients(final int points) {
+		final double[][][] coefficients = new double[points][points][points];
+
+		for (int i = 0; i < points; i++) {
+			final Matrix delts = new Matrix(points, points);
+			final double[][] ptr = delts.getData();
+
+			for (int j = 0; j < points; j++) {
+				final double delt = (j - i);
+				double hterm = 1.0;
+
+				for (int k = 0; k < points; k++) {
+					ptr[j][k] = hterm / EncogMath.factorial(k);
+					hterm *= delt;
+				}
+			}
+
+			final Matrix invMatrix = delts.inverse();
+			final double dNumPointsFactorial = EncogMath.factorial(points);
+
+			for (int j = 0; j < points; j++) {
+				for (int k = 0; k < points; k++) {
+					coefficients[i][j][k] = (Math
+							.round(invMatrix.getData()[j][k]
+									* dNumPointsFactorial))
+							/ dNumPointsFactorial;
+				}
+			}
+		}
+
+		return coefficients;
+	}
+
 	/**
 	 * @return The trained network.
 	 */
+	@Override
 	public MLMethod getMethod() {
 		return this.network;
 	}
@@ -289,11 +390,10 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	/**
 	 * Perform one iteration.
 	 */
+	@Override
 	public void iteration() {
 
 		LUDecomposition decomposition = null;
-		double trace = 0;
-
 		preIteration();
 
 		this.weights = NetworkCODEC.networkToArray(this.network);
@@ -340,8 +440,8 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 			sumOfSquaredErrors = 0.0;
 			for (int i = 0; i < this.trainingLength; i++) {
 				this.indexableTraining.getRecord(i, this.pair);
-				final MLData actual = this.network.compute(this.pair
-						.getInput());
+				final MLData actual = this.network
+						.compute(this.pair.getInput());
 				final double e = this.pair.getIdeal().getData(0)
 						- actual.getData(0);
 				sumOfSquaredErrors += e * e;
@@ -364,6 +464,72 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 		postIteration();
 	}
 
+	/// <summary>
+	///   Calculates the Jacobian Matrix using Finite Differences
+	/// </summary>
+	/// <returns>Returns the sum of squared errors of the network divided by 2.</returns>
+	private double jacobianByFiniteDifference() {
+		double e;
+		double sumOfSquaredErrors = 0;
+		getTraining().getRecordCount();
+
+		int ji = 0;
+
+		// foreach training vector
+		for (final MLDataPair pair : getTraining()) {
+			final MLData networkOutput = this.network.compute(pair.getInput());
+
+			// Calculate network error to build the residuals vector
+			e = pair.getIdeal().getData(0) - networkOutput.getData(0);
+			this.errors[ji] = e;
+			sumOfSquaredErrors += e * e;
+
+			// Computation of one of the Jacobian Matrix rows by nummerical differentiation:
+			// for each weight wj in the network, we have to compute its partial
+			//   derivative to build the jacobian matrix.
+			int jj = 0;
+
+			// So, for each layer:
+			for (int layer = this.network.getLayerCount() - 1; layer > 0; layer--) {
+				// for each neuron:
+				for (int neuron = 0; neuron < this.network
+						.getLayerNeuronCount(layer); neuron++) {
+					// for each weight:
+					for (int weight = 0; weight < this.network
+							.getLayerTotalNeuronCount(layer - 1); weight++) {
+						// Compute its partial derivative
+						this.jacobian[ji][jj] = computeDerivative(
+								pair.getInput(), layer - 1, neuron, weight,
+								this.derivativeStepSize,
+								networkOutput.getData(0), jj);
+						jj++;
+					}
+				}
+			}
+
+			ji++;
+		}
+
+		// returns the sum of squared errors / 2
+		return sumOfSquaredErrors / 2.0;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public TrainingContinuation pause() {
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void resume(final TrainingContinuation state) {
+
+	}
+
 	/**
 	 * Update the weights.
 	 * 
@@ -378,157 +544,4 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 
 		NetworkCODEC.arrayToNetwork(w, this.network);
 	}
-	
-	@Override
-	public boolean canContinue() {
-		return false;
-	}
-
-	@Override
-	public TrainingContinuation pause() {
-		return null;
-	}
-
-	@Override
-	public void resume(TrainingContinuation state) {
-		
-	}
-	
-    
-    private double[][][] CreateCoefficients(int points)
-    {
-        double[][][] coefficients = new double[points][points][points];
-
-        for (int i = 0; i < points; i++)
-        {
-            Matrix delts = new Matrix(points,points);
-            double[][] ptr = delts.getData();
-
-            for (int j = 0; j < points; j++)
-            {
-                double delt = (double)(j - i);
-                double hterm = 1.0;
-
-                for (int k = 0; k < points; k++)
-                {
-                    ptr[j][k] = hterm / EncogMath.factorial(k);
-                    hterm *= delt;
-                }
-            }        
-
-            Matrix invMatrix = delts.inverse();
-            double dNumPointsFactorial = EncogMath.factorial(points);
-
-            for (int j = 0; j < points; j++)
-            {
-                for (int k = 0; k < points; k++)
-                {
-                    coefficients[i][j][k] = (Math.round(invMatrix.getData()[j][k] * dNumPointsFactorial)) / dNumPointsFactorial;
-                }
-            }
-        }
-
-        return coefficients;
-    }
-    
-    /// <summary>
-    ///   Calculates the Jacobian Matrix using Finite Differences
-    /// </summary>
-    /// <returns>Returns the sum of squared errors of the network divided by 2.</returns>
-    private double jacobianByFiniteDifference()
-    {
-        double e;
-        double sumOfSquaredErrors = 0;
-        int N = (int)this.getTraining().getRecordCount();
-
-        int ji = 0;
-        
-        // foreach training vector
-        for( MLDataPair pair : getTraining() )
-        {
-            MLData networkOutput = network.compute(pair.getInput());
-
-            // Calculate network error to build the residuals vector
-            e = pair.getIdeal().getData(0) - networkOutput.getData(0);
-            errors[ji] = e;
-            sumOfSquaredErrors += e * e;
-
-            // Computation of one of the Jacobian Matrix rows by nummerical differentiation:
-            // for each weight wj in the network, we have to compute its partial
-            //   derivative to build the jacobian matrix.
-            int jj = 0;
-
-            // So, for each layer:
-            for (int layer = network.getLayerCount()-1; layer >0 ; layer--)
-            {
-                // for each neuron:
-                for (int neuron = 0; neuron < network.getLayerNeuronCount(layer); neuron++)
-                {
-                    // for each weight:
-                    for (int weight = 0; weight < network.getLayerTotalNeuronCount(layer-1); weight++)
-                    {
-                        // Compute its partial derivative
-                        jacobian[ji][jj] = computeDerivative(pair.getInput(), layer-1, neuron, weight, derivativeStepSize, networkOutput.getData(0), jj);
-                        jj++;
-                    }                   
-                }
-            }
-            
-            ji++;
-        }
-
-        // returns the sum of squared errors / 2
-        return sumOfSquaredErrors / 2.0;
-    }
-    
-    private double computeDerivative(MLData inputData,
-            int layer, int neuron, int weight,
-            double[] stepSize, double networkOutput, int jj)
-        {
-            int numPoints = differentialCoefficients.length;
-            double ret = 0.0;
-            double originalValue;
-
-            // Saves a copy of the original value in the neuron
-            originalValue = network.getWeight(layer, weight, neuron);
-            
-            double[] points = new double[numPoints];
-
-            if (originalValue != 0.0)
-                stepSize[jj] = DERIV_STEP * Math.abs(originalValue);
-            else stepSize[jj] = DERIV_STEP;
-
-            int centerPoint = (numPoints - 1) / 2;
-
-            for (int i = 0; i < numPoints; i++)
-            {
-                if (i != centerPoint)
-                {
-                    double newValue = originalValue + ((double)(i - centerPoint)) * stepSize[jj];
-
-                    network.setWeight(layer, weight, neuron, newValue);
-
-                    MLData output = network.compute(inputData);
-                    points[i] = output.getData(0);
-                }
-                else
-                {
-                    points[i] = networkOutput;
-                }
-            }
-
-            ret = 0.0;
-            for (int i = 0; i < differentialCoefficients.length; i++)
-            {
-                ret += differentialCoefficients[centerPoint][1][i] * points[i];
-            }
-
-            ret /= Math.pow(stepSize[jj], 1);
-
-
-            // Changes back the modified value
-            network.setWeight(layer, weight, neuron, originalValue);
-
-            return ret;
-        }
 }
