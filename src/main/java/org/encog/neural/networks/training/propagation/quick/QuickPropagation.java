@@ -55,8 +55,7 @@ public class QuickPropagation extends Propagation implements
 	 *            The training data.
 	 */
 	public QuickPropagation(final ContainsFlat network, final MLDataSet training) {
-		this(network, training, 0);
-		addStrategy(new SmartLearningRate());
+		this(network, training, 2.0);
 	}
 
 	/**
