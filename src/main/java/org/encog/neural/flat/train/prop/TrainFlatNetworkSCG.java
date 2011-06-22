@@ -339,5 +339,12 @@ public class TrainFlatNetworkSCG extends TrainFlatNetworkProp {
 			final double[] lastGradient, final int index) {
 		return 0;
 	}
+	
+	/**
+	 * Perform training method specific init.
+	 */
+	public void initOthers() {
+		
+	}
 
 }

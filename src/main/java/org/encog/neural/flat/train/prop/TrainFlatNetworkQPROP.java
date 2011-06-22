@@ -27,7 +27,7 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.neural.flat.FlatNetwork;
 
 /**
- * Train a flat network, using backpropagation.
+ * Train a flat network, using QuickPropagation.  Code in this file is based on work done by 
  */
 public class TrainFlatNetworkQPROP extends TrainFlatNetworkProp {
 
@@ -39,31 +39,31 @@ public class TrainFlatNetworkQPROP extends TrainFlatNetworkProp {
 	/**
 	 * The last delta values.
 	 */
-	private final double[] lastDelta;
+	private double[] lastDelta;
 
 	/**
 	 * This factor times the current weight is added to the slope 
 	 * at the start of each output epoch. Keeps weights from growing 
 	 * too big.
 	 */
-	private final double decay = 0.0001d;
+	private double decay = 0.0001d;
 
 	/**
 	 * Used to scale for the size of the training set.
 	 */
-	private final double eps;
+	private double eps;
 
 	/**
 	 * Controls the amount of linear gradient descent 
      * to use in updating output weights.
 	 */
-	private final double outputEpsilon = 0.35;
+	private double outputEpsilon = 0.35;
 
 	/**
 	 * Used in computing whether the proposed step is 
      * too large.  Related to learningRate.
 	 */
-	private final double shrink;
+	private double shrink;
 
 	/**
 	 * Construct a QPROP trainer for flat networks.
@@ -82,9 +82,16 @@ public class TrainFlatNetworkQPROP extends TrainFlatNetworkProp {
 			final MLDataSet training, final double theLearningRate) {
 		super(network, training);
 		this.learningRate = theLearningRate;
-		this.eps = this.outputEpsilon / training.getRecordCount();
-		this.shrink = this.learningRate / (1.0 + this.learningRate);
 		this.lastDelta = new double[this.network.getWeights().length];
+	}
+	
+	/**
+	 * Perform training method specific init.
+	 */
+	public void initOthers() {
+		this.eps = this.outputEpsilon / getTraining().getRecordCount();
+		this.shrink = this.learningRate / (1.0 + this.learningRate);
+				
 	}
 
 	/**
@@ -165,5 +172,70 @@ public class TrainFlatNetworkQPROP extends TrainFlatNetworkProp {
 
 		return nextStep;
 	}
+
+	/**
+	 * @return the decay
+	 */
+	public double getDecay() {
+		return decay;
+	}
+
+	/**
+	 * @return the outputEpsilon
+	 */
+	public double getOutputEpsilon() {
+		return outputEpsilon;
+	}
+
+	/**
+	 * @return the shrink
+	 */
+	public double getShrink() {
+		return shrink;
+	}
+
+	/**
+	 * @param shrink the shrink to set
+	 */
+	public void setShrink(double shrink) {
+		this.shrink = shrink;
+	}
+
+	/**
+	 * @param outputEpsilon the outputEpsilon to set
+	 */
+	public void setOutputEpsilon(double outputEpsilon) {
+		this.outputEpsilon = outputEpsilon;
+	}
+
+	/**
+	 * @return the lastDelta
+	 */
+	public double[] getLastDelta() {
+		return lastDelta;
+	}
+
+	/**
+	 * @param lastDelta the lastDelta to set
+	 */
+	public void setLastDelta(double[] lastDelta) {
+		this.lastDelta = lastDelta;
+	}
+
+	/**
+	 * @return the eps
+	 */
+	public double getEps() {
+		return eps;
+	}
+
+	/**
+	 * @param decay the decay to set
+	 */
+	public void setDecay(double decay) {
+		this.decay = decay;
+	}
+	
+	
 
 }

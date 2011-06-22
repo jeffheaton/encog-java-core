@@ -95,5 +95,12 @@ public class TrainFlatNetworkManhattan extends TrainFlatNetworkProp {
 			return -this.learningRate;
 		}
 	}
+	
+	/**
+	 * Perform training method specific init.
+	 */
+	public void initOthers() {
+		
+	}
 
 }

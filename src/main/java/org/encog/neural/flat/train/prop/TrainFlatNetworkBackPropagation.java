@@ -138,4 +138,11 @@ public class TrainFlatNetworkBackPropagation extends TrainFlatNetworkProp {
 		return delta;
 	}
 
+	/**
+	 * Perform training method specific init.
+	 */
+	public void initOthers() {
+		
+	}
+
 }

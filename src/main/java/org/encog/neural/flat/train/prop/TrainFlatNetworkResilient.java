@@ -50,6 +50,8 @@ public class TrainFlatNetworkResilient extends TrainFlatNetworkProp {
 	private final double maxStep;
 	
 	private RPROPType rpropType = RPROPType.RPROPp;
+	
+	private double[] lastWeightChange;
 
 	/**
 	 * Construct a resilient trainer for flat networks.
@@ -71,6 +73,7 @@ public class TrainFlatNetworkResilient extends TrainFlatNetworkProp {
 		super(network, training);
 		this.updateValues = new double[network.getWeights().length];
 		this.lastDelta = new double[network.getWeights().length];
+		this.lastWeightChange = new double[network.getWeights().length];
 		this.zeroTolerance = zeroTolerance;
 		this.maxStep = maxStep;
 
@@ -124,18 +127,27 @@ public class TrainFlatNetworkResilient extends TrainFlatNetworkProp {
 	@Override
 	public double updateWeight(final double[] gradients,
 			final double[] lastGradient, final int index) {
+		double weightChange = 0;
+		
 		switch(this.rpropType) {
 			case RPROPp:
-				return updateWeightPlus(gradients,lastGradient,index);
+				weightChange = updateWeightPlus(gradients,lastGradient,index);
+				break;
 			case RPROPm:
-				return updateWeightMinus(gradients,lastGradient,index);
+				weightChange = updateWeightMinus(gradients,lastGradient,index);
+				break;
 			case iRPROPp:
-				return updateiWeightPlus(gradients,lastGradient,index);
+				weightChange = updateiWeightPlus(gradients,lastGradient,index);
+				break;
 			case iRPROPm:
-				return updateiWeightMinus(gradients,lastGradient,index);
+				weightChange = updateiWeightMinus(gradients,lastGradient,index);
+				break;
 			default:
 				throw new TrainingError("Unknown RPROP type: " + this.rpropType);
 		}
+		
+		this.lastWeightChange[index] = weightChange;
+		return weightChange;
 	}
 	
 	
@@ -162,6 +174,7 @@ public class TrainFlatNetworkResilient extends TrainFlatNetworkProp {
 					* RPROPConst.NEGATIVE_ETA;
 			delta = Math.max(delta, RPROPConst.DELTA_MIN);
 			this.updateValues[index] = delta;
+			weightChange = -this.lastWeightChange[index];
 			// set the previous gradent to zero so that there will be no
 			// adjustment the next iteration
 			lastGradient[index] = 0;
@@ -231,7 +244,7 @@ public class TrainFlatNetworkResilient extends TrainFlatNetworkProp {
 			this.updateValues[index] = delta;
 			
 			if( this.currentError>this.lastError ) {
-				weightChange = -sign(gradients[index]) * delta;
+				weightChange = -this.lastWeightChange[index];
 			}
 			
 			// set the previous gradent to zero so that there will be no
@@ -300,6 +313,11 @@ public class TrainFlatNetworkResilient extends TrainFlatNetworkProp {
 		this.rpropType = rpropType;
 	}
 	
-	
+	/**
+	 * Perform training method specific init.
+	 */
+	public void initOthers() {
+		
+	}
 
 }

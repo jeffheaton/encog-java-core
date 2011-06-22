@@ -301,6 +301,8 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 					this, this.indexable.openAdditional(), r.getLow(),
 					r.getHigh(), this.flatSpot, this.ef);
 		}
+		
+		initOthers();
 	}
 
 	/**
@@ -451,4 +453,6 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	public ErrorFunction getErrorFunction() {
 		return this.ef;
 	}
+	
+	public abstract void initOthers();
 }

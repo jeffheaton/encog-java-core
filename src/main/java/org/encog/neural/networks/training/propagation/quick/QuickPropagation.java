@@ -24,20 +24,25 @@
 package org.encog.neural.networks.training.propagation.quick;
 
 import org.encog.ml.data.MLDataSet;
-import org.encog.neural.flat.train.prop.TrainFlatNetworkBackPropagation;
 import org.encog.neural.flat.train.prop.TrainFlatNetworkQPROP;
-import org.encog.neural.flat.train.prop.TrainFlatNetworkResilient;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
-import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
-import org.encog.neural.networks.training.strategy.SmartLearningRate;
 import org.encog.util.EngineArray;
 import org.encog.util.validate.ValidateNetwork;
 
-
+/**
+ * QPROP is an efficient training method that is based on Newton's Method.  
+ * QPROP was introduced in a paper:
+ * 
+ * An Empirical Study of Learning Speed in Back-Propagation Networks" (Scott E. Fahlman, 1988)
+ * 
+ *  
+ * http://www.heatonresearch.com/wiki/Quickprop
+ *
+ */
 public class QuickPropagation extends Propagation implements 
 		LearningRate {
 
@@ -93,7 +98,7 @@ public class QuickPropagation extends Propagation implements
 	 * @return The last delta values.
 	 */
 	public final double[] getLastDelta() {
-		return ((TrainFlatNetworkBackPropagation) getFlatTraining())
+		return ((TrainFlatNetworkQPROP) getFlatTraining())
 				.getLastDelta();
 	}
 
@@ -104,7 +109,7 @@ public class QuickPropagation extends Propagation implements
 	 */
 	@Override
 	public final double getLearningRate() {
-		return ((TrainFlatNetworkBackPropagation) getFlatTraining())
+		return ((TrainFlatNetworkQPROP) getFlatTraining())
 				.getLearningRate();
 	}
 
@@ -173,7 +178,38 @@ public class QuickPropagation extends Propagation implements
 	 */
 	@Override
 	public final void setLearningRate(final double rate) {
-		((TrainFlatNetworkBackPropagation) getFlatTraining())
+		((TrainFlatNetworkQPROP) getFlatTraining())
 				.setLearningRate(rate);
+	}
+	
+	/**
+	 * @return the outputEpsilon
+	 */
+	public double getOutputEpsilon() {
+		return ((TrainFlatNetworkQPROP) getFlatTraining())
+		.getOutputEpsilon();
+	}
+
+	/**
+	 * @return the shrink
+	 */
+	public double getShrink() {
+		return ((TrainFlatNetworkQPROP) getFlatTraining())
+		.getShrink();
+	}
+
+	/**
+	 * @param shrink the shrink to set
+	 */
+	public void setShrink(double shrink) {
+		((TrainFlatNetworkQPROP) getFlatTraining())
+		.setShrink(shrink);
+	}
+
+	/**
+	 * @param outputEpsilon the outputEpsilon to set
+	 */
+	public void setOutputEpsilon(double outputEpsilon) {
+		this.setOutputEpsilon( outputEpsilon);
 	}
 }
