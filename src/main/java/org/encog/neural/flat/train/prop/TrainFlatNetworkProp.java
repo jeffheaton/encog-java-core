@@ -26,6 +26,7 @@ package org.encog.neural.flat.train.prop;
 import org.encog.Encog;
 import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.mathutil.IntRange;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.error.ErrorFunction;
@@ -269,14 +270,8 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 			for (int i = 0; i < this.network.getActivationFunctions().length; i++) {
 				final ActivationFunction af = this.network
 						.getActivationFunctions()[i];
-				// if the diriv tends to 0 on either -1, 0.0 or 1, then 
-				// add a flat-spot const.
-				final double t1 = af.derivativeFunction(-1.0,-1.0);
-				final double t2 = af.derivativeFunction(0.0,0.0);
-				final double t3 = af.derivativeFunction(1.0,1.0);
-				if ((Math.abs(t1) < Encog.DEFAULT_DOUBLE_EQUAL)
-						|| (Math.abs(t2) < Encog.DEFAULT_DOUBLE_EQUAL)
-						|| (Math.abs(t3) < Encog.DEFAULT_DOUBLE_EQUAL)) {
+				
+				if( af instanceof ActivationSigmoid ) {
 					this.flatSpot[i] = 0.1;
 				} else {
 					this.flatSpot[i] = 0.0;
