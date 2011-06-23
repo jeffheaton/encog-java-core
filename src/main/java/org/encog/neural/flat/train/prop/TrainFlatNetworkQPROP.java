@@ -27,7 +27,10 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.neural.flat.FlatNetwork;
 
 /**
- * Train a flat network, using QuickPropagation.  Code in this file is based on work done by 
+ * Train a flat network, using QuickPropagation.  
+ * Code in this file is based on work done by 
+ * 
+ *  An Empirical Study of Learning Speed in Back-Propagation Networks" (Scott E. Fahlman, 1988)
  */
 public class TrainFlatNetworkQPROP extends TrainFlatNetworkProp {
 
