@@ -80,7 +80,7 @@ public class AnalystWizard {
 	/**
 	 * The default training error.
 	 */
-	public static final double DEFAULT_TRAIN_ERROR = 0.01;
+	public static final double DEFAULT_TRAIN_ERROR = 0.05;
 
 	/**
 	 * The raw file.
@@ -1177,7 +1177,4 @@ public class AnalystWizard {
 	public void setMissing(HandleMissingValues missing) {
 		this.missing = missing;
 	}
-	
-	
-
 }
