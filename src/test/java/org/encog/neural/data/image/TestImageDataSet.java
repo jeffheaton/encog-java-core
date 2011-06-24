@@ -25,6 +25,7 @@ package org.encog.neural.data.image;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.util.Iterator;
 
@@ -44,6 +45,7 @@ public class TestImageDataSet extends TestCase {
 
 	public void testImageDataSet()
 	{
+		try {
 		JFrame frame = new JFrame();
 		frame.setVisible(true);
 		Image image = frame.createImage(10, 10);
@@ -70,6 +72,10 @@ public class TestImageDataSet extends TestCase {
 		// just "flex" these for no exceptions
 		input.toString();
 		input.setImage(input.getImage());
+		}
+		catch( HeadlessException ex) {
+			// ignore if we are running headless (i.e. the build server)
+		}
 	}
 	
 }
