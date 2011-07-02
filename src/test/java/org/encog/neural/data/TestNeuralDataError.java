@@ -25,9 +25,9 @@ package org.encog.neural.data;
 
 import java.awt.Graphics;
 
-import org.encog.ml.data.MLlDataError;
-
 import junit.framework.TestCase;
+
+import org.encog.ml.data.MLDataError;
 
 public class TestNeuralDataError extends TestCase {
 	public void testNeuralDataError()
@@ -36,10 +36,10 @@ public class TestNeuralDataError extends TestCase {
 		{
 			int i=0;
 			if(i==0)
-				throw new MLlDataError("test");
+				throw new MLDataError("test");
 			TestCase.assertTrue(false);
 		}
-		catch(MLlDataError e)
+		catch(MLDataError e)
 		{
 		}
 		
@@ -54,10 +54,10 @@ public class TestNeuralDataError extends TestCase {
 			{
 				int i=0;
 				if(i==0)
-					throw new MLlDataError(e);
+					throw new MLDataError(e);
 				TestCase.assertTrue(false);
 			}
-			catch(MLlDataError e2)
+			catch(MLDataError e2)
 			{
 				
 			}
