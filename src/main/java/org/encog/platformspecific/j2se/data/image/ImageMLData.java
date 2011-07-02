@@ -40,7 +40,7 @@ import org.encog.util.downsample.Downsample;
  * @author jheaton
  *
  */
-public class ImageNeuralData extends BasicMLData {
+public class ImageMLData extends BasicMLData {
 
 	/**
 	 * The serial id.
@@ -57,7 +57,7 @@ public class ImageNeuralData extends BasicMLData {
 	 * @param theImage
 	 *            The image to use.
 	 */
-	public ImageNeuralData(final Image theImage) {
+	public ImageMLData(final Image theImage) {
 		super(1);
 		this.image = theImage;
 	}
