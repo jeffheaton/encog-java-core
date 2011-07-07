@@ -35,7 +35,7 @@ import org.encog.util.downsample.Downsample;
  * 
  * @author jheaton
  */
-public class ImageNeuralDataSet extends BasicMLDataSet {
+public class ImageMLDataSet extends BasicMLDataSet {
 
 	/**
 	 * The serial id.
@@ -91,7 +91,7 @@ public class ImageNeuralDataSet extends BasicMLDataSet {
 	 * @param theLo
 	 *            The low value to normalize to.
 	 */
-	public ImageNeuralDataSet(final Downsample theDownsampler,
+	public ImageMLDataSet(final Downsample theDownsampler,
 			final boolean theFindBounds, 
 			final double theHi, final double theLo) {
 		this.downsampler = theDownsampler;
@@ -115,13 +115,13 @@ public class ImageNeuralDataSet extends BasicMLDataSet {
 		this.width = theWidth;
 
 		for (final MLDataPair pair : this) {
-			if (!(pair.getInput() instanceof ImageNeuralData)) {
+			if (!(pair.getInput() instanceof ImageMLData)) {
 				throw new NeuralNetworkError(
 						"Invalid class type found in ImageNeuralDataSet, only "
 								+ "ImageNeuralData items are allowed.");
 			}
 
-			final ImageNeuralData input = (ImageNeuralData) pair.getInput();
+			final ImageMLData input = (ImageMLData) pair.getInput();
 			input.downsample(this.downsampler, this.findBounds, height, width,
 					this.hi, this.lo);
 

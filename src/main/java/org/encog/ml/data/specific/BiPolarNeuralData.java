@@ -27,7 +27,7 @@ import java.io.Serializable;
 
 import org.encog.mathutil.matrices.BiPolarUtil;
 import org.encog.ml.data.MLData;
-import org.encog.ml.data.MLlDataError;
+import org.encog.ml.data.MLDataError;
 
 /**
  * A NeuralData implementation designed to work with bipolar data. Bipolar data
@@ -78,7 +78,7 @@ public class BiPolarNeuralData implements MLData, Serializable {
 	 */
 	@Override
 	public final void add(final int index, final double value) {
-		throw new MLlDataError("Add is not supported for bipolar data.");
+		throw new MLDataError("Add is not supported for bipolar data.");
 	}
 
 	/**

@@ -36,8 +36,8 @@ import junit.framework.TestCase;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLData;
-import org.encog.platformspecific.j2se.data.image.ImageNeuralData;
-import org.encog.platformspecific.j2se.data.image.ImageNeuralDataSet;
+import org.encog.platformspecific.j2se.data.image.ImageMLData;
+import org.encog.platformspecific.j2se.data.image.ImageMLDataSet;
 import org.encog.util.downsample.Downsample;
 import org.encog.util.downsample.SimpleIntensityDownsample;
 
@@ -57,9 +57,9 @@ public class TestImageDataSet extends TestCase {
 		g.dispose();
 		
 		Downsample downsample = new SimpleIntensityDownsample();
-		ImageNeuralDataSet set = new ImageNeuralDataSet(downsample,true,-1,1);
+		ImageMLDataSet set = new ImageMLDataSet(downsample,true,-1,1);
 		BasicMLData ideal = new BasicMLData(1);
-		ImageNeuralData input = new ImageNeuralData(image);
+		ImageMLData input = new ImageMLData(image);
 		set.add(input,ideal);
 		set.downsample(2,2);
 		Iterator<MLDataPair> itr = set.iterator();

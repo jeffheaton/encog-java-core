@@ -25,8 +25,8 @@ package org.encog.ml.data.buffer;
 
 import java.util.Iterator;
 
+import org.encog.ml.data.MLDataError;
 import org.encog.ml.data.MLDataPair;
-import org.encog.ml.data.MLlDataError;
 import org.encog.ml.data.basic.BasicMLDataPair;
 
 /**
@@ -84,7 +84,7 @@ public class BufferedDataSetIterator implements Iterator<MLDataPair> {
 	 */
 	@Override
 	public final void remove() {
-		throw new MLlDataError("Remove is not supported.");
+		throw new MLDataError("Remove is not supported.");
 	}
 
 }

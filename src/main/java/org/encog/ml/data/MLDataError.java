@@ -26,7 +26,7 @@ package org.encog.ml.data;
 /**
  * Used by the machine learning methods classes to indicate a data error.
  */
-public class MLlDataError extends RuntimeException {
+public class MLDataError extends RuntimeException {
 	/**
 	 * Serial id for this class.
 	 */
@@ -38,7 +38,7 @@ public class MLlDataError extends RuntimeException {
 	 * @param msg
 	 *            The exception message.
 	 */
-	public MLlDataError(final String msg) {
+	public MLDataError(final String msg) {
 		super(msg);
 	}
 
@@ -48,7 +48,7 @@ public class MLlDataError extends RuntimeException {
 	 * @param t
 	 *            The other exception.
 	 */
-	public MLlDataError(final Throwable t) {
+	public MLDataError(final Throwable t) {
 		super(t);
 	}
 }

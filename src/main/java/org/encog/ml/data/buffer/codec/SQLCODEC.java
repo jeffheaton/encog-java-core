@@ -29,7 +29,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.encog.ml.data.MLlDataError;
+import org.encog.ml.data.MLDataError;
 
 /**
  * A CODEC that is designed to read data from an SQL source. This is a read-only
@@ -98,7 +98,7 @@ public class SQLCODEC implements DataSetCODEC {
 			// prepare the statement
 			this.statement = this.connection.prepareStatement(theSQL);
 		} catch (final SQLException e) {
-			throw new MLlDataError(e);
+			throw new MLDataError(e);
 		}
 	}
 
@@ -143,9 +143,9 @@ public class SQLCODEC implements DataSetCODEC {
 			this.statement = this.connection.prepareStatement(theSQL);
 
 		} catch (final ClassNotFoundException e) {
-			throw new MLlDataError(e);
+			throw new MLDataError(e);
 		} catch (final SQLException e) {
-			throw new MLlDataError(e);
+			throw new MLDataError(e);
 		}
 	}
 
@@ -160,7 +160,7 @@ public class SQLCODEC implements DataSetCODEC {
 			}
 			this.results.close();
 		} catch (final SQLException e) {
-			throw new MLlDataError(e);
+			throw new MLDataError(e);
 		}
 	}
 
@@ -192,7 +192,7 @@ public class SQLCODEC implements DataSetCODEC {
 			// execute the statement
 			this.results = this.statement.executeQuery();
 		} catch (final SQLException e) {
-			throw new MLlDataError(e);
+			throw new MLDataError(e);
 		}
 	}
 
@@ -203,7 +203,7 @@ public class SQLCODEC implements DataSetCODEC {
 	public final void prepareWrite(final int recordCount, 
 			final int theInputSize,
 			final int theIdealSize) {
-		throw new MLlDataError("Write not supported.");
+		throw new MLDataError("Write not supported.");
 	}
 
 	/**
@@ -234,7 +234,7 @@ public class SQLCODEC implements DataSetCODEC {
 			significance[0] = 1;
 			return true;
 		} catch (final SQLException e) {
-			throw new MLlDataError(e);
+			throw new MLDataError(e);
 		}
 	}
 
@@ -243,7 +243,7 @@ public class SQLCODEC implements DataSetCODEC {
 	 */
 	@Override
 	public final void write(final double[] input, final double[] ideal, double significance) {
-		throw new MLlDataError("Write not supported.");
+		throw new MLDataError("Write not supported.");
 	}
 
 	/**
