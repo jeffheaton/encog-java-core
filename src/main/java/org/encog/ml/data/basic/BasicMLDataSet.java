@@ -169,7 +169,7 @@ public class BasicMLDataSet implements Serializable, MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void add(final MLData theData) {
+	public void add(final MLData theData) {
 		this.data.add(new BasicMLDataPair(theData));
 	}
 
@@ -177,7 +177,7 @@ public class BasicMLDataSet implements Serializable, MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void add(final MLData inputData, final MLData idealData) {
+	public void add(final MLData inputData, final MLData idealData) {
 
 		final MLDataPair pair = new BasicMLDataPair(inputData, idealData);
 		this.data.add(pair);
@@ -187,7 +187,7 @@ public class BasicMLDataSet implements Serializable, MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void add(final MLDataPair inputData) {
+	public void add(final MLDataPair inputData) {
 		this.data.add(inputData);
 	}
 
