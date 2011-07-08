@@ -23,6 +23,7 @@
  */
 package org.encog.util.csv;
 
+import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -32,7 +33,7 @@ import java.util.Locale;
  * separate numbers.
  * 
  */
-public class CSVFormat {
+public class CSVFormat implements Serializable {
 
 	/**
 	 * Use a decimal point, and a comma to separate numbers.
