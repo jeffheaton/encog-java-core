@@ -23,6 +23,8 @@
  */
 package org.encog.mathutil;
 
+import java.io.Serializable;
+
 import org.encog.EncogError;
 
 /**
@@ -30,7 +32,7 @@ import org.encog.EncogError;
  * class is provided the number of groups, as well as the range that the
  * activations should fall into.
  */
-public class Equilateral {
+public class Equilateral implements Serializable {
 
 	/**
 	 * The minimum number of fields to use equilateral encoding.

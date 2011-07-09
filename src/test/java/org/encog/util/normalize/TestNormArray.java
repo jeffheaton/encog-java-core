@@ -121,3 +121,4 @@ public class TestNormArray extends TestCase {
 		Assert.assertEquals(arrayOutput[1][1],0.9,0.1);	
 	}
 }
+
