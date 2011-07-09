@@ -29,7 +29,7 @@ import java.util.List;
 import org.encog.EncogError;
 import org.encog.StatusReportable;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.buffer.BufferedNeuralDataSet;
+import org.encog.ml.data.buffer.BufferedMLDataSet;
 import org.encog.ml.train.strategy.StopTrainingStrategy;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.propagation.Propagation;
@@ -409,11 +409,11 @@ public class PruneIncremental extends ConcurrentJob {
 	public final void performJobUnit(final JobUnitContext context) {
 
 		final BasicNetwork network = (BasicNetwork) context.getJobUnit();
-		BufferedNeuralDataSet buffer = null;
+		BufferedMLDataSet buffer = null;
 		MLDataSet useTraining = this.training;
 
-		if (this.training instanceof BufferedNeuralDataSet) {
-			buffer = (BufferedNeuralDataSet) this.training;
+		if (this.training instanceof BufferedMLDataSet) {
+			buffer = (BufferedMLDataSet) this.training;
 			useTraining = buffer.openAdditional();
 		}
 

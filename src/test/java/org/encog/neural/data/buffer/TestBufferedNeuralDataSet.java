@@ -31,7 +31,7 @@ import java.io.PrintStream;
 import junit.framework.TestCase;
 
 import org.encog.ml.data.basic.BasicMLData;
-import org.encog.ml.data.buffer.BufferedNeuralDataSet;
+import org.encog.ml.data.buffer.BufferedMLDataSet;
 import org.encog.neural.networks.XOR;
 
 public class TestBufferedNeuralDataSet extends TestCase {
@@ -42,7 +42,7 @@ public class TestBufferedNeuralDataSet extends TestCase {
 	public void testBufferData() throws Exception 
 	{
 		new File(FILENAME).delete();
-		BufferedNeuralDataSet set = new BufferedNeuralDataSet(new File(FILENAME));
+		BufferedMLDataSet set = new BufferedMLDataSet(new File(FILENAME));
 		set.beginLoad(2, 1);
 		for(int i=0;i<XOR.XOR_INPUT.length;i++) {
 			BasicMLData input = new BasicMLData(XOR.XOR_INPUT[i]);
