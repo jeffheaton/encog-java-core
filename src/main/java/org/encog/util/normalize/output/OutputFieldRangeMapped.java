@@ -87,6 +87,14 @@ public class OutputFieldRangeMapped extends BasicOutputField implements
 	}
 
 	/**
+	 * Create a range field with -1 and 1 as low/high.
+	 * @param f The input field to use.
+	 */
+	public OutputFieldRangeMapped(InputField f) {
+		this(f,-1,1);
+	}
+
+	/**
 	 * Calculate this output field.
 	 * 
 	 * @param subfield

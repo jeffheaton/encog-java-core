@@ -60,7 +60,7 @@ public class OutputOneOf extends BasicOutputField {
 	 * Default constructor for reflection.
 	 */
 	public OutputOneOf() {
-
+		this(1,-1);
 	}
 
 	/**

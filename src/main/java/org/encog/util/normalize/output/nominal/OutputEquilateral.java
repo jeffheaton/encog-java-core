@@ -68,7 +68,7 @@ public class OutputEquilateral extends BasicOutputField {
 	 * Prodvide a default constructor for reflection.
 	 */
 	public OutputEquilateral() {
-
+		this(1,-1);
 	}
 
 	/**
