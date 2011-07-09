@@ -55,7 +55,6 @@ import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.pattern.FeedForwardPattern;
-import org.encog.platformspecific.j2se.TrainingDialog;
 import org.encog.util.Format;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
@@ -428,5 +427,16 @@ public final class EncogUtility {
 			total++;
 		}
 		return (double)(total-correct) / (double)total;
+	}
+
+	/**
+	 * Save a training set to an EGB file.
+	 * @param f
+	 * @param data
+	 */
+	public static void saveEGB(File f, MLDataSet data) {
+		BufferedNeuralDataSet binary = new BufferedNeuralDataSet(f);
+		binary.load(data);
+		data.close();		
 	}
 }
