@@ -37,7 +37,7 @@ public class BufferedDataSetIterator implements Iterator<MLDataPair> {
 	/**
 	 * The dataset being iterated over.
 	 */
-	private final BufferedNeuralDataSet data;
+	private final BufferedMLDataSet data;
 
 	/**
 	 * The current record.
@@ -50,7 +50,7 @@ public class BufferedDataSetIterator implements Iterator<MLDataPair> {
 	 * @param theData
 	 *            The dataset to iterate over.
 	 */
-	public BufferedDataSetIterator(final BufferedNeuralDataSet theData) {
+	public BufferedDataSetIterator(final BufferedMLDataSet theData) {
 		this.data = theData;
 		this.current = 0;
 	}

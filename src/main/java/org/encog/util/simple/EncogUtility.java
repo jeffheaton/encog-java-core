@@ -42,7 +42,7 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
-import org.encog.ml.data.buffer.BufferedNeuralDataSet;
+import org.encog.ml.data.buffer.BufferedMLDataSet;
 import org.encog.ml.data.buffer.MemoryDataLoader;
 import org.encog.ml.data.buffer.codec.CSVDataCODEC;
 import org.encog.ml.data.buffer.codec.DataSetCODEC;
@@ -84,7 +84,7 @@ public final class EncogUtility {
 		binFile.delete();
 		final CSVNeuralDataSet csv = new CSVNeuralDataSet(csvFile.toString(),
 				inputCount, outputCount, false);
-		final BufferedNeuralDataSet buffer = new BufferedNeuralDataSet(binFile);
+		final BufferedMLDataSet buffer = new BufferedMLDataSet(binFile);
 		buffer.beginLoad(inputCount, outputCount);
 		for (final MLDataPair pair : csv) {
 			buffer.add(pair);
@@ -306,7 +306,7 @@ public final class EncogUtility {
 	}
 
 	public static MLDataSet loadEGB2Memory(File filename) {
-		BufferedNeuralDataSet buffer = new BufferedNeuralDataSet(filename);
+		BufferedMLDataSet buffer = new BufferedMLDataSet(filename);
 		return buffer.loadToMemory();
 	}
 
@@ -326,7 +326,7 @@ public final class EncogUtility {
         (new File(binFile)).delete();
         CSVNeuralDataSet csv = new CSVNeuralDataSet(csvFile.toString(),
                inputCount, outputCount, headers);
-        BufferedNeuralDataSet buffer = new BufferedNeuralDataSet(new File(binFile));
+        BufferedMLDataSet buffer = new BufferedMLDataSet(new File(binFile));
         buffer.beginLoad(inputCount, outputCount);
         for(MLDataPair pair : csv)
         {
@@ -343,7 +343,7 @@ public final class EncogUtility {
        binFile.delete();
        ReadCSV csv = new ReadCSV(csvFile.toString(), headers, format);
        
-       BufferedNeuralDataSet buffer = new BufferedNeuralDataSet(binFile);
+       BufferedMLDataSet buffer = new BufferedMLDataSet(binFile);
        buffer.beginLoad(input.length, ideal.length);
        while(csv.next())
        {
@@ -435,7 +435,7 @@ public final class EncogUtility {
 	 * @param data
 	 */
 	public static void saveEGB(File f, MLDataSet data) {
-		BufferedNeuralDataSet binary = new BufferedNeuralDataSet(f);
+		BufferedMLDataSet binary = new BufferedMLDataSet(f);
 		binary.load(data);
 		data.close();		
 	}

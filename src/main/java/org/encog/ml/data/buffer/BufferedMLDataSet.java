@@ -56,7 +56,7 @@ import org.encog.ml.data.basic.BasicMLDataSet;
  * format, and can be used with any Encog platform. Encog binary files are
  * stored using "little endian" numbers.
  */
-public class BufferedNeuralDataSet implements
+public class BufferedMLDataSet implements
 	MLDataSet, Serializable {
 
 	/**
@@ -94,13 +94,13 @@ public class BufferedNeuralDataSet implements
 	/**
 	 * Additional sets that were opened.
 	 */
-	private transient List<BufferedNeuralDataSet> additional 
-		= new ArrayList<BufferedNeuralDataSet>();
+	private transient List<BufferedMLDataSet> additional 
+		= new ArrayList<BufferedMLDataSet>();
 
 	/**
 	 * The owner.
 	 */
-	private transient BufferedNeuralDataSet owner;
+	private transient BufferedMLDataSet owner;
 
 	/**
 	 * Construct the dataset using the specified binary file.
@@ -108,7 +108,7 @@ public class BufferedNeuralDataSet implements
 	 * @param binaryFile
 	 *            The file to use.
 	 */
-	public BufferedNeuralDataSet(final File binaryFile) {
+	public BufferedMLDataSet(final File binaryFile) {
 		this.file = binaryFile;
 		this.egb = new EncogEGBFile(binaryFile);
 		if (file.exists()) {
@@ -170,9 +170,9 @@ public class BufferedNeuralDataSet implements
 	 * @return An additional training set.
 	 */
 	@Override
-	public final BufferedNeuralDataSet openAdditional() {
+	public final BufferedMLDataSet openAdditional() {
 
-		BufferedNeuralDataSet result = new BufferedNeuralDataSet(this.file);
+		BufferedMLDataSet result = new BufferedMLDataSet(this.file);
 		result.setOwner(this);
 		this.additional.add(result);
 		return result;
@@ -186,7 +186,7 @@ public class BufferedNeuralDataSet implements
 	 */
 	public final void add(final MLData data1) {
 		if (!this.loading) {
-			throw new MLDataError(BufferedNeuralDataSet.ERROR_ADD);
+			throw new MLDataError(BufferedMLDataSet.ERROR_ADD);
 		}
 
 		egb.write(data1.getData());
@@ -204,7 +204,7 @@ public class BufferedNeuralDataSet implements
 	public final void add(final MLData inputData, final MLData idealData) {
 
 		if (!this.loading) {
-			throw new MLDataError(BufferedNeuralDataSet.ERROR_ADD);
+			throw new MLDataError(BufferedMLDataSet.ERROR_ADD);
 		}
 
 		this.egb.write(inputData.getData());
@@ -220,7 +220,7 @@ public class BufferedNeuralDataSet implements
 	 */
 	public final void add(final MLDataPair pair) {
 		if (!this.loading) {
-			throw new MLDataError(BufferedNeuralDataSet.ERROR_ADD);
+			throw new MLDataError(BufferedMLDataSet.ERROR_ADD);
 		}
 
 		this.egb.write(pair.getInputArray());
@@ -238,7 +238,7 @@ public class BufferedNeuralDataSet implements
 		Object[] obj = this.additional.toArray();
 
 		for (int i = 0; i < obj.length; i++) {
-			BufferedNeuralDataSet set = (BufferedNeuralDataSet) obj[i];
+			BufferedMLDataSet set = (BufferedMLDataSet) obj[i];
 			set.close();
 		}
 
@@ -292,7 +292,7 @@ public class BufferedNeuralDataSet implements
 	 * @return If this dataset was created by openAdditional, the set that
 	 *         created this object is the owner. Return the owner.
 	 */
-	public final BufferedNeuralDataSet getOwner() {
+	public final BufferedMLDataSet getOwner() {
 		return owner;
 	}
 
@@ -302,7 +302,7 @@ public class BufferedNeuralDataSet implements
 	 * @param theOwner
 	 *            The owner.
 	 */
-	public final void setOwner(final BufferedNeuralDataSet theOwner) {
+	public final void setOwner(final BufferedMLDataSet theOwner) {
 		this.owner = theOwner;
 	}
 
@@ -312,7 +312,7 @@ public class BufferedNeuralDataSet implements
 	 * @param child
 	 *            The additional dataset to remove.
 	 */
-	public final void removeAdditional(final BufferedNeuralDataSet child) {
+	public final void removeAdditional(final BufferedMLDataSet child) {
 		synchronized (this) {
 			this.additional.remove(child);
 		}
