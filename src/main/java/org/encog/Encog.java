@@ -81,21 +81,14 @@ public final class Encog {
 	/**
 	 * The instance.
 	 */
-	private static Encog instance;
-
+	private static Encog instance = new Encog();
+	
 	/**
 	 * Get the instance to the singleton.
 	 * 
 	 * @return The instance.
 	 */
-	public static Encog getInstance() {
-		if (Encog.instance == null) {
-			Encog.instance = new Encog();
-			Encog.instance.registerPlugin(new SystemLoggingPlugin());
-			Encog.instance.registerPlugin(new SystemMethodsPlugin());
-			Encog.instance.registerPlugin(new SystemTrainingPlugin());
-			Encog.instance.registerPlugin(new SystemActivationPlugin());
-		}
+	public static Encog getInstance() {		
 		return Encog.instance;
 	}
 
@@ -124,6 +117,11 @@ public final class Encog {
 	private Encog() {
 		this.properties.put(Encog.ENCOG_VERSION, Encog.VERSION);
 		this.properties.put(Encog.ENCOG_FILE_VERSION, Encog.FILE_VERSION);
+		
+		registerPlugin(new SystemLoggingPlugin());
+		registerPlugin(new SystemMethodsPlugin());
+		registerPlugin(new SystemTrainingPlugin());
+		registerPlugin(new SystemActivationPlugin());
 	}
 
 	/**
