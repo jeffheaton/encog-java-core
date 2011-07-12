@@ -25,6 +25,7 @@ package org.encog.ml.genetic;
 
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.util.concurrency.EngineConcurrency;
+import org.encog.util.concurrency.MultiThreadable;
 import org.encog.util.concurrency.TaskGroup;
 
 /**
@@ -36,7 +37,7 @@ public class BasicGeneticAlgorithm extends GeneticAlgorithm {
 	 * Is this the first iteration.
 	 */
 	private boolean first = true;
-
+	
 	/**
 	 * Modify the weight matrix and bias values based on the last call to
 	 * calcError.
@@ -47,6 +48,7 @@ public class BasicGeneticAlgorithm extends GeneticAlgorithm {
 	public final void iteration() {
 
 		if (this.first) {
+			EngineConcurrency.getInstance().setThreadCount(getThreadCount());
 			getPopulation().claim(this);
 			this.first = false;
 		}
@@ -75,21 +77,14 @@ public class BasicGeneticAlgorithm extends GeneticAlgorithm {
 			final MateWorker worker = new MateWorker(mother, father, child1,
 					child2);
 
-			if( this.isMultiThreaded() ) {
-				EngineConcurrency.getInstance().processTask(worker, group);
-			} else {
-				worker.run();
-			}
+			EngineConcurrency.getInstance().processTask(worker, group);
 			
 			offspringIndex += 2;
 		}
 
-		if( this.isMultiThreaded() ) {
-			group.waitForComplete();
-		}
+		group.waitForComplete();
 
 		// sort the next generation
 		getPopulation().sort();
 	}
-
 }

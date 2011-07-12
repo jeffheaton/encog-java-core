@@ -204,7 +204,7 @@ public final class EncogUtility {
 	public static void trainConsole(final BasicNetwork network,
 			final MLDataSet trainingSet, final int minutes) {
 		final Propagation train = new ResilientPropagation(network, trainingSet);
-		train.setNumThreads(0);
+		train.setThreadCount(0);
 		EncogUtility.trainConsole(train, network, trainingSet, minutes);
 	}
 

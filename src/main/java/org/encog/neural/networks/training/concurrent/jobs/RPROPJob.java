@@ -70,9 +70,9 @@ public class RPROPJob extends TrainingJob {
 				getTraining(), getInitialUpdate(), getMaxStep());
 
 		if (singleThreaded) {
-			train.setNumThreads(1);
+			train.setThreadCount(1);
 		} else {
-			train.setNumThreads(0);
+			train.setThreadCount(0);
 		}
 
 		for (final Strategy strategy : getStrategies()) {

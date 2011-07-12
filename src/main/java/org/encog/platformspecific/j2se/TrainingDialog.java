@@ -185,7 +185,7 @@ public class TrainingDialog extends JDialog implements ActionListener {
 	public static void trainDialog(final BasicNetwork network,
 			final MLDataSet trainingSet) {
 		final Propagation train = new ResilientPropagation(network, trainingSet);
-		train.setNumThreads(0);
+		train.setThreadCount(0);
 		TrainingDialog.trainDialog(train, network, trainingSet);
 	}
 

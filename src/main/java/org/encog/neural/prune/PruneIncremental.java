@@ -436,7 +436,7 @@ public class PruneIncremental extends ConcurrentJob {
 					5);
 
 			train.addStrategy(strat);
-			train.setNumThreads(1); // force single thread mode
+			train.setThreadCount(1); // force single thread mode
 
 			for (int i = 0; (i < this.iterations) && !getShouldStop()
 					&& !strat.shouldStop(); i++) {

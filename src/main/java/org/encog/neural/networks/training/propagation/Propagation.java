@@ -35,6 +35,7 @@ import org.encog.neural.flat.train.prop.TrainFlatNetworkProp;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.Train;
 import org.encog.util.EncogValidate;
+import org.encog.util.concurrency.MultiThreadable;
 import org.encog.util.logging.EncogLogging;
 
 /**
@@ -45,7 +46,7 @@ import org.encog.util.logging.EncogLogging;
  * @author jheaton
  * 
  */
-public abstract class Propagation extends BasicTraining implements Train {
+public abstract class Propagation extends BasicTraining implements Train, MultiThreadable {
 
 	/**
 	 * The network.
@@ -112,7 +113,7 @@ public abstract class Propagation extends BasicTraining implements Train {
 	/**
 	 * @return The number of threads.
 	 */
-	public final int getNumThreads() {
+	public final int getThreadCount() {
 		return this.flatTraining.getNumThreads();
 	}
 
@@ -182,7 +183,7 @@ public abstract class Propagation extends BasicTraining implements Train {
 	 * @param numThreads
 	 *            The number of threads.
 	 */
-	public final void setNumThreads(final int numThreads) {
+	public final void setThreadCount(final int numThreads) {
 		this.flatTraining.setNumThreads(numThreads);
 	}
 

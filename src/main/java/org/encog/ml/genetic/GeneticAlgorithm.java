@@ -31,6 +31,7 @@ import org.encog.ml.genetic.genome.GenomeComparator;
 import org.encog.ml.genetic.mutate.Mutate;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.species.Species;
+import org.encog.util.concurrency.MultiThreadable;
 
 /**
  * Implements a genetic algorithm. This is an abstract class. Other classes are
@@ -40,8 +41,13 @@ import org.encog.ml.genetic.species.Species;
  * The genetic algorithm is also capable of using a thread pool to speed
  * execution.
  */
-public abstract class GeneticAlgorithm {
-
+public abstract class GeneticAlgorithm  implements MultiThreadable {
+	
+	/**
+	 * The thread count;
+	 */
+	private int threadCount;
+	
 	/**
 	 * The score calculation object.
 	 */
@@ -275,19 +281,20 @@ public abstract class GeneticAlgorithm {
 	public abstract void iteration();
 
 	/**
-	 * @return True, if multi-threaded genetic training is being used.
+	 * {@inheritDoc}
 	 */
-	public final boolean isMultiThreaded() {
-		return multiThreaded;
+	@Override
+	public int getThreadCount() {
+		return this.threadCount;
 	}
 
 	/**
-	 * Set if multi-threaded training should be used.  By default, it will
-	 * be used.  However, if your evaluation function is not thread safe,
-	 * do not use multi-threaded training.
-	 * @param multiThreaded True, if multi-threaded training is used.
+	 * {@inheritDoc}
 	 */
-	public final void setMultiThreaded(boolean multiThreaded) {
-		this.multiThreaded = multiThreaded;
-	}	
+	@Override
+	public void setThreadCount(int numThreads) {
+		this.threadCount = numThreads;
+		
+	}
+	
 }

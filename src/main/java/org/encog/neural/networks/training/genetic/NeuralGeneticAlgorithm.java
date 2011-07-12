@@ -36,6 +36,7 @@ import org.encog.ml.train.BasicTraining;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
+import org.encog.util.concurrency.MultiThreadable;
 import org.encog.util.logging.EncogLogging;
 
 /**
@@ -55,7 +56,7 @@ import org.encog.util.logging.EncogLogging;
  * create your own implementation of the CalculateScore method. This class can
  * then score the networks any way that you like.
  */
-public class NeuralGeneticAlgorithm extends BasicTraining {
+public class NeuralGeneticAlgorithm extends BasicTraining implements MultiThreadable {
 
 	/**
 	 * Very simple class that implements a genetic algorithm.
@@ -195,22 +196,15 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 	public final void setGenetic(final NeuralGeneticAlgorithmHelper genetic) {
 		this.genetic = genetic;
 	}
-	
-	/**
-	 * @return True, if multi-threaded genetic training is being used.
-	 */
-	public final boolean isMultiThreaded() {
-		return this.genetic.isMultiThreaded();
+
+	@Override
+	public int getThreadCount() {
+		return this.genetic.getThreadCount();
 	}
 
-	/**
-	 * Set if multi-threaded training should be used.  By default, it will
-	 * be used.  However, if your evaluation function is not thread safe,
-	 * do not use multi-threaded training.
-	 * @param multiThreaded True, if multi-threaded training is used.
-	 */
-	public final void setMultiThreaded(boolean multiThreaded) {
-		this.genetic.setMultiThreaded(multiThreaded);
+	@Override
+	public void setThreadCount(int numThreads) {
+		this.genetic.setThreadCount(numThreads);		
 	}	
 
 }

@@ -78,9 +78,9 @@ public class BPROPJob extends TrainingJob {
 				getTraining(), getLearningRate(), getMomentum());
 
 		if (singleThreaded) {
-			train.setNumThreads(1);
+			train.setThreadCount(1);
 		} else {
-			train.setNumThreads(0);
+			train.setThreadCount(0);
 		}
 
 		for (final Strategy strategy : getStrategies()) {
