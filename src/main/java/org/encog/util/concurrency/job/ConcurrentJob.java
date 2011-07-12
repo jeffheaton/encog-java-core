@@ -25,12 +25,18 @@ package org.encog.util.concurrency.job;
 
 import org.encog.StatusReportable;
 import org.encog.util.concurrency.EngineConcurrency;
+import org.encog.util.concurrency.MultiThreadable;
 import org.encog.util.concurrency.TaskGroup;
 
 /**
  * This class forms the basis for a job that can be run concurrently.
  */
-public abstract class ConcurrentJob implements Runnable {
+public abstract class ConcurrentJob implements Runnable, MultiThreadable {
+	
+	/**
+	 * The thread count.
+	 */
+	private int threadCount;
 
 	/**
 	 * The class to report status to.
@@ -88,6 +94,7 @@ public abstract class ConcurrentJob implements Runnable {
 	 */
 	public void process() {
 		Object task;
+		EngineConcurrency.getInstance().setThreadCount(this.threadCount);
 
 		this.running = true;
 		this.totalTasks = loadWorkload();
@@ -164,5 +171,20 @@ public abstract class ConcurrentJob implements Runnable {
 		this.report = r;		
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getThreadCount()
+	{
+		return this.threadCount;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setThreadCount(int numThreads)
+	{
+		this.threadCount = numThreads;
+	}
 	
 }

@@ -37,20 +37,17 @@ import org.encog.EncogError;
  * @author jheaton
  * 
  */
-public class EngineConcurrency {
+public class EngineConcurrency implements MultiThreadable {
 
 	/**
 	 * Singleton instance.
 	 */
-	private static EngineConcurrency instance;
+	private static EngineConcurrency instance = new EngineConcurrency();
 
 	/**
 	 * @return The instance to the singleton.
 	 */
-	public static EngineConcurrency getInstance() {
-		if (EngineConcurrency.instance == null) {
-			EngineConcurrency.instance = new EngineConcurrency();
-		}
+	public static EngineConcurrency getInstance() {		
 		return EngineConcurrency.instance;
 	}
 
@@ -59,6 +56,11 @@ public class EngineConcurrency {
 	 * main thread.
 	 */
 	private Throwable threadError;
+	
+	/**
+	 * The thread count.
+	 */
+	private int threadCount;
 
 	/**
 	 * The current task group, used to ensure that all threads finish at the
@@ -82,9 +84,14 @@ public class EngineConcurrency {
 		this.executor = Executors.newFixedThreadPool(threads);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void setThreadCount(int t) {
 		this.executor.shutdown();
 		this.executor = Executors.newFixedThreadPool(t);
+		this.threadCount = t;
 	}
 
 	/**
@@ -175,5 +182,13 @@ public class EngineConcurrency {
 				throw new EncogError(e);
 			}
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getThreadCount() {
+		return this.threadCount;
 	}
 }
