@@ -461,8 +461,8 @@ public class PruneIncremental extends ConcurrentJob {
 				int networkHidden2Count;
 
 				if (network.getLayerCount() > 3) {
-					networkHidden2Count = network.getLayerNeuronCount(1);
-					networkHidden1Count = network.getLayerNeuronCount(2);
+					networkHidden2Count = network.getLayerNeuronCount(2);
+					networkHidden1Count = network.getLayerNeuronCount(1);
 				} else {
 					networkHidden2Count = 0;
 					networkHidden1Count = network.getLayerNeuronCount(1);
