@@ -68,22 +68,26 @@ public class PruneIncremental extends ConcurrentJob {
 	 * @return A human readable string.
 	 */
 	public static String networkToString(final BasicNetwork network) {
-		final StringBuilder result = new StringBuilder();
-		int num = 1;
+		if (network != null) {
+			final StringBuilder result = new StringBuilder();
+			int num = 1;
 
-		// display only hidden layers
-		for (int i = 1; i < network.getLayerCount() - 1; i++) {
+			// display only hidden layers
+			for (int i = 1; i < network.getLayerCount() - 1; i++) {
 
-			if (result.length() > 0) {
-				result.append(",");
+				if (result.length() > 0) {
+					result.append(",");
+				}
+				result.append("H");
+				result.append(num++);
+				result.append("=");
+				result.append(network.getLayerNeuronCount(i));
 			}
-			result.append("H");
-			result.append(num++);
-			result.append("=");
-			result.append(network.getLayerNeuronCount(i));
-		}
 
-		return result.toString();
+			return result.toString();
+		} else {
+			return "N/A";
+		}
 	}
 
 	/**
@@ -196,6 +200,10 @@ public class PruneIncremental extends ConcurrentJob {
 			final int weightTries, final int numTopResults,
 			final StatusReportable report) {
 		super(report);
+		if( numTopResults<1) {
+			throw new EncogError("There must be at least one best network.  numTopResults must be >0.");
+		}
+		
 		this.training = training;
 		this.pattern = pattern;
 		this.iterations = iterations;
@@ -604,6 +612,7 @@ public class PruneIncremental extends ConcurrentJob {
 			EncogLogging.log(EncogLogging.LEVEL_DEBUG,
 					"Prune found new best network: error=" + error
 							+ ", network=" + choice);
+			this.bestNetwork = choice;
 		}
 
 	}
