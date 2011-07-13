@@ -562,7 +562,7 @@ public class BasicFile implements QuantTask {
 		this.currentRecord++;
 		this.lastUpdate++;
 
-		if (this.lastUpdate > this.reportInterval) {
+		if (this.lastUpdate >= this.reportInterval) {
 			this.lastUpdate = 0;
 			shouldDisplay = true;
 		}
