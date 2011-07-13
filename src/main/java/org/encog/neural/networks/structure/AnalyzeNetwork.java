@@ -89,6 +89,8 @@ public class AnalyzeNetwork {
 		final List<Double> biasList = new ArrayList<Double>();
 		final List<Double> weightList = new ArrayList<Double>();
 		final List<Double> allList = new ArrayList<Double>();
+		
+		network.
 
 		for (int layerNumber = 0; layerNumber < network.getLayerCount() - 1; layerNumber++) {
 			final int fromCount = network.getLayerNeuronCount(layerNumber);

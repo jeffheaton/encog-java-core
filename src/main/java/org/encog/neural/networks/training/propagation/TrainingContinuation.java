@@ -23,6 +23,7 @@
  */
 package org.encog.neural.networks.training.propagation;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ import java.util.Map;
  * Allows training to be continued.
  * 
  */
-public class TrainingContinuation  {
+public class TrainingContinuation implements Serializable {
 
 	/**
 	 * The serial ID.

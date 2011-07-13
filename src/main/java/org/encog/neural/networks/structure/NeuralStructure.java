@@ -117,7 +117,7 @@ public class NeuralStructure implements Serializable {
 	/**
 	 * Parse/finalize the limit value for connections.
 	 */
-	private void finalizeLimit() {
+	public void finalizeLimit() {
 		// see if there is a connection limit imposed
 		final String limit = this.network
 				.getPropertyString(BasicNetwork.TAG_LIMIT);
@@ -125,6 +125,7 @@ public class NeuralStructure implements Serializable {
 			try {
 				this.connectionLimited = true;
 				this.connectionLimit = Double.parseDouble(limit);
+				enforceLimit();
 			} catch (final NumberFormatException e) {
 				throw new NeuralNetworkError("Invalid property("
 						+ BasicNetwork.TAG_LIMIT + "):" + limit);
