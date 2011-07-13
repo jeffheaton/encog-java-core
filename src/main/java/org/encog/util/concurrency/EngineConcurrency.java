@@ -90,8 +90,18 @@ public class EngineConcurrency implements MultiThreadable {
 	@Override
 	public void setThreadCount(int t) {
 		this.executor.shutdown();
-		this.executor = Executors.newFixedThreadPool(t);
-		this.threadCount = t;
+		int threads = t;
+		
+		if( threads==0 )
+		{
+			Runtime runtime = Runtime.getRuntime();
+			threads = runtime.availableProcessors();
+	        if( threads>1 )
+	        	threads++;	
+		}		
+        
+		this.executor = Executors.newFixedThreadPool(threads);
+		this.threadCount = threads;
 	}
 
 	/**
