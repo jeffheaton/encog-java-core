@@ -60,8 +60,8 @@ public class NominalItem implements Serializable {
 	 * @param high The high value.
 	 * @param low The low value.
 	 */
-	public NominalItem(final InputField inputField, final double high,
-			final double low) {
+	public NominalItem(final InputField inputField, final double low,
+			final double high) {
 		super();
 		this.high = high;
 		this.low = low;
