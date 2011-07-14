@@ -84,8 +84,8 @@ public class AnalyzeNetwork {
 	 *            The network to analyze.
 	 */
 	public AnalyzeNetwork(final BasicNetwork network) {
-		final int assignDisabled = 0;
-		final int assignedTotal = 0;
+		int assignDisabled = 0;
+		int assignedTotal = 0;
 		final List<Double> biasList = new ArrayList<Double>();
 		final List<Double> weightList = new ArrayList<Double>();
 		final List<Double> allList = new ArrayList<Double>();
@@ -101,6 +101,14 @@ public class AnalyzeNetwork {
 				for (int toNeuron = 0; toNeuron < toCount; toNeuron++) {
 					final double v = network.getWeight(layerNumber, fromNeuron,
 							toNeuron);
+					
+					if( network.getStructure().isConnectionLimited() ) {
+						if( Math.abs(v)<network.getStructure().getConnectionLimit() ) {
+							assignDisabled++;
+						}
+					}
+
+					assignedTotal++;
 					weightList.add(v);
 					allList.add(v);
 				}
@@ -112,6 +120,14 @@ public class AnalyzeNetwork {
 				for (int toNeuron = 0; toNeuron < toCount; toNeuron++) {
 					final double v = network.getWeight(layerNumber, biasNeuron,
 							toNeuron);
+					
+					if( network.getStructure().isConnectionLimited() ) {
+						if( Math.abs(v)<network.getStructure().getConnectionLimit() ) {
+							assignDisabled++;
+						}
+					}
+					
+					assignedTotal++;
 					biasList.add(v);
 					allList.add(v);
 				}
@@ -125,7 +141,8 @@ public class AnalyzeNetwork {
 				}
 			}
 		}
-
+		
+		
 		this.disabledConnections = assignDisabled;
 		this.totalConnections = assignedTotal;
 		this.weights = new NumericRange(weightList);
