@@ -69,7 +69,7 @@ public final class ArchitectureParse {
 				throw new EncogError("Count cannot be less than zero.");
 			}
 		} catch (final NumberFormatException f) {
-			EncogLogging.log(f);
+			// don't really care!  Just checking to see if its a number.
 		}
 
 		// see if it is a default

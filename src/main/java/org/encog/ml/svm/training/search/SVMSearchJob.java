@@ -20,6 +20,7 @@ import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.util.Format;
 import org.encog.util.concurrency.job.ConcurrentJob;
 import org.encog.util.concurrency.job.JobUnitContext;
+import org.encog.util.logging.EncogLogging;
 
 public class SVMSearchJob extends ConcurrentJob implements MLTrain {
 
@@ -360,7 +361,7 @@ public class SVMSearchJob extends ConcurrentJob implements MLTrain {
 			error = SVMTrain.evaluate(pack.getSvm().getParams(),
 					this.problem, target);
 		}
-		
+				
 		// new best error?
 		if (!Double.isNaN(error)) {
 			if (error < this.bestError) {
@@ -374,13 +375,13 @@ public class SVMSearchJob extends ConcurrentJob implements MLTrain {
 		final StringBuilder message = new StringBuilder();
 
 		message.append("Current: gamma= ");
-		message.append(Format.formatDouble(this.currentGamma, 2));
+		message.append(Format.formatDouble(pack.getGamma(), 2));
 		message.append("; Const: ");
-		message.append(Format.formatDouble(this.currentConst, 2));
+		message.append(Format.formatDouble(pack.getC(), 2));
 		message.append("; Best Error: " + Format.formatPercent(this.bestError));
 
 		reportStatus(context, message.toString());
-
+		EncogLogging.log(EncogLogging.LEVEL_INFO, message.toString());
 	}
 
 	@Override

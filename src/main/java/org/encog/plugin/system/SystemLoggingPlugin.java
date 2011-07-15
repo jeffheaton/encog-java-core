@@ -109,12 +109,12 @@ public class SystemLoggingPlugin implements EncogPluginLogging1 {
 	@Override
 	public final void log(final int level, final String message) {
 
-		if (this.currentLevel < level) {
+		if (this.currentLevel <= level) {
 			final Date now = new Date();
 			final StringBuilder line = new StringBuilder();
 			line.append(now.toString());
 			line.append(" [");
-			switch (this.currentLevel) {
+			switch (level) {
 			case EncogLogging.LEVEL_CRITICAL:
 				line.append("CRITICAL");
 				break;

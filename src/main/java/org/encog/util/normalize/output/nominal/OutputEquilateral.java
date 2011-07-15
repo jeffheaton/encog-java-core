@@ -68,7 +68,7 @@ public class OutputEquilateral extends BasicOutputField {
 	 * Prodvide a default constructor for reflection.
 	 */
 	public OutputEquilateral() {
-		this(1,-1);
+		this(-1,1);
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class OutputEquilateral extends BasicOutputField {
 	 * @param low
 	 * 				The low output value.
 	 */
-	public OutputEquilateral(final double high, final double low) {
+	public OutputEquilateral(final double low, final double high) {
 		this.high = high;
 		this.low = low;
 	}
@@ -92,7 +92,7 @@ public class OutputEquilateral extends BasicOutputField {
 	 * @param value The value.
 	 */
 	public void addItem(final InputField inputField, final double value) {
-		addItem(inputField, value + 0.1, value - 0.1);
+		addItem(inputField, value - 0.1, value + 0.1);
 	}
 
 	/**
