@@ -292,7 +292,7 @@ public class EncogAnalyst {
 		for (final AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
 			if (field.isInput() && !field.isIgnored()) {
-				result++;
+				result+=field.getColumnsNeeded();
 			}
 		}
 
