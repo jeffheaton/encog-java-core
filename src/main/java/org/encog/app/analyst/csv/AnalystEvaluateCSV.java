@@ -98,7 +98,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 		this.outputColumns = this.analyst.determineOutputFieldCount();
 
 		this.analystHeaders = new CSVHeaders(this.getInputHeadings());
-		this.series = new TimeSeriesUtil(analyst,
+		this.series = new TimeSeriesUtil(analyst,false,
 				this.analystHeaders.getHeaders());
 
 	}
@@ -163,7 +163,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 
 		MLData output = null;
 
-		final int outputLength = this.analyst.determineUniqueInputFieldCount();
+		final int outputLength = this.analyst.determineTotalInputFieldCount();
 
 		final PrintWriter tw = this.prepareOutputFile(outputFile, this.analyst
 				.getScript().getNormalize().countActiveFields() - 1, 1);

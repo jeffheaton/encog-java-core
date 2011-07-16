@@ -254,6 +254,7 @@ public class EncogAnalyst {
 				final String name = field.getName();
 				if (!used.containsKey(name)) {
 					result += field.getColumnsNeeded();
+					used.put(name, null);
 				}
 			}
 		}
@@ -278,6 +279,23 @@ public class EncogAnalyst {
 				}
 			}
 		}
+		return result;
+	}
+	
+	/**
+	 * Determine the total input field count, minus ignored fields.
+	 * @return The number of unique input fields.
+	 */
+	public final int determineTotalInputFieldCount() {
+
+		int result = 0;
+		for (final AnalystField field : this.script.getNormalize()
+				.getNormalizedFields()) {
+			if (field.isInput() && !field.isIgnored()) {
+				result++;
+			}
+		}
+
 		return result;
 	}
 
@@ -741,6 +759,18 @@ public class EncogAnalyst {
 	 */
 	public void setMethod(MLMethod method) {
 		this.method = method;
+	}
+
+	public int determineTotalColumns() {
+		int result = 0;
+
+		for (final AnalystField field : this.script.getNormalize()
+				.getNormalizedFields()) {
+			if (!field.isIgnored()) {
+				result += field.getColumnsNeeded();
+			}
+		}
+		return result;
 	}
 	
 	

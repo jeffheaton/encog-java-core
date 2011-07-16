@@ -84,13 +84,13 @@ public class TimeSeriesUtil {
 	 * @param theAnalyst The analyst to use.
 	 * @param headings The column headings.
 	 */
-	public TimeSeriesUtil(final EncogAnalyst theAnalyst,
+	public TimeSeriesUtil(final EncogAnalyst theAnalyst, boolean includeOutput,
 			final List<String> headings) {
 		this.analyst = theAnalyst;
 		this.lagDepth = analyst.getLagDepth();
 		this.leadDepth = analyst.getLeadDepth();
 		this.totalDepth = this.lagDepth + this.leadDepth + 1;
-		this.inputSize = analyst.determineUniqueColumns();
+		this.inputSize = includeOutput ? analyst.determineTotalColumns() : analyst.determineTotalInputFieldCount();
 		this.outputSize = analyst.determineInputCount()
 				+ analyst.determineOutputCount();
 

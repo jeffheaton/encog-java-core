@@ -88,7 +88,7 @@ public class AnalystClusterCSV extends BasicFile {
 		resetStatus();
 		int recordCount = 0;
 
-		final int outputLength = this.analyst.determineUniqueColumns();
+		final int outputLength = this.analyst.determineTotalColumns();
 		final ReadCSV csv = new ReadCSV(this.getInputFilename().toString(),
 				this.isExpectInputHeaders(), this.getInputFormat());
 		readHeaders(csv);
