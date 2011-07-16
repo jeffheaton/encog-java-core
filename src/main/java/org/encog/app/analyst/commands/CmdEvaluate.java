@@ -86,7 +86,7 @@ public class CmdEvaluate extends Cmd {
 		final MLMethod method = (MLMethod) EncogDirectoryPersistence
 				.loadObject(resourceFile);
 
-		final boolean headers = getScript().expectInputHeaders(evalID);
+		final boolean headers = true;
 
 		final AnalystEvaluateCSV eval = new AnalystEvaluateCSV();
 		eval.setScript(getScript());

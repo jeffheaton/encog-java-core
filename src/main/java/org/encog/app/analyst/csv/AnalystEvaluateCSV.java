@@ -163,7 +163,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 
 		MLData output = null;
 
-		final int outputLength = this.analyst.determineUniqueColumns();
+		final int outputLength = this.analyst.determineUniqueInputFieldCount();
 
 		final PrintWriter tw = this.prepareOutputFile(outputFile, this.analyst
 				.getScript().getNormalize().countActiveFields() - 1, 1);
@@ -174,7 +174,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 			final LoadedRow row = new LoadedRow(csv, this.outputColumns);
 
 			double[] inputArray = AnalystNormalizeCSV.extractFields(analyst,
-					this.analystHeaders, csv, outputLength, false);
+					this.analystHeaders, csv, outputLength, true);
 			if (this.series.getTotalDepth() > 1) {
 				inputArray = this.series.process(inputArray);
 			}
