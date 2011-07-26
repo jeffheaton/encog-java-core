@@ -703,7 +703,16 @@ public class BasicNetwork extends BasicML implements ContainsFlat, MLContext,
 	public final String toString() {
 		final StringBuilder builder = new StringBuilder();
 		builder.append("[BasicNetwork: Layers=");
-		final int layers = this.structure.getLayers().size();
+		int layers = 0;
+		if( this.structure.getFlat()==null)
+		{
+			layers = this.structure.getLayers().size();
+		}
+		else 
+		{
+			layers = this.structure.getFlat().getLayerCounts().length;
+		}
+		
 		builder.append(layers);
 		builder.append("]");
 		return builder.toString();
