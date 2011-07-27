@@ -431,8 +431,7 @@ public class FlatNetwork implements Serializable {
 					"Incompatable weight sizes, can't assign length="
 							+ data.length + " to length=" + data.length);
 		}
-		this.weights = data;
-
+		this.weights = EngineArray.arrayCopy(data);
 	}
 
 	/**
@@ -728,8 +727,11 @@ public class FlatNetwork implements Serializable {
 	 * @param af The activation functions.
 	 */
 	public final void setActivationFunctions(final ActivationFunction[] af) {
-		this.activationFunctions = af;
 
+		this.activationFunctions = new ActivationFunction[af.length];
+		for (int i = 0; i < af.length; i++) {
+			this.activationFunctions[i] = af[i];
+		}
 	}
 
 	/**
@@ -765,7 +767,7 @@ public class FlatNetwork implements Serializable {
 	 * @param contextTargetOffset The context target offset.
 	 */
 	public final void setContextTargetOffset(final int[] contextTargetOffset) {
-		this.contextTargetOffset = contextTargetOffset;
+		this.contextTargetOffset = EngineArray.arrayCopy(contextTargetOffset);
 
 	}
 
@@ -774,7 +776,7 @@ public class FlatNetwork implements Serializable {
 	 * @param contextTargetSize The context target size.
 	 */
 	public final void setContextTargetSize(final int[] contextTargetSize) {
-		this.contextTargetSize = contextTargetSize;
+		this.contextTargetSize = EngineArray.arrayCopy(contextTargetSize);
 
 	}
 
@@ -807,7 +809,7 @@ public class FlatNetwork implements Serializable {
 	 * @param layerContextCount The layer context count.
 	 */
 	public final void setLayerContextCount(final int[] layerContextCount) {
-		this.layerContextCount = layerContextCount;
+		this.layerContextCount = EngineArray.arrayCopy(layerContextCount);
 	}
 
 	/**
@@ -815,12 +817,12 @@ public class FlatNetwork implements Serializable {
 	 * @param layerCounts The layer counts.
 	 */
 	public final void setLayerCounts(final int[] layerCounts) {
-		this.layerCounts = layerCounts;
+		this.layerCounts = EngineArray.arrayCopy(layerCounts);
 
 	}
 
 	public final void setLayerFeedCounts(final int[] layerFeedCounts) {
-		this.layerFeedCounts = layerFeedCounts;
+		this.layerFeedCounts = EngineArray.arrayCopy(layerFeedCounts);
 
 	}
 
@@ -829,7 +831,7 @@ public class FlatNetwork implements Serializable {
 	 * @param i The layer index.
 	 */
 	public final void setLayerIndex(final int[] i) {
-		this.layerIndex = i;
+		this.layerIndex = EngineArray.arrayCopy(i);
 	}
 
 	/**
@@ -837,7 +839,7 @@ public class FlatNetwork implements Serializable {
 	 * @param layerOutput The layer output.
 	 */
 	public final void setLayerOutput(final double[] layerOutput) {
-		this.layerOutput = layerOutput;
+		this.layerOutput = EngineArray.arrayCopy(layerOutput);
 	}
 
 	/**
@@ -853,7 +855,7 @@ public class FlatNetwork implements Serializable {
 	 * @param weightIndex The weight index.
 	 */
 	public final void setWeightIndex(final int[] weightIndex) {
-		this.weightIndex = weightIndex;
+		this.weightIndex = EngineArray.arrayCopy(weightIndex);
 
 	}
 
@@ -862,7 +864,7 @@ public class FlatNetwork implements Serializable {
 	 * @param weights The weights.
 	 */
 	public final void setWeights(final double[] weights) {
-		this.weights = weights;
+		this.weights = EngineArray.arrayCopy(weights);
 	}
 
 	/**
@@ -877,7 +879,7 @@ public class FlatNetwork implements Serializable {
 	 * @param d The layer sums.
 	 */
 	public void setLayerSums(double[] d) {
-		this.layerSums = d;
+		this.layerSums = EngineArray.arrayCopy(d);
 		
 	}
 	

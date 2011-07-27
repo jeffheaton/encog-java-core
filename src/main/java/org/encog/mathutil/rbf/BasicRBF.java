@@ -24,6 +24,7 @@
 package org.encog.mathutil.rbf;
 
 import org.encog.Encog;
+import org.encog.util.EngineArray;
 import org.encog.util.Format;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
@@ -101,7 +102,7 @@ public abstract class BasicRBF implements RadialBasisFunction {
 	 */
 	@Override
 	public final void setCenters(final double[] centers) {
-		this.center = centers;
+		this.center = EngineArray.arrayCopy(centers);
 
 	}
 

@@ -23,6 +23,7 @@
  */
 package org.encog.util.normalize.target;
 
+import org.encog.util.EngineArray;
 import org.encog.util.normalize.DataNormalization;
 
 /**
@@ -51,7 +52,7 @@ public class NormalizationStorageArray1D implements NormalizationStorage {
 	 * @param array The array to store to.
 	 */
 	public NormalizationStorageArray1D(final double[] array) {
-		this.array = array;
+		this.array = EngineArray.arrayCopy(array);
 		this.currentIndex = 0;
 	}
 

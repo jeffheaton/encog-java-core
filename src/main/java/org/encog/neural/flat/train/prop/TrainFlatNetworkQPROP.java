@@ -25,6 +25,7 @@ package org.encog.neural.flat.train.prop;
 
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.flat.FlatNetwork;
+import org.encog.util.EngineArray;
 
 /**
  * Train a flat network, using QuickPropagation.  
@@ -222,7 +223,7 @@ public class TrainFlatNetworkQPROP extends TrainFlatNetworkProp {
 	 * @param lastDelta the lastDelta to set
 	 */
 	public void setLastDelta(double[] lastDelta) {
-		this.lastDelta = lastDelta;
+		this.lastDelta = EngineArray.arrayCopy(lastDelta);
 	}
 
 	/**

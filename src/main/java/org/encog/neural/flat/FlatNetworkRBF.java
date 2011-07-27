@@ -117,7 +117,10 @@ public class FlatNetworkRBF extends FlatNetwork implements Serializable {
 	 * @param rbf The RBF's used.
 	 */
 	public final void setRBF(final RadialBasisFunction[] rbf) {
-		this.rbf = rbf;
+		this.rbf = new RadialBasisFunction[rbf.length];
+		for(int i=0;i<rbf.length;i++) {
+			this.rbf[i] = rbf[i];
+		}
 	}
 
 	/**

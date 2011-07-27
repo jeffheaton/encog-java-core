@@ -45,7 +45,9 @@ public class BasicGenerateID implements GenerateID, Serializable {
 	 * Construct the ID generator to start at 1.
 	 */
 	public BasicGenerateID() {
-		this.currentID = 1;
+		synchronized (this) {
+			this.currentID = 1;
+		}
 	}
 
 	/**
@@ -62,14 +64,18 @@ public class BasicGenerateID implements GenerateID, Serializable {
 	 * @return the currentID
 	 */
 	public long getCurrentID() {
-		return currentID;
+		synchronized (this) {
+			return currentID;
+		}
 	}
 
 	/**
 	 * @param currentID the currentID to set
 	 */
 	public void setCurrentID(long currentID) {
-		this.currentID = currentID;
+		synchronized (this) {
+			this.currentID = currentID;
+		}
 	}
 	
 	
