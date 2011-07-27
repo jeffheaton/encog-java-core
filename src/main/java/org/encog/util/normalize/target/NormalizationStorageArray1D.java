@@ -52,7 +52,7 @@ public class NormalizationStorageArray1D implements NormalizationStorage {
 	 * @param array The array to store to.
 	 */
 	public NormalizationStorageArray1D(final double[] array) {
-		this.array = EngineArray.arrayCopy(array);
+		this.array = array;
 		this.currentIndex = 0;
 	}
 
