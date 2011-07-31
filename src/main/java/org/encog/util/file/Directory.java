@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.encog.EncogError;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * Directory utilities.
@@ -56,12 +57,16 @@ public final class Directory {
 	 *            The target of the copy.
 	 */
 	public static void copyFile(final File source, final File target) {
+		
+		FileInputStream in = null;
+		FileOutputStream out = null;
+		
 		try {
 			final byte[] buffer = new byte[Directory.BUFFER_SIZE];
 
-			// open the files before the copy
-			final FileInputStream in = new FileInputStream(source);
-			final FileOutputStream out = new FileOutputStream(target);
+			
+			in = new FileInputStream(source);
+			out = new FileOutputStream(target);
 
 			// perform the copy
 			int packetSize = 0;
@@ -71,13 +76,29 @@ public final class Directory {
 				if (packetSize != -1) {
 					out.write(buffer, 0, packetSize);
 				}
-			}
-
-			// close the files after the copy
-			in.close();
-			out.close();
+			}			
 		} catch (final IOException e) {
 			throw new EncogError(e);
+		} finally {
+			// close the files after the copy
+			if( in!=null )
+			{
+				try {
+					in.close();
+				} catch (IOException e) {
+					EncogLogging.log(e);
+				}
+				in = null;
+			}
+			if( out!=null )
+			{
+				try {
+					out.close();
+				} catch (IOException e) {
+					EncogLogging.log(e);
+				}
+				out = null;
+			}
 		}
 	}
 
@@ -113,9 +134,11 @@ public final class Directory {
 	 * @return The string that was read in.
 	 */
 	public static String readStream(final InputStream is) {
+		BufferedReader reader = null;
+		
 		try {
 			final StringBuffer sb = new StringBuffer(1024);
-			final BufferedReader reader = new BufferedReader(
+			reader = new BufferedReader(
 					new InputStreamReader(is));
 
 			final char[] chars = new char[Directory.BUFFER_SIZE];
@@ -128,6 +151,14 @@ public final class Directory {
 			return sb.toString();
 		} catch (final IOException e) {
 			throw new EncogError(e);
+		} finally {
+			if( reader!=null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					EncogLogging.log(e);
+				}
+			}
 		}
 	}
 

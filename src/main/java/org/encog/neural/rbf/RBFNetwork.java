@@ -40,6 +40,7 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.flat.FlatNetworkRBF;
 import org.encog.neural.networks.ContainsFlat;
+import org.encog.util.EngineArray;
 import org.encog.util.Format;
 import org.encog.util.simple.EncogUtility;
 
@@ -313,15 +314,16 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 	 */
 	public final void setRBFFunction(final int index, final RBFEnum t,
 			final double[] centers, final double width) {
+		double[] ctr = EngineArray.arrayCopy(centers);
 		if (t == RBFEnum.Gaussian) {
-			this.flat.getRBF()[index] = new GaussianFunction(0.5, centers,
+			this.flat.getRBF()[index] = new GaussianFunction(0.5, ctr,
 					width);
 		} else if (t == RBFEnum.Multiquadric) {
-			this.flat.getRBF()[index] = new MultiquadricFunction(0.5, centers,
+			this.flat.getRBF()[index] = new MultiquadricFunction(0.5, ctr,
 					width);
 		} else if (t == RBFEnum.InverseMultiquadric) {
 			this.flat.getRBF()[index] = new InverseMultiquadricFunction(0.5,
-					centers, width);
+					ctr, width);
 		}
 	}
 

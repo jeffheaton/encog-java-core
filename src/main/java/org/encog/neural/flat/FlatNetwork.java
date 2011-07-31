@@ -745,7 +745,7 @@ public class FlatNetwork implements Serializable {
 	 * @param biasActivation The bias activation.
 	 */
 	public final void setBiasActivation(final double[] biasActivation) {
-		this.biasActivation = biasActivation;
+		this.biasActivation = EngineArray.arrayCopy(biasActivation);
 	}
 
 	/**
