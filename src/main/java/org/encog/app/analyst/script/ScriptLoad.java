@@ -40,6 +40,7 @@ import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogReadHelper;
 import org.encog.util.arrayutil.NormalizationAction;
+import org.encog.util.csv.CSVFormat;
 
 /**
  * Used to load an Encog Analyst script.
@@ -149,23 +150,23 @@ public class ScriptLoad {
 	 * Handle loading data stats.
 	 * @param section The section being loaded.
 	 */
-	private void handleDataStats(final EncogFileSection section) {
+	private void handleDataStats(final EncogFileSection section) {		
 		final List<DataField> dfs = new ArrayList<DataField>();
 		boolean first = true;
 		for (final String line : section.getLines()) {
 			if (!first) {
 				final List<String> cols = EncogFileSection.splitColumns(line);
 				final String name = cols.get(0);
-				final boolean isclass = Integer.parseInt(cols.get(1)) > 0;
+				final boolean isclass = Integer.parseInt(cols.get(1)) > 0; 
 				final boolean iscomplete = Integer.parseInt(cols.get(2)) > 0;
 				final boolean isint = 
 					Integer.parseInt(cols.get(COLUMN_THREE)) > 0;
 				final boolean isreal = 
 					Integer.parseInt(cols.get(COLUMN_FOUR)) > 0;
-				final double amax = Double.parseDouble(cols.get(5));
-				final double amin = Double.parseDouble(cols.get(6));
-				final double mean = Double.parseDouble(cols.get(7));
-				final double sdev = Double.parseDouble(cols.get(8));
+				final double amax = CSVFormat.EG_FORMAT.parse(cols.get(5));
+				final double amin = CSVFormat.EG_FORMAT.parse(cols.get(6));
+				final double mean = CSVFormat.EG_FORMAT.parse(cols.get(7));
+				final double sdev = CSVFormat.EG_FORMAT.parse(cols.get(8));
 				final DataField df = new DataField(name);
 				df.setClass(isclass);
 				df.setComplete(iscomplete);
@@ -218,8 +219,8 @@ public class ScriptLoad {
 						.equals("output");
 				final int timeSlice = Integer.parseInt(cols.get(2));
 				final String action = cols.get(3);
-				final double high = Double.parseDouble(cols.get(4));
-				final double low = Double.parseDouble(cols.get(5));
+				final double high = CSVFormat.EG_FORMAT.parse(cols.get(4));
+				final double low = CSVFormat.EG_FORMAT.parse(cols.get(5));
 
 				NormalizationAction des = null;
 				if (action.equals("range")) {

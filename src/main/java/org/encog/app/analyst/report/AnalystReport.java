@@ -85,7 +85,7 @@ public class AnalystReport {
 				ScriptProperties.HEADER_DATASOURCE_RAW_FILE);
 
 		File sourceFile = this.analyst.getScript().resolveFilename(sourceID);
-		CSVFormat inputFormat = this.analyst.getScript().determineInputFormat(sourceID);	
+		CSVFormat inputFormat = this.analyst.getScript().determineFormat();	
 		boolean headers = this.analyst.getScript().expectInputHeaders(sourceID);
 			
 		// read the file

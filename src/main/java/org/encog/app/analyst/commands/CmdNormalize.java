@@ -76,9 +76,7 @@ public class CmdNormalize extends Cmd {
 		getScript().markGenerated(targetID);
 
 		// get formats
-		final CSVFormat inputFormat = getScript()
-				.determineInputFormat(sourceID);
-		final CSVFormat outputFormat = getScript().determineOutputFormat();
+		final CSVFormat format = getScript().determineFormat();
 
 		// prepare to normalize
 		final AnalystNormalizeCSV norm = new AnalystNormalizeCSV();
@@ -87,8 +85,7 @@ public class CmdNormalize extends Cmd {
 		norm.setReport(new AnalystReportBridge(getAnalyst()));
 
 		final boolean headers = getScript().expectInputHeaders(sourceID);
-		norm.analyze(sourceFile, headers, inputFormat, getAnalyst());
-		norm.setOutputFormat(outputFormat);
+		norm.analyze(sourceFile, headers, format, getAnalyst());
 		norm.setProduceOutputHeaders(true);
 		norm.normalize(targetFile);
 		getAnalyst().setCurrentQuantTask(null);

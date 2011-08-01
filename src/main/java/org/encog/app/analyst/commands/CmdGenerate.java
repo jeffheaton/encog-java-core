@@ -139,8 +139,7 @@ public class CmdGenerate extends Cmd {
 				ScriptProperties.GENERATE_CONFIG_SOURCE_FILE);
 		final String targetID = getProp().getPropertyString(
 				ScriptProperties.GENERATE_CONFIG_TARGET_FILE);
-		final CSVFormat format = getAnalyst().getScript().determineInputFormat(
-				sourceID);
+		final CSVFormat format = getAnalyst().getScript().determineFormat();
 
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Beginning generate");
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "source file:" + sourceID);

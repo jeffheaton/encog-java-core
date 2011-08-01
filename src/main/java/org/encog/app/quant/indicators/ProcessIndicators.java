@@ -117,7 +117,7 @@ public class ProcessIndicators extends BasicCachedFile {
 
 		try {
 			csv = new ReadCSV(getInputFilename().toString(),
-					isExpectInputHeaders(), getInputFormat());
+					isExpectInputHeaders(), getFormat());
 
 			resetStatus();
 			int row = 0;
@@ -128,7 +128,7 @@ public class ProcessIndicators extends BasicCachedFile {
 						if (column.isInput()) {
 							final FileData fd = (FileData) column;
 							final String str = csv.get(fd.getIndex());
-							final double d = getInputFormat().parse(str);
+							final double d = getFormat().parse(str);
 							fd.getData()[row] = d;
 						}
 					}
@@ -177,7 +177,7 @@ public class ProcessIndicators extends BasicCachedFile {
 				for (final BaseCachedColumn column : getColumns()) {
 					if (column.isOutput()) {
 						if (line.length() > 0) {
-							line.append(getInputFormat().getSeparator());
+							line.append(getFormat().getSeparator());
 						}
 						line.append("\"");
 						line.append(column.getName());
@@ -200,10 +200,10 @@ public class ProcessIndicators extends BasicCachedFile {
 				for (final BaseCachedColumn column : getColumns()) {
 					if (column.isOutput()) {
 						if (line.length() > 0) {
-							line.append(getInputFormat().getSeparator());
+							line.append(getFormat().getSeparator());
 						}
 						final double d = column.getData()[row];
-						line.append(getInputFormat().format(d, getPrecision()));
+						line.append(getFormat().format(d, getPrecision()));
 					}
 				}
 

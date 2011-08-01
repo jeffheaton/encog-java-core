@@ -72,9 +72,7 @@ public class CmdSegregate extends Cmd {
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "source file:" + sourceID);
 
 		// get formats
-		final CSVFormat inputFormat = getScript()
-				.determineInputFormat(sourceID);
-		final CSVFormat outputFormat = getScript().determineOutputFormat();
+		final CSVFormat format = getScript().determineFormat();
 
 		// prepare to segregate
 		final boolean headers = getScript().expectInputHeaders(sourceID);
@@ -95,8 +93,7 @@ public class CmdSegregate extends Cmd {
 		}
 
 		seg.setReport(new AnalystReportBridge(getAnalyst()));
-		seg.analyze(sourceFile, headers, inputFormat);
-		seg.setOutputFormat(outputFormat);
+		seg.analyze(sourceFile, headers, format);
 
 		seg.process();
 		getAnalyst().setCurrentQuantTask(null);

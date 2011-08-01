@@ -79,18 +79,13 @@ public class AnalystClusterCSV extends BasicFile {
 
 		setAnalyzed(true);
 		this.analyst = theAnalyst;
-
-		if (getOutputFormat() == null) {
-			setOutputFormat(this.getInputFormat());
-		}
-
 		this.data = new BasicMLDataSet();
 		resetStatus();
 		int recordCount = 0;
 
 		final int outputLength = this.analyst.determineTotalColumns();
 		final ReadCSV csv = new ReadCSV(this.getInputFilename().toString(),
-				this.isExpectInputHeaders(), this.getInputFormat());
+				this.isExpectInputHeaders(), this.getFormat());
 		readHeaders(csv);
 
 		this.analystHeaders = new CSVHeaders(this.getInputHeadings());
@@ -136,7 +131,7 @@ public class AnalystClusterCSV extends BasicFile {
 				// handle provided fields, not all may be used, but all should
 				// be displayed
 				for (final String heading : this.getInputHeadings()) {
-					BasicFile.appendSeparator(line, getOutputFormat());
+					BasicFile.appendSeparator(line, getFormat());
 					line.append("\"");
 					line.append(heading);
 					line.append("\"");

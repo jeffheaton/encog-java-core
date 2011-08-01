@@ -93,9 +93,9 @@ public final class ConvertStringConst {
 			return AnalystFileFormat.DECPNT_SPACE;
 		} else if (str.equalsIgnoreCase("decpnt|semi")) {
 			return AnalystFileFormat.DECPNT_SEMI;
-		} else if (str.equalsIgnoreCase("decpnt|space")) {
+		} else if (str.equalsIgnoreCase("deccomma|space")) {
 			return AnalystFileFormat.DECCOMMA_SPACE;
-		} else if (str.equalsIgnoreCase("decpnt|semi")) {
+		} else if (str.equalsIgnoreCase("deccomma|semi")) {
 			return AnalystFileFormat.DECCOMMA_SEMI;
 		} else {
 			return null;

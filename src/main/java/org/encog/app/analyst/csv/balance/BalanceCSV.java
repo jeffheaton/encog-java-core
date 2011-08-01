@@ -114,7 +114,7 @@ public class BalanceCSV extends BasicFile {
 		this.counts = new HashMap<String, Integer>();
 
 		final ReadCSV csv = new ReadCSV(getInputFilename().toString(),
-				isExpectInputHeaders(), getInputFormat());
+				isExpectInputHeaders(), getFormat());
 
 		resetStatus();
 		while (csv.next() && !shouldStop()) {

@@ -87,7 +87,7 @@ public class SortCSV extends BasicFile {
 		resetStatus();
 
 		final ReadCSV csv = new ReadCSV(getInputFilename().toString(),
-				isExpectInputHeaders(), getInputFormat());
+				isExpectInputHeaders(), getFormat());
 		while (csv.next() && !shouldStop()) {
 			updateStatus("Reading input file");
 			final LoadedRow row = new LoadedRow(csv);
