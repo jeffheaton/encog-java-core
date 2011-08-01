@@ -55,12 +55,13 @@ public final class BotUtil {
 	 *            The file.
 	 */
 	public static void downloadPage(final URL url, final File file) {
+		FileOutputStream fos = null;
 		try {
 			final byte[] buffer = new byte[BotUtil.BUFFER_SIZE];
 
 			int length;
 
-			final FileOutputStream fos = new FileOutputStream(file);
+			fos = new FileOutputStream(file);
 			final InputStream is = url.openStream();
 
 			do {
@@ -75,6 +76,14 @@ public final class BotUtil {
 		} catch (final IOException e) {
 			EncogLogging.log(e);
 			throw new BotError(e);
+		} finally {
+			if( fos!=null ) {
+				try {
+					fos.close();
+				} catch (IOException e) {
+					EncogLogging.log(e);
+				}	
+			}
 		}
 	}
 

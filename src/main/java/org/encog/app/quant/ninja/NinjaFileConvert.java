@@ -44,11 +44,13 @@ public class NinjaFileConvert extends BasicCachedFile {
 	 * @param target The target file to write to.
 	 */
 	public final void process(final File target) {
+		PrintWriter tw = null;
+		
 		try {
 			ReadCSV csv = new ReadCSV(this.getInputFilename().toString(),
 					this.isExpectInputHeaders(), this.getInputFormat());
 
-			PrintWriter tw = new PrintWriter(new FileWriter(target));
+			tw = new PrintWriter(new FileWriter(target));
 
 			resetStatus();
 			while (csv.next() && !this.shouldStop()) {
@@ -86,6 +88,10 @@ public class NinjaFileConvert extends BasicCachedFile {
 			tw.close();
 		} catch (IOException ex) {
 			throw new QuantError(ex);
+		} finally {
+			if( tw!=null ) {
+				tw.close();
+			}
 		}
 	}
 }

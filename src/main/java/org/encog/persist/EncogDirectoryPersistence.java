@@ -207,15 +207,25 @@ public class EncogDirectoryPersistence {
 	 * @return The type.
 	 */
 	public String getEncogType(final String name) {
+		BufferedReader br = null;
+		
 		try {
 			final File path = new File(this.parent, name);
-			final BufferedReader br = new BufferedReader(new FileReader(path));
+			br = new BufferedReader(new FileReader(path));
 			final String header = br.readLine();
 			final String[] params = header.split(",");
-			br.close();
+
 			return params[1];
 		} catch (final IOException ex) {
 			throw new PersistError(ex);
+		} finally {
+			if( br!=null ) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					EncogLogging.log(e);
+				}				
+			}
 		}
 	}
 

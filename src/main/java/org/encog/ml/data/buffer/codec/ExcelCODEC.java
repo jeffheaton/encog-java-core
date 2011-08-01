@@ -41,6 +41,7 @@ import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.file.ResourceInputStream;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * A CODEC that can read/write Microsoft Excel (*.XLSX) files.
@@ -247,6 +248,7 @@ public class ExcelCODEC implements DataSetCODEC {
 			final int idealSize) {
 		this.inputCount = inputSize;
 		this.idealCount = idealSize;
+		ZipInputStream zis = null;
 
 		try {
 			this.fos = new FileOutputStream(this.file);
@@ -255,7 +257,7 @@ public class ExcelCODEC implements DataSetCODEC {
 			final InputStream is = ResourceInputStream
 					.openResourceInputStream("org/encog/data/blank.xlsx");
 
-			final ZipInputStream zis = new ZipInputStream(is);
+			zis = new ZipInputStream(is);
 
 			ZipEntry theEntry;
 
@@ -276,6 +278,7 @@ public class ExcelCODEC implements DataSetCODEC {
 			}
 
 			zis.close();
+			zis = null;
 
 			this.buffer = new ByteArrayOutputStream();
 			this.xmlOut = new WriteXML(this.buffer);
@@ -307,6 +310,14 @@ public class ExcelCODEC implements DataSetCODEC {
 
 		} catch (final IOException ex) {
 			throw new BufferedDataError(ex);
+		} finally {
+			if( zis!=null ) {
+				try {
+					zis.close();
+				} catch (IOException e) {
+					EncogLogging.log(e);
+				}
+			}
 		}
 	}
 
