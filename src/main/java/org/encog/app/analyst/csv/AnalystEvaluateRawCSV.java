@@ -121,7 +121,7 @@ public class AnalystEvaluateRawCSV extends BasicFile {
 				for (final AnalystField field : this.analyst.getScript()
 						.getNormalize().getNormalizedFields()) {
 					if (field.isInput()) {
-						field.addRawHeadings(line, null, getOutputFormat());
+						field.addRawHeadings(line, null, getFormat());
 					}
 				}
 
@@ -131,7 +131,7 @@ public class AnalystEvaluateRawCSV extends BasicFile {
 							.getNormalize().getNormalizedFields()) {
 						if (field.isOutput()) {
 							field.addRawHeadings(line, "ideal:",
-									getOutputFormat());
+									getFormat());
 						}
 					}
 				}
@@ -141,7 +141,7 @@ public class AnalystEvaluateRawCSV extends BasicFile {
 						.getNormalize().getNormalizedFields()) {
 					if (field.isOutput()) {
 						field.addRawHeadings(line, "output:", 
-								getOutputFormat());
+								getFormat());
 					}
 				}
 
@@ -164,7 +164,7 @@ public class AnalystEvaluateRawCSV extends BasicFile {
 			final MLRegression method) {
 
 		final ReadCSV csv = new ReadCSV(getInputFilename().toString(),
-				isExpectInputHeaders(), getInputFormat());
+				isExpectInputHeaders(), getFormat());
 
 		if (method.getInputCount() != this.inputCount) {
 			throw new AnalystError("This machine learning method has "
@@ -187,7 +187,7 @@ public class AnalystEvaluateRawCSV extends BasicFile {
 			// load the input data
 			for (int i = 0; i < this.inputCount; i++) {
 				final String str = row.getData()[i];
-				final double d = getInputFormat().parse(str);
+				final double d = getFormat().parse(str);
 				input.setData(i, d);
 				dataIndex++;
 			}
@@ -201,7 +201,7 @@ public class AnalystEvaluateRawCSV extends BasicFile {
 			// display the computed result
 			for (int i = 0; i < this.outputCount; i++) {
 				final double d = output.getData(i);
-				row.getData()[dataIndex++] = getInputFormat().format(d,
+				row.getData()[dataIndex++] = getFormat().format(d,
 						getPrecision());
 			}
 

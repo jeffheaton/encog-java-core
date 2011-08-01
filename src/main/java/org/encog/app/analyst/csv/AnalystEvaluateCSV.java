@@ -122,7 +122,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 				// handle provided fields, not all may be used, but all should
 				// be displayed
 				for (final String heading : this.getInputHeadings()) {
-					BasicFile.appendSeparator(line, getOutputFormat());
+					BasicFile.appendSeparator(line, getFormat());
 					line.append("\"");
 					line.append(heading);
 					line.append("\"");
@@ -132,7 +132,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 				for (final AnalystField field : this.analyst.getScript()
 						.getNormalize().getNormalizedFields()) {
 					if (field.isOutput() && !field.isIgnored()) {
-						BasicFile.appendSeparator(line, getOutputFormat());
+						BasicFile.appendSeparator(line, getFormat());
 						line.append("\"Output:");
 						line.append(CSVHeaders.tagColumn(field.getName(), 0,
 								field.getTimeSlice(), false));
@@ -159,7 +159,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 			final MLMethod method) {
 
 		final ReadCSV csv = new ReadCSV(getInputFilename().toString(),
-				isExpectInputHeaders(), getInputFormat());
+				isExpectInputHeaders(), getFormat());
 
 		MLData output = null;
 
@@ -218,7 +218,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 								// regression
 								double n = output.getData(outputIndex++);
 								n = field.deNormalize(n);
-								row.getData()[index++] = getInputFormat()
+								row.getData()[index++] = getFormat()
 										.format(n, getPrecision());
 							}
 						}

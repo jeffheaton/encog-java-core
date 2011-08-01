@@ -107,7 +107,7 @@ public class FilterCSV extends BasicFile {
 	 */
 	public final void process(final File outputFile) {
 		final ReadCSV csv = new ReadCSV(getInputFilename().toString(),
-				isExpectInputHeaders(), getInputFormat());
+				isExpectInputHeaders(), getFormat());
 
 		final PrintWriter tw = prepareOutputFile(outputFile);
 		this.filteredCount = 0;

@@ -273,7 +273,15 @@ public class AnalystWizard {
 	 */
 	private NormalizeRange range = NormalizeRange.NegOne2One;
 	
+	/**
+	 * What to do with missing values.
+	 */
 	private HandleMissingValues missing = new DiscardMissing();
+	
+	/**
+	 * The format being used.
+	 */
+	private AnalystFileFormat format;
 
 	/**
 	 * Construct the analyst wizard.
@@ -773,7 +781,7 @@ public class AnalystWizard {
 		// other
 		this.script.getProperties().setProperty(
 				ScriptProperties.SETUP_CONFIG_CSV_FORMAT,
-				AnalystFileFormat.DECPNT_COMMA);
+				format);
 	}
 
 	/**
@@ -1109,14 +1117,13 @@ public class AnalystWizard {
 			final AnalystFileFormat format) {
 
 		this.script.getProperties().setProperty(
-				ScriptProperties.HEADER_DATASOURCE_SOURCE_FORMAT, format);
-		this.script.getProperties().setProperty(
 				ScriptProperties.HEADER_DATASOURCE_SOURCE_HEADERS, b);
 		this.script.getProperties().setProperty(
 				ScriptProperties.HEADER_DATASOURCE_RAW_FILE, analyzeFile);
 
 		this.timeSeries = ((this.lagWindowSize > 0) 
 				|| (this.leadWindowSize > 0));
+		this.format = format;
 
 		determineClassification();
 		generateFilenames(analyzeFile);
@@ -1151,11 +1158,10 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.HEADER_DATASOURCE_SOURCE_FILE, url);
 		this.script.getProperties().setProperty(
-				ScriptProperties.HEADER_DATASOURCE_SOURCE_FORMAT, format);
-		this.script.getProperties().setProperty(
 				ScriptProperties.HEADER_DATASOURCE_SOURCE_HEADERS, b);
 		this.script.getProperties().setProperty(
 				ScriptProperties.HEADER_DATASOURCE_RAW_FILE, analyzeFile);
+		this.format = format;
 
 		generateFilenames(analyzeFile);
 		generateSettings();

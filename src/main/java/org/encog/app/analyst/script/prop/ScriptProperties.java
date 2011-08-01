@@ -58,12 +58,6 @@ public class ScriptProperties {
 		= "HEADER:DATASOURCE_rawFile";
 	
 	/**
-	 * Property for: "HEADER:DATASOURCE_sourceFormat".
-	 */
-	public static final String HEADER_DATASOURCE_SOURCE_FORMAT 
-		= "HEADER:DATASOURCE_sourceFormat";
-	
-	/**
 	 * Property for: "HEADER:DATASOURCE_sourceHeaders".
 	 */
 	public static final String HEADER_DATASOURCE_SOURCE_HEADERS 

@@ -125,7 +125,7 @@ public class SegregateCSV extends BasicFile {
 		validate();
 
 		final ReadCSV csv = new ReadCSV(getInputFilename().toString(),
-				isExpectInputHeaders(), getInputFormat());
+				isExpectInputHeaders(), getFormat());
 		resetStatus();
 		for (final SegregateTargetPercent target : this.targets) {
 			final PrintWriter tw = prepareOutputFile(target.getFilename());

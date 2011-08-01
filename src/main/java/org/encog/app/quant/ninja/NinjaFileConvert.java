@@ -48,7 +48,7 @@ public class NinjaFileConvert extends BasicCachedFile {
 		
 		try {
 			ReadCSV csv = new ReadCSV(this.getInputFilename().toString(),
-					this.isExpectInputHeaders(), this.getInputFormat());
+					this.isExpectInputHeaders(), this.getFormat());
 
 			tw = new PrintWriter(new FileWriter(target));
 
@@ -60,24 +60,24 @@ public class NinjaFileConvert extends BasicCachedFile {
 				line.append(" ");
 				line.append(this.getColumnData(FileData.TIME, csv));
 				line.append(";");
-				line.append(getInputFormat().format(
+				line.append(getFormat().format(
 						Double.parseDouble(this.getColumnData(FileData.OPEN,
 								csv)), this.getPrecision()));
 				line.append(";");
-				line.append(getInputFormat().format(
+				line.append(getFormat().format(
 						Double.parseDouble(this.getColumnData(FileData.HIGH,
 								csv)), this.getPrecision()));
 				line.append(";");
-				line.append(getInputFormat().format(
+				line.append(getFormat().format(
 						Double.parseDouble(this
 								.getColumnData(FileData.LOW, csv)),
 						this.getPrecision()));
 				line.append(";");
-				line.append(getInputFormat().format(
+				line.append(getFormat().format(
 						Double.parseDouble(this.getColumnData(FileData.CLOSE,
 								csv)), this.getPrecision()));
 				line.append(";");
-				line.append(getInputFormat().format(
+				line.append(getFormat().format(
 						Double.parseDouble(this.getColumnData(FileData.VOLUME,
 								csv)), this.getPrecision()));
 

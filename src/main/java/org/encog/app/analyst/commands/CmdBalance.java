@@ -100,9 +100,7 @@ public class CmdBalance extends Cmd {
 		getScript().markGenerated(targetID);
 
 		// get formats
-		final CSVFormat inputFormat = getScript()
-				.determineInputFormat(sourceID);
-		final CSVFormat outputFormat = getScript().determineOutputFormat();
+		final CSVFormat format = getScript().determineFormat();
 
 		// prepare to normalize
 		final BalanceCSV balance = new BalanceCSV();
@@ -111,8 +109,7 @@ public class CmdBalance extends Cmd {
 		balance.setReport(new AnalystReportBridge(getAnalyst()));
 
 		final boolean headers = getScript().expectInputHeaders(sourceID);
-		balance.analyze(sourceFile, headers, inputFormat);
-		balance.setOutputFormat(outputFormat);
+		balance.analyze(sourceFile, headers, format);
 		balance.setProduceOutputHeaders(true);
 		balance.process(targetFile, targetFieldIndex, countPer);
 		getAnalyst().setCurrentQuantTask(null);

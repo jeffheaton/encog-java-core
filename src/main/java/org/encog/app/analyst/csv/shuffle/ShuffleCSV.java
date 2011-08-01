@@ -147,7 +147,7 @@ public class ShuffleCSV extends BasicFile {
 		validateAnalyzed();
 
 		final ReadCSV csv = new ReadCSV(getInputFilename().toString(),
-				isExpectInputHeaders(), getInputFormat());
+				isExpectInputHeaders(), getFormat());
 		LoadedRow row;
 
 		final PrintWriter tw = prepareOutputFile(outputFile);

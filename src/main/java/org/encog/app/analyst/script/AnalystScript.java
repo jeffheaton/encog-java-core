@@ -116,31 +116,10 @@ public class AnalystScript {
 	}
 
 	/**
-	 * Determine the input format for the specified file.
-	 * @param sourceID The file.
-	 * @return The input format.
-	 */
-	public final CSVFormat determineInputFormat(final String sourceID) {
-		final String rawID = getProperties().getPropertyString(
-				ScriptProperties.HEADER_DATASOURCE_RAW_FILE);
-		CSVFormat result;
-
-		if (sourceID.equals(rawID)) {
-			result = getProperties().getPropertyCSVFormat(
-					ScriptProperties.HEADER_DATASOURCE_SOURCE_FORMAT);
-		} else {
-			result = getProperties().getPropertyCSVFormat(
-					ScriptProperties.SETUP_CONFIG_CSV_FORMAT);
-		}
-
-		return result;
-	}
-
-	/**
 	 * Determine the output format.
 	 * @return The output format.
 	 */
-	public final CSVFormat determineOutputFormat() {
+	public final CSVFormat determineFormat() {
 		return getProperties().getPropertyCSVFormat(
 				ScriptProperties.SETUP_CONFIG_CSV_FORMAT);
 	}

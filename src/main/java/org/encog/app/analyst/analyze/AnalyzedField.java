@@ -33,6 +33,7 @@ import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
+import org.encog.util.csv.CSVError;
 
 /**
  * This class represents a field that the Encog Analyst is in the process of
@@ -98,12 +99,12 @@ public class AnalyzedField extends DataField {
 
 		if (isReal()) {
 			try {
-				final double d = Double.parseDouble(str);
+				final double d = this.script.determineFormat().parse(str);
 				setMax(Math.max(d, getMax()));
 				setMin(Math.min(d, getMin()));
 				this.total += d;
 				accountedFor = true;
-			} catch (final NumberFormatException ex) {
+			} catch (final CSVError ex) {
 				setReal(false);
 				if (!isInteger()) {
 					setMax(0);
@@ -164,7 +165,7 @@ public class AnalyzedField extends DataField {
 
 		if (isReal() || isInteger()) {
 			if (!str.equals("") && !str.equals("?")) {
-				final double d = Double.parseDouble(str);
+				final double d = this.script.determineFormat().parse(str);
 				this.devTotal += Math.pow((d - getMean()), 2);
 			}
 		}

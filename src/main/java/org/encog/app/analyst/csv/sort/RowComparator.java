@@ -65,8 +65,8 @@ public class RowComparator implements Comparator<LoadedRow> {
 
 			switch (t.getSortType()) {
 			case SortDecimal:
-				final double xDouble = this.sort.getInputFormat().parse(xStr);
-				final double yDouble = this.sort.getInputFormat().parse(yStr);
+				final double xDouble = this.sort.getFormat().parse(xStr);
+				final double yDouble = this.sort.getFormat().parse(yStr);
 				final int c = Double.compare(xDouble, yDouble);
 				if (c != 0) {
 					return c;

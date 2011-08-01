@@ -168,7 +168,7 @@ public class AnalystNormalizeCSV extends BasicFile {
 
 		try {
 			csv = new ReadCSV(getInputFilename().toString(),
-					isExpectInputHeaders(), getInputFormat());
+					isExpectInputHeaders(), getFormat());
 
 			tw = new PrintWriter(new FileWriter(file));
 
@@ -194,7 +194,7 @@ public class AnalystNormalizeCSV extends BasicFile {
 
 				if (output != null) {
 					final StringBuilder line = new StringBuilder();
-					NumberList.toList(getOutputFormat(), line, output);
+					NumberList.toList(getFormat(), line, output);
 					tw.println(line);
 				}
 			}
@@ -251,7 +251,7 @@ public class AnalystNormalizeCSV extends BasicFile {
 			final int needed = stat.getColumnsNeeded();
 
 			for (int i = 0; i < needed; i++) {
-				BasicFile.appendSeparator(line, getInputFormat());
+				BasicFile.appendSeparator(line, getFormat());
 				line.append('\"');
 				line.append(CSVHeaders.tagColumn(stat.getName(), i,
 						stat.getTimeSlice(), needed > 1));

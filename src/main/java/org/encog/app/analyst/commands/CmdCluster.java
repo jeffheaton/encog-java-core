@@ -85,9 +85,7 @@ public class CmdCluster extends Cmd {
 		final File targetFile = getScript().resolveFilename(targetID);
 
 		// get formats
-		final CSVFormat inputFormat = getScript()
-				.determineInputFormat(sourceID);
-		final CSVFormat outputFormat = getScript().determineOutputFormat();
+		final CSVFormat format = getScript().determineFormat();
 
 		// mark generated
 		getScript().markGenerated(targetID);
@@ -98,8 +96,7 @@ public class CmdCluster extends Cmd {
 		getAnalyst().setCurrentQuantTask(cluster);
 		cluster.setReport(new AnalystReportBridge(getAnalyst()));
 		final boolean headers = getScript().expectInputHeaders(sourceID);
-		cluster.analyze(getAnalyst(), sourceFile, headers, inputFormat);
-		cluster.setOutputFormat(outputFormat);
+		cluster.analyze(getAnalyst(), sourceFile, headers, format);
 		cluster.process(targetFile, clusters, getAnalyst(), DEFAULT_ITERATIONS);
 		getAnalyst().setCurrentQuantTask(null);
 		return cluster.shouldStop();
