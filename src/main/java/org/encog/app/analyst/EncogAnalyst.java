@@ -342,6 +342,13 @@ public class EncogAnalyst {
 	 * @param file The file to down load into.
 	 */
 	private void downloadPage(final URL url, final File file) {
+		
+		FileOutputStream fos = null;
+		InputStream is = null;
+		FileInputStream fis = null;
+		GZIPInputStream gis = null;
+
+		
 		try {
 			// download the URL
 			long size = 0;
@@ -352,8 +359,8 @@ public class EncogAnalyst {
 			int length;
 			int lastUpdate = 0;
 
-			FileOutputStream fos = new FileOutputStream(tempFile);
-			final InputStream is = url.openStream();
+			fos = new FileOutputStream(tempFile);
+			is = url.openStream();
 
 			do {
 				length = is.read(buffer);
@@ -372,11 +379,13 @@ public class EncogAnalyst {
 			} while (length >= 0);
 
 			fos.close();
+			fos = null;
+			
 			// unzip if needed
 
 			if (url.toString().toLowerCase().endsWith(".gz")) {
-				final FileInputStream fis = new FileInputStream(tempFile);
-				final GZIPInputStream gis = new GZIPInputStream(fis);
+				fis = new FileInputStream(tempFile);
+				gis = new GZIPInputStream(fis);
 				fos = new FileOutputStream(file);
 
 				size = 0;
@@ -398,9 +407,6 @@ public class EncogAnalyst {
 					lastUpdate++;
 				} while (length >= 0);
 
-				fos.close();
-				fis.close();
-				gis.close();
 				tempFile.delete();
 
 			} else {
@@ -411,7 +417,36 @@ public class EncogAnalyst {
 
 		} catch (final IOException e) {
 			throw new AnalystError(e);
-		}
+		} finally {
+			if( fos!=null ) {
+				try {
+					fos.close();
+				} catch (IOException e) {
+					EncogLogging.log(e);
+				}
+			}
+			if( is!=null ) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					EncogLogging.log(e);
+				}
+			}
+			if( fis!=null ) {
+				try {
+					fis.close();
+				} catch (IOException e) {
+					EncogLogging.log(e);
+				}
+			}
+			if( gis!=null ) {
+				try {
+					gis.close();
+				} catch (IOException e) {
+					EncogLogging.log(e);
+				}
+			}
+ 		}
 	}
 
 	/**

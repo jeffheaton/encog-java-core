@@ -37,6 +37,7 @@ import java.io.OutputStream;
 
 import org.encog.EncogError;
 import org.encog.bot.BotUtil;
+import org.encog.util.logging.EncogLogging;
 
 public class FileUtil {
 
@@ -83,19 +84,29 @@ public class FileUtil {
 
 	public static String readFileAsString(File filePath)
 			throws java.io.IOException {
-		StringBuffer fileData = new StringBuffer(1000);
-		BufferedReader reader = new BufferedReader(new FileReader(filePath));
-		char[] buf = new char[1024];
-		int numRead = 0;
-		while ((numRead = reader.read(buf)) != -1) {
-			String readData = String.valueOf(buf, 0, numRead);
-			fileData.append(readData);
-			buf = new char[1024];
+		
+		StringBuffer fileData = null;
+		BufferedReader reader = null;
+
+		try {
+			fileData = new StringBuffer(1000);
+			reader = new BufferedReader(new FileReader(filePath));
+			char[] buf = new char[1024];
+			int numRead = 0;
+			while ((numRead = reader.read(buf)) != -1) {
+				String readData = String.valueOf(buf, 0, numRead);
+				fileData.append(readData);
+				buf = new char[1024];
+			}
+			reader.close();
+			return fileData.toString();
+		} finally {
+			if( reader!=null ) {
+				reader.close();
+			}
 		}
-		reader.close();
-		return fileData.toString();
 	}
-	
+
 	public static String readStreamAsString(InputStream is)
 			throws java.io.IOException {
 		StringBuffer fileData = new StringBuffer(1000);
@@ -125,19 +136,37 @@ public class FileUtil {
 	}
 
 	public static void copy(File source, File target) {
+		
+		FileOutputStream fos = null;
+		InputStream is = null;
+		
 		try {
-			final FileOutputStream fos = new FileOutputStream(target);
-			final InputStream is = new FileInputStream(source);
-			
-			copy(is,fos);
+			fos = new FileOutputStream(target);
+			is = new FileInputStream(source);
 
-			fos.close();
-			is.close();
+			copy(is, fos);
+
 		} catch (final IOException e) {
 			throw new EncogError(e);
+		} finally {
+			if( fos!=null ) {
+				try {
+					fos.close();
+				} catch (IOException e) {
+					EncogLogging.log(e);
+				}
+			}
+			
+			if( is!=null ) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					EncogLogging.log(e);
+				}
+			}
 		}
 	}
-	
+
 	public static void copy(InputStream is, OutputStream os) {
 		try {
 			final byte[] buffer = new byte[BotUtil.BUFFER_SIZE];
@@ -149,19 +178,20 @@ public class FileUtil {
 					os.write(buffer, 0, length);
 				}
 			} while (length > 0);
-		} catch(IOException ex) {
+		} catch (IOException ex) {
 			throw new EncogError(ex);
 		}
 	}
 
 	public static void copyResource(String resource, File targetFile) {
 		try {
-		InputStream is = ResourceInputStream.openResourceInputStream(resource);
-		OutputStream os = new FileOutputStream(targetFile);
-		copy(is,os);
-		is.close();
-		os.close();
-		} catch(IOException ex) {
+			InputStream is = ResourceInputStream
+					.openResourceInputStream(resource);
+			OutputStream os = new FileOutputStream(targetFile);
+			copy(is, os);
+			is.close();
+			os.close();
+		} catch (IOException ex) {
 			throw new EncogError(ex);
 		}
 	}

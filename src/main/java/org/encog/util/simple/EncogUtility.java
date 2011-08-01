@@ -58,6 +58,7 @@ import org.encog.neural.pattern.FeedForwardPattern;
 import org.encog.util.Format;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * General utility class for Encog. Provides for some common Encog procedures.
@@ -383,9 +384,13 @@ public final class EncogUtility {
 	}
 
 	public static void saveCSV(File targetFile, CSVFormat format, MLDataSet set) {
+		
+		FileWriter outFile = null;
+		PrintWriter out = null;
+		
 		try {
-			FileWriter outFile = new FileWriter(targetFile);
-			PrintWriter out = new PrintWriter(outFile);
+			outFile = new FileWriter(targetFile);
+			out = new PrintWriter(outFile);
 			
 			for(MLDataPair data: set) {
 				StringBuilder line = new StringBuilder();
@@ -403,17 +408,29 @@ public final class EncogUtility {
 				}
 								
 				out.println(line);
-			}
-			
-			out.close();
-			outFile.close();
-
+			}					
 		} catch(IOException ex) {
 			throw new EncogError(ex);
-		}
-		
+		} finally {
+			if( outFile!=null ) {
+				try {
+					outFile.close();
+				} catch (IOException e) {
+					EncogLogging.log(e);
+				}
+			}
+			if( out!=null ) {
+				out.close();
+			}
+		}		
 	}
 
+	/**
+	 * Calculate the classification error.
+	 * @param method The method to check.
+	 * @param data The data to check.
+	 * @return The error.
+	 */
 	public static double calculateClassificationError(MLClassification method,
 			MLDataSet data) {
 		int total = 0;
