@@ -252,7 +252,7 @@ public final class PersistConst {
 	/**
 	 * Snapshot.
 	 */
-	public static final String SNAPSHOT = "snapshot";
+	public static final String ACTIVATION_CYCLES = "cycles";
 	
 	/**
 	 * Error.
