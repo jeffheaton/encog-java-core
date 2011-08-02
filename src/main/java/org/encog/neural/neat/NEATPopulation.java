@@ -60,7 +60,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 	 */
 	private ActivationFunction neatActivationFunction = new ActivationSigmoid();
 	
-	private boolean snapshot;
+	private int activationCycles = 1;
 
 	/**
 	 * The activation function to use on the output layer of Encog.
@@ -164,20 +164,14 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 		this.outputActivationFunction = outputActivationFunction;
 	}
 
-	/**
-	 * @return the snapshot
-	 */
-	public boolean isSnapshot() {
-		return snapshot;
+	public int getActivationCycles() {
+		return activationCycles;
 	}
 
-	/**
-	 * @param snapshot the snapshot to set
-	 */
-	public void setSnapshot(boolean snapshot) {
-		this.snapshot = snapshot;
+	public void setActivationCycles(int activationCycles) {
+		this.activationCycles = activationCycles;
 	}
-	
+
 	
 
 }

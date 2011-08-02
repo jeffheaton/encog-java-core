@@ -89,14 +89,11 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLE
 	 * The neurons that make up this network.
 	 */
 	private final List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
-
-	/**
-	 * Should snapshot be used to calculate the output of the neural network.
-	 */
-	private boolean snapshot = false;
 	
 	private int inputCount;
 	private int outputCount;
+	
+	private int activationCycles = 1;
 
 
 	/**
@@ -174,14 +171,8 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLE
 "This network has not been evolved yet, it has no neurons in the NEAT synapse.");
 		}
 
-		int flushCount = 1;
-
-		if (this.snapshot) {
-			flushCount = this.networkDepth;
-		}
-
 		// iterate through the network FlushCount times
-		for (int i = 0; i < flushCount; ++i) {
+		for (int i = 0; i < activationCycles; ++i) {
 			int outputIndex = 0;
 			int index = 0;
 
@@ -251,29 +242,12 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLE
 	}
 
 	/**
-	 * @return True if snapshot is being used.
-	 */
-	public boolean isSnapshot() {
-		return this.snapshot;
-	}
-
-	/**
 	 * Set the activation function.
 	 * @param activationFunction The activation function.
 	 */
 	public void setActivationFunction(
 			final ActivationFunction activationFunction) {
 		this.activationFunction = activationFunction;
-	}
-
-	/**
-	 * Sets if snapshot is used.
-	 * 
-	 * @param snapshot
-	 *            True if snapshot is used.
-	 */
-	public void setSnapshot(final boolean snapshot) {
-		this.snapshot = snapshot;
 	}
 
 	@Override
@@ -328,5 +302,15 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLE
 	 */
 	public double calculateError(final MLDataSet data) {
 		return EncogUtility.calculateRegressionError(this,data);
+	}
+
+	public int getActivationCycles() {
+		return activationCycles;
+	}
+
+	public void setActivationCycles(int activationCycles) {
+		this.activationCycles = activationCycles;
 	}	
+	
+	
 }
