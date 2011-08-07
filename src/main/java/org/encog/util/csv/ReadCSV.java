@@ -196,6 +196,13 @@ public class ReadCSV {
 			// read the column heads
 			if (headers) {
 				final String line = this.reader.readLine();
+				
+				// Are we trying to parse an empty file?
+				if( line==null ) {
+					this.columnNames.clear();
+					return;
+				}
+				
 				final List<String> tok = parse(line);
 
 				int i = 0;
