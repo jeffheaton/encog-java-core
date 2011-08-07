@@ -36,5 +36,10 @@ public enum ErrorCalculationMode {
 	 * Mean square error.
 	 */
 	MSE,
+	
+	/**
+	 * Sum of Squares error.
+	 */
+	ESS
 
 }

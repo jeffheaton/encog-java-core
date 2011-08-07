@@ -42,7 +42,7 @@ public class ErrorCalculation {
 	 * preferred training method. Currently the only training method that does
 	 * this is Levenberg Marquardt (LMA).
 	 * 
-	 * The default error mode for Encog is RMS.
+	 * The default error mode for Encog is MSE.
 	 * 
 	 * @return The current mode.
 	 */
@@ -90,19 +90,12 @@ public class ErrorCalculation {
 			return calculateRMS();
 		case MSE:
 			return calculateMSE();
+		case ESS:
+			return calculateESS();
 		default:
 			return calculateMSE();
 		}
 
-	}
-
-	/**
-	 * Calculate the error with ARCTAN.
-	 * 
-	 * @return The current error for the neural network.
-	 */
-	public final double calculateARCTAN() {
-		return calculateMSE();
 	}
 
 	/**
@@ -115,6 +108,20 @@ public class ErrorCalculation {
 			return 0;
 		}
 		final double err = this.globalError / this.setSize;
+		return err;
+
+	}
+	
+	/**
+	 * Calculate the error with SSE.
+	 * 
+	 * @return The current error for the neural network.
+	 */
+	public final double calculateESS() {
+		if (this.setSize == 0) {
+			return 0;
+		}
+		final double err = this.globalError / 2;
 		return err;
 
 	}
