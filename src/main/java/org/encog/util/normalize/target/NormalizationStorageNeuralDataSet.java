@@ -23,6 +23,7 @@
  */
 package org.encog.util.normalize.target;
 
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
@@ -46,7 +47,7 @@ public class NormalizationStorageNeuralDataSet implements NormalizationStorage {
 	/**
 	 * The data set to add to.
 	 */
-	private NeuralDataSet dataset;
+	private MLDataSet dataset;
 
 	
 	public NormalizationStorageNeuralDataSet()
@@ -73,7 +74,7 @@ public class NormalizationStorageNeuralDataSet implements NormalizationStorage {
 	 * @param dataset
 	 *            The data set to store to. This uses an existing data set.
 	 */
-	public NormalizationStorageNeuralDataSet(final NeuralDataSet dataset) {
+	public NormalizationStorageNeuralDataSet(final MLDataSet dataset) {
 		this.dataset = dataset;
 		this.inputCount = this.dataset.getInputSize();
 		this.idealCount = this.dataset.getIdealSize();
@@ -127,7 +128,7 @@ public class NormalizationStorageNeuralDataSet implements NormalizationStorage {
 	/**
 	 * @return The dataset used.
 	 */
-	public NeuralDataSet getDataset() {
+	public MLDataSet getDataset() {
 		return dataset;
 	}
 	
