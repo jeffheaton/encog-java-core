@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.flat.train.prop;
+package org.encog.neural.networks.training.propagation.resilient;
 
 /**
  * Constants used for Resilient Propagation (RPROP) training.

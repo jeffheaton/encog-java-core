@@ -24,7 +24,6 @@
 package org.encog.neural.networks.training.propagation.quick;
 
 import org.encog.ml.data.MLDataSet;
-import org.encog.neural.flat.train.prop.TrainFlatNetworkQPROP;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.TrainingError;
@@ -50,6 +49,41 @@ public class QuickPropagation extends Propagation implements
 	 * Continuation tag for the last gradients.
 	 */
 	public static final String LAST_GRADIENTS = "LAST_GRADIENTS";
+	
+	/**
+	 * The learning rate.
+	 */
+	private double learningRate;
+
+	/**
+	 * The last delta values.
+	 */
+	private double[] lastDelta;
+
+	/**
+	 * This factor times the current weight is added to the slope 
+	 * at the start of each output epoch. Keeps weights from growing 
+	 * too big.
+	 */
+	private double decay = 0.0001d;
+
+	/**
+	 * Used to scale for the size of the training set.
+	 */
+	private double eps;
+
+	/**
+	 * Controls the amount of linear gradient descent 
+     * to use in updating output weights.
+	 */
+	private double outputEpsilon = 0.35;
+
+	/**
+	 * Used in computing whether the proposed step is 
+     * too large.  Related to learningRate.
+	 */
+	private double shrink;
+
 
 	/**
 	 * Construct a QPROP trainer for flat networks.  Uses a learning rate of 2.
@@ -80,10 +114,9 @@ public class QuickPropagation extends Propagation implements
 			final MLDataSet training, final double learnRate) {
 		super(network, training);
 		ValidateNetwork.validateMethodToData(network, training);
-		final TrainFlatNetworkQPROP backFlat = new TrainFlatNetworkQPROP(
-				network.getFlat(), getTraining(), learnRate);
-		setFlatTraining(backFlat);
-
+		
+		this.learningRate = learnRate;
+		this.lastDelta = new double[this.network.getFlat().getWeights().length];
 	}
 
 	/**
@@ -98,8 +131,7 @@ public class QuickPropagation extends Propagation implements
 	 * @return The last delta values.
 	 */
 	public final double[] getLastDelta() {
-		return ((TrainFlatNetworkQPROP) getFlatTraining())
-				.getLastDelta();
+		return this.lastDelta;
 	}
 
 	/**
@@ -109,8 +141,7 @@ public class QuickPropagation extends Propagation implements
 	 */
 	@Override
 	public final double getLearningRate() {
-		return ((TrainFlatNetworkQPROP) getFlatTraining())
-				.getLearningRate();
+		return this.learningRate;
 	}
 
 	/**
@@ -143,9 +174,7 @@ public class QuickPropagation extends Propagation implements
 	public final TrainingContinuation pause() {
 		final TrainingContinuation result = new TrainingContinuation();
 		result.setTrainingType(this.getClass().getSimpleName());
-		final TrainFlatNetworkQPROP qprop = (TrainFlatNetworkQPROP) getFlatTraining();
-		final double[] d = qprop.getLastGradient();
-		result.set(QuickPropagation.LAST_GRADIENTS, d);
+		result.set(QuickPropagation.LAST_GRADIENTS, this.getLastGradient());
 		return result;
 	}
 
@@ -164,8 +193,7 @@ public class QuickPropagation extends Propagation implements
 		final double[] lastGradient = (double[]) state
 				.get(QuickPropagation.LAST_GRADIENTS);
 
-		EngineArray.arrayCopy(lastGradient,
-				((TrainFlatNetworkQPROP) getFlatTraining()).getLastGradient());
+		EngineArray.arrayCopy(lastGradient,this.getLastGradient());
 	}
 
 	/**
@@ -178,32 +206,28 @@ public class QuickPropagation extends Propagation implements
 	 */
 	@Override
 	public final void setLearningRate(final double rate) {
-		((TrainFlatNetworkQPROP) getFlatTraining())
-				.setLearningRate(rate);
+		this.learningRate = rate;
 	}
 	
 	/**
 	 * @return the outputEpsilon
 	 */
 	public double getOutputEpsilon() {
-		return ((TrainFlatNetworkQPROP) getFlatTraining())
-		.getOutputEpsilon();
+		return this.outputEpsilon;
 	}
 
 	/**
 	 * @return the shrink
 	 */
 	public double getShrink() {
-		return ((TrainFlatNetworkQPROP) getFlatTraining())
-		.getShrink();
+		return this.shrink;
 	}
 
 	/**
-	 * @param shrink the shrink to set
+	 * @param s the shrink to set
 	 */
-	public void setShrink(double shrink) {
-		((TrainFlatNetworkQPROP) getFlatTraining())
-		.setShrink(shrink);
+	public void setShrink(double s) {
+		this.shrink = s;
 	}
 
 	/**
@@ -211,5 +235,76 @@ public class QuickPropagation extends Propagation implements
 	 */
 	public void setOutputEpsilon(double outputEpsilon) {
 		this.setOutputEpsilon( outputEpsilon);
+	}
+	
+	/**
+	 * Perform training method specific init.
+	 */
+	public void initOthers() {
+		this.eps = this.outputEpsilon / getTraining().getRecordCount();
+		this.shrink = this.learningRate / (1.0 + this.learningRate);
+				
+	}
+	
+	/**
+	 * Update a weight.
+	 * 
+	 * @param gradients
+	 *            The gradients.
+	 * @param lastGradient
+	 *            The last gradients.
+	 * @param index
+	 *            The index.
+	 * @return The weight delta.
+	 */
+	@Override
+	public final double updateWeight(final double[] gradients,
+			final double[] lastGradient, final int index) {
+
+		final double w = this.network.getFlat().getWeights()[index];
+		final double d = this.lastDelta[index];
+		final double s = -this.gradients[index] + this.decay * w;
+		final double p = -lastGradient[index];
+		double nextStep = 0.0;
+
+		// The step must always be in direction opposite to the slope.
+		if (d < 0.0) {
+			// If last step was negative...
+			if (s > 0.0) {
+				// Add in linear term if current slope is still positive.
+				nextStep -= this.eps * s;
+			}
+			// If current slope is close to or larger than prev slope...
+			if (s >= (this.shrink * p)) {
+				// Take maximum size negative step.
+				nextStep += this.learningRate * d;
+			} else {
+				// Else, use quadratic estimate.
+				nextStep += d * s / (p - s);
+			}
+		} else if (d > 0.0) {
+			// If last step was positive...
+			if (s < 0.0) {
+				// Add in linear term if current slope is still negative.
+				nextStep -= this.eps * s;
+			}
+			// If current slope is close to or more neg than prev slope...
+			if (s <= (this.shrink * p)) {
+				// Take maximum size negative step.
+				nextStep += this.learningRate * d; 
+			} else {
+				// Else, use quadratic estimate.
+				nextStep += d * s / (p - s); 
+			}
+		} else {
+			// Last step was zero, so use only linear term. 
+			nextStep -= this.eps * s;
+		}
+
+		// update global data arrays
+		this.lastDelta[index] = nextStep;
+		this.getLastGradient()[index] = gradients[index];
+
+		return nextStep;
 	}
 }

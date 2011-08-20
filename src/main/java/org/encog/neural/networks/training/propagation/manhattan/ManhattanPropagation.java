@@ -24,11 +24,11 @@
 package org.encog.neural.networks.training.propagation.manhattan;
 
 import org.encog.ml.data.MLDataSet;
-import org.encog.neural.flat.train.prop.TrainFlatNetworkManhattan;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
+import org.encog.neural.networks.training.propagation.resilient.RPROPConst;
 
 /**
  * One problem that the backpropagation technique has is that the magnitude of
@@ -53,6 +53,17 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 * The default tolerance to determine of a number is close to zero.
 	 */
 	static final double DEFAULT_ZERO_TOLERANCE = 0.001;
+	
+	/**
+	 * The zero tolerance to use.
+	 */
+	private final double zeroTolerance;
+
+	/**
+	 * The learning rate.
+	 */
+	private double learningRate;
+
 
 	/**
 	 * Construct a Manhattan propagation training object.
@@ -61,16 +72,16 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 *            The network to train.
 	 * @param training
 	 *            The training data to use.
-	 * @param learnRate
+	 * @param theLearnRate
 	 *            The learning rate.
 	 */
 	public ManhattanPropagation(final ContainsFlat network,
 			final MLDataSet training, 
-			final double learnRate) {
+			final double theLearnRate) {
 		super(network, training);
 
-		setFlatTraining(new TrainFlatNetworkManhattan(network
-				.getFlat(), getTraining(), learnRate));
+		this.learningRate = theLearnRate;
+		this.zeroTolerance = RPROPConst.DEFAULT_ZERO_TOLERANCE;
 
 	}
 
@@ -78,8 +89,7 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 * @return The learning rate that was specified in the constructor.
 	 */
 	public final double getLearningRate() {
-		return ((TrainFlatNetworkManhattan) getFlatTraining())
-				.getLearningRate();
+		return this.learningRate;
 	}
 
 	/**
@@ -89,8 +99,7 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 *            The new learning rate.
 	 */
 	public final void setLearningRate(final double rate) {
-		((TrainFlatNetworkManhattan) getFlatTraining())
-				.setLearningRate(rate);
+		this.learningRate = rate;
 	}
 
 	/**
@@ -120,4 +129,33 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 		
 	}
 
+	/**
+	 * Calculate the amount to change the weight by.
+	 * 
+	 * @param gradients
+	 *            The gradients.
+	 * @param lastGradient
+	 *            The last gradients.
+	 * @param index
+	 *            The index to update.
+	 * @return The amount to change the weight by.
+	 */
+	@Override
+	public final double updateWeight(final double[] gradients,
+			final double[] lastGradient, final int index) {
+		if (Math.abs(gradients[index]) < this.zeroTolerance) {
+			return 0;
+		} else if (gradients[index] > 0) {
+			return this.learningRate;
+		} else {
+			return -this.learningRate;
+		}
+	}
+	
+	/**
+	 * Perform training method specific init.
+	 */
+	public void initOthers() {
+		
+	}
 }

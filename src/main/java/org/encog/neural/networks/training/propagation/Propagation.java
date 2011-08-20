@@ -24,18 +24,24 @@
 package org.encog.neural.networks.training.propagation;
 
 import org.encog.EncogError;
+import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationSigmoid;
+import org.encog.mathutil.IntRange;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.BasicTraining;
 import org.encog.neural.error.ErrorFunction;
+import org.encog.neural.error.LinearErrorFunction;
 import org.encog.neural.flat.FlatNetwork;
-import org.encog.neural.flat.train.TrainFlatNetwork;
-import org.encog.neural.flat.train.prop.TrainFlatNetworkProp;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.Train;
 import org.encog.util.EncogValidate;
+import org.encog.util.EngineArray;
+import org.encog.util.concurrency.DetermineWorkload;
+import org.encog.util.concurrency.EngineConcurrency;
 import org.encog.util.concurrency.MultiThreadable;
+import org.encog.util.concurrency.TaskGroup;
 import org.encog.util.logging.EncogLogging;
 
 /**
@@ -49,19 +55,76 @@ import org.encog.util.logging.EncogLogging;
 public abstract class Propagation extends BasicTraining implements Train, MultiThreadable {
 
 	/**
-	 * The network.
-	 */
-	private final ContainsFlat network;
-
-	/**
 	 * The current flat network we are using for training, or null for none.
 	 */
 	private FlatNetwork currentFlatNetwork;
+	
+	/**
+	 * The number of threads to use.
+	 */
+	private int numThreads;
 
 	/**
-	 * The current flat trainer we are using, or null for none.
+	 * The gradients.
 	 */
-	private TrainFlatNetwork flatTraining;
+	protected double[] gradients;
+
+	/**
+	 * The last gradients, from the last training iteration.
+	 */
+	private final double[] lastGradient;
+
+	/**
+	 * The network to train.
+	 */
+	protected final ContainsFlat network;
+
+	/**
+	 * The network in indexable form.
+	 */
+	private final MLDataSet indexable;
+
+	/**
+	 * The workers.
+	 */
+	private GradientWorker[] workers;
+
+	/**
+	 * The total error. Used to take the average of.
+	 */
+	private double totalError;
+	
+	/**
+	 * The last error.
+	 */
+	protected double lastError;
+
+	/**
+	 * Reported exception from the threads.
+	 */
+	private Throwable reportedException;
+
+	/**
+	 * The iteration.
+	 */
+	private int iteration;
+
+	/**
+	 * The flat spot constants.
+	 */
+	private double[] flatSpot;
+	
+	/**
+	 * Should we fix flat spots.
+	 */
+	private boolean shouldFixFlatSpot;
+	
+	/**
+	 * The error function.
+	 */
+	private ErrorFunction ef = new LinearErrorFunction();
+
+	
 
 
 	/**
@@ -76,7 +139,16 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 			final MLDataSet training) {
 		super(TrainingImplementationType.Iterative);
 		this.network = network;
+		this.currentFlatNetwork = network.getFlat();
 		setTraining(training);
+
+		this.gradients = new double[this.currentFlatNetwork.getWeights().length];
+		this.lastGradient = new double[this.currentFlatNetwork.getWeights().length];
+
+		this.indexable = training;
+		this.numThreads = 0;
+		this.reportedException = null;
+		this.shouldFixFlatSpot = true;
 	}
 
 	/**
@@ -86,7 +158,6 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 	@Override
 	public final void finishTraining() {
 		super.finishTraining();
-		this.flatTraining.finishTraining();
 	}
 
 	/**
@@ -97,13 +168,6 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 	}
 
 	/**
-	 * @return the flatTraining
-	 */
-	public final TrainFlatNetwork getFlatTraining() {
-		return this.flatTraining;
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	public final MLMethod getMethod() {
@@ -111,22 +175,37 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 	}
 
 	/**
-	 * @return The number of threads.
-	 */
-	public final int getThreadCount() {
-		return this.flatTraining.getNumThreads();
-	}
-
-	/**
 	 * Perform one training iteration.
 	 */
-	public final void iteration() {
+	public void iteration() {
 		try {		
 			preIteration();
 
-			this.flatTraining.iteration();
-			setError(this.flatTraining.getError());
+			this.iteration++;
 
+			calculateGradients();
+
+			if (this.currentFlatNetwork.isLimited()) {
+				learnLimited();
+			} else {
+				learn();
+			}
+			
+			this.lastError = this.getError();
+
+			for (final GradientWorker worker : this.workers) {
+				EngineArray.arrayCopy(this.currentFlatNetwork.getWeights(), 0,
+						worker.getWeights(), 0, this.currentFlatNetwork.getWeights().length);
+			}
+
+			if (this.currentFlatNetwork.getHasContext()) {
+				copyContexts();
+			}
+
+			if (this.reportedException != null) {
+				throw (new EncogError(this.reportedException));
+			}
+			
 			postIteration();
 
 			EncogLogging.log(EncogLogging.LEVEL_INFO,"Training iteration done, error: "
@@ -151,9 +230,30 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 		try {
 			preIteration();
 
-			this.flatTraining.iteration(count);
-			setIteration(this.flatTraining.getIteration());
-			setError(this.flatTraining.getError());
+			this.iteration++;
+
+			calculateGradients();
+
+			if (this.currentFlatNetwork.isLimited()) {
+				learnLimited();
+			} else {
+				learn();
+			}
+			
+			this.lastError = this.getError();
+
+			for (final GradientWorker worker : this.workers) {
+				EngineArray.arrayCopy(this.currentFlatNetwork.getWeights(), 0,
+						worker.getWeights(), 0, this.currentFlatNetwork.getWeights().length);
+			}
+
+			if (this.currentFlatNetwork.getHasContext()) {
+				copyContexts();
+			}
+
+			if (this.reportedException != null) {
+				throw (new EncogError(this.reportedException));
+			}
 
 			postIteration();
 
@@ -168,14 +268,6 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 	}
 
 	/**
-	 * @param flatTraining
-	 *            the flatTraining to set
-	 */
-	public final void setFlatTraining(final TrainFlatNetwork flatTraining) {
-		this.flatTraining = flatTraining;
-	}
-
-	/**
 	 * Set the number of threads. Specify zero to tell Encog to automatically
 	 * determine the best number of threads for the processor. If OpenCL is used
 	 * as the target device, then this value is not used.
@@ -184,7 +276,12 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 	 *            The number of threads.
 	 */
 	public final void setThreadCount(final int numThreads) {
-		this.flatTraining.setNumThreads(numThreads);
+		this.numThreads = numThreads;
+	}
+	
+	@Override
+	public int getThreadCount() {
+		return this.numThreads;
 	}
 
 	/**
@@ -197,12 +294,186 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 	 * @param b True to fix flat spots, false otherwise.
 	 */
 	public void fixFlatSpot(boolean b) {
-		((TrainFlatNetworkProp) this.flatTraining).fixFlatSpot(b);
-		
+		this.shouldFixFlatSpot = b;		
 	}
 	
 	public void setErrorFunction(ErrorFunction ef) {
-		((TrainFlatNetworkProp) this.flatTraining).setErrorFunction(ef);
+		this.ef = ef;
+	}
+	
+	/**
+	 * Calculate the gradients.
+	 */
+	public void calculateGradients() {
+		if (this.workers == null) {
+			init();
+		}
+
+		if (this.currentFlatNetwork.getHasContext()) {
+			this.workers[0].getNetwork().clearContext();
+		}
+
+		this.totalError = 0;
+
+		if (this.workers.length > 1) {
+
+			final TaskGroup group = EngineConcurrency.getInstance()
+					.createTaskGroup();
+
+			for (final GradientWorker worker : this.workers) {
+				EngineConcurrency.getInstance().processTask(worker, group);
+			}
+
+			group.waitForComplete();
+		} else {
+			this.workers[0].run();
+		}
+
+		this.setError( this.totalError / this.workers.length );
+
 	}
 
+	/**
+	 * Copy the contexts to keep them consistent with multithreaded training.
+	 */
+	private void copyContexts() {
+
+		// copy the contexts(layer outputO from each group to the next group
+		for (int i = 0; i < (this.workers.length - 1); i++) {
+			final double[] src = this.workers[i].getNetwork().getLayerOutput();
+			final double[] dst = this.workers[i + 1].getNetwork()
+					.getLayerOutput();
+			EngineArray.arrayCopy(src, dst);
+		}
+
+		// copy the contexts from the final group to the real network
+		EngineArray.arrayCopy(this.workers[this.workers.length - 1]
+				.getNetwork().getLayerOutput(), this.currentFlatNetwork.getLayerOutput());
+	}
+	
+	/**
+	 * Init the process.
+	 */
+	private void init() {
+
+		// fix flat spot, if needed
+		this.flatSpot = new double[this.currentFlatNetwork.getActivationFunctions().length];
+
+		if (this.shouldFixFlatSpot) {
+			for (int i = 0; i < this.currentFlatNetwork.getActivationFunctions().length; i++) {
+				final ActivationFunction af = this.currentFlatNetwork
+						.getActivationFunctions()[i];
+				
+				if( af instanceof ActivationSigmoid ) {
+					this.flatSpot[i] = 0.1;
+				} else {
+					this.flatSpot[i] = 0.0;
+				}
+			}
+		} else {
+			EngineArray.fill(this.flatSpot, 0.0);
+		}
+		
+		
+		// setup workers
+		final DetermineWorkload determine = new DetermineWorkload(
+				this.numThreads, (int) this.indexable.getRecordCount());
+
+		this.workers = new GradientWorker[determine.getThreadCount()];
+
+		int index = 0;
+
+		// handle CPU
+		for (final IntRange r : determine.calculateWorkers()) {
+			this.workers[index++] = new GradientWorker(this.currentFlatNetwork.clone(),
+					this, this.indexable.openAdditional(), r.getLow(),
+					r.getHigh(), this.flatSpot, this.ef);
+		}
+		
+		initOthers();
+	}
+	
+	/**
+	 * Called by the worker threads to report the progress at each step.
+	 * 
+	 * @param gradients
+	 *            The gradients from that worker.
+	 * @param error
+	 *            The error for that worker.
+	 * @param ex
+	 *            The exception.
+	 */
+	public final void report(final double[] gradients, final double error,
+			final Throwable ex) {
+		synchronized (this) {
+			if (ex == null) {
+
+				for (int i = 0; i < gradients.length; i++) {
+					this.gradients[i] += gradients[i];
+				}
+				this.totalError += error;
+			} else {
+				this.reportedException = ex;
+			}
+		}
+	}
+	
+	/**
+	 * Apply and learn.
+	 */
+	protected void learn() {
+		final double[] weights = this.currentFlatNetwork.getWeights();
+		for (int i = 0; i < this.gradients.length; i++) {
+			weights[i] += updateWeight(this.gradients, this.lastGradient, i);
+			this.gradients[i] = 0;
+		}
+	}
+
+	/**
+	 * Apply and learn. This is the same as learn, but it checks to see if any
+	 * of the weights are below the limit threshold. In this case, these weights
+	 * are zeroed out. Having two methods allows the regular learn method, which
+	 * is what is usually use, to be as fast as possible.
+	 */
+	protected void learnLimited() {
+		final double limit = this.currentFlatNetwork.getConnectionLimit();
+		final double[] weights = this.currentFlatNetwork.getWeights();
+		for (int i = 0; i < this.gradients.length; i++) {
+			if (Math.abs(weights[i]) < limit) {
+				weights[i] = 0;
+			} else {
+				weights[i] += updateWeight(this.gradients, this.lastGradient, i);
+			}
+			this.gradients[i] = 0;
+		}
+	}
+
+
+	public abstract void initOthers();
+
+
+	/**
+	 * Update a weight, the means by which weights are updated vary depending on
+	 * the training.
+	 * 
+	 * @param gradients
+	 *            The gradients.
+	 * @param lastGradient
+	 *            The last gradients.
+	 * @param index
+	 *            The index.
+	 * @return The update value.
+	 */
+	public abstract double updateWeight(double[] gradients,
+			double[] lastGradient, int index);
+
+	/**
+	 * @return the lastGradient
+	 */
+	public double[] getLastGradient() {
+		return lastGradient;
+	}
+	
+	
+	
 }

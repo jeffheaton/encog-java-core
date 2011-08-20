@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.flat.train.prop;
+package org.encog.neural.networks.training.propagation;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.error.ErrorCalculation;
@@ -121,7 +121,7 @@ public class GradientWorker implements EngineTask {
 	/**
 	 * The owner.
 	 */
-	private final TrainFlatNetworkProp owner;
+	private final Propagation owner;
 	
 	/**
 	 * Derivative add constant.  Used to combat flat spot.
@@ -148,7 +148,7 @@ public class GradientWorker implements EngineTask {
 	 *            The high index to use in the training data.
 	 */
 	public GradientWorker(final FlatNetwork theNetwork,
-			final TrainFlatNetworkProp theOwner,
+			final Propagation theOwner,
 			final MLDataSet theTraining, final int theLow, 
 			final int theHigh, final double[] flatSpot, 
 			ErrorFunction ef) {

@@ -31,8 +31,8 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.factory.parse.ArchitectureParse;
 import org.encog.ml.train.MLTrain;
-import org.encog.neural.flat.train.prop.RPROPConst;
 import org.encog.neural.networks.ContainsFlat;
+import org.encog.neural.networks.training.propagation.resilient.RPROPConst;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.util.ParamsHolder;
 

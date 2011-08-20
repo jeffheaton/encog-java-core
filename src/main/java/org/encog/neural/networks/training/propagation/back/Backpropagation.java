@@ -24,7 +24,6 @@
 package org.encog.neural.networks.training.propagation.back;
 
 import org.encog.ml.data.MLDataSet;
-import org.encog.neural.flat.train.prop.TrainFlatNetworkBackPropagation;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.Momentum;
@@ -66,6 +65,22 @@ public class Backpropagation extends Propagation implements Momentum,
 	 * The resume key for backpropagation.
 	 */
 	public static final String LAST_DELTA = "LAST_DELTA";
+	
+	/**
+	 * The learning rate.
+	 */
+	private double learningRate;
+
+	/**
+	 * The momentum.
+	 */
+	private double momentum;
+
+	/**
+	 * The last delta values.
+	 */
+	private double[] lastDelta;
+
 
 	/**
 	 * Create a class to train using backpropagation. Use auto learn rate and
@@ -88,21 +103,21 @@ public class Backpropagation extends Propagation implements Momentum,
 	 *            The network that is to be trained
 	 * @param training
 	 *            The training set
-	 * @param learnRate
+	 * @param theLearnRate
 	 *            The rate at which the weight matrix will be adjusted based on
 	 *            learning.
-	 * @param momentum
+	 * @param theMomentum
 	 *            The influence that previous iteration's training deltas will
 	 *            have on the current iteration.
 	 */
 	public Backpropagation(final ContainsFlat network,
-			final MLDataSet training, final double learnRate,
-			final double momentum) {
+			final MLDataSet training, final double theLearnRate,
+			final double theMomentum) {
 		super(network, training);
 		ValidateNetwork.validateMethodToData(network, training);
-		final TrainFlatNetworkBackPropagation backFlat = new TrainFlatNetworkBackPropagation(
-				network.getFlat(), getTraining(), learnRate, momentum);
-		setFlatTraining(backFlat);
+		this.momentum = theMomentum;
+		this.learningRate = theLearnRate;
+		this.lastDelta = new double[network.getFlat().getWeights().length];
 
 	}
 
@@ -118,8 +133,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 * @return Ther last delta values.
 	 */
 	public final double[] getLastDelta() {
-		return ((TrainFlatNetworkBackPropagation) getFlatTraining())
-				.getLastDelta();
+		return this.lastDelta;
 	}
 
 	/**
@@ -129,8 +143,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 */
 	@Override
 	public final double getLearningRate() {
-		return ((TrainFlatNetworkBackPropagation) getFlatTraining())
-				.getLearningRate();
+		return this.learningRate;
 	}
 
 	/**
@@ -140,8 +153,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 */
 	@Override
 	public final double getMomentum() {
-		return ((TrainFlatNetworkBackPropagation) getFlatTraining())
-				.getMomentum();
+		return this.momentum;
 	}
 
 	/**
@@ -174,9 +186,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	public final TrainingContinuation pause() {
 		final TrainingContinuation result = new TrainingContinuation();
 		result.setTrainingType(this.getClass().getSimpleName());
-		final TrainFlatNetworkBackPropagation backFlat = (TrainFlatNetworkBackPropagation) getFlatTraining();
-		final double[] d = backFlat.getLastDelta();
-		result.set(Backpropagation.LAST_DELTA, d);
+		result.set(Backpropagation.LAST_DELTA, this.lastDelta);
 		return result;
 	}
 
@@ -192,8 +202,7 @@ public class Backpropagation extends Propagation implements Momentum,
 			throw new TrainingError("Invalid training resume data length");
 		}
 
-		((TrainFlatNetworkBackPropagation) getFlatTraining())
-				.setLastDelta((double[]) state.get(Backpropagation.LAST_DELTA));
+		this.lastDelta = ((double[]) state.get(Backpropagation.LAST_DELTA));
 
 	}
 
@@ -207,8 +216,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 */
 	@Override
 	public final void setLearningRate(final double rate) {
-		((TrainFlatNetworkBackPropagation) getFlatTraining())
-				.setLearningRate(rate);
+		this.learningRate = rate;
 	}
 
 	/**
@@ -221,7 +229,33 @@ public class Backpropagation extends Propagation implements Momentum,
 	 */
 	@Override
 	public final void setMomentum(final double m) {
-		((TrainFlatNetworkBackPropagation) getFlatTraining())
-				.setLearningRate(m);
+		this.momentum = m;
+	}
+	
+	/**
+	 * Update a weight.
+	 * 
+	 * @param gradients
+	 *            The gradients.
+	 * @param lastGradient
+	 *            The last gradients.
+	 * @param index
+	 *            The index.
+	 * @return The weight delta.
+	 */
+	@Override
+	public final double updateWeight(final double[] gradients,
+			final double[] lastGradient, final int index) {
+		final double delta = (gradients[index] * this.learningRate)
+				+ (this.lastDelta[index] * this.momentum);
+		this.lastDelta[index] = delta;
+		return delta;
+	}
+
+	/**
+	 * Perform training method specific init.
+	 */
+	public void initOthers() {
+		
 	}
 }

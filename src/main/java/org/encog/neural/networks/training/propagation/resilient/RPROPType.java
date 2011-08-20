@@ -1,4 +1,4 @@
-package org.encog.neural.flat.train.prop;
+package org.encog.neural.networks.training.propagation.resilient;
 
 /**
  * Allows the type of RPROP to be defined.  RPROPp is the classic RPROP.

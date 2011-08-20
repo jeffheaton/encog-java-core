@@ -25,9 +25,9 @@ package org.encog.neural.networks.training.concurrent.jobs;
 
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.strategy.Strategy;
-import org.encog.neural.flat.train.prop.RPROPConst;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.propagation.Propagation;
+import org.encog.neural.networks.training.propagation.resilient.RPROPConst;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 
 /**
