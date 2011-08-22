@@ -147,7 +147,7 @@ public class KMeansClustering implements MLClustering {
 		for (int i = 0; i < count; i++) {
 			final MLDataPair pair = BasicMLDataPair.createPair(
 					this.set.getInputSize(), this.set.getIdealSize());
-			this.set.getRecord(index, pair);
+			this.set.getRecord(i, pair);
 			result = Math.max(result, pair.getInputArray()[index]);
 		}
 		return result;
@@ -167,7 +167,7 @@ public class KMeansClustering implements MLClustering {
 				this.set.getInputSize(), this.set.getIdealSize());
 
 		for (int i = 0; i < count; i++) {
-			this.set.getRecord(index, pair);
+			this.set.getRecord(i, pair);
 			result = Math.min(result, pair.getInputArray()[index]);
 		}
 		return result;
