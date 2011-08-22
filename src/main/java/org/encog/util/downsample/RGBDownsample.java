@@ -113,7 +113,7 @@ public class RGBDownsample implements Downsample {
 		final double[] result = new double[height * width * 3];
 
 		final PixelGrabber grabber = new PixelGrabber(image, 0, 0,
-				this.imageWidth, this.imageWidth, true);
+				this.imageWidth, this.imageHeight, true);
 
 		try {
 			grabber.grabPixels();
