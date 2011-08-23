@@ -23,9 +23,10 @@
  */
 package org.encog.neural.networks.training.lma;
 
-import org.encog.mathutil.EncogMath;
-import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.mathutil.matrices.decomposition.LUDecomposition;
+import org.encog.mathutil.matrices.hessian.ComputeHessian;
+import org.encog.mathutil.matrices.hessian.HessianFD;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLData;
@@ -36,7 +37,6 @@ import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.train.BasicTraining;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
-import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.util.validate.ValidateNetwork;
 
@@ -44,32 +44,43 @@ import org.encog.util.validate.ValidateNetwork;
  * Trains a neural network using a Levenberg Marquardt algorithm (LMA). This
  * training technique is based on the mathematical technique of the same name.
  * 
+ * The LMA interpolates between the Gauss–Newton algorithm (GNA) and the 
+ * method of gradient descent (similar to what is used by backpropagation. 
+ * The lambda parameter determines the degree to which GNA and Gradient 
+ * Descent are used.  A lower lambda results in heavier use of GNA, 
+ * whereas a higher lambda results in a heavier use of gradient descent.
+ * 
+ * Each iteration starts with a low lambda that  builds if the improvement 
+ * to the neural network is not desirable.  At some point the lambda is
+ * high enough that the training method reverts totally to gradient descent.
+ * 
+ * This allows the neural network to be trained effectively in cases where GNA
+ * provides the optimal training time, but has the ability to fall back to the
+ * more primitive gradient descent method
+ *
+ * LMA finds only a local minimum, not a global minimum.
+ *  
+ * References:
+ * http://www.heatonresearch.com/wiki/LMA
  * http://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm
- * 
- * The LMA training technique has some important limitations that you should be
- * aware of, before using it.
- * 
- * Only neural networks that have a single output neuron can be used with this
- * training technique.
- * 
- * The entire training set must be loaded into memory. Because of this an
- * Indexable training set must be used.
- * 
- * However, despite these limitations, the LMA training technique can be a very
- * effective training method.
- * 
- * References: - http://www-alg.ist.hokudai.ac.jp/~jan/alpha.pdf -
+ * http://en.wikipedia.org/wiki/Finite_difference_method
+ * http://mathworld.wolfram.com/FiniteDifference.html 
+ * http://www-alg.ist.hokudai.ac.jp/~jan/alpha.pdf -
  * http://www.inference.phy.cam.ac.uk/mackay/Bayes_FAQ.html
+ * http://crsouza.blogspot.com/2009/11/neural-network-learning-by-levenberg_18.html
  * ----------------------------------------------------------------
  * 
- * This implementation of the Levenberg Marquardt algorithm is based heavily on code
- * published in an article by Cesar Roberto de Souza.  The original article can be
- * found here:
+ * This implementation of the Levenberg Marquardt replaces a previously used algorithm 
+ * that was based heavily on code published in an article by Cesar Roberto de Souza.  
  * 
- * http://crsouza.blogspot.com/2009/11/neural-network-learning-by-levenberg_18.html
+ * This replacement was added several major architectural issues in the Accord implementation.
+ * Specifically, this implementation is designed for the efficient flat structure
+ * of Encog neural networks, and not the threshold based method of AForge.
+ * Additionally, neural networks of multiple layers and multiple outputs are supported.
+ * Which were two major limitations of the Accord version.  
  * 
- * Portions of this class are under the following copyright/license.
- * Copyright 2009 by Cesar Roberto de Souza, Released under the LGPL.
+ * Finally, the calculation of the Jaccobian has been modified to be multi-threaded.
+ * When dealing with a multicore processor this provides a huge speed boost.
  * 
  */
 public class LevenbergMarquardtTraining extends BasicTraining {
@@ -83,26 +94,11 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	 * The max amount for the LAMBDA.
 	 */
 	public static final double LAMBDA_MAX = 1e25;
-
+	
 	/**
-	 * Number of points for finite difference.
+	 * Utility class to compute the Jacobian.
 	 */
-	public final static int NUM_POINTS = 3;
-
-	/**
-	 * Return the sum of the diagonal.
-	 * 
-	 * @param m
-	 *            The matrix to sum.
-	 * @return The trace of the matrix.
-	 */
-	public static double trace(final double[][] m) {
-		double result = 0.0;
-		for (int i = 0; i < m.length; i++) {
-			result += m[i][i];
-		}
-		return result;
-	}
+	private ComputeHessian jacobian;
 
 	/**
 	 * The network that is to be trained.
@@ -120,11 +116,9 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	private final int trainingLength;
 
 	/**
-	 * The number of "parameters" in the LMA algorithm. The parameters are what
-	 * the LMA adjusts to achieve the desired outcome. For neural network
-	 * optimization, the parameters are the weights and bias values.
+	 * How many weights are we dealing with?
 	 */
-	private final int parametersLength;
+	private final int weightCount;
 
 	/**
 	 * The neural network weights and bias values.
@@ -132,35 +126,10 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	private double[] weights;
 
 	/**
-	 * The "hessian" matrix, used by the LMA.
-	 */
-	private final Matrix hessianMatrix;
-
-	/**
-	 * The jacobian, a matrix of partial derivatives.
-	 */
-	private final double[][] jacobian;
-
-	/**
-	 * The "hessian" matrix as a 2d array.
-	 */
-	private final double[][] hessian;
-
-	/**
-	 * The beta is multiplied by the sum squared of the errors.
-	 */
-	private final double beta;
-
-	/**
 	 * The lambda, or damping factor. This is increased until a desirable
 	 * adjustment is found.
 	 */
 	private double lambda;
-
-	/**
-	 * The calculated gradients.
-	 */
-	private final double[] gradient;
 
 	/**
 	 * The diagonal of the hessian.
@@ -173,34 +142,9 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	private double[] deltas;
 
 	/**
-	 * Gamma, used for Bayesian regularization.
-	 */
-	private double gamma;
-
-	/**
 	 * The training elements.
 	 */
 	private final MLDataPair pair;
-
-	/**
-	 * The derivative step size for finite difference.
-	 */
-	private final double[] derivativeStepSize;
-	
-	/**
-	 * The coefficients for finite difference.
-	 */
-	private final double[][][] differentialCoefficients;
-	
-	/**
-	 * The derivitive step size.
-	 */
-	private final double DERIV_STEP = 1e-2;
-	
-	/**
-	 * The errors.
-	 */
-	private final double[] errors;
 
 	/**
 	 * Construct the LMA object.
@@ -214,169 +158,38 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 			final MLDataSet training) {
 		super(TrainingImplementationType.Iterative);
 		ValidateNetwork.validateMethodToData(network, training);
-		if (network.getOutputCount() != 1) {
-			throw new TrainingError(
-					"Levenberg Marquardt requires an output layer with a single neuron.");
-		}
 
 		setTraining(training);
 		this.indexableTraining = getTraining();
 		this.network = network;
 		this.trainingLength = (int) this.indexableTraining.getRecordCount();
-		this.parametersLength = this.network.getStructure().calculateSize();
-		this.hessianMatrix = new Matrix(this.parametersLength,
-				this.parametersLength);
-		this.hessian = this.hessianMatrix.getData();
-		this.beta = 1.0;
+		this.weightCount = this.network.getStructure().calculateSize();
 		this.lambda = 0.1;
-		this.deltas = new double[this.parametersLength];
-		this.gradient = new double[this.parametersLength];
-		this.diagonal = new double[this.parametersLength];
-		this.errors = new double[this.trainingLength];
-		this.jacobian = new double[this.trainingLength][this.parametersLength];
+		this.deltas = new double[this.weightCount];
+		this.diagonal = new double[this.weightCount];
 
 		final BasicMLData input = new BasicMLData(
 				this.indexableTraining.getInputSize());
 		final BasicMLData ideal = new BasicMLData(
 				this.indexableTraining.getIdealSize());
 		this.pair = new BasicMLDataPair(input, ideal);
+		
+		this.jacobian = new HessianFD();
+		this.jacobian.init(network, training);
 
-		// setup coefficient arrays for finite difference method
-		// create differential coefficient arrays
-		this.differentialCoefficients = CreateCoefficients(LevenbergMarquardtTraining.NUM_POINTS);
-		this.derivativeStepSize = new double[this.parametersLength];
 
-		// initialize arrays
-		for (int i = 0; i < this.parametersLength; i++) {
-			this.derivativeStepSize[i] = this.DERIV_STEP;
-		}
 	}
 
-	/**
-	 * Calculate the Hessian matrix.
-	 */
-	public void calculateHessian() {
-		for (int i = 0; i < this.parametersLength; i++) {
-			// Compute Jacobian Matrix Errors
-			double s = 0.0;
-			for (int j = 0; j < this.trainingLength; j++) {
-				s += this.jacobian[j][i] * this.errors[j];
-			}
-			this.gradient[i] = s;
-
-			// Compute Quasi-Hessian Matrix using Jacobian (H = J'J)
-			for (int j = 0; j < this.parametersLength; j++) {
-				double c = 0.0;
-				for (int k = 0; k < this.trainingLength; k++) {
-					c += this.jacobian[k][i] * this.jacobian[k][j];
-				}
-				this.hessian[i][j] = this.beta * c;
-			}
+	private void saveDiagonal() {
+		double[][] h = this.jacobian.getHessian();
+		for (int i = 0; i < this.weightCount; i++) {
+			this.diagonal[i] = h[i][i];
 		}
-
-		for (int i = 0; i < this.parametersLength; i++) {
-			this.diagonal[i] = this.hessian[i][i];
-		}
-	}
-
-	/**
-	 * Calculate the sum squared of the weights.
-	 * 
-	 * @return The sum squared of the weights.
-	 */
-	private double calculateSumOfSquaredWeights() {
-		double result = 0;
-
-		for (final double weight : this.weights) {
-			result += weight * weight;
-		}
-
-		return result / 2.0;
 	}
 
 	@Override
 	public boolean canContinue() {
 		return false;
-	}
-
-	private double computeDerivative(final MLData inputData, final int layer,
-			final int neuron, final int weight, final double[] stepSize,
-			final double networkOutput, final int jj) {
-		final int numPoints = this.differentialCoefficients.length;
-		double ret = 0.0;
-		double originalValue;
-
-		// Saves a copy of the original value in the neuron
-		originalValue = this.network.getWeight(layer, weight, neuron);
-
-		final double[] points = new double[numPoints];
-
-		if (originalValue != 0.0) {
-			stepSize[jj] = this.DERIV_STEP * Math.abs(originalValue);
-		} else {
-			stepSize[jj] = this.DERIV_STEP;
-		}
-
-		final int centerPoint = (numPoints - 1) / 2;
-
-		for (int i = 0; i < numPoints; i++) {
-			if (i != centerPoint) {
-				final double newValue = originalValue + ((i - centerPoint))
-						* stepSize[jj];
-
-				this.network.setWeight(layer, weight, neuron, newValue);
-
-				final MLData output = this.network.compute(inputData);
-				points[i] = output.getData(0);
-			} else {
-				points[i] = networkOutput;
-			}
-		}
-
-		ret = 0.0;
-		for (int i = 0; i < this.differentialCoefficients.length; i++) {
-			ret += this.differentialCoefficients[centerPoint][1][i] * points[i];
-		}
-
-		ret /= Math.pow(stepSize[jj], 1);
-
-		// Changes back the modified value
-		this.network.setWeight(layer, weight, neuron, originalValue);
-
-		return ret;
-	}
-
-	private double[][][] CreateCoefficients(final int points) {
-		final double[][][] coefficients = new double[points][points][points];
-
-		for (int i = 0; i < points; i++) {
-			final Matrix delts = new Matrix(points, points);
-			final double[][] ptr = delts.getData();
-
-			for (int j = 0; j < points; j++) {
-				final double delt = (j - i);
-				double hterm = 1.0;
-
-				for (int k = 0; k < points; k++) {
-					ptr[j][k] = hterm / EncogMath.factorial(k);
-					hterm *= delt;
-				}
-			}
-
-			final Matrix invMatrix = delts.inverse();
-			final double dNumPointsFactorial = EncogMath.factorial(points);
-
-			for (int j = 0; j < points; j++) {
-				for (int k = 0; k < points; k++) {
-					coefficients[i][j][k] = (Math
-							.round(invMatrix.getData()[j][k]
-									* dNumPointsFactorial))
-							/ dNumPointsFactorial;
-				}
-			}
-		}
-
-		return coefficients;
 	}
 
 	/**
@@ -386,7 +199,29 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	public MLMethod getMethod() {
 		return this.network;
 	}
-
+	
+	/**
+	 * @return The SSE error with the current weights.
+	 */
+	private double calculateError() {
+		ErrorCalculation result = new ErrorCalculation();
+		
+		for (int i = 0; i < this.trainingLength; i++) {
+			this.indexableTraining.getRecord(i, this.pair);
+			final MLData actual = this.network.compute(this.pair.getInput());
+			result.updateError(actual.getData(), this.pair.getIdeal().getData(),pair.getSignificance());
+		}		
+		
+		return result.calculateESS();
+	}
+	
+	private void applyLambda() {
+		double[][] h = this.jacobian.getHessian();
+		for (int i = 0; i < this.weightCount; i++) {
+			h[i][i] = this.diagonal[i] + this.lambda;
+		}
+	}
+	
 	/**
 	 * Perform one iteration.
 	 */
@@ -396,123 +231,49 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 		LUDecomposition decomposition = null;
 		preIteration();
 
+		this.jacobian.clear();
 		this.weights = NetworkCODEC.networkToArray(this.network);
+		
+		// for each output
+		double currentError = 0;
+		for(int i=0;i<network.getOutputCount();i++) {
+			this.jacobian.compute(i);			
+			currentError += this.jacobian.getSSE();
+		}
+		saveDiagonal();
 
-		double sumOfSquaredErrors = jacobianByFiniteDifference();
+		final double startingError = currentError;
+		boolean done = false;
 
-		// this.setError(j.getError());
-		calculateHessian();
+		while (!done) {
+			applyLambda();
+			decomposition = new LUDecomposition(this.jacobian.getHessianMatrix());
 
-		// Define the objective function
-		// bayesian regularization objective function
-		final double objective = this.beta * sumOfSquaredErrors;
-		double current = objective + 1.0;
+			if (decomposition.isNonsingular()) {
+				this.deltas = decomposition.Solve(this.jacobian.getGradients());
 
-		// Start the main Levenberg-Macquardt method
-		this.lambda /= LevenbergMarquardtTraining.SCALE_LAMBDA;
-
-		// We'll try to find a direction with less error
-		// (or where the objective function is smaller)
-		while ((current >= objective)
-				&& (this.lambda < LevenbergMarquardtTraining.LAMBDA_MAX)) {
-			this.lambda *= LevenbergMarquardtTraining.SCALE_LAMBDA;
-
-			// Update diagonal (Levenberg-Marquardt formula)
-			for (int i = 0; i < this.parametersLength; i++) {
-				this.hessian[i][i] = this.diagonal[i] + this.lambda;
+				updateWeights();
+				currentError = calculateError();				
 			}
-
-			// Decompose to solve the linear system
-			decomposition = new LUDecomposition(this.hessianMatrix);
-
-			// Check if the Jacobian has become non-invertible
-			if (!decomposition.isNonsingular()) {
-				continue;
+			
+			if (currentError >= startingError) {
+				this.lambda *= LevenbergMarquardtTraining.SCALE_LAMBDA;
+				if( this.lambda> LevenbergMarquardtTraining.LAMBDA_MAX ) {
+					this.lambda = LevenbergMarquardtTraining.LAMBDA_MAX;
+					done = true;
+				}
+			} else {
+				this.lambda /= LevenbergMarquardtTraining.SCALE_LAMBDA;
+				done = true;
 			}
-
-			// Solve using LU (or SVD) decomposition
-			this.deltas = decomposition.Solve(this.gradient);
-
-			// Update weights using the calculated deltas
-			updateWeights();
-
-			// Calculate the new error
-			sumOfSquaredErrors = 0.0;
-			for (int i = 0; i < this.trainingLength; i++) {
-				this.indexableTraining.getRecord(i, this.pair);
-				final MLData actual = this.network
-						.compute(this.pair.getInput());
-				final double e = this.pair.getIdeal().getData(0)
-						- actual.getData(0);
-				sumOfSquaredErrors += e * e;
-			}
-			sumOfSquaredErrors /= 2.0;
-
-			// Update the objective function
-			current = this.beta * sumOfSquaredErrors;
-
-			// If the object function is bigger than before, the method
-			// is tried again using a greater dumping factor.
 		}
 
-		// If this iteration caused a error drop, then next iteration
-		// will use a smaller damping factor.
-		this.lambda /= LevenbergMarquardtTraining.SCALE_LAMBDA;
-
-		setError(sumOfSquaredErrors);
+		setError(currentError);
 
 		postIteration();
 	}
 
-	/// <summary>
-	///   Calculates the Jacobian Matrix using Finite Differences
-	/// </summary>
-	/// <returns>Returns the sum of squared errors of the network divided by 2.</returns>
-	private double jacobianByFiniteDifference() {
-		double e;
-		double sumOfSquaredErrors = 0;
-		getTraining().getRecordCount();
 
-		int ji = 0;
-
-		// foreach training vector
-		for (final MLDataPair pair : getTraining()) {
-			final MLData networkOutput = this.network.compute(pair.getInput());
-
-			// Calculate network error to build the residuals vector
-			e = pair.getIdeal().getData(0) - networkOutput.getData(0);
-			this.errors[ji] = e;
-			sumOfSquaredErrors += e * e;
-
-			// Computation of one of the Jacobian Matrix rows by nummerical differentiation:
-			// for each weight wj in the network, we have to compute its partial
-			//   derivative to build the jacobian matrix.
-			int jj = 0;
-
-			// So, for each layer:
-			for (int layer = this.network.getLayerCount() - 1; layer > 0; layer--) {
-				// for each neuron:
-				for (int neuron = 0; neuron < this.network
-						.getLayerNeuronCount(layer); neuron++) {
-					// for each weight:
-					for (int weight = 0; weight < this.network
-							.getLayerTotalNeuronCount(layer - 1); weight++) {
-						// Compute its partial derivative
-						this.jacobian[ji][jj] = computeDerivative(
-								pair.getInput(), layer - 1, neuron, weight,
-								this.derivativeStepSize,
-								networkOutput.getData(0), jj);
-						jj++;
-					}
-				}
-			}
-
-			ji++;
-		}
-
-		// returns the sum of squared errors / 2
-		return sumOfSquaredErrors / 2.0;
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -531,9 +292,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	}
 
 	/**
-	 * Update the weights.
-	 * 
-	 * @return The sum squared of the weights.
+	 * Update the weights in the neural network.
 	 */
 	public void updateWeights() {
 		final double[] w = this.weights.clone();
@@ -544,4 +303,5 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 
 		NetworkCODEC.arrayToNetwork(w, this.network);
 	}
+
 }
