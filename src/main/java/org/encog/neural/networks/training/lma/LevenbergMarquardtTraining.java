@@ -26,7 +26,7 @@ package org.encog.neural.networks.training.lma;
 import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.mathutil.matrices.decomposition.LUDecomposition;
 import org.encog.mathutil.matrices.hessian.ComputeHessian;
-import org.encog.mathutil.matrices.hessian.HessianFD;
+import org.encog.mathutil.matrices.hessian.HessianCR;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLData;
@@ -96,9 +96,9 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	public static final double LAMBDA_MAX = 1e25;
 	
 	/**
-	 * Utility class to compute the Jacobian.
+	 * Utility class to compute the Hessian.
 	 */
-	private ComputeHessian jacobian;
+	private ComputeHessian hessian;
 
 	/**
 	 * The network that is to be trained.
@@ -174,14 +174,14 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 				this.indexableTraining.getIdealSize());
 		this.pair = new BasicMLDataPair(input, ideal);
 		
-		this.jacobian = new HessianFD();
-		this.jacobian.init(network, training);
+		this.hessian = new HessianCR();
+		this.hessian.init(network, training);
 
 
 	}
 
 	private void saveDiagonal() {
-		double[][] h = this.jacobian.getHessian();
+		double[][] h = this.hessian.getHessian();
 		for (int i = 0; i < this.weightCount; i++) {
 			this.diagonal[i] = h[i][i];
 		}
@@ -216,7 +216,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	}
 	
 	private void applyLambda() {
-		double[][] h = this.jacobian.getHessian();
+		double[][] h = this.hessian.getHessian();
 		for (int i = 0; i < this.weightCount; i++) {
 			h[i][i] = this.diagonal[i] + this.lambda;
 		}
@@ -231,14 +231,14 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 		LUDecomposition decomposition = null;
 		preIteration();
 
-		this.jacobian.clear();
+		this.hessian.clear();
 		this.weights = NetworkCODEC.networkToArray(this.network);
 		
 		// for each output
 		double currentError = 0;
 		for(int i=0;i<network.getOutputCount();i++) {
-			this.jacobian.compute(i);			
-			currentError += this.jacobian.getSSE();
+			this.hessian.compute(i);			
+			currentError += this.hessian.getSSE();
 		}
 		saveDiagonal();
 
@@ -247,10 +247,10 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 
 		while (!done) {
 			applyLambda();
-			decomposition = new LUDecomposition(this.jacobian.getHessianMatrix());
+			decomposition = new LUDecomposition(this.hessian.getHessianMatrix());
 
 			if (decomposition.isNonsingular()) {
-				this.deltas = decomposition.Solve(this.jacobian.getGradients());
+				this.deltas = decomposition.Solve(this.hessian.getGradients());
 
 				updateWeights();
 				currentError = calculateError();				
@@ -303,5 +303,22 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 
 		NetworkCODEC.arrayToNetwork(w, this.network);
 	}
+
+	/**
+	 * @return The Hessian calculation method used.
+	 */
+	public ComputeHessian getHessian() {
+		return hessian;
+	}
+
+	/**
+	 * Set the Hessian calculation method used.
+	 * @param hessian The Hessian.
+	 */
+	public void setHessian(ComputeHessian hessian) {
+		this.hessian = hessian;
+	}
+	
+	
 
 }
