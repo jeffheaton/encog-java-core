@@ -86,11 +86,6 @@ public class HessianCR extends BasicHessian {
 	private double[] weights;	
 	
 	/**
-	 * The sum of square error.
-	 */	
-	private double sse;
-	
-	/**
 	 * {@inheritDoc}
 	 */
 	public void init(BasicNetwork theNetwork, MLDataSet theTraining) {
@@ -100,7 +95,6 @@ public class HessianCR extends BasicHessian {
 		
 		this.training = theTraining;
 		this.network = theNetwork;
-		this.gradients = new double[weightCount];
 		
 		this.layerDelta = new double[flat.getLayerOutput().length];	
 		this.actual = new double[flat.getOutputCount()];

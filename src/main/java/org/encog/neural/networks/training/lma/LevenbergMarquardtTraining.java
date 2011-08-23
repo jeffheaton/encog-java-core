@@ -44,7 +44,7 @@ import org.encog.util.validate.ValidateNetwork;
  * Trains a neural network using a Levenberg Marquardt algorithm (LMA). This
  * training technique is based on the mathematical technique of the same name.
  * 
- * The LMA interpolates between the Gauss–Newton algorithm (GNA) and the 
+ * The LMA interpolates between the Gauss-Newton algorithm (GNA) and the 
  * method of gradient descent (similar to what is used by backpropagation. 
  * The lambda parameter determines the degree to which GNA and Gradient 
  * Descent are used.  A lower lambda results in heavier use of GNA, 
@@ -64,23 +64,10 @@ import org.encog.util.validate.ValidateNetwork;
  * http://www.heatonresearch.com/wiki/LMA
  * http://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm
  * http://en.wikipedia.org/wiki/Finite_difference_method
+ * http://crsouza.blogspot.com/2009/11/neural-network-learning-by-levenberg_18.html
  * http://mathworld.wolfram.com/FiniteDifference.html 
  * http://www-alg.ist.hokudai.ac.jp/~jan/alpha.pdf -
  * http://www.inference.phy.cam.ac.uk/mackay/Bayes_FAQ.html
- * http://crsouza.blogspot.com/2009/11/neural-network-learning-by-levenberg_18.html
- * ----------------------------------------------------------------
- * 
- * This implementation of the Levenberg Marquardt replaces a previously used algorithm 
- * that was based heavily on code published in an article by Cesar Roberto de Souza.  
- * 
- * This replacement was added several major architectural issues in the Accord implementation.
- * Specifically, this implementation is designed for the efficient flat structure
- * of Encog neural networks, and not the threshold based method of AForge.
- * Additionally, neural networks of multiple layers and multiple outputs are supported.
- * Which were two major limitations of the Accord version.  
- * 
- * Finally, the calculation of the Jaccobian has been modified to be multi-threaded.
- * When dealing with a multicore processor this provides a huge speed boost.
  * 
  */
 public class LevenbergMarquardtTraining extends BasicTraining {
@@ -156,6 +143,19 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	 */
 	public LevenbergMarquardtTraining(final BasicNetwork network,
 			final MLDataSet training) {
+		this(network,training,new HessianCR());
+	}
+	
+	/**
+	 * Construct the LMA object.
+	 * 
+	 * @param network
+	 *            The network to train. Must have a single output neuron.
+	 * @param training
+	 *            The training data to use. Must be indexable.
+	 */
+	public LevenbergMarquardtTraining(final BasicNetwork network,
+			final MLDataSet training, final ComputeHessian h) {
 		super(TrainingImplementationType.Iterative);
 		ValidateNetwork.validateMethodToData(network, training);
 
@@ -174,7 +174,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 				this.indexableTraining.getIdealSize());
 		this.pair = new BasicMLDataPair(input, ideal);
 		
-		this.hessian = new HessianCR();
+		this.hessian = h;
 		this.hessian.init(network, training);
 
 
@@ -309,16 +309,6 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	 */
 	public ComputeHessian getHessian() {
 		return hessian;
-	}
-
-	/**
-	 * Set the Hessian calculation method used.
-	 * @param hessian The Hessian.
-	 */
-	public void setHessian(ComputeHessian hessian) {
-		this.hessian = hessian;
-	}
-	
-	
+	}	
 
 }
