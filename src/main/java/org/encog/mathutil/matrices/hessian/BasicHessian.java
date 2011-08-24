@@ -23,6 +23,8 @@
  */
 package org.encog.mathutil.matrices.hessian;
 
+import java.util.Arrays;
+
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.flat.FlatNetwork;

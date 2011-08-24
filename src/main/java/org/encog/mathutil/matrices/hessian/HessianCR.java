@@ -116,32 +116,36 @@ public class HessianCR extends BasicHessian {
 	public void compute() {
 		double e;
 		int weightCount = this.network.getFlat().getWeights().length;
-		int row = 0;
+		
 		ErrorCalculation error = new ErrorCalculation();
 		double[] totDeriv = new double[weightCount];
-		
-		// Loop over every training element
-		for (final MLDataPair pair : this.training) {
-			final MLData networkOutput = this.network.compute(pair.getInput());
-			
-			EngineArray.fill(this.derivative, 0);
 
-			e = pair.getIdeal().getData(0) - networkOutput.getData(0);
-			error.updateError(networkOutput.getData(0), pair.getIdeal().getData(0));
-						
-			process(row,pair.getInputArray(),pair.getIdealArray());
-						
-			// calculate gradients
-			for(int i=0;i<this.weights.length;i++) {
-				this.gradients[i]+=e*this.derivative[i];
-				totDeriv[i]+=this.derivative[i];
+		for (int outputNeuron = 0; outputNeuron < this.network.getOutputCount(); outputNeuron++) {
+			EngineArray.fill(totDeriv, 0);
+			
+			// Loop over every training element
+			for (final MLDataPair pair : this.training) {
+				final MLData networkOutput = this.network.compute(pair
+						.getInput());
+
+				EngineArray.fill(this.derivative, 0);
+
+				e = pair.getIdeal().getData(outputNeuron) - networkOutput.getData(outputNeuron);
+				error.updateError(networkOutput.getData(outputNeuron), pair.getIdeal()
+						.getData(outputNeuron));
+
+				process(outputNeuron, pair.getInputArray(), pair.getIdealArray());
+
+				// calculate gradients
+				for (int i = 0; i < this.weights.length; i++) {
+					this.gradients[i] += e * this.derivative[i];
+					totDeriv[i] += this.derivative[i];
+				}
 			}
-			
-			
-			row++;
+			updateHessian(totDeriv);
 		}
 		
-		updateHessian(totDeriv);
+		
 
 		sse= error.calculateESS();
 	}
@@ -154,18 +158,23 @@ public class HessianCR extends BasicHessian {
 	 * @param ideal
 	 *            The ideal values.      
 	 */
-	private void process(int row, final double[] input, final double[] ideal) {
+	private void process(int outputNeuron, final double[] input, final double[] ideal) {
 				
 		this.network.compute(input, this.actual);
 
 		for (int i = 0; i < this.actual.length; i++) {
 
-			this.layerDelta[i] = this.flat.getActivationFunctions()[0]
-					.derivativeFunction(this.layerSums[i],this.layerOutput[i]);
+			if (i == outputNeuron) {
+				this.layerDelta[i] = this.flat.getActivationFunctions()[0]
+						.derivativeFunction(this.layerSums[i],
+								this.layerOutput[i]);
+			} else {
+				this.layerDelta[i] = 0;
+			}
 		}
 
 		for (int i = this.flat.getBeginTraining(); i < this.flat.getEndTraining(); i++) {
-			processLevel(row,i);
+			processLevel(i);
 		}
 	}
 
@@ -175,7 +184,7 @@ public class HessianCR extends BasicHessian {
 	 * @param currentLevel
 	 *            The level.
 	 */
-	private void processLevel(int row, final int currentLevel) {
+	private void processLevel(final int currentLevel) {
 		final int fromLayerIndex = this.layerIndex[currentLevel + 1];
 		final int toLayerIndex = this.layerIndex[currentLevel];
 		final int fromLayerSize = this.layerCounts[currentLevel + 1];

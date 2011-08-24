@@ -27,7 +27,7 @@ public class TestHessian extends TestCase {
 		}
 	}
 	
-	public void testDerivative() {
+	public void testSingleOutput() {
 		
 		BasicNetwork network = new BasicNetwork();
 		network.addLayer(new BasicLayer(null,true,2));
@@ -41,13 +41,40 @@ public class TestHessian extends TestCase {
 		
 		HessianFD testFD = new HessianFD(); 
 		testFD.init(network, trainingData);
-		testFD.compute(0);
+		testFD.compute();
 				
 		HessianCR testCR = new HessianCR(); 
 		testCR.init(network, trainingData);
-		testCR.compute(0);
+		testCR.compute();
 		
 		//dump(testFD, "FD");
+		//dump(testCR, "CR");
+		Assert.assertTrue(testCR.getHessianMatrix().equals(testFD.getHessianMatrix(), 4));
+	}
+	
+	public void testDualOutput() {
+		
+		BasicNetwork network = new BasicNetwork();
+		network.addLayer(new BasicLayer(null,true,2));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(),true,2));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(),false,2));
+		network.getStructure().finalizeStructure();
+		
+		(new ConsistentRandomizer(-1,1)).randomize(network);
+		
+		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL2);		
+		
+		HessianFD testFD = new HessianFD(); 
+		testFD.init(network, trainingData);
+		testFD.compute();
+		
+		//dump(testFD, "FD");
+				
+		HessianCR testCR = new HessianCR(); 
+		testCR.init(network, trainingData);
+		testCR.compute();
+		
+		
 		//dump(testCR, "CR");
 		Assert.assertTrue(testCR.getHessianMatrix().equals(testFD.getHessianMatrix(), 4));
 	}
