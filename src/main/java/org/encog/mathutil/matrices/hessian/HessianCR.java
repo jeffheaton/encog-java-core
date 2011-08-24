@@ -113,7 +113,7 @@ public class HessianCR extends BasicHessian {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void compute(int outputNeuron) {
+	public void compute() {
 		double e;
 		int weightCount = this.network.getFlat().getWeights().length;
 		int row = 0;
@@ -126,8 +126,8 @@ public class HessianCR extends BasicHessian {
 			
 			EngineArray.fill(this.derivative, 0);
 
-			e = pair.getIdeal().getData(outputNeuron) - networkOutput.getData(outputNeuron);
-			error.updateError(networkOutput.getData(outputNeuron), pair.getIdeal().getData(outputNeuron));
+			e = pair.getIdeal().getData(0) - networkOutput.getData(0);
+			error.updateError(networkOutput.getData(0), pair.getIdeal().getData(0));
 						
 			process(row,pair.getInputArray(),pair.getIdealArray());
 						

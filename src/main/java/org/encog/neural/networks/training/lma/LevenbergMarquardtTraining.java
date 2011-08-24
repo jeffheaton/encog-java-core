@@ -234,12 +234,8 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 		this.hessian.clear();
 		this.weights = NetworkCODEC.networkToArray(this.network);
 		
-		// for each output
-		double currentError = 0;
-		for(int i=0;i<network.getOutputCount();i++) {
-			this.hessian.compute(i);			
-			currentError += this.hessian.getSSE();
-		}
+		this.hessian.compute();			
+		double currentError = this.hessian.getSSE();
 		saveDiagonal();
 
 		final double startingError = currentError;

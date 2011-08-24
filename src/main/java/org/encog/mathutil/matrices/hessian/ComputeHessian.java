@@ -48,9 +48,8 @@ public interface ComputeHessian {
 	
 	/**
 	 * Compute the Hessian.
-	 * @param outputNeuron The output neuron to calculate for.
 	 */
-	void compute(int outputNeuron);
+	void compute();
 	
 	/**
 	 * The gradeints.

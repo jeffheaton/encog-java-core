@@ -98,7 +98,15 @@ public class HessianFD extends BasicHessian {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void compute(int outputNeuron) {
+	public void compute() {
+		this.sse = 0;
+		
+		for(int i=0;i<network.getOutputCount();i++) {
+			internalCompute(i);			
+		}
+	}
+	
+	private void internalCompute(int outputNeuron) {
 		double e;
 
 		int row = 0;
@@ -150,7 +158,7 @@ public class HessianFD extends BasicHessian {
 		
 		updateHessian(this.derivative);
 
-		sse= error.calculateESS();
+		sse+= error.calculateESS();
 	}
 	
 	/**
