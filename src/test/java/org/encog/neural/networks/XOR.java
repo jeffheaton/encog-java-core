@@ -46,6 +46,8 @@ public class XOR {
 
 		public static double XOR_IDEAL[][] = { { 0.0 }, { 1.0 }, { 1.0 }, { 0.0 } };
 		
+		public static double XOR_IDEAL2[][] = { { 1.0, 0.0 }, { 0.0,1.0 }, { 1.0,0.0 }, { 0.0,1.0 } };
+		
 		public static boolean verifyXOR(MLRegression network,double tolerance) 
 		{
 			for(int trainingSet=0;trainingSet<XOR.XOR_IDEAL.length;trainingSet++)
