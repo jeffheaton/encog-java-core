@@ -37,7 +37,9 @@ import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.train.BasicTraining;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
+import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
+import org.encog.util.concurrency.MultiThreadable;
 import org.encog.util.validate.ValidateNetwork;
 
 /**
@@ -70,7 +72,7 @@ import org.encog.util.validate.ValidateNetwork;
  * http://www.inference.phy.cam.ac.uk/mackay/Bayes_FAQ.html
  * 
  */
-public class LevenbergMarquardtTraining extends BasicTraining {
+public class LevenbergMarquardtTraining extends BasicTraining implements MultiThreadable {
 
 	/**
 	 * The amount to scale the lambda by.
@@ -305,6 +307,24 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	 */
 	public ComputeHessian getHessian() {
 		return hessian;
+	}
+
+	@Override
+	public int getThreadCount() {
+		if( this.hessian instanceof MultiThreadable ) {
+			return ((MultiThreadable)this.hessian).getThreadCount();
+		} else {
+			throw new TrainingError("The Hessian object in use("+this.hessian.getClass().toString()+") does not support multi-threaded mode.");
+		}
+	}
+
+	@Override
+	public void setThreadCount(int numThreads) {
+		if( this.hessian instanceof MultiThreadable ) {
+			((MultiThreadable)this.hessian).setThreadCount(numThreads);
+		} else {
+			throw new TrainingError("The Hessian object in use("+this.hessian.getClass().toString()+") does not support multi-threaded mode.");
+		}
 	}	
 
 }
