@@ -23,22 +23,31 @@
  */
 package org.encog.mathutil.matrices.hessian;
 
-import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.mathutil.error.ErrorCalculation;
+import org.encog.mathutil.IntRange;
 import org.encog.mathutil.matrices.Matrix;
-import org.encog.ml.data.MLData;
-import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.util.EngineArray;
+import org.encog.neural.networks.training.propagation.GradientWorker;
+import org.encog.util.concurrency.DetermineWorkload;
+import org.encog.util.concurrency.EngineConcurrency;
+import org.encog.util.concurrency.MultiThreadable;
+import org.encog.util.concurrency.TaskGroup;
 
 /**
  * Calculate the Hessian matrix using the chain rule method. 
  * 
  */
-public class HessianCR extends BasicHessian {
-
-	private ChainRuleWorker worker;
+public class HessianCR extends BasicHessian implements MultiThreadable {
+	
+	/**
+	 * The number of threads to use.
+	 */
+	private int numThreads;
+	
+	/**
+	 * The workers.
+	 */
+	private ChainRuleWorker[] workers;
 	
 	
 	/**
@@ -54,28 +63,84 @@ public class HessianCR extends BasicHessian {
 		
 		this.hessianMatrix = new Matrix(weightCount,weightCount);
 		this.hessian = this.hessianMatrix.getData();
-		this.worker = new ChainRuleWorker(theNetwork,theTraining);
+		
+		// create worker(s)
+		final DetermineWorkload determine = new DetermineWorkload(
+				this.numThreads, (int) this.training.getRecordCount());
+
+		this.workers = new ChainRuleWorker[determine.getThreadCount()];
+
+		int index = 0;
+
+		// handle CPU
+		for (final IntRange r : determine.calculateWorkers()) {
+			this.workers[index++] = new ChainRuleWorker(this.flat.clone(),
+					this.training.openAdditional(), r.getLow(),
+					r.getHigh());
+		}
+		
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
-	public void compute() {
+	public void compute() {		
+		clear();
 		double e = 0;
 		int weightCount = this.network.getFlat().getWeights().length;
 		
 		for (int outputNeuron = 0; outputNeuron < this.network.getOutputCount(); outputNeuron++) {
 		
-			worker.setOutputNeuron(outputNeuron);
-			worker.run();
-			e+=worker.getError();
-			
-			for(int i=0;i<weightCount;i++) {
-				this.gradients[i] += worker.getGradients()[i];
+			// handle context
+			if (this.flat.getHasContext()) {
+				this.workers[0].getNetwork().clearContext();
 			}
-			updateHessian(worker.getDerivative());			
+
+			if (this.workers.length > 1) {
+
+				final TaskGroup group = EngineConcurrency.getInstance()
+						.createTaskGroup();
+
+				for (final ChainRuleWorker worker : this.workers) {
+					worker.setOutputNeuron(outputNeuron);
+					EngineConcurrency.getInstance().processTask(worker, group);
+				}
+
+				group.waitForComplete();
+			} else {
+				this.workers[0].setOutputNeuron(outputNeuron);
+				this.workers[0].run();
+			}
+			
+			// aggregate workers
+
+			for (final ChainRuleWorker worker : this.workers) {
+				e+=worker.getError();
+				for(int i=0;i<weightCount;i++) {
+					this.gradients[i] += worker.getGradients()[i];
+				}
+				updateHessian(worker.getDerivative());
+			}
 		}
 		
 		sse= e/2;
+	}
+	
+	/**
+	 * Set the number of threads. Specify zero to tell Encog to automatically
+	 * determine the best number of threads for the processor. If OpenCL is used
+	 * as the target device, then this value is not used.
+	 * 
+	 * @param numThreads
+	 *            The number of threads.
+	 */
+	@Override
+	public final void setThreadCount(final int numThreads) {
+		this.numThreads = numThreads;
+	}
+	
+	@Override
+	public int getThreadCount() {
+		return this.numThreads;
 	}
 }

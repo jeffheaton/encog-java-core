@@ -5,6 +5,7 @@ import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.networks.BasicNetwork;
@@ -59,8 +60,6 @@ public class ChainRuleWorker implements EngineTask {
 	 */
 	private double[] weights;	
 	
-	private BasicNetwork network;
-	
 	private FlatNetwork flat;
 
 	private double[] derivative;
@@ -75,13 +74,22 @@ public class ChainRuleWorker implements EngineTask {
 	
 	private double error;
 	
-	public ChainRuleWorker(BasicNetwork theNetwork, MLDataSet theTraining) {
+	private int low;
+	
+	private int high;
+	
+	/**
+	 * The pair to use for training.
+	 */
+	private final MLDataPair pair;
+
+	
+	public ChainRuleWorker(FlatNetwork theNetwork, MLDataSet theTraining, int theLow, int theHigh) {
 		
-		int weightCount = theNetwork.getStructure().getFlat().getWeights().length;
+		int weightCount = theNetwork.getWeights().length;
 		
 		this.training = theTraining;
-		this.network = theNetwork;
-		this.flat = this.network.getFlat();
+		this.flat = theNetwork;
 		
 		this.layerDelta = new double[flat.getLayerOutput().length];	
 		this.actual = new double[flat.getOutputCount()];
@@ -96,7 +104,10 @@ public class ChainRuleWorker implements EngineTask {
 		this.layerOutput = flat.getLayerOutput();
 		this.layerSums = flat.getLayerSums();
 		this.layerFeedCounts = flat.getLayerFeedCounts();
-		
+		this.low = theLow;
+		this.high = theHigh;
+		this.pair = BasicMLDataPair.createPair(flat.getInputCount(), flat
+				.getOutputCount());
 	}
 	
 	
@@ -108,22 +119,16 @@ public class ChainRuleWorker implements EngineTask {
 		
 		
 		// Loop over every training element
-		for (final MLDataPair pair : this.training) {
-			final MLData networkOutput = this.network.compute(pair
-					.getInput());
-
+		for (int i = this.low; i <= this.high; i++) {
+			this.training.getRecord(i, this.pair);
+		
 			EngineArray.fill(this.derivative, 0);
 
-			double e = pair.getIdeal().getData(outputNeuron) - networkOutput.getData(outputNeuron);
-			this.error+=e*e;
+
 
 			process(outputNeuron, pair.getInputArray(), pair.getIdealArray());
 
-			// calculate gradients
-			for (int i = 0; i < this.weights.length; i++) {
-				this.gradients[i] += e * this.derivative[i];
-				totDeriv[i] += this.derivative[i];
-			}
+
 		}
 		
 	}
@@ -138,7 +143,10 @@ public class ChainRuleWorker implements EngineTask {
 	 */
 	private void process(int outputNeuron, final double[] input, final double[] ideal) {
 				
-		this.network.compute(input, this.actual);
+		this.flat.compute(input, this.actual);
+		
+		double e = ideal[outputNeuron] - this.actual[outputNeuron];
+		this.error+=e*e;
 
 		for (int i = 0; i < this.actual.length; i++) {
 
@@ -153,6 +161,12 @@ public class ChainRuleWorker implements EngineTask {
 
 		for (int i = this.flat.getBeginTraining(); i < this.flat.getEndTraining(); i++) {
 			processLevel(i);
+		}
+				
+		// calculate gradients
+		for (int j = 0; j < this.weights.length; j++) {
+			this.gradients[j] += e * this.derivative[j];
+			totDeriv[j] += this.derivative[j];
 		}
 	}
 
@@ -222,6 +236,10 @@ public class ChainRuleWorker implements EngineTask {
 
 	public double getError() {
 		return this.error;
+	}
+	
+	public FlatNetwork getNetwork() {
+		return this.flat;
 	}
 	
 }
