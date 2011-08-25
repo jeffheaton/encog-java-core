@@ -223,7 +223,7 @@ public class ChainRuleWorker implements EngineTask {
 	}
 	
 	public double[] getDerivative() {
-		return this.derivative;
+		return this.totDeriv;
 	}
 
 
