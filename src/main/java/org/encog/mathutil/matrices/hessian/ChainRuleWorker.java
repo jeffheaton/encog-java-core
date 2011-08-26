@@ -1,17 +1,42 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.mathutil.matrices.hessian;
 
 import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.mathutil.matrices.Matrix;
-import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.flat.FlatNetwork;
-import org.encog.neural.networks.BasicNetwork;
 import org.encog.util.EngineArray;
 import org.encog.util.concurrency.EngineTask;
 
+/**
+ * A threaded worker that is used to calculate the first derivatives of the
+ * output of the neural network. These values are ultimatly used to calculate
+ * the Hessian.
+ * 
+ */
 public class ChainRuleWorker implements EngineTask {
 
 	/**
@@ -53,29 +78,55 @@ public class ChainRuleWorker implements EngineTask {
 	 * The sums.
 	 */
 	private double[] layerSums;
-
 	
 	/**
 	 * The weights and thresholds.
 	 */
 	private double[] weights;	
 	
+	/**
+	 * The flat network.
+	 */
 	private FlatNetwork flat;
 
+	/**
+	 * The current first derivatives.
+	 */
 	private double[] derivative;
 	
+	/**
+	 * The training data.
+	 */
 	private MLDataSet training;
 	
+	/**
+	 * The output neuron to calculate for.
+	 */
 	private int outputNeuron;
 	
+	/**
+	 * The total first derivatives.
+	 */
 	private double[] totDeriv;
 	
+	/**
+	 * The gradients.
+	 */
 	private double[] gradients;
 	
+	/**
+	 * The error.
+	 */
 	private double error;
 	
+	/**
+	 * The low range.
+	 */
 	private int low;
 	
+	/**
+	 * The high range.
+	 */
 	private int high;
 	
 	/**
@@ -83,7 +134,13 @@ public class ChainRuleWorker implements EngineTask {
 	 */
 	private final MLDataPair pair;
 
-	
+	/**
+	 * Construct the chain rule worker.
+	 * @param theNetwork The network to calculate a Hessian for.
+	 * @param theTraining The training data.
+	 * @param theLow The low range.
+	 * @param theHigh The high range.
+	 */
 	public ChainRuleWorker(FlatNetwork theNetwork, MLDataSet theTraining, int theLow, int theHigh) {
 		
 		int weightCount = theNetwork.getWeights().length;
@@ -110,7 +167,10 @@ public class ChainRuleWorker implements EngineTask {
 				.getOutputCount());
 	}
 	
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void run() {
 		this.error = 0;
@@ -214,7 +274,6 @@ public class ChainRuleWorker implements EngineTask {
 		return outputNeuron;
 	}
 
-
 	/**
 	 * @param outputNeuron the outputNeuron to set
 	 */
@@ -222,6 +281,9 @@ public class ChainRuleWorker implements EngineTask {
 		this.outputNeuron = outputNeuron;
 	}
 	
+	/**
+	 * @return The first derivatives, used to calculate the Hessian.
+	 */
 	public double[] getDerivative() {
 		return this.totDeriv;
 	}
@@ -234,10 +296,16 @@ public class ChainRuleWorker implements EngineTask {
 		return gradients;
 	}
 
+	/**
+	 * @return The SSE error.
+	 */
 	public double getError() {
 		return this.error;
 	}
 	
+	/**
+	 * @return The flat network.
+	 */
 	public FlatNetwork getNetwork() {
 		return this.flat;
 	}

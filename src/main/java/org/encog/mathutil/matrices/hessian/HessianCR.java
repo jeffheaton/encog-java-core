@@ -139,6 +139,9 @@ public class HessianCR extends BasicHessian implements MultiThreadable {
 		this.numThreads = numThreads;
 	}
 	
+	/**
+	 * @return The thread count.
+	 */
 	@Override
 	public int getThreadCount() {
 		return this.numThreads;
