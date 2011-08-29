@@ -255,11 +255,6 @@ public class PruneSelective {
 			connections += outBoundConnections * increaseBy;
 		}
 
-		// increase layer count
-		final int flatLayer = this.network.getLayerCount() - targetLayer - 1;
-		flat.getLayerCounts()[flatLayer] += increaseBy;
-		flat.getLayerFeedCounts()[flatLayer] += increaseBy;
-
 		// allocate new weights now that we know how big the new weights will be
 		final double[] newWeights = new double[connections];
 
@@ -288,6 +283,11 @@ public class PruneSelective {
 				}
 			}
 		}
+		
+		// increase layer count
+		final int flatLayer = this.network.getLayerCount() - targetLayer - 1;
+		flat.getLayerCounts()[flatLayer] += increaseBy;
+		flat.getLayerFeedCounts()[flatLayer] += increaseBy;
 
 		// swap in the new weights
 		flat.setWeights(newWeights);
