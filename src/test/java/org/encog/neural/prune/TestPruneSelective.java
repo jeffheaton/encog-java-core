@@ -25,6 +25,7 @@ package org.encog.neural.prune;
 
 import junit.framework.TestCase;
 
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.XOR;
@@ -157,6 +158,19 @@ public class TestPruneSelective extends TestCase {
 		checkWithModel(model.getStructure().getFlat(),network.getStructure().getFlat());
 		
 		Assert.assertTrue( XOR.verifyXOR(network, 0.10) );
+	}
+	
+	public void testIncreaseNeuronCountHidden2()
+	{
+		BasicNetwork network = EncogUtility.simpleFeedForward(5,6,0,2,true);
+		PruneSelective prune = new PruneSelective(network);
+		prune.changeNeuronCount(1, 60);
+		
+		BasicMLData input = new BasicMLData(5);
+		BasicNetwork model = EncogUtility.simpleFeedForward(5,60,0,2,true);
+		checkWithModel(model.getStructure().getFlat(),network.getStructure().getFlat());
+		model.compute(input);
+		network.compute(input);
 	}
 	
 	public void testRandomizeNeuronInput()
