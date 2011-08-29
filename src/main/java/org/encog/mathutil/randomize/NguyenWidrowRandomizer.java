@@ -76,14 +76,9 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 		
 		BasicNetwork network = (BasicNetwork)method;
 
-		new RangeRandomizer(getMin(), getMax()).randomize(network);
+		new RangeRandomizer(-0.5, 0.5).randomize(network);
 
-		int hiddenNeurons = 0;
-
-		for(int i=1;i<network.getLayerCount()-1;i++)
-		{
-			hiddenNeurons+=network.getLayerNeuronCount(i);
-		}
+		int hiddenNeurons = network.getLayerNeuronCount(1);
 
 		// can't really do much, use regular randomization
 		if (hiddenNeurons < 1) {
@@ -92,39 +87,23 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 
 		this.inputCount = network.getInputCount();
 		this.beta = 0.7 * Math.pow(hiddenNeurons, 1.0 / network.getInputCount());
-
-		super.randomize(network);
-	}
-	
-	/**
-	 * Randomize one level of a neural network.
-	 * @param network The network to randomize
-	 * @param fromLayer The from level to randomize.
-	 */
-	public void randomize(final BasicNetwork network, int fromLayer)
-	{
-		int fromCount = network.getLayerTotalNeuronCount(fromLayer);
-		int toCount = network.getLayerNeuronCount(fromLayer+1);
+		int totalInput = network.getLayerTotalNeuronCount(0);
 		
-		for(int toNeuron = 0; toNeuron<toCount; toNeuron++)
-		{
-			double n = 0.0;
-            for (int fromNeuron = 0; fromNeuron < fromCount; fromNeuron++)
-            {
-            	double w = network.getWeight(fromLayer, fromNeuron, toNeuron);
-                n += w*w;
-            }
-            n = Math.sqrt(n);
+		for( int i = 0; i<hiddenNeurons;i++) {
+			// calculate mag
+			double mag = 0;
+			for(int j=0; j<totalInput;j++) {
+				double w = network.getWeight(0, j, i);
+				mag+=w*w;
+			}
+			mag = Math.sqrt(mag);
 			
-			
-            for (int fromNeuron = 0; fromNeuron < fromCount; fromNeuron++)
-			{
-            	double w = network.getWeight(fromLayer, fromNeuron, toNeuron);
-            	w = beta * w / n;
-				network.setWeight(fromLayer, fromNeuron, toNeuron, w);
+			// now adjust weights
+			for(int j=0; j<totalInput;j++) {
+				double w = network.getWeight(0, j, i);
+				w=(this.beta*w)/mag;
+				network.setWeight(0, j, i, w);
 			}
 		}
 	}
-
-
 }
