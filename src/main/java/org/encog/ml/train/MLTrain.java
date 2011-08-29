@@ -32,22 +32,22 @@ import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
 /**
- * Defines a training method for a machine learning method.  Most MLMethod 
+ * Defines a training method for a machine learning method. Most MLMethod
  * objects need to be trained in some way before they are ready for use.
- *
+ * 
  */
 public interface MLTrain {
-	
+
 	/**
 	 * @return The training implementation type.
 	 */
 	TrainingImplementationType getImplementationType();
-	
+
 	/**
 	 * @return True if training can progress no further.
 	 */
 	boolean isTrainingDone();
-	
+
 	/**
 	 * @return The training data to use.
 	 */
@@ -57,11 +57,15 @@ public interface MLTrain {
 	 * Perform one iteration of training.
 	 */
 	void iteration();
-	
+
 	/**
-	 * Get the current error percent from the training.
-	 * 
-	 * @return The current error.
+	 * @return Returns the training error. This value is calculated as the
+	 *         training data is evaluated by the iteration function. This has
+	 *         two important ramifications. First, the value returned by
+	 *         getError() is meaningless prior to a call to iteration. Secondly,
+	 *         the error is calculated BEFORE training is applied by the call to
+	 *         iteration. The timing of the error calculation is done for
+	 *         performance reasons.
 	 */
 	double getError();
 
@@ -75,23 +79,25 @@ public interface MLTrain {
 	 * training techniques.
 	 */
 	void finishTraining();
-	
+
 	/**
 	 * Perform a number of training iterations.
-	 * @param count The number of iterations to perform.
+	 * 
+	 * @param count
+	 *            The number of iterations to perform.
 	 */
 	void iteration(int count);
-	
+
 	/**
 	 * @return The current training iteration.
 	 */
 	int getIteration();
-	
+
 	/**
 	 * @return True if the training can be paused, and later continued.
 	 */
 	boolean canContinue();
-	
+
 	/**
 	 * Pause the training to continue later.
 	 * 
@@ -127,7 +133,6 @@ public interface MLTrain {
 	 * @return The strategies to use.
 	 */
 	List<Strategy> getStrategies();
-	
 
 	/**
 	 * @param error
@@ -135,12 +140,13 @@ public interface MLTrain {
 	 *            strategies.
 	 */
 	void setError(double error);
-			
+
 	/**
 	 * Set the current training iteration.
-	 * @param iteration Iteration.
+	 * 
+	 * @param iteration
+	 *            Iteration.
 	 */
 	void setIteration(int iteration);
-
 
 }
