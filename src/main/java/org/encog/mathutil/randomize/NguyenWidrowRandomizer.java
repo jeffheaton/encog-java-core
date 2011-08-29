@@ -55,6 +55,14 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 	}
 	
 	/**
+	 * Construct a Nguyen-Widrow randomizer, with the standard range of -0.5 to +0.5,
+	 * as specified in the origional paper from which this class is based.
+	 */
+	public NguyenWidrowRandomizer() {
+		super(-0.5, 0.5);
+	}
+	
+	/**
 	 * The <i>Nguyen-Widrow</i> initialization algorithm is the following :
 	 * <br>
 	 * 1. Initialize all weight of hidden layers with (ranged) random values<br>
@@ -76,7 +84,7 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 		
 		BasicNetwork network = (BasicNetwork)method;
 
-		new RangeRandomizer(-0.5, 0.5).randomize(network);
+		new RangeRandomizer(getMin(), getMax()).randomize(network);
 
 		int hiddenNeurons = network.getLayerNeuronCount(1);
 
