@@ -89,9 +89,7 @@ public abstract class BasicTraining implements MLTrain {
 	}
 
 	/**
-	 * Get the current error percent from the training.
-	 * 
-	 * @return The current error.
+	 * {@inheritDoc}
 	 */
 	public double getError() {
 		return this.error;
