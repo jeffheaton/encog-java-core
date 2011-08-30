@@ -36,6 +36,10 @@ public class TestPersistNEAT extends TestCase {
 	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
 	public final File SERIAL_FILENAME = TEMP_DIR.createFile("encogtest.ser");
 		
+	public void testNothing() {
+		
+	}
+	
 	private NEATNetwork create()
 	{
 /*		List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();

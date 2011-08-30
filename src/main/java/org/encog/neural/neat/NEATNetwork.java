@@ -23,9 +23,6 @@
  */
 package org.encog.neural.neat;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.BasicML;
@@ -35,7 +32,7 @@ import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
-import org.encog.neural.NeuralNetworkError;
+import org.encog.util.EngineArray;
 import org.encog.util.simple.EncogUtility;
 
 /**
@@ -62,7 +59,7 @@ import org.encog.util.simple.EncogUtility;
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLError {
+public class NEATNetwork extends BasicML implements MLRegression, MLError {
 
 	/**
 	 * The serial ID.
@@ -86,42 +83,53 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLE
 	private int networkDepth;
 	
 	private int inputCount;
-	private int outputCount;
-	
-	private int activationCycles = 1;
+	private int outputCount;	
+	private int activationCycles = 1;	
+	private int[] sourceNeuronIndex;
+	private int[] targetNeuronIndex;
+	private double[] weights;
+	private ActivationFunction[] activation;
+	private double[] neuronSums;
+	private double[] neuronOutput;
+	private int inputAndBiasNeuronCount;
+	private int cycles;
+	private double stabilityThreshold = Double.MAX_VALUE;
 
 
-	/**
-	 * Default constructor.
-	 */
-	public NEATNetwork() {
+    public NEATNetwork(	
+    		int[] theSourceNeuronIndex,
+    		int[] theTargetNeuronIndex,
+    		double[] theWeights,
+    		ActivationFunction[] theActivationFunctions,
+            int neuronCount,
+            int inputNeuronCount,
+            int outputNeuronCount,
+            int theCycles)
+    {
+    	// copy weights and source/target indexes
+    	this.sourceNeuronIndex = EngineArray.arrayCopy(theSourceNeuronIndex);
+    	this.targetNeuronIndex = EngineArray.arrayCopy(theTargetNeuronIndex);
+    	this.weights = EngineArray.arrayCopy(theWeights);
+    	
 
-	}
+    	// copy the activation functions
+    	this.activation = new ActivationFunction[theActivationFunctions.length];
+    	for(int i=0;i<theActivationFunctions.length;i++) {
+    		this.activation[i] = theActivationFunctions[i];
+    	}
 
+    	// setup other properties
+    	neuronSums = new double[neuronCount];
+    	neuronOutput = new double[neuronCount];
 
+    	this.inputCount = inputNeuronCount;
+    	this.inputAndBiasNeuronCount = inputNeuronCount+1;
+        this.outputCount = outputNeuronCount;
+        this.cycles = theCycles;
 
-	/**
-	 * Construct a NEAT network.
-	 * 
-	 * @param inputCount
-	 *            The input count.
-	 * @param outputCount
-	 *            The output count.
-	 */
-	public NEATNetwork(final int inputCount, final int outputCount) {
-		this.inputCount = inputCount;
-		this.outputCount = outputCount;
-		this.networkDepth = 0;
-		this.activationFunction = new ActivationSigmoid();
-	}
-
-	/**
-	 * Clear any context from previous runs. This sets the activation of all
-	 * neurons to zero.
-	 */
-	public void clearContext() {
-
-	}
+        // bias is always 1.0
+        this.neuronOutput[0] = 1.0;
+    }
 
 	/**
 	 * Compute the output from this synapse.
@@ -131,9 +139,51 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLE
 	 * @return The output from this synapse.
 	 */
 	public MLData compute(final MLData input) {
-		final MLData result = new BasicMLData(this.outputCount);
+		double[] work = new double[1];
+		
+		// reset the state of the neural network
+		for(int i=inputAndBiasNeuronCount; i<neuronOutput.length; i++) {
+        	neuronSums[i] = 0.0;
+        	neuronOutput[i] = 0.0;
+        }
+				
+		// copy the input array in
+		EngineArray.arrayCopy(input.getData(), 0, this.neuronOutput, 1, this.inputCount);
+		
+		// calculate the output for the neural network
+		int cyclesLeft = this.cycles;
+		boolean stable = false;
+		
+		// begin the main calculation loop
+		while(cyclesLeft>0 && !stable ) {
+			
+			for (int j = 0; j < weights.length; j++) {
+				neuronSums[targetNeuronIndex[j]] += neuronOutput[sourceNeuronIndex[j]]
+						* weights[j];
+			}
 
-		return null;
+			stable = true;
+			
+			for (int j = inputAndBiasNeuronCount; j < neuronSums.length; j++) {
+				work[0] = neuronSums[j];
+				activation[j].activationFunction(work, 0, 1);
+				
+                if(Math.abs(work[0] - neuronOutput[j]) > stabilityThreshold) {
+                    stable = false;
+                }
+				
+				neuronOutput[j] = work[0];
+				neuronSums[j] = 0;
+			}
+			
+			cyclesLeft--;
+		}
+		
+		// copy the values from the output neurons
+		final MLData result = new BasicMLData(this.outputCount);
+		EngineArray.arrayCopy(result.getData(), 0, this.neuronOutput, this.inputCount+1, this.outputCount);
+		
+		return result;
 	}
 
 	/**
@@ -213,13 +263,11 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLE
 		return EncogUtility.calculateRegressionError(this,data);
 	}
 
-	public int getActivationCycles() {
-		return activationCycles;
+	public double getStabilityThreshold() {
+		return stabilityThreshold;
 	}
 
-	public void setActivationCycles(int activationCycles) {
-		this.activationCycles = activationCycles;
+	public void setStabilityThreshold(double stabilityThreshold) {
+		this.stabilityThreshold = stabilityThreshold;
 	}	
-	
-	
 }
