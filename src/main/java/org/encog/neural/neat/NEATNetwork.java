@@ -84,11 +84,6 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLE
 	 * The depth of the network.
 	 */
 	private int networkDepth;
-
-	/**
-	 * The neurons that make up this network.
-	 */
-	private final List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
 	
 	private int inputCount;
 	private int outputCount;
@@ -103,33 +98,7 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLE
 
 	}
 
-	/**
-	 * Construct a NEAT synapse.
-	 * 
-	 * @param inputCount
-	 *            The number of input neurons.
-	 * @param outputCount
-	 *            The number of output neurons.
-	 * @param neurons
-	 *            The neurons in this synapse.
-	 * @param activationFunction
-	 *            The activation function to use.
-	 * @param networkDepth
-	 *            The depth of the network.
-	 */
-	public NEATNetwork(final int inputCount, 
-			final int outputCount,
-			final List<NEATNeuron> neurons,
-			final ActivationFunction activationFunction,
-			final ActivationFunction outputActivationFunction,
-			final int networkDepth) {
-		this.inputCount = inputCount;
-		this.outputCount = outputCount;
-		this.outputActivationFunction = outputActivationFunction;
-		this.neurons.addAll(neurons);
-		this.networkDepth = networkDepth;
-		this.activationFunction = activationFunction;
-	}
+
 
 	/**
 	 * Construct a NEAT network.
@@ -151,9 +120,7 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLE
 	 * neurons to zero.
 	 */
 	public void clearContext() {
-		for (final NEATNeuron neuron : this.neurons) {
-			neuron.setOutput(0);
-		}
+
 	}
 
 	/**
@@ -166,58 +133,7 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLE
 	public MLData compute(final MLData input) {
 		final MLData result = new BasicMLData(this.outputCount);
 
-		if (this.neurons.size() == 0) {
-			throw new NeuralNetworkError(
-"This network has not been evolved yet, it has no neurons in the NEAT synapse.");
-		}
-
-		// iterate through the network FlushCount times
-		for (int i = 0; i < activationCycles; ++i) {
-			int outputIndex = 0;
-			int index = 0;
-
-			result.clear();
-
-			// populate the input neurons
-			while (this.neurons.get(index).getNeuronType() 
-					== NEATNeuronType.Input) {
-				this.neurons.get(index).setOutput(input.getData(index));
-
-				index++;
-			}
-
-			// set the bias neuron
-			this.neurons.get(index++).setOutput(1);
-
-			while (index < this.neurons.size()) {
-
-				final NEATNeuron currentNeuron = this.neurons.get(index);
-
-				double sum = 0;
-
-				for (final NEATLink link : currentNeuron.getInboundLinks()) {
-					final double weight = link.getWeight();
-					final double neuronOutput = link.getFromNeuron()
-							.getOutput();
-					sum += weight * neuronOutput;
-				}
-
-				final double[] d = new double[1];
-				d[0] = sum / currentNeuron.getActivationResponse();
-				this.activationFunction.activationFunction(d,0,d.length);
-
-				this.neurons.get(index).setOutput(d[0]);
-
-				if (currentNeuron.getNeuronType() == NEATNeuronType.Output) {
-					result.setData(outputIndex++, currentNeuron.getOutput());
-				}
-				index++;
-			}
-		}
-		
-		this.outputActivationFunction.activationFunction(result.getData(), 0, result.size());
-
-		return result;
+		return null;
 	}
 
 	/**
@@ -232,13 +148,6 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLE
 	 */
 	public int getNetworkDepth() {
 		return this.networkDepth;
-	}
-
-	/**
-	 * @return The NEAT neurons.
-	 */
-	public List<NEATNeuron> getNeurons() {
-		return this.neurons;
 	}
 
 	/**

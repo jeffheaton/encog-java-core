@@ -24,18 +24,13 @@
 package org.encog.neural.neat.training;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.genetic.genes.Gene;
 import org.encog.ml.genetic.genome.BasicGenome;
 import org.encog.ml.genetic.genome.Chromosome;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.neat.NEATLink;
-import org.encog.neural.neat.NEATNetwork;
-import org.encog.neural.neat.NEATNeuron;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.neat.NEATPopulation;
 
@@ -550,6 +545,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 
 		NEATPopulation pop = (NEATPopulation)this.getPopulation();
 		
+		/*
 		final List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
 
 		for (final Gene gene : getNeurons().getGenes()) {
@@ -593,7 +589,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		
 		
 		network.setActivationCycles(pop.getActivationCycles());		
-		setOrganism(network);		
+		setOrganism(network);	*/	
 	}
 
 	/**
