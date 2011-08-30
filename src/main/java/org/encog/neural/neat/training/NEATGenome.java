@@ -24,20 +24,16 @@
 package org.encog.neural.neat.training;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.genetic.genes.Gene;
 import org.encog.ml.genetic.genome.BasicGenome;
 import org.encog.ml.genetic.genome.Chromosome;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.neat.NEATLink;
-import org.encog.neural.neat.NEATNetwork;
-import org.encog.neural.neat.NEATNeuron;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.neat.NEATPopulation;
+import org.encog.neural.neat.decode.DecodeGenome;
 
 /**
  * Implements a NEAT genome. This is a "blueprint" for creating a neural
@@ -547,53 +543,9 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * Convert the genes to an actual network.
 	 */
 	public void decode() {
-
+		
 		NEATPopulation pop = (NEATPopulation)this.getPopulation();
-		
-		final List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
-
-		for (final Gene gene : getNeurons().getGenes()) {
-			final NEATNeuronGene neuronGene = (NEATNeuronGene) gene;
-			final NEATNeuron neuron = new NEATNeuron(
-					neuronGene.getNeuronType(), neuronGene.getId(), neuronGene
-							.getSplitY(), neuronGene.getSplitX(), neuronGene
-							.getActivationResponse());
-
-			neurons.add(neuron);
-		}
-
-		// now to create the links.
-		for (final Gene gene : getLinks().getGenes()) {
-			final NEATLinkGene linkGene = (NEATLinkGene) gene;
-			if (linkGene.isEnabled()) {
-				int element = getElementPos(linkGene.getFromNeuronID());
-				final NEATNeuron fromNeuron = neurons.get(element);
-
-				element = getElementPos(linkGene.getToNeuronID());
-				if( element==-1 ) {
-					System.out.println("test");
-				}
-				final NEATNeuron toNeuron = neurons.get(element);
-
-				final NEATLink link = new NEATLink(linkGene.getWeight(),
-						fromNeuron, toNeuron, linkGene.isRecurrent());
-
-				fromNeuron.getOutputboundLinks().add(link);
-				toNeuron.getInboundLinks().add(link);
-
-			}
-		}
-
-		NEATNetwork network = new NEATNetwork(inputCount, 
-				outputCount,
-				neurons,
-				pop.getNeatActivationFunction(), 
-				pop.getOutputActivationFunction(),
-				0);
-		
-		
-		network.setActivationCycles(pop.getActivationCycles());		
-		setOrganism(network);		
+		setOrganism(DecodeGenome.decode(this));
 	}
 
 	/**
