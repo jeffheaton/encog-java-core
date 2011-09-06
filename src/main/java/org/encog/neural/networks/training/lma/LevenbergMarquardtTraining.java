@@ -63,14 +63,10 @@ import org.encog.util.validate.ValidateNetwork;
  * LMA finds only a local minimum, not a global minimum.
  *  
  * References:
- * 
- * C. R. Souza. (2009). Neural Network Learning by the Levenberg-Marquardt Algorithm 
- * with Bayesian Regularization. Website, available from: 
- * http://crsouza.blogspot.com/2009/11/neural-network-learning-by-levenberg_18.html
- * 
  * http://www.heatonresearch.com/wiki/LMA
  * http://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm
  * http://en.wikipedia.org/wiki/Finite_difference_method
+ * http://crsouza.blogspot.com/2009/11/neural-network-learning-by-levenberg_18.html
  * http://mathworld.wolfram.com/FiniteDifference.html 
  * http://www-alg.ist.hokudai.ac.jp/~jan/alpha.pdf -
  * http://www.inference.phy.cam.ac.uk/mackay/Bayes_FAQ.html
