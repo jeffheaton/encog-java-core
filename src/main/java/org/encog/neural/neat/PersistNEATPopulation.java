@@ -310,7 +310,11 @@ public class PersistNEATPopulation implements EncogPersistor {
 			out.addColumn(species.getGensNoImprovement());
 			out.addColumn(species.getNumToSpawn());
 			out.addColumn(species.getSpawnsRequired());
-			out.addColumn(species.getLeader().getGenomeID());
+			if( species.getLeader()==null ) {
+				out.addColumn(-1);
+			} else {
+				out.addColumn(species.getLeader().getGenomeID());
+			}
 			out.writeLine();
 		}
 		out.flush();
