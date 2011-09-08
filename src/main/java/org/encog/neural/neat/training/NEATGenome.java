@@ -293,7 +293,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 				final NEATNeuronGene neuron1 = chooseRandomNeuron(true);
 				final NEATNeuronGene neuron2 = chooseRandomNeuron(false);
 
-				if (!isDuplicateLink(neuron1ID, neuron2ID)
+				if (!isDuplicateLink(neuron1.getId(), neuron2.getId())
 						&& (neuron1.getId() != neuron2.getId())
 						&& (neuron2.getNeuronType() != NEATNeuronType.Bias)) {
 
@@ -522,7 +522,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * Choose a random neuron.
 	 *
 	 * @param includeInput
-	 *            Should the input neurons be included.
+	 *            Should the input and bias neurons be included.
 	 * @return The random neuron.
 	 */
 	private NEATNeuronGene chooseRandomNeuron(final boolean includeInput) {
@@ -897,8 +897,5 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 */
 	public void setOutputCount(int outputCount) {
 		this.outputCount = outputCount;
-	}
-
-	
-	
+	}	
 }
