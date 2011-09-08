@@ -60,11 +60,11 @@ public class EncoderTrainingFactory {
 		for (int i = 0; i < inputCount; i++) {
 			for (int j = 0; j < inputCount; j++) {
 				if (compl) {
-					input[i][j] = (j == i) ? inputMin : inputMax;
-					ideal[i][j] = (j == i) ? outputMin : outputMax;
+					input[i][j] = (j == i) ? inputMax : inputMin;
+					ideal[i][j] = (j == i) ? outputMin : outputMax;					
 				} else {
 					input[i][j] = (j == i) ? inputMax : inputMin;
-					ideal[i][j] = (j == i) ? outputMin : outputMax;
+					ideal[i][j] = (j == i) ? inputMax : inputMin;
 				}				
 			}
 		}
