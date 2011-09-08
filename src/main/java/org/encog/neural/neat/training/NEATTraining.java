@@ -398,13 +398,12 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 
 		int curMom = 0; // current gene index from mom
 		int curDad = 0; // current gene index from dad
-
-		
+		NEATLinkGene selectedGene = null;
 
 		while ((curMom < mom.getNumGenes()) || (curDad < dad.getNumGenes())) {
 			NEATLinkGene momGene = null; // the mom gene object
 			NEATLinkGene dadGene = null; // the dad gene object
-			NEATLinkGene selectedGene = null;
+			
 
 			// grab the actual objects from mom and dad for the specified indexes
 			// if there are none, then null

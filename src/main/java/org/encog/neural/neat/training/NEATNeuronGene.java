@@ -47,7 +47,6 @@ public class NEATNeuronGene extends BasicGene implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	public static final String PROPERTY_ACT_RESPONSE = "aResp";
-	public static final String PROPERTY_RECURRENT = "recurrent";
 	public static final String PROPERTY_SPLIT_X = "splitX";
 	public static final String PROPERTY_SPLIT_Y = "splitY";
 	
@@ -60,11 +59,6 @@ public class NEATNeuronGene extends BasicGene implements Serializable {
 	 * The neuron type.
 	 */
 	private NEATNeuronType neuronType;
-
-	/**
-	 * True if this is recurrent.
-	 */
-	private boolean recurrent;
 
 	/**
 	 * The x-split.
@@ -97,7 +91,7 @@ public class NEATNeuronGene extends BasicGene implements Serializable {
 	 */
 	public NEATNeuronGene(final NEATNeuronType type, final long id,
 			final double splitY, final double splitX) {
-		this(type, id, splitY, splitX, false, 1.0);
+		this(type, id, splitY, splitX, 1.0);
 	}
 
 	/**
@@ -111,19 +105,16 @@ public class NEATNeuronGene extends BasicGene implements Serializable {
 	 *            The split y.
 	 * @param splitX
 	 *            The split x.
-	 * @param recurrent
-	 *            True if this is a recurrent link.
 	 * @param act
 	 *            The activation response.
 	 */
 	public NEATNeuronGene(final NEATNeuronType type, final long id,
-			final double splitY, final double splitX, final boolean recurrent,
+			final double splitY, final double splitX, 
 			final double act) {
 		this.neuronType = type;
 		setId(id);
 		this.splitX = splitX;
 		this.splitY = splitY;
-		this.recurrent = recurrent;
 		this.activationResponse = act;
 	}
 
@@ -138,7 +129,6 @@ public class NEATNeuronGene extends BasicGene implements Serializable {
 		this.activationResponse = other.activationResponse;
 		setId(other.getId());
 		this.neuronType = other.neuronType;
-		this.recurrent = other.recurrent;
 		this.splitX = other.splitX;
 		this.splitY = other.splitY;
 
@@ -173,13 +163,6 @@ public class NEATNeuronGene extends BasicGene implements Serializable {
 	}
 
 	/**
-	 * @return True if this is recurrent.
-	 */
-	public boolean isRecurrent() {
-		return this.recurrent;
-	}
-
-	/**
 	 * Set the activation response.
 	 * 
 	 * @param activationResponse
@@ -197,16 +180,6 @@ public class NEATNeuronGene extends BasicGene implements Serializable {
 	 */
 	public void setNeuronType(final NEATNeuronType neuronType) {
 		this.neuronType = neuronType;
-	}
-
-	/**
-	 * Set if this is a recurrent neuron.
-	 * 
-	 * @param recurrent
-	 *            True if this is a recurrent neuron.
-	 */
-	public void setRecurrent(final boolean recurrent) {
-		this.recurrent = recurrent;
 	}
 
 	/**

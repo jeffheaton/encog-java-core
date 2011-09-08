@@ -138,7 +138,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			final NEATNeuronGene oldGene = (NEATNeuronGene) gene;
 			final NEATNeuronGene newGene = new NEATNeuronGene(oldGene
 					.getNeuronType(), oldGene.getId(), oldGene.getSplitY(),
-					oldGene.getSplitX(), oldGene.isRecurrent(), oldGene
+					oldGene.getSplitX(), oldGene
 							.getActivationResponse());
 			getNeurons().add(newGene);
 		}
@@ -270,40 +270,17 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 
 		boolean recurrent = false;
 
-		// a self-connected loop?
-		if (Math.random() < chanceOfLooped) {
+		// try to add a link
+		while ((countTrysToAddLink--) > 0) {
+			final NEATNeuronGene neuron1 = chooseRandomNeuron(true);
+			final NEATNeuronGene neuron2 = chooseRandomNeuron(false);
 
-			// try to find(randomly) a neuron to add a self-connected link to
-			while ((countTrysToFindLoop--) > 0) {
-				final NEATNeuronGene neuronGene = chooseRandomNeuron(false);
+			if (!isDuplicateLink(neuron1.getId(), neuron2.getId())
+					&& (neuron2.getNeuronType() != NEATNeuronType.Bias)) {
 
-				// no self-links on input or bias neurons
-				if (!neuronGene.isRecurrent()
-					&& (neuronGene.getNeuronType() != NEATNeuronType.Bias)
-					&& (neuronGene.getNeuronType() != NEATNeuronType.Input)) {
-					neuron1ID = neuronGene.getId();
-					neuron2ID = neuronGene.getId();
-					
-					neuronGene.setRecurrent(true);
-					recurrent = true;
-
-					countTrysToFindLoop = 0;
-				}
-			}
-		} else {
-			// try to add a regular link
-			while ((countTrysToAddLink--) > 0) {
-				final NEATNeuronGene neuron1 = chooseRandomNeuron(true);
-				final NEATNeuronGene neuron2 = chooseRandomNeuron(false);
-
-				if (!isDuplicateLink(neuron1.getId(), neuron2.getId())
-						&& (neuron1.getId() != neuron2.getId())
-						&& (neuron2.getNeuronType() != NEATNeuronType.Bias)) {
-
-					neuron1ID = neuron1.getId();
-					neuron2ID = neuron2.getId();
-					break;
-				}
+				neuron1ID = neuron1.getId();
+				neuron2ID = neuron2.getId();
+				break;
 			}
 		}
 
@@ -911,20 +888,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			NEATNeuronGene gene = (NEATNeuronGene)this.neuronsChromosome.getGene(i);
 			if( gene.getNeuronType()!=NEATNeuronType.Input ) {
 				throw new EncogError("NEAT Neuron Gene " + i + " should be an input gene.");
-			}
-		}
-		
-		// make sure recurrent is valid on every gene
-		for(int i=0;i<this.neuronsChromosome.size();i++) {
-			NEATNeuronGene gene = (NEATNeuronGene)this.neuronsChromosome.getGene(i);
-			if( gene.isRecurrent() ) {
-				if( !this.isDuplicateLink(gene.getId(), gene.getId()) ) {
-					throw new EncogError("Gene marked recurrent, but that is not so!");
-				}
-			} else {
-				if( this.isDuplicateLink(gene.getId(), gene.getId()) ) {
-					throw new EncogError("Gene marked non-recurrent, but that is not so!");
-				}
 			}
 		}
 		
