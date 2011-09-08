@@ -62,7 +62,7 @@ import org.encog.util.simple.EncogUtility;
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLError {
+public class NEATNetwork extends BasicML implements MLRegression, MLError {
 
 	/**
 	 * The serial ID.
@@ -147,16 +147,6 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLE
 	}
 
 	/**
-	 * Clear any context from previous runs. This sets the activation of all
-	 * neurons to zero.
-	 */
-	public void clearContext() {
-		for (final NEATNeuron neuron : this.neurons) {
-			neuron.setOutput(0);
-		}
-	}
-
-	/**
 	 * Compute the output from this synapse.
 	 * 
 	 * @param input
@@ -167,8 +157,12 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLE
 		final MLData result = new BasicMLData(this.outputCount);
 
 		if (this.neurons.size() == 0) {
-			throw new NeuralNetworkError(
-"This network has not been evolved yet, it has no neurons in the NEAT synapse.");
+			throw new NeuralNetworkError("This network has not been evolved yet.");
+		}
+		
+		// clear from previous run
+		for (final NEATNeuron neuron : this.neurons) {
+			neuron.setOutput(0);
 		}
 
 		// iterate through the network FlushCount times

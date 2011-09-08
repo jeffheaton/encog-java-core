@@ -213,7 +213,7 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 
 		add(newInnovation);
 
-		return (this.nextNeuronID - 1); // ??????? should it be innov?
+		return (this.nextNeuronID - 1); 
 	}
 
 	public void setPopulation(NEATPopulation population) {
