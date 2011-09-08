@@ -334,6 +334,50 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 	public boolean canContinue() {
 		return false;
 	}
+	
+	/**
+	 * Choose a parent to favor.
+	 * @param mom The mother.
+	 * @param dad The father.
+	 * @return The parent to favor.
+	 */
+	private NEATParent favorParent(final NEATGenome mom, final NEATGenome dad) {
+		
+		// first determine who is more fit, the mother or the father?
+		// see if mom and dad are the same fitness
+		if (mom.getScore() == dad.getScore()) {
+			// are mom and dad the same fitness
+			if (mom.getNumGenes() == dad.getNumGenes()) {
+				// if mom and dad are the same fitness and have the same number of genes, 
+				// then randomly pick mom or dad as the most fit.
+				if (Math.random() > 0) {
+					return NEATParent.Mom;
+				} else {
+					return NEATParent.Dad;
+				}
+			}
+			// mom and dad are the same fitness, but different number of genes
+			// favor the parent with fewer genes
+			else {
+				if (mom.getNumGenes() < dad.getNumGenes()) {
+					return NEATParent.Mom;
+				} else {
+					return NEATParent.Dad;
+				}
+			}
+		} else {
+			// mom and dad have different scores, so choose the better score.
+			// important to note, better score COULD BE the larger or smaller score.
+			if (getComparator().isBetterThan(mom.getScore(), dad.getScore())) {
+				return NEATParent.Mom;
+			}
+
+			else {
+				return NEATParent.Dad;
+			}
+		}
+		
+	}
 
 	/**
 	 * Perform the crossover.
@@ -345,62 +389,34 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 	 * @return The child.
 	 */
 	public NEATGenome crossover(final NEATGenome mom, final NEATGenome dad) {
-		NEATParent best;
-
-		// first determine who is more fit, the mother or the father?
-		if (mom.getScore() == dad.getScore()) {
-			if (mom.getNumGenes() == dad.getNumGenes()) {
-				if (Math.random() > 0) {
-					best = NEATParent.Mom;
-				} else {
-					best = NEATParent.Dad;
-				}
-			}
-
-			else {
-				if (mom.getNumGenes() < dad.getNumGenes()) {
-					best = NEATParent.Mom;
-				} else {
-					best = NEATParent.Dad;
-				}
-			}
-		} else {
-			if (getComparator().isBetterThan(mom.getScore(), dad.getScore())) {
-				best = NEATParent.Mom;
-			}
-
-			else {
-				best = NEATParent.Dad;
-			}
-		}
+		NEATParent best = favorParent(mom,dad);
 
 		final Chromosome babyNeurons = new Chromosome();
 		final Chromosome babyGenes = new Chromosome();
 
 		final List<Long> vecNeurons = new ArrayList<Long>();
 
-		int curMom = 0;
-		int curDad = 0;
+		int curMom = 0; // current gene index from mom
+		int curDad = 0; // current gene index from dad
 
-		NEATLinkGene momGene;
-		NEATLinkGene dadGene;
-
-		NEATLinkGene selectedGene = null;
+		
 
 		while ((curMom < mom.getNumGenes()) || (curDad < dad.getNumGenes())) {
+			NEATLinkGene momGene = null; // the mom gene object
+			NEATLinkGene dadGene = null; // the dad gene object
+			NEATLinkGene selectedGene = null;
 
+			// grab the actual objects from mom and dad for the specified indexes
+			// if there are none, then null
 			if (curMom < mom.getNumGenes()) {
 				momGene = (NEATLinkGene) mom.getLinks().get(curMom);
-			} else {
-				momGene = null;
-			}
+			} 
 
 			if (curDad < dad.getNumGenes()) {
 				dadGene = (NEATLinkGene) dad.getLinks().get(curDad);
-			} else {
-				dadGene = null;
-			}
+			} 
 
+			// now select a gene for mom or dad.  This gene is for the baby
 			if ((momGene == null) && (dadGene != null)) {
 				if (best == NEATParent.Dad) {
 					selectedGene = dadGene;
@@ -431,14 +447,11 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 				}
 				curMom++;
 				curDad++;
-
 			}
 
 			if (babyGenes.size() == 0) {
 				babyGenes.add(selectedGene);
-			}
-
-			else {
+			} else {
 				if (((NEATLinkGene) babyGenes.get(babyGenes.size() - 1))
 						.getInnovationId() != selectedGene.getInnovationId()) {
 					babyGenes.add(selectedGene);
@@ -466,6 +479,8 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 				mom.getOutputCount());
 		babyGenome.setGeneticAlgorithm(this);
 		babyGenome.setPopulation(getPopulation());
+		
+		babyGenome.validate();
 
 		return babyGenome;
 	}

@@ -26,8 +26,11 @@ package org.encog.neural.neat.training;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.encog.EncogError;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.genetic.genes.Gene;
 import org.encog.ml.genetic.genome.BasicGenome;
@@ -280,7 +283,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 					&& (neuronGene.getNeuronType() != NEATNeuronType.Input)) {
 					neuron1ID = neuronGene.getId();
 					neuron2ID = neuronGene.getId();
-
+					
 					neuronGene.setRecurrent(true);
 					recurrent = true;
 
@@ -308,7 +311,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		if ((neuron1ID < 0) || (neuron2ID < 0)) {
 			return;
 		}
-
+		
 		// check to see if this innovation has already been tried
 		final NEATInnovation innovation = ((NEATTraining) getGeneticAlgorithm())
 				.getInnovations().checkInnovation(neuron1ID, neuron1ID,
@@ -320,7 +323,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 				.get(getElementPos(neuron1ID));
 		if (neuronGene.getSplitY() > neuronGene.getSplitY()) {
 			recurrent = true;
-		}
+		}		
 
 		// is this a new innovation?
 		if (innovation == null) {
@@ -343,6 +346,8 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 					RangeRandomizer.randomize(-1, 1), recurrent);
 			this.linksChromosome.add(linkGene);
 		}
+		
+		validate();
 	}
 
 	/**
@@ -547,7 +552,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * Convert the genes to an actual network.
 	 */
 	public void decode() {
-
+		validate();
 		NEATPopulation pop = (NEATPopulation)this.getPopulation();
 		
 		final List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
@@ -898,4 +903,64 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	public void setOutputCount(int outputCount) {
 		this.outputCount = outputCount;
 	}	
+	
+	public void validate() {
+		
+		// make sure all input neurons are at the beginning
+		for(int i=0;i<this.inputCount;i++) {
+			NEATNeuronGene gene = (NEATNeuronGene)this.neuronsChromosome.getGene(i);
+			if( gene.getNeuronType()!=NEATNeuronType.Input ) {
+				throw new EncogError("NEAT Neuron Gene " + i + " should be an input gene.");
+			}
+		}
+		
+		// make sure recurrent is valid on every gene
+		for(int i=0;i<this.neuronsChromosome.size();i++) {
+			NEATNeuronGene gene = (NEATNeuronGene)this.neuronsChromosome.getGene(i);
+			if( gene.isRecurrent() ) {
+				if( !this.isDuplicateLink(gene.getId(), gene.getId()) ) {
+					throw new EncogError("Gene marked recurrent, but that is not so!");
+				}
+			} else {
+				if( this.isDuplicateLink(gene.getId(), gene.getId()) ) {
+					throw new EncogError("Gene marked non-recurrent, but that is not so!");
+				}
+			}
+		}
+		
+		// make sure that the bias neuron is where it should be
+		NEATNeuronGene g = (NEATNeuronGene)this.neuronsChromosome.getGene(this.inputCount);
+		if( g.getNeuronType()!=NEATNeuronType.Bias ) {
+			throw new EncogError("NEAT Neuron Gene " + this.inputCount + " should be a bias gene.");
+		}
+		
+		// make sure that all input neurons are connected
+		for(int i=0;i<this.inputCount;i++) {
+			NEATNeuronGene gene = (NEATNeuronGene)this.neuronsChromosome.getGene(i);
+			
+			boolean found = false;
+			for(Gene lg: this.linksChromosome.getGenes()) {
+				NEATLinkGene nlg = (NEATLinkGene)lg;
+				if( nlg.getFromNeuronID()==gene.getId()) {
+					found = true;
+					break;
+				}
+			}
+			
+			if( !found ) {
+				throw new EncogError("Input neuron " + i + " is unconnected.");
+			}			
+		}
+		
+		// make sure that there are no double links
+		Map<String,NEATLinkGene> map = new HashMap<String,NEATLinkGene>();
+		for(Gene lg: this.linksChromosome.getGenes()) {
+			NEATLinkGene nlg = (NEATLinkGene)lg;
+			String key = nlg.getFromNeuronID() + "->" + nlg.getToNeuronID();
+			if(map.containsKey(key)) {
+				throw new EncogError("Double link found: " + key);
+			} 
+			map.put(key, nlg);
+		}
+	}
 }

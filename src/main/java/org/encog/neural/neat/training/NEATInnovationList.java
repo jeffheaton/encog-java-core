@@ -153,7 +153,6 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 				result.setId(innovation.getNeuronID());
 				result.setSplitY(innovation.getSplitY());
 				result.setSplitX(innovation.getSplitX());
-
 				return result;
 			}
 		}
