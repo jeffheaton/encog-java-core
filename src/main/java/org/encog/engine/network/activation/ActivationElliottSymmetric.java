@@ -42,7 +42,7 @@ public class ActivationElliottSymmetric implements ActivationFunction {
      */
     @Override
     public final ActivationFunction clone() {
-        return new ActivationElliott();
+        return new ActivationElliottSymmetric();
     }
 
     /**
@@ -51,7 +51,8 @@ public class ActivationElliottSymmetric implements ActivationFunction {
     @Override
     public final double derivativeFunction(final double b, final double a) {
     	double s = params[0];
-    	return 	s/((1.0+Math.abs(b*s))*(1+Math.abs(b*s)));
+    	double d = (1.0+Math.abs(b*s));
+    	return  (s*1.0)/(d*d);
     }
 
     /**
