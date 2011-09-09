@@ -100,86 +100,6 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 	private final int outputCount;
 
 	/**
-	 * The activation mutation rate.
-	 */
-	private double paramActivationMutationRate = 0.1;
-
-	/**
-	 * The likelyhood of adding a link.
-	 */
-	private double paramChanceAddLink = 0.07;
-
-	/**
-	 * The likelyhood of adding a node.
-	 */
-	private double paramChanceAddNode = 0.04;
-
-	/**
-	 * THe likelyhood of adding a recurrent link.
-	 */
-	private double paramChanceAddRecurrentLink = 0.05;
-
-	/**
-	 * The compatibility threshold for a species.
-	 */
-	private double paramCompatibilityThreshold = 0.26;
-
-	/**
-	 * The crossover rate.
-	 */
-	private double paramCrossoverRate = 0.7;
-
-	/**
-	 * The max activation perturbation.
-	 */
-	private double paramMaxActivationPerturbation = 0.1;
-
-	/**
-	 * The maximum number of species.
-	 */
-	private int paramMaxNumberOfSpecies = 0;
-
-	/**
-	 * The maximum number of neurons.
-	 */
-	private double paramMaxPermittedNeurons = 100;
-
-	/**
-	 * The maximum weight perturbation.
-	 */
-	private double paramMaxWeightPerturbation = 0.5;
-
-	/**
-	 * The mutation rate.
-	 */
-	private double paramMutationRate = 0.2;
-
-	/**
-	 * The number of link add attempts.
-	 */
-	private int paramNumAddLinkAttempts = 5;
-
-	/**
-	 * The number of generations allowed with no improvement.
-	 */
-	private int paramNumGensAllowedNoImprovement = 15;
-
-	/**
-	 * The number of tries to find a looped link.
-	 */
-	private int paramNumTrysToFindLoopedLink = 5;
-
-	/**
-	 * The number of tries to find an old link.
-	 */
-	private int paramNumTrysToFindOldLink = 5;
-
-	/**
-	 * The probability that the weight will be totally replaced.
-	 */
-	private double paramProbabilityWeightReplaced = 0.1;
-
-	/**
 	 * The total fit adjustment.
 	 */
 	private double totalFitAdjustment;
@@ -193,6 +113,11 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 	 * The iteration number.
 	 */
 	private int iteration;
+	
+	/**
+	 * The parameters of NEAT.
+	 */
+	private final NEATParams params = new NEATParams();
 
 	/**
 	 * Construct a neat trainer with a new population. The new population is
@@ -285,18 +210,18 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 	public void adjustCompatibilityThreshold() {
 
 		// has this been disabled (unlimited species)
-		if (this.paramMaxNumberOfSpecies < 1) {
+		if (this.params.maxNumberOfSpecies < 1) {
 			return;
 		}
 
 		final double thresholdIncrement = 0.01;
 
-		if (getPopulation().getSpecies().size() > this.paramMaxNumberOfSpecies) {
-			this.paramCompatibilityThreshold += thresholdIncrement;
+		if (getPopulation().getSpecies().size() > this.params.maxNumberOfSpecies) {
+			this.params.compatibilityThreshold += thresholdIncrement;
 		}
 
 		else if (getPopulation().getSpecies().size() < 2) {
-			this.paramCompatibilityThreshold -= thresholdIncrement;
+			this.params.compatibilityThreshold -= thresholdIncrement;
 		}
 
 	}
@@ -540,118 +465,6 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 	}
 
 	/**
-	 * @return The mutation rate.
-	 */
-	public double getParamActivationMutationRate() {
-		return this.paramActivationMutationRate;
-	}
-
-	/**
-	 * @return The chance that we will add a link.
-	 */
-	public double getParamChanceAddLink() {
-		return this.paramChanceAddLink;
-	}
-
-	/**
-	 * @return The chance that we will add a node.
-	 */
-	public double getParamChanceAddNode() {
-		return this.paramChanceAddNode;
-	}
-
-	/**
-	 * @return The chance we will add a recurrent link.
-	 */
-	public double getParamChanceAddRecurrentLink() {
-		return this.paramChanceAddRecurrentLink;
-	}
-
-	/**
-	 * @return The compatibility threshold for a species.
-	 */
-	public double getParamCompatibilityThreshold() {
-		return this.paramCompatibilityThreshold;
-	}
-
-	/**
-	 * @return The crossover rate.
-	 */
-	public double getParamCrossoverRate() {
-		return this.paramCrossoverRate;
-	}
-
-	/**
-	 * @return THe maximum activation perturbation.
-	 */
-	public double getParamMaxActivationPerturbation() {
-		return this.paramMaxActivationPerturbation;
-	}
-
-	/**
-	 * @return The maximum number of species.
-	 */
-	public int getParamMaxNumberOfSpecies() {
-		return this.paramMaxNumberOfSpecies;
-	}
-
-	/**
-	 * @return THe maximum neurons.
-	 */
-	public double getParamMaxPermittedNeurons() {
-		return this.paramMaxPermittedNeurons;
-	}
-
-	/**
-	 * @return THe max weight perturbation.
-	 */
-	public double getParamMaxWeightPerturbation() {
-		return this.paramMaxWeightPerturbation;
-	}
-
-	/**
-	 * @return The mutation rate.
-	 */
-	public double getParamMutationRate() {
-		return this.paramMutationRate;
-	}
-
-	/**
-	 * @return The number of attempts to add a link.
-	 */
-	public int getParamNumAddLinkAttempts() {
-		return this.paramNumAddLinkAttempts;
-	}
-
-	/**
-	 * @return The number of generations allowed with no improvement.
-	 */
-	public int getParamNumGensAllowedNoImprovement() {
-		return this.paramNumGensAllowedNoImprovement;
-	}
-
-	/**
-	 * @return The number of tries to find a looped link.
-	 */
-	public int getParamNumTrysToFindLoopedLink() {
-		return this.paramNumTrysToFindLoopedLink;
-	}
-
-	/**
-	 * @return The number of tries to find an old link.
-	 */
-	public int getParamNumTrysToFindOldLink() {
-		return this.paramNumTrysToFindOldLink;
-	}
-
-	/**
-	 * @return THe propbability that a weight will be replaced.
-	 */
-	public double getParamProbabilityWeightReplaced() {
-		return this.paramProbabilityWeightReplaced;
-	}
-
-	/**
 	 * Returns an empty list, strategies are not supported.
 	 * 
 	 * @return The strategies in use(none).
@@ -757,7 +570,7 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 						} else {
 							final NEATGenome g1 = (NEATGenome) s.chooseParent();
 
-							if (Math.random() < this.paramCrossoverRate) {
+							if (Math.random() < this.params.crossoverRate) {
 								NEATGenome g2 = (NEATGenome) s.chooseParent();
 
 								int numAttempts = 5;
@@ -780,25 +593,25 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 						if (baby != null) {
 							baby.setGenomeID(getPopulation().assignGenomeID());
 
-							if (baby.getNeurons().size() < this.paramMaxPermittedNeurons) {
-								baby.addNeuron(this.paramChanceAddNode,
-										this.paramNumTrysToFindOldLink);
+							if (baby.getNeurons().size() < this.params.maxPermittedNeurons) {
+								baby.addNeuron(this.params.chanceAddNode,
+										this.params.numTrysToFindOldLink);
 							}
 
 							// now there's the chance a link may be added
-							baby.addLink(this.paramChanceAddLink,
-									this.paramChanceAddRecurrentLink,
-									this.paramNumTrysToFindLoopedLink,
-									this.paramNumAddLinkAttempts);
+							baby.addLink(this.params.chanceAddLink,
+									this.params.chanceAddRecurrentLink,
+									this.params.numTrysToFindLoopedLink,
+									this.params.numAddLinkAttempts);
 
 							// mutate the weights
-							baby.mutateWeights(this.paramMutationRate,
-									this.paramProbabilityWeightReplaced,
-									this.paramMaxWeightPerturbation);
+							baby.mutateWeights(this.params.mutationRate,
+									this.params.probabilityWeightReplaced,
+									this.params.maxWeightPerturbation);
 
 							baby.mutateActivationResponse(
-									this.paramActivationMutationRate,
-									this.paramMaxActivationPerturbation);
+									this.params.activationMutationRate,
+									this.params.maxActivationPerturbation);
 
 						}
 					}
@@ -809,7 +622,7 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 
 						// add to new pop
 						// if (newPop.contains(baby)) {
-						// throw new EncogError("readd");
+						// throw new EncogErrorthis.params("readd");
 						// }
 						newPop.add(baby);
 
@@ -869,7 +682,7 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 			final Species s = (Species) element;
 			s.purge();
 
-			if ((s.getGensNoImprovement() > this.paramNumGensAllowedNoImprovement)
+			if ((s.getGensNoImprovement() > this.params.numGensAllowedNoImprovement)
 					&& getComparator().isBetterThan(this.bestEverScore,
 							s.getBestScore())) {
 				getPopulation().getSpecies().remove(s);
@@ -897,174 +710,6 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 		this.iteration = iteration;
 	}
 
-	/**
-	 * Set the activation mutation rate.
-	 * 
-	 * @param paramActivationMutationRate
-	 *            The mutation rate.
-	 */
-	public void setParamActivationMutationRate(
-			final double paramActivationMutationRate) {
-		this.paramActivationMutationRate = paramActivationMutationRate;
-	}
-
-	/**
-	 * Set the chance to add a link.
-	 * 
-	 * @param paramChanceAddLink
-	 *            The chance to add a link.
-	 */
-	public void setParamChanceAddLink(final double paramChanceAddLink) {
-		this.paramChanceAddLink = paramChanceAddLink;
-	}
-
-	/**
-	 * Set the chance to add a node.
-	 * 
-	 * @param paramChanceAddNode
-	 *            The chance to add a node.
-	 */
-	public void setParamChanceAddNode(final double paramChanceAddNode) {
-		this.paramChanceAddNode = paramChanceAddNode;
-	}
-
-	/**
-	 * Set the chance to add a recurrent link.
-	 * 
-	 * @param paramChanceAddRecurrentLink
-	 *            The chance to add a recurrent link.
-	 */
-	public void setParamChanceAddRecurrentLink(
-			final double paramChanceAddRecurrentLink) {
-		this.paramChanceAddRecurrentLink = paramChanceAddRecurrentLink;
-	}
-
-	/**
-	 * Set the compatibility threshold for species.
-	 * 
-	 * @param paramCompatibilityThreshold
-	 *            The threshold.
-	 */
-	public void setParamCompatibilityThreshold(
-			final double paramCompatibilityThreshold) {
-		this.paramCompatibilityThreshold = paramCompatibilityThreshold;
-	}
-
-	/**
-	 * Set the cross over rate.
-	 * 
-	 * @param paramCrossoverRate
-	 *            The crossover rate.
-	 */
-	public void setParamCrossoverRate(final double paramCrossoverRate) {
-		this.paramCrossoverRate = paramCrossoverRate;
-	}
-
-	/**
-	 * Set the max activation perturbation.
-	 * 
-	 * @param paramMaxActivationPerturbation
-	 *            The max perturbation.
-	 */
-	public void setParamMaxActivationPerturbation(
-			final double paramMaxActivationPerturbation) {
-		this.paramMaxActivationPerturbation = paramMaxActivationPerturbation;
-	}
-
-	/**
-	 * Set the maximum number of species.
-	 * 
-	 * @param paramMaxNumberOfSpecies
-	 *            The max number of species.
-	 */
-	public void setParamMaxNumberOfSpecies(final int paramMaxNumberOfSpecies) {
-		this.paramMaxNumberOfSpecies = paramMaxNumberOfSpecies;
-	}
-
-	/**
-	 * Set the max permitted neurons.
-	 * 
-	 * @param paramMaxPermittedNeurons
-	 *            The max permitted neurons.
-	 */
-	public void setParamMaxPermittedNeurons(
-			final double paramMaxPermittedNeurons) {
-		this.paramMaxPermittedNeurons = paramMaxPermittedNeurons;
-	}
-
-	/**
-	 * Set the max weight perturbation.
-	 * 
-	 * @param paramMaxWeightPerturbation
-	 *            The max weight perturbation.
-	 */
-	public void setParamMaxWeightPerturbation(
-			final double paramMaxWeightPerturbation) {
-		this.paramMaxWeightPerturbation = paramMaxWeightPerturbation;
-	}
-
-	/**
-	 * Set the mutation rate.
-	 * 
-	 * @param paramMutationRate
-	 *            The mutation rate.
-	 */
-	public void setParamMutationRate(final double paramMutationRate) {
-		this.paramMutationRate = paramMutationRate;
-	}
-
-	/**
-	 * Set the number of attempts to add a link.
-	 * 
-	 * @param paramNumAddLinkAttempts
-	 *            The number of attempts to add a link.
-	 */
-	public void setParamNumAddLinkAttempts(final int paramNumAddLinkAttempts) {
-		this.paramNumAddLinkAttempts = paramNumAddLinkAttempts;
-	}
-
-	/**
-	 * Set the number of no-improvement generations allowed.
-	 * 
-	 * @param paramNumGensAllowedNoImprovement
-	 *            The number of generations.
-	 */
-	public void setParamNumGensAllowedNoImprovement(
-			final int paramNumGensAllowedNoImprovement) {
-		this.paramNumGensAllowedNoImprovement = paramNumGensAllowedNoImprovement;
-	}
-
-	/**
-	 * Set the number of tries to create a looped link.
-	 * 
-	 * @param paramNumTrysToFindLoopedLink
-	 *            Number of tries.
-	 */
-	public void setParamNumTrysToFindLoopedLink(
-			final int paramNumTrysToFindLoopedLink) {
-		this.paramNumTrysToFindLoopedLink = paramNumTrysToFindLoopedLink;
-	}
-
-	/**
-	 * Set the number of tries to try an old link.
-	 * 
-	 * @param paramNumTrysToFindOldLink
-	 *            Number of tries.
-	 */
-	public void setParamNumTrysToFindOldLink(final int paramNumTrysToFindOldLink) {
-		this.paramNumTrysToFindOldLink = paramNumTrysToFindOldLink;
-	}
-
-	/**
-	 * Set the probability to replace a weight.
-	 * 
-	 * @param paramProbabilityWeightReplaced
-	 *            The probability.
-	 */
-	public void setParamProbabilityWeightReplaced(
-			final double paramProbabilityWeightReplaced) {
-		this.paramProbabilityWeightReplaced = paramProbabilityWeightReplaced;
-	}
 
 	/**
 	 * Set if we are using snapshot mode.
@@ -1117,7 +762,7 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 				final double compatibility = genome
 						.getCompatibilityScore((NEATGenome) s.getLeader());
 
-				if (compatibility <= this.paramCompatibilityThreshold) {
+				if (compatibility <= this.params.compatibilityThreshold) {
 					addSpeciesMember(s, genome);
 					genome.setSpeciesID(s.getSpeciesID());
 					added = true;
