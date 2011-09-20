@@ -24,6 +24,7 @@
 package org.encog.util.csv;
 
 import java.io.Serializable;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -62,23 +63,7 @@ public class CSVFormat implements Serializable {
 	 * @return The decimal character used.
 	 */
 	public static char getDecimalCharacter() {
-		final NumberFormat nf = NumberFormat.getInstance();
-		final String str = nf.format(0.5);
-
-		// there is PROBABLY a better way to do this, but I could not find it.
-		// Basically we want to know the decimal separator for the current
-		// locale. So we get the default number formatter and loop until we
-		// find the fractional char for 0.5. Which may be "0,5" in some areas.
-		for (int i = 0; i < str.length(); i++) {
-			final char ch = str.charAt(i);
-			if (!Character.isDigit(ch)) {
-				return ch;
-			}
-		}
-
-		// for some reason, we failed to find it. This should never happen.
-		// But if it does, just return a decimal point.
-		return '.';
+		return DecimalFormatSymbols.getInstance().getDecimalSeparator(); 
 	}
 
 	/**
