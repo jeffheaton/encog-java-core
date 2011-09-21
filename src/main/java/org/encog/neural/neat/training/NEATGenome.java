@@ -302,6 +302,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			recurrent = true;
 		}		
 
+		validate();
 		// is this a new innovation?
 		if (innovation == null) {
 			// new innovation
@@ -400,6 +401,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 				.getInnovations().checkInnovation(from, to,
 						NEATInnovationType.NewNeuron);
 
+		validate();
 		// prevent chaining
 		if (innovation != null) {
 			final long neuronID = innovation.getNeuronID();
@@ -410,6 +412,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		}
 
 		if (innovation == null) {
+			
 			// this innovation has not been tried, create it
 			final long newNeuronID = ((NEATTraining) getGeneticAlgorithm())
 					.getInnovations().createNewInnovation(from, to,
@@ -430,7 +433,9 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			final NEATLinkGene link1 = new NEATLinkGene(from, newNeuronID,
 					true, link1ID, 1.0, false);
 
+			validate();
 			this.linksChromosome.add(link1);
+			validate();
 
 			// add the second link
 			final long link2ID = ((NEATTraining) getGeneticAlgorithm())
@@ -443,7 +448,9 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			final NEATLinkGene link2 = new NEATLinkGene(newNeuronID, to, true,
 					link2ID, originalWeight, false);
 
+			validate();
 			this.linksChromosome.add(link2);
+			validate();
 		}
 
 		else {
@@ -474,9 +481,11 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			final NEATNeuronGene newNeuron = new NEATNeuronGene(
 					NEATNeuronType.Hidden, newNeuronID, newDepth, newWidth);
 
+			validate();
 			this.neuronsChromosome.add(newNeuron);
+			validate();
 		}
-
+		
 		return;
 	}
 

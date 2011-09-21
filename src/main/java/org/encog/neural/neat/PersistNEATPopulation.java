@@ -211,6 +211,8 @@ public class PersistNEATPopulation implements EncogPersistor {
 			species.setLeader(leader);
 			((BasicSpecies)species).setPopulation(result);
 		}
+		
+		((NEATInnovationList)result.getInnovations()).init();
 
 		return result;
 	}

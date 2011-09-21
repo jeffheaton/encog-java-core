@@ -197,7 +197,7 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	 *            The x-coordinate.
 	 * @param y
 	 *            The y-coordinate.
-	 * @return The new innovation.
+	 * @return The new neuron, if one was created.
 	 */
 	public long createNewInnovation(final long from, final long to,
 			final NEATInnovationType innovationType,
@@ -217,5 +217,17 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 
 	public void setPopulation(NEATPopulation population) {
 		this.population = population;		
+	}
+
+	public void init() {
+		long maxNeuron = 0;
+		
+		for(Innovation innovation: this.getInnovations() ) {
+			NEATInnovation ni = (NEATInnovation)innovation;
+			maxNeuron = Math.max(ni.getFromNeuronID(), maxNeuron);
+			maxNeuron = Math.max(ni.getToNeuronID(), maxNeuron);
+		}
+		this.nextNeuronID = maxNeuron+1;
+		
 	}
 }
