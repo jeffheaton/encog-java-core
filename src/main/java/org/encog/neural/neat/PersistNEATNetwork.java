@@ -74,8 +74,8 @@ public class PersistNEATNetwork implements EncogPersistor {
 
 					final long neuronID = Integer.parseInt(cols.get(0));
 					final NEATNeuronType neuronType = PersistNEATPopulation.stringToNeuronType(cols.get(1)); 
-					final double splitY = CSVFormat.EG_FORMAT.parse(cols.get(3));
-					final double splitX = CSVFormat.EG_FORMAT.parse(cols.get(4));
+					final double splitY = CSVFormat.EG_FORMAT.parse(cols.get(2));
+					final double splitX = CSVFormat.EG_FORMAT.parse(cols.get(3));
 					
 					NEATNeuron neatNeuron = new NEATNeuron(neuronType, neuronID,
 						splitY,splitX);
