@@ -60,7 +60,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 	 */
 	private ActivationFunction neatActivationFunction = new ActivationSteepenedSigmoid();
 	
-	private int activationCycles = 1;
+	private int activationCycles = 4;
 
 	/**
 	 * The activation function to use on the output layer of Encog.
