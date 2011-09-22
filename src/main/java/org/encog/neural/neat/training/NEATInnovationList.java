@@ -230,4 +230,8 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 		this.nextNeuronID = maxNeuron+1;
 		
 	}
+	
+	public void setNextNeuronID(int l) {
+		this.nextNeuronID = l;		
+	}
 }

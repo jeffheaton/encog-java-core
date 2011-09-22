@@ -88,17 +88,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 					"Population must have more than zero genomes.");
 		}
 
-		// create the initial population
-		for (int i = 0; i < populationSize; i++) {
-			NEATGenome genome = new NEATGenome(assignGenomeID(), inputCount,
-					outputCount);
-			add(genome);
-		}
-
-		// create initial innovations
-		NEATGenome genome = (NEATGenome) this.getGenomes().get(0);
-		this.setInnovations(new NEATInnovationList(this, genome.getLinks(),
-				genome.getNeurons()));
+		reset(populationSize);
 
 	}
 
@@ -172,6 +162,28 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 		this.activationCycles = activationCycles;
 	}
 
+	public void reset(int populationSize) {
+		this.getGenomes().clear();
+		this.setPopulationSize(populationSize);		
+		
+		// reset counters
+		this.getGeneIDGenerate().setCurrentID(1);
+		this.getGenomeIDGenerate().setCurrentID(1);
+		this.getInnovationIDGenerate().setCurrentID(1);
+		this.getSpeciesIDGenerate().setCurrentID(1);
+		
+		// create the initial population
+		for (int i = 0; i < populationSize; i++) {
+			NEATGenome genome = new NEATGenome(assignGenomeID(), inputCount,
+					outputCount);
+			add(genome);
+		}
+
+		// create initial innovations
+		NEATGenome genome = (NEATGenome) this.getGenomes().get(0);
+		this.setInnovations(new NEATInnovationList(this, genome.getLinks(),
+				genome.getNeurons()));
+	}
 	
 
 }
