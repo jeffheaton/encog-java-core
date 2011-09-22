@@ -42,7 +42,6 @@ import java.util.List;
 public class NEATNeuron implements Serializable {
 
 	public static final String NEURON_ID = "neuronID";
-	public static final String ACTIVATION_RESPONSE = "aresp";
 	
 	/**
 	 * The serial id.
@@ -106,7 +105,7 @@ public class NEATNeuron implements Serializable {
 	private double sumActivation;
 
 	/**
-	 * Default constructor, used for persistance.
+	 * Default constructor, used for persistence.
 	 */
 	public NEATNeuron() {
 
