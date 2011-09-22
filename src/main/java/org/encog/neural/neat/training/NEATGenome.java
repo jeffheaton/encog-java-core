@@ -547,8 +547,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			final NEATNeuronGene neuronGene = (NEATNeuronGene) gene;
 			final NEATNeuron neuron = new NEATNeuron(
 					neuronGene.getNeuronType(), neuronGene.getId(), neuronGene
-							.getSplitY(), neuronGene.getSplitX(), neuronGene
-							.getActivationResponse());
+							.getSplitY(), neuronGene.getSplitX());
 
 			neurons.add(neuron);
 		}

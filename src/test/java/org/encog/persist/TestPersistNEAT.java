@@ -61,36 +61,31 @@ public class TestPersistNEAT extends TestCase {
 				NEATNeuronType.Input, 
 				1,
 				0.1, 
-				0.2,
-				0.3);
+				0.2);
 		
 		NEATNeuron input2 = new NEATNeuron(
 				NEATNeuronType.Input, 
 				2,
 				0.1, 
-				0.2,
-				0.3);
+				0.2);
 		
 		NEATNeuron bias = new NEATNeuron(
 				NEATNeuronType.Bias, 
 				3,
 				0.1, 
-				0.2,
-				0.3);
+				0.2);
 		
 		NEATNeuron hidden1 = new NEATNeuron(
 				NEATNeuronType.Hidden, 
 				4,
 				0.1, 
-				0.2,
-				0.3);
+				0.2);
 		
 		NEATNeuron output = new NEATNeuron(
 				NEATNeuronType.Output, 
 				5,
 				0.1, 
-				0.2,
-				0.3);
+				0.2);
 
 		// add the neurons
 		neurons.add(input1);

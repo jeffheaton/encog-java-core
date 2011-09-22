@@ -197,7 +197,7 @@ public class NEATNetwork extends BasicML implements MLRegression, MLError {
 				}
 
 				final double[] d = new double[1];
-				d[0] = sum / currentNeuron.getActivationResponse();
+				d[0] = sum;// / currentNeuron.getActivationResponse();
 				this.activationFunction.activationFunction(d,0,d.length);
 
 				this.neurons.get(index).setOutput(d[0]);

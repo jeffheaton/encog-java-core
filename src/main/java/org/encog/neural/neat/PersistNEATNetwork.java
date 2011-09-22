@@ -74,12 +74,11 @@ public class PersistNEATNetwork implements EncogPersistor {
 
 					final long neuronID = Integer.parseInt(cols.get(0));
 					final NEATNeuronType neuronType = PersistNEATPopulation.stringToNeuronType(cols.get(1)); 
-					final double activationResponse = CSVFormat.EG_FORMAT.parse(cols.get(2));
 					final double splitY = CSVFormat.EG_FORMAT.parse(cols.get(3));
 					final double splitX = CSVFormat.EG_FORMAT.parse(cols.get(4));
 					
 					NEATNeuron neatNeuron = new NEATNeuron(neuronType, neuronID,
-						splitY,splitX,activationResponse);
+						splitY,splitX);
 					result.getNeurons().add(neatNeuron);
 					neuronMap.put((int)neuronID, neatNeuron);
 				}				
@@ -122,7 +121,6 @@ public class PersistNEATNetwork implements EncogPersistor {
 		for (NEATNeuron neatNeuron : neat.getNeurons() ) {
 			out.addColumn(neatNeuron.getNeuronID());
 			out.addColumn(PersistNEATPopulation.neuronTypeToString(neatNeuron.getNeuronType()));
-			out.addColumn(neatNeuron.getActivationResponse());
 			out.addColumn(neatNeuron.getSplitX());
 			out.addColumn(neatNeuron.getSplitY());
 			out.writeLine();

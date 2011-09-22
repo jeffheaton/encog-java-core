@@ -27,7 +27,7 @@ import java.io.Serializable;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationLinear;
-import org.encog.engine.network.activation.ActivationSigmoid;
+import org.encog.engine.network.activation.ActivationSteepenedSigmoid;
 import org.encog.ml.genetic.population.BasicPopulation;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.neat.training.NEATGenome;
@@ -58,7 +58,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 	/**
 	 * The activation function for neat to use.
 	 */
-	private ActivationFunction neatActivationFunction = new ActivationSigmoid();
+	private ActivationFunction neatActivationFunction = new ActivationSteepenedSigmoid();
 	
 	private int activationCycles = 1;
 

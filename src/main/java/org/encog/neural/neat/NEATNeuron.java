@@ -49,12 +49,6 @@ public class NEATNeuron implements Serializable {
 	private static final long serialVersionUID = -2815145950124389743L;
 
 	/**
-	 * The activation response. This is evolved to allow NEAT to scale the slope
-	 * of the activation function.
-	 */
-	private double activationResponse;
-
-	/**
 	 * Inbound links to this neuron.
 	 */
 	private final List<NEATLink> inboundLinks = new ArrayList<NEATLink>();
@@ -126,24 +120,15 @@ public class NEATNeuron implements Serializable {
 	 *            The activation response.
 	 */
 	public NEATNeuron(final NEATNeuronType neuronType, final long neuronID,
-			final double splitY, final double splitX,
-			final double activationResponse) {
+			final double splitY, final double splitX) {
 		this.neuronType = neuronType;
 		this.neuronID = neuronID;
 		this.splitY = splitY;
 		this.splitX = splitX;
-		this.activationResponse = activationResponse;
 		posX = 0;
 		posY = 0;
 		output = 0;
 		sumActivation = 0;
-	}
-
-	/**
-	 * @return the activation response.
-	 */
-	public double getActivationResponse() {
-		return activationResponse;
 	}
 
 	/**
