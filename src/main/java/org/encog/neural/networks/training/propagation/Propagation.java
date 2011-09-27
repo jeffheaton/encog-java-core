@@ -52,13 +52,14 @@ import org.encog.util.logging.EncogLogging;
  * @author jheaton
  * 
  */
-public abstract class Propagation extends BasicTraining implements Train, MultiThreadable {
+public abstract class Propagation extends BasicTraining implements Train,
+		MultiThreadable {
 
 	/**
 	 * The current flat network we are using for training, or null for none.
 	 */
 	private FlatNetwork currentFlatNetwork;
-	
+
 	/**
 	 * The number of threads to use.
 	 */
@@ -93,7 +94,7 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 	 * The total error. Used to take the average of.
 	 */
 	private double totalError;
-	
+
 	/**
 	 * The last error.
 	 */
@@ -113,19 +114,16 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 	 * The flat spot constants.
 	 */
 	private double[] flatSpot;
-	
+
 	/**
 	 * Should we fix flat spots.
 	 */
 	private boolean shouldFixFlatSpot;
-	
+
 	/**
 	 * The error function.
 	 */
 	private ErrorFunction ef = new LinearErrorFunction();
-
-	
-
 
 	/**
 	 * Construct a propagation object.
@@ -135,8 +133,7 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 	 * @param training
 	 *            The training set.
 	 */
-	public Propagation(final ContainsFlat network, 
-			final MLDataSet training) {
+	public Propagation(final ContainsFlat network, final MLDataSet training) {
 		super(TrainingImplementationType.Iterative);
 		this.network = network;
 		this.currentFlatNetwork = network.getFlat();
@@ -178,7 +175,7 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 	 * Perform one training iteration.
 	 */
 	public void iteration() {
-		try {		
+		try {
 			preIteration();
 
 			this.iteration++;
@@ -190,12 +187,13 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 			} else {
 				learn();
 			}
-			
+
 			this.lastError = this.getError();
 
 			for (final GradientWorker worker : this.workers) {
 				EngineArray.arrayCopy(this.currentFlatNetwork.getWeights(), 0,
-						worker.getWeights(), 0, this.currentFlatNetwork.getWeights().length);
+						worker.getWeights(), 0,
+						this.currentFlatNetwork.getWeights().length);
 			}
 
 			if (this.currentFlatNetwork.getHasContext()) {
@@ -205,11 +203,11 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 			if (this.reportedException != null) {
 				throw (new EncogError(this.reportedException));
 			}
-			
+
 			postIteration();
 
-			EncogLogging.log(EncogLogging.LEVEL_INFO,"Training iteration done, error: "
-						+ getError());			
+			EncogLogging.log(EncogLogging.LEVEL_INFO,
+					"Training iteration done, error: " + getError());
 		} catch (final ArrayIndexOutOfBoundsException ex) {
 			EncogValidate.validateNetworkForTraining(this.network,
 					getTraining());
@@ -227,39 +225,43 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 	 */
 	@Override
 	public final void iteration(final int count) {
+
 		try {
-			preIteration();
+			for (int i = 0; i < count; i++) {
+				preIteration();
 
-			this.iteration++;
+				this.iteration++;
 
-			calculateGradients();
+				calculateGradients();
 
-			if (this.currentFlatNetwork.isLimited()) {
-				learnLimited();
-			} else {
-				learn();
+				if (this.currentFlatNetwork.isLimited()) {
+					learnLimited();
+				} else {
+					learn();
+				}
+
+				this.lastError = this.getError();
+
+				for (final GradientWorker worker : this.workers) {
+					EngineArray.arrayCopy(this.currentFlatNetwork.getWeights(),
+							0, worker.getWeights(), 0,
+							this.currentFlatNetwork.getWeights().length);
+				}
+
+				if (this.currentFlatNetwork.getHasContext()) {
+					copyContexts();
+				}
+
+				if (this.reportedException != null) {
+					throw (new EncogError(this.reportedException));
+				}
+
+				postIteration();
+
+				EncogLogging.log(EncogLogging.LEVEL_INFO,
+						"Training iterations done, error: " + getError());
 			}
-			
-			this.lastError = this.getError();
 
-			for (final GradientWorker worker : this.workers) {
-				EngineArray.arrayCopy(this.currentFlatNetwork.getWeights(), 0,
-						worker.getWeights(), 0, this.currentFlatNetwork.getWeights().length);
-			}
-
-			if (this.currentFlatNetwork.getHasContext()) {
-				copyContexts();
-			}
-
-			if (this.reportedException != null) {
-				throw (new EncogError(this.reportedException));
-			}
-
-			postIteration();
-
-			EncogLogging.log(EncogLogging.LEVEL_INFO,"Training iterations done, error: "
-						+ getError());
-			
 		} catch (final ArrayIndexOutOfBoundsException ex) {
 			EncogValidate.validateNetworkForTraining(this.network,
 					getTraining());
@@ -278,7 +280,7 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 	public final void setThreadCount(final int numThreads) {
 		this.numThreads = numThreads;
 	}
-	
+
 	@Override
 	public int getThreadCount() {
 		return this.numThreads;
@@ -294,13 +296,13 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 	 * @param b True to fix flat spots, false otherwise.
 	 */
 	public void fixFlatSpot(boolean b) {
-		this.shouldFixFlatSpot = b;		
+		this.shouldFixFlatSpot = b;
 	}
-	
+
 	public void setErrorFunction(ErrorFunction ef) {
 		this.ef = ef;
 	}
-	
+
 	/**
 	 * Calculate the gradients.
 	 */
@@ -329,7 +331,7 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 			this.workers[0].run();
 		}
 
-		this.setError( this.totalError / this.workers.length );
+		this.setError(this.totalError / this.workers.length);
 
 	}
 
@@ -348,23 +350,26 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 
 		// copy the contexts from the final group to the real network
 		EngineArray.arrayCopy(this.workers[this.workers.length - 1]
-				.getNetwork().getLayerOutput(), this.currentFlatNetwork.getLayerOutput());
+				.getNetwork().getLayerOutput(), this.currentFlatNetwork
+				.getLayerOutput());
 	}
-	
+
 	/**
 	 * Init the process.
 	 */
 	private void init() {
 
 		// fix flat spot, if needed
-		this.flatSpot = new double[this.currentFlatNetwork.getActivationFunctions().length];
+		this.flatSpot = new double[this.currentFlatNetwork
+				.getActivationFunctions().length];
 
 		if (this.shouldFixFlatSpot) {
-			for (int i = 0; i < this.currentFlatNetwork.getActivationFunctions().length; i++) {
+			for (int i = 0; i < this.currentFlatNetwork
+					.getActivationFunctions().length; i++) {
 				final ActivationFunction af = this.currentFlatNetwork
 						.getActivationFunctions()[i];
-				
-				if( af instanceof ActivationSigmoid ) {
+
+				if (af instanceof ActivationSigmoid) {
 					this.flatSpot[i] = 0.1;
 				} else {
 					this.flatSpot[i] = 0.0;
@@ -373,8 +378,7 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 		} else {
 			EngineArray.fill(this.flatSpot, 0.0);
 		}
-		
-		
+
 		// setup workers
 		final DetermineWorkload determine = new DetermineWorkload(
 				this.numThreads, (int) this.indexable.getRecordCount());
@@ -385,14 +389,15 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 
 		// handle CPU
 		for (final IntRange r : determine.calculateWorkers()) {
-			this.workers[index++] = new GradientWorker(this.currentFlatNetwork.clone(),
-					this, this.indexable.openAdditional(), r.getLow(),
-					r.getHigh(), this.flatSpot, this.ef);
+			this.workers[index++] = new GradientWorker(
+					this.currentFlatNetwork.clone(), this,
+					this.indexable.openAdditional(), r.getLow(), r.getHigh(),
+					this.flatSpot, this.ef);
 		}
-		
+
 		initOthers();
 	}
-	
+
 	/**
 	 * Called by the worker threads to report the progress at each step.
 	 * 
@@ -417,7 +422,7 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 			}
 		}
 	}
-	
+
 	/**
 	 * Apply and learn.
 	 */
@@ -448,9 +453,7 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 		}
 	}
 
-
 	public abstract void initOthers();
-
 
 	/**
 	 * Update a weight, the means by which weights are updated vary depending on
@@ -473,7 +476,5 @@ public abstract class Propagation extends BasicTraining implements Train, MultiT
 	public double[] getLastGradient() {
 		return lastGradient;
 	}
-	
-	
-	
+
 }
