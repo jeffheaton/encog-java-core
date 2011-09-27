@@ -175,44 +175,7 @@ public abstract class Propagation extends BasicTraining implements Train,
 	 * Perform one training iteration.
 	 */
 	public void iteration() {
-		try {
-			preIteration();
-
-			this.iteration++;
-
-			calculateGradients();
-
-			if (this.currentFlatNetwork.isLimited()) {
-				learnLimited();
-			} else {
-				learn();
-			}
-
-			this.lastError = this.getError();
-
-			for (final GradientWorker worker : this.workers) {
-				EngineArray.arrayCopy(this.currentFlatNetwork.getWeights(), 0,
-						worker.getWeights(), 0,
-						this.currentFlatNetwork.getWeights().length);
-			}
-
-			if (this.currentFlatNetwork.getHasContext()) {
-				copyContexts();
-			}
-
-			if (this.reportedException != null) {
-				throw (new EncogError(this.reportedException));
-			}
-
-			postIteration();
-
-			EncogLogging.log(EncogLogging.LEVEL_INFO,
-					"Training iteration done, error: " + getError());
-		} catch (final ArrayIndexOutOfBoundsException ex) {
-			EncogValidate.validateNetworkForTraining(this.network,
-					getTraining());
-			throw new EncogError(ex);
-		}
+		iteration(1);
 	}
 
 	/**
@@ -228,6 +191,7 @@ public abstract class Propagation extends BasicTraining implements Train,
 
 		try {
 			for (int i = 0; i < count; i++) {
+
 				preIteration();
 
 				this.iteration++;
@@ -259,9 +223,9 @@ public abstract class Propagation extends BasicTraining implements Train,
 				postIteration();
 
 				EncogLogging.log(EncogLogging.LEVEL_INFO,
-						"Training iterations done, error: " + getError());
-			}
+						"Training iteration done, error: " + getError());
 
+			}
 		} catch (final ArrayIndexOutOfBoundsException ex) {
 			EncogValidate.validateNetworkForTraining(this.network,
 					getTraining());
