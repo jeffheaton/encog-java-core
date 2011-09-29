@@ -26,10 +26,12 @@ package org.encog.engine.network.activation;
 import org.encog.mathutil.BoundMath;
 
 /**
- * An activation function based on the gaussian function.
+ * An activation function based on the gaussian function. The output range is
+ * between 0 and 1. This activation function is used mainly for the HyperNeat
+ * implementation.
  * 
- * @author jheaton
- * 
+ * It was developed by  Ken Stanley while at The University of Texas at Austin.
+ * http://www.cs.ucf.edu/~kstanley/
  */
 public class ActivationGaussian implements ActivationFunction {
 
@@ -39,21 +41,15 @@ public class ActivationGaussian implements ActivationFunction {
 	public static final int PARAM_GAUSSIAN_CENTER = 0;
 
 	/**
-	 * The offset to the parameter that holds the peak.
-	 */
-	public static final int PARAM_GAUSSIAN_PEAK = 1;
-
-	/**
 	 * The offset to the parameter that holds the width.
 	 */
-	public static final int PARAM_GAUSSIAN_WIDTH = 2;
+	public static final int PARAM_GAUSSIAN_WIDTH = 1;
 
-	
 	/**
 	 * The parameters.
 	 */
 	private double[] params;
-	
+
 	/**
 	 * The serial id.
 	 */
@@ -64,16 +60,13 @@ public class ActivationGaussian implements ActivationFunction {
 	 * 
 	 * @param center
 	 *            The center of the curve.
-	 * @param peak
-	 *            The peak of the curve.
 	 * @param width
 	 *            The width of the curve.
 	 */
-	public ActivationGaussian(final double center, final double peak,
+	public ActivationGaussian(final double center,
 			final double width) {
-		this.params = new double[3];
+		this.params = new double[2];
 		this.params[ActivationGaussian.PARAM_GAUSSIAN_CENTER] = center;
-		this.params[ActivationGaussian.PARAM_GAUSSIAN_PEAK] = peak;
 		this.params[ActivationGaussian.PARAM_GAUSSIAN_WIDTH] = width;
 	}
 
@@ -86,8 +79,8 @@ public class ActivationGaussian implements ActivationFunction {
 	 */
 	@Override
 	public final ActivationFunction clone() {
-		return new ActivationGaussian(this.getCenter(), this.getPeak(), this
-				.getWidth());
+		return new ActivationGaussian(this.getCenter(), 
+				this.getWidth());
 	}
 
 	/**
@@ -105,32 +98,25 @@ public class ActivationGaussian implements ActivationFunction {
 	}
 
 	/**
-	 * @return The peak of the function.
-	 */
-	private final double getPeak() {
-		return this.getParams()[ActivationGaussian.PARAM_GAUSSIAN_PEAK];
-	}
-
-	/**
 	 * @return Return true, gaussian has a derivative.
 	 */
 	public final boolean hasDerivative() {
-		return true;
+		return false;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void activationFunction(final double[] x, final int start, 
+	public final void activationFunction(final double[] x, final int start,
 			final int size) {
-		for (int i = start; i < start+size ; i++) {
-			x[i] = params[ActivationGaussian.PARAM_GAUSSIAN_PEAK]
-			     * BoundMath.exp(-Math.pow(x[i] 
-                    - params[ActivationGaussian.PARAM_GAUSSIAN_CENTER],2)
-                    / (2.0 * params[ActivationGaussian.PARAM_GAUSSIAN_WIDTH] * params[ActivationGaussian.PARAM_GAUSSIAN_WIDTH]));
+
+		for (int i = start; i < start + size; i++) {
+
+			double d = (x[i] - params[0]) * Math.sqrt(params[1]) * 4.0;
+			x[i] = BoundMath.exp(-(d * d));
 		}
-		
+
 	}
 
 	/**
@@ -138,10 +124,7 @@ public class ActivationGaussian implements ActivationFunction {
 	 */
 	@Override
 	public final double derivativeFunction(final double b, final double a) {
-		final double width = params[ActivationGaussian.PARAM_GAUSSIAN_WIDTH];
-		final double peak = params[ActivationGaussian.PARAM_GAUSSIAN_PEAK];
-		return Math.exp(-0.5 * width * width * b * b) * peak * width * width
-				* (width * width * b * b - 1);
+		return 0;
 	}
 
 	/**
@@ -149,7 +132,7 @@ public class ActivationGaussian implements ActivationFunction {
 	 */
 	@Override
 	public final String[] getParamNames() {
-		final String[] result = { "center", "peak", "width" };
+		final String[] result = { "center", "width" };
 		return result;
 	}
 
@@ -167,6 +150,6 @@ public class ActivationGaussian implements ActivationFunction {
 	@Override
 	public final void setParam(final int index, final double value) {
 		this.params[index] = value;
-		
+
 	}
 }
