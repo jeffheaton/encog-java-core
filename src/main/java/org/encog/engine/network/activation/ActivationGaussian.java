@@ -26,11 +26,19 @@ package org.encog.engine.network.activation;
 import org.encog.mathutil.BoundMath;
 
 /**
- * An activation function based on the gaussian function. The output range is
+ * An activation function based on the Gaussian function. The output range is
  * between 0 and 1. This activation function is used mainly for the HyperNeat
  * implementation.
  * 
- * It was developed by  Ken Stanley while at The University of Texas at Austin.
+ * A derivative is provided, so this activation function can be used with
+ * propagation training.  However, its primary intended purpose is for
+ * HyperNeat.  The derivative was obtained with the R statistical package.
+ * 
+ * If you are looking to implement a RBF-based neural network, see the 
+ * RBFNetwork class.
+ * 
+ * The idea for this activation function was developed by  Ken Stanley, of  
+ * the University of Texas at Austin.
  * http://www.cs.ucf.edu/~kstanley/
  */
 public class ActivationGaussian implements ActivationFunction {
@@ -71,7 +79,9 @@ public class ActivationGaussian implements ActivationFunction {
 	}
 
 	public ActivationGaussian() {
-		// TODO Auto-generated constructor stub
+		this.params = new double[2];
+		this.params[0] = 0.1;
+		this.params[0] = 0.1;
 	}
 
 	/**
@@ -101,7 +111,7 @@ public class ActivationGaussian implements ActivationFunction {
 	 * @return Return true, gaussian has a derivative.
 	 */
 	public final boolean hasDerivative() {
-		return false;
+		return true;
 	}
 
 	/**
@@ -124,7 +134,9 @@ public class ActivationGaussian implements ActivationFunction {
 	 */
 	@Override
 	public final double derivativeFunction(final double b, final double a) {
-		return 0;
+		return -(Math.exp(-(Math.pow(
+				((b - params[0]) * Math.sqrt(params[1]) * 4), 2))) * (2 * (Math
+				.sqrt(params[1]) * 4 * ((b - params[0]) * Math.sqrt(params[1]) * 4))));
 	}
 
 	/**
