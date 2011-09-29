@@ -34,8 +34,8 @@ public class TestActivationGaussian extends TestCase {
 	@Test
 	public void testGaussian() throws Throwable
 	{
-		ActivationGaussian activation = new ActivationGaussian(0.0,0.5,1.0);
-		Assert.assertTrue(activation.hasDerivative());
+		ActivationGaussian activation = new ActivationGaussian(0.0,1.0);
+		Assert.assertFalse(activation.hasDerivative());
 		
 		ActivationGaussian clone = (ActivationGaussian)activation.clone();
 		Assert.assertNotNull(clone);
@@ -44,10 +44,10 @@ public class TestActivationGaussian extends TestCase {
 		
 		activation.activationFunction(input,0,input.length);
 		
-		Assert.assertEquals(0.5,input[0],0.1);
+		Assert.assertEquals(1.0,input[0],0.1);
 		
 		input[0] = activation.derivativeFunction(input[0],input[0]);
-		Assert.assertEquals(-33,(int)(input[0]*100),0.1);		
+		Assert.assertEquals(0,(int)(input[0]*100),0.1);		
 		
 		
 		
