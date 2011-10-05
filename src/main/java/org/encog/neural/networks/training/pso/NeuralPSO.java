@@ -24,13 +24,16 @@
 package org.encog.neural.networks.training.pso;
 
 import org.encog.mathutil.VectorAlgebra;
+import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.mathutil.randomize.Randomizer;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.BasicTraining;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.CalculateScore;
+import org.encog.neural.networks.training.TrainingSetScore;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.util.concurrency.EngineConcurrency;
 import org.encog.util.concurrency.TaskGroup;
@@ -143,6 +146,19 @@ public class NeuralPSO extends BasicTraining {
         m_bestVector = NetworkCODEC.networkToArray(m_bestNetwork);
 
         m_va = new VectorAlgebra();
+    }
+    
+    /**
+     * Construct a PSO using a training set score function, 20 particles and the
+     * NguyenWidrowRandomizer randomizer.
+     * @param network The network to train. an initialised Encog network. 
+     * The networks in the swarm will be created with 
+     * the same topology as this network.
+     * @param trainingSet The training set.
+     */
+    public NeuralPSO(BasicNetwork network, MLDataSet trainingSet)        
+    {   
+    	this(network, new NguyenWidrowRandomizer(-1, 1), new TrainingSetScore(trainingSet), 20);
     }
 
     /**
