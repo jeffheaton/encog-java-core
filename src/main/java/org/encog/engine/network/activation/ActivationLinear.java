@@ -32,6 +32,16 @@ package org.encog.engine.network.activation;
 public class ActivationLinear implements ActivationFunction {
 
 	/**
+	 * Default empty parameters.
+	 */
+	public static final double P[] = new double[0];
+	
+	/**
+	 * Default empty parameters.
+	 */
+	public static final String N[] = new String[0];
+	
+	/**
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = -5356580554235104944L;
