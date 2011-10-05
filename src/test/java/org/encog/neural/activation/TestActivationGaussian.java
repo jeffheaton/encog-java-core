@@ -35,7 +35,7 @@ public class TestActivationGaussian extends TestCase {
 	public void testGaussian() throws Throwable
 	{
 		ActivationGaussian activation = new ActivationGaussian(0.0,1.0);
-		Assert.assertFalse(activation.hasDerivative());
+		Assert.assertFalse(!activation.hasDerivative());
 		
 		ActivationGaussian clone = (ActivationGaussian)activation.clone();
 		Assert.assertNotNull(clone);
