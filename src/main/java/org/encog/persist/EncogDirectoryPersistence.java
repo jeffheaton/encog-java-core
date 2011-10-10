@@ -35,6 +35,7 @@ import java.io.PrintWriter;
 import java.util.Date;
 
 import org.encog.Encog;
+import org.encog.util.file.ResourceInputStream;
 import org.encog.util.logging.EncogLogging;
 
 /**
@@ -44,6 +45,27 @@ import org.encog.util.logging.EncogLogging;
  */
 public class EncogDirectoryPersistence {
 
+	/**
+	 * Load an EG object as a reousrce.
+	 * @param res
+	 * @return
+	 */
+	public static Object loadResourceObject(final String res) {
+		InputStream is = null;
+		try {
+		 is = ResourceInputStream.openResourceInputStream(res);
+		return loadObject(is);
+		} finally {
+			try {
+				if( is!=null ) {
+					is.close();
+				}
+			} catch(IOException ex) {
+				
+			}
+		}
+	}
+	
 	/**
 	 * Load the specified object.
 	 * @param file The file to load.
