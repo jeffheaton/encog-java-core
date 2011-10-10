@@ -26,7 +26,14 @@ package org.encog.engine.network.activation;
 import org.encog.mathutil.BoundMath;
 
 /**
- * An activation function based on the sin function.
+ * An activation function based on the sin function, with a double period.
+ * 
+ * This activation is typically part of a CPPN neural network, such as 
+ * HyperNEAT.
+ * 
+ * The idea for this activation function was developed by  Ken Stanley, of  
+ * the University of Texas at Austin.
+ * http://www.cs.ucf.edu/~kstanley/
  * 
  * @author jheaton
  */
@@ -72,7 +79,7 @@ public class ActivationSIN implements ActivationFunction {
 	public final void activationFunction(final double[] x, final int start,
 			final int size) {
 		for (int i = start; i < start + size; i++) {
-			x[i] = BoundMath.sin(x[i]);
+			x[i] = BoundMath.sin(2.0*x[i]);
 		}
 	}
 
@@ -81,7 +88,7 @@ public class ActivationSIN implements ActivationFunction {
 	 */
 	@Override
 	public final double derivativeFunction(final double b, final double a) {
-		return BoundMath.cos(b);
+		return BoundMath.cos(2.0*b);
 	}
 
 	/**
