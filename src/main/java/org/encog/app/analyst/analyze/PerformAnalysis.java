@@ -143,6 +143,10 @@ public class PerformAnalysis {
 		final CSVFormat csvFormat = ConvertStringConst
 				.convertToCSVFormat(this.format);
 		ReadCSV csv = new ReadCSV(this.filename, this.headers, csvFormat);
+		
+		if( !csv.next() ) {
+			throw new AnalystError("Can't analyze file, it is empty.");
+		}
 
 		// pass one, calculate the min/max
 		while (csv.next()) {
