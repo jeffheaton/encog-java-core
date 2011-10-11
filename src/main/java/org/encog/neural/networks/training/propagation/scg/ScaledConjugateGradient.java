@@ -224,6 +224,9 @@ public class ScaledConjugateGradient extends Propagation {
 		if (this.mustInit) {
 			init();
 		}
+		
+		rollIteration();
+		
 		final int numWeights = this.weights.length;
 		// Storage space for previous iteration values.
 

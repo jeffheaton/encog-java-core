@@ -177,6 +177,13 @@ public abstract class Propagation extends BasicTraining implements Train,
 	public void iteration() {
 		iteration(1);
 	}
+	
+	/**
+	 * Increase the iteration by one.
+	 */
+	public void rollIteration() {
+		this.iteration++;
+	}
 
 	/**
 	 * Perform the specified number of training iterations. This can be more
@@ -194,7 +201,7 @@ public abstract class Propagation extends BasicTraining implements Train,
 
 				preIteration();
 
-				this.iteration++;
+				rollIteration();
 
 				calculateGradients();
 
