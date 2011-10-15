@@ -7,5 +7,8 @@ public class BasicGraph {
 	
 	private List<BasicNode> nodes = new ArrayList<BasicNode>();
 	
+	public List<BasicNode> getNodes() {
+		return this.nodes;
+	}
 	
 }
