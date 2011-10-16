@@ -19,7 +19,17 @@ public class BasicNode {
 	public String getLabel() {
 		return label;
 	}
+
+	public void connect(BasicNode newNode,double cost) {
+		this.connections.add(new BasicEdge(this,newNode,cost));
+	}
 	
-	
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[BasicNode: ");
+		result.append(this.label);
+		result.append("]");
+		return result.toString();
+	}
 	
 }

@@ -30,5 +30,19 @@ public class BasicPath {
 		return this.nodes.size();
 	}
 	
+	public String toString() {
+		boolean first = true;
+		StringBuilder result = new StringBuilder();
+		result.append("[BasicPath: ");
+		for(BasicNode node: this.nodes) {
+			if( !first ) {
+				result.append(',');
+			}
+			result.append(node.toString());
+			first = false;
+		}
+		result.append("]");
+		return result.toString();
+	}
 	
 }

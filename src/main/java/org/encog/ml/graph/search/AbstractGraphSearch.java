@@ -34,11 +34,12 @@ public abstract class AbstractGraphSearch implements Prioritizer {
 	
 	public void iteration() {
 		if (solution == null) {
-			BasicPath path = this.frontier.pop();
-			
+					
 			if( this.frontier.size()==0 ) {
 				throw new EncogError("Frontier is empty, cannot find solution.");
 			}
+			
+			BasicPath path = this.frontier.pop();
 
 			if (this.goal.isGoalMet(path)) {
 				this.solution = path;
@@ -57,5 +58,14 @@ public abstract class AbstractGraphSearch implements Prioritizer {
 			}
 		}
 	}
+
+	/**
+	 * @return the solution
+	 */
+	public BasicPath getSolution() {
+		return solution;
+	}
+	
+	
 
 }

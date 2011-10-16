@@ -15,7 +15,7 @@ public class SimpleDestinationGoal implements SearchGoal {
 	@Override
 	public boolean isGoalMet(BasicPath path) {
 		if( path.getDestinationNode() == goalDestination ) {
-			
+			return true;
 		}
 		return false;
 	}
