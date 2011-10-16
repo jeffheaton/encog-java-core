@@ -9,7 +9,7 @@ import org.encog.ml.graph.BasicGraph;
 import org.encog.ml.graph.BasicNode;
 import org.encog.ml.graph.BasicPath;
 
-public abstract class AbstractGraphSearch implements Prioritizer {
+public abstract class AbstractGraphSearch implements GraphSearch {
 	
 	private final BasicGraph graph;
 	private final SearchGoal goal;

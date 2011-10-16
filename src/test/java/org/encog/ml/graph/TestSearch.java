@@ -1,12 +1,25 @@
 package org.encog.ml.graph;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.encog.ml.graph.search.AStarSearch;
 import org.encog.ml.graph.search.BreadthFirstSearch;
 import org.encog.ml.graph.search.DepthFirstSearch;
+import org.encog.ml.graph.search.EuclideanCostEstimator;
+import org.encog.ml.graph.search.GraphSearch;
 import org.encog.ml.graph.search.SimpleDestinationGoal;
 
 public class TestSearch extends TestCase {
+	
+	private int countIterations(GraphSearch search) {
+		int result = 0;
+		while( search.getSolution()==null ) {
+			search.iteration();
+			result++;
+		}
+		return result;
+	}
 	
 	public void testDepthFirstSearch() {
 		BasicNode nodeA = new BasicNode("a");
@@ -17,12 +30,12 @@ public class TestSearch extends TestCase {
 		nodeC.connect(nodeD, 1);
 		
 		DepthFirstSearch search = new DepthFirstSearch(graph,nodeA,new SimpleDestinationGoal(nodeD));
-		while( search.getSolution()==null ) {
-			search.iteration();
-		}
+		Assert.assertEquals(3, countIterations(search));
 		
 		BasicPath solution = search.getSolution();
-		System.out.println(solution.toString());
+		Assert.assertEquals(solution.getNodes().get(0).getLabel(), "a");
+		Assert.assertEquals(solution.getNodes().get(1).getLabel(), "b");
+		Assert.assertEquals(solution.getNodes().get(2).getLabel(), "d");
 	}
 	
 	public void testBredthFirstSearch() {
@@ -34,11 +47,33 @@ public class TestSearch extends TestCase {
 		nodeC.connect(nodeD, 1);
 		
 		BreadthFirstSearch search = new BreadthFirstSearch(graph,nodeA,new SimpleDestinationGoal(nodeD));
-		while( search.getSolution()==null ) {
-			search.iteration();
-		}
+		Assert.assertEquals(4, countIterations(search));
 		
 		BasicPath solution = search.getSolution();
-		System.out.println(solution.toString());
+		Assert.assertEquals(solution.getNodes().get(0).getLabel(), "a");
+		Assert.assertEquals(solution.getNodes().get(1).getLabel(), "b");
+		Assert.assertEquals(solution.getNodes().get(2).getLabel(), "d");
+	}
+	
+	public void testAStar() {
+		EuclideanNode nodeA = new EuclideanNode("a", 0, 0);
+		BasicGraph graph = new BasicGraph(nodeA);
+		BasicNode nodeB = graph.connect(nodeA, new EuclideanNode("b",0,2), 10.0);
+		BasicNode nodeC = graph.connect(nodeA, new EuclideanNode("c",0,1), 1.0);
+		BasicNode nodeD = graph.connect(nodeB, new EuclideanNode("d",0,1), 1.0);
+		nodeD.connect(nodeD, 1.0);
+		nodeC.connect(nodeD, 1.0);
+		
+		AStarSearch search = new AStarSearch(
+				graph,
+				nodeA,
+				new SimpleDestinationGoal(nodeD),
+				new EuclideanCostEstimator());
+		Assert.assertEquals(3, countIterations(search));
+		
+		BasicPath solution = search.getSolution();
+		Assert.assertEquals(solution.getNodes().get(0).getLabel(), "a");
+		Assert.assertEquals(solution.getNodes().get(1).getLabel(), "c");
+		Assert.assertEquals(solution.getNodes().get(2).getLabel(), "d");
 	}
 }
