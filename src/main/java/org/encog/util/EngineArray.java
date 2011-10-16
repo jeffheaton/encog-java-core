@@ -355,4 +355,13 @@ public final class EngineArray {
 		}
 		return Math.sqrt(result/(double)data.length);
 	}
+
+	public static double euclideanDistance(double[] p1, double[] p2) {
+		double sum = 0;
+		for(int i=0;i<p1.length;i++) {
+			double d = p1[0] - p2[0];
+			sum+=d*d;
+		}
+		return Math.sqrt(sum);
+	}
 }

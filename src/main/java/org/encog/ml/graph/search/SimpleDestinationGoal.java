@@ -2,6 +2,7 @@ package org.encog.ml.graph.search;
 
 import org.encog.ml.graph.BasicNode;
 import org.encog.ml.graph.BasicPath;
+import org.encog.ml.graph.EuclideanNode;
 
 public class SimpleDestinationGoal implements SearchGoal {
 
@@ -19,5 +20,14 @@ public class SimpleDestinationGoal implements SearchGoal {
 		}
 		return false;
 	}
+
+	/**
+	 * @return the goalDestination
+	 */
+	public BasicNode getGoalDestination() {
+		return goalDestination;
+	}
+
+	
 
 }
