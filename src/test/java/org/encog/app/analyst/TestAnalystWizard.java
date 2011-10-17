@@ -63,7 +63,7 @@ public class TestAnalystWizard extends TestCase {
 		Assert.assertEquals(5,encog.getScript().getNormalize().getNormalizedFields().size());
 		Assert.assertEquals(4.3,encog.getScript().getFields()[0].getMin(),0.001);
 		Assert.assertEquals(7.9,encog.getScript().getFields()[0].getMax(),0.001);
-		Assert.assertEquals(5.84333,encog.getScript().getFields()[0].getMean(),0.001);
+		Assert.assertEquals(5.848322,encog.getScript().getFields()[0].getMean(),0.001);
 		Assert.assertEquals(encog.getScript().getFields()[0].isClass(),false);
 		Assert.assertEquals(encog.getScript().getFields()[0].isReal(),true);
 		Assert.assertEquals(encog.getScript().getFields()[0].isInteger(),false);
