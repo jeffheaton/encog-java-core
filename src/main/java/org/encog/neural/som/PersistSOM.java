@@ -74,10 +74,6 @@ public class PersistSOM implements EncogPersistor {
 				final Map<String, String> params = section.parseParams();
 				result.setWeights(EncogFileSection.parseMatrix(params,
 						PersistConst.WEIGHTS));
-				result.setOutputNeuronCount(EncogFileSection.parseInt(params,
-						PersistConst.OUTPUT_COUNT));
-				result.setInputCount(EncogFileSection.parseInt(params,
-						PersistConst.INPUT_COUNT));
 			}
 		}
 
@@ -97,7 +93,7 @@ public class PersistSOM implements EncogPersistor {
 		out.addSubSection("NETWORK");
 		out.writeProperty(PersistConst.WEIGHTS, som.getWeights());
 		out.writeProperty(PersistConst.INPUT_COUNT, som.getInputCount());
-		out.writeProperty(PersistConst.OUTPUT_COUNT, som.getOutputNeuronCount());
+		out.writeProperty(PersistConst.OUTPUT_COUNT, som.getOutputCount());
 		out.flush();
 	}
 

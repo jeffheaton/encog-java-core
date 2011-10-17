@@ -26,6 +26,7 @@ package org.encog.neural.som.training.basic;
 import org.encog.mathutil.BoundMath;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.data.MLData;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.som.SOM;
 
 /**
@@ -73,10 +74,16 @@ public class BestMatchingUnit {
 	public int calculateBMU(final MLData input) {
 		int result = 0;
 		
+		if( input.size()>this.som.getInputCount() ) {
+			throw new NeuralNetworkError("Can't train SOM with input size of " + som.getInputCount() 
+					+ " with input data of count " 
+					+ input.size());
+		}
+		
 		// Track the lowest distance so far.
 		double lowestDistance = Double.MAX_VALUE;
 
-		for (int i = 0; i < this.som.getOutputNeuronCount(); i++) {
+		for (int i = 0; i < this.som.getOutputCount(); i++) {
 			final double distance = calculateEuclideanDistance(this.som.getWeights(), input,
 					i);
 
@@ -115,7 +122,7 @@ public class BestMatchingUnit {
 		// Loop over all input data.
 		for (int i = 0; i < input.size(); i++) {
 			final double diff = input.getData(i)
-					- matrix.get(i, outputNeuron);
+					- matrix.get(outputNeuron, i);
 			result += diff * diff;
 		}
 		return BoundMath.sqrt(result);

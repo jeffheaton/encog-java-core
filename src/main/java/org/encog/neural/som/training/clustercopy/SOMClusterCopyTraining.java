@@ -33,7 +33,7 @@ import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.neural.som.SOM;
 
 /**
- * SOM cluster copy is a very simple trainer for SOM's. Using this triner all of
+ * SOM cluster copy is a very simple trainer for SOM's. Using this trainer all of
  * the training data is copied to the SOM weights. This can provide a functional
  * SOM, or can be used as a starting point for training.
  * 
@@ -76,7 +76,7 @@ public class SOMClusterCopyTraining extends BasicTraining {
 	 */
 	private void copyInputPattern(final int outputNeuron, final MLData input) {
 		for (int inputNeuron = 0; inputNeuron < this.network.getInputCount(); inputNeuron++) {
-			this.network.getWeights().set(inputNeuron, outputNeuron,
+			this.network.getWeights().set(outputNeuron, inputNeuron,
 					input.getData(inputNeuron));
 		}
 	}

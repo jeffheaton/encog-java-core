@@ -33,6 +33,7 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.som.training.basic.BestMatchingUnit;
 import org.encog.util.EngineArray;
 
@@ -59,15 +60,6 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 */
 	private Matrix weights;
 
-	/**
-	 * Number of input neurons.
-	 */
-	protected int inputNeuronCount;
-
-	/**
-	 * Number of output neurons.
-	 */
-	protected int outputNeuronCount;
 
 	/**
 	 * Default constructor.
@@ -85,10 +77,7 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 *            Number of output neurons
 	 */
 	public SOM(final int inputCount, final int outputCount) {
-
-		this.inputNeuronCount = inputCount;
-		this.outputNeuronCount = outputCount;
-		this.weights = new Matrix(inputCount, outputCount);
+		this.weights = new Matrix(outputCount, inputCount);
 	}
 
 	/**
@@ -116,24 +105,48 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 */
 	@Override
 	public final int classify(final MLData input) {
-		final MLData result = compute(input);
-		return EngineArray.maxIndex(result.getData());
+		if( input.size()>getInputCount() ) {
+			throw new NeuralNetworkError("Can't classify SOM with input size of " + getInputCount() 
+					+ " with input data of count " 
+					+ input.size());
+		}
+		
+		double[][] m = this.weights.getData();
+		double[] inputData = input.getData();
+		double minDist = Double.POSITIVE_INFINITY;
+		int result = -1;
+		
+		for(int i=0;i<getOutputCount();i++) {
+			double dist = EngineArray.euclideanDistance(inputData, m[i]);
+			if( dist<minDist ) {
+				minDist = dist;
+				result = i;
+			}
+		}
+		
+		return result;
 	}
 
 	/**
-	 * Determine the winner for the specified input. This is the number of the
-	 * winning neuron.
-	 * 
+	 * Calculate the output of the SOM, for each output neuron.  Typically,
+	 * you will use the classify method instead of calling this method.
 	 * @param input
 	 *            The input pattern.
-	 * @return The winning neuron.
+	 * @return The output activation of each output neuron.
 	 */
 	public final MLData compute(final MLData input) {
+		
+		if( input.size()>getInputCount() ) {
+			throw new NeuralNetworkError("Can't compute SOM with input size of " + getInputCount() 
+					+ " with input data of count " 
+					+ input.size());
+		}
 
-		final MLData result = new BasicMLData(this.outputNeuronCount);
 
-		for (int i = 0; i < this.outputNeuronCount; i++) {
-			final Matrix optr = this.weights.getCol(i);
+		final MLData result = new BasicMLData(this.getOutputCount());
+
+		for (int i = 0; i < this.getOutputCount(); i++) {
+			final Matrix optr = this.weights.getRow(i);
 			final Matrix inputMatrix = Matrix.createRowMatrix(input.getData());
 			result.setData(i, MatrixMath.dotProduct(inputMatrix, optr));
 		}
@@ -146,16 +159,7 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 */
 	@Override
 	public final int getInputCount() {
-		return this.inputNeuronCount;
-	}
-
-	/**
-	 * Get the input neuron count.
-	 * 
-	 * @return The input neuron count.
-	 */
-	public final int getInputNeuronCount() {
-		return this.inputNeuronCount;
+		return this.weights.getCols();
 	}
 
 	/**
@@ -163,16 +167,7 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 */
 	@Override
 	public final int getOutputCount() {
-		return 1;
-	}
-
-	/**
-	 * Get the output neuron count.
-	 * 
-	 * @return The output neuron count.
-	 */
-	public final int getOutputNeuronCount() {
-		return this.outputNeuronCount;
+		return this.weights.getRows();
 	}
 
 	/**
@@ -197,23 +192,6 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	@Override
 	public final void reset(final int seed) {
 		reset();
-	}
-
-	/**
-	 * Set the input count.
-	 * @param i The input count.
-	 */
-	public final void setInputCount(final int i) {
-		this.inputNeuronCount = i;
-	}
-
-	/**
-	 * Set the output count.
-	 * @param i The output count.
-	 */
-	public final void setOutputNeuronCount(final int i) {
-		this.outputNeuronCount = i;
-
 	}
 
 	/**

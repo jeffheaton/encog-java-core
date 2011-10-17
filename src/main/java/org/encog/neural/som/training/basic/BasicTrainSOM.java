@@ -165,14 +165,13 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 		setTraining(training);
 		this.learningRate = learningRate;
 		this.network = network;
-		this.inputNeuronCount = network.getInputNeuronCount();
-		this.outputNeuronCount = network.getOutputNeuronCount();
+		this.inputNeuronCount = network.getInputCount();
+		this.outputNeuronCount = network.getOutputCount();
 		this.forceWinner = false;
 		setError(0);
 
 		// setup the correction matrix
-		this.correctionMatrix = new Matrix(this.inputNeuronCount,
-				this.outputNeuronCount);
+		this.correctionMatrix = new Matrix(this.outputNeuronCount,this.inputNeuronCount);
 
 		// create the BMU class
 		this.bmuUtil = new BestMatchingUnit(network);
@@ -223,7 +222,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	private void copyInputPattern(final Matrix matrix, final int outputNeuron,
 			final MLData input) {
 		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; inputNeuron++) {
-			matrix.set(inputNeuron, outputNeuron, input.getData(inputNeuron));
+			matrix.set(outputNeuron, inputNeuron, input.getData(inputNeuron));
 		}
 	}
 
@@ -555,13 +554,13 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 
 		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; inputNeuron++) {
 
-			final double currentWeight = matrix.get(inputNeuron, current);
+			final double currentWeight = matrix.get(current, inputNeuron);
 			final double inputValue = input.getData(inputNeuron);
 
 			final double newWeight = determineNewWeight(currentWeight,
 					inputValue, current, bmu);
 
-			this.correctionMatrix.set(inputNeuron, current, newWeight);
+			this.correctionMatrix.set(current, inputNeuron, newWeight);
 		}
 	}
 

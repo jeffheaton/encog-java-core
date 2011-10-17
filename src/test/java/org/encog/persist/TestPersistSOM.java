@@ -67,8 +67,8 @@ public class TestPersistSOM extends TestCase {
 	
 	private void validate(SOM network)
 	{
-		Assert.assertEquals(4, network.getInputNeuronCount());
-		Assert.assertEquals(2, network.getOutputNeuronCount());
+		Assert.assertEquals(4, network.getInputCount());
+		Assert.assertEquals(2, network.getOutputCount());
 		Assert.assertEquals(8, network.getWeights().toPackedArray().length);
 	}
 	
