@@ -113,6 +113,4 @@ public class BayesianEvent {
 		this.table.validate();
 	}
 	
-	
-	
 }

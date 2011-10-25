@@ -177,5 +177,5 @@ public class BayesianNetwork {
 	public boolean isCondIndependant(BayesianEvent a, BayesianEvent b, BayesianEvent ... given) {
 		Set<BayesianEvent> searched = new HashSet<BayesianEvent>();
 		return isCondIndependant(false, a,b,searched,given);
-	}
+	}	
 }

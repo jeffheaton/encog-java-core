@@ -54,4 +54,29 @@ public class BayesianTable {
 		}
 		
 	}
+	
+	public double generateRandom(double ... args) {
+		double r = Math.random();
+		double limit = 0;
+		
+		for(TableLine line: this.lines) {
+			if( line.compareArgs(args)) {
+				limit+=line.getProbability();
+				if( r<limit ) {
+					return line.getResult();
+				}
+			}
+		}
+		
+		throw new BayesianError("Incomplete logic table for event: " + this.event.toString());
+	}
+	
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		for(TableLine line: this.lines) {
+			result.append(line.toString());
+			result.append("\n");
+		}
+		return result.toString();
+	}
 }
