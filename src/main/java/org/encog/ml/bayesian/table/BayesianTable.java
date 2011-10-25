@@ -16,7 +16,7 @@ public class BayesianTable {
 	public void addLine(double prob, boolean result, boolean... args) {
 		double[] d = new double[args.length];
 		for(int i=0;i<args.length;i++) {
-			d[i] = args[i] ? 0.0 : 1.0;
+			d[i] = args[i] ? 1.0 : 0.0;
 		}
 		
 		addLine(prob,result?1.0:0.0,d);

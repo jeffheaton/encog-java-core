@@ -112,5 +112,8 @@ public class BayesianEvent {
 	public void validate() {
 		this.table.validate();
 	}
-	
+
+	public boolean isBoolean() {
+		return this.choices==BayesianNetwork.CHOICES_TRUE_FALSE;
+	}	
 }

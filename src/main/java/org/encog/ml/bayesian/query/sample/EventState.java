@@ -1,9 +1,10 @@
-package org.encog.ml.bayesian.query;
+package org.encog.ml.bayesian.query.sample;
 
 import org.encog.Encog;
 import org.encog.ml.bayesian.BayesianError;
 import org.encog.ml.bayesian.BayesianEvent;
 import org.encog.ml.bayesian.EventType;
+import org.encog.util.Format;
 
 public class EventState {
 	
@@ -94,6 +95,38 @@ public class EventState {
 		return Math.abs(this.compareValue-this.value)<Encog.DEFAULT_DOUBLE_EQUAL;
 	}
 	
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[EventState:event=");
+		result.append(this.event.toString());
+		result.append(",type=");
+		result.append(this.eventType.toString());
+		result.append(",value=");
+		result.append(Format.formatDouble(this.value,2));
+		result.append(",compare=");
+		result.append(Format.formatDouble(this.compareValue,2));
+		result.append(",calc=");
+		result.append(this.calculated?"y":"n");
+		result.append("]");
+		return result.toString();
+	}
 	
+	public static String toSimpleString(EventState state) {
+		StringBuilder result = new StringBuilder();
+		if( state.getEvent().isBoolean() ) {
+			if( state.getCompareValue()<0.1) {
+				result.append("~");
+			}
+		}
+		
+		result.append(state.getEvent().getLabel());
+		
+		if( !state.getEvent().isBoolean()) {
+			result.append("=");
+			result.append(state.getCompareValue());			
+		}
+		
+		return result.toString();		
+	}
 	
 }
