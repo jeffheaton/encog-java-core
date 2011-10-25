@@ -1,7 +1,9 @@
 package org.encog.ml.bayesian;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class BayesianNetwork {
 	
@@ -112,5 +114,68 @@ public class BayesianNetwork {
 		for( BayesianEvent e: this.events.values()) {
 			e.validate();
 		}
+	}
+	
+	private boolean isGiven(BayesianEvent[] given, BayesianEvent e) {
+		for(BayesianEvent e2: given) {
+			if( e==e2)
+				return true;
+		}
+		
+		return false;
+	}
+	
+	public boolean isDescendant(BayesianEvent a, BayesianEvent b) {
+		if( a==b )
+			return true;
+		
+		for( BayesianEvent e: b.getChildren()) {
+			if( isDescendant(a,e))
+				return true;
+		}
+		return false;
+	}
+	
+	private boolean isGivenOrDescendant(BayesianEvent[] given, BayesianEvent e) {
+		for(BayesianEvent e2: given) {
+			if( isDescendant(e2,e) )
+				return true;
+		}
+		
+		return false;
+	}
+	
+	private boolean isCondIndependant(boolean previousHead, BayesianEvent a, BayesianEvent goal, Set<BayesianEvent> searched, BayesianEvent ... given) {
+		
+		// did we find it?
+		if( a==goal ) {
+			return false;
+		}
+		
+		// search children
+		for( BayesianEvent e : a.getChildren()) {
+			if( !searched.contains(e) || !isGiven(given,a) ) {
+				searched.add(e);
+				if( !isCondIndependant(true,e,goal,searched,given) )
+					return false;
+			}
+		}
+		
+		// search parents
+		for( BayesianEvent e : a.getParents()) {
+			if( !searched.contains(e) ) {
+				searched.add(e);
+				if( !previousHead || isGivenOrDescendant(given,a) )
+					if( !isCondIndependant(false,e,goal,searched,given) )
+						return false;
+			}
+		}
+		
+		return true;
+	}
+
+	public boolean isCondIndependant(BayesianEvent a, BayesianEvent b, BayesianEvent ... given) {
+		Set<BayesianEvent> searched = new HashSet<BayesianEvent>();
+		return isCondIndependant(false, a,b,searched,given);
 	}
 }
