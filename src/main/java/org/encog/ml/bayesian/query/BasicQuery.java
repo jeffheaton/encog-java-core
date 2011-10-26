@@ -63,7 +63,7 @@ public class BasicQuery {
 
 
 
-	protected void locateEventTypes() {
+	public void locateEventTypes() {
 		this.evidenceEvents.clear();
 		this.outcomeEvents.clear();
 		
