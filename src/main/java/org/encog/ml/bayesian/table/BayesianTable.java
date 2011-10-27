@@ -60,7 +60,7 @@ public class BayesianTable {
 		double limit = 0;
 		
 		for(TableLine line: this.lines) {
-			if( line.compareArgs(args)) {
+			if( line!=null && line.compareArgs(args)) {
 				limit+=line.getProbability();
 				if( r<limit ) {
 					return line.getResult();
