@@ -9,6 +9,6 @@ public class TestBagOfWords extends TestCase {
 	public void testCount() {
 		BagOfWords bag = new BagOfWords();
 		bag.process(SAMPLE1);
-		Assert.assertEquals(14,bag.size());
+		Assert.assertEquals(14,bag.getUniqueWords());
 	}
 }

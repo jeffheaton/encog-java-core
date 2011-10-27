@@ -10,6 +10,16 @@ public class BagOfWords {
 	private boolean breakSpaces = true;
 	private boolean ignoreCase = true;
 	private int totalWords;
+	private final int k;
+	private int laplaceClasses; 
+	
+	public BagOfWords(int laplace) {
+		this.k = laplace;
+	}
+	
+	public BagOfWords() {
+		this(0);
+	}
 
 	public void process(String str) {
 		if (breakSpaces) {
@@ -42,6 +52,7 @@ public class BagOfWords {
 	public void increase(String word) {
 		String word2;
 		this.totalWords++;
+		this.laplaceClasses++;
 
 		if (this.ignoreCase) {
 			word2 = word.toLowerCase();
@@ -93,10 +104,6 @@ public class BagOfWords {
 		return words;
 	}
 
-	public int size() {
-		return words.size();
-	}
-
 	public void clear() {
 		this.words.clear();
 	}
@@ -123,12 +130,60 @@ public class BagOfWords {
 	public boolean contains(String word) {
 		return this.words.containsKey(word);
 	}
+	
+	public int getK() {
+		return this.k;
+	}
 
 	/**
 	 * @return the totalWords
 	 */
 	public int getTotalWords() {
 		return totalWords;
+	}
+	
+	public int getCount(String word) {
+		String word2;
+		if( this.ignoreCase ) {
+			word2 = word.toLowerCase();
+		} else {
+			word2 = word;
+		}
+		if( !this.words.containsKey(word2) ) {
+			return 0;
+		}
+		return this.words.get(word2);
+	}
+
+	public double probability(String word) {
+		double n = ((double)getCount(word))+((double)this.k);
+		double d = ((double)getTotalWords())+(k*this.laplaceClasses);
+		return n/d;
+	}
+
+	/**
+	 * @return the laplaceClasses
+	 */
+	public int getLaplaceClasses() {
+		return laplaceClasses;
+	}
+
+	/**
+	 * @param laplaceClasses the laplaceClasses to set
+	 */
+	public void setLaplaceClasses(int laplaceClasses) {
+		this.laplaceClasses = laplaceClasses;
+	}
+
+	/**
+	 * @param totalWords the totalWords to set
+	 */
+	public void setTotalWords(int totalWords) {
+		this.totalWords = totalWords;
+	}
+
+	public int getUniqueWords() {
+		return this.words.size();
 	}
 	
 	

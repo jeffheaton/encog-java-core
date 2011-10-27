@@ -38,13 +38,6 @@ public class SamplingQuery extends BasicQuery {
 	public void setSampleSize(int sampleSize) {
 		this.sampleSize = sampleSize;
 	}
-		
-/*	private void randomizeEvidence() {
-		for(BayesianEvent event: this.evidenceEvents) {
-			EventState state = getEventState(event);
-			state.randomize(obtainArgs(event));
-		}
-	}*/
 	
 	private double[] obtainArgs(BayesianEvent event) {
 		double[] result = new double[event.getParents().size()];
