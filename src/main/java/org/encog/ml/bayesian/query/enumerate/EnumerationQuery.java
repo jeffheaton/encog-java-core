@@ -56,6 +56,7 @@ public class EnumerationQuery extends BasicQuery {
 			} else {
 				state.setValue(v);
 				done = true;
+				break;
 			}
 			
 			currentIndex++;
@@ -65,7 +66,7 @@ public class EnumerationQuery extends BasicQuery {
 				eof = true;
 			}
 		}
-		
+
 		return !eof;
 	}
 	
@@ -102,7 +103,7 @@ public class EnumerationQuery extends BasicQuery {
 		do {
 			boolean first = true;
 			double prob = 0;
-			for(EventState state: this.getEvents().values()) {
+			for(EventState state: this.getEvents().values()) {				
 				if( first ) {
 					prob = calculateProbability(state);
 					first = false;
@@ -112,7 +113,6 @@ public class EnumerationQuery extends BasicQuery {
 			}
 			result+=prob;
 		} while(forward());
-		
 		return result;
 	}
 	
