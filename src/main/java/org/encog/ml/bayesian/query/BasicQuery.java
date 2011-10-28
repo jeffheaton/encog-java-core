@@ -11,16 +11,36 @@ import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.bayesian.EventType;
 import org.encog.ml.bayesian.query.sample.EventState;
 
-public class BasicQuery {
+/**
+ * Provides basic functionality for a Bayesian query. This class is abstract,
+ * and is not used directly. Rather, other queries make use of it.
+ * 
+ */
+public abstract class BasicQuery implements BayesianQuery {
 	
+	/**
+	 * The network to be queried.
+	 */
 	private final BayesianNetwork network;
-	private final Map<BayesianEvent,EventState> events = new HashMap<BayesianEvent,EventState>();	
+	
+	/**
+	 * A mapping of the events to event states.
+	 */
+	private final Map<BayesianEvent,EventState> events = new HashMap<BayesianEvent,EventState>();
+	
+	/**
+	 * The evidence events.
+	 */
 	private final List<BayesianEvent> evidenceEvents = new ArrayList<BayesianEvent>();
+	
+	/**
+	 * The outcome events.
+	 */
 	private final List<BayesianEvent> outcomeEvents = new ArrayList<BayesianEvent>();
 	
 	public BasicQuery(BayesianNetwork theNetwork) {
 		this.network = theNetwork;
-		for(BayesianEvent event: theNetwork.getEvents().values()) {
+		for(BayesianEvent event: theNetwork.getEvents()) {
 			events.put(event, new EventState(event));
 		}
 	}
@@ -28,7 +48,7 @@ public class BasicQuery {
 	
 	
 	/**
-	 * @return the network
+	 * {@inheritDoc}
 	 */
 	public BayesianNetwork getNetwork() {
 		return network;
@@ -37,7 +57,7 @@ public class BasicQuery {
 
 
 	/**
-	 * @return the events
+	 * {@inheritDoc}
 	 */
 	public Map<BayesianEvent, EventState> getEvents() {
 		return events;
@@ -46,7 +66,7 @@ public class BasicQuery {
 
 
 	/**
-	 * @return the evidenceEvents
+	 * {@inheritDoc}
 	 */
 	public List<BayesianEvent> getEvidenceEvents() {
 		return evidenceEvents;
@@ -55,7 +75,7 @@ public class BasicQuery {
 
 
 	/**
-	 * @return the outcomeEvents
+	 * {@inheritDoc}
 	 */
 	public List<BayesianEvent> getOutcomeEvents() {
 		return outcomeEvents;
@@ -63,11 +83,14 @@ public class BasicQuery {
 
 
 
+	/**
+	 * Called to locate the evidence and outcome events.
+	 */
 	public void locateEventTypes() {
 		this.evidenceEvents.clear();
 		this.outcomeEvents.clear();
 		
-		for(BayesianEvent event: this.network.getEvents().values()) {
+		for(BayesianEvent event: this.network.getEvents()) {
 			switch(getEventType(event)) {
 				case Evidence:
 					this.evidenceEvents.add(event);
@@ -79,6 +102,9 @@ public class BasicQuery {
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void reset() {
 		for(EventState s : this.events.values()) {
 			s.setCalculated(false);			
@@ -86,18 +112,31 @@ public class BasicQuery {
 	}
 
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void defineEventType(BayesianEvent event, EventType et) {		
 		getEventState(event).setEventType(et);		
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public EventState getEventState(BayesianEvent event) {
 		return this.events.get(event);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public EventType getEventType(BayesianEvent event) {
 		return getEventState(event).getEventType();
 	}
 	
+	/**
+	 * @return Determines if the evidence events have values that satisfy the
+	 *         needed case. This is used for sampling.
+	 */
 	protected boolean isNeededEvidence() {
 		for(BayesianEvent evidenceEvent: this.evidenceEvents) {
 			EventState state = getEventState(evidenceEvent);
@@ -108,6 +147,9 @@ public class BasicQuery {
 		return true;
 	}
 	
+	/**
+	 * @return True, if the current state satisifies the desired outcome.
+	 */
 	protected boolean satisfiesDesiredOutcome() {
 		for(BayesianEvent outcomeEvent: this.outcomeEvents) {
 			EventState state = getEventState(outcomeEvent);
@@ -118,10 +160,16 @@ public class BasicQuery {
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setEventValue(BayesianEvent event, boolean b) {
 		setEventValue(event,b?1:0);		
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setEventValue(BayesianEvent event, double d) {
 		if( getEventType(event)==EventType.Hidden) {
 			throw new BayesianError("You may only set the value of an evidence or outcome event.");
@@ -131,6 +179,9 @@ public class BasicQuery {
 		getEventState(event).setValue(d);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getProblem() {
 		StringBuilder result = new StringBuilder();
 		result.append("P(");

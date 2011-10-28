@@ -6,14 +6,42 @@ import org.encog.ml.bayesian.BayesianEvent;
 import org.encog.ml.bayesian.EventType;
 import org.encog.util.Format;
 
+/**
+ * Holds the state of an event during a query. This allows the event to actually
+ * hold a value, as well as an anticipated value (compareValue).
+ * 
+ */
 public class EventState {
-	
+
+	/**
+	 * Has this event been calculated yet?
+	 */
 	private boolean calculated;
-	private double value;
-	private final BayesianEvent event;
-	private EventType eventType;
-	private double compareValue;
 	
+	/**
+	 * The current value of this event.
+	 */
+	private double value;
+	
+	/**
+	 * The event that this state is connected to.
+	 */
+	private final BayesianEvent event;
+	
+	/**
+	 * The type of event that this is for the query.
+	 */
+	private EventType eventType;
+	
+	/**
+	 * The value that we are comparing to, for probability.
+	 */
+	private double compareValue;
+
+	/**
+	 * Construct an event state for the specified event.
+	 * @param theEvent The event to create a state for.
+	 */
 	public EventState(BayesianEvent theEvent) {
 		this.event = theEvent;
 		this.eventType = EventType.Hidden;
@@ -28,7 +56,8 @@ public class EventState {
 	}
 
 	/**
-	 * @param calculated the calculated to set
+	 * @param calculated
+	 *            the calculated to set
 	 */
 	public void setCalculated(boolean calculated) {
 		this.calculated = calculated;
@@ -42,7 +71,8 @@ public class EventState {
 	}
 
 	/**
-	 * @param value the value to set
+	 * @param value
+	 *            the value to set
 	 */
 	public void setValue(double value) {
 		this.calculated = true;
@@ -64,14 +94,15 @@ public class EventState {
 	}
 
 	/**
-	 * @param eventType the eventType to set
+	 * @param eventType
+	 *            the eventType to set
 	 */
 	public void setEventType(EventType eventType) {
 		this.eventType = eventType;
 	}
 
-	public void randomize(double ... args) {
-		setValue( event.getTable().generateRandom(args) );		
+	public void randomize(double... args) {
+		setValue(event.getTable().generateRandom(args));
 	}
 
 	/**
@@ -82,19 +113,24 @@ public class EventState {
 	}
 
 	/**
-	 * @param compareValue the compareValue to set
+	 * @param compareValue
+	 *            the compareValue to set
 	 */
 	public void setCompareValue(double compareValue) {
 		this.compareValue = compareValue;
 	}
 
 	public boolean isSatisfied() {
-		if( eventType==EventType.Hidden) {
-			throw new BayesianError("Satisfy can't be called on a hidden event.");
+		if (eventType == EventType.Hidden) {
+			throw new BayesianError(
+					"Satisfy can't be called on a hidden event.");
 		}
-		return Math.abs(this.compareValue-this.value)<Encog.DEFAULT_DOUBLE_EQUAL;
+		return Math.abs(this.compareValue - this.value) < Encog.DEFAULT_DOUBLE_EQUAL;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append("[EventState:event=");
@@ -102,30 +138,35 @@ public class EventState {
 		result.append(",type=");
 		result.append(this.eventType.toString());
 		result.append(",value=");
-		result.append(Format.formatDouble(this.value,2));
+		result.append(Format.formatDouble(this.value, 2));
 		result.append(",compare=");
-		result.append(Format.formatDouble(this.compareValue,2));
+		result.append(Format.formatDouble(this.compareValue, 2));
 		result.append(",calc=");
-		result.append(this.calculated?"y":"n");
+		result.append(this.calculated ? "y" : "n");
 		result.append("]");
 		return result.toString();
 	}
-	
+
+	/**
+	 * Convert a state to a simple string. (probability expression)
+	 * @param state The state.
+	 * @return A probability expression as a string.
+	 */
 	public static String toSimpleString(EventState state) {
 		StringBuilder result = new StringBuilder();
-		if( state.getEvent().isBoolean() ) {
-			if( state.getCompareValue()<0.1) {
+		if (state.getEvent().isBoolean()) {
+			if (state.getCompareValue() < 0.1) {
 				result.append("~");
 			}
 		}
-		
+
 		result.append(state.getEvent().getLabel());
-		
-		if( !state.getEvent().isBoolean()) {
+
+		if (!state.getEvent().isBoolean()) {
 			result.append("=");
-			result.append(state.getCompareValue());			
+			result.append(state.getCompareValue());
 		}
-		
-		return result.toString();		
+
+		return result.toString();
 	}
 }

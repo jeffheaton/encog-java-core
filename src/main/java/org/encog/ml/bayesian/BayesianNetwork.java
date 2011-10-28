@@ -1,35 +1,54 @@
 package org.encog.ml.bayesian;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class BayesianNetwork {
+import org.encog.ml.MLRegression;
+import org.encog.ml.bayesian.query.BayesianQuery;
+import org.encog.ml.bayesian.query.enumerate.EnumerationQuery;
+import org.encog.ml.bayesian.query.sample.EventState;
+import org.encog.ml.data.MLData;
+import org.encog.ml.data.basic.BasicMLData;
+
+public class BayesianNetwork implements MLRegression {
 	
 	public static final String[] CHOICES_TRUE_FALSE = { "false", "true" };
 	
-	private final Map<String,BayesianEvent> events  = new HashMap<String,BayesianEvent>();
+	private final Map<String,BayesianEvent> eventMap  = new HashMap<String,BayesianEvent>();
+	private final List<BayesianEvent> events = new ArrayList<BayesianEvent>();
+	private BayesianQuery query;
+		
+	public BayesianNetwork() {
+		this.query = new EnumerationQuery(this);
+	}
 
 	/**
 	 * @return the events
 	 */
-	public Map<String, BayesianEvent> getEvents() {
-		return events;
+	public Map<String, BayesianEvent> getEventMap() {
+		return eventMap;
+	}
+	
+	public List<BayesianEvent> getEvents() {
+		return this.events;
 	}
 	
 	public BayesianEvent getEvent(String label) {
-		return this.events.get(label);
+		return this.eventMap.get(label);
 	}
 	
 	public BayesianEvent getEventError(String label) {
 		if( !eventExists(label) )
 			throw(new BayesianError("Undefined label: " + label));
-		return this.events.get(label);
+		return this.eventMap.get(label);
 	}
 	
 	public boolean eventExists(String label) {
-		return this.events.containsKey(label);
+		return this.eventMap.containsKey(label);
 	}
 	
 	public BayesianEvent createEvent(String label) {
@@ -37,7 +56,8 @@ public class BayesianNetwork {
 			throw new BayesianError("The label \"" + label + "\" has already been defined.");
 		}
 		BayesianEvent event = new BayesianEvent(label);
-		this.events.put(label, event);
+		this.eventMap.put(label, event);
+		this.events.add(event);
 		return event;		
 	}
 	
@@ -64,7 +84,7 @@ public class BayesianNetwork {
 		boolean first = true;
 		
 		// display only those with no parents
-		for( BayesianEvent e : this.events.values() ) {
+		for( BayesianEvent e : this.eventMap.values() ) {
 			if( !e.hasParents( ) ) {
 				if( !first ) 
 					result.append(" ");
@@ -74,7 +94,7 @@ public class BayesianNetwork {
 		}
 		
 		// display only those with parents and children
-		for( BayesianEvent e : this.events.values() ) {
+		for( BayesianEvent e : this.eventMap.values() ) {
 			if( e.hasParents( ) && e.hasChildren() ) {
 				if( !first ) 
 					result.append(" ");
@@ -84,7 +104,7 @@ public class BayesianNetwork {
 		}
 		
 		// display only those with parents and no children
-		for( BayesianEvent e : this.events.values() ) {
+		for( BayesianEvent e : this.eventMap.values() ) {
 			if( e.hasParents( ) && !e.hasChildren() ) {
 				if( !first ) 
 					result.append(" ");
@@ -98,20 +118,20 @@ public class BayesianNetwork {
 	
 	public int calculateParameterCount() {
 		int result = 0;
-		for( BayesianEvent e: this.events.values()) {
+		for( BayesianEvent e: this.eventMap.values()) {
 			result+=e.calculateParameterCount();
 		}
 		return result;
 	}
 
 	public void finalizeStructure() {
-		for( BayesianEvent e: this.events.values()) {
+		for( BayesianEvent e: this.eventMap.values()) {
 			e.finalizeStructure();
 		}
 	}
 
 	public void validate() {
-		for( BayesianEvent e: this.events.values()) {
+		for( BayesianEvent e: this.eventMap.values()) {
 			e.validate();
 		}
 	}
@@ -177,5 +197,48 @@ public class BayesianNetwork {
 	public boolean isCondIndependant(BayesianEvent a, BayesianEvent b, BayesianEvent ... given) {
 		Set<BayesianEvent> searched = new HashSet<BayesianEvent>();
 		return isCondIndependant(false, a,b,searched,given);
-	}	
+	}
+	
+	
+
+	public BayesianQuery getQuery() {
+		return query;
+	}
+
+	public void setQuery(BayesianQuery query) {
+		this.query = query;
+	}
+
+	@Override
+	public int getInputCount() {
+		return this.query.getEvidenceEvents().size();
+	}
+
+	@Override
+	public int getOutputCount() {
+		return 1;
+	}
+
+	@Override
+	public MLData compute(MLData input) {
+		
+		// copy the input to evidence
+		int inputIndex = 0;
+		for(int i=0; i<this.events.size();i++) {
+			BayesianEvent event = this.events.get(i);
+			EventState state = this.query.getEventState(event);
+			if( state.getEventType() == EventType.Evidence) {
+				state.setValue(input.getData(inputIndex++));
+			}
+		}
+		
+		// execute the query
+		this.query.execute();
+		
+		MLData result = new BasicMLData(1);
+		result.setData(0, this.query.getProbability());		
+		return result;
+	}
+
+		
 }
