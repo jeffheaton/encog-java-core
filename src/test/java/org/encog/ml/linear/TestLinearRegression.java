@@ -12,9 +12,13 @@ public class TestLinearRegression extends TestCase {
 		double[][] IDEAL = { {0}, {-3}, {-1}, {-2} };
 		
 		MLDataSet data = new BasicMLDataSet(INPUT,IDEAL);
-		LinearRegression lin = new LinearRegression(data);
-		System.out.println("w0 = " + Format.formatDouble(lin.getW()[0],2));
-		System.out.println("w1 = " + Format.formatDouble(lin.getW()[1],2));
+		LinearRegression lin = new LinearRegression(1);
+		TrainLinearRegression train = new TrainLinearRegression(lin,data);
+		train.iteration();
+		
+		System.out.println("w0 = " + Format.formatDouble(lin.getWeights()[0],2));
+		System.out.println("w1 = " + Format.formatDouble(lin.getWeights()[1],2));
+		System.out.println("Error: " + lin.calculateError(data));
 	}
 	
 	public void testLinear2() {
@@ -22,8 +26,11 @@ public class TestLinearRegression extends TestCase {
 		double[][] IDEAL = { {2}, {5}, {5}, {8} };
 		
 		MLDataSet data = new BasicMLDataSet(INPUT,IDEAL);
-		LinearRegression lin = new LinearRegression(data);
-		System.out.println("w0 = " + Format.formatDouble(lin.getW()[0],2));
-		System.out.println("w1 = " + Format.formatDouble(lin.getW()[1],2));
+		LinearRegression lin = new LinearRegression(1);
+		TrainLinearRegression train = new TrainLinearRegression(lin,data);
+		train.iteration();
+		System.out.println("w0 = " + Format.formatDouble(lin.getWeights()[0],2));
+		System.out.println("w1 = " + Format.formatDouble(lin.getWeights()[1],2));
+		System.out.println("Error: " + lin.calculateError(data));
 	}
 }

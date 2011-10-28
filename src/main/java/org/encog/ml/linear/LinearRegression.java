@@ -1,46 +1,64 @@
 package org.encog.ml.linear;
 
 import org.encog.EncogError;
+import org.encog.mathutil.error.ErrorCalculation;
+import org.encog.ml.MLError;
+import org.encog.ml.MLRegression;
+import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.data.basic.BasicMLData;
+import org.encog.util.simple.EncogUtility;
 
-public class LinearRegression {
+public class LinearRegression implements MLRegression, MLError {
 	
-	private MLDataSet data;
-	private double[] w;
-	private int m;
+	private double[] weights;
+	private int inputCount;
 	
-	public LinearRegression(MLDataSet theData) {
-		this.data = theData;
+	public LinearRegression(int theInputCount) {
 		
-		if( this.data.getInputSize()!=1 || this.data.getIdealSize()!=1 ) {
-			throw new EncogError("Input and ideal size must be one.");
+		if( theInputCount!=1  ) {
+			throw new EncogError("Input size must be one.");
 		}
 		
-		this.w = new double[2];
+		this.inputCount = theInputCount;
+		this.weights = new double[theInputCount+1];	
+	}
+	
+	
+	public double[] getWeights() {
+		return weights;
+	}
+
+	@Override
+	public int getInputCount() {
+		return this.inputCount;
+	}
+
+	@Override
+	public int getOutputCount() {
+		return 1;
+	}
+
+	@Override
+	public MLData compute(MLData input) {
+		if( input.size()!=this.inputCount) {
+			throw new EncogError("Invalid input size, must be " + inputCount);
+		}
+		double[] sum = new double[1];
 		
-		m = (int)this.data.getRecordCount();
-		double sumX = 0;
-		double sumY = 0;
-		double sumXY = 0;
-		double sumX2 = 0;
+		sum[0] += this.weights[0];
 		
-		for(MLDataPair pair: this.data) {
-			sumX+=pair.getInputArray()[0];
-			sumY+=pair.getIdealArray()[0];
-			sumX2+=Math.pow(pair.getInputArray()[0], 2);
-			sumXY+=pair.getInputArray()[0]*pair.getIdealArray()[0];
+		for(int i=0;i<input.size();i++) {	
+			sum[0] += this.weights[i+1] * Math.pow(input.getData(i),i+1);
 		}
 		
-		w[1] = ((m*sumXY)-(sumX*sumY))/((m*sumX2)-Math.pow(sumX, 2));
-		w[0] = ((1.0/m)*sumY)-( (w[1]/m) * sumX);
+		return new BasicMLData(sum);
 	}
-	
-	public int getM() {
-		return m;
-	}
-	
-	public double[] getW() {
-		return w;
+
+
+	@Override
+	public double calculateError(MLDataSet data) {
+		return EncogUtility.calculateRegressionError(this, data);
 	}
 }
