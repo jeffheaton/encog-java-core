@@ -128,6 +128,7 @@ public class BasicQuery {
 		}
 		
 		getEventState(event).setCompareValue(d);
+		getEventState(event).setValue(d);
 	}
 
 	public String getProblem() {

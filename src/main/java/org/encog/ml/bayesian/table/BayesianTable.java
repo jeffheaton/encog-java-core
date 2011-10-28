@@ -79,4 +79,8 @@ public class BayesianTable {
 		}
 		return result.toString();
 	}
+
+	public TableLine[] getLines() {
+		return this.lines;
+	}
 }

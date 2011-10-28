@@ -128,5 +128,4 @@ public class EventState {
 		
 		return result.toString();		
 	}
-	
 }
