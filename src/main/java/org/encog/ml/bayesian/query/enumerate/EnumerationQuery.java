@@ -83,6 +83,11 @@ public class EnumerationQuery extends BasicQuery {
 		int currentIndex = 0;
 		boolean done = false;
 		boolean eof = false;
+		
+		if( this.enumerationEvents.size() == 0 ) {
+			done = true;
+			eof = true;
+		}
 
 		while (!done) {
 
