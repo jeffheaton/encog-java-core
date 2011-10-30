@@ -1,11 +1,9 @@
-package org.encog.ml.linear;
+package org.encog.ml.fitting.linear;
 
 import org.encog.EncogError;
-import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
-import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.util.simple.EncogUtility;

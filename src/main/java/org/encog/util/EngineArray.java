@@ -364,4 +364,13 @@ public final class EngineArray {
 		}
 		return Math.sqrt(sum);
 	}
+
+	public static void fill(double[][] sigma, int value) {
+		for(int i=0;i<sigma.length;i++) {
+			for(int j=0;j<sigma[i].length;j++) {
+				sigma[i][j] = value;
+			}
+		}
+		
+	}
 }

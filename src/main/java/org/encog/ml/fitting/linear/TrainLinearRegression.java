@@ -1,4 +1,4 @@
-package org.encog.ml.linear;
+package org.encog.ml.fitting.linear;
 
 import org.encog.EncogError;
 import org.encog.ml.MLMethod;

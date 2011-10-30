@@ -4,6 +4,8 @@ import junit.framework.TestCase;
 
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.encog.ml.fitting.linear.LinearRegression;
+import org.encog.ml.fitting.linear.TrainLinearRegression;
 import org.encog.util.Format;
 
 public class TestLinearRegression extends TestCase {

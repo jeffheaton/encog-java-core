@@ -23,6 +23,8 @@
  */
 package org.encog.mathutil.matrices;
 
+import org.encog.mathutil.matrices.decomposition.LUDecomposition;
+
 /**
  * This class can perform many different mathematical operations on matrixes.
  * The matrixes passed in will not be modified, rather a new matrix, with the
@@ -407,6 +409,10 @@ public final class MatrixMath {
 	 * A private constructor.
 	 */
 	private MatrixMath() {
+	}
+	
+	public static double determinant(Matrix m) {
+		return new LUDecomposition(m).det();
 	}
 
 }
