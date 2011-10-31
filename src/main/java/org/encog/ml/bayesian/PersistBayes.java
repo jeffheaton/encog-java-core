@@ -71,6 +71,15 @@ public class PersistBayes implements EncogPersistor {
 			}
 			if (section.getSectionName().equals("BAYES-NETWORK")
 					&& section.getSubSectionName().equals("BAYES-TABLE")) {
+				
+				// first, define relationships (1st pass)
+				for( String line : section.getLines() ) {
+					result.defineRelationship(line);					
+				}
+				
+				result.finalizeStructure();
+				
+				// now define the probabilities (2nd pass)
 				for( String line : section.getLines() ) {
 					result.defineProbability(line);					
 				}
@@ -104,8 +113,10 @@ public class PersistBayes implements EncogPersistor {
 				
 				if( event.isBoolean()) {
 					if( Math.abs(line.getResult())<Encog.DEFAULT_DOUBLE_EQUAL) {
+						str.append("-");
+					} else {
 						str.append("+");
-					}					
+					}
 				}
 				str.append(event.getLabel());
 				if( !event.isBoolean()) {
@@ -127,9 +138,9 @@ public class PersistBayes implements EncogPersistor {
 					double arg = line.getArguments()[index];
 					if( parentEvent.isBoolean() ) {
 						if( Math.abs(arg)<Encog.DEFAULT_DOUBLE_EQUAL ) {
-							str.append("+");
-						} else {
 							str.append("-");
+						} else {
+							str.append("+");
 						}
 					}
 					str.append(parentEvent.getLabel());

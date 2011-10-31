@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.encog.EncogError;
 import org.encog.ml.MLRegression;
+import org.encog.ml.bayesian.parse.ParseProbability;
+import org.encog.ml.bayesian.parse.ParsedProbability;
 import org.encog.ml.bayesian.query.BayesianQuery;
 import org.encog.ml.bayesian.query.enumerate.EnumerationQuery;
 import org.encog.ml.bayesian.query.sample.EventState;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLData;
-import org.encog.util.SimpleParser;
 import org.encog.util.csv.CSVFormat;
 
 public class BayesianNetwork implements MLRegression {
@@ -67,8 +67,17 @@ public class BayesianNetwork implements MLRegression {
 
 	public void createDependancy(BayesianEvent parentEvent,
 			BayesianEvent childEvent) {
-		parentEvent.addChild(childEvent);
-		childEvent.addParent(parentEvent);
+		// does the dependency exist?
+		if(!hasDependency(parentEvent,childEvent) ) {		
+			// create the dependency
+			parentEvent.addChild(childEvent);
+			childEvent.addParent(parentEvent);
+		}
+	}
+
+	private boolean hasDependency(BayesianEvent parentEvent,
+			BayesianEvent childEvent) {
+		return( parentEvent.getChildren().contains(childEvent));
 	}
 
 	public void createDependancy(BayesianEvent parentEvent,
@@ -248,43 +257,9 @@ public class BayesianNetwork implements MLRegression {
 	}
 
 	public void defineProbability(String line, double probability) {
-		SimpleParser parser = new SimpleParser(line);
-		parser.eatWhiteSpace();
-		if (!parser.lookAhead("P(", true)) {
-			throw new EncogError("Bayes table lines must start with P(");
-		}
-		parser.advance(2);
-		String label = parser.readToChars(",|)");
-		BayesianEvent event = getEvent(label);
-		if( event== null ) {
-			throw new BayesianError("Undefined event: " + label); 
-		}
-		if( parser.peek()==',') {
-			throw new BayesianError("Only one base event may be used to define a probability, i.e. P(a), not P(a,b).");
-		}
-		
-		double[] args;
-		if( parser.peek()=='|') {
-			StringBuilder l = new StringBuilder();
-			boolean done = false;
-			
-			while( !done && !parser.eol()) {
-				char ch = parser.peek();
-				if( ",)".indexOf(ch) != -1 ) {
-					if( ch==')') 
-						done = true;
-					
-				} else {
-					parser.advance();
-					l.append(ch);
-				}
-			}
-			
-		}
-		
-		if(parser.peek()!=')') {
-			throw new BayesianError("Probability not properly terminated.");
-		}
+		ParseProbability parse = new ParseProbability(this);
+		ParsedProbability parsedProbability = parse.parse(line);
+		parsedProbability.defineTruthTable(this, probability);
 	}
 
 	public void defineProbability(String line) {
@@ -309,6 +284,20 @@ public class BayesianNetwork implements MLRegression {
 			throw new BayesianError("Probability must be of the form \"P(event|condition1,condition2,etc.)=0.5\".  Conditions are optional.");
 		}
 		defineProbability(left,prob);
+	}
+
+	public BayesianEvent requireEvent(String label) {
+		BayesianEvent result = getEvent(label);
+		if( result==null ) {
+			throw new BayesianError("The event " + label + " is not defined.");
+		}
+		return result;
+	}
+
+	public void defineRelationship(String line) {
+		ParseProbability parse = new ParseProbability(this);
+		ParsedProbability parsedProbability = parse.parse(line);
+		parsedProbability.defineRelationships(this);
 	}
 	
 	
