@@ -4,9 +4,8 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.ml.bayesian.query.enumerate.EnumerationQuery;
-import org.encog.ml.bayesian.query.sample.SamplingQuery;
 
-public class TestSamplingQuery extends TestCase {
+public class TestEnumerationQuery extends TestCase {
 	
 	private void testPercent(double d, int target) {
 		if( ((int)d)>=(target-2) && ((int)d)<=(target+2) ) {
@@ -14,7 +13,7 @@ public class TestSamplingQuery extends TestCase {
 		}
 	}
 	
-	public void testSampling1() {
+	public void testEnumeration1() {
 		BayesianNetwork network = new BayesianNetwork();
 		BayesianEvent a = network.createEvent("a");
 		BayesianEvent b = network.createEvent("b");
@@ -26,7 +25,7 @@ public class TestSamplingQuery extends TestCase {
 		b.getTable().addLine(0.8, true, false);// p(b|~a) = 0.8		
 		network.validate();
 		
-		SamplingQuery query = new SamplingQuery(network);
+		EnumerationQuery query = new EnumerationQuery(network);
 		query.defineEventType(a, EventType.Evidence);
 		query.defineEventType(b, EventType.Outcome);
 		query.setEventValue(b, true);
@@ -35,7 +34,7 @@ public class TestSamplingQuery extends TestCase {
 		testPercent(query.getProbability(),20);
 	}
 	
-	public void testSampling2() {
+	public void testEnumeration2() {
 		BayesianNetwork network = new BayesianNetwork();
 		BayesianEvent a = network.createEvent("a");
 		BayesianEvent x1 = network.createEvent("x1");
@@ -54,7 +53,7 @@ public class TestSamplingQuery extends TestCase {
 		x3.getTable().addLine(0.6, true, false);// p(x3|~a) = 0.6
 		network.validate();
 		
-		SamplingQuery query = new SamplingQuery(network);
+		EnumerationQuery query = new EnumerationQuery(network);
 		query.defineEventType(x1, EventType.Evidence);
 		query.defineEventType(x2, EventType.Evidence);
 		query.defineEventType(x3, EventType.Evidence);
@@ -67,7 +66,7 @@ public class TestSamplingQuery extends TestCase {
 		testPercent(query.getProbability(),18);
 	}
 	
-	public void testSampling3() {
+	public void testEnumeration3() {
 		BayesianNetwork network = new BayesianNetwork();
 		BayesianEvent a = network.createEvent("a");
 		BayesianEvent x1 = network.createEvent("x1");
@@ -86,7 +85,7 @@ public class TestSamplingQuery extends TestCase {
 		x3.getTable().addLine(0.6, true, false);// p(x3|~a) = 0.6
 		network.validate();
 		
-		SamplingQuery query = new SamplingQuery(network);
+		EnumerationQuery query = new EnumerationQuery(network);
 		query.defineEventType(x1, EventType.Evidence);
 		query.defineEventType(x3, EventType.Outcome);
 		query.setEventValue(x1, true);
@@ -95,5 +94,5 @@ public class TestSamplingQuery extends TestCase {
 		testPercent(query.getProbability(),50);
 	}
 	
-	
+
 }
