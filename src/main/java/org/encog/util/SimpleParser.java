@@ -172,4 +172,15 @@ public class SimpleParser {
 		
 		return result.toString();
 	}
+
+	public String readToChars(String chs) {
+		StringBuilder result = new StringBuilder();
+
+        while ( chs.indexOf(this.peek())==-1 && !eol())
+        {
+            result.append(readChar());
+        }
+
+        return result.toString();
+	}
 }
