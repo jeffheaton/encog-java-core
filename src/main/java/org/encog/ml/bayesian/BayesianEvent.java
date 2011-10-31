@@ -1,11 +1,12 @@
 package org.encog.ml.bayesian;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.ml.bayesian.table.BayesianTable;
 
-public class BayesianEvent {
+public class BayesianEvent implements Serializable {
 	
 	private final String label;
 	private final List<BayesianEvent> parents = new ArrayList<BayesianEvent>();

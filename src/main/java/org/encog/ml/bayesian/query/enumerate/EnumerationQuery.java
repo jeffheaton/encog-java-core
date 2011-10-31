@@ -1,5 +1,6 @@
 package org.encog.ml.bayesian.query.enumerate;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import org.encog.util.Format;
  * estimate of probability the sampling query can be used.
  * 
  */
-public class EnumerationQuery extends BasicQuery {
+public class EnumerationQuery extends BasicQuery implements Serializable {
 
 	/**
 	 * The events that we will enumerate over.
@@ -41,6 +42,13 @@ public class EnumerationQuery extends BasicQuery {
 	 */
 	public EnumerationQuery(BayesianNetwork theNetwork) {
 		super(theNetwork);
+	}
+	
+	/**
+	 * Default constructor.
+	 */
+	public EnumerationQuery() {
+		
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package org.encog.ml.bayesian.query;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +17,7 @@ import org.encog.ml.bayesian.query.sample.EventState;
  * and is not used directly. Rather, other queries make use of it.
  * 
  */
-public abstract class BasicQuery implements BayesianQuery {
+public abstract class BasicQuery implements BayesianQuery, Serializable {
 	
 	/**
 	 * The network to be queried.
@@ -32,6 +33,14 @@ public abstract class BasicQuery implements BayesianQuery {
 	 * The evidence events.
 	 */
 	private final List<BayesianEvent> evidenceEvents = new ArrayList<BayesianEvent>();
+	
+	/**
+	 * Default constructor.
+	 */
+	public BasicQuery() {
+		this.network = null;
+	}
+	
 	
 	/**
 	 * The outcome events.

@@ -1,10 +1,12 @@
 package org.encog.ml.bayesian.table;
 
+import java.io.Serializable;
+
 import org.encog.Encog;
 import org.encog.util.EngineArray;
 import org.encog.util.Format;
 
-public class TableLine {
+public class TableLine implements Serializable {
 	
 	private final double probability;
 	private final double result;

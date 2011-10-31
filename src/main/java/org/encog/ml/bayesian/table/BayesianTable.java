@@ -1,9 +1,11 @@
 package org.encog.ml.bayesian.table;
 
+import java.io.Serializable;
+
 import org.encog.ml.bayesian.BayesianError;
 import org.encog.ml.bayesian.BayesianEvent;
 
-public class BayesianTable {
+public class BayesianTable implements Serializable {
 	private final BayesianEvent event;
 	private final TableLine[] lines;
 	private int currentLine;

@@ -1,5 +1,6 @@
 package org.encog.ml.bayesian;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,7 +18,7 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.util.csv.CSVFormat;
 
-public class BayesianNetwork implements MLRegression {
+public class BayesianNetwork implements MLRegression, Serializable {
 
 	public static final String[] CHOICES_TRUE_FALSE = { "false", "true" };
 

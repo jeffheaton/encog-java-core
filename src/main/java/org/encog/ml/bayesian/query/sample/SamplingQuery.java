@@ -1,5 +1,7 @@
 package org.encog.ml.bayesian.query.sample;
 
+import java.io.Serializable;
+
 import org.encog.ml.bayesian.BayesianError;
 import org.encog.ml.bayesian.BayesianEvent;
 import org.encog.ml.bayesian.BayesianNetwork;
@@ -17,7 +19,7 @@ import org.encog.util.Format;
  * enumeration query will become slow as the size of the Bayesian network grows.
  * Sampling can often be used for a quick estimation of a probability.
  */
-public class SamplingQuery extends BasicQuery {
+public class SamplingQuery extends BasicQuery implements Serializable {
 
 	/**
 	 * The default sample size.

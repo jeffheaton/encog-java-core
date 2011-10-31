@@ -1,5 +1,7 @@
 package org.encog.ml.bayesian.query.sample;
 
+import java.io.Serializable;
+
 import org.encog.Encog;
 import org.encog.ml.bayesian.BayesianError;
 import org.encog.ml.bayesian.BayesianEvent;
@@ -11,7 +13,7 @@ import org.encog.util.Format;
  * hold a value, as well as an anticipated value (compareValue).
  * 
  */
-public class EventState {
+public class EventState implements Serializable {
 
 	/**
 	 * Has this event been calculated yet?
