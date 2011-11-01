@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.encog.ml.BasicML;
 import org.encog.ml.MLRegression;
 import org.encog.ml.bayesian.parse.ParseProbability;
 import org.encog.ml.bayesian.parse.ParsedEvent;
@@ -19,7 +20,7 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.util.csv.CSVFormat;
 
-public class BayesianNetwork implements MLRegression, Serializable {
+public class BayesianNetwork extends BasicML implements MLRegression, Serializable {
 
 	public static final String[] CHOICES_TRUE_FALSE = { "false", "true" };
 
@@ -333,5 +334,10 @@ public class BayesianNetwork implements MLRegression, Serializable {
 		}
 		
 		query.locateEventTypes();
+	}
+
+	@Override
+	public void updateProperties() {
+		// Not needed		
 	}
 }
