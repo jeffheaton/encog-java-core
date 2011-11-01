@@ -322,12 +322,14 @@ public class BayesianNetwork implements MLRegression, Serializable {
 		for( ParsedEvent parsedEvent : parsedProbability.getGivenEvents() ) {
 			BayesianEvent event = getEvent(parsedEvent.getLabel());
 			query.defineEventType(event, EventType.Evidence);
+			query.setEventValue(event, parsedEvent.resolveValue(event));
 		}
 		
 		// deal with outcome (output)
 		for( ParsedEvent parsedEvent : parsedProbability.getBaseEvents() ) {
 			BayesianEvent event = getEvent(parsedEvent.getLabel());
 			query.defineEventType(event, EventType.Outcome);
+			query.setEventValue(event, parsedEvent.resolveValue(event));
 		}
 		
 		query.locateEventTypes();
