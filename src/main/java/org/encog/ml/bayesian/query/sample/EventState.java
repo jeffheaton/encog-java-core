@@ -158,7 +158,9 @@ public class EventState implements Serializable {
 		StringBuilder result = new StringBuilder();
 		if (state.getEvent().isBoolean()) {
 			if (state.getCompareValue() < 0.1) {
-				result.append("~");
+				result.append("-");
+			} else {
+				result.append("+");
 			}
 		}
 

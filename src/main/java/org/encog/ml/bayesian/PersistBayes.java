@@ -26,16 +26,18 @@ package org.encog.ml.bayesian;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 
 import org.encog.Encog;
-import org.encog.EncogError;
-import org.encog.bot.BotUtil;
+import org.encog.ml.bayesian.query.BayesianQuery;
+import org.encog.ml.bayesian.query.enumerate.EnumerationQuery;
+import org.encog.ml.bayesian.query.sample.EventState;
+import org.encog.ml.bayesian.query.sample.SamplingQuery;
 import org.encog.ml.bayesian.table.TableLine;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
 import org.encog.persist.EncogWriteHelper;
-import org.encog.util.SimpleParser;
 
 /**
  * Persist a SVM.
@@ -59,8 +61,16 @@ public class PersistBayes implements EncogPersistor {
 		final BayesianNetwork result = new BayesianNetwork();
 		final EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;
+		String queryType = "";
+		String queryStr = "";
 
 		while ((section = in.readNextSection()) != null) {
+			if (section.getSectionName().equals("BAYES-NETWORK")
+					&& section.getSubSectionName().equals("BAYES-PARAM")) {
+				final Map<String, String> params = section.parseParams();
+				queryType = params.get("queryType");
+				queryStr = params.get("query");
+			}
 			if (section.getSectionName().equals("BAYES-NETWORK")
 					&& section.getSubSectionName().equals("BAYES-EVENT")) {
 				for (String line : section.getLines()) {
@@ -82,9 +92,26 @@ public class PersistBayes implements EncogPersistor {
 				// now define the probabilities (2nd pass)
 				for( String line : section.getLines() ) {
 					result.defineProbability(line);					
-				}
-			} 
+				}							
+			}
 		}
+		
+		// define query, if it exists
+		if( queryType.length()>0) {
+			BayesianQuery query = null;
+			if( queryType.equals("EnumerationQuery")) {
+				query = new EnumerationQuery(result);
+			} else {
+				query = new SamplingQuery(result);
+			}
+			
+			if( query!=null ) {
+				result.setQuery(query);
+				result.defineQuery(queryStr);
+			}
+		}
+		
+		
 
 		return result;
 	}
@@ -97,6 +124,15 @@ public class PersistBayes implements EncogPersistor {
 		final EncogWriteHelper out = new EncogWriteHelper(os);
 		final BayesianNetwork b = (BayesianNetwork) obj;
 		out.addSection("BAYES-NETWORK");
+		out.addSubSection("BAYES-PARAM");
+		String queryType = "";
+		String queryStr = "";
+		if( b.getQuery()!=null ) {
+			queryType = b.getQuery().getClass().getSimpleName();
+			queryStr = b.getQuery().getProblem();
+		}
+		out.writeProperty("queryType", queryType);
+		out.writeProperty("query", queryStr);
 		out.addSubSection("BAYES-EVENT");
 		for( BayesianEvent event: b.getEvents()) {
 			out.addColumn(event.getLabel());
@@ -155,7 +191,7 @@ public class PersistBayes implements EncogPersistor {
 				out.write(str.toString());
 			}
 		}
-		
+				
 		out.flush();
 	}
 

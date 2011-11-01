@@ -49,7 +49,12 @@ public abstract class BasicQuery implements BayesianQuery, Serializable {
 	
 	public BasicQuery(BayesianNetwork theNetwork) {
 		this.network = theNetwork;
-		for(BayesianEvent event: theNetwork.getEvents()) {
+		finalizeStructure();
+	}
+	
+	public void finalizeStructure() {
+		this.events.clear();
+		for(BayesianEvent event: this.network.getEvents()) {
 			events.put(event, new EventState(event));
 		}
 	}

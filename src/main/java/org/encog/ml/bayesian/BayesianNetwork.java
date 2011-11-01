@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.encog.ml.MLRegression;
 import org.encog.ml.bayesian.parse.ParseProbability;
+import org.encog.ml.bayesian.parse.ParsedEvent;
 import org.encog.ml.bayesian.parse.ParsedProbability;
 import org.encog.ml.bayesian.query.BayesianQuery;
 import org.encog.ml.bayesian.query.enumerate.EnumerationQuery;
@@ -143,6 +144,10 @@ public class BayesianNetwork implements MLRegression, Serializable {
 	public void finalizeStructure() {
 		for (BayesianEvent e : this.eventMap.values()) {
 			e.finalizeStructure();
+		}
+		
+		if( this.query!=null ) {
+			this.query.finalizeStructure();
 		}
 	}
 
@@ -300,7 +305,31 @@ public class BayesianNetwork implements MLRegression, Serializable {
 		ParsedProbability parsedProbability = parse.parse(line);
 		parsedProbability.defineRelationships(this);
 	}
-	
-	
 
+	public void defineQuery(String line) {
+		
+		if( this.query==null ) {
+			throw new BayesianError("This Bayesian network does not have a query to define.");
+		}
+		
+		ParseProbability parse = new ParseProbability(this);
+		ParsedProbability parsedProbability = parse.parse(line);
+		
+		// first, mark all events as hidden
+		this.query.reset();
+		
+		// deal with evidence (input)
+		for( ParsedEvent parsedEvent : parsedProbability.getGivenEvents() ) {
+			BayesianEvent event = getEvent(parsedEvent.getLabel());
+			query.defineEventType(event, EventType.Evidence);
+		}
+		
+		// deal with outcome (output)
+		for( ParsedEvent parsedEvent : parsedProbability.getBaseEvents() ) {
+			BayesianEvent event = getEvent(parsedEvent.getLabel());
+			query.defineEventType(event, EventType.Outcome);
+		}
+		
+		query.locateEventTypes();
+	}
 }

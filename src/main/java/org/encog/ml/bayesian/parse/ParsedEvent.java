@@ -26,6 +26,10 @@ public class ParsedEvent {
 	public double resolveValue(BayesianEvent actualEvent) {
 		int result = 0;
 		
+		if( this.value==null ) {
+			throw new BayesianError("Value is undefined for " + this.label);
+		}
+		
 		for(String choice: actualEvent.getChoices()) {
 			if( this.value.equals(choice)) {
 				return result;

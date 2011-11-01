@@ -99,4 +99,11 @@ public interface BayesianQuery {
 	 * @return Obtains the probability after execute has been called.
 	 */
 	double getProbability();
+	
+	void finalizeStructure();
+	
+	/**
+	 * Called to locate the evidence and outcome events.
+	 */
+	public void locateEventTypes();
 }

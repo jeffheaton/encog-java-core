@@ -189,4 +189,17 @@ public class HTMLReport {
 		text.append("</table></td>");
 		
 	}
+
+	public void header(String head, int colSpan) {
+		text.append("<th");
+		if (colSpan > 0) {
+			text.append(" colspan=\"");
+			text.append(colSpan);
+			text.append("\"");
+		}
+		text.append(">");
+		text.append(encode(head));
+		text.append("</td>");
+		
+	}
 }
