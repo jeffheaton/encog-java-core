@@ -183,4 +183,8 @@ public class SimpleParser {
 
         return result.toString();
 	}
+
+	public String getLine() {
+		return this.line;
+	}
 }

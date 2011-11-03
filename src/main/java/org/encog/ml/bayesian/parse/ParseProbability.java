@@ -26,14 +26,14 @@ public class ParseProbability {
 				if( ch==')' || ch=='|') 
 					done = true;
 									
-				ParsedEvent parsedEvent;
+				ParsedEvent parsedEvent;			
 				
 				// deal with a value specified by + or -
-				if( l.charAt(0)=='+' ) {
+				if( l.length()>0 && l.charAt(0)=='+' ) {
 					String l2 = l.toString().substring(1);
 					parsedEvent = new ParsedEvent(l2.trim());
 					parsedEvent.setValue("true");
-				} else if( l.charAt(0)=='-') {
+				} else if( l.length()>0 && l.charAt(0)=='-') {
 					String l2 = l.toString().substring(1);
 					parsedEvent = new ParsedEvent(l2.trim());
 					parsedEvent.setValue("false");
@@ -52,7 +52,9 @@ public class ParseProbability {
 					parser.advance();
 				}
 				
-				results.add(parsedEvent);
+				if( parsedEvent.getLabel().length()>0 ) {
+					results.add(parsedEvent);
+				}
 				l.setLength(0);
 			} else {
 				parser.advance();
