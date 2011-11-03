@@ -41,7 +41,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	public static final String PROPERTY_NEAT_ACTIVATION = "neatAct";
-	public static final String PROPERTY_OUTPUT_ACTIVATION = "outAct";
 
 	/**
 	 * The number of input units. All members of the population must agree with
@@ -62,10 +61,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 	
 	private int activationCycles = 4;
 
-	/**
-	 * The activation function to use on the output layer of Encog.
-	 */
-	private ActivationFunction outputActivationFunction = new ActivationLinear();
 
 	/**
 	 * Construct a starting NEAT population.
@@ -137,21 +132,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 	public void setNeatActivationFunction(
 			ActivationFunction neatActivationFunction) {
 		this.neatActivationFunction = neatActivationFunction;
-	}
-
-	/**
-	 * @return the outputActivationFunction
-	 */
-	public ActivationFunction getOutputActivationFunction() {
-		return outputActivationFunction;
-	}
-
-	/**
-	 * @param outputActivationFunction the outputActivationFunction to set
-	 */
-	public void setOutputActivationFunction(
-			ActivationFunction outputActivationFunction) {
-		this.outputActivationFunction = outputActivationFunction;
 	}
 
 	public int getActivationCycles() {

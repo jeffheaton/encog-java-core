@@ -578,7 +578,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 				outputCount,
 				neurons,
 				pop.getNeatActivationFunction(), 
-				pop.getOutputActivationFunction(),
 				0);
 		
 		

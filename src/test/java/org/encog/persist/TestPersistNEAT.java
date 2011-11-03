@@ -105,7 +105,6 @@ public class TestPersistNEAT extends TestCase {
 				1,
 				neurons,
 				afSigmoid,
-				afStep,
 				3);
 				
 		return result;
@@ -145,10 +144,6 @@ public class TestPersistNEAT extends TestCase {
 		Assert.assertEquals(2, network.getInputCount());
 		Assert.assertEquals(3, network.getNetworkDepth());
 		Assert.assertTrue(network.getActivationFunction() instanceof ActivationSigmoid);
-		Assert.assertTrue(network.getOutputActivationFunction() instanceof ActivationStep);
-		Assert.assertEquals(0.0, ((ActivationStep)network.getOutputActivationFunction()).getCenter() );
-		Assert.assertEquals(1.0, ((ActivationStep)network.getOutputActivationFunction()).getHigh() );
-		Assert.assertEquals(0.0, ((ActivationStep)network.getOutputActivationFunction()).getLow() );
 		Assert.assertEquals(5,network.getNeurons().size());
 		
 		Map<NEATNeuronType,NEATNeuron> neurons = new HashMap<NEATNeuronType,NEATNeuron>();
