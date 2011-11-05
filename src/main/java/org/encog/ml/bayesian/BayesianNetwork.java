@@ -66,7 +66,15 @@ public class BayesianNetwork extends BasicML implements MLRegression, Serializab
 			throw new BayesianError("The label \"" + label
 					+ "\" has already been defined.");
 		}
-		BayesianEvent event = new BayesianEvent(label,options);
+		
+		BayesianEvent event;
+		
+		if( options.length==0 ) {
+			event = new BayesianEvent(label);
+		} else {
+			event = new BayesianEvent(label,options);
+			
+		}
 		this.eventMap.put(label, event);
 		this.events.add(event);
 		return event;
