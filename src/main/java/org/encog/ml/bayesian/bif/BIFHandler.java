@@ -177,43 +177,10 @@ public class BIFHandler extends DefaultHandler {
 				for(int result = 0; result<childEvent.getChoices().length;result++) {
 					childEvent.getTable().addLine(t[tableIndex++], result, args);	
 				}
-			} while(rollArgs(childEvent,args));
+			} while(BIFUtil.rollArgs(childEvent,args));
 		}
 	}
 	
-	private boolean rollArgs(BayesianEvent event, double[] args) {
-		int currentIndex = event.getParents().size()-1;
-		boolean done = false;
-		boolean eof = false;
-		
-		if( event.getParents().size() == 0 ) {
-			done = true;
-			eof = true;
-		}
-
-		while (!done) {
-
-			//EventState state = this.parents.get(currentIndex);
-			int v = (int) args[currentIndex];
-			v++;
-			if (v >= event.getParents().get(currentIndex).getChoices().length) {
-				args[currentIndex] = 0;
-			} else {
-				args[currentIndex] = v;
-				done = true;
-				break;
-			}
-
-			currentIndex--;
-
-			if (currentIndex < 0) {
-				done = true;
-				eof = true;
-			}
-		}
-
-		return !eof;
-	}
 
 	@Override
 	public void characters(char[] ch, int start, int length)

@@ -2,6 +2,7 @@ package org.encog.ml.bayesian.table;
 
 import java.io.Serializable;
 
+import org.encog.Encog;
 import org.encog.ml.bayesian.BayesianError;
 import org.encog.ml.bayesian.BayesianEvent;
 
@@ -84,5 +85,18 @@ public class BayesianTable implements Serializable {
 
 	public TableLine[] getLines() {
 		return this.lines;
+	}
+
+	public TableLine findLine(int result, double[] args) {
+		
+		for (TableLine line : this.lines) {
+			if (line.compareArgs(args)) {
+				if (Math.abs(line.getResult() - result) < Encog.DEFAULT_DOUBLE_EQUAL) {
+					return line;
+				}
+			}
+		}
+		
+		return null;
 	}
 }
