@@ -30,6 +30,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
+import org.encog.util.csv.CSVFormat;
 import org.encog.util.logging.EncogLogging;
 
 /**
@@ -2554,7 +2555,7 @@ public class svm {
 
 	private static double atof(String s)
 	{
-		return Double.valueOf(s).doubleValue();
+		return CSVFormat.EG_FORMAT.parse(s);
 	}
 
 	private static int atoi(String s)
