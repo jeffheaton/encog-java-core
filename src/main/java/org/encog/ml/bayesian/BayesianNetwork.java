@@ -55,17 +55,27 @@ public class BayesianNetwork implements MLRegression, Serializable {
 	public boolean eventExists(String label) {
 		return this.eventMap.containsKey(label);
 	}
-
-	public BayesianEvent createEvent(String label) {
+	
+	public BayesianEvent createEvent(String label, String ... options) {
+		if( label==null) {
+			throw new BayesianError("Can't create event with null label name");
+		}
+		
 		if (eventExists(label)) {
 			throw new BayesianError("The label \"" + label
 					+ "\" has already been defined.");
 		}
-		BayesianEvent event = new BayesianEvent(label);
+		BayesianEvent event = new BayesianEvent(label,options);
 		this.eventMap.put(label, event);
 		this.events.add(event);
 		return event;
 	}
+	
+	public BayesianEvent createEvent(String label, List<String> options) {
+		String[] s = new String[options.size()];
+		options.toArray(s);
+		return createEvent(label,s);		
+	}	
 
 	public void createDependancy(BayesianEvent parentEvent,
 			BayesianEvent childEvent) {

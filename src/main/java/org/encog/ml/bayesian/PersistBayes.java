@@ -144,6 +144,8 @@ public class PersistBayes implements EncogPersistor {
 		out.addSubSection("BAYES-TABLE");
 		for( BayesianEvent event: b.getEvents()) {
 			for( TableLine line : event.getTable().getLines() ) {
+				if( line==null )
+					continue;
 				StringBuilder str = new StringBuilder();
 				str.append("P(");
 				
@@ -171,7 +173,7 @@ public class PersistBayes implements EncogPersistor {
 						str.append(",");						
 					}
 					first = false;
-					double arg = line.getArguments()[index];
+					double arg = line.getArguments()[index++];
 					if( parentEvent.isBoolean() ) {
 						if( Math.abs(arg)<Encog.DEFAULT_DOUBLE_EQUAL ) {
 							str.append("-");
