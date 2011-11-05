@@ -94,6 +94,11 @@ public class PersistBayes implements EncogPersistor {
 					result.defineProbability(line);					
 				}							
 			}
+			if (section.getSectionName().equals("BAYES-NETWORK")
+					&& section.getSubSectionName().equals("BAYES-PROPERTIES")) {
+				final Map<String, String> params = section.parseParams();
+				result.getProperties().putAll(params);
+			}
 		}
 		
 		// define query, if it exists
@@ -133,6 +138,8 @@ public class PersistBayes implements EncogPersistor {
 		}
 		out.writeProperty("queryType", queryType);
 		out.writeProperty("query", queryStr);
+		out.addSubSection("BAYES-PROPERTIES");
+		out.addProperties(b.getProperties());
 		out.addSubSection("BAYES-EVENT");
 		for( BayesianEvent event: b.getEvents()) {
 			out.addColumn(event.getLabel());
