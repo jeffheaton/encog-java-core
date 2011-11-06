@@ -44,7 +44,6 @@ import org.encog.persist.EncogWriteHelper;
  */
 public class PersistBayes implements EncogPersistor {
 
-
 	/**
 	 * @return The file version.
 	 */
@@ -76,23 +75,27 @@ public class PersistBayes implements EncogPersistor {
 				for (String line : section.getLines()) {
 					List<String> cols = EncogFileSection.splitColumns(line);
 					String label = cols.get(0);
-					result.createEvent(label);
+					String[] choices = new String[cols.size()-1];
+					for(int i=0;i<choices.length;i++) {
+						choices[i] = cols.get(i+1);
+					}
+					result.createEvent(label,choices);					
 				}
 			}
 			if (section.getSectionName().equals("BAYES-NETWORK")
 					&& section.getSubSectionName().equals("BAYES-TABLE")) {
-				
+
 				// first, define relationships (1st pass)
-				for( String line : section.getLines() ) {
-					result.defineRelationship(line);					
+				for (String line : section.getLines()) {
+					result.defineRelationship(line);
 				}
-				
+
 				result.finalizeStructure();
-				
+
 				// now define the probabilities (2nd pass)
-				for( String line : section.getLines() ) {
-					result.defineProbability(line);					
-				}							
+				for (String line : section.getLines()) {
+					result.defineProbability(line);
+				}
 			}
 			if (section.getSectionName().equals("BAYES-NETWORK")
 					&& section.getSubSectionName().equals("BAYES-PROPERTIES")) {
@@ -100,23 +103,21 @@ public class PersistBayes implements EncogPersistor {
 				result.getProperties().putAll(params);
 			}
 		}
-		
+
 		// define query, if it exists
-		if( queryType.length()>0) {
+		if (queryType.length() > 0) {
 			BayesianQuery query = null;
-			if( queryType.equals("EnumerationQuery")) {
+			if (queryType.equals("EnumerationQuery")) {
 				query = new EnumerationQuery(result);
 			} else {
 				query = new SamplingQuery(result);
 			}
-			
-			if( query!=null ) {
+
+			if (query != null) {
 				result.setQuery(query);
 				result.defineQuery(queryStr);
 			}
 		}
-		
-		
 
 		return result;
 	}
@@ -132,7 +133,7 @@ public class PersistBayes implements EncogPersistor {
 		out.addSubSection("BAYES-PARAM");
 		String queryType = "";
 		String queryStr = "";
-		if( b.getQuery()!=null ) {
+		if (b.getQuery() != null) {
 			queryType = b.getQuery().getClass().getSimpleName();
 			queryStr = b.getQuery().getProblem();
 		}
@@ -141,57 +142,60 @@ public class PersistBayes implements EncogPersistor {
 		out.addSubSection("BAYES-PROPERTIES");
 		out.addProperties(b.getProperties());
 		out.addSubSection("BAYES-EVENT");
-		for( BayesianEvent event: b.getEvents()) {
+		for (BayesianEvent event : b.getEvents()) {
 			out.addColumn(event.getLabel());
-			for(String str: event.getChoices() ) {
+			for (String str : event.getChoices()) {
 				out.addColumn(str);
-			}			
+			}
 			out.writeLine();
 		}
 		out.addSubSection("BAYES-TABLE");
-		for( BayesianEvent event: b.getEvents()) {
-			for( TableLine line : event.getTable().getLines() ) {
-				if( line==null )
+		for (BayesianEvent event : b.getEvents()) {
+			for (TableLine line : event.getTable().getLines()) {
+				if (line == null)
 					continue;
 				StringBuilder str = new StringBuilder();
 				str.append("P(");
-				
-				if( event.isBoolean()) {
-					if( Math.abs(line.getResult())<Encog.DEFAULT_DOUBLE_EQUAL) {
+
+				if (event.isBoolean()) {
+					if (line.getResult()==0 ) {
 						str.append("-");
 					} else {
 						str.append("+");
 					}
 				}
 				str.append(event.getLabel());
-				if( !event.isBoolean()) {
-						str.append("=");
-						str.append(line.getResult());
+				if (!event.isBoolean()) {
+					str.append("=");
+					str.append(event.getChoices()[line.getResult()]);
 				}
-				
-				if( event.getParents().size()>0) {
+
+				if (event.getParents().size() > 0) {
 					str.append("|");
 				}
-				
+
 				int index = 0;
 				boolean first = true;
-				for( BayesianEvent parentEvent : event.getParents()) {
-					if( !first ) {
-						str.append(",");						
+				for (BayesianEvent parentEvent : event.getParents()) {
+					if (!first) {
+						str.append(",");
 					}
 					first = false;
-					double arg = line.getArguments()[index++];
-					if( parentEvent.isBoolean() ) {
-						if( Math.abs(arg)<Encog.DEFAULT_DOUBLE_EQUAL ) {
+					int arg = line.getArguments()[index++];
+					if (parentEvent.isBoolean()) {
+						if (arg==0) {
 							str.append("-");
 						} else {
 							str.append("+");
 						}
 					}
 					str.append(parentEvent.getLabel());
-					if( !parentEvent.isBoolean() ) {
+					if (!parentEvent.isBoolean()) {
 						str.append("=");
-						str.append(arg);
+						if( arg>=parentEvent.getChoices().length) {
+							throw new BayesianError("Argument value " + arg + " is out of range for event " + parentEvent.toString());
+						}
+						str.append(parentEvent.getChoices()[arg]);
 					}
 				}
 				str.append(")=");
@@ -200,7 +204,7 @@ public class PersistBayes implements EncogPersistor {
 				out.write(str.toString());
 			}
 		}
-				
+
 		out.flush();
 	}
 

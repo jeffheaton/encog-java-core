@@ -40,5 +40,14 @@ public class ParsedEvent {
 		throw new BayesianError("Can'f find choice " + this.value + " in the event " + this.label );
 	}
 	
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[ParsedEvent:label=");
+		result.append(this.label);
+		result.append(",value=");
+		result.append(this.value);
+		result.append("]");
+		return result.toString();
+	}
 	
 }

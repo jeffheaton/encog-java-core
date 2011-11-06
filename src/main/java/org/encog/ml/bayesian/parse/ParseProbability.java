@@ -46,8 +46,8 @@ public class ParseProbability {
 				if( parser.peek()=='=' ) {
 					parser.readChar();
 					String value = parser.readToChars(delim);
-					BayesianEvent evt = this.network.getEvent(parsedEvent.getLabel());
-					parsedEvent.setValue(evt.getChoices()[(int)Double.parseDouble(value)]);
+//					BayesianEvent evt = this.network.getEvent(parsedEvent.getLabel());
+					parsedEvent.setValue(value);
 				}  
 				
 				if( ch==',') {
