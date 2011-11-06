@@ -126,8 +126,8 @@ public class EnumerationQuery extends BasicQuery implements Serializable {
 	 * @param event The event.
 	 * @return The arguments.
 	 */
-	private double[] obtainArgs(BayesianEvent event) {
-		double[] result = new double[event.getParents().size()];
+	private int[] obtainArgs(BayesianEvent event) {
+		int[] result = new int[event.getParents().size()];
 
 		int index = 0;
 		for (BayesianEvent parentEvent : event.getParents()) {
@@ -145,7 +145,7 @@ public class EnumerationQuery extends BasicQuery implements Serializable {
 	 */
 	private double calculateProbability(EventState state) {
 
-		double[] args = obtainArgs(state.getEvent());
+		int[] args = obtainArgs(state.getEvent());
 
 		for (TableLine line : state.getEvent().getTable().getLines()) {
 			if (line.compareArgs(args)) {

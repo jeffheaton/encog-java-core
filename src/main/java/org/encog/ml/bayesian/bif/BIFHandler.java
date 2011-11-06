@@ -172,7 +172,7 @@ public class BIFHandler extends DefaultHandler {
 			BayesianEvent childEvent = this.network.requireEvent(d.getForDefinition());
 			
 			int tableIndex = 0;
-			double[] args = new double[childEvent.getParents().size()];
+			int[] args = new int[childEvent.getParents().size()];
 			do {
 				for(int result = 0; result<childEvent.getChoices().length;result++) {
 					childEvent.getTable().addLine(t[tableIndex++], result, args);	

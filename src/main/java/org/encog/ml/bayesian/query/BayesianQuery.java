@@ -82,7 +82,7 @@ public interface BayesianQuery {
 	 * @param event The event to set.
 	 * @param d An integer class item.
 	 */
-	void setEventValue(BayesianEvent event, double d);
+	void setEventValue(BayesianEvent event, int d);
 
 	/**
 	 * Return a string that represents this query as a probability "problem".

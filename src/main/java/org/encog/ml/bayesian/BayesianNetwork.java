@@ -269,7 +269,7 @@ public class BayesianNetwork extends BasicML implements MLRegression, Serializab
 			BayesianEvent event = this.events.get(i);
 			EventState state = this.query.getEventState(event);
 			if (state.getEventType() == EventType.Evidence) {
-				state.setValue(input.getData(inputIndex++));
+				state.setValue((int)input.getData(inputIndex++));
 			}
 		}
 

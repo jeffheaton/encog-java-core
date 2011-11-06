@@ -23,7 +23,7 @@ public class EventState implements Serializable {
 	/**
 	 * The current value of this event.
 	 */
-	private double value;
+	private int value;
 	
 	/**
 	 * The event that this state is connected to.
@@ -38,7 +38,7 @@ public class EventState implements Serializable {
 	/**
 	 * The value that we are comparing to, for probability.
 	 */
-	private double compareValue;
+	private int compareValue;
 
 	/**
 	 * Construct an event state for the specified event.
@@ -68,7 +68,7 @@ public class EventState implements Serializable {
 	/**
 	 * @return the value
 	 */
-	public double getValue() {
+	public int getValue() {
 		return value;
 	}
 
@@ -76,7 +76,7 @@ public class EventState implements Serializable {
 	 * @param value
 	 *            the value to set
 	 */
-	public void setValue(double value) {
+	public void setValue(int value) {
 		this.calculated = true;
 		this.value = value;
 	}
@@ -103,14 +103,14 @@ public class EventState implements Serializable {
 		this.eventType = eventType;
 	}
 
-	public void randomize(double... args) {
+	public void randomize(int... args) {
 		setValue(event.getTable().generateRandom(args));
 	}
 
 	/**
 	 * @return the compareValue
 	 */
-	public double getCompareValue() {
+	public int getCompareValue() {
 		return compareValue;
 	}
 
@@ -118,7 +118,7 @@ public class EventState implements Serializable {
 	 * @param compareValue
 	 *            the compareValue to set
 	 */
-	public void setCompareValue(double compareValue) {
+	public void setCompareValue(int compareValue) {
 		this.compareValue = compareValue;
 	}
 

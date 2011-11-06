@@ -74,10 +74,10 @@ public class SamplingQuery extends BasicQuery implements Serializable {
 	/**
 	 * Obtain the arguments for an event.
 	 * @param event The event.
-	 * @return The arguemtns for that event, based on the other event values.
+	 * @return The arguments for that event, based on the other event values.
 	 */
-	private double[] obtainArgs(BayesianEvent event) {
-		double[] result = new double[event.getParents().size()];
+	private int[] obtainArgs(BayesianEvent event) {
+		int[] result = new int[event.getParents().size()];
 
 		int index = 0;
 		for (BayesianEvent parentEvent : event.getParents()) {
@@ -98,7 +98,7 @@ public class SamplingQuery extends BasicQuery implements Serializable {
 		// first, has this event already been randomized
 		if (!eventState.isCalculated()) {
 			// next, see if we can randomize the event passed
-			double[] args = obtainArgs(eventState.getEvent());
+			int[] args = obtainArgs(eventState.getEvent());
 			if (args != null) {
 				eventState.randomize(args);
 			}

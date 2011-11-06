@@ -17,25 +17,25 @@ public class BayesianTable implements Serializable {
 	}
 	
 	public void addLine(double prob, boolean result, boolean... args) {
-		double[] d = new double[args.length];
+		int[] d = new int[args.length];
 		for(int i=0;i<args.length;i++) {
-			d[i] = args[i] ? 1.0 : 0.0;
+			d[i] = args[i] ? 1 : 0;
 		}
 		
-		addLine(prob,result?1.0:0.0,d);
-		addLine(1.0 - prob,result?0.0:1.0,d);
+		addLine(prob,result?1:0,d);
+		addLine(1.0 - prob,result?0:1,d);
 	}
 	
-	public void addLine(double prob, double result, boolean... args) {
-		double[] d = new double[args.length];
+	public void addLine(double prob, int result, boolean... args) {
+		int[] d = new int[args.length];
 		for(int i=0;i<args.length;i++) {
-			d[i] = args[i] ? 0.0 : 1.0;
+			d[i] = args[i] ? 0 : 1;
 		}
 		
 		addLine(prob,result,d);
 	}
 
-	public void addLine(double prob, double result, double... args) {
+	public void addLine(double prob, int result, int ... args) {
 		if (args.length != this.event.getParents().size()) {
 			throw new BayesianError("Truth table line with " + args.length
 					+ ", specied for event with "
@@ -58,7 +58,7 @@ public class BayesianTable implements Serializable {
 		
 	}
 	
-	public double generateRandom(double ... args) {
+	public int generateRandom(int ... args) {
 		double r = Math.random();
 		double limit = 0;
 		
@@ -87,7 +87,7 @@ public class BayesianTable implements Serializable {
 		return this.lines;
 	}
 
-	public TableLine findLine(int result, double[] args) {
+	public TableLine findLine(int result, int[] args) {
 		
 		for (TableLine line : this.lines) {
 			if (line.compareArgs(args)) {

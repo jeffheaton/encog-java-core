@@ -121,7 +121,7 @@ public class BIFUtil {
 	public static String generateTable(BayesianEvent event) {
 		StringBuilder s = new StringBuilder();
 		int tableIndex = 0;
-		double[] args = new double[event.getParents().size()];
+		int[] args = new int[event.getParents().size()];
 		do {
 			for(int result = 0; result<event.getChoices().length;result++) {
 				TableLine line = event.getTable().findLine(result,args);
@@ -134,7 +134,7 @@ public class BIFUtil {
 		return s.toString();
 	}
 	
-	public static boolean rollArgs(BayesianEvent event, double[] args) {
+	public static boolean rollArgs(BayesianEvent event, int[] args) {
 		int currentIndex = event.getParents().size()-1;
 		boolean done = false;
 		boolean eof = false;

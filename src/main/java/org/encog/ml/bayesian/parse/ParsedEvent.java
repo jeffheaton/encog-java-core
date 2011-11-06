@@ -23,7 +23,7 @@ public class ParsedEvent {
 		return label;
 	}
 
-	public double resolveValue(BayesianEvent actualEvent) {
+	public int resolveValue(BayesianEvent actualEvent) {
 		int result = 0;
 		
 		if( this.value==null ) {

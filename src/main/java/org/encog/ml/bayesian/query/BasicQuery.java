@@ -184,7 +184,7 @@ public abstract class BasicQuery implements BayesianQuery, Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setEventValue(BayesianEvent event, double d) {
+	public void setEventValue(BayesianEvent event, int d) {
 		if( getEventType(event)==EventType.Hidden) {
 			throw new BayesianError("You may only set the value of an evidence or outcome event.");
 		}

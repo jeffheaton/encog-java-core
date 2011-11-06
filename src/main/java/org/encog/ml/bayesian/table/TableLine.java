@@ -9,10 +9,10 @@ import org.encog.util.Format;
 public class TableLine implements Serializable {
 	
 	private final double probability;
-	private final double result;
-	private final double[] arguments;
+	private final int result;
+	private final int[] arguments;
 
-	public TableLine(double prob, double result, double[] args) {
+	public TableLine(double prob, int result, int[] args) {
 		this.probability = prob;
 		this.result = result;
 		this.arguments = EngineArray.arrayCopy(args);
@@ -28,21 +28,21 @@ public class TableLine implements Serializable {
 	/**
 	 * @return the arguments
 	 */
-	public double[] getArguments() {
+	public int[] getArguments() {
 		return arguments;
 	}
 
 	/**
 	 * @return the result
 	 */
-	public double getResult() {
+	public int getResult() {
 		return result;
 	}
 
 	public String toString() {
 		StringBuilder r = new StringBuilder();
 		r.append("result=");
-		r.append(Format.formatDouble(result, 2));
+		r.append(result);
 		r.append(",probability=");
 		r.append(Format.formatDouble(this.probability, 2));
 		r.append("|");
@@ -53,7 +53,7 @@ public class TableLine implements Serializable {
 		return r.toString();
 	}
 
-	public boolean compareArgs(double[] args) {
+	public boolean compareArgs(int[] args) {
 		
 		if( args.length!=this.arguments.length) {
 			return false;

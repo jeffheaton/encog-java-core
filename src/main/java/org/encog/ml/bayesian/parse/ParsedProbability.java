@@ -19,8 +19,8 @@ public class ParsedProbability {
 		this.baseEvents.add(event);
 	}
 	
-	public double[] getArgs(BayesianEvent actualEvent) {
-		double[] result = new double[givenEvents.size()];
+	public int[] getArgs(BayesianEvent actualEvent) {
+		int[] result = new int[givenEvents.size()];
 				
 		for(int i=0;i<givenEvents.size();i++) {
 			ParsedEvent givenEvent = this.givenEvents.get(i);
@@ -48,7 +48,7 @@ public class ParsedProbability {
 		BayesianEvent childEvent = network.requireEvent(childParsed.getLabel());
 		
 		// define truth table line
-		double[] args = getArgs(childEvent);
+		int[] args = getArgs(childEvent);
 		childEvent.getTable().addLine(result, childParsed.resolveValue(childEvent), args);
 		
 	}
