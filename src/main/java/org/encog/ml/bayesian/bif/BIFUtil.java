@@ -145,8 +145,6 @@ public class BIFUtil {
 		}
 
 		while (!done) {
-
-			//EventState state = this.parents.get(currentIndex);
 			int v = (int) args[currentIndex];
 			v++;
 			if (v >= event.getParents().get(currentIndex).getChoices().length) {

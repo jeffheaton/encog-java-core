@@ -358,4 +358,19 @@ public class BayesianNetwork extends BasicML implements MLRegression, Serializab
 	public void updateProperties() {
 		// Not needed		
 	}
+
+	public int getEventIndex(BayesianEvent event) {
+		for(int i=0;i<this.events.size();i++) {
+			if( event==events.get(i))
+				return i;
+		}
+		
+		return -1;
+	}
+
+	public void removeAllRelations() {
+		for(BayesianEvent event: this.events) {
+			event.removeAllRelations();
+		}
+	}
 }

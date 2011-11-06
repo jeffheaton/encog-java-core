@@ -213,5 +213,44 @@ public class EnumerationQuery extends BasicQuery implements Serializable {
 		result.append("]");
 		return result.toString();
 	}
+	
+	/**
+	 * Roll the enumeration events forward by one.
+	 * 
+	 * @return False if there are no more values to roll into, which means we're
+	 *         done.
+	 */
+	public static boolean roll(List<BayesianEvent> enumerationEvents, int[] args) {
+		int currentIndex = 0;
+		boolean done = false;
+		boolean eof = false;
+		
+		if( enumerationEvents.size() == 0 ) {
+			done = true;
+			eof = true;
+		}
+
+		while (!done) {
+			BayesianEvent event = enumerationEvents.get(currentIndex);
+			int v = (int) args[currentIndex];
+			v++;
+			if (v >= event.getChoices().length) {
+				args[currentIndex] = 0;
+			} else {
+				args[currentIndex] = v;
+				done = true;
+				break;
+			}
+
+			currentIndex++;
+
+			if (currentIndex >= args.length) {
+				done = true;
+				eof = true;
+			}
+		}
+
+		return !eof;
+	}
 
 }

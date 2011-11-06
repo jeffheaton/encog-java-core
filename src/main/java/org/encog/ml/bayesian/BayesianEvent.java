@@ -151,5 +151,10 @@ public class BayesianEvent implements Serializable {
 		}
 
 		return !eof;
+	}
+
+	public void removeAllRelations() {
+		this.children.clear();
+		this.parents.clear();		
 	}	
 }
