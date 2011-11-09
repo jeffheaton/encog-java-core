@@ -155,22 +155,6 @@ public class EventState implements Serializable {
 	 * @return A probability expression as a string.
 	 */
 	public static String toSimpleString(EventState state) {
-		StringBuilder result = new StringBuilder();
-		if (state.getEvent().isBoolean()) {
-			if (state.getCompareValue() < 0.1) {
-				result.append("-");
-			} else {
-				result.append("+");
-			}
-		}
-
-		result.append(state.getEvent().getLabel());
-
-		if (!state.getEvent().isBoolean()) {
-			result.append("=");
-			result.append(state.getCompareValue());
-		}
-
-		return result.toString();
+		return BayesianEvent.formatEventName(state.getEvent(), state.getCompareValue());
 	}
 }

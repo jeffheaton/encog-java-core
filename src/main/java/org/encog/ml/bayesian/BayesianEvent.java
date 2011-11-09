@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.Encog;
 import org.encog.ml.bayesian.query.sample.EventState;
 import org.encog.ml.bayesian.table.BayesianTable;
 
@@ -116,7 +117,7 @@ public class BayesianEvent implements Serializable {
 	}
 
 	public boolean isBoolean() {
-		return this.choices==BayesianNetwork.CHOICES_TRUE_FALSE;
+		return this.choices.length==2;
 	}
 
 	public boolean rollArgs(double[] args) {
@@ -157,4 +158,24 @@ public class BayesianEvent implements Serializable {
 		this.children.clear();
 		this.parents.clear();		
 	}	
+	
+	public static String formatEventName(BayesianEvent event, int value) {
+		StringBuilder str = new StringBuilder();
+		
+		if (event.isBoolean()) {
+			if (value==0) {
+				str.append("-");
+			} else {
+				str.append("+");
+			}
+		}
+		str.append(event.getLabel());
+		if (!event.isBoolean()) {
+			str.append("=");
+			str.append(value);
+		}
+		
+		return str.toString();
+
+	}
 }

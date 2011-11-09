@@ -157,18 +157,7 @@ public class PersistBayes implements EncogPersistor {
 				StringBuilder str = new StringBuilder();
 				str.append("P(");
 
-				if (event.isBoolean()) {
-					if (line.getResult()==0 ) {
-						str.append("-");
-					} else {
-						str.append("+");
-					}
-				}
-				str.append(event.getLabel());
-				if (!event.isBoolean()) {
-					str.append("=");
-					str.append(event.getChoices()[line.getResult()]);
-				}
+				str.append(BayesianEvent.formatEventName(event, line.getResult()));
 
 				if (event.getParents().size() > 0) {
 					str.append("|");

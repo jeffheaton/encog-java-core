@@ -22,7 +22,7 @@ import org.encog.util.csv.CSVFormat;
 
 public class BayesianNetwork extends BasicML implements MLRegression, Serializable {
 
-	public static final String[] CHOICES_TRUE_FALSE = { "false", "true" };
+	public static final String[] CHOICES_TRUE_FALSE = { "true", "false" };
 
 	private final Map<String, BayesianEvent> eventMap = new HashMap<String, BayesianEvent>();
 	private final List<BayesianEvent> events = new ArrayList<BayesianEvent>();
@@ -339,14 +339,14 @@ public class BayesianNetwork extends BasicML implements MLRegression, Serializab
 		
 		// deal with evidence (input)
 		for( ParsedEvent parsedEvent : parsedProbability.getGivenEvents() ) {
-			BayesianEvent event = getEvent(parsedEvent.getLabel());
+			BayesianEvent event = this.requireEvent(parsedEvent.getLabel());
 			query.defineEventType(event, EventType.Evidence);
 			query.setEventValue(event, parsedEvent.resolveValue(event));
 		}
 		
 		// deal with outcome (output)
 		for( ParsedEvent parsedEvent : parsedProbability.getBaseEvents() ) {
-			BayesianEvent event = getEvent(parsedEvent.getLabel());
+			BayesianEvent event = requireEvent(parsedEvent.getLabel());
 			query.defineEventType(event, EventType.Outcome);
 			query.setEventValue(event, parsedEvent.resolveValue(event));
 		}
@@ -372,5 +372,10 @@ public class BayesianNetwork extends BasicML implements MLRegression, Serializab
 		for(BayesianEvent event: this.events) {
 			event.removeAllRelations();
 		}
+	}
+
+	public void defineContents(String currentContents) {
+		// TODO Auto-generated method stub
+		
 	}
 }
