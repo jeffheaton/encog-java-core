@@ -8,12 +8,12 @@ import org.encog.ml.bayesian.BayesianEvent;
 
 public class BayesianTable implements Serializable {
 	private final BayesianEvent event;
-	private final TableLine[] lines;
+	private TableLine[] lines;
 	private int currentLine;
 
 	public BayesianTable(BayesianEvent theEvent) {
 		this.event = theEvent;
-		this.lines = new TableLine[theEvent.calculateParameterCount()*theEvent.getChoices().length];
+		finalizeStructure();
 	}
 	
 	public void addLine(double prob, boolean result, boolean... args) {
@@ -98,5 +98,14 @@ public class BayesianTable implements Serializable {
 		}
 		
 		return null;
+	}
+
+	public void finalizeStructure() {
+		int idealLength = event.calculateParameterCount()*event.getChoices().length;
+		int actualLength = (this.lines==null)?0:this.lines.length;
+		if( actualLength!=idealLength ) {
+			this.lines = new TableLine[idealLength];
+		}
+		
 	}
 }

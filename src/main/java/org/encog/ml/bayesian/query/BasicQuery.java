@@ -215,7 +215,10 @@ public abstract class BasicQuery implements BayesianQuery, Serializable {
 				result.append(",");
 			}
 			first = false;
-			result.append(EventState.toSimpleString(getEventState(event)));
+			EventState state = getEventState(event);
+			if( state==null )
+				break;
+			result.append(EventState.toSimpleString(state));
 		}
 		result.append(")");
 		

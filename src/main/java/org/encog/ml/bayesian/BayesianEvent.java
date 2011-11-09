@@ -4,14 +4,20 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.Encog;
-import org.encog.ml.bayesian.query.sample.EventState;
 import org.encog.ml.bayesian.table.BayesianTable;
 
 public class BayesianEvent implements Serializable {
 	
 	private final String label;
+	
+	/**
+	 * The parents, or given.
+	 */
 	private final List<BayesianEvent> parents = new ArrayList<BayesianEvent>();
+	
+	/**
+	 * THe children, or events that use us as a given.
+	 */
 	private final List<BayesianEvent> children = new ArrayList<BayesianEvent>();
 	private final String[] choices;
 	private BayesianTable table;
@@ -109,7 +115,12 @@ public class BayesianEvent implements Serializable {
 	}
 
 	public void finalizeStructure() {
-		this.table = new BayesianTable(this);		
+		if( this.table == null ) {
+			this.table = new BayesianTable(this);
+		} else {
+			this.table.finalizeStructure();
+		}
+		
 	}
 
 	public void validate() {
@@ -177,5 +188,14 @@ public class BayesianEvent implements Serializable {
 		
 		return str.toString();
 
+	}
+
+	public boolean hasGiven(String l) {
+		for(BayesianEvent event: this.parents ) {
+			if( event.getLabel().equals(l)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

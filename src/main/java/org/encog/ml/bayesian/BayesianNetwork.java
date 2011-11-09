@@ -114,8 +114,8 @@ public class BayesianNetwork extends BasicML implements MLRegression, Serializab
 		BayesianEvent childEvent = getEventError(childEventLabel);
 		createDependancy(parentEvent, childEvent);
 	}
-
-	public String toString() {
+	
+	public String getContents() {
 		StringBuilder result = new StringBuilder();
 		boolean first = true;
 
@@ -149,7 +149,84 @@ public class BayesianNetwork extends BasicML implements MLRegression, Serializab
 			}
 		}
 
-		return result.toString();
+		return result.toString();		
+	}
+	
+	public void setContents(String line) {
+		List<ParsedProbability> list = ParseProbability.parseProbabilityList(this, line);
+		List<String> labelList = new ArrayList<String>();
+		
+		// ensure that all events are there
+		for(ParsedProbability prob: list ) {
+			ParsedEvent parsedEvent = prob.getChildEvent();
+			String eventLabel = parsedEvent.getLabel();
+			labelList.add(eventLabel);
+			
+			// create event, if not already here
+			if( getEvent(eventLabel)==null ) {
+				createEvent(eventLabel, BayesianNetwork.CHOICES_TRUE_FALSE);				
+			}
+		}
+
+		
+		// now remove all events that were not covered
+		for(int i=0; i<events.size();i++) {
+			BayesianEvent event = this.events.get(i);
+			if( !labelList.contains(event.getLabel()) ) {
+				removeEvent(event);
+			}
+		}
+
+		// handle dependencies
+		for(ParsedProbability prob: list ) {
+			ParsedEvent parsedEvent = prob.getChildEvent();
+			String eventLabel = parsedEvent.getLabel();
+			
+			BayesianEvent event = requireEvent(eventLabel);
+			
+			// ensure that all "givens" are present
+			List<String> givenList = new ArrayList<String>();
+			for( ParsedEvent given: prob.getGivenEvents() ) {
+				if( !event.hasGiven(given.getLabel()) ) {
+					BayesianEvent givenEvent = requireEvent(given.getLabel());
+					this.createDependancy(givenEvent, event);					
+				}
+				givenList.add(given.getLabel());
+			}
+			
+			// now remove givens that were not covered
+			for(int i=0; i<event.getParents().size();i++) {
+				BayesianEvent event2 = event.getParents().get(i);
+				if( !givenList.contains(event2.getLabel()) ) {					
+					removeDependancy(event2,event);
+				}
+			}
+		}		
+		
+		// finalize the structure
+		finalizeStructure();
+		if (this.query != null) {
+			this.query.finalizeStructure();
+		}
+
+	}
+
+	private void removeDependancy(BayesianEvent parent, BayesianEvent child) {
+		parent.getChildren().remove(child);
+		child.getParents().remove(parent);
+		
+	}
+
+	private void removeEvent(BayesianEvent event) {
+		for( BayesianEvent e : event.getParents() ) {
+			e.getChildren().remove(event);
+		}
+		this.eventMap.remove(event.getLabel());
+		this.events.remove(event);		
+	}
+
+	public String toString() {
+		return getContents();
 	}
 
 	public int calculateParameterCount() {
@@ -372,10 +449,5 @@ public class BayesianNetwork extends BasicML implements MLRegression, Serializab
 		for(BayesianEvent event: this.events) {
 			event.removeAllRelations();
 		}
-	}
-
-	public void defineContents(String currentContents) {
-		// TODO Auto-generated method stub
-		
 	}
 }

@@ -1,10 +1,10 @@
 package org.encog.ml.bayesian.parse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.EncogError;
 import org.encog.ml.bayesian.BayesianError;
-import org.encog.ml.bayesian.BayesianEvent;
 import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.util.SimpleParser;
 
@@ -93,5 +93,25 @@ public class ParseProbability {
 
 		return result;
 	
+	}
+	
+	public static List<ParsedProbability> parseProbabilityList(BayesianNetwork network, String line) {
+		List<ParsedProbability> result = new ArrayList<ParsedProbability>(); 
+		
+		StringBuilder prob = new StringBuilder();
+		for(int i=0;i<line.length();i++) {
+			char ch = line.charAt(i);
+			if( ch==')') {
+				prob.append(ch);
+				ParseProbability parse = new ParseProbability(network);
+				ParsedProbability parsedProbability = parse.parse(prob.toString());
+				result.add(parsedProbability);
+				prob.setLength(0);
+			}
+			else if(!Character.isWhitespace(ch)) {
+				prob.append(ch);
+			}			
+		}
+		return result;
 	}
 }
