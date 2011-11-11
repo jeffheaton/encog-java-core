@@ -8,7 +8,7 @@ import org.encog.util.Format;
 
 public class TableLine implements Serializable {
 	
-	private final double probability;
+	private double probability;
 	private final int result;
 	private final int[] arguments;
 
@@ -67,6 +67,11 @@ public class TableLine implements Serializable {
 		
 		return true;
 	}
+
+	public void setProbability(double probability) {
+		this.probability = probability;
+	}
+	
 	
 
 }

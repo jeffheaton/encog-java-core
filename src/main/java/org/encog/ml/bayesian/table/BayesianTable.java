@@ -1,10 +1,12 @@
 package org.encog.ml.bayesian.table;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.encog.Encog;
 import org.encog.ml.bayesian.BayesianError;
 import org.encog.ml.bayesian.BayesianEvent;
+import org.encog.ml.bayesian.query.enumerate.EnumerationQuery;
 
 public class BayesianTable implements Serializable {
 	private final BayesianEvent event;
@@ -14,6 +16,18 @@ public class BayesianTable implements Serializable {
 	public BayesianTable(BayesianEvent theEvent) {
 		this.event = theEvent;
 		finalizeStructure();
+	}
+	
+	public void reset() {
+		List<BayesianEvent> parents = this.event.getParents();
+		
+		int[] args = new int[parents.size()];
+		
+		do {
+			for(int k = 0; k<event.getChoices().length; k++) {
+				addLine(0,k,args);
+			}
+		} while(EnumerationQuery.roll(parents, args));
 	}
 	
 	public void addLine(double prob, boolean result, boolean... args) {
@@ -42,13 +56,20 @@ public class BayesianTable implements Serializable {
 					+ this.event.getParents().size()
 					+ " parents.  These numbers must be the same");
 		}
+				
+		TableLine line = findLine(result,args);
 		
-		if( this.currentLine>= this.lines.length) {
-			throw new BayesianError("This truth table is already full.");
+		if( line==null ) {
+			if( this.currentLine>= this.lines.length) {
+				throw new BayesianError("This truth table is already full.");
+			}
+
+			line = new TableLine(prob, result, args);
+			this.lines[this.currentLine++] = line;
 		}
-		
-		TableLine line = new TableLine(prob, result, args);
-		this.lines[this.currentLine++] = line;		
+		else {
+			line.setProbability(prob);
+		}
 	}
 
 	public void validate() {
@@ -90,7 +111,7 @@ public class BayesianTable implements Serializable {
 	public TableLine findLine(int result, int[] args) {
 		
 		for (TableLine line : this.lines) {
-			if (line.compareArgs(args)) {
+			if ( line!=null && line.compareArgs(args)) {
 				if (Math.abs(line.getResult() - result) < Encog.DEFAULT_DOUBLE_EQUAL) {
 					return line;
 				}

@@ -117,6 +117,7 @@ public class BayesianEvent implements Serializable {
 	public void finalizeStructure() {
 		if( this.table == null ) {
 			this.table = new BayesianTable(this);
+			this.table.reset();
 		} else {
 			this.table.finalizeStructure();
 		}
@@ -197,5 +198,12 @@ public class BayesianEvent implements Serializable {
 			}
 		}
 		return false;
+	}
+
+	public void reset() {
+		if( this.table==null ) {
+			this.table = new BayesianTable(this);
+		}
+		this.table.reset();
 	}
 }
