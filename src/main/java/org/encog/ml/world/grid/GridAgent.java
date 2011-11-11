@@ -1,34 +1,27 @@
 package org.encog.ml.world.grid;
 
+import org.encog.ml.world.State;
 import org.encog.ml.world.WorldAgent;
 
 public class GridAgent implements WorldAgent {
-	private int currentRow;
-	private int currentColumn;
+	
+	private State currentState;
+
 	/**
-	 * @return the currentRow
+	 * @return the currentState
 	 */
-	public int getCurrentRow() {
-		return currentRow;
+	public State getCurrentState() {
+		return currentState;
 	}
+
 	/**
-	 * @param currentRow the currentRow to set
+	 * @param currentState the currentState to set
 	 */
-	public void setCurrentRow(int currentRow) {
-		this.currentRow = currentRow;
+	public void setCurrentState(State currentState) {
+		this.currentState = currentState;
 	}
-	/**
-	 * @return the currentColumn
-	 */
-	public int getCurrentColumn() {
-		return currentColumn;
-	}
-	/**
-	 * @param currentColumn the currentColumn to set
-	 */
-	public void setCurrentColumn(int currentColumn) {
-		this.currentColumn = currentColumn;
-	}
+	
+	
 	
 	
 }

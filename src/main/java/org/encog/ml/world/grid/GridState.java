@@ -1,6 +1,9 @@
 package org.encog.ml.world.grid;
 
-public class GridState {
+import org.encog.ml.world.State;
+import org.encog.ml.world.basic.BasicState;
+
+public class GridState extends BasicState {
 	
 	private final int row;
 	private final int column;

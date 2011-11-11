@@ -1,4 +1,6 @@
-package org.encog.ml.world;
+package org.encog.ml.world.basic;
+
+import org.encog.ml.world.Action;
 
 public class BasicAction implements Action {
 	private final String label;
