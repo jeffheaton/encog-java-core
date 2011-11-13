@@ -160,21 +160,24 @@ public class GridStochasticProbability extends GridAbstractProbability {
 			if (this.probabilityLeft > Encog.DEFAULT_DOUBLE_EQUAL) {
 				State newState = determineActionState((GridState) state,
 						GridWorld.leftOfAction(action));
-				result.add(new SuccessorState(newState, this.probabilityLeft));
+				if( newState!=null )
+					result.add(new SuccessorState(newState, this.probabilityLeft));
 			}
 
 			// probability of right
 			if (this.probabilityRight > Encog.DEFAULT_DOUBLE_EQUAL) {
 				State newState = determineActionState((GridState) state,
 						GridWorld.rightOfAction(action));
-				result.add(new SuccessorState(newState, this.probabilityRight));
+				if( newState!=null )
+					result.add(new SuccessorState(newState, this.probabilityRight));
 			}
 
 			// probability of reverse
 			if (this.probabilityReverse > Encog.DEFAULT_DOUBLE_EQUAL) {
 				State newState = determineActionState((GridState) state,
 						GridWorld.reverseOfAction(action));
-				result.add(new SuccessorState(newState, this.probabilityReverse));
+				if( newState!=null )
+					result.add(new SuccessorState(newState, this.probabilityReverse));
 			}
 		}
 

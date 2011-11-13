@@ -17,6 +17,13 @@ public class BasicAction implements Action {
 		return label;
 	}
 	
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[BasicAction: label=");
+		result.append(this.label);
+		result.append("]");
+		return result.toString();
+	}
 	
 	
 }

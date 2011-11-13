@@ -12,4 +12,7 @@ public interface World {
 	void setProbability(ActionProbability probability);
 	void addAgent(WorldAgent agent);
 	void removeAgent(WorldAgent agent);
+	void addGoal(State s);
+	void removeGoal(State s);
+	List<State> getGoals();
 }

@@ -17,6 +17,7 @@ public abstract class BasicWorld implements World {
 	private final List<Action> actions = new ArrayList<Action>();
 	private ActionProbability probability;
 	private List<WorldAgent> agents = new ArrayList<WorldAgent>();
+	private List<State> goals = new ArrayList<State>();
 	
 	public List<Action> getActions() {
 		return this.actions;
@@ -84,13 +85,29 @@ public abstract class BasicWorld implements World {
 	@Override
 	public void addAgent(WorldAgent agent) {
 		this.agents.add(agent);
-		agent.setWorld(this);		
+		agent.setWorld(this);			
 	}
 
 	@Override
 	public void removeAgent(WorldAgent agent) {
 		this.agents.remove(agent);
 		agent.setWorld(null);
+	}
+	
+	@Override
+	public void addGoal(State s) {
+		this.goals.add(s);
+	}
+
+	@Override
+	public void removeGoal(State s) {
+		this.goals.remove(s);
+		
+	}
+
+	@Override
+	public List<State> getGoals() {
+		return this.goals;
 	}
 	
 	

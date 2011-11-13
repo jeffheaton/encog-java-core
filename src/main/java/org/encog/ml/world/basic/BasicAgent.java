@@ -14,6 +14,7 @@ public class BasicAgent implements WorldAgent {
 	private State currentState;
 	private AgentPolicy policy;
 	private World world;
+	private boolean first = true;
 	
 	@Override
 	public State getCurrentState() {
@@ -53,6 +54,11 @@ public class BasicAgent implements WorldAgent {
 
 	@Override
 	public void tick() {
+		if( first ) {
+			first = false;
+			this.currentState.increaseVisited();
+		}
+		
 		Action action = this.policy.determineNextAction(this);
 		Set<SuccessorState> states = world.getProbability().determineSuccessorStates(currentState, action);
 		double d = Math.random();
@@ -61,6 +67,9 @@ public class BasicAgent implements WorldAgent {
 			sum+=state.getProbability();
 			if( d<sum) {
 				this.currentState = state.getState();
+				if( state.getState()==null ) {
+					System.out.println("danger");
+				}
 				state.getState().increaseVisited();
 				return;
 			}
