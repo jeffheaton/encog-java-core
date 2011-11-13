@@ -9,5 +9,7 @@ public interface State {
 	void setAllPolicyValues(double d);
 	void setPolicyValueSize(int s);
 	boolean wasVisited();
-	void setVisited(boolean b);
+	void setVisited(int i);
+	int getVisited();
+	void increaseVisited();
 }

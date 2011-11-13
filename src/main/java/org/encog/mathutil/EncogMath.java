@@ -149,4 +149,8 @@ public final class EncogMath {
 	private EncogMath() {
 
 	}
+
+	public static double square(double d) {
+		return d*d;
+	}
 }

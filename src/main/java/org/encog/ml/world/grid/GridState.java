@@ -1,7 +1,7 @@
 package org.encog.ml.world.grid;
 
-import org.encog.ml.world.State;
 import org.encog.ml.world.basic.BasicState;
+import org.encog.util.Format;
 
 public class GridState extends BasicState {
 	
@@ -51,5 +51,14 @@ public class GridState extends BasicState {
 		return owner;
 	}
 	
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[GridState: row=");
+		result.append(this.row);
+		result.append(", col=");
+		result.append(this.column);
+		result.append("]");
+		return result.toString();
+	}
 	
 }

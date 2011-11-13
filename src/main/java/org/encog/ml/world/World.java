@@ -8,4 +8,8 @@ public interface World {
 	void addAction(Action action);
 	void setPolicyValue(State state, Action action, double r);	
 	double getPolicyValue(State state, Action action);
+	ActionProbability getProbability();
+	void setProbability(ActionProbability probability);
+	void addAgent(WorldAgent agent);
+	void removeAgent(WorldAgent agent);
 }

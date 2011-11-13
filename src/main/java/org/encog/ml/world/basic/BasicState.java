@@ -12,7 +12,7 @@ public class BasicState implements State {
 	private final Map<String, Object> properties = new HashMap<String, Object>();
 	private double reward;
 	private double[] policyValues;
-	private boolean visited;
+	private int visited;
 	
 	@Override
 	public void setProperty(String key, Object value) {
@@ -51,12 +51,12 @@ public class BasicState implements State {
 	
 	@Override
 	public boolean wasVisited() {
-		return this.visited;
+		return this.visited>0;
 	}
 	
 	@Override
-	public void setVisited(boolean b) {
-		this.visited = b;
+	public void setVisited(int i) {
+		this.visited = i;
 	}
 	
 	public String toString() {
@@ -68,6 +68,16 @@ public class BasicState implements State {
 		}
 		result.append("]");
 		return result.toString();
+	}
+
+	@Override
+	public int getVisited() {
+		return this.visited;		
+	}
+
+	@Override
+	public void increaseVisited() {
+		this.visited++;		
 	}
 	
 }
