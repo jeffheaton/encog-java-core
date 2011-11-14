@@ -12,7 +12,7 @@ public class SuccessorState implements Comparable<SuccessorState> {
 	public SuccessorState(State state, double probability) {
 		super();
 		if( state==null ) {
-			System.out.println("Danger");
+			throw new WorldError("Can't create null successor state");
 		}
 		this.state = state;
 		this.probability = probability;

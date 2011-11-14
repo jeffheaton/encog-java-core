@@ -153,7 +153,8 @@ public class GridStochasticProbability extends GridAbstractProbability {
 			// probability of successful action
 			if (this.probabilitySuccess > Encog.DEFAULT_DOUBLE_EQUAL) {
 				State newState = determineActionState((GridState) state, action);
-				result.add(new SuccessorState(newState, this.probabilitySuccess));
+				if( newState!=null )
+					result.add(new SuccessorState(newState, this.probabilitySuccess));
 			}
 
 			// probability of left

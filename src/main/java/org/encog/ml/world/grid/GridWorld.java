@@ -7,7 +7,6 @@ import org.encog.mathutil.EncogMath;
 import org.encog.ml.world.Action;
 import org.encog.ml.world.ActionProbability;
 import org.encog.ml.world.State;
-import org.encog.ml.world.WorldAgent;
 import org.encog.ml.world.basic.BasicAction;
 import org.encog.ml.world.basic.BasicWorld;
 
@@ -30,7 +29,9 @@ public class GridWorld extends BasicWorld {
 
 		for (int row = 0; row < rows; row++) {
 			for (int col = 0; col < columns; col++) {
-				this.state[row][col] = new GridState(this, row, col, false);
+				GridState state = new GridState(this, row, col, false);
+				addState(state);
+				this.state[row][col] = state;
 				this.state[row][col].setPolicyValueSize(getActions().size());
 			}
 		}
@@ -173,12 +174,6 @@ public class GridWorld extends BasicWorld {
 		}
 	}
 
-	public void tick() {
-		for (WorldAgent agent : getAgents()) {
-			agent.tick();
-		}
-	}
-
 	public GridState findClosestStateToGoal(List<GridState> states) {
 		double min = Double.POSITIVE_INFINITY;
 		GridState minState = null;
@@ -194,24 +189,5 @@ public class GridWorld extends BasicWorld {
 		}
 
 		return minState;
-	}
-	
-	public boolean isGoalState(State s) {
-		for(State state: this.getGoals()) {
-			if( s==state) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public void runToGoal(WorldAgent a) {
-		boolean done = false;
-		while(!done) {
-			tick();
-			if( isGoalState(a.getCurrentState()) ) {
-				done = true;
-			}
-		}
-	}
+	}	
 }

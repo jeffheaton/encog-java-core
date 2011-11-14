@@ -57,6 +57,13 @@ public class GridState extends BasicState {
 		result.append(this.row);
 		result.append(", col=");
 		result.append(this.column);
+		
+		result.append(", valueFunction= ");
+		for(int i=0;i<this.getPolicyValue().length;i++) {
+			result.append(Format.formatDouble(getPolicyValue()[i], 4));
+			result.append(" ");
+		}
+		
 		result.append("]");
 		return result.toString();
 	}

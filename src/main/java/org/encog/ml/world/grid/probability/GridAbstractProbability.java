@@ -29,16 +29,24 @@ public abstract class GridAbstractProbability implements ActionProbability {
 	}
 	
 	public GridState determineActionState(GridState currentState, Action action) {
+		
+		GridState result = null;
+		
 		if( action==GridWorld.ACTION_NORTH) {
-			return this.world.getState(currentState.getRow()-1, currentState.getColumn());
+			result = this.world.getState(currentState.getRow()-1, currentState.getColumn());
 		} else if( action==GridWorld.ACTION_SOUTH) {
-			return this.world.getState(currentState.getRow()+1, currentState.getColumn());
+			result = this.world.getState(currentState.getRow()+1, currentState.getColumn());
 		} else if( action==GridWorld.ACTION_EAST) {
-			return this.world.getState(currentState.getRow(), currentState.getColumn()+1);
+			result = this.world.getState(currentState.getRow(), currentState.getColumn()+1);
 		} else if( action==GridWorld.ACTION_WEST) {
-			return this.world.getState(currentState.getRow(), currentState.getColumn()-1);
+			result = this.world.getState(currentState.getRow(), currentState.getColumn()-1);
 		}
-		return null;
+		
+		if( result==null || result.isBlocked() ) {
+			result = currentState;
+		}
+		
+		return result;
 	}
 
 	/**

@@ -2,15 +2,16 @@ package org.encog.ml.world.learning.mdp;
 
 import org.encog.ml.world.State;
 import org.encog.ml.world.World;
+import org.encog.ml.world.WorldError;
 
 public class MarkovDecisionProcess {
 		
 	private final World world; 
 	private final State goal;
 	
-	public MarkovDecisionProcess(World theWorld, State theGoal) {
+	public MarkovDecisionProcess(World theWorld) {
 		this.world = theWorld;
-		this.goal = theGoal;
+		this.goal = theWorld.getGoals().get(0);
 	}
 
 	/**
@@ -26,6 +27,4 @@ public class MarkovDecisionProcess {
 	public State getGoal() {
 		return goal;
 	}
-	
-	
 }
