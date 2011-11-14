@@ -42,7 +42,7 @@ public abstract class GridAbstractProbability implements ActionProbability {
 			result = this.world.getState(currentState.getRow(), currentState.getColumn()-1);
 		}
 		
-		if( result==null || result.isBlocked() ) {
+		if( result==null ) {
 			result = currentState;
 		}
 		

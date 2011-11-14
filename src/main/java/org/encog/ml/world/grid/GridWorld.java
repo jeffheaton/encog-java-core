@@ -39,7 +39,7 @@ public class GridWorld extends BasicWorld {
 	}
 
 	public static boolean isStateBlocked(GridState state) {
-		if (state == null || state.isBlocked())
+		if (state == null )
 			return true;
 		else
 			return false;
@@ -189,5 +189,11 @@ public class GridWorld extends BasicWorld {
 		}
 
 		return minState;
+	}
+
+	public void setBlocked(int row, int column) {
+		State state = this.state[row][column]; 
+		this.state[row][column] = null;
+		this.getStates().remove(state);		
 	}	
 }
