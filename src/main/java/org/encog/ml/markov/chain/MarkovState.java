@@ -12,5 +12,13 @@ public class MarkovState {
 	 */
 	public String getLabel() {
 		return label;
-	}	
+	}
+	
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[MarkovState: label=");
+		result.append(this.label);
+		result.append("]");
+		return result.toString();
+	}
 }

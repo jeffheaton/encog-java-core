@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.EncogError;
+import org.encog.util.EngineArray;
+import org.encog.util.Format;
+
 public class MarkovChain {
 
 	private final List<MarkovState> states = new ArrayList<MarkovState>();
@@ -74,5 +78,44 @@ public class MarkovChain {
 	public double calculateProbability(MarkovState state) {
 		double sum = 0;
 		return sum;
+	}
+	
+	public MarkovState getState(String label) {
+		return this.stateMap.get(label);
+	}
+	
+	public MarkovState requireState(String label) {
+		MarkovState result = this.getState(label);
+		if( result==null ) {
+			throw new EncogError("Label does not exist: " + label);
+		}
+		return result;
+	}
+
+	public void clearProbability() {
+		EngineArray.fill(this.initialState, 0);
+		EngineArray.fill(this.stateProbability, 0);
+	}
+
+	public int getStateIndex(MarkovState state) {
+		return this.states.indexOf(state);
+	}
+
+	public String dump() {
+		StringBuilder result = new StringBuilder();
+		int states = this.states.size();
+		for(int stateIndex = 0; stateIndex<states; stateIndex++) {
+			for(int priorStateIndex = 0; priorStateIndex<states; priorStateIndex++) {
+				result.append("P(");
+				result.append(this.states.get(stateIndex).getLabel());
+				result.append("|");
+				result.append(this.states.get(priorStateIndex).getLabel());
+				result.append(") = ");
+				result.append(Format.formatDouble(this.getStateProbability(priorStateIndex, stateIndex), 4));
+				result.append("\n");
+			}
+		}
+		
+		return result.toString();
 	}
 }
