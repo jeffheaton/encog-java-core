@@ -20,12 +20,21 @@ public class FindTransitionProbabilities {
 	public FindTransitionProbabilities(MarkovChain theChain, int theK) {
 		this.chain = theChain;
 		this.k  = theK;
+		clear();
 	}
 	
 	public void clear() {
 		this.transition.clear();
 		this.initial = null;
 		this.lastState = null;
+		// create initial transitions
+		for(MarkovState state: this.chain.getStates()) {
+			StateTransition st = new StateTransition(state);
+			this.transition.put(state, st);
+			for(MarkovState s2: this.chain.getStates()) {
+				st.createNextState(s2);
+			}
+		}
 	}
 	
 	public void add(String label) {
@@ -50,7 +59,17 @@ public class FindTransitionProbabilities {
 	
 	public void finishTraining() {
 		this.chain.clearProbability();
-		this.chain.setInitialState(this.initial, 1.0);
+		
+		for(int i=0;i<this.chain.getStates().size();i++) {
+			MarkovState state = this.chain.getStates().get(i);
+			double num = (state==this.initial)?1:0;
+			double den = 1;
+			num+=k;
+			den+=this.chain.getStates().size();
+			this.chain.setInitialState(state, num/den);
+		}
+		
+		//this.chain.setInitialState(this.initial, 1.0);
 		
 		for( StateTransition st : this.transition.values() ) {
 			int count = st.getCount();

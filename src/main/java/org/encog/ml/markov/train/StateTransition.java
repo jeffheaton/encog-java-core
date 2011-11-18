@@ -60,4 +60,8 @@ public class StateTransition {
 		result.append("]");
 		return result.toString();
 	}
+
+	public void createNextState(MarkovState s2) {
+		this.nextStates.put(s2, 0);
+	}
 }

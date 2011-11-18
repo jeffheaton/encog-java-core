@@ -104,6 +104,17 @@ public class MarkovChain {
 	public String dump() {
 		StringBuilder result = new StringBuilder();
 		int states = this.states.size();
+		// handle initial
+		int idx = 0;
+		for(MarkovState state: this.states) {
+			result.append("P(");
+			result.append(state.getLabel());
+			result.append("0)=");
+			result.append(this.initialState[idx++]);
+			result.append("\n");
+		}
+		
+		// handle transitional prob
 		for(int stateIndex = 0; stateIndex<states; stateIndex++) {
 			for(int priorStateIndex = 0; priorStateIndex<states; priorStateIndex++) {
 				result.append("P(");
