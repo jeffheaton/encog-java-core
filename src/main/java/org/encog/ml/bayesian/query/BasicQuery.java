@@ -178,7 +178,7 @@ public abstract class BasicQuery implements BayesianQuery, Serializable {
 	 * {@inheritDoc}
 	 */
 	public void setEventValue(BayesianEvent event, boolean b) {
-		setEventValue(event,b?1:0);		
+		setEventValue(event,b?0:1);		
 	}
 	
 	/**

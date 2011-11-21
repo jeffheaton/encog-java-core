@@ -176,9 +176,9 @@ public class BayesianEvent implements Serializable {
 		
 		if (event.isBoolean()) {
 			if (value==0) {
-				str.append("-");
-			} else {
 				str.append("+");
+			} else {
+				str.append("-");
 			}
 		}
 		str.append(event.getLabel());

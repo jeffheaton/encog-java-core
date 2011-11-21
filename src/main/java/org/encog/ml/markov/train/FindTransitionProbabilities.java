@@ -65,7 +65,7 @@ public class FindTransitionProbabilities {
 			double num = (state==this.initial)?1:0;
 			double den = 1;
 			num+=k;
-			den+=this.chain.getStates().size();
+			den+=(k*this.chain.getStates().size());
 			this.chain.setInitialState(state, num/den);
 		}
 		

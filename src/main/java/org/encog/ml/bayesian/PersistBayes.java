@@ -173,9 +173,9 @@ public class PersistBayes implements EncogPersistor {
 					int arg = line.getArguments()[index++];
 					if (parentEvent.isBoolean()) {
 						if (arg==0) {
-							str.append("-");
-						} else {
 							str.append("+");
+						} else {
+							str.append("-");
 						}
 					}
 					str.append(parentEvent.getLabel());

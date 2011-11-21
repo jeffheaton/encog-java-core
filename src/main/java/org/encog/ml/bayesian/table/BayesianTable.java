@@ -33,11 +33,11 @@ public class BayesianTable implements Serializable {
 	public void addLine(double prob, boolean result, boolean... args) {
 		int[] d = new int[args.length];
 		for(int i=0;i<args.length;i++) {
-			d[i] = args[i] ? 1 : 0;
+			d[i] = args[i] ? 0 : 1;
 		}
 		
-		addLine(prob,result?1:0,d);
-		addLine(1.0 - prob,result?0:1,d);
+		addLine(prob,result?0:1,d);
+		addLine(1.0 - prob,result?1:0,d);
 	}
 	
 	public void addLine(double prob, int result, boolean... args) {
