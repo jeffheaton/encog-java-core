@@ -84,6 +84,14 @@ public class MarkovChain {
 		return this.stateMap.get(label);
 	}
 	
+	public int requireState(MarkovState state) {
+		int result = this.states.indexOf(state);
+		if( result==-1 ) {
+			throw new EncogError("State does not exist: " + state.toString());
+		}
+		return result;
+	}
+	
 	public MarkovState requireState(String label) {
 		MarkovState result = this.getState(label);
 		if( result==null ) {
@@ -99,6 +107,15 @@ public class MarkovChain {
 
 	public int getStateIndex(MarkovState state) {
 		return this.states.indexOf(state);
+	}
+	
+	
+
+	/**
+	 * @return the initialState
+	 */
+	public double[] getInitialState() {
+		return initialState;
 	}
 
 	public String dump() {
@@ -128,5 +145,16 @@ public class MarkovChain {
 		}
 		
 		return result.toString();
+	}
+
+	public double getInitialState(MarkovState r) {
+		int index = requireState(r);
+		return this.initialState[index];
+	}
+
+	public double getStateProbability(MarkovState baseState, MarkovState givenState) {
+		int fromIndex = this.requireState(givenState);
+		int toIndex = this.requireState(baseState);
+		return this.stateProbability[fromIndex][toIndex];
 	}
 }
