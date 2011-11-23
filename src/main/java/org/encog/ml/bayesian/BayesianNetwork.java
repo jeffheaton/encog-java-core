@@ -58,6 +58,16 @@ public class BayesianNetwork extends BasicML implements MLRegression, MLResettab
 		return this.eventMap.containsKey(label);
 	}
 	
+	public void createEvent(BayesianEvent event) {
+		if( eventExists(event.getLabel())) {
+			throw new BayesianError("The label \"" + event.getLabel()
+					+ "\" has already been defined.");
+		}
+		
+		this.eventMap.put(event.getLabel(), event);
+		this.events.add(event);
+	}
+	
 	public BayesianEvent createEvent(String label, String ... options) {
 		if( label==null) {
 			throw new BayesianError("Can't create event with null label name");
@@ -76,8 +86,7 @@ public class BayesianNetwork extends BasicML implements MLRegression, MLResettab
 			event = new BayesianEvent(label,options);
 			
 		}
-		this.eventMap.put(label, event);
-		this.events.add(event);
+		createEvent(event);
 		return event;
 	}
 	

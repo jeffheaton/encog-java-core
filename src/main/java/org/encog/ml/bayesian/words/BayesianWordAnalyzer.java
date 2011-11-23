@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.encog.mathutil.probability.CalcProbability;
 import org.encog.ml.bayesian.BayesianEvent;
-import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.bayesian.EventType;
+import org.encog.ml.bayesian.naive.NaiveBayesian;
 import org.encog.ml.bayesian.query.enumerate.EnumerationQuery;
 import org.encog.util.text.BagOfWords;
 
@@ -89,43 +89,35 @@ public class BayesianWordAnalyzer {
 	public double probability(String m) {
 		List<String> words = separateSpaces(m);
 		
-		BayesianNetwork network = new BayesianNetwork();
-		BayesianEvent spamEvent = network.createEvent(this.className);
+		NaiveBayesian network = new NaiveBayesian(this.className);
 		
 		int index = 0;
 		for( String word: words) {
-			BayesianEvent event = network.createEvent(word+index);
-			network.createDependancy(spamEvent, event);
+			String w2 = word+index;
+			double pClass = this.classBag.probability(word); // class
+			double pNot = this.notClassBag.probability(word); // not class
+
+			network.addFeature(word+index, pClass, pNot);
 			index++;
 		}
 		
 		network.finalizeStructure();
 		
-		//SamplingQuery query = new SamplingQuery(network);
-		EnumerationQuery query = new EnumerationQuery(network);
-		
 		double probSpam = messageProbability.calculate(0);
 
-		spamEvent.getTable().addLine(probSpam, true);
-		query.defineEventType(spamEvent, EventType.Outcome);
-		query.setEventValue(spamEvent, true);
-				
+		BayesianEvent posteriorEvent = network.getPosterior();
+		
+		posteriorEvent.getTable().addLine(probSpam, true);
+
 		index = 0;
 		for( String word: words) {
 			String word2 = word+index;
 			BayesianEvent event = network.getEvent(word2);
-			event.getTable().addLine(this.classBag.probability(word), true, true); // spam
-			event.getTable().addLine(this.notClassBag.probability(word), true, false); // ham
-			query.defineEventType(event, EventType.Evidence);
-			query.setEventValue(event, true);
+			event.getTable().addLine(this.classBag.probability(word), true, true); // class
+			event.getTable().addLine(this.notClassBag.probability(word), true, false); // not class
 			index++;
 		}
-
-		//query.setSampleSize(100000000);
-		query.execute();
-		this.lastProblem = query.getProblem();
-		//System.out.println(query.getProblem());
-		return query.getProbability();		
+		return network.computeNaiveProbability();		
 	}
 
 
