@@ -23,7 +23,6 @@ public class NaiveBayesian extends BayesianNetwork {
 	}
 	
 	public void addFeature( BayesianEvent event) {
-		createEvent(event);
 		createDependancy(this.posterior, event);
 	}
 	

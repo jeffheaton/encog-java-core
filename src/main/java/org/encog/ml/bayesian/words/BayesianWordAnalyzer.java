@@ -96,8 +96,7 @@ public class BayesianWordAnalyzer {
 			String w2 = word+index;
 			double pClass = this.classBag.probability(word); // class
 			double pNot = this.notClassBag.probability(word); // not class
-
-			network.addFeature(word+index, pClass, pNot);
+			network.addFeature(w2, pClass, pNot);
 			index++;
 		}
 		
@@ -108,15 +107,7 @@ public class BayesianWordAnalyzer {
 		BayesianEvent posteriorEvent = network.getPosterior();
 		
 		posteriorEvent.getTable().addLine(probSpam, true);
-
-		index = 0;
-		for( String word: words) {
-			String word2 = word+index;
-			BayesianEvent event = network.getEvent(word2);
-			event.getTable().addLine(this.classBag.probability(word), true, true); // class
-			event.getTable().addLine(this.notClassBag.probability(word), true, false); // not class
-			index++;
-		}
+		
 		return network.computeNaiveProbability();		
 	}
 
