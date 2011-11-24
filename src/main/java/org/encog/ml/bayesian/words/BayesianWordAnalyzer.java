@@ -6,9 +6,7 @@ import java.util.List;
 
 import org.encog.mathutil.probability.CalcProbability;
 import org.encog.ml.bayesian.BayesianEvent;
-import org.encog.ml.bayesian.EventType;
 import org.encog.ml.bayesian.naive.NaiveBayesian;
-import org.encog.ml.bayesian.query.enumerate.EnumerationQuery;
 import org.encog.util.text.BagOfWords;
 
 public class BayesianWordAnalyzer {
@@ -88,8 +86,9 @@ public class BayesianWordAnalyzer {
 	
 	public double probability(String m) {
 		List<String> words = separateSpaces(m);
-		
-		NaiveBayesian network = new NaiveBayesian(this.className);
+		double probClass = messageProbability.calculate(0);
+
+		NaiveBayesian network = new NaiveBayesian(this.className, probClass);
 		
 		int index = 0;
 		for( String word: words) {
@@ -101,12 +100,6 @@ public class BayesianWordAnalyzer {
 		}
 		
 		network.finalizeStructure();
-		
-		double probSpam = messageProbability.calculate(0);
-
-		BayesianEvent posteriorEvent = network.getPosterior();
-		
-		posteriorEvent.getTable().addLine(probSpam, true);
 		
 		return network.computeNaiveProbability();		
 	}
