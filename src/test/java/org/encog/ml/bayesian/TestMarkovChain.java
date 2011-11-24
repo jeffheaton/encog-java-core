@@ -2,9 +2,9 @@ package org.encog.ml.bayesian;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.encog.ml.markov.chain.MarkovChain;
-import org.encog.ml.markov.chain.MarkovState;
-import org.encog.ml.markov.train.FindTransitionProbabilities;
+import org.encog.ml.bayesian.markov.MarkovChain;
+import org.encog.ml.bayesian.markov.MarkovState;
+import org.encog.ml.bayesian.training.markov.FindTransitionProbabilities;
 
 
 public class TestMarkovChain extends TestCase {

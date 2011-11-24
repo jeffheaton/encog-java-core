@@ -1,4 +1,4 @@
-package org.encog.ml.markov.chain;
+package org.encog.ml.bayesian.markov;
 
 import java.util.ArrayList;
 import java.util.HashMap;

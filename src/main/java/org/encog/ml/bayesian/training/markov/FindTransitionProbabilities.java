@@ -1,10 +1,10 @@
-package org.encog.ml.markov.train;
+package org.encog.ml.bayesian.training.markov;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.encog.ml.markov.chain.MarkovChain;
-import org.encog.ml.markov.chain.MarkovState;
+import org.encog.ml.bayesian.markov.MarkovChain;
+import org.encog.ml.bayesian.markov.MarkovState;
 
 public class FindTransitionProbabilities {
 	private MarkovChain chain;

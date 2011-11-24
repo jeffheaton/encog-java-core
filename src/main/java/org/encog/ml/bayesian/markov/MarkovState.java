@@ -1,4 +1,4 @@
-package org.encog.ml.markov.chain;
+package org.encog.ml.bayesian.markov;
 
 public class MarkovState {
 	private final String label;

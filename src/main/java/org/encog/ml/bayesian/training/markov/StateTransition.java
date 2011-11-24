@@ -1,9 +1,9 @@
-package org.encog.ml.markov.train;
+package org.encog.ml.bayesian.training.markov;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.encog.ml.markov.chain.MarkovState;
+import org.encog.ml.bayesian.markov.MarkovState;
 
 public class StateTransition {
 	private int count;
