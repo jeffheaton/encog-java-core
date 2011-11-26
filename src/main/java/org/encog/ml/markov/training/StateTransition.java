@@ -1,20 +1,21 @@
-package org.encog.ml.bayesian.training.markov;
+package org.encog.ml.markov.training;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.encog.ml.bayesian.markov.MarkovState;
+import org.encog.mathutil.probability.vars.RandomVariable;
+import org.encog.ml.bayesian.BayesianEvent;
 
 public class StateTransition {
 	private int count;
-	private final MarkovState state;
-	private final Map<MarkovState,Integer> nextStates = new HashMap<MarkovState,Integer>();
+	private final RandomVariable state;
+	private final Map<RandomVariable,Integer> nextStates = new HashMap<RandomVariable,Integer>();
 	
-	public StateTransition(MarkovState theState) {
+	public StateTransition(RandomVariable theState) {
 		this.state = theState;
 	}
 	
-	public void update(MarkovState nextState) {
+	public void update(RandomVariable nextState) {
 		this.count++;
 		if( nextStates.containsKey(nextState) ) {
 			nextStates.put(nextState, nextStates.get(nextState)+1);
@@ -33,14 +34,14 @@ public class StateTransition {
 	/**
 	 * @return the state
 	 */
-	public MarkovState getState() {
+	public RandomVariable getState() {
 		return state;
 	}
 
 	/**
 	 * @return the prior
 	 */
-	public Map<MarkovState, Integer> getNextStates() {
+	public Map<RandomVariable, Integer> getNextStates() {
 		return this.nextStates;
 	}
 	
@@ -51,7 +52,7 @@ public class StateTransition {
 		result.append(", count=");
 		result.append(count);
 		result.append(", nextState=");
-		for(MarkovState t : this.nextStates.keySet()) {
+		for(RandomVariable t : this.nextStates.keySet()) {
 			int i = this.nextStates.get(t);
 			result.append(t.toString());
 			result.append("=");
@@ -61,7 +62,7 @@ public class StateTransition {
 		return result.toString();
 	}
 
-	public void createNextState(MarkovState s2) {
+	public void createNextState(RandomVariable s2) {
 		this.nextStates.put(s2, 0);
 	}
 }

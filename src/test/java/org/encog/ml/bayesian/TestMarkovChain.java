@@ -2,17 +2,17 @@ package org.encog.ml.bayesian;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.encog.ml.bayesian.markov.MarkovChain;
-import org.encog.ml.bayesian.markov.MarkovState;
-import org.encog.ml.bayesian.training.markov.FindTransitionProbabilities;
+import org.encog.mathutil.probability.vars.RandomVariable;
+import org.encog.ml.markov.MarkovChain;
+import org.encog.ml.markov.training.FindTransitionProbabilities;
 
 
 public class TestMarkovChain extends TestCase {
 	
 	public static void testMarkovTransition1() {
 		MarkovChain chain = new MarkovChain();
-		MarkovState r = chain.addState("R");
-		MarkovState s = chain.addState("S");
+		RandomVariable r = chain.addState("R");
+		RandomVariable s = chain.addState("S");
 		chain.finalizeStructure();
 		FindTransitionProbabilities train = new FindTransitionProbabilities(chain);
 		train.fromSingleLetterString("RSSSRSR");
@@ -27,8 +27,8 @@ public class TestMarkovChain extends TestCase {
 	
 	public static void testMarkovTransition2() {
 		MarkovChain chain = new MarkovChain();
-		MarkovState r = chain.addState("R");
-		MarkovState s = chain.addState("S");
+		RandomVariable r = chain.addState("R");
+		RandomVariable s = chain.addState("S");
 		chain.finalizeStructure();
 		FindTransitionProbabilities train = new FindTransitionProbabilities(chain);
 		train.fromSingleLetterString("SSSSSRSSSRR");
@@ -43,8 +43,8 @@ public class TestMarkovChain extends TestCase {
 	
 	public static void testMarkovTransitionLaplace() {
 		MarkovChain chain = new MarkovChain();
-		MarkovState r = chain.addState("R");
-		MarkovState s = chain.addState("S");
+		RandomVariable r = chain.addState("R");
+		RandomVariable s = chain.addState("S");
 		chain.finalizeStructure();
 		FindTransitionProbabilities train = new FindTransitionProbabilities(chain,1);
 		train.fromSingleLetterString("RSSSS");
@@ -59,8 +59,8 @@ public class TestMarkovChain extends TestCase {
 	
 	public static void testProbability1() {
 		MarkovChain chain = new MarkovChain();
-		MarkovState rState = chain.addState("R");
-		MarkovState sState = chain.addState("S");
+		RandomVariable rState = chain.addState("R");
+		RandomVariable sState = chain.addState("S");
 		chain.finalizeStructure();
 		chain.setStateProbability(rState,rState,0.6);
 		chain.setStateProbability(sState, sState,0.8);
@@ -79,8 +79,8 @@ public class TestMarkovChain extends TestCase {
 	
 	public static void testProbability2() {
 		MarkovChain chain = new MarkovChain();
-		MarkovState aState = chain.addState("A");
-		MarkovState bState = chain.addState("B");
+		RandomVariable aState = chain.addState("A");
+		RandomVariable bState = chain.addState("B");
 		chain.finalizeStructure();
 		chain.setStateProbability(aState,aState,0.5);
 		chain.setStateProbability(bState, bState,0.0);

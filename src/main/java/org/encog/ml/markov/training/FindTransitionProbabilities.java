@@ -1,16 +1,17 @@
-package org.encog.ml.bayesian.training.markov;
+package org.encog.ml.markov.training;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.encog.ml.bayesian.markov.MarkovChain;
-import org.encog.ml.bayesian.markov.MarkovState;
+import org.encog.mathutil.probability.vars.RandomVariable;
+import org.encog.ml.bayesian.BayesianEvent;
+import org.encog.ml.markov.MarkovChain;
 
 public class FindTransitionProbabilities {
 	private MarkovChain chain;
-	private MarkovState initial;
-	private MarkovState lastState;
-	private Map<MarkovState,StateTransition> transition = new HashMap<MarkovState,StateTransition>();
+	private RandomVariable initial;
+	private RandomVariable lastState;
+	private Map<RandomVariable,StateTransition> transition = new HashMap<RandomVariable,StateTransition>();
 	private int k;
 	
 	public FindTransitionProbabilities(MarkovChain theChain) {
@@ -28,20 +29,20 @@ public class FindTransitionProbabilities {
 		this.initial = null;
 		this.lastState = null;
 		// create initial transitions
-		for(MarkovState state: this.chain.getStates()) {
+		for(RandomVariable state: this.chain.getStates().contents()) {
 			StateTransition st = new StateTransition(state);
 			this.transition.put(state, st);
-			for(MarkovState s2: this.chain.getStates()) {
+			for(RandomVariable s2: this.chain.getStates().contents()) {
 				st.createNextState(s2);
 			}
 		}
 	}
 	
 	public void add(String label) {
-		add(this.chain.requireState(label));
+		add(this.chain.getStates().requireEvent(label));
 	}
 	
-	public void add(MarkovState state) {
+	public void add(RandomVariable state) {
 		if( this.initial==null ) {
 			this.initial = state;			
 		} else {
@@ -61,7 +62,7 @@ public class FindTransitionProbabilities {
 		this.chain.clearProbability();
 		
 		for(int i=0;i<this.chain.getStates().size();i++) {
-			MarkovState state = this.chain.getStates().get(i);
+			RandomVariable state = this.chain.getStates().get(i);
 			double num = (state==this.initial)?1:0;
 			double den = 1;
 			num+=k;
@@ -73,7 +74,7 @@ public class FindTransitionProbabilities {
 		
 		for( StateTransition st : this.transition.values() ) {
 			int count = st.getCount();
-			for( MarkovState nextState : st.getNextStates().keySet() ) {
+			for( RandomVariable nextState : st.getNextStates().keySet() ) {
 				int p = st.getNextStates().get(nextState);
 				double num = p;
 				double den = count;
