@@ -72,8 +72,10 @@ public class MarkovChain {
 	}
 	
 	public double calculateProbability(RandomVariable state) {
-		double sum = 0;
-		return sum;
+		int index = this.states.indexOf(state);
+		double a = this.stateProbability[0][index];
+		double b = this.stateProbability[1][index];
+		return b/(b-a+1);
 	}
 
 	public int requireState(RandomVariable state) {
@@ -142,5 +144,36 @@ public class MarkovChain {
 		int fromIndex = this.requireState(givenState);
 		int toIndex = this.requireState(baseState);
 		return this.stateProbability[fromIndex][toIndex];
-	}	
+	}
+
+	public String dumpArrow() {
+		StringBuilder result = new StringBuilder();
+		int states = this.states.size();
+	
+		
+		// handle initial
+		int idx = 0;
+		for(RandomVariable state: this.states.contents()) {
+			result.append("P(");
+			result.append(state.getLabel());
+			result.append("0)=");
+			result.append(this.initialState[idx++]);
+			result.append("\n");
+		}
+		
+		// handle transitional prob
+		for(int stateIndex = 0; stateIndex<states; stateIndex++) {
+			for(int priorStateIndex = 0; priorStateIndex<states; priorStateIndex++) {
+				result.append("P(");
+				result.append(this.states.get(priorStateIndex).getLabel());
+				result.append("-->");
+				result.append(this.states.get(stateIndex).getLabel());				
+				result.append(") = ");
+				result.append(Format.formatDouble(this.getStateProbability(priorStateIndex, stateIndex), 4));
+				result.append("\n");
+			}
+		}
+		
+		return result.toString();
+	}
 }
