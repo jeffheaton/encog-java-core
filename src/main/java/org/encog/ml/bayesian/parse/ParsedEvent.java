@@ -27,7 +27,7 @@ public class ParsedEvent {
 		int result = 0;
 		
 		if( this.value==null ) {
-			throw new BayesianError("Value is undefined for " + this.label);
+			throw new BayesianError("Value is undefined for " + this.label + " should express a value with +, - or =.");
 		}
 		
 		for(String choice: actualEvent.getChoices()) {

@@ -85,6 +85,15 @@ public class FindTransitionProbabilities {
 			}
 		}
 	}
+	
+	public void fromNewString(String str) {
+		this.initial = null;
+		this.lastState = null;
+		for(int i=0;i<str.length();i++) {
+			String labelName = ""+str.charAt(i);
+			add(labelName);
+		}
+	}
 
 	public void fromSingleLetterString(String str) {
 
