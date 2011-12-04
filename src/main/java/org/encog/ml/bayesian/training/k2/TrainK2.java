@@ -3,12 +3,14 @@ package org.encog.ml.bayesian.training.k2;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.Encog;
 import org.encog.mathutil.EncogMath;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.bayesian.BayesianEvent;
 import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.bayesian.query.enumerate.EnumerationQuery;
+import org.encog.ml.bayesian.table.TableLine;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.BasicTraining;
@@ -28,9 +30,8 @@ public class TrainK2 extends BasicTraining {
 		this.maximumParents = theMaximumParents;
 		this.network.removeAllRelations();
 	}
-
-	@Override
-	public void iteration() {
+		
+	public void discoverStructure() {
 		for(int i = 0; i<this.data.getInputSize();i++) {
 			BayesianEvent event = this.network.getEvents().get(i);
 			double oldP = this.calculateG(network, event, event.getParents());
@@ -45,7 +46,58 @@ public class TrainK2 extends BasicTraining {
 				}
 			}
 		}
+	}
+	
+	public double calculateProbability(BayesianEvent event, int result, int[] args) {
+		int eventIndex = this.network.getEvents().indexOf(event);
+		int x = 0;
+		int y = 0;
+		
+		// calculate overall probability
+		for( MLDataPair pair : this.data ) {
+			double[] d = pair.getInputArray();
+			
+			if( Math.abs(d[eventIndex]-result)<Encog.DEFAULT_DOUBLE_EQUAL ) {
+				x++;
+				
+				int i = 0;
+				boolean givenMatch = true;
+				for(BayesianEvent givenEvent : event.getChildren()) {
+					int givenIndex = this.network.getEventIndex(givenEvent);
+					if( Math.abs(args[i]-d[givenIndex])<Encog.DEFAULT_DOUBLE_EQUAL ) {
+						givenMatch = false;
+						break;
+					}
+					i++;
+				}
+				
+				if( givenMatch ) {
+					y++;
+				}
+			}
+		}
+		
+		double num = x + 1;
+		double den = y + event.getChoices().length;
+		
+		
+		return num/den;
+	}
+	
+	public void discoverProbabilities() {
+		for(BayesianEvent event: this.network.getEvents() ) {
+			for(TableLine line : event.getTable().getLines() ) {
+				line.setProbability(calculateProbability(event,line.getResult(),line.getArguments()));
+			}
+		}
+	}
 
+	@Override
+	public void iteration() {
+		discoverStructure();
+		this.network.finalizeStructure();
+		this.network.reset();
+		discoverProbabilities();
 	}
 	
 	private BayesianEvent findZ(BayesianEvent event, int n, double old) {
