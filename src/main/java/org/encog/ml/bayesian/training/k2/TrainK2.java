@@ -50,6 +50,7 @@ public class TrainK2 extends BasicTraining {
 	
 	private BayesianEvent findZ(BayesianEvent event, int n, double old) {
 		BayesianEvent result = null;
+		double maxChildP = Double.NEGATIVE_INFINITY;
 		
 		for(int i=0;i<n;i++) {
 			BayesianEvent trialChild = this.network.getEvents().get(i);
@@ -57,12 +58,13 @@ public class TrainK2 extends BasicTraining {
 			parents.addAll(event.getParents());
 			parents.add(trialChild);
 			this.lastCalculatedP = this.calculateG(network, event, parents);
-			if( this.lastCalculatedP>old ) {
-				return trialChild;
+			if( this.lastCalculatedP>old && this.lastCalculatedP>maxChildP ) {
+				result = trialChild;
+				maxChildP = this.lastCalculatedP;
 			}			
 		}
 		
-		this.lastCalculatedP = 0;
+		this.lastCalculatedP = maxChildP;
 		return result;
 	}
 
