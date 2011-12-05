@@ -119,7 +119,7 @@ public class BayesianEvent implements Serializable {
 			this.table = new BayesianTable(this);
 			this.table.reset();
 		} else {
-			this.table.finalizeStructure();
+			this.table.reset();
 		}
 		
 	}

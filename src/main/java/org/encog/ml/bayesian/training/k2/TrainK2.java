@@ -57,14 +57,20 @@ public class TrainK2 extends BasicTraining {
 		for( MLDataPair pair : this.data ) {
 			double[] d = pair.getInputArray();
 			
-			if( Math.abs(d[eventIndex]-result)<Encog.DEFAULT_DOUBLE_EQUAL ) {
+			if( args.length==0 ) {
+				x++;
+				if( Math.abs(d[eventIndex]-result)<Encog.DEFAULT_DOUBLE_EQUAL ) {
+					y++;
+				}
+			}
+			else if( Math.abs(d[eventIndex]-result)<Encog.DEFAULT_DOUBLE_EQUAL ) {
 				x++;
 				
 				int i = 0;
 				boolean givenMatch = true;
-				for(BayesianEvent givenEvent : event.getChildren()) {
+				for(BayesianEvent givenEvent : event.getParents()) {
 					int givenIndex = this.network.getEventIndex(givenEvent);
-					if( Math.abs(args[i]-d[givenIndex])<Encog.DEFAULT_DOUBLE_EQUAL ) {
+					if( Math.abs(args[i]-d[givenIndex])>Encog.DEFAULT_DOUBLE_EQUAL ) {
 						givenMatch = false;
 						break;
 					}
@@ -77,8 +83,8 @@ public class TrainK2 extends BasicTraining {
 			}
 		}
 		
-		double num = x + 1;
-		double den = y + event.getChoices().length;
+		double num = y + 1;
+		double den = x + event.getChoices().length;
 		
 		
 		return num/den;
