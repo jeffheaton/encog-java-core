@@ -51,5 +51,10 @@ public enum WizardMethodType {
 	/**
 	 * SOM neural network.
 	 */
-	SOM
+	SOM,
+	
+	/**
+	 * Bayesian network.
+	 */
+	BayesianNetwork
 }

@@ -33,7 +33,12 @@ import org.encog.plugin.EncogPluginService1;
  * This factory is used to create machine learning methods.
  */
 public class MLMethodFactory {
-
+	
+	/**
+	 * String constant for a bayesian neural network.
+	 */
+	public static final String TYPE_BAYESIAN = "bayesian";
+	
 	/**
 	 * String constant for feedforward neural networks.
 	 */

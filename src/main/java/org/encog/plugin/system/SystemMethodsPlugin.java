@@ -28,6 +28,7 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.factory.MLMethodFactory;
+import org.encog.ml.factory.method.BayesianFactory;
 import org.encog.ml.factory.method.FeedforwardFactory;
 import org.encog.ml.factory.method.PNNFactory;
 import org.encog.ml.factory.method.RBFNetworkFactory;
@@ -68,6 +69,11 @@ public class SystemMethodsPlugin implements EncogPluginService1 {
 	 * A factory used to create SOM's.
 	 */
 	private final SOMFactory somFactory = new SOMFactory();
+	
+	/**
+	 * A factory used to create Bayesian networks
+	 */
+	private final BayesianFactory bayesianFactory = new BayesianFactory();
 
 	
 	/**
@@ -122,6 +128,8 @@ public class SystemMethodsPlugin implements EncogPluginService1 {
 			return this.somFactory.create(architecture, input, output);
 		} else if (MLMethodFactory.TYPE_PNN.equals(methodType)) {
 			return this.pnnFactory.create(architecture, input, output);
+		} else if (MLMethodFactory.TYPE_BAYESIAN.equals(methodType)) {
+			return this.bayesianFactory.create(architecture, input, output);
 		}
 		throw new EncogError("Unknown method type: " + methodType);
 	}

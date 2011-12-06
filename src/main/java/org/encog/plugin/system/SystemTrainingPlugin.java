@@ -32,6 +32,7 @@ import org.encog.ml.factory.train.AnnealFactory;
 import org.encog.ml.factory.train.BackPropFactory;
 import org.encog.ml.factory.train.ClusterSOMFactory;
 import org.encog.ml.factory.train.GeneticFactory;
+import org.encog.ml.factory.train.K2Factory;
 import org.encog.ml.factory.train.LMAFactory;
 import org.encog.ml.factory.train.ManhattanFactory;
 import org.encog.ml.factory.train.NeighborhoodSOMFactory;
@@ -47,6 +48,12 @@ import org.encog.plugin.EncogPluginBase;
 import org.encog.plugin.EncogPluginService1;
 
 public class SystemTrainingPlugin implements EncogPluginService1 {
+	
+	/**
+	 * The factory for K2
+	 */
+	private final K2Factory k2Factory = new K2Factory();
+	
 	/**
 	 * The factory for backprop.
 	 */
@@ -198,7 +205,10 @@ public class SystemTrainingPlugin implements EncogPluginService1 {
 			return this.pnnFactory.create(method, training, args2);
 		} else if (MLTrainFactory.TYPE_QPROP.equalsIgnoreCase(type)) {
 			return this.qpropFactory.create(method, training, args2);
-		} else {
+		} else if (MLTrainFactory.TYPE_K2.equals(type) ) {
+			return this.k2Factory.create(method, training, args2);
+		}
+		else {
 			throw new EncogError("Unknown training type: " + type);
 		}
 	}

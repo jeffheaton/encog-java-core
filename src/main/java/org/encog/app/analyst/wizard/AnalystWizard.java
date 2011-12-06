@@ -498,6 +498,29 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_TRAIN_TARGET_ERROR, DEFAULT_TRAIN_ERROR);
 	}
+	
+	/**
+	 * Generate a Bayesian network machine learning method.
+	 * @param inputColumns The input column count.
+	 * @param outputColumns The output column count.
+	 */
+	private void generateBayesian(final int inputColumns,
+			final int outputColumns) {
+		
+		StringBuilder a = new StringBuilder();
+		for( DataField field: this.analyst.getScript().getFields())
+		
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_TYPE,
+				MLMethodFactory.TYPE_BAYESIAN);
+
+		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
+				"k2");
+		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_ARGUMENTS,
+				"maxParents=5");
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_TRAIN_TARGET_ERROR, DEFAULT_TRAIN_ERROR);
+	}
 
 	/**
 	 * Generate filenames.
@@ -575,6 +598,9 @@ public class AnalystWizard {
 				.calculateOutputColumns();
 
 		switch (this.methodType) {
+		case BayesianNetwork:
+			generateBayesian(inputColumns, idealColumns);
+			break;
 		case FeedForward:
 			generateFeedForward(inputColumns, idealColumns);
 			break;

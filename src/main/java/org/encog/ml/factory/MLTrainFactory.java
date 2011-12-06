@@ -52,6 +52,11 @@ import org.encog.plugin.EncogPluginService1;
 public class MLTrainFactory {
 	
 	/**
+	 * K2 training for Bayesian.
+	 */
+	public static final String TYPE_K2 = "k2";
+	
+	/**
 	 * String constant for RPROP training.
 	 */
 	public static final String TYPE_RPROP = "rprop";
@@ -230,6 +235,8 @@ public class MLTrainFactory {
 	 * QPROP training.
 	 */
 	public static final String TYPE_QPROP = "qprop";
+
+	public static final String PROPERTY_MAX_PARENTS = "maxParents";
 
 	
 	/**
