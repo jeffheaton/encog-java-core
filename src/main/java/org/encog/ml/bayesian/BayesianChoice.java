@@ -3,6 +3,7 @@ package org.encog.ml.bayesian;
 import java.io.Serializable;
 
 import org.encog.Encog;
+import org.encog.util.csv.CSVFormat;
 
 public class BayesianChoice implements Serializable {
 	
@@ -42,6 +43,18 @@ public class BayesianChoice implements Serializable {
 	
 	public String toString() {
 		return this.label;
+	}
+	
+	public String toFullString() {
+		StringBuilder result = new StringBuilder();
+		result.append(this.label);
+		if( !isIndex() ) {
+			result.append(":");
+			result.append(CSVFormat.EG_FORMAT.format(this.min, 4));
+			result.append(" to ");
+			result.append(CSVFormat.EG_FORMAT.format(this.max, 4));
+		}
+		return result.toString();
 	}
 		
 }

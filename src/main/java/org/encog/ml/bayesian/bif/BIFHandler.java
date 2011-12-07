@@ -3,6 +3,7 @@ package org.encog.ml.bayesian.bif;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.ml.bayesian.BayesianChoice;
 import org.encog.ml.bayesian.BayesianEvent;
 import org.encog.ml.bayesian.BayesianNetwork;
 import org.xml.sax.Attributes;
@@ -150,7 +151,13 @@ public class BIFHandler extends DefaultHandler {
 
 		// define variables
 		for (BIFVariable v : this.bifVariables) {
-			this.network.createEvent(v.getName(), v.getOptions());
+			List<BayesianChoice> c = new ArrayList<BayesianChoice>();
+			int index = 0;
+			for(String s : v.getOptions() ) {
+				c.add(new BayesianChoice(s,index++));
+			}
+			
+			this.network.createEvent(v.getName(), c);
 		}
 
 		// define relations 

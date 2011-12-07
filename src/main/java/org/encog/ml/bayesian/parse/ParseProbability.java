@@ -7,6 +7,7 @@ import org.encog.EncogError;
 import org.encog.ml.bayesian.BayesianError;
 import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.util.SimpleParser;
+import org.encog.util.csv.CSVFormat;
 
 public class ParseProbability {
 	
@@ -23,7 +24,7 @@ public class ParseProbability {
 		while( !done && !parser.eol()) {
 			char ch = parser.peek();
 			if( delim.indexOf(ch) != -1 ) {
-				if( ch==')' || ch=='|') 
+				if( ch==')' || ch=='|' ) 
 					done = true;
 									
 				ParsedEvent parsedEvent;			
@@ -42,6 +43,37 @@ public class ParseProbability {
 					parsedEvent = new ParsedEvent(l2.trim());
 				}
 				
+				// parse choices
+				if( ch=='[' ) {
+					parser.advance();
+					int index = 0;
+					while( ch!=']' && !parser.eol() ) {
+						
+						String labelName = parser.readToChars(":,]");
+						if( parser.peek()==':' ) {
+							parser.advance();
+							parser.eatWhiteSpace();
+							double min = Double.parseDouble(parser.readToWhiteSpace());
+							parser.eatWhiteSpace();
+							if(!parser.lookAhead("to", true) ) {
+								throw new BayesianError("Expected \"to\" in probability choice range.");
+							}
+							parser.advance(2);
+							double max = CSVFormat.EG_FORMAT.parse(parser.readToChars(",]"));
+							parsedEvent.getList().add(new ParsedChoice(labelName,min,max));
+							
+						} else {
+							parsedEvent.getList().add(new ParsedChoice(labelName,index++));
+						}
+						parser.eatWhiteSpace();
+						ch = parser.peek();
+						
+						if( ch==',' ) {
+							parser.advance();
+						}
+					}
+				}
+				
 				// deal with a value specified by =
 				if( parser.peek()=='=' ) {
 					parser.readChar();
@@ -51,6 +83,10 @@ public class ParseProbability {
 				}  
 				
 				if( ch==',') {
+					parser.advance();
+				}
+				
+				if( ch==']') {
 					parser.advance();
 				}
 				
@@ -78,12 +114,12 @@ public class ParseProbability {
 		parser.advance(2);
 
 		// handle base
-		addEvents(parser, result.getBaseEvents(), "|,)=");
+		addEvents(parser, result.getBaseEvents(), "|,)=[]");
 
 		// handle conditions
 		if (parser.peek() == '|') {
 			parser.advance();
-			addEvents(parser, result.getGivenEvents(), ",)=");
+			addEvents(parser, result.getGivenEvents(), ",)=[]");
 
 		}
 

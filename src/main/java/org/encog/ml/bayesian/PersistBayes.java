@@ -62,6 +62,7 @@ public class PersistBayes implements EncogPersistor {
 		EncogFileSection section;
 		String queryType = "";
 		String queryStr = "";
+		String contentsStr = "";
 
 		while ((section = in.readNextSection()) != null) {
 			if (section.getSectionName().equals("BAYES-NETWORK")
@@ -69,22 +70,13 @@ public class PersistBayes implements EncogPersistor {
 				final Map<String, String> params = section.parseParams();
 				queryType = params.get("queryType");
 				queryStr = params.get("query");
-			}
-			if (section.getSectionName().equals("BAYES-NETWORK")
-					&& section.getSubSectionName().equals("BAYES-EVENT")) {
-				for (String line : section.getLines()) {
-					List<String> cols = EncogFileSection.splitColumns(line);
-					String label = cols.get(0);
-					String[] choices = new String[cols.size()-1];
-					for(int i=0;i<choices.length;i++) {
-						choices[i] = cols.get(i+1);
-					}
-					result.createEvent(label,choices);					
-				}
+				contentsStr = params.get("contents");
 			}
 			if (section.getSectionName().equals("BAYES-NETWORK")
 					&& section.getSubSectionName().equals("BAYES-TABLE")) {
 
+				result.setContents(contentsStr);
+				
 				// first, define relationships (1st pass)
 				for (String line : section.getLines()) {
 					result.defineRelationship(line);
@@ -139,16 +131,10 @@ public class PersistBayes implements EncogPersistor {
 		}
 		out.writeProperty("queryType", queryType);
 		out.writeProperty("query", queryStr);
+		out.writeProperty("contents", b.getContents());
 		out.addSubSection("BAYES-PROPERTIES");
 		out.addProperties(b.getProperties());
-		out.addSubSection("BAYES-EVENT");
-		for (BayesianEvent event : b.getEvents()) {
-			out.addColumn(event.getLabel());
-			for (BayesianChoice str : event.getChoices()) {
-				out.addColumn(str.getLabel());
-			}
-			out.writeLine();
-		}
+
 		out.addSubSection("BAYES-TABLE");
 		for (BayesianEvent event : b.getEvents()) {
 			for (TableLine line : event.getTable().getLines()) {

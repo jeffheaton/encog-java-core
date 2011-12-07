@@ -1,5 +1,8 @@
 package org.encog.ml.bayesian.parse;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.encog.ml.bayesian.BayesianChoice;
 import org.encog.ml.bayesian.BayesianError;
 import org.encog.ml.bayesian.BayesianEvent;
@@ -7,6 +10,7 @@ import org.encog.ml.bayesian.BayesianEvent;
 public class ParsedEvent {
 	private final String label;
 	private String value;
+	private final List<ParsedChoice> list = new ArrayList<ParsedChoice>();
 	
 	public ParsedEvent(String theLabel) {
 		this.label = theLabel;
@@ -41,6 +45,12 @@ public class ParsedEvent {
 		throw new BayesianError("Can'f find choice " + this.value + " in the event " + this.label );
 	}
 	
+	
+	
+	public List<ParsedChoice> getList() {
+		return list;
+	}
+
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append("[ParsedEvent:label=");

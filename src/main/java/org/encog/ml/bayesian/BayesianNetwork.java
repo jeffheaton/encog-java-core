@@ -68,6 +68,28 @@ public class BayesianNetwork extends BasicML implements MLRegression, MLResettab
 		this.events.add(event);
 	}
 	
+	public BayesianEvent createEvent(String label, List<BayesianChoice> options) {
+		if( label==null) {
+			throw new BayesianError("Can't create event with null label name");
+		}
+		
+		if (eventExists(label)) {
+			throw new BayesianError("The label \"" + label
+					+ "\" has already been defined.");
+		}
+		
+		BayesianEvent event;
+		
+		if( options.size()==0 ) {
+			event = new BayesianEvent(label);
+		} else {
+			event = new BayesianEvent(label,options);
+			
+		}
+		createEvent(event);
+		return event;
+	}
+	
 	public BayesianEvent createEvent(String label, String ... options) {
 		if( label==null) {
 			throw new BayesianError("Can't create event with null label name");
@@ -89,12 +111,6 @@ public class BayesianNetwork extends BasicML implements MLRegression, MLResettab
 		createEvent(event);
 		return event;
 	}
-	
-	public BayesianEvent createEvent(String label, List<String> options) {
-		String[] s = new String[options.size()];
-		options.toArray(s);
-		return createEvent(label,s);		
-	}	
 
 	public void createDependancy(BayesianEvent parentEvent,
 			BayesianEvent childEvent) {
@@ -135,7 +151,7 @@ public class BayesianNetwork extends BasicML implements MLRegression, MLResettab
 				if (!first)
 					result.append(" ");
 				first = false;
-				result.append(e.toString());
+				result.append(e.toFullString());
 			}
 		}
 
@@ -145,7 +161,7 @@ public class BayesianNetwork extends BasicML implements MLRegression, MLResettab
 				if (!first)
 					result.append(" ");
 				first = false;
-				result.append(e.toString());
+				result.append(e.toFullString());
 			}
 		}
 
@@ -155,7 +171,7 @@ public class BayesianNetwork extends BasicML implements MLRegression, MLResettab
 				if (!first)
 					result.append(" ");
 				first = false;
-				result.append(e.toString());
+				result.append(e.toFullString());
 			}
 		}
 

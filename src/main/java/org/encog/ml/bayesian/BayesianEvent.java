@@ -85,46 +85,22 @@ public class BayesianEvent implements Serializable {
 		result.append("P(");
 		result.append(this.getLabel());
 		
-		// handle actual class members
-		/*if( field.getClassMembers().size()>0 ) {
-						a.append("[");
-						boolean first = true;
-						for( AnalystClassItem item : field.getClassMembers()) {
-							if(!first) {
-								a.append(",");
-							}
-							a.append(item.getCode());
-							first = false;
-						}
-						a.append("]");
-					} else {
-						a.append("[");
-						// handle ranges
-						double size = field.getMax() - field.getMin();
-						double per = size / segment;
-						
-						boolean first = true;
-						for(int i=0;i<segment;i++) {
-							if( !first ) {
-								a.append(",");
-							}					
-							double low = field.getMin()+(per*i);
-							double hi = i==(segment-1)?(field.getMax()):(low+per);
-							a.append("Type");
-							a.append(i);
-							a.append(";");
-							a.append(CSVFormat.EG_FORMAT.format(low, 4));
-							a.append(" to ");
-							a.append(CSVFormat.EG_FORMAT.format(hi, 4));
-							first = false;					
-						}
-						a.append("]");*/
+		result.append("[");
+		boolean first = true;
+		for(BayesianChoice choice: this.choices ) {
+			if(!first) {
+				result.append(",");
+			}
+			result.append(choice.toFullString());
+			first = false;
+		}
+		result.append("]");		
 		
 		if( hasParents() ) {
 			result.append("|");
 		}
 		
-		boolean first = true;
+		first = true;
 		for(BayesianEvent e : this.parents) {
 			if( !first )
 				result.append(",");
