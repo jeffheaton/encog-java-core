@@ -34,6 +34,7 @@ import org.encog.app.analyst.AnalystGoal;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.missing.DiscardMissing;
 import org.encog.app.analyst.missing.HandleMissingValues;
+import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.normalize.AnalystField;
@@ -43,6 +44,7 @@ import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.util.arrayutil.NormalizationAction;
+import org.encog.util.csv.CSVFormat;
 import org.encog.util.file.FileUtil;
 
 /**
@@ -507,12 +509,59 @@ public class AnalystWizard {
 	private void generateBayesian(final int inputColumns,
 			final int outputColumns) {
 		
+		int segment = 3;
+		
 		StringBuilder a = new StringBuilder();
-		for( DataField field: this.analyst.getScript().getFields())
+		for( DataField field: this.analyst.getScript().getFields()) {
+			a.append("P(");
+			a.append(field.getName());
+			
+			// handle actual class members
+			if( field.getClassMembers().size()>0 ) {
+				a.append("[");
+				boolean first = true;
+				for( AnalystClassItem item : field.getClassMembers()) {
+					if(!first) {
+						a.append(",");
+					}
+					a.append(item.getCode());
+					first = false;
+				}
+				a.append("]");
+			} else {
+				a.append("[");
+				// handle ranges
+				double size = field.getMax() - field.getMin();
+				double per = size / segment;
+				
+				boolean first = true;
+				for(int i=0;i<segment;i++) {
+					if( !first ) {
+						a.append(",");
+					}					
+					double low = field.getMin()+(per*i);
+					double hi = i==(segment-1)?(field.getMax()):(low+per);
+					a.append("Type");
+					a.append(i);
+					a.append(";");
+					a.append(CSVFormat.EG_FORMAT.format(low, 4));
+					a.append(" to ");
+					a.append(CSVFormat.EG_FORMAT.format(hi, 4));
+					first = false;					
+				}
+				a.append("]");
+			}			
+			
+			a.append(") ");
+		}
 		
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_TYPE,
 				MLMethodFactory.TYPE_BAYESIAN);
+		
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_ARCHITECTURE,
+				a.toString());
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				"k2");

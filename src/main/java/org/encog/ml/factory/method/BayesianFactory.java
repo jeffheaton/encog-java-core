@@ -8,7 +8,8 @@ public class BayesianFactory {
 	
 	public final MLMethod create(final String architecture, final int input,
 			final int output) {
-		MLMethod method = new BayesianNetwork();
+		BayesianNetwork method = new BayesianNetwork();
+		method.setContents(architecture);
 		return method;
 	}
 }
