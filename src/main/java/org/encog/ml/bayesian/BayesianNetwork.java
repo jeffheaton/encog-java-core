@@ -12,6 +12,7 @@ import org.encog.ml.BasicML;
 import org.encog.ml.MLRegression;
 import org.encog.ml.MLResettable;
 import org.encog.ml.bayesian.parse.ParseProbability;
+import org.encog.ml.bayesian.parse.ParsedChoice;
 import org.encog.ml.bayesian.parse.ParsedEvent;
 import org.encog.ml.bayesian.parse.ParsedProbability;
 import org.encog.ml.bayesian.query.BayesianQuery;
@@ -189,8 +190,15 @@ public class BayesianNetwork extends BasicML implements MLRegression, MLResettab
 			labelList.add(eventLabel);
 			
 			// create event, if not already here
-			if( getEvent(eventLabel)==null ) {
-				createEvent(eventLabel, BayesianNetwork.CHOICES_TRUE_FALSE);				
+			BayesianEvent e = getEvent(eventLabel); 
+			if( e==null ) {
+				List<BayesianChoice> cl = new ArrayList<BayesianChoice>();
+								
+				for( ParsedChoice c : parsedEvent.getList() ) {
+					cl.add(new BayesianChoice(c.getLabel(),c.getMin(),c.getMax()));
+				}
+				
+				createEvent(eventLabel, cl);				
 			}
 		}
 

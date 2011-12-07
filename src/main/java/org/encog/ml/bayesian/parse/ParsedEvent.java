@@ -42,6 +42,14 @@ public class ParsedEvent {
 			result++;
 		}
 		
+		// resolve true/false if not found, probably came from +/- notation
+		if( this.value.equalsIgnoreCase("true")) {
+			return 0;
+		} else if( this.value.equalsIgnoreCase("false")) {
+			return 1;
+		}
+		
+		// error out if nothing found
 		throw new BayesianError("Can'f find choice " + this.value + " in the event " + this.label );
 	}
 	
