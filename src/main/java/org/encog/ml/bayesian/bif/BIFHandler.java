@@ -174,7 +174,7 @@ public class BIFHandler extends DefaultHandler {
 			int tableIndex = 0;
 			int[] args = new int[childEvent.getParents().size()];
 			do {
-				for(int result = 0; result<childEvent.getChoices().length;result++) {
+				for(int result = 0; result<childEvent.getChoices().size();result++) {
 					childEvent.getTable().addLine(t[tableIndex++], result, args);	
 				}
 			} while(BIFUtil.rollArgs(childEvent,args));

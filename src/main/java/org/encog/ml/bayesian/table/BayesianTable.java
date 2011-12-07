@@ -26,7 +26,7 @@ public class BayesianTable implements Serializable {
 		int[] args = new int[l];
 
 		do {
-			for (int k = 0; k < event.getChoices().length; k++) {
+			for (int k = 0; k < event.getChoices().size(); k++) {
 				addLine(0, k, args);
 			}
 		} while (EnumerationQuery.roll(parents, args));
@@ -127,6 +127,6 @@ public class BayesianTable implements Serializable {
 	}
 	
 	public int getMaxLines() {
-		return event.calculateParameterCount() * event.getChoices().length;
+		return event.calculateParameterCount() * event.getChoices().size();
 	}
 }

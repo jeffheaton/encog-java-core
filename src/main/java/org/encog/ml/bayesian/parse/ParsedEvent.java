@@ -1,5 +1,6 @@
 package org.encog.ml.bayesian.parse;
 
+import org.encog.ml.bayesian.BayesianChoice;
 import org.encog.ml.bayesian.BayesianError;
 import org.encog.ml.bayesian.BayesianEvent;
 
@@ -30,8 +31,8 @@ public class ParsedEvent {
 			throw new BayesianError("Value is undefined for " + this.label + " should express a value with +, - or =.");
 		}
 		
-		for(String choice: actualEvent.getChoices()) {
-			if( this.value.equals(choice)) {
+		for(BayesianChoice choice: actualEvent.getChoices()) {
+			if( this.value.equals(choice.getLabel())) {
 				return result;
 			}
 			result++;

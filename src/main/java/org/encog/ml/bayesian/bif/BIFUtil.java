@@ -12,6 +12,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.encog.Encog;
+import org.encog.ml.bayesian.BayesianChoice;
 import org.encog.ml.bayesian.BayesianError;
 import org.encog.ml.bayesian.BayesianEvent;
 import org.encog.ml.bayesian.BayesianNetwork;
@@ -95,8 +96,8 @@ public class BIFUtil {
 			xml.addAttribute("TYPE", "nature");
 			xml.beginTag("VARIABLE");
 			xml.addProperty("NAME", event.getLabel());
-			for(String str: event.getChoices()) {
-				xml.addProperty("OUTCOME", str);
+			for(BayesianChoice str: event.getChoices()) {
+				xml.addProperty("OUTCOME", str.getLabel());
 			}
 			xml.endTag();
 		}
@@ -123,7 +124,7 @@ public class BIFUtil {
 		int tableIndex = 0;
 		int[] args = new int[event.getParents().size()];
 		do {
-			for(int result = 0; result<event.getChoices().length;result++) {
+			for(int result = 0; result<event.getChoices().size();result++) {
 				TableLine line = event.getTable().findLine(result,args);
 				if( s.length()>0 ) {
 					s.append(" ");
@@ -147,7 +148,7 @@ public class BIFUtil {
 		while (!done) {
 			int v = (int) args[currentIndex];
 			v++;
-			if (v >= event.getParents().get(currentIndex).getChoices().length) {
+			if (v >= event.getParents().get(currentIndex).getChoices().size()) {
 				args[currentIndex] = 0;
 			} else {
 				args[currentIndex] = v;

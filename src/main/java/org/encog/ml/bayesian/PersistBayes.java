@@ -144,8 +144,8 @@ public class PersistBayes implements EncogPersistor {
 		out.addSubSection("BAYES-EVENT");
 		for (BayesianEvent event : b.getEvents()) {
 			out.addColumn(event.getLabel());
-			for (String str : event.getChoices()) {
-				out.addColumn(str);
+			for (BayesianChoice str : event.getChoices()) {
+				out.addColumn(str.getLabel());
 			}
 			out.writeLine();
 		}
@@ -181,10 +181,10 @@ public class PersistBayes implements EncogPersistor {
 					str.append(parentEvent.getLabel());
 					if (!parentEvent.isBoolean()) {
 						str.append("=");
-						if( arg>=parentEvent.getChoices().length) {
+						if( arg>=parentEvent.getChoices().size()) {
 							throw new BayesianError("Argument value " + arg + " is out of range for event " + parentEvent.toString());
 						}
-						str.append(parentEvent.getChoices()[arg]);
+						str.append(parentEvent.getChoices().get(arg));
 					}
 				}
 				str.append(")=");

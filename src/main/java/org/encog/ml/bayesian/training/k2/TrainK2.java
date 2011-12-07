@@ -84,7 +84,7 @@ public class TrainK2 extends BasicTraining {
 		}
 		
 		double num = y + 1;
-		double den = x + event.getChoices().length;
+		double den = x + event.getChoices().size();
 		
 		
 		return num/den;
@@ -224,7 +224,7 @@ public class TrainK2 extends BasicTraining {
 	public double calculateG(BayesianNetwork network,
 			BayesianEvent event, List<BayesianEvent> parents) {
 		double result = 1.0;
-		int r = event.getChoices().length;
+		int r = event.getChoices().size();
 
 		int[] args = new int[parents.size()];
 		
@@ -235,7 +235,7 @@ public class TrainK2 extends BasicTraining {
 			double p1 = n/d;
 			
 			double p2 = 1;
-			for(int k = 0; k<event.getChoices().length; k++) {
+			for(int k = 0; k<event.getChoices().size(); k++) {
 				p2 *= EncogMath.factorial(calculateN(network,event,parents,args,k));
 			}						
 			

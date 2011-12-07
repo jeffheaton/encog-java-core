@@ -102,7 +102,7 @@ public class EnumerationQuery extends BasicQuery implements Serializable {
 			EventState state = this.enumerationEvents.get(currentIndex);
 			int v = (int) state.getValue();
 			v++;
-			if (v >= state.getEvent().getChoices().length) {
+			if (v >= state.getEvent().getChoices().size()) {
 				state.setValue(0);
 			} else {
 				state.setValue(v);
@@ -234,7 +234,7 @@ public class EnumerationQuery extends BasicQuery implements Serializable {
 			BayesianEvent event = enumerationEvents.get(currentIndex);
 			int v = (int) args[currentIndex];
 			v++;
-			if (v >= event.getChoices().length) {
+			if (v >= event.getChoices().size()) {
 				args[currentIndex] = 0;
 			} else {
 				args[currentIndex] = v;

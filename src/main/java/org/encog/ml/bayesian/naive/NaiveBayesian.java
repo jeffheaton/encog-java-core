@@ -16,8 +16,8 @@ public class NaiveBayesian extends BayesianNetwork {
 	private final double[] posteriorProbability;
 	
 	public NaiveBayesian(BayesianEvent thePosterior, double[] thePosteriorProbability) {
-		if( thePosteriorProbability.length!=thePosterior.getChoices().length) {
-			throw new BayesianError("The posterior choice count (" + thePosterior.getChoices().length
+		if( thePosteriorProbability.length!=thePosterior.getChoices().size()) {
+			throw new BayesianError("The posterior choice count (" + thePosterior.getChoices().size()
 					+") must match the posterior probability array size(" 
 					+ thePosteriorProbability.length + ")");
 		}
