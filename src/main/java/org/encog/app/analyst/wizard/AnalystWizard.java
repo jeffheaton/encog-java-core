@@ -543,7 +543,7 @@ public class AnalystWizard {
 					double hi = i==(segment-1)?(field.getMax()):(low+per);
 					a.append("Type");
 					a.append(i);
-					a.append(";");
+					a.append(":");
 					a.append(CSVFormat.EG_FORMAT.format(low, 4));
 					a.append(" to ");
 					a.append(CSVFormat.EG_FORMAT.format(hi, 4));

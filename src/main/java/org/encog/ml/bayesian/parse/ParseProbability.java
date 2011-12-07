@@ -144,7 +144,7 @@ public class ParseProbability {
 				result.add(parsedProbability);
 				prob.setLength(0);
 			}
-			else if(!Character.isWhitespace(ch)) {
+			else {
 				prob.append(ch);
 			}			
 		}

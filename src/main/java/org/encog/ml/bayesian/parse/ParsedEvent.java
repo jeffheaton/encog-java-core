@@ -49,6 +49,16 @@ public class ParsedEvent {
 			return 1;
 		}
 		
+		// try to resolve numeric index
+		try {
+			int i = Integer.parseInt(this.value);
+			if( i<actualEvent.getChoices().size() ) {
+				return i;
+			}
+		} catch(NumberFormatException ex) {
+			// well, we tried
+		}
+		
 		// error out if nothing found
 		throw new BayesianError("Can'f find choice " + this.value + " in the event " + this.label );
 	}
