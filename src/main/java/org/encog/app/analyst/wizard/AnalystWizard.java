@@ -235,7 +235,7 @@ public class AnalystWizard {
 	private int leadWindowSize;
 	
 	/**
-	 * Should the target field be included int he input, if we are doing 
+	 * Should the target field be included in the input, if we are doing 
 	 * time-series.
 	 */
 	private boolean includeTargetField;
@@ -390,20 +390,24 @@ public class AnalystWizard {
 			}
 		}
 
-		// now that the target field has been determined, set the analyst fields
-		AnalystField af = null;
-		for (final AnalystField field : this.analyst.getScript().getNormalize()
-				.getNormalizedFields()) {
-			if ((field.getAction() != NormalizationAction.Ignore)
-					&& field.getName().equalsIgnoreCase(this.targetField)) {
-				if ((af == null) || (af.getTimeSlice() < field.getTimeSlice())) {
-					af = field;
+		// determine output field
+		if (this.methodType != WizardMethodType.BayesianNetwork) {
+			// now that the target field has been determined, set the analyst fields
+			AnalystField af = null;
+			for (final AnalystField field : this.analyst.getScript()
+					.getNormalize().getNormalizedFields()) {
+				if ((field.getAction() != NormalizationAction.Ignore)
+						&& field.getName().equalsIgnoreCase(this.targetField)) {
+					if ((af == null)
+							|| (af.getTimeSlice() < field.getTimeSlice())) {
+						af = field;
+					}
 				}
 			}
-		}
 
-		if (af != null) {
-			af.setOutput(true);
+			if (af != null) {
+				af.setOutput(true);
+			}
 		}
 
 		// set the clusters count
@@ -682,7 +686,15 @@ public class AnalystWizard {
 			NormalizationAction action;
 			final boolean isLast = i == this.script.getFields().length - 1;
 
-			if ((f.isInteger() || f.isReal()) && !f.isClass()) {
+			if( this.methodType == WizardMethodType.BayesianNetwork ) {
+				AnalystField af;
+				if( f.isClass() ) {
+					af = new AnalystField(f.getName(), NormalizationAction.SingleField, 0, 0);
+				} else {
+					af = new AnalystField(f.getName(), NormalizationAction.PassThrough, 0, 0);
+				}
+				norm.add(af);
+			} else if ((f.isInteger() || f.isReal()) && !f.isClass()) {
 				action = NormalizationAction.Normalize;
 				AnalystField af;
 				if (this.range == NormalizeRange.NegOne2One) {

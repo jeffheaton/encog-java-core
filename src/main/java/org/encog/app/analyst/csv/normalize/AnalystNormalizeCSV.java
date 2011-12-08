@@ -95,6 +95,9 @@ public class AnalystNormalizeCSV extends BasicFile {
 					double d = csv.getFormat().parse(str);
 					d = stat.normalize(d);
 					output[outputIndex++] = d;
+				} else if (stat.getAction() == NormalizationAction.PassThrough) {
+					double d = csv.getFormat().parse(str);
+					output[outputIndex++] = d;
 				} else {
 					final double[] d = stat.encode(str);
 					for (final double element : d) {

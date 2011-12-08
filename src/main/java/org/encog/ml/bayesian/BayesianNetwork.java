@@ -363,7 +363,7 @@ public class BayesianNetwork extends BasicML implements MLRegression, MLResettab
 
 	@Override
 	public int getInputCount() {
-		return this.query.getEvidenceEvents().size();
+		return this.events.size();
 	}
 
 	@Override

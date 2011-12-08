@@ -143,8 +143,7 @@ public class TrainK2 extends BasicTraining {
 
 	@Override
 	public MLMethod getMethod() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.network;
 	}
 
 	/**
