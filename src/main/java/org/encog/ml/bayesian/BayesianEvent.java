@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.Encog;
 import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.ml.bayesian.table.BayesianTable;
 import org.encog.util.csv.CSVFormat;
@@ -23,6 +24,10 @@ public class BayesianEvent implements Serializable {
 	private final List<BayesianEvent> children = new ArrayList<BayesianEvent>();
 	private final List<BayesianChoice> choices = new ArrayList<BayesianChoice>();
 	private BayesianTable table;
+	private int minimumChoiceIndex;
+	private double minimumChoice;
+	private int maximumChoiceIndex;
+	private double maximumChoice;
 	
 	public BayesianEvent(String theLabel, List<BayesianChoice> theChoices) {
 		this.label = theLabel;
@@ -159,6 +164,26 @@ public class BayesianEvent implements Serializable {
 	}
 
 	public void finalizeStructure() {
+		// find min/max choice
+		this.minimumChoiceIndex = -1;
+		this.maximumChoiceIndex = -1;
+		this.minimumChoice = Double.POSITIVE_INFINITY;
+		this.maximumChoice = Double.NEGATIVE_INFINITY;
+				
+		int index = 0;
+		for(BayesianChoice choice : this.choices) {
+			if( choice.getMin()<this.minimumChoice ) {
+				this.minimumChoice = choice.getMin();
+				this.minimumChoiceIndex = index;				
+			}
+			if( choice.getMax()>this.maximumChoice ) {
+				this.maximumChoice = choice.getMax();
+				this.maximumChoiceIndex = index;				
+			}
+			index++;
+		}
+		
+		// build truth table
 		if( this.table == null ) {
 			this.table = new BayesianTable(this);
 			this.table.reset();
@@ -249,5 +274,36 @@ public class BayesianEvent implements Serializable {
 			this.table = new BayesianTable(this);
 		}
 		this.table.reset();
+	}
+
+	public int matchChoiceToRange(double d) {
+		if( this.getChoices().size()>0 && this.getChoices().get(0).isIndex() ) {
+			return (int)d;
+		}
+		
+		
+		int index = 0;
+		for(BayesianChoice choice : this.choices) {
+			if( d>choice.getMin() && d<choice.getMax() ) {
+				return index;
+			}
+			
+			if( Math.abs(d-choice.getMin())<Encog.DEFAULT_DOUBLE_EQUAL )
+				return index;
+			
+			if( Math.abs(d-choice.getMax())<Encog.DEFAULT_DOUBLE_EQUAL )
+				return index;
+			
+			index++;
+		}
+		
+		// out of range?
+		
+		if( d<this.minimumChoice )
+			return this.minimumChoiceIndex;
+		if( d>this.maximumChoice )
+			return this.minimumChoiceIndex;
+		
+		throw new BayesianError("Can't find a choice to map the value of " + d + " to for event " + this.toString());
 	}
 }

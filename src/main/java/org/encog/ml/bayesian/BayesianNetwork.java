@@ -498,4 +498,16 @@ public class BayesianNetwork extends BasicML implements MLRegression, MLResettab
 		}
 		
 	}
+
+	public int[] determineClasses(MLData input) {
+		int[] result = new int[input.size()];
+		
+		for(int i=0;i<input.size();i++) {
+			BayesianEvent event = this.events.get(i);
+			int classIndex = event.matchChoiceToRange(input.getData(i));
+			result[i] = classIndex;
+		}
+		
+		return result;
+	}
 }

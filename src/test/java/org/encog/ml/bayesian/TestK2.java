@@ -38,6 +38,8 @@ public class TestK2 extends TestCase {
 		Assert.assertTrue(x3.getParents().size()==1);
 		Assert.assertTrue(x2.getParents().contains(x1));
 		Assert.assertTrue(x3.getParents().contains(x2));
+		Assert.assertEquals(0.714, network.getEvent("x2").getTable().findLine(1, new int[] {1}).getProbability(),0.001);
+		
 	}
 	
 	public void testK2Calc() {

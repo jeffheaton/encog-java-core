@@ -55,7 +55,7 @@ public class TrainK2 extends BasicTraining {
 		
 		// calculate overall probability
 		for( MLDataPair pair : this.data ) {
-			double[] d = pair.getInputArray();
+			int[] d = this.network.determineClasses( pair.getInput() );
 			
 			if( args.length==0 ) {
 				x++;
@@ -63,7 +63,7 @@ public class TrainK2 extends BasicTraining {
 					y++;
 				}
 			}
-			else if( Math.abs(d[eventIndex]-result)<Encog.DEFAULT_DOUBLE_EQUAL ) {
+			else if( d[eventIndex]==result ) {
 				x++;
 				
 				int i = 0;
@@ -163,15 +163,15 @@ public class TrainK2 extends BasicTraining {
 		int eventIndex = network.getEventIndex(event);
 
 		for (MLDataPair pair : this.data) {
-			double[] d = pair.getInputArray();
+			int[] d = this.network.determineClasses(pair.getInput());
 
-			if (((int) d[eventIndex]) == desiredValue) {
+			if ( d[eventIndex] == desiredValue) {
 				boolean reject = false;
 
 				for (int i = 0; i < parentInstance.length; i++) {
 					BayesianEvent parentEvent = parents.get(i);
 					int parentIndex = network.getEventIndex(parentEvent);
-					if (parentInstance[i] != ((int) d[parentIndex])) {
+					if (parentInstance[i] != d[parentIndex]) {
 						reject = true;
 						break;
 					}
@@ -200,7 +200,7 @@ public class TrainK2 extends BasicTraining {
 		int result = 0;
 
 		for (MLDataPair pair : this.data) {
-			double[] d = pair.getInputArray();
+			int[] d = this.network.determineClasses( pair.getInput());
 
 			boolean reject = false;
 
