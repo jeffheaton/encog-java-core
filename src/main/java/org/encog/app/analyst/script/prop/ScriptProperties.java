@@ -202,6 +202,11 @@ public class ScriptProperties {
 		= "ML:CONFIG_architecture";
 	
 	/**
+	 * Property for "ML:CONFIG_query"
+	 */
+	public static final String ML_CONFIG_QUERY = "ML:CONFIG_query";
+	
+	/**
 	 * Property for: "ML:TRAIN_type". 
 	 */
 	public static final String ML_TRAIN_TYPE 
@@ -248,7 +253,6 @@ public class ScriptProperties {
 	 */
 	public static final String CLUSTER_CONFIG_CLUSTERS 
 		= "CLUSTER:CONFIG_clusters";
-
 
 	/**
 	 * Convert a key to the dot form.

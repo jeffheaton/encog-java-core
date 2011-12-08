@@ -30,6 +30,7 @@ import org.encog.app.analyst.csv.AnalystEvaluateCSV;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.ml.MLMethod;
+import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.util.logging.EncogLogging;
 
@@ -70,6 +71,9 @@ public class CmdEvaluate extends Cmd {
 		final String outputID = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_OUTPUT_FILE);
 		
+		final String query = getProp().getPropertyString(
+				ScriptProperties.ML_CONFIG_QUERY);
+		
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
 			"Beginning evaluate");
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
@@ -85,6 +89,10 @@ public class CmdEvaluate extends Cmd {
 
 		final MLMethod method = (MLMethod) EncogDirectoryPersistence
 				.loadObject(resourceFile);
+		
+		if( method instanceof BayesianNetwork ) {
+			((BayesianNetwork)method).defineClassificationStructure(query);
+		}
 
 		final boolean headers = true;
 

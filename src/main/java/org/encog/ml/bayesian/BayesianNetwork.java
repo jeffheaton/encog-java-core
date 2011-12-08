@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.encog.ml.BasicML;
-import org.encog.ml.MLRegression;
+import org.encog.ml.MLClassification;
 import org.encog.ml.MLResettable;
 import org.encog.ml.bayesian.parse.ParseProbability;
 import org.encog.ml.bayesian.parse.ParsedChoice;
@@ -19,16 +19,19 @@ import org.encog.ml.bayesian.query.BayesianQuery;
 import org.encog.ml.bayesian.query.enumerate.EnumerationQuery;
 import org.encog.ml.bayesian.query.sample.EventState;
 import org.encog.ml.data.MLData;
-import org.encog.ml.data.basic.BasicMLData;
+import org.encog.util.EngineArray;
 import org.encog.util.csv.CSVFormat;
 
-public class BayesianNetwork extends BasicML implements MLRegression, MLResettable, Serializable {
+public class BayesianNetwork extends BasicML implements MLClassification, MLResettable, Serializable {
 
 	public static final String[] CHOICES_TRUE_FALSE = { "true", "false" };
 
 	private final Map<String, BayesianEvent> eventMap = new HashMap<String, BayesianEvent>();
 	private final List<BayesianEvent> events = new ArrayList<BayesianEvent>();
 	private BayesianQuery query;
+	private boolean[] inputPresent;
+	private int classificationTarget;
+	private double[] classificationProbabilities;
 
 	public BayesianNetwork() {
 		this.query = new EnumerationQuery(this);
@@ -242,6 +245,8 @@ public class BayesianNetwork extends BasicML implements MLRegression, MLResettab
 		if (this.query != null) {
 			this.query.finalizeStructure();
 		}
+		
+		
 
 	}
 
@@ -279,6 +284,10 @@ public class BayesianNetwork extends BasicML implements MLRegression, MLResettab
 		if( this.query!=null ) {
 			this.query.finalizeStructure();
 		}
+		
+		this.inputPresent = new boolean[this.events.size()];
+		EngineArray.fill(this.inputPresent, true);
+		this.classificationTarget = -1;
 	}
 
 	public void validate() {
@@ -371,8 +380,7 @@ public class BayesianNetwork extends BasicML implements MLRegression, MLResettab
 		return 1;
 	}
 
-	@Override
-	public MLData compute(MLData input) {
+	public double computeProbability(MLData input) {
 
 		// copy the input to evidence
 		int inputIndex = 0;
@@ -386,10 +394,8 @@ public class BayesianNetwork extends BasicML implements MLRegression, MLResettab
 
 		// execute the query
 		this.query.execute();
-
-		MLData result = new BasicMLData(1);
-		result.setData(0, this.query.getProbability());
-		return result;
+		
+		return this.query.getProbability();
 	}
 
 	public void defineProbability(String line, double probability) {
@@ -509,5 +515,90 @@ public class BayesianNetwork extends BasicML implements MLRegression, MLResettab
 		}
 		
 		return result;
+	}
+
+	@Override
+	public int classify(MLData input) {
+		
+		if( this.classificationTarget<0 || this.classificationTarget>=this.events.size() ) {
+			throw new BayesianError("Must specify classification target by calling setClassificationTarget.");
+		}
+		
+		int[] d = this.determineClasses(input);
+		
+		// properly tag all of the events
+		for(int i=0;i<this.events.size();i++) {
+			BayesianEvent event = this.events.get(i);
+			if( i==this.classificationTarget ) {
+				this.query.defineEventType(event, EventType.Outcome);
+			} else if( this.inputPresent[i] ) {
+				this.query.defineEventType(event, EventType.Evidence);
+				this.query.setEventValue(event, d[i]);
+			} else {
+				this.query.defineEventType(event, EventType.Hidden);
+				this.query.setEventValue(event, d[i]);
+			}
+		}
+		
+		
+		// loop over and try each outcome choice
+		BayesianEvent outcomeEvent = this.events.get(this.classificationTarget);
+		this.classificationProbabilities = new double[outcomeEvent.getChoices().size()];
+		for(int i=0;i<outcomeEvent.getChoices().size();i++) {
+			this.query.setEventValue(outcomeEvent, i);
+			this.query.execute();
+			classificationProbabilities[i] = this.query.getProbability();
+		}
+		
+		
+		return EngineArray.maxIndex(this.classificationProbabilities);
+	}
+
+	public int getClassificationTarget() {
+		return classificationTarget;
+	}
+	
+	public boolean isInputPresent(int idx) {
+		return this.inputPresent[idx];
+	}
+
+	public void defineClassificationStructure(String line) {
+		List<ParsedProbability> list = ParseProbability.parseProbabilityList(this, line);	
+		
+		if( list.size()>1) {
+			throw new BayesianError("Must only define a single probability, not a chain.");
+		}
+		
+		if( list.size()==0) {
+			throw new BayesianError("Must define at least one probability.");
+		}
+
+		// first define everything to be hidden
+		for(BayesianEvent event: this.events) {
+			this.query.defineEventType(event, EventType.Hidden);
+		}
+		
+		// define the base event
+		ParsedProbability prob = list.get(0);
+		BayesianEvent be = this.getEvent( prob.getChildEvent().getLabel() );
+		this.classificationTarget = this.events.indexOf(be);
+		this.query.defineEventType(be, EventType.Outcome);
+		
+		// define the given events
+		for(ParsedEvent parsedGiven: prob.getGivenEvents()) {
+			BayesianEvent given = this.getEvent( parsedGiven.getLabel() );
+			this.query.defineEventType(given, EventType.Evidence);
+		}
+		
+		this.query.finalizeStructure();
+		
+	}
+
+	public BayesianEvent getClassificationTargetEvent() {
+		if( this.classificationTarget==-1) {
+			throw new BayesianError("No classification target defined.");			
+		}
+		
+		return this.events.get(this.classificationTarget);
 	}
 }

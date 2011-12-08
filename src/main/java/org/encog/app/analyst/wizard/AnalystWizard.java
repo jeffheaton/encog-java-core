@@ -559,6 +559,22 @@ public class AnalystWizard {
 			a.append(") ");
 		}
 		
+		StringBuilder q = new StringBuilder();
+		q.append("P(");
+		q.append(this.targetField);
+		q.append("|");
+		boolean first = true;
+		for( DataField field: this.analyst.getScript().getFields()) {
+			if (!field.getName().equals(this.targetField)) {
+				if (!first) {
+					q.append(",");
+				}
+				q.append(field.getName());
+				first = false;
+			}
+		}
+		q.append(")");
+		
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_TYPE,
 				MLMethodFactory.TYPE_BAYESIAN);
@@ -566,6 +582,8 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_ARCHITECTURE,
 				a.toString());
+		
+		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_QUERY, q.toString());
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				"k2");

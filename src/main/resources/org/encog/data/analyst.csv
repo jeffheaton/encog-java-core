@@ -33,6 +33,7 @@ ML:CONFIG,machineLearningFile,string
 ML:CONFIG,outputFile,string
 ML:CONFIG,type,string
 ML:CONFIG,architecture,string
+ML:CONFIG,query,string
 ML:TRAIN,type,string
 ML:TRAIN,arguments,string
 ML:TRAIN,targetError,real

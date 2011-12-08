@@ -38,6 +38,7 @@ import org.encog.app.quant.QuantError;
 import org.encog.ml.MLClassification;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
+import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.util.arrayutil.ClassItem;
@@ -110,7 +111,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 	 * @param output The output count.
 	 * @return The file to write to.
 	 */
-	private PrintWriter prepareOutputFile(final File outputFile,
+	private PrintWriter prepareOutputFile(MLMethod method, final File outputFile,
 			final int input, final int output) {
 		try {
 			final PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
@@ -139,7 +140,18 @@ public class AnalystEvaluateCSV extends BasicFile {
 						line.append("\"");
 					}
 				}
-
+				
+				// add in Bayesian output column, if needed
+				String otherOutput = "";
+				if( method instanceof BayesianNetwork ) {
+					otherOutput = ((BayesianNetwork)method).getClassificationTargetEvent().getLabel();
+					BasicFile.appendSeparator(line, getFormat());
+					line.append("\"Output:");
+					line.append(otherOutput);
+					line.append("\"");
+				}
+				
+				
 				tw.println(line.toString());
 			}
 
@@ -165,7 +177,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 
 		final int outputLength = this.analyst.determineTotalInputFieldCount();
 
-		final PrintWriter tw = this.prepareOutputFile(outputFile, this.analyst
+		final PrintWriter tw = this.prepareOutputFile(method, outputFile, this.analyst
 				.getScript().getNormalize().countActiveFields() - 1, 1);
 
 		resetStatus();
@@ -197,13 +209,18 @@ public class AnalystEvaluateCSV extends BasicFile {
 				// skip file data
 				int index = this.fileColumns;
 				int outputIndex = 0;
+				
+				String otherOutput = "";
+				if( method instanceof BayesianNetwork ) {
+					otherOutput = ((BayesianNetwork)method).getClassificationTargetEvent().getLabel();
+				}
 
 				// display output
 				for (final AnalystField field : analyst.getScript()
 						.getNormalize().getNormalizedFields()) {
 					if (this.analystHeaders.find(field.getName()) != -1) {
 
-						if (field.isOutput()) {
+						if (field.isOutput() || field.getName().equals(otherOutput)) {
 							if (field.isClassify()) {
 								// classification
 								final ClassItem cls = field.determineClass(

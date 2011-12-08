@@ -58,6 +58,7 @@ import org.encog.app.analyst.wizard.AnalystWizard;
 import org.encog.app.quant.QuantTask;
 import org.encog.bot.BotUtil;
 import org.encog.ml.MLMethod;
+import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.train.MLTrain;
 import org.encog.util.Format;
 import org.encog.util.logging.EncogLogging;
@@ -236,6 +237,11 @@ public class EncogAnalyst {
 			}
 
 		}
+		
+		if( this.method instanceof BayesianNetwork ) {
+			result++;
+		}
+		
 		return result;
 	}
 

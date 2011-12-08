@@ -373,4 +373,10 @@ public final class EngineArray {
 		}
 		
 	}
+
+	public static void fill(boolean[] a, boolean b) {
+		for(int i=0;i<a.length;i++) {
+			a[i] = b;
+		}
+	}
 }
