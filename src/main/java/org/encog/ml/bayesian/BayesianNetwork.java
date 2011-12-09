@@ -149,34 +149,11 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		StringBuilder result = new StringBuilder();
 		boolean first = true;
 
-		// display only those with no parents
-		for (BayesianEvent e : this.eventMap.values()) {
-			if (!e.hasParents()) {
-				if (!first)
-					result.append(" ");
-				first = false;
-				result.append(e.toFullString());
-			}
-		}
-
-		// display only those with parents and children
-		for (BayesianEvent e : this.eventMap.values()) {
-			if (e.hasParents() && e.hasChildren()) {
-				if (!first)
-					result.append(" ");
-				first = false;
-				result.append(e.toFullString());
-			}
-		}
-
-		// display only those with parents and no children
-		for (BayesianEvent e : this.eventMap.values()) {
-			if (e.hasParents() && !e.hasChildren()) {
-				if (!first)
-					result.append(" ");
-				first = false;
-				result.append(e.toFullString());
-			}
+		for (BayesianEvent e : this.events) {
+			if (!first)
+				result.append(" ");
+			first = false;
+			result.append(e.toFullString());
 		}
 
 		return result.toString();		

@@ -3,7 +3,6 @@ package org.encog.ml.bayesian.training.k2;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.Encog;
 import org.encog.mathutil.EncogMath;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
@@ -59,7 +58,7 @@ public class TrainK2 extends BasicTraining {
 			
 			if( args.length==0 ) {
 				x++;
-				if( Math.abs(d[eventIndex]-result)<Encog.DEFAULT_DOUBLE_EQUAL ) {
+				if( d[eventIndex]==result ) {
 					y++;
 				}
 			}
@@ -70,7 +69,7 @@ public class TrainK2 extends BasicTraining {
 				boolean givenMatch = true;
 				for(BayesianEvent givenEvent : event.getParents()) {
 					int givenIndex = this.network.getEventIndex(givenEvent);
-					if( Math.abs(args[i]-d[givenIndex])>Encog.DEFAULT_DOUBLE_EQUAL ) {
+					if( args[i]==d[givenIndex] ) {
 						givenMatch = false;
 						break;
 					}
