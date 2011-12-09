@@ -4,14 +4,14 @@ import java.util.Map;
 
 import org.encog.ml.MLMethod;
 import org.encog.ml.bayesian.BayesianNetwork;
-import org.encog.ml.bayesian.training.k2.TrainK2;
+import org.encog.ml.bayesian.training.TrainBayesian;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.factory.parse.ArchitectureParse;
 import org.encog.ml.train.MLTrain;
 import org.encog.util.ParamsHolder;
 
-public class K2Factory {
+public class TrainBayesianFactory {
 	/**
 	 * Create a K2 trainer.
 	 * 
@@ -29,7 +29,7 @@ public class K2Factory {
 		final ParamsHolder holder = new ParamsHolder(args);
 
 		final int maxParents = holder.getInt(
-				MLTrainFactory.PROPERTY_MAX_PARENTS, false, 5);
-		return new TrainK2((BayesianNetwork) method, training, maxParents);
+				MLTrainFactory.PROPERTY_MAX_PARENTS, false, 1);
+		return new TrainBayesian((BayesianNetwork) method, training, maxParents);
 	}
 }

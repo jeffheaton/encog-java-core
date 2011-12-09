@@ -1,11 +1,12 @@
 package org.encog.ml.bayesian;
 
-import org.encog.ml.bayesian.training.k2.TrainK2;
-import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataSet;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.encog.ml.bayesian.training.TrainBayesian;
+import org.encog.ml.bayesian.training.search.k2.SearchK2;
+import org.encog.ml.data.MLDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 
 public class TestK2 extends TestCase {
 	
@@ -31,7 +32,7 @@ public class TestK2 extends TestCase {
 		BayesianEvent x2 = network.createEvent("x2", labels);
 		BayesianEvent x3 = network.createEvent("x3", labels);
 		network.finalizeStructure();
-		TrainK2 train = new TrainK2(network,data,10);
+		TrainBayesian train = new TrainBayesian(network,data,10);
 		train.iteration();
 		Assert.assertTrue(x1.getParents().size()==0);
 		Assert.assertTrue(x2.getParents().size()==1);
@@ -51,7 +52,7 @@ public class TestK2 extends TestCase {
 		BayesianEvent x2 = network.createEvent("x2", labels);
 		BayesianEvent x3 = network.createEvent("x3", labels);
 		network.finalizeStructure();
-		TrainK2 train = new TrainK2(network,data,10);
+		TrainBayesian train = new TrainBayesian(network,data,10);
 		
 		double p = train.calculateG(network, x1, x1.getParents());
 		Assert.assertEquals(3.607503E-4, p, 0.0001);

@@ -54,7 +54,7 @@ public class MLTrainFactory {
 	/**
 	 * K2 training for Bayesian.
 	 */
-	public static final String TYPE_K2 = "k2";
+	public static final String TYPE_BAYESIAN = "bayesian";
 	
 	/**
 	 * String constant for RPROP training.

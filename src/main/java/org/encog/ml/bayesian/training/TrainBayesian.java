@@ -1,4 +1,4 @@
-package org.encog.ml.bayesian.training.k2;
+package org.encog.ml.bayesian.training;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +15,13 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.BasicTraining;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
-public class TrainK2 extends BasicTraining {
-
+public class TrainBayesian extends BasicTraining {
 	private final MLDataSet data;
 	private final BayesianNetwork network;
 	private final int maximumParents;
 	private double lastCalculatedP;
 
-	public TrainK2(BayesianNetwork theNetwork, MLDataSet theData, int theMaximumParents) {
+	public TrainBayesian(BayesianNetwork theNetwork, MLDataSet theData, int theMaximumParents) {
 		super(TrainingImplementationType.Iterative);
 		this.network = theNetwork;
 		this.data = theData;
@@ -69,7 +68,7 @@ public class TrainK2 extends BasicTraining {
 				boolean givenMatch = true;
 				for(BayesianEvent givenEvent : event.getParents()) {
 					int givenIndex = this.network.getEventIndex(givenEvent);
-					if( args[i]==d[givenIndex] ) {
+					if( args[i]!=d[givenIndex] ) {
 						givenMatch = false;
 						break;
 					}
@@ -256,7 +255,4 @@ public class TrainK2 extends BasicTraining {
 	public int getMaximumParents() {
 		return maximumParents;
 	}
-	
-	
 }
-
