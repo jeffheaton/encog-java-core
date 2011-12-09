@@ -30,6 +30,7 @@ import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLResettable;
+import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.folded.FoldedDataSet;
 import org.encog.ml.factory.MLTrainFactory;
@@ -108,6 +109,12 @@ public class CmdTrain extends Cmd {
 		final MLDataSet trainingSet = obtainTrainingSet();
 		MLMethod method = obtainMethod();
 		final MLTrain trainer = createTrainer(method, trainingSet);
+		
+		if( method instanceof BayesianNetwork ) {
+			final String query = getProp().getPropertyString(
+					ScriptProperties.ML_CONFIG_QUERY);
+			((BayesianNetwork)method).defineClassificationStructure(query);
+		}
 		
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Beginning training");
 

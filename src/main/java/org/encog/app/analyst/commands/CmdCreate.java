@@ -28,6 +28,7 @@ import java.io.File;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.ml.MLMethod;
+import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.data.buffer.EncogEGBFile;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.persist.EncogDirectoryPersistence;
@@ -91,6 +92,12 @@ public class CmdCreate extends Cmd {
 
 		final MLMethodFactory factory = new MLMethodFactory();
 		final MLMethod obj = factory.create(type, arch, input, ideal);
+		
+		if( obj instanceof BayesianNetwork ) {
+			final String query = getProp().getPropertyString(
+					ScriptProperties.ML_CONFIG_QUERY);
+			((BayesianNetwork)obj).defineClassificationStructure(query);
+		}
 
 		EncogDirectoryPersistence.saveObject(resourceFile, obj);
 
