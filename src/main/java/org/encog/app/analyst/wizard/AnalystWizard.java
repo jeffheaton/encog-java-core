@@ -284,6 +284,10 @@ public class AnalystWizard {
 	 * The format being used.
 	 */
 	private AnalystFileFormat format;
+	
+	private boolean naiveBayes = false;
+	
+	private int evidenceSegements = 3;
 
 	/**
 	 * Construct the analyst wizard.
@@ -513,7 +517,7 @@ public class AnalystWizard {
 	private void generateBayesian(final int inputColumns,
 			final int outputColumns) {
 		
-		int segment = 3;
+		int segment = this.evidenceSegements;
 		
 		StringBuilder a = new StringBuilder();
 		for( DataField field: this.analyst.getScript().getFields()) {
@@ -587,8 +591,15 @@ public class AnalystWizard {
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				"bayesian");
-		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_ARGUMENTS,
-				"maxParents=1,estimator=simple,search=k1,init=naive");
+		
+		if( this.naiveBayes ) {
+			this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_ARGUMENTS,
+				"maxParents=1,estimator=simple,search=none,init=naive");
+		} else {
+			this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_ARGUMENTS,
+				"maxParents=1,estimator=simple,search=k1,init=naive");	
+		}
+		
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_TRAIN_TARGET_ERROR, DEFAULT_TRAIN_ERROR);
 	}
@@ -1288,4 +1299,36 @@ public class AnalystWizard {
 	public void setMissing(HandleMissingValues missing) {
 		this.missing = missing;
 	}
+
+	/**
+	 * @return the naiveBayes
+	 */
+	public boolean isNaiveBayes() {
+		return naiveBayes;
+	}
+
+	/**
+	 * @param naiveBayes the naiveBayes to set
+	 */
+	public void setNaiveBayes(boolean naiveBayes) {
+		this.naiveBayes = naiveBayes;
+	}
+
+	/**
+	 * @return the evidenceSegements
+	 */
+	public int getEvidenceSegements() {
+		return evidenceSegements;
+	}
+
+	/**
+	 * @param evidenceSegements the evidenceSegements to set
+	 */
+	public void setEvidenceSegements(int evidenceSegements) {
+		this.evidenceSegements = evidenceSegements;
+	}
+
+	
+
 }
+
