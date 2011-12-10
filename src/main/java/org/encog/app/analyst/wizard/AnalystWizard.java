@@ -588,7 +588,7 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				"bayesian");
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_ARGUMENTS,
-				"maxParents=5");
+				"maxParents=1,estimator=simple,search=k1,init=naive");
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_TRAIN_TARGET_ERROR, DEFAULT_TRAIN_ERROR);
 	}

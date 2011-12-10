@@ -236,7 +236,7 @@ public class MLTrainFactory {
 	 */
 	public static final String TYPE_QPROP = "qprop";
 
-	public static final String PROPERTY_MAX_PARENTS = "maxParents";
+	public static final String PROPERTY_MAX_PARENTS = "MAXPARENTS";
 
 	
 	/**

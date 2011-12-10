@@ -3,8 +3,16 @@ package org.encog.ml.factory.train;
 import java.util.Map;
 
 import org.encog.ml.MLMethod;
+import org.encog.ml.bayesian.BayesianError;
 import org.encog.ml.bayesian.BayesianNetwork;
+import org.encog.ml.bayesian.training.BayesianInit;
 import org.encog.ml.bayesian.training.TrainBayesian;
+import org.encog.ml.bayesian.training.estimator.BayesEstimator;
+import org.encog.ml.bayesian.training.estimator.EstimatorNone;
+import org.encog.ml.bayesian.training.estimator.SimpleEstimator;
+import org.encog.ml.bayesian.training.search.SearchNone;
+import org.encog.ml.bayesian.training.search.k2.BayesSearch;
+import org.encog.ml.bayesian.training.search.k2.SearchK2;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.factory.parse.ArchitectureParse;
@@ -30,6 +38,43 @@ public class TrainBayesianFactory {
 
 		final int maxParents = holder.getInt(
 				MLTrainFactory.PROPERTY_MAX_PARENTS, false, 1);
-		return new TrainBayesian((BayesianNetwork) method, training, maxParents);
+		String searchStr = holder.getString("SEARCH", false, "k2");
+		String estimatorStr = holder.getString("ESTIMATOR", false, "simple");
+		String initStr = holder.getString("INIT", false, "naive");
+		
+		BayesSearch search;
+		BayesEstimator estimator;
+		BayesianInit init;
+		
+		if( searchStr.equalsIgnoreCase("k2")) {
+			search = new SearchK2();
+		} else if( searchStr.equalsIgnoreCase("none")) {
+			search = new SearchNone();
+		}
+		else {
+			throw new BayesianError("Invalid search type: " + searchStr);
+		}
+		
+		if( estimatorStr.equalsIgnoreCase("simple")) {
+			estimator = new SimpleEstimator();
+		} else if( estimatorStr.equalsIgnoreCase("none")) {
+			estimator = new EstimatorNone();
+		}
+		else {
+			throw new BayesianError("Invalid estimator type: " + estimatorStr);
+		}
+		
+		if( initStr.equalsIgnoreCase("simple")) {
+			init = BayesianInit.InitEmpty;
+		} else if( initStr.equalsIgnoreCase("naive")) {
+			init = BayesianInit.InitNaiveBayes;
+		} else if( initStr.equalsIgnoreCase("none")) {
+			init = BayesianInit.InitNoChange;
+		}
+		else {
+			throw new BayesianError("Invalid init type: " + initStr);
+		}
+		
+		return new TrainBayesian((BayesianNetwork) method, training, maxParents, init, search, estimator);
 	}
 }

@@ -4,6 +4,7 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.bayesian.BayesianEvent;
 import org.encog.ml.bayesian.BayesianNetwork;
+import org.encog.ml.bayesian.training.estimator.BayesEstimator;
 import org.encog.ml.bayesian.training.estimator.SimpleEstimator;
 import org.encog.ml.bayesian.training.search.k2.BayesSearch;
 import org.encog.ml.bayesian.training.search.k2.SearchK2;
@@ -16,20 +17,34 @@ public class TrainBayesian extends BasicTraining {
 	private final BayesianNetwork network;
 	private final int maximumParents;
 	private final BayesSearch search;
-	private final SimpleEstimator estimator;
+	private final BayesEstimator estimator;
 	private BayesianInit initNetwork = BayesianInit.InitNaiveBayes;
 
-	public TrainBayesian(BayesianNetwork theNetwork, MLDataSet theData, int theMaximumParents) {
+	public TrainBayesian(BayesianNetwork theNetwork, 
+			MLDataSet theData, 
+			int theMaximumParents) {
+		this(theNetwork, theData, theMaximumParents, BayesianInit.InitNaiveBayes, 
+				new SearchK2(), new SimpleEstimator());
+	}
+	
+	public TrainBayesian(BayesianNetwork theNetwork, 
+			MLDataSet theData, 
+			int theMaximumParents,
+			BayesianInit theInit,
+			BayesSearch theSearch,
+			BayesEstimator theEstimator) {
 		super(TrainingImplementationType.Iterative);
 		this.network = theNetwork;
 		this.data = theData;
 		this.maximumParents = theMaximumParents;		
 		
-		this.search = new SearchK2();
+		this.search = theSearch;
 		this.search.init(this, theNetwork, theData);
 		
-		this.estimator = new SimpleEstimator();
+		this.estimator = theEstimator;
 		this.estimator.init(this, theNetwork, theData);
+		
+		this.initNetwork = theInit;
 	}
 	
 	private void initNaiveBayes() {
