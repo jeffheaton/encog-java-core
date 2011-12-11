@@ -229,5 +229,8 @@ public abstract class BasicQuery implements BayesianQuery, Serializable {
 		return result.toString();
 	}
 
+	public BayesianQuery clone() {
+		return null;
+	}
 
 }

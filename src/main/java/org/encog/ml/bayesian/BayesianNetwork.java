@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.ml.BasicML;
 import org.encog.ml.MLClassification;
+import org.encog.ml.MLError;
 import org.encog.ml.MLResettable;
 import org.encog.ml.bayesian.parse.ParseProbability;
 import org.encog.ml.bayesian.parse.ParsedChoice;
@@ -19,10 +21,12 @@ import org.encog.ml.bayesian.query.BayesianQuery;
 import org.encog.ml.bayesian.query.enumerate.EnumerationQuery;
 import org.encog.ml.bayesian.query.sample.EventState;
 import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.MLDataSet;
 import org.encog.util.EngineArray;
 import org.encog.util.csv.CSVFormat;
 
-public class BayesianNetwork extends BasicML implements MLClassification, MLResettable, Serializable {
+public class BayesianNetwork extends BasicML implements MLClassification, MLResettable, Serializable, MLError {
 
 	public static final String[] CHOICES_TRUE_FALSE = { "true", "false" };
 
@@ -428,36 +432,39 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		ParsedProbability parsedProbability = parse.parse(line);
 		parsedProbability.defineRelationships(this);
 	}
-
-	public void defineQuery(String line) {
-		
+	
+	public double performQuery(String line) {
 		if( this.query==null ) {
 			throw new BayesianError("This Bayesian network does not have a query to define.");
 		}
 		
-		this.defineClassificationStructure(line);
-		
 		ParseProbability parse = new ParseProbability(this);
 		ParsedProbability parsedProbability = parse.parse(line);
 		
+		// create a temp query
+		BayesianQuery q = this.query.clone();
+		
 		// first, mark all events as hidden
-		this.query.reset();
+		q.reset();
 		
 		// deal with evidence (input)
 		for( ParsedEvent parsedEvent : parsedProbability.getGivenEvents() ) {
 			BayesianEvent event = this.requireEvent(parsedEvent.getLabel());
-			query.defineEventType(event, EventType.Evidence);
-			query.setEventValue(event, parsedEvent.resolveValue(event));
+			q.defineEventType(event, EventType.Evidence);
+			q.setEventValue(event, parsedEvent.resolveValue(event));
 		}
 		
 		// deal with outcome (output)
 		for( ParsedEvent parsedEvent : parsedProbability.getBaseEvents() ) {
 			BayesianEvent event = requireEvent(parsedEvent.getLabel());
-			query.defineEventType(event, EventType.Outcome);
-			query.setEventValue(event, parsedEvent.resolveValue(event));
+			q.defineEventType(event, EventType.Outcome);
+			q.setEventValue(event, parsedEvent.resolveValue(event));
 		}
 		
-		query.locateEventTypes();
+		q.locateEventTypes();
+		
+		q.execute();
+		return q.getProbability();
 	}
 
 	@Override
@@ -589,5 +596,22 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		}
 		
 		return this.events.get(this.classificationTarget);
+	}
+	
+	@Override
+	public double calculateError(final MLDataSet data) {
+		getClassificationTarget();
+		int correctCount = 0;
+		int totalCount = 0;
+		
+		for(MLDataPair pair: data) {
+			int c = this.classify(pair.getInput());
+			totalCount++;
+			if( c==pair.getInput().getData(this.classificationTarget)) {
+				correctCount++;
+			}
+		}
+		
+		return (double)correctCount/(double)totalCount;
 	}
 }

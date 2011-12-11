@@ -1,6 +1,7 @@
 org.encog.neural.cpn.CPN
 org.encog.neural.neat.NEATPopulation
 org.encog.ml.genetic.species.BasicSpecies
+org.encog.ml.bayesian.BayesianNetwork
 org.encog.neural.rbf.RBFNetwork
 org.encog.ml.svm.SVM
 org.encog.neural.neat.training.NEATLinkGene

@@ -18,7 +18,7 @@ import org.encog.ml.bayesian.query.sample.EventState;
  * the Bayesian network to be queried in nearly any way.  It is also possible to
  * omit missing evidence to handle missing data.
  */
-public interface BayesianQuery {
+public interface BayesianQuery extends Cloneable {
 
 	/**
 	 * @return The Bayesian network that we are using this query for.
@@ -106,4 +106,6 @@ public interface BayesianQuery {
 	 * Called to locate the evidence and outcome events.
 	 */
 	public void locateEventTypes();
+	
+	BayesianQuery clone();
 }

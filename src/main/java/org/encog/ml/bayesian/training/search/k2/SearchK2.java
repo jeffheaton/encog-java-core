@@ -51,20 +51,20 @@ public class SearchK2 implements BayesSearch {
 	private BayesianEvent findZ(BayesianEvent event, int n, double old) {
 		BayesianEvent result = null;
 		double maxChildP = Double.NEGATIVE_INFINITY;
-		System.out.println("Finding parent for: " + event.toString());
+		//System.out.println("Finding parent for: " + event.toString());
 		for(int i=0;i<n;i++) {
 			BayesianEvent trialParent = this.nodeOrdering.get(i);
 			List<BayesianEvent> parents = new ArrayList<BayesianEvent>();
 			parents.addAll(event.getParents());
 			parents.add(trialParent);
-			System.out.println("Calculating adding " + trialParent.toString() + " to " + event.toString());
+			//System.out.println("Calculating adding " + trialParent.toString() + " to " + event.toString());
 			this.lastCalculatedP = this.calculateG(network, event, parents);
-			System.out.println("lastP:" + this.lastCalculatedP);
-			System.out.println("old:" + old);
+			//System.out.println("lastP:" + this.lastCalculatedP);
+			//System.out.println("old:" + old);
 			if( this.lastCalculatedP>old && this.lastCalculatedP>maxChildP ) {
 				result = trialParent;
 				maxChildP = this.lastCalculatedP;
-				System.out.println("Current best is: " + result.toString());
+				//System.out.println("Current best is: " + result.toString());
 			}			
 		}
 		
@@ -182,9 +182,9 @@ public class SearchK2 implements BayesSearch {
 			while(  event.getParents().size()<this.train.getMaximumParents() ) {
 				BayesianEvent z = findZ(event,i,oldP);
 				if(z!=null) {
-					System.out.println("Before: " + this.network.toString());
+					//System.out.println("Before: " + this.network.toString());
 					this.network.createDependancy(z, event);
-					System.out.println("After: " + this.network.toString());
+					//System.out.println("After: " + this.network.toString());
 					oldP = this.lastCalculatedP;
 				} else {
 					break;

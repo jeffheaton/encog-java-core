@@ -177,6 +177,10 @@ public class SamplingQuery extends BasicQuery implements Serializable {
 		}
 		return result.toString();
 	}
+	
+	public SamplingQuery clone() {
+		return new SamplingQuery(this.getNetwork());
+	}
 
 	/**
 	 * {@inheritDoc}
