@@ -3,6 +3,7 @@ package org.encog.ml.bayesian;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.encog.ml.bayesian.training.BayesianInit;
 import org.encog.ml.bayesian.training.TrainBayesian;
 import org.encog.ml.bayesian.training.search.k2.SearchK2;
 import org.encog.ml.data.MLDataSet;
@@ -33,6 +34,7 @@ public class TestK2 extends TestCase {
 		BayesianEvent x3 = network.createEvent("x3", labels);
 		network.finalizeStructure();
 		TrainBayesian train = new TrainBayesian(network,data,10);
+		train.setInitNetwork(BayesianInit.InitEmpty);
 		train.iteration();
 		Assert.assertTrue(x1.getParents().size()==0);
 		Assert.assertTrue(x2.getParents().size()==1);

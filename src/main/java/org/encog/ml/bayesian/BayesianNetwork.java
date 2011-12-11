@@ -242,7 +242,17 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 	}
 
 	public String toString() {
-		return getContents();
+		StringBuilder result = new StringBuilder();
+		boolean first = true;
+
+		for (BayesianEvent e : this.events) {
+			if (!first)
+				result.append(" ");
+			first = false;
+			result.append(e.toString());
+		}
+
+		return result.toString();
 	}
 
 	public int calculateParameterCount() {
@@ -424,6 +434,8 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		if( this.query==null ) {
 			throw new BayesianError("This Bayesian network does not have a query to define.");
 		}
+		
+		this.defineClassificationStructure(line);
 		
 		ParseProbability parse = new ParseProbability(this);
 		ParsedProbability parsedProbability = parse.parse(line);

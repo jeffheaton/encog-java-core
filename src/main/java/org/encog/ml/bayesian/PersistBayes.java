@@ -105,7 +105,7 @@ public class PersistBayes implements EncogPersistor {
 				query = new SamplingQuery(result);
 			}
 
-			if (query != null) {
+			if (query != null && queryStr.length()>0) {
 				result.setQuery(query);
 				result.defineQuery(queryStr);
 			}

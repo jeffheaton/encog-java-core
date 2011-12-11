@@ -197,6 +197,10 @@ public abstract class BasicQuery implements BayesianQuery, Serializable {
 	 * {@inheritDoc}
 	 */
 	public String getProblem() {
+		
+		if( this.outcomeEvents.size()==0 )
+			return "";
+		
 		StringBuilder result = new StringBuilder();
 		result.append("P(");
 		boolean first = true;

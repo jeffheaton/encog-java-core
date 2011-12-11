@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.mathutil.EncogMath;
-import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.bayesian.BayesianEvent;
 import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.bayesian.query.enumerate.EnumerationQuery;
@@ -18,27 +17,54 @@ public class SearchK2 implements BayesSearch {
 	private BayesianNetwork network;
 	private TrainBayesian train;
 	private double lastCalculatedP;
+	private final List<BayesianEvent> nodeOrdering = new ArrayList<BayesianEvent>();
 	
 	@Override
 	public void init(TrainBayesian theTrainer,BayesianNetwork theNetwork, MLDataSet theData) {
 		this.network = theNetwork;
 		this.data = theData;
 		this.train = theTrainer;
+		orderNodes();
+	}
+	
+	/**
+	 * Basically the goal here is to get the classification target, if it exists,
+	 * to go first. This will greatly enhance K2's effectiveness.
+	 */
+	private void orderNodes() {
+		this.nodeOrdering.clear();
+		
+		// is there a classification target?
+		if( this.network.getClassificationTarget()!=-1 ) {
+			this.nodeOrdering.add(this.network.getClassificationTargetEvent());
+		}
+		
+		
+		// now add the others
+		for(BayesianEvent event: this.network.getEvents()) {
+			if( !this.nodeOrdering.contains(event) ) {
+				this.nodeOrdering.add(event);
+			}
+		}
 	}
 	
 	private BayesianEvent findZ(BayesianEvent event, int n, double old) {
 		BayesianEvent result = null;
 		double maxChildP = Double.NEGATIVE_INFINITY;
-		
+		System.out.println("Finding parent for: " + event.toString());
 		for(int i=0;i<n;i++) {
-			BayesianEvent trialChild = this.network.getEvents().get(i);
+			BayesianEvent trialParent = this.nodeOrdering.get(i);
 			List<BayesianEvent> parents = new ArrayList<BayesianEvent>();
 			parents.addAll(event.getParents());
-			parents.add(trialChild);
+			parents.add(trialParent);
+			System.out.println("Calculating adding " + trialParent.toString() + " to " + event.toString());
 			this.lastCalculatedP = this.calculateG(network, event, parents);
+			System.out.println("lastP:" + this.lastCalculatedP);
+			System.out.println("old:" + old);
 			if( this.lastCalculatedP>old && this.lastCalculatedP>maxChildP ) {
-				result = trialChild;
+				result = trialParent;
 				maxChildP = this.lastCalculatedP;
+				System.out.println("Current best is: " + result.toString());
 			}			
 		}
 		
@@ -147,14 +173,18 @@ public class SearchK2 implements BayesSearch {
 	
 	@Override
 	public void iteration() {
+		orderNodes();
+		
 		for(int i = 0; i<this.data.getInputSize();i++) {
-			BayesianEvent event = this.network.getEvents().get(i);
+			BayesianEvent event = this.nodeOrdering.get(i);
 			double oldP = this.calculateG(network, event, event.getParents());
 
 			while(  event.getParents().size()<this.train.getMaximumParents() ) {
 				BayesianEvent z = findZ(event,i,oldP);
 				if(z!=null) {
+					System.out.println("Before: " + this.network.toString());
 					this.network.createDependancy(z, event);
+					System.out.println("After: " + this.network.toString());
 					oldP = this.lastCalculatedP;
 				} else {
 					break;
