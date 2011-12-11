@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.ml.BasicML;
 import org.encog.ml.MLClassification;
 import org.encog.ml.MLError;
@@ -613,5 +612,39 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		}
 		
 		return (double)correctCount/(double)totalCount;
+	}
+
+	public String getClassificationStructure() {
+		StringBuilder result = new StringBuilder();
+		
+		result.append("P(");
+		boolean first = true;
+		
+		for(int i=0;i<this.getEvents().size();i++) {
+			BayesianEvent event = this.events.get(i);			
+			if( this.query.getEventState(event).getEventType()==EventType.Outcome ) {
+				if(!first) {
+					result.append(",");
+				}
+				result.append(event.getLabel());
+				first = false;
+			}
+		}
+		
+		result.append("|");
+		
+		for(int i=0;i<this.getEvents().size();i++) {
+			BayesianEvent event = this.events.get(i);			
+			if( this.query.getEventState(event).getEventType()==EventType.Evidence ) {
+				if(!first) {
+					result.append(",");
+				}
+				result.append(event.getLabel());
+				first = false;
+			}
+		}
+		
+		result.append(")");
+		return result.toString();
 	}
 }

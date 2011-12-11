@@ -124,11 +124,8 @@ public class PersistBayes implements EncogPersistor {
 		out.addSection("BAYES-NETWORK");
 		out.addSubSection("BAYES-PARAM");
 		String queryType = "";
-		String queryStr = "";
-		if (b.getQuery() != null) {
-			queryType = b.getQuery().getClass().getSimpleName();
-			queryStr = b.getQuery().getProblem();
-		}
+		String queryStr = b.getClassificationStructure();
+
 		out.writeProperty("queryType", queryType);
 		out.writeProperty("query", queryStr);
 		out.writeProperty("contents", b.getContents());
