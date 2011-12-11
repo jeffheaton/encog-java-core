@@ -597,7 +597,7 @@ public class AnalystWizard {
 				"maxParents=1,estimator=simple,search=none,init=naive");
 		} else {
 			this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_ARGUMENTS,
-				"maxParents=1,estimator=simple,search=k1,init=naive");	
+				"maxParents=1,estimator=simple,search=k2,init=naive");	
 		}
 		
 		this.script.getProperties().setProperty(
