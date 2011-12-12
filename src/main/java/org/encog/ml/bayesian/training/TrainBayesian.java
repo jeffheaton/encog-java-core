@@ -66,6 +66,9 @@ public class TrainBayesian extends BasicTraining {
 
 	@Override
 	public void iteration() {
+		
+		String holdQuery = this.network.getClassificationStructure();
+		
 		switch(this.initNetwork) {
 			case InitEmpty:
 				this.network.removeAllRelations();
@@ -82,6 +85,8 @@ public class TrainBayesian extends BasicTraining {
 		this.network.finalizeStructure();
 		this.network.reset();
 		this.estimator.iteration();
+		
+		this.network.defineClassificationStructure(holdQuery);
 	}
 	
 

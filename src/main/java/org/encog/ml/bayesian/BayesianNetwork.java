@@ -585,7 +585,7 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 			this.query.defineEventType(given, EventType.Evidence);
 		}
 		
-		this.query.finalizeStructure();
+		this.query.locateEventTypes();
 		
 	}
 
@@ -621,8 +621,9 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		boolean first = true;
 		
 		for(int i=0;i<this.getEvents().size();i++) {
-			BayesianEvent event = this.events.get(i);			
-			if( this.query.getEventState(event).getEventType()==EventType.Outcome ) {
+			BayesianEvent event = this.events.get(i);	
+			EventState state = this.query.getEventState(event);
+			if( state.getEventType()==EventType.Outcome ) {
 				if(!first) {
 					result.append(",");
 				}
@@ -633,6 +634,7 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		
 		result.append("|");
 		
+		first = true;
 		for(int i=0;i<this.getEvents().size();i++) {
 			BayesianEvent event = this.events.get(i);			
 			if( this.query.getEventState(event).getEventType()==EventType.Evidence ) {
