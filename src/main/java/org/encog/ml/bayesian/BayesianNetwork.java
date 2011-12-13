@@ -600,18 +600,18 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 	@Override
 	public double calculateError(final MLDataSet data) {
 		getClassificationTarget();
-		int correctCount = 0;
+		int badCount = 0;
 		int totalCount = 0;
 		
 		for(MLDataPair pair: data) {
 			int c = this.classify(pair.getInput());
 			totalCount++;
-			if( c==pair.getInput().getData(this.classificationTarget)) {
-				correctCount++;
+			if( c!=pair.getInput().getData(this.classificationTarget)) {
+				badCount++;
 			}
 		}
 		
-		return (double)correctCount/(double)totalCount;
+		return (double)badCount/(double)totalCount;
 	}
 
 	public String getClassificationStructure() {

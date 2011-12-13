@@ -10,15 +10,30 @@ import org.encog.ml.bayesian.training.search.k2.BayesSearch;
 import org.encog.ml.bayesian.training.search.k2.SearchK2;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.BasicTraining;
+import org.encog.ml.train.strategy.Strategy;
+import org.encog.ml.train.strategy.end.EndTrainingStrategy;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
 public class TrainBayesian extends BasicTraining {
+	
+	private enum Phase {
+		Init,
+		Search,
+		SearchDone,
+		Probability,
+		Finish,
+		Terminated
+	};
+	
+	private Phase p = Phase.Init;
+	
 	private final MLDataSet data;
 	private final BayesianNetwork network;
 	private final int maximumParents;
 	private final BayesSearch search;
 	private final BayesEstimator estimator;
 	private BayesianInit initNetwork = BayesianInit.InitNaiveBayes;
+	private String holdQuery;
 
 	public TrainBayesian(BayesianNetwork theNetwork, 
 			MLDataSet theData, 
@@ -45,6 +60,7 @@ public class TrainBayesian extends BasicTraining {
 		this.estimator.init(this, theNetwork, theData);
 		
 		this.initNetwork = theInit;
+		setError(1.0);
 	}
 	
 	private void initNaiveBayes() {
@@ -62,12 +78,9 @@ public class TrainBayesian extends BasicTraining {
 		}
 		
 	}
-		
-
-	@Override
-	public void iteration() {
-		
-		String holdQuery = this.network.getClassificationStructure();
+	
+	private void iterationInit() {
+		this.holdQuery = this.network.getClassificationStructure();
 		
 		switch(this.initNetwork) {
 			case InitEmpty:
@@ -79,14 +92,64 @@ public class TrainBayesian extends BasicTraining {
 				initNaiveBayes();
 				break;
 		}
-		
-		
-		this.search.iteration();
+		this.p = Phase.Search;
+	}
+	
+	private void iterationSearch() {
+		if( !this.search.iteration() ) {
+			this.p = Phase.SearchDone;
+		}
+	}
+	
+	private void iterationSearchDone() {
 		this.network.finalizeStructure();
 		this.network.reset();
+		this.p = Phase.Probability;
+	}
+	
+	private void iterationProbability() {		
 		this.estimator.iteration();
+		this.p = Phase.Finish;
+	}
+	
+	private void iterationFinish() {
+		this.network.defineClassificationStructure(this.holdQuery);		
+		setError(this.network.calculateError(this.data));
+		this.p = Phase.Terminated;
+	}
+	
+	/**
+	 * @return True if training can progress no further.
+	 */
+	@Override
+	public boolean isTrainingDone() {
+		if( super.isTrainingDone() )
+			return true;
+		else
+			return this.p==Phase.Terminated;		
+	}
 		
-		this.network.defineClassificationStructure(holdQuery);
+
+	@Override
+	public void iteration() {
+		switch(p) {
+			case Init:
+				iterationInit();
+				break;
+			case Search:
+				iterationSearch();
+				break;
+			case SearchDone:
+				iterationSearchDone();
+				break;
+			case Probability:
+				iterationProbability();
+				break;
+			case Finish:
+				iterationFinish();
+				break;
+		}
+
 	}
 	
 

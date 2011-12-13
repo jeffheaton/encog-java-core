@@ -18,6 +18,7 @@ public class SearchK2 implements BayesSearch {
 	private TrainBayesian train;
 	private double lastCalculatedP;
 	private final List<BayesianEvent> nodeOrdering = new ArrayList<BayesianEvent>();
+	private int index = -1;
 	
 	@Override
 	public void init(TrainBayesian theTrainer,BayesianNetwork theNetwork, MLDataSet theData) {
@@ -25,6 +26,7 @@ public class SearchK2 implements BayesSearch {
 		this.data = theData;
 		this.train = theTrainer;
 		orderNodes();
+		this.index = -1;
 	}
 	
 	/**
@@ -172,25 +174,27 @@ public class SearchK2 implements BayesSearch {
 
 	
 	@Override
-	public void iteration() {
-		orderNodes();
+	public boolean iteration() {
 		
-		for(int i = 0; i<this.data.getInputSize();i++) {
-			BayesianEvent event = this.nodeOrdering.get(i);
+		if( index==-1 ) {
+			orderNodes();	
+		} else {
+			BayesianEvent event = this.nodeOrdering.get(index);
 			double oldP = this.calculateG(network, event, event.getParents());
 
 			while(  event.getParents().size()<this.train.getMaximumParents() ) {
-				BayesianEvent z = findZ(event,i,oldP);
+				BayesianEvent z = findZ(event,index,oldP);
 				if(z!=null) {
-					//System.out.println("Before: " + this.network.toString());
 					this.network.createDependancy(z, event);
-					//System.out.println("After: " + this.network.toString());
 					oldP = this.lastCalculatedP;
 				} else {
 					break;
 				}
 			}
 		}
+		
+		index++;
+		return( index<this.data.getInputSize());
 	}
 	
 }

@@ -15,8 +15,8 @@ public class SearchNone implements BayesSearch {
 	}
 
 	@Override
-	public void iteration() {
-		// TODO Auto-generated method stub
+	public boolean iteration() {
+		return false;
 		
 	}
 
