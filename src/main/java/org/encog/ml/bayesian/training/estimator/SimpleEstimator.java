@@ -12,12 +12,14 @@ public class SimpleEstimator implements BayesEstimator {
 	private MLDataSet data;
 	private BayesianNetwork network;
 	private TrainBayesian trainer;
+	private int index;
 	
 	@Override
 	public void init(TrainBayesian theTrainer,BayesianNetwork theNetwork, MLDataSet theData) {
 		this.network = theNetwork;
 		this.data = theData;
 		this.trainer = theTrainer;
+		this.index = 0;
 	} 
 	
 	
@@ -64,11 +66,13 @@ public class SimpleEstimator implements BayesEstimator {
 	}
 	
 	@Override
-	public void iteration() {
-		for(BayesianEvent event: this.network.getEvents() ) {
-			for(TableLine line : event.getTable().getLines() ) {
-				line.setProbability(calculateProbability(event,line.getResult(),line.getArguments()));
-			}
+	public boolean iteration() {
+		BayesianEvent event = this.network.getEvents().get(this.index);
+		for(TableLine line : event.getTable().getLines() ) {
+			line.setProbability(calculateProbability(event,line.getResult(),line.getArguments()));
 		}
+		index++;
+		
+		return index<this.network.getEvents().size();
 	}
 }

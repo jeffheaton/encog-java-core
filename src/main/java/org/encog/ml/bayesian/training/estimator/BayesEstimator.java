@@ -6,5 +6,5 @@ import org.encog.ml.data.MLDataSet;
 
 public interface BayesEstimator {
 	void init(TrainBayesian theTrainer ,BayesianNetwork theNetwork, MLDataSet theData);	
-	void iteration();
+	boolean iteration();
 }

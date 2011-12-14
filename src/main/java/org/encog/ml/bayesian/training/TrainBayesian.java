@@ -108,8 +108,9 @@ public class TrainBayesian extends BasicTraining {
 	}
 	
 	private void iterationProbability() {		
-		this.estimator.iteration();
-		this.p = Phase.Finish;
+		if(!this.estimator.iteration()) {
+			this.p = Phase.Finish;
+		}
 	}
 	
 	private void iterationFinish() {

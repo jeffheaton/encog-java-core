@@ -14,9 +14,8 @@ public class EstimatorNone implements BayesEstimator {
 	}
 
 	@Override
-	public void iteration() {
-		// TODO Auto-generated method stub
-		
+	public boolean iteration() {
+		return false;
 	}
 
 }
