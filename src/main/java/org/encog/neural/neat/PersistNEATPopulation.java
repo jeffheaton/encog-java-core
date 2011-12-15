@@ -41,6 +41,7 @@ import org.encog.neural.neat.training.NEATInnovationList;
 import org.encog.neural.neat.training.NEATInnovationType;
 import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.NEATNeuronGene;
+import org.encog.persist.EncogFileLine;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
@@ -70,7 +71,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 		while ((section = in.readNextSection()) != null) {
 			if (section.getSectionName().equals("NEAT-POPULATION")
 					&& section.getSubSectionName().equals("INNOVATIONS")) {
-				for (String line : section.getLines()) {
+				for (EncogFileLine line : section.getLines()) {
 					List<String> cols = EncogFileSection.splitColumns(line);
 					NEATInnovation innovation = new NEATInnovation();
 					innovation.setInnovationID(Integer.parseInt(cols.get(0)));
@@ -86,8 +87,8 @@ public class PersistNEATPopulation implements EncogPersistor {
 				}
 			} else if (section.getSectionName().equals("NEAT-POPULATION")
 					&& section.getSubSectionName().equals("SPECIES")) {
-				for (String line : section.getLines()) {
-					String[] cols = line.split(",");
+				for (EncogFileLine line : section.getLines()) {
+					String[] cols = line.toString().split(",");
 					BasicSpecies species = new BasicSpecies();
 
 					species.setSpeciesID(Integer.parseInt(cols[0]));
@@ -105,7 +106,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 			} else if (section.getSectionName().equals("NEAT-POPULATION")
 					&& section.getSubSectionName().equals("GENOMES")) {
 				NEATGenome lastGenome = null;
-				for (String line : section.getLines()) {
+				for (EncogFileLine line : section.getLines()) {
 					List<String> cols = EncogFileSection.splitColumns(line);
 					if (cols.get(0).equalsIgnoreCase("g") ) {
 						lastGenome = new NEATGenome();
@@ -154,7 +155,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 				}
 			} else if (section.getSectionName().equals("NEAT-POPULATION")
 					&& section.getSubSectionName().equals("CONFIG")) {
-				Map<String, String> params = section.parseParams();
+				Map<String, EncogFileLine> params = section.parseParams();
 				
 				result.setNeatActivationFunction(EncogFileSection.parseActivationFunction(params,NEATPopulation.PROPERTY_NEAT_ACTIVATION));
 				result.setActivationCycles(EncogFileSection.parseInt(params, PersistConst.ACTIVATION_CYCLES));

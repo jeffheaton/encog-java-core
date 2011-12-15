@@ -33,6 +33,7 @@ import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.encog.persist.EncogFileLine;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
@@ -142,7 +143,7 @@ public class PersistBasicPNN implements EncogPersistor {
 		final EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;
 		final BasicMLDataSet samples = new BasicMLDataSet();
-		Map<String, String> networkParams = null;
+		Map<String, EncogFileLine> networkParams = null;
 		PNNKernelType kernel = null;
 		PNNOutputMode outmodel = null;
 		int inputCount = 0;
@@ -157,15 +158,15 @@ public class PersistBasicPNN implements EncogPersistor {
 			}
 			if (section.getSectionName().equals("PNN")
 					&& section.getSubSectionName().equals("NETWORK")) {
-				final Map<String, String> params = section.parseParams();
+				final Map<String, EncogFileLine> params = section.parseParams();
 				inputCount = EncogFileSection.parseInt(params,
 						PersistConst.INPUT_COUNT);
 				outputCount = EncogFileSection.parseInt(params,
 						PersistConst.OUTPUT_COUNT);
 				kernel = PersistBasicPNN.stringToKernel(params
-						.get(PersistConst.KERNEL));
+						.get(PersistConst.KERNEL).toString());
 				outmodel = PersistBasicPNN.stringToOutputMode(params
-						.get(PersistBasicPNN.PROPERTY_outputMode));
+						.get(PersistBasicPNN.PROPERTY_outputMode).toString());
 				error = EncogFileSection
 						.parseDouble(params, PersistConst.ERROR);
 				sigma = EncogFileSection.parseDoubleArray(params,
@@ -173,7 +174,7 @@ public class PersistBasicPNN implements EncogPersistor {
 			}
 			if (section.getSectionName().equals("PNN")
 					&& section.getSubSectionName().equals("SAMPLES")) {
-				for (final String line : section.getLines()) {
+				for (final EncogFileLine line : section.getLines()) {
 					final List<String> cols = EncogFileSection
 							.splitColumns(line);
 					int index = 0;
@@ -197,7 +198,7 @@ public class PersistBasicPNN implements EncogPersistor {
 		final BasicPNN result = new BasicPNN(kernel, outmodel, inputCount,
 				outputCount);
 		if (networkParams != null) {
-			result.getProperties().putAll(networkParams);
+			result.getProperties().putAll(EncogFileSection.toPropertyMap(networkParams));
 		}
 		result.setSamples(samples);
 		result.setError(error);

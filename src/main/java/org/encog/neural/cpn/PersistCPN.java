@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.util.Map;
 
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.persist.EncogFileLine;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
@@ -75,7 +76,7 @@ public class PersistCPN implements EncogPersistor {
 	 */
 	@Override
 	public final Object read(final InputStream is) {
-		Map<String, String> networkParams = null;
+		Map<String, EncogFileLine> networkParams = null;
 		final EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;
 		int inputCount = 0;
@@ -92,7 +93,7 @@ public class PersistCPN implements EncogPersistor {
 			}
 			if (section.getSectionName().equals("CPN")
 					&& section.getSubSectionName().equals("NETWORK")) {
-				final Map<String, String> params = section.parseParams();
+				final Map<String, EncogFileLine> params = section.parseParams();
 
 				inputCount = EncogFileSection.parseInt(params,
 						PersistConst.INPUT_COUNT);
@@ -111,7 +112,7 @@ public class PersistCPN implements EncogPersistor {
 
 		final CPN result = new CPN(inputCount, instarCount, outputCount,
 				winnerCount);
-		result.getProperties().putAll(networkParams);
+		result.getProperties().putAll(EncogFileSection.toPropertyMap(networkParams));
 		result.getWeightsInputToInstar().set(m1);
 		result.getWeightsInstarToOutstar().set(m2);
 		return result;

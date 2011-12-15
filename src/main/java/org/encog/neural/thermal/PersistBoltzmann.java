@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
+import org.encog.persist.EncogFileLine;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
@@ -69,21 +70,21 @@ public class PersistBoltzmann implements EncogPersistor {
 		while ((section = in.readNextSection()) != null) {
 			if (section.getSectionName().equals("BOLTZMANN")
 					&& section.getSubSectionName().equals("PARAMS")) {
-				final Map<String, String> params = section.parseParams();
-				result.getProperties().putAll(params);
+				final Map<String, EncogFileLine> params = section.parseParams();
+				result.getProperties().putAll(EncogFileSection.toPropertyMap(params));
 			}
 			if (section.getSectionName().equals("BOLTZMANN")
 					&& section.getSubSectionName().equals("NETWORK")) {
-				final Map<String, String> params = section.parseParams();
+				final Map<String, EncogFileLine> params = section.parseParams();
 				result.setWeights(NumberList.fromList(CSVFormat.EG_FORMAT,
-						params.get(PersistConst.WEIGHTS)));
+						params.get(PersistConst.WEIGHTS).toString()));
 				result.setCurrentState(NumberList.fromList(CSVFormat.EG_FORMAT,
-						params.get(PersistConst.OUTPUT)));
+						params.get(PersistConst.OUTPUT).toString()));
 				result.setNeuronCount(EncogFileSection.parseInt(params,
 						PersistConst.NEURON_COUNT));
 
 				result.setThreshold(NumberList.fromList(CSVFormat.EG_FORMAT,
-						params.get(PersistConst.THRESHOLDS)));
+						params.get(PersistConst.THRESHOLDS).toString()));
 				result.setAnnealCycles(EncogFileSection.parseInt(params,
 						BoltzmannMachine.ANNEAL_CYCLES));
 				result.setRunCycles(EncogFileSection.parseInt(params,

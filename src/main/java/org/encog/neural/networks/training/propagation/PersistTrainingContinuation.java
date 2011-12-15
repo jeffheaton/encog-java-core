@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
+import org.encog.persist.EncogFileLine;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
@@ -66,10 +67,10 @@ public class PersistTrainingContinuation implements EncogPersistor {
 		while ((section = in.readNextSection()) != null) {
 			if (section.getSectionName().equals("CONT")
 					&& section.getSubSectionName().equals("PARAMS")) {
-				final Map<String, String> params = section.parseParams();
+				final Map<String, EncogFileLine> params = section.parseParams();
 				for (final String key : params.keySet()) {
 					if (key.equalsIgnoreCase("type")) {
-						result.setTrainingType(params.get(key));
+						result.setTrainingType(params.get(key).toString());
 					} else {
 						final double[] list = EncogFileSection
 								.parseDoubleArray(params, key);

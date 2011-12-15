@@ -49,8 +49,8 @@ public class EncogFileSection {
 	 * @return The parsed activation function.
 	 */
 	public static ActivationFunction parseActivationFunction(
-			final Map<String, String> params, final String name) {
-		String value = null;
+			final Map<String, EncogFileLine> params, final String name) {
+		EncogFileLine value = null;
 		try {
 			value = params.get(name);
 			if (value == null) {
@@ -58,7 +58,7 @@ public class EncogFileSection {
 			}
 
 			ActivationFunction af = null;
-			final String[] cols = value.split("\\|");
+			final String[] cols = value.toString().split("\\|");
 
 			final String afName = "org.encog.engine.network.activation." + cols[0];
 			try {
@@ -89,16 +89,16 @@ public class EncogFileSection {
 	 * @param name The name to parse.
 	 * @return The parsed boolean value.
 	 */
-	public static boolean parseBoolean(final Map<String, String> params,
+	public static boolean parseBoolean(final Map<String, EncogFileLine> params,
 			final String name) {
-		String value = null;
+		EncogFileLine value = null;
 		try {
 			value = params.get(name);
 			if (value == null) {
 				throw new PersistError("Missing property: " + name);
 			}
 
-			return value.trim().toLowerCase().charAt(0) == 't';
+			return value.toString().trim().toLowerCase().charAt(0) == 't';
 
 		} catch (final NumberFormatException ex) {
 			throw new PersistError("Field: " + name + ", "
@@ -112,16 +112,16 @@ public class EncogFileSection {
 	 * @param name The name to parse.
 	 * @return The parsed double value.
 	 */
-	public static double parseDouble(final Map<String, String> params,
+	public static double parseDouble(final Map<String, EncogFileLine> params,
 			final String name) {
-		String value = null;
+		EncogFileLine value = null;
 		try {
 			value = params.get(name);
 			if (value == null) {
 				throw new PersistError("Missing property: " + name);
 			}
 
-			return CSVFormat.EG_FORMAT.parse(value);
+			return CSVFormat.EG_FORMAT.parse(value.toString());
 
 		} catch (final NumberFormatException ex) {
 			throw new PersistError("Field: " + name + ", "
@@ -135,16 +135,16 @@ public class EncogFileSection {
 	 * @param name The name to parse.
 	 * @return The parsed double array value.
 	 */
-	public static double[] parseDoubleArray(final Map<String, String> params,
+	public static double[] parseDoubleArray(final Map<String, EncogFileLine> params,
 			final String name) {
-		String value = null;
+		EncogFileLine value = null;
 		try {
 			value = params.get(name);
 			if (value == null) {
 				throw new PersistError("Missing property: " + name);
 			}
 
-			return NumberList.fromList(CSVFormat.EG_FORMAT, value);
+			return NumberList.fromList(CSVFormat.EG_FORMAT, value.toString());
 
 		} catch (final NumberFormatException ex) {
 			throw new PersistError("Field: " + name + ", "
@@ -158,16 +158,16 @@ public class EncogFileSection {
 	 * @param name The name to parse.
 	 * @return The parsed int value.
 	 */
-	public static int parseInt(final Map<String, String> params,
+	public static int parseInt(final Map<String, EncogFileLine> params,
 			final String name) {
-		String value = null;
+		EncogFileLine value = null;
 		try {
 			value = params.get(name);
 			if (value == null) {
 				throw new PersistError("Missing property: " + name);
 			}
 
-			return Integer.parseInt(value);
+			return Integer.parseInt(value.toString());
 
 		} catch (final NumberFormatException ex) {
 			throw new PersistError("Field: " + name + ", "
@@ -181,16 +181,16 @@ public class EncogFileSection {
 	 * @param name The name to parse.
 	 * @return The parsed int array value.
 	 */
-	public static int[] parseIntArray(final Map<String, String> params,
+	public static int[] parseIntArray(final Map<String, EncogFileLine> params,
 			final String name) {
-		String value = null;
+		EncogFileLine value = null;
 		try {
 			value = params.get(name);
 			if (value == null) {
 				throw new PersistError("Missing property: " + name);
 			}
 
-			return NumberList.fromListInt(CSVFormat.EG_FORMAT, value);
+			return NumberList.fromListInt(CSVFormat.EG_FORMAT, value.toString());
 
 		} catch (final NumberFormatException ex) {
 			throw new PersistError("Field: " + name + ", "
@@ -204,16 +204,16 @@ public class EncogFileSection {
 	 * @param name The name to parse.
 	 * @return The parsed matrix value.
 	 */
-	public static Matrix parseMatrix(final Map<String, String> params,
+	public static Matrix parseMatrix(final Map<String, EncogFileLine> params,
 			final String name) {
 
 		if (!params.containsKey(name)) {
 			throw new PersistError("Missing property: " + name);
 		}
 
-		final String line = params.get(name);
+		final EncogFileLine line = params.get(name);
 
-		final double[] d = NumberList.fromList(CSVFormat.EG_FORMAT, line);
+		final double[] d = NumberList.fromList(CSVFormat.EG_FORMAT, line.toString());
 		final int rows = (int) d[0];
 		final int cols = (int) d[1];
 
@@ -249,6 +249,19 @@ public class EncogFileSection {
 		}
 		return result;
 	}
+	
+	public static Map<String,String> toPropertyMap(Map<String,EncogFileLine> source) {
+		Map<String,String> result = new HashMap<String,String>();
+		for(String key : source.keySet()) {
+			EncogFileLine line = source.get(key);
+			result.put(key, line.toString());
+		}
+		return result;
+	}
+	
+	public static List<String> splitColumns(final EncogFileLine line) {
+		return splitColumns(line.toString());
+	}
 
 	/**
 	 * The name of this section.
@@ -263,7 +276,7 @@ public class EncogFileSection {
 	/**
 	 * The lines in this section/subsection.
 	 */
-	private final List<String> lines = new ArrayList<String>();
+	private final List<EncogFileLine> lines = new ArrayList<EncogFileLine>();
 
 	/**
 	 * Construct the object.
@@ -280,7 +293,7 @@ public class EncogFileSection {
 	/**
 	 * @return The lines.
 	 */
-	public final List<String> getLines() {
+	public final List<EncogFileLine> getLines() {
 		return this.lines;
 	}
 
@@ -289,8 +302,8 @@ public class EncogFileSection {
 	 */
 	public final String getLinesAsString() {
 		final StringBuilder result = new StringBuilder();
-		for (final String line : this.lines) {
-			result.append(line);
+		for (final EncogFileLine line : this.lines) {
+			result.append(line.toString());
 			result.append("\n");
 		}
 		return result.toString();
@@ -313,20 +326,18 @@ public class EncogFileSection {
 	/**
 	 * @return The params.
 	 */
-	public final Map<String, String> parseParams() {
-		final Map<String, String> result = new HashMap<String, String>();
+	public final Map<String, EncogFileLine> parseParams() {
+		final Map<String, EncogFileLine> result = new HashMap<String, EncogFileLine>();
 
-		for (String line : this.lines) {
-			line = line.trim();
-			if (line.length() > 0) {
-				final int idx = line.indexOf('=');
-				if (idx == -1) {
+		for (EncogFileLine line : this.lines) {
+			
+			if (!line.isEmpty() ) {
+				if( !line.isProperty() ) {
 					throw new AnalystError("Invalid setup item: " + line);
 				}
-				final String name = line.substring(0, idx).trim();
-				final String value = line.substring(idx + 1).trim();
+				final String name = line.getName();
 
-				result.put(name, value);
+				result.put(name, line);
 			}
 		}
 

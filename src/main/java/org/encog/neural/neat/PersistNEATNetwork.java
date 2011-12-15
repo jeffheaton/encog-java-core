@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.persist.EncogFileLine;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
@@ -57,10 +58,10 @@ public class PersistNEATNetwork implements EncogPersistor {
 		
 		while( (section = in.readNextSection()) != null ) {
 			if( section.getSectionName().equals("NEAT") && section.getSubSectionName().equals("PARAMS") ) {
-				Map<String,String> params = section.parseParams();
-				result.getProperties().putAll(params);
+				Map<String,EncogFileLine> params = section.parseParams();
+				result.getProperties().putAll(EncogFileSection.toPropertyMap(params));
 			} if( section.getSectionName().equals("NEAT") && section.getSubSectionName().equals("NETWORK") ) {
-				Map<String,String> params = section.parseParams();
+				Map<String,EncogFileLine> params = section.parseParams();
 				
 				result.setInputCount( EncogFileSection.parseInt(params,PersistConst.INPUT_COUNT));
 				result.setOutputCount( EncogFileSection.parseInt(params,PersistConst.OUTPUT_COUNT));
@@ -68,7 +69,7 @@ public class PersistNEATNetwork implements EncogPersistor {
 				result.setNetworkDepth( EncogFileSection.parseInt(params,PersistConst.DEPTH));
 				result.setActivationCycles( EncogFileSection.parseInt(params, PersistConst.ACTIVATION_CYCLES));
 			} else if( section.getSectionName().equals("NEAT") && section.getSubSectionName().equals("NEURONS") ) {
-				for (String line : section.getLines()) {
+				for (EncogFileLine line : section.getLines()) {
 					List<String> cols = EncogFileSection.splitColumns(line);
 
 					final long neuronID = Integer.parseInt(cols.get(0));
@@ -82,7 +83,7 @@ public class PersistNEATNetwork implements EncogPersistor {
 					neuronMap.put((int)neuronID, neatNeuron);
 				}				
 			} else if( section.getSectionName().equals("NEAT") && section.getSubSectionName().equals("LINKS") ) {
-				for (String line : section.getLines()) {
+				for (EncogFileLine line : section.getLines()) {
 					List<String> cols = EncogFileSection.splitColumns(line);
 					int fromID = Integer.parseInt(cols.get(0));
 					int toID = Integer.parseInt(cols.get(1));

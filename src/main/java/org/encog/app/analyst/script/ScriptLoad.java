@@ -37,6 +37,7 @@ import org.encog.app.analyst.script.prop.PropertyConstraints;
 import org.encog.app.analyst.script.prop.PropertyEntry;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
+import org.encog.persist.EncogFileLine;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogReadHelper;
 import org.encog.util.arrayutil.NormalizationAction;
@@ -96,7 +97,7 @@ public class ScriptLoad {
 			= new HashMap<String, List<AnalystClassItem>>();
 
 		boolean first = true;
-		for (final String line : section.getLines()) {
+		for (final EncogFileLine line : section.getLines()) {
 			if (!first) {
 				final List<String> cols = EncogFileSection.splitColumns(line);
 
@@ -153,7 +154,7 @@ public class ScriptLoad {
 	private void handleDataStats(final EncogFileSection section) {		
 		final List<DataField> dfs = new ArrayList<DataField>();
 		boolean first = true;
-		for (final String line : section.getLines()) {
+		for (final EncogFileLine line : section.getLines()) {
 			if (!first) {
 				final List<String> cols = EncogFileSection.splitColumns(line);
 				final String name = cols.get(0);
@@ -196,11 +197,11 @@ public class ScriptLoad {
 	 */
 	private void handleFilenames(final EncogFileSection section) {
 
-		final Map<String, String> prop = section.parseParams();
+		final Map<String, EncogFileLine> prop = section.parseParams();
 		this.script.getProperties().clearFilenames();
 
-		for (final Entry<String, String> e : prop.entrySet()) {
-			this.script.getProperties().setFilename(e.getKey(), e.getValue());
+		for (final Entry<String, EncogFileLine> e : prop.entrySet()) {
+			this.script.getProperties().setFilename(e.getKey(), e.getValue().toString());
 		}
 	}
 
@@ -211,7 +212,7 @@ public class ScriptLoad {
 	private void handleNormalizeRange(final EncogFileSection section) {
 		this.script.getNormalize().getNormalizedFields().clear();
 		boolean first = true;
-		for (final String line : section.getLines()) {
+		for (final EncogFileLine line : section.getLines()) {
 			if (!first) {
 				final List<String> cols = EncogFileSection.splitColumns(line);
 				final String name = cols.get(0);
@@ -258,7 +259,7 @@ public class ScriptLoad {
 		final List<AnalystSegregateTarget> nfs 
 			= new ArrayList<AnalystSegregateTarget>();
 		boolean first = true;
-		for (final String line : section.getLines()) {
+		for (final EncogFileLine line : section.getLines()) {
 			if (!first) {
 				final List<String> cols = EncogFileSection.splitColumns(line);
 				final String filename = cols.get(0);
@@ -287,8 +288,8 @@ public class ScriptLoad {
 	 */
 	private void handleTask(final EncogFileSection section) {
 		final AnalystTask task = new AnalystTask(section.getSubSectionName());
-		for (final String line : section.getLines()) {
-			task.getLines().add(line);
+		for (final EncogFileLine line : section.getLines()) {
+			task.getLines().add(line.toString());
 		}
 		this.script.addTask(task);
 	}
@@ -322,12 +323,12 @@ public class ScriptLoad {
 	 * @param section The section to load from.
 	 */
 	private void loadSubSection(final EncogFileSection section) {
-		final Map<String, String> prop = section.parseParams();
+		final Map<String, EncogFileLine> prop = section.parseParams();
 
 		for (final String name : prop.keySet()) {
 			final String key = section.getSectionName().toUpperCase() + ":"
 					+ section.getSubSectionName().toUpperCase() + "_" + name;
-			String value = prop.get(name);
+			String value = prop.get(name).toString();
 			if (value == null) {
 				value = "";
 			}

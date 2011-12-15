@@ -32,6 +32,7 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.rbf.RadialBasisFunction;
 import org.encog.neural.flat.FlatNetworkRBF;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.persist.EncogFileLine;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
@@ -76,12 +77,12 @@ public class PersistRBFNetwork implements EncogPersistor {
 		while ((section = in.readNextSection()) != null) {
 			if (section.getSectionName().equals("RBF-NETWORK")
 					&& section.getSubSectionName().equals("PARAMS")) {
-				final Map<String, String> params = section.parseParams();
-				result.getProperties().putAll(params);
+				final Map<String, EncogFileLine> params = section.parseParams();
+				result.getProperties().putAll(EncogFileSection.toPropertyMap(params));
 			}
 			if (section.getSectionName().equals("RBF-NETWORK")
 					&& section.getSubSectionName().equals("NETWORK")) {
-				final Map<String, String> params = section.parseParams();
+				final Map<String, EncogFileLine> params = section.parseParams();
 
 				flat.setBeginTraining(EncogFileSection.parseInt(params,
 						BasicNetwork.TAG_BEGIN_TRAINING));
@@ -123,7 +124,7 @@ public class PersistRBFNetwork implements EncogPersistor {
 				flat.setActivationFunctions(new ActivationFunction[flat
 						.getLayerCounts().length]);
 
-				for (final String line : section.getLines()) {
+				for (final EncogFileLine line : section.getLines()) {
 					ActivationFunction af = null;
 					final List<String> cols = EncogFileSection
 							.splitColumns(line);
@@ -157,7 +158,7 @@ public class PersistRBFNetwork implements EncogPersistor {
 
 				flat.setRBF(new RadialBasisFunction[hiddenCount]);
 
-				for (final String line : section.getLines()) {
+				for (final EncogFileLine line : section.getLines()) {
 					RadialBasisFunction rbf = null;
 					final List<String> cols = EncogFileSection
 							.splitColumns(line);

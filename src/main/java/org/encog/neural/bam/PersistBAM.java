@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
+import org.encog.persist.EncogFileLine;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
@@ -66,12 +67,12 @@ public class PersistBAM implements EncogPersistor {
 		while ((section = in.readNextSection()) != null) {
 			if (section.getSectionName().equals("BAM")
 					&& section.getSubSectionName().equals("PARAMS")) {
-				final Map<String, String> params = section.parseParams();
-				result.getProperties().putAll(params);
+				final Map<String, EncogFileLine> params = section.parseParams();
+				result.getProperties().putAll(EncogFileSection.toPropertyMap(params));
 			}
 			if (section.getSectionName().equals("BAM")
 					&& section.getSubSectionName().equals("NETWORK")) {
-				final Map<String, String> params = section.parseParams();
+				final Map<String, EncogFileLine> params = section.parseParams();
 
 				result.setF1Count(EncogFileSection.parseInt(params,
 						PersistConst.PROPERTY_F1_COUNT));
