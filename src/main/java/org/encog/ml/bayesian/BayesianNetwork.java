@@ -575,6 +575,10 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		
 		// define the base event
 		ParsedProbability prob = list.get(0);
+		if( prob.getBaseEvents().size()==0 ) {
+			return;
+		}
+		
 		BayesianEvent be = this.getEvent( prob.getChildEvent().getLabel() );
 		this.classificationTarget = this.events.indexOf(be);
 		this.query.defineEventType(be, EventType.Outcome);
@@ -648,5 +652,13 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		
 		result.append(")");
 		return result.toString();
+	}
+
+	public boolean hasValidClassificationTarget() {
+		if( this.classificationTarget<0 || this.classificationTarget>=this.events.size() ) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 }
