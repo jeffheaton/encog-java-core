@@ -267,17 +267,9 @@ public class EncogWriteHelper {
 	 * @param d The double value.
 	 */
 	public final void writeProperty(final String name, final double[] d) {
-		this.out.print(name);
-		this.out.print("=");
-		boolean first = true;
-		for(int i=0;i<d.length;i++) {
-			if( !first ) {
-				this.out.print(",");
-			}
-			this.out.print(CSVFormat.EG_FORMAT.format(d[i],Encog.DEFAULT_PRECISION));
-			first = false;
-		}
-		this.out.println();
+		final StringBuilder result = new StringBuilder();
+		NumberList.toList(CSVFormat.EG_FORMAT, result, d);
+		writeProperty(name, result.toString());
 	}
 
 	/**

@@ -34,7 +34,6 @@ import org.encog.ml.bayesian.query.enumerate.EnumerationQuery;
 import org.encog.ml.bayesian.query.sample.EventState;
 import org.encog.ml.bayesian.query.sample.SamplingQuery;
 import org.encog.ml.bayesian.table.TableLine;
-import org.encog.persist.EncogFileLine;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
@@ -68,10 +67,10 @@ public class PersistBayes implements EncogPersistor {
 		while ((section = in.readNextSection()) != null) {
 			if (section.getSectionName().equals("BAYES-NETWORK")
 					&& section.getSubSectionName().equals("BAYES-PARAM")) {
-				final Map<String, EncogFileLine> params = section.parseParams();
-				queryType = params.get("queryType").toString();
-				queryStr = params.get("query").toString();
-				contentsStr = params.get("contents").toString();
+				final Map<String, String> params = section.parseParams();
+				queryType = params.get("queryType");
+				queryStr = params.get("query");
+				contentsStr = params.get("contents");
 			}
 			if (section.getSectionName().equals("BAYES-NETWORK")
 					&& section.getSubSectionName().equals("BAYES-TABLE")) {
@@ -79,21 +78,21 @@ public class PersistBayes implements EncogPersistor {
 				result.setContents(contentsStr);
 				
 				// first, define relationships (1st pass)
-				for (EncogFileLine line : section.getLines()) {
-					result.defineRelationship(line.toString());
+				for (String line : section.getLines()) {
+					result.defineRelationship(line);
 				}
 
 				result.finalizeStructure();
 
 				// now define the probabilities (2nd pass)
-				for (EncogFileLine line : section.getLines()) {
-					result.defineProbability(line.toString());
+				for (String line : section.getLines()) {
+					result.defineProbability(line);
 				}
 			}
 			if (section.getSectionName().equals("BAYES-NETWORK")
 					&& section.getSubSectionName().equals("BAYES-PROPERTIES")) {
-				final Map<String, EncogFileLine> params = section.parseParams();
-				result.getProperties().putAll(EncogFileSection.toPropertyMap(params));
+				final Map<String, String> params = section.parseParams();
+				result.getProperties().putAll(params);
 			}
 		}
 

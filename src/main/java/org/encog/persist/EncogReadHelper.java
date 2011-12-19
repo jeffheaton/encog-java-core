@@ -45,7 +45,7 @@ public class EncogReadHelper {
 	/**
 	 * The lines read from the file.
 	 */
-	private final List<EncogFileLine> lines = new ArrayList<EncogFileLine>();
+	private final List<String> lines = new ArrayList<String>();
 
 	/**
 	 * The current section name.
@@ -89,17 +89,18 @@ public class EncogReadHelper {
 	public final EncogFileSection readNextSection() {
 
 		try {
-			EncogFileLine line;
+			String line;
 
-			while ((line = EncogFileLine.read(reader)) != null) {
+			while ((line = this.reader.readLine()) != null) {
+				line = line.trim();
 
 				// is it a comment
-				if (line.toString().startsWith("//")) {
+				if (line.startsWith("//")) {
 					continue; 
 				}
 
 				// is it a section or subsection
-				else if (line.toString().startsWith("[")) {
+				else if (line.startsWith("[")) {
 					// handle previous section
 					this.section = new EncogFileSection(
 							this.currentSectionName, this.currentSubSectionName);
@@ -107,11 +108,11 @@ public class EncogReadHelper {
 
 					// now begin the new section
 					this.lines.clear();
-					String s = line.toString().substring(1).trim();
+					String s = line.substring(1).trim();
 					if (!s.endsWith("]")) {
 						throw new PersistError("Invalid section: " + line);
 					}
-					s = s.substring(0, line.toString().length() - 2);
+					s = s.substring(0, line.length() - 2);
 					final int idx = s.indexOf(':');
 					if (idx == -1) {
 						this.currentSectionName = s;
@@ -136,6 +137,8 @@ public class EncogReadHelper {
 						this.currentSubSectionName = newSubSection;
 					}
 					return this.section;
+				} else if (line.length() < 1) {
+					continue;
 				} else {
 					if (this.currentSectionName.length() < 1) {
 						throw new PersistError(

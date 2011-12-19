@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
-import org.encog.persist.EncogFileLine;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
@@ -70,16 +69,16 @@ public class PersistHopfield implements EncogPersistor {
 		while ((section = in.readNextSection()) != null) {
 			if (section.getSectionName().equals("HOPFIELD")
 					&& section.getSubSectionName().equals("PARAMS")) {
-				final Map<String, EncogFileLine> params = section.parseParams();
-				result.getProperties().putAll(EncogFileSection.toPropertyMap(params));
+				final Map<String, String> params = section.parseParams();
+				result.getProperties().putAll(params);
 			}
 			if (section.getSectionName().equals("HOPFIELD")
 					&& section.getSubSectionName().equals("NETWORK")) {
-				final Map<String, EncogFileLine> params = section.parseParams();
+				final Map<String, String> params = section.parseParams();
 				result.setWeights(NumberList.fromList(CSVFormat.EG_FORMAT,
-						params.get(PersistConst.WEIGHTS).toString()));
+						params.get(PersistConst.WEIGHTS)));
 				result.setCurrentState(NumberList.fromList(CSVFormat.EG_FORMAT,
-						params.get(PersistConst.OUTPUT).toString()));
+						params.get(PersistConst.OUTPUT)));
 				result.setNeuronCount(EncogFileSection.parseInt(params,
 						PersistConst.NEURON_COUNT));
 			}
