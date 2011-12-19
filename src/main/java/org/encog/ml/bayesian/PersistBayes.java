@@ -80,14 +80,14 @@ public class PersistBayes implements EncogPersistor {
 				
 				// first, define relationships (1st pass)
 				for (EncogFileLine line : section.getLines()) {
-					result.defineRelationship(line.toCompleteString());
+					result.defineRelationship(line.toString());
 				}
 
 				result.finalizeStructure();
 
 				// now define the probabilities (2nd pass)
 				for (EncogFileLine line : section.getLines()) {
-					result.defineProbability(line.toCompleteString());
+					result.defineProbability(line.toString());
 				}
 			}
 			if (section.getSectionName().equals("BAYES-NETWORK")

@@ -2,7 +2,6 @@ package org.encog.ml.bayesian.training;
 
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
-import org.encog.ml.bayesian.BayesianError;
 import org.encog.ml.bayesian.BayesianEvent;
 import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.bayesian.training.estimator.BayesEstimator;
@@ -115,12 +114,8 @@ public class TrainBayesian extends BasicTraining {
 	}
 	
 	private void iterationFinish() {
-		this.network.defineClassificationStructure(this.holdQuery);	
-		
-		if( this.network.hasValidClassificationTarget()  ) {
-			setError(this.network.calculateError(this.data));
-		}
-		
+		this.network.defineClassificationStructure(this.holdQuery);		
+		setError(this.network.calculateError(this.data));
 		this.p = Phase.Terminated;
 	}
 	

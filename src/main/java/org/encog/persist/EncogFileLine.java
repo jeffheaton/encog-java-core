@@ -17,16 +17,6 @@ public class EncogFileLine {
 		this.name = theName.trim();
 	}
 	
-	public String toCompleteString() {
-		StringBuilder result = new StringBuilder();
-		if( this.name!=null) {
-			result.append(name);
-			result.append("=");
-		}
-		result.append(line);
-		return result.toString();
-	}
-	
 	public String toString() {
 		return this.line;
 	}

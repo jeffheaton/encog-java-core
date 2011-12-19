@@ -140,7 +140,7 @@ public class BayesianEvent implements Serializable {
 	}
 	
 	public int calculateParameterCount() {
-		int result = this.getChoices().size()-1;
+		int result = 1;
 		
 		for(BayesianEvent parent: this.parents) {
 			result *= parent.getChoices().size();

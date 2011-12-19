@@ -33,13 +33,9 @@ public class TestK2 extends TestCase {
 		BayesianEvent x2 = network.createEvent("x2", labels);
 		BayesianEvent x3 = network.createEvent("x3", labels);
 		network.finalizeStructure();
-		//network.defineClassificationStructure("p(x1)");
-		
 		TrainBayesian train = new TrainBayesian(network,data,10);
 		train.setInitNetwork(BayesianInit.InitEmpty);
-		while( !train.isTrainingDone())
-			train.iteration();
-		System.out.println(network.toString());
+		train.iteration();
 		Assert.assertTrue(x1.getParents().size()==0);
 		Assert.assertTrue(x2.getParents().size()==1);
 		Assert.assertTrue(x3.getParents().size()==1);
