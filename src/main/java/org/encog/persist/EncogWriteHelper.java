@@ -40,6 +40,8 @@ import org.encog.util.csv.NumberList;
  * 
  */
 public class EncogWriteHelper {
+	
+	private int largeArrayNumber;
 
 	/**
 	 * A quote char.
@@ -172,6 +174,7 @@ public class EncogWriteHelper {
 	 */
 	public final void addSubSection(final String str) {
 		this.out.println("[" + this.currentSection + ":" + str + "]");
+		this.largeArrayNumber = 0;
 	}
 
 	/**
@@ -267,18 +270,46 @@ public class EncogWriteHelper {
 	 * @param d The double value.
 	 */
 	public final void writeProperty(final String name, final double[] d) {
-		this.out.print(name);
-		this.out.print("=");
-		boolean first = true;
-		for (int i = 0; i < d.length; i++) {
-			if (!first) {
-				this.out.print(",");
+		
+		if( d.length<2048 ) {
+			this.out.print(name);
+			this.out.print("=");
+			boolean first = true;
+			for (int i = 0; i < d.length; i++) {
+				if (!first) {
+					this.out.print(",");
+				}
+				this.out.print(CSVFormat.EG_FORMAT.format(d[i],
+						Encog.DEFAULT_PRECISION));
+				first = false;
 			}
-			this.out.print(CSVFormat.EG_FORMAT.format(d[i],
-					Encog.DEFAULT_PRECISION));
-			first = false;
+			this.out.println();
+		} else {
+			this.out.print(name);
+			this.out.print("=##");
+			this.out.println(largeArrayNumber++);
+			this.out.print("##double#");
+			this.out.println(d.length);
+			
+			int index = 0;
+			
+			while(index<d.length) {
+				boolean first = true;
+				for (int i = 0; (i < 2048) && (index<d.length); i++) {
+					if (!first) {
+						this.out.print(",");
+					} else {
+						this.out.print("   ");
+					}
+					this.out.print(CSVFormat.EG_FORMAT.format(d[index],
+							Encog.DEFAULT_PRECISION));
+					index++;
+					first = false;
+				}
+				this.out.println();
+			}
+			this.out.println("##end");
 		}
-		this.out.println();
 	}
 
 	/**

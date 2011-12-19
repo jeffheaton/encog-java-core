@@ -30,6 +30,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.util.EngineArray;
+import org.encog.util.csv.CSVFormat;
+import org.encog.util.csv.NumberList;
+
 /**
  * Used to read an Encog EG/EGA file. EG files are used to hold Encog objects.
  * EGA files are used to hold Encog Analyst scripts.
@@ -90,6 +94,7 @@ public class EncogReadHelper {
 
 		try {
 			String line;
+			List<double[]> largeArrays = new ArrayList<double[]>();
 
 			while ((line = this.reader.readLine()) != null) {
 				line = line.trim();
@@ -136,9 +141,13 @@ public class EncogReadHelper {
 
 						this.currentSubSectionName = newSubSection;
 					}
+					this.section.setLargeArrays(largeArrays);
 					return this.section;
 				} else if (line.length() < 1) {
 					continue;
+				} else if( line.startsWith("##double")) {
+					double[] d = readLargeArray(line);
+					largeArrays.add(d);
 				} else {
 					if (this.currentSectionName.length() < 1) {
 						throw new PersistError(
@@ -159,10 +168,35 @@ public class EncogReadHelper {
 			this.section.getLines().addAll(this.lines);
 			this.currentSectionName = ""; 
 			this.currentSubSectionName = "";
+			this.section.setLargeArrays(largeArrays);
 			return this.section;
 		} catch (final IOException ex) {
 			throw new PersistError(ex);
 		}
 
+	}
+
+	private double[] readLargeArray(String line) throws IOException {
+		String str = line.substring(9);
+		int l = Integer.parseInt(str);
+		double[] result = new double[l];
+		
+		int index = 0;
+		while ((line = this.reader.readLine()) != null) {
+			line = line.trim();
+
+			// is it a comment
+			if (line.startsWith("//")) {
+				continue; 
+			} else if( line.startsWith("##end")) {
+				break;
+			}
+			
+			double[] t = NumberList.fromList(CSVFormat.EG_FORMAT, str);
+			EngineArray.arrayCopy(t, 0, result, index, t.length);
+			index+=t.length;
+		}
+		
+		return result;
 	}
 }

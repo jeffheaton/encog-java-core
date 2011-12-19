@@ -190,7 +190,7 @@ public class PersistSVM implements EncogPersistor {
 						params, PersistSVM.PARAM_START_ITERATIONS);
 				result.getParams().svm_type = EncogFileSection.parseInt(params,
 						PersistSVM.PARAM_SVM_TYPE);
-				result.getParams().weight = EncogFileSection.parseDoubleArray(
+				result.getParams().weight = section.parseDoubleArray(
 						params, PersistSVM.PARAM_WEIGHT);
 				result.getParams().weight_label = EncogFileSection
 						.parseIntArray(params, PersistSVM.PARAM_WEIGHT_LABEL);

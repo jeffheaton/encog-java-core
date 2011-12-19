@@ -71,7 +71,7 @@ public class PersistTrainingContinuation implements EncogPersistor {
 					if (key.equalsIgnoreCase("type")) {
 						result.setTrainingType(params.get(key));
 					} else {
-						final double[] list = EncogFileSection
+						final double[] list = section
 								.parseDoubleArray(params, key);
 						result.put(key, list);
 					}

@@ -168,7 +168,7 @@ public class PersistBasicPNN implements EncogPersistor {
 						.get(PersistBasicPNN.PROPERTY_outputMode));
 				error = EncogFileSection
 						.parseDouble(params, PersistConst.ERROR);
-				sigma = EncogFileSection.parseDoubleArray(params,
+				sigma = section.parseDoubleArray(params,
 						PersistConst.SIGMA);
 			}
 			if (section.getSectionName().equals("PNN")

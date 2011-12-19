@@ -42,6 +42,8 @@ import org.encog.util.csv.NumberList;
  */
 public class EncogFileSection {
 
+	private List<double[]> largeArrays = new ArrayList<double[]>();
+	
 	/**
 	 * Parse an activation function from a string.
 	 * @param params The params.
@@ -135,7 +137,7 @@ public class EncogFileSection {
 	 * @param name The name to parse.
 	 * @return The parsed double array value.
 	 */
-	public static double[] parseDoubleArray(final Map<String, String> params,
+	public double[] parseDoubleArray(final Map<String, String> params,
 			final String name) {
 		String value = null;
 		try {
@@ -143,8 +145,13 @@ public class EncogFileSection {
 			if (value == null) {
 				throw new PersistError("Missing property: " + name);
 			}
-
-			return NumberList.fromList(CSVFormat.EG_FORMAT, value);
+			
+			if( value.startsWith("##") ) {
+				int i = Integer.parseInt(value.substring(2));
+				return this.largeArrays.get(i);
+			} else {
+				return NumberList.fromList(CSVFormat.EG_FORMAT, value);
+			}
 
 		} catch (final NumberFormatException ex) {
 			throw new PersistError("Field: " + name + ", "
@@ -345,5 +352,20 @@ public class EncogFileSection {
 		result.append("]");
 		return result.toString();
 	}
+	
+	
 
+	/**
+	 * @return the largeArrays
+	 */
+	public List<double[]> getLargeArrays() {
+		return largeArrays;
+	}
+
+	/**
+	 * @param largeArrays the largeArrays to set
+	 */
+	public void setLargeArrays(List<double[]> largeArrays) {
+		this.largeArrays = largeArrays;
+	}
 }

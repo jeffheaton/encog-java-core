@@ -102,16 +102,16 @@ public class PersistBasicNetwork implements EncogPersistor {
 						params, BasicNetwork.TAG_LAYER_CONTEXT_COUNT));
 				flat.setLayerIndex(EncogFileSection.parseIntArray(params,
 						BasicNetwork.TAG_LAYER_INDEX));
-				flat.setLayerOutput(EncogFileSection.parseDoubleArray(params,
+				flat.setLayerOutput(section.parseDoubleArray(params,
 						PersistConst.OUTPUT));
 				flat.setLayerSums(new double[flat.getLayerOutput().length]);
 				flat.setOutputCount(EncogFileSection.parseInt(params,
 						PersistConst.OUTPUT_COUNT));
 				flat.setWeightIndex(EncogFileSection.parseIntArray(params,
 						BasicNetwork.TAG_WEIGHT_INDEX));
-				flat.setWeights(EncogFileSection.parseDoubleArray(params,
+				flat.setWeights(section.parseDoubleArray(params,
 						PersistConst.WEIGHTS));
-				flat.setBiasActivation(EncogFileSection.parseDoubleArray(
+				flat.setBiasActivation(section.parseDoubleArray(
 						params, BasicNetwork.TAG_BIAS_ACTIVATION));
 			} else if (section.getSectionName().equals("BASIC")
 					&& section.getSubSectionName().equals("ACTIVATION")) {
