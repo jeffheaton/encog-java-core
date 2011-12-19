@@ -35,6 +35,9 @@ public class TestK2 extends TestCase {
 		network.finalizeStructure();
 		TrainBayesian train = new TrainBayesian(network,data,10);
 		train.setInitNetwork(BayesianInit.InitEmpty);
+		while(!train.isTrainingDone()) {
+			train.iteration();
+		}
 		train.iteration();
 		Assert.assertTrue(x1.getParents().size()==0);
 		Assert.assertTrue(x2.getParents().size()==1);

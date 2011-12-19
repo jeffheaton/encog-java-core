@@ -10,8 +10,6 @@ import org.encog.ml.bayesian.training.search.k2.BayesSearch;
 import org.encog.ml.bayesian.training.search.k2.SearchK2;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.BasicTraining;
-import org.encog.ml.train.strategy.Strategy;
-import org.encog.ml.train.strategy.end.EndTrainingStrategy;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
 public class TrainBayesian extends BasicTraining {
