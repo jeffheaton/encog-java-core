@@ -23,12 +23,15 @@
  */
 package org.encog.ml.kmeans;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.encog.ml.MLCluster;
 import org.encog.ml.MLClustering;
-import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataPair;
+import org.encog.util.kmeans.KMeansUtil;
 
 /**
  * This class performs a basic K-Means clustering. This class can be used on
@@ -40,38 +43,9 @@ import org.encog.ml.data.basic.BasicMLDataPair;
  */
 public class KMeansClustering implements MLClustering {
 
-	/**
-	 * Calculate the euclidean distance between a centroid and data.
-	 * @param c The centroid to use.
-	 * @param data The data to use.
-	 * @return The distance.
-	 */
-	public static double calculateEuclideanDistance(final Centroid c,
-			final MLData data) {
-		final double[] d = data.getData();
-		double sum = 0;
-
-		for (int i = 0; i < c.getCenters().length; i++) {
-			sum += Math.pow(d[i] - c.getCenters()[i], 2);
-		}
-
-		return Math.sqrt(sum);
-	}
-
-	/**
-	 * The clusters.
-	 */
-	private final KMeansCluster[] clusters;
-
-	/**
-	 * The dataset to cluster.
-	 */
-	private final MLDataSet set;
-
-	/**
-	 * Within-cluster sum of squares (WCSS).
-	 */
-	private double wcss;
+	private KMeansUtil<BasicMLDataPair> kmeans;
+	private MLCluster[] clusters;
+	private int k;
 
 	/**
 	 * Construct the K-Means object.
@@ -81,143 +55,27 @@ public class KMeansClustering implements MLClustering {
 	 * @param theSet
 	 *            The dataset to cluster.
 	 */
-	public KMeansClustering(final int k, final MLDataSet theSet) {
-
-		this.clusters = new KMeansCluster[k];
-		for (int i = 0; i < k; i++) {
-			this.clusters[i] = new KMeansCluster();
+	public KMeansClustering(final int theK, final MLDataSet theSet) {
+		List<BasicMLDataPair> list = new ArrayList<BasicMLDataPair>();
+		for(MLDataPair pair: theSet) {
+			list.add((BasicMLDataPair)pair);
 		}
-		this.set = theSet;
-
-		setInitialCentroids();
-
-		// break up the data over the clusters
-		int clusterNumber = 0;
-
-		for (final MLDataPair pair : set) {
-
-			this.clusters[clusterNumber].add(pair.getInput());
-
-			clusterNumber++;
-
-			if (clusterNumber >= this.clusters.length) {
-				clusterNumber = 0;
-			}
-		}
-
-		calcWCSS();
-
-		for (final KMeansCluster element : this.clusters) {
-			element.getCentroid().calcCentroid();
-		}
-
-		calcWCSS();
+		this.k = theK;
+		this.kmeans = new KMeansUtil<BasicMLDataPair>(this.k,list);
 	}
 
-	/**
-	 * Calculate the within-cluster sum of squares (WCSS).
-	 */
-	private void calcWCSS() {
-		double temp = 0;
-		for (final KMeansCluster element : this.clusters) {
-			temp = temp + element.getSumSqr();
-		}
-		this.wcss = temp;
-	}
-
-	/**
-	 * @return The clusters.
-	 */
-	@Override
-	public final MLCluster[] getClusters() {
-		return this.clusters;
-	}
-
-	/**
-	 * Get the maximum, over all the data, for the specified index.
-	 * 
-	 * @param index
-	 *            An index into the input data.
-	 * @return The maximum value.
-	 */
-	private double getMaxValue(final int index) {
-		double result = Double.MIN_VALUE;
-		final long count = this.set.getRecordCount();
-
-		for (int i = 0; i < count; i++) {
-			final MLDataPair pair = BasicMLDataPair.createPair(
-					this.set.getInputSize(), this.set.getIdealSize());
-			this.set.getRecord(i, pair);
-			result = Math.max(result, pair.getInputArray()[index]);
-		}
-		return result;
-	}
-
-	/**
-	 * Get the minimum, over all the data, for the specified index.
-	 * 
-	 * @param index
-	 *            An index into the input data.
-	 * @return The minimum value.
-	 */
-	private double getMinValue(final int index) {
-		double result = Double.MAX_VALUE;
-		final long count = this.set.getRecordCount();
-		final MLDataPair pair = BasicMLDataPair.createPair(
-				this.set.getInputSize(), this.set.getIdealSize());
-
-		for (int i = 0; i < count; i++) {
-			this.set.getRecord(i, pair);
-			result = Math.min(result, pair.getInputArray()[index]);
-		}
-		return result;
-	}
-
-	/**
-	 * @return Within-cluster sum of squares (WCSS).
-	 */
-	public final double getWCSS() {
-		return this.wcss;
-	}
 
 	/**
 	 * Perform a single training iteration.
 	 */
 	@Override
 	public final void iteration() {
-
-		// loop over all clusters
-		for (final KMeansCluster element : this.clusters) {
-			for (int k = 0; k < element.size(); k++) {
-
-				final MLData data = element.get(k);
-				double distance = KMeansClustering.calculateEuclideanDistance(
-						element.getCentroid(), data);
-				KMeansCluster tempCluster = null;
-				boolean match = false;
-
-				for (final KMeansCluster cluster : this.clusters) {
-
-					final double d = KMeansClustering
-							.calculateEuclideanDistance(cluster.getCentroid(),
-									element.get(k));
-					if (distance > d) {
-						distance = d;
-						tempCluster = cluster;
-						match = true;
-					}
-				}
-
-				if (match) {
-					tempCluster.add(element.get(k));
-					element.remove(element.get(k));
-					for (final KMeansCluster element2 : this.clusters) {
-						element2.getCentroid().calcCentroid();
-					}
-					calcWCSS();
-				}
-			}
+		this.kmeans.process();
+		this.clusters = new MLCluster[this.k];
+		for(int i=0;i<this.k;i++) {
+			this.clusters[i] = new BasicCluster(this.kmeans.getCluster(i));
 		}
+
 	}
 
 	/**
@@ -233,29 +91,17 @@ public class KMeansClustering implements MLClustering {
 		}
 	}
 
-	/**
-	 * @return The number of clusters.
-	 */
+
 	@Override
-	public final int numClusters() {
-		return this.clusters.length;
+	public MLCluster[] getClusters() {
+		return this.clusters;
 	}
 
-	/**
-	 * Setup the initial centroids.
-	 */
-	private void setInitialCentroids() {
-		for (int n = 1; n <= this.clusters.length; n++) {
 
-			final double[] temp = new double[this.set.getInputSize()];
-			for (int j = 0; j < temp.length; j++) {
-				temp[j] = (((getMaxValue(j) 
-						- getMinValue(j)) / (this.clusters.length + 1)) * n)
-						+ getMinValue(j);
-			}
-			final Centroid c1 = new Centroid(temp);
-			this.clusters[n - 1].setCentroid(c1);
-			c1.setCluster(this.clusters[n - 1]);
-		}
+	@Override
+	public int numClusters() {
+		return this.k;
 	}
+
+
 }

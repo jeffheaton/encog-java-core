@@ -26,6 +26,9 @@ package org.encog.ml.data.basic;
 import java.io.Serializable;
 
 import org.encog.ml.data.MLData;
+import org.encog.ml.hmm.ObservationEncog;
+import org.encog.util.kmeans.Centroid;
+import org.encog.util.kmeans.CentroidFactory;
 
 /**
  * Basic implementation of the MLData interface that stores the data in an
@@ -34,7 +37,8 @@ import org.encog.ml.data.MLData;
  * @author jheaton
  *
  */
-public class BasicMLData implements MLData, Serializable, Cloneable {
+public class BasicMLData implements MLData, CentroidFactory<BasicMLData>,
+	Serializable, Cloneable {
 
 	/**
 	 * The serial id.
@@ -162,5 +166,44 @@ public class BasicMLData implements MLData, Serializable, Cloneable {
 		}
 		builder.append("]");
 		return builder.toString();
+	}
+
+	@Override
+	public Centroid<BasicMLData> createCentroid() {
+		return new BasicMLDataCentroid(this);
+	}
+	
+	public MLData plus(MLData o)
+	{
+		if (size() != o.size())
+			throw new IllegalArgumentException();
+		
+		BasicMLData result = new BasicMLData(size());
+		for (int i = 0; i < size(); i++)
+			result.setData(i, getData(i) + o.getData(i));
+		
+		return result;
+	}
+	
+	public MLData times(double d)
+	{
+		MLData result = new BasicMLData(size());
+		
+		for (int i = 0; i < size(); i++)
+			result.setData(i, getData(i) * d);
+		
+		return result;
+	}
+	
+	public MLData minus(MLData o)
+	{
+		if (size() != o.size())
+			throw new IllegalArgumentException();
+		
+		MLData result = new BasicMLData(size());
+		for (int i = 0; i < size(); i++)
+			result.setData(i,  getData(i) - o.getData(i));
+		
+		return result;
 	}
 }

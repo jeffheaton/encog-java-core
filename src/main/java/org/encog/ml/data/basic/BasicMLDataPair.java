@@ -25,9 +25,12 @@ package org.encog.ml.data.basic;
 
 import java.io.Serializable;
 
+import org.encog.EncogError;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.util.Format;
+import org.encog.util.kmeans.Centroid;
+import org.encog.util.kmeans.CentroidFactory;
 
 /**
  * A basic implementation of the MLDataPair interface. This implementation
@@ -41,7 +44,8 @@ import org.encog.util.Format;
  * @author jheaton
  * 
  */
-public class BasicMLDataPair implements MLDataPair, Serializable {
+public class BasicMLDataPair implements MLDataPair, Serializable, 
+	CentroidFactory<BasicMLDataPair> {
 
 	/**
 	 * The serial ID.
@@ -207,7 +211,15 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 	public void setSignificance(double significance) {
 		this.significance = significance;
 	}
-	
+
+	@Override
+	public Centroid<BasicMLDataPair> createCentroid() {
+		if( !(this.input instanceof BasicMLData) ) {
+			throw new EncogError("The input data type of " + this.input.getClass().getSimpleName() + " must be BasicMLData.");
+		}
+		return new BasicMLDataPairCentroid(this);
+	}
+
 	
 
 }

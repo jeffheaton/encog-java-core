@@ -28,19 +28,24 @@ import java.util.List;
 
 import org.encog.ml.MLCluster;
 import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.data.basic.BasicMLDataPair;
+import org.encog.ml.data.basic.BasicMLDataPairCentroid;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.encog.util.kmeans.Centroid;
+import org.encog.util.kmeans.Cluster;
 
 /**
  * Holds a cluster of MLData items that have been clustered 
  * by the KMeansClustering class.
  */
-public class KMeansCluster implements MLCluster {
+public class BasicCluster implements MLCluster {
 
 	/**
 	 * The centroid.
 	 */
-	private Centroid centroid;
+	private BasicMLDataPairCentroid centroid;
 	
 	/**
 	 * The sum square.
@@ -52,6 +57,13 @@ public class KMeansCluster implements MLCluster {
 	 */
 	private final List<MLData> data = new ArrayList<MLData>();
 
+	public BasicCluster(Cluster<BasicMLDataPair> cluster) {
+		this.centroid = (BasicMLDataPairCentroid)cluster.centroid();
+		for(MLDataPair pair : cluster.getContents()) {
+			this.data.add(pair.getInput());
+		}
+	}
+
 	/**
 	 * Add to the cluster.
 	 * @param pair The pair to add.
@@ -59,20 +71,6 @@ public class KMeansCluster implements MLCluster {
 	@Override
 	public final void add(final MLData pair) {
 		this.data.add(pair);
-		calcSumOfSquares();
-	}
-
-	/**
-	 * Calculate the sum of squares.
-	 */
-	public final void calcSumOfSquares() { 
-		final int size = this.data.size();
-		double temp = 0;
-		for (int i = 0; i < size; i++) {
-			temp += KMeansClustering.calculateEuclideanDistance(this.centroid,
-					(this.data.get(i)));
-		}
-		this.sumSqr = temp;
 	}
 
 	/**
@@ -126,14 +124,13 @@ public class KMeansCluster implements MLCluster {
 	@Override
 	public final void remove(final MLData pair) {
 		this.data.remove(pair);
-		calcSumOfSquares();
 	}
 
 	/**
 	 * Set the centroid.
 	 * @param c The new centroid.
 	 */
-	public final void setCentroid(final Centroid c) {
+	public final void setCentroid(final BasicMLDataPairCentroid c) {
 		this.centroid = c;
 	}
 

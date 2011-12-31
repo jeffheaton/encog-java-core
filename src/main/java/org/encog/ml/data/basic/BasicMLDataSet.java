@@ -302,4 +302,12 @@ public class BasicMLDataSet implements Serializable, MLDataSet {
 		this.data = theData;
 	}
 
+	public static List<MLDataPair> toList(MLDataSet theSet) {
+		List<MLDataPair> list = new ArrayList<MLDataPair>();
+		for(MLDataPair pair: theSet) {
+			list.add(pair);
+		}
+		return list;
+	}
+
 }
