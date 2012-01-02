@@ -26,9 +26,7 @@ package org.encog.ml.data.basic;
 import java.io.Serializable;
 
 import org.encog.ml.data.MLData;
-import org.encog.ml.hmm.ObservationEncog;
 import org.encog.util.kmeans.Centroid;
-import org.encog.util.kmeans.CentroidFactory;
 
 /**
  * Basic implementation of the MLData interface that stores the data in an
@@ -37,7 +35,7 @@ import org.encog.util.kmeans.CentroidFactory;
  * @author jheaton
  *
  */
-public class BasicMLData implements MLData, CentroidFactory<BasicMLData>,
+public class BasicMLData implements MLData, 
 	Serializable, Cloneable {
 
 	/**
@@ -169,7 +167,7 @@ public class BasicMLData implements MLData, CentroidFactory<BasicMLData>,
 	}
 
 	@Override
-	public Centroid<BasicMLData> createCentroid() {
+	public Centroid<MLData> createCentroid() {
 		return new BasicMLDataCentroid(this);
 	}
 	

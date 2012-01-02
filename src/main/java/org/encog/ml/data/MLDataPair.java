@@ -23,6 +23,9 @@
  */
 package org.encog.ml.data;
 
+import org.encog.ml.data.basic.BasicMLDataPair;
+import org.encog.util.kmeans.CentroidFactory;
+
 
 /**
  * Training data is stored in two ways, depending on if the data is for
@@ -39,7 +42,7 @@ package org.encog.ml.data;
  * 
  * @author jheaton
  */
-public interface MLDataPair {
+public interface MLDataPair extends CentroidFactory<MLDataPair> {
 
 	/**
 	 * @return The ideal data that the machine learning method should produce 

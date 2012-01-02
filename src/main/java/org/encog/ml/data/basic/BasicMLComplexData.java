@@ -3,6 +3,7 @@ package org.encog.ml.data.basic;
 import org.encog.mathutil.ComplexNumber;
 import org.encog.ml.data.MLComplexData;
 import org.encog.ml.data.MLData;
+import org.encog.util.kmeans.Centroid;
 
 /**
  * This class implements a data object that can hold complex numbers.  It 
@@ -208,5 +209,10 @@ public class BasicMLComplexData implements MLComplexData {
 		}
 		builder.append("]");
 		return builder.toString();
+	}
+
+	@Override
+	public Centroid<MLData> createCentroid() {
+		return null;
 	}
 }

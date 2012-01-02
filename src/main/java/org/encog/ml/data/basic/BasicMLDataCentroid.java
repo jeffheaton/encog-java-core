@@ -4,17 +4,17 @@ import org.encog.ml.data.MLData;
 import org.encog.util.kmeans.Centroid;
 
 public class BasicMLDataCentroid
-implements Centroid<BasicMLData>, Cloneable
+implements Centroid<MLData>, Cloneable
 {	
 	private BasicMLData value;
 	
-	public BasicMLDataCentroid(BasicMLData o)
+	public BasicMLDataCentroid(MLData o)
 	{
 		this.value = (BasicMLData) o.clone();
 	} 
 	
 	
-	public void add(BasicMLData d,
+	public void add(MLData d,
 			int s)
 	{
 		double[] a = d.getData();
@@ -25,7 +25,7 @@ implements Centroid<BasicMLData>, Cloneable
 	}
 	
 	
-	public void remove(BasicMLData d, 
+	public void remove(MLData d, 
 			int s)
 	{
 		double[] a = d.getData();
@@ -35,7 +35,7 @@ implements Centroid<BasicMLData>, Cloneable
 				((value.getData(i) * s) - a[i]) / (s-1));
 	}
 	
-	public double distance(BasicMLData d)
+	public double distance(MLData d)
 	{
 		MLData diff = value.minus(d);
 		double sum = 0.;

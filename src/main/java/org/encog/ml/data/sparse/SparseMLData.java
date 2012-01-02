@@ -28,6 +28,7 @@ import java.io.Serializable;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataError;
 import org.encog.util.EngineArray;
+import org.encog.util.kmeans.Centroid;
 
 public class SparseMLData implements MLData, Serializable, Cloneable {
 
@@ -210,6 +211,11 @@ public class SparseMLData implements MLData, Serializable, Cloneable {
 	
 	public double[] getSparseData() {
 		return this.data;
+	}
+
+	@Override
+	public Centroid<MLData> createCentroid() {
+		return null;
 	}
 	
 	

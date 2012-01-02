@@ -23,13 +23,16 @@
  */
 package org.encog.ml.data;
 
+import org.encog.ml.data.basic.BasicMLData;
+import org.encog.util.kmeans.CentroidFactory;
+
 /**
  * Defines an array of data. This is an array of double values that could be
  * used either for input data, actual output data or ideal output data.
  * 
  * @author jheaton
  */
-public interface MLData extends Cloneable {
+public interface MLData extends Cloneable, CentroidFactory<MLData> {
 
 	/**
 	 * Add a value to the specified index.

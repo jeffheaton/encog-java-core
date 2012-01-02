@@ -1,5 +1,7 @@
 package org.encog.ml.data;
 
+import org.encog.util.kmeans.Centroid;
+
 public class MLDataBreak implements MLData {
 
 	@Override
@@ -39,6 +41,11 @@ public class MLDataBreak implements MLData {
 	
 	public MLDataBreak clone() {
 		return new MLDataBreak();
+	}
+
+	@Override
+	public Centroid<MLData> createCentroid() {
+		return null;
 	}
 
 }

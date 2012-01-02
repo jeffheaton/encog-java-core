@@ -44,8 +44,7 @@ import org.encog.util.kmeans.CentroidFactory;
  * @author jheaton
  * 
  */
-public class BasicMLDataPair implements MLDataPair, Serializable, 
-	CentroidFactory<BasicMLDataPair> {
+public class BasicMLDataPair implements MLDataPair, Serializable {
 
 	/**
 	 * The serial ID.
@@ -213,7 +212,7 @@ public class BasicMLDataPair implements MLDataPair, Serializable,
 	}
 
 	@Override
-	public Centroid<BasicMLDataPair> createCentroid() {
+	public Centroid<MLDataPair> createCentroid() {
 		if( !(this.input instanceof BasicMLData) ) {
 			throw new EncogError("The input data type of " + this.input.getClass().getSimpleName() + " must be BasicMLData.");
 		}

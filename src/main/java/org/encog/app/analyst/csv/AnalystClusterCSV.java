@@ -172,7 +172,7 @@ public class AnalystClusterCSV extends BasicFile {
 		int clusterNum = 0;
 		for (final MLCluster cl : cluster.getClusters()) {
 			for (final MLData item : cl.getData()) {
-				final ClusterRow row = (ClusterRow) item;
+				final ClusterRow row = null;//(ClusterRow) item;
 				final int clsIndex = row.getInput().size() - 1;
 				final LoadedRow lr = row.getRow();
 				lr.getData()[clsIndex] = "" + clusterNum;

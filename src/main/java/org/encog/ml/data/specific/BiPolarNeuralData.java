@@ -28,6 +28,7 @@ import java.io.Serializable;
 import org.encog.mathutil.matrices.BiPolarUtil;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataError;
+import org.encog.util.kmeans.Centroid;
 
 /**
  * A NeuralData implementation designed to work with bipolar data. Bipolar data
@@ -204,5 +205,10 @@ public class BiPolarNeuralData implements MLData, Serializable {
 		}
 		result.append(']');
 		return (result.toString());
+	}
+
+	@Override
+	public Centroid<MLData> createCentroid() {
+		return null;
 	}
 }
