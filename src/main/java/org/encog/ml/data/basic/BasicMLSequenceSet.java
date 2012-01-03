@@ -307,8 +307,10 @@ public class BasicMLSequenceSet implements Serializable, MLSequenceSet {
 
 	@Override
 	public void startNewSequence() {
-		this.currentSequence = new BasicMLDataSet();
-		this.sequences.add(this.currentSequence);
+		if (this.currentSequence.getRecordCount() > 0) {
+			this.currentSequence = new BasicMLDataSet();
+			this.sequences.add(this.currentSequence);
+		}
 		
 	}
 
