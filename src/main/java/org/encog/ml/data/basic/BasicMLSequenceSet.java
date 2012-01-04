@@ -62,11 +62,17 @@ public class BasicMLSequenceSet implements Serializable, MLSequenceSet {
 		@Override
 		public final boolean hasNext() {
 			
-			if( this.currentSequenceIndex==(sequences.size()-1) ) {
-				return this.currentIndex < sequences.get(this.currentIndex).getRecordCount();
-			} else {
-				return true;
+			if( this.currentSequenceIndex>=sequences.size() ) {
+				return false;
+			} 
+			
+			MLDataSet seq = sequences.get(this.currentSequenceIndex);
+			
+			if(this.currentIndex>=seq.getRecordCount()) {
+				return false;
 			}
+			
+			return true;
 		}
 
 		/**
@@ -311,7 +317,6 @@ public class BasicMLSequenceSet implements Serializable, MLSequenceSet {
 			this.currentSequence = new BasicMLDataSet();
 			this.sequences.add(this.currentSequence);
 		}
-		
 	}
 
 	@Override
