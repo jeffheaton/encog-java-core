@@ -310,4 +310,14 @@ public class BasicMLDataSet implements Serializable, MLDataSet {
 		return list;
 	}
 
+	@Override
+	public int size() {
+		return (int)getRecordCount();
+	}
+
+	@Override
+	public MLDataPair get(int index) {
+		return this.data.get(index);
+	}
+
 }

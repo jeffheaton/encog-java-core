@@ -333,5 +333,18 @@ public class BasicMLSequenceSet implements Serializable, MLSequenceSet {
 	public Collection<MLDataSet> getSequences() {
 		return this.sequences;
 	}
+	
+
+	@Override
+	public int size() {
+		return (int)getRecordCount();
+	}
+
+	@Override
+	public MLDataPair get(int index) {
+		MLDataPair result = BasicMLDataPair.createPair(getInputSize(), getIdealSize());
+		this.getRecord(index, result);
+		return result;
+	}
 
 }

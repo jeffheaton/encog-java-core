@@ -117,4 +117,8 @@ public interface MLDataSet extends Iterable<MLDataPair> {
 	 * any iterators created.
 	 */
 	void close();
+	
+	int size();
+	
+	MLDataPair get(int index);
 }

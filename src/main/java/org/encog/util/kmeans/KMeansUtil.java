@@ -40,8 +40,8 @@ public class KMeansUtil<K extends CentroidFactory<? super K>> {
 			if (!added) {
 				clusters.add(new Cluster<K>(elements.get(elementIndex)));
 				clusterIndex++;
-				elementIndex++;
 			}
+			elementIndex++;
 		}
 
 		// create

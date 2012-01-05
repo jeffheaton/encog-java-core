@@ -28,6 +28,7 @@ import java.util.Iterator;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.neural.networks.training.TrainingError;
 
 /**
@@ -308,5 +309,18 @@ public class FoldedDataSet implements MLDataSet {
 	 */
 	public final void setOwner(final FoldedDataSet theOwner) {
 		this.owner = theOwner;
+	}
+	
+
+	@Override
+	public int size() {
+		return (int)getRecordCount();
+	}
+
+	@Override
+	public MLDataPair get(int index) {
+		MLDataPair result = BasicMLDataPair.createPair(getInputSize(), getIdealSize());
+		this.getRecord(index, result);
+		return result;
 	}
 }
