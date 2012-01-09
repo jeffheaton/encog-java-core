@@ -7,4 +7,5 @@ public interface MLSequenceSet extends MLDataSet {
 	int getSequenceCount();
 	MLDataSet getSequence(int i);
 	Collection<MLDataSet> getSequences();
+	void add(MLDataSet sequence);
 }

@@ -422,7 +422,7 @@ public class TestMatrix extends TestCase {
 	{
 		double matrixData[][] = {{1.0,2.0},{3.0,4.0}};
 		Matrix matrix = new Matrix(matrixData);
-		Double matrixData2[] = matrix.toPackedArray();
+		double matrixData2[] = matrix.toPackedArray();
 		TestCase.assertEquals(4, matrixData2.length);
 		TestCase.assertEquals(1.0,matrix.get(0, 0));
 		TestCase.assertEquals(2.0,matrix.get(0, 1));
@@ -436,7 +436,7 @@ public class TestMatrix extends TestCase {
 	
 	public void testPackedArray2() throws Throwable
 	{
-		Double data[] = {1.0,2.0,3.0,4.0};
+		double data[] = {1.0,2.0,3.0,4.0};
 		Matrix matrix = new Matrix(1,4);
 		matrix.fromPackedArray(data, 0);
 		TestCase.assertEquals(1.0, matrix.get(0, 0));

@@ -347,4 +347,12 @@ public class BasicMLSequenceSet implements Serializable, MLSequenceSet {
 		return result;
 	}
 
+	@Override
+	public void add(MLDataSet sequence) {
+		for(MLDataPair pair: sequence) {
+			add(pair);
+		}
+		
+	}
+
 }

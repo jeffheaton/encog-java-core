@@ -238,7 +238,7 @@ public class Matrix implements Cloneable, Serializable {
 	 *            Where to start in the packed array.
 	 * @return The new index after this matrix has been read.
 	 */
-	public final int fromPackedArray(final Double[] array, final int index) {
+	public final int fromPackedArray(final double[] array, final int index) {
 		int i = index;
 		for (int r = 0; r < getRows(); r++) {
 			for (int c = 0; c < getCols(); c++) {
@@ -742,8 +742,8 @@ public class Matrix implements Cloneable, Serializable {
 	 * 
 	 * @return The matrix as a packed array.
 	 */
-	public final Double[] toPackedArray() {
-		final Double[] result = new Double[getRows() * getCols()];
+	public final double[] toPackedArray() {
+		final double[] result = new double[getRows() * getCols()];
 
 		int index = 0;
 		for (int r = 0; r < getRows(); r++) {
@@ -790,5 +790,9 @@ public class Matrix implements Cloneable, Serializable {
 					+ getCols();
 			throw new MatrixError(str);
 		}
+	}
+	
+	public boolean isSquare() {
+		return getRows()==getCols();
 	}
 }

@@ -379,4 +379,20 @@ public final class EngineArray {
 			a[i] = b;
 		}
 	}
+
+	public static double[] add(double[] d, double[] m) {
+		double[] result = new double[d.length];
+		for(int i=0;i<d.length;i++) {
+			result[i] = d[i] + m[i];
+		}
+		return result;
+	}
+
+	public static double[] subtract(double[] a, double[] b) {
+		double[] result = new double[a.length];
+		for(int i=0;i<a.length;i++) {
+			result[i] = a[i] - b[i];
+		}
+		return result;
+	}
 }

@@ -160,4 +160,54 @@ public class CholeskyDecomposition {
 
 		return new Matrix(x);
 	}
+
+
+	public double getDeterminant() {		
+		double result = 1;
+		
+		for (int i = 0; i < n; i++)
+			result *= l[i][i];
+		
+		return result * result;
+	}
+	
+
+	public Matrix inverseCholesky()
+	{		
+		double[][] li = lowerTriangularInverse(l);
+		double[][] ic = new double[n][n];
+		
+		for (int r = 0; r < n; r++)
+			for (int c = 0; c < n; c++)
+				for (int i = 0; i < n; i++)
+					ic[r][c] += li[i][r] * li[i][c];
+		
+		return new Matrix(ic);
+	}
+	
+	
+	private double[][] lowerTriangularInverse(double[][] m)
+	{
+
+		double[][] lti = new double[m.length][m.length];
+		
+		for (int j = 0; j < m.length; j++) {
+			if (m[j][j] == 0)
+				throw new IllegalArgumentException("Error, the natrix is not full rank");
+			
+			lti[j][j] = 1. / m[j][j];
+			
+			for (int i = j + 1; i < m.length; i++) {
+				double sum = 0.;
+				
+				for (int k = j; k < i; k++)
+					sum -= m[i][k] * lti[k][j];
+				
+				lti[i][j] = sum / m[i][i];
+			}
+		}
+		
+		return lti;
+		
+	}
 }

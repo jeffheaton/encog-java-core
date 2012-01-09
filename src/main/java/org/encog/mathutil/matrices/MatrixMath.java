@@ -397,7 +397,7 @@ public final class MatrixMath {
 			throw new MatrixError(
 					"Can only take the vector length of a vector.");
 		}
-		final Double[] v = input.toPackedArray();
+		final double[] v = input.toPackedArray();
 		double rtn = 0.0;
 		for (final Double element : v) {
 			rtn += Math.pow(element, 2);
@@ -413,6 +413,17 @@ public final class MatrixMath {
 	
 	public static double determinant(Matrix m) {
 		return new LUDecomposition(m).det();
+	}
+
+	public static double[] multiply(Matrix a, double[] d) {	
+		double[] p = new double[a.getRows()];
+		double[][] aData = a.getData();
+		
+		for (int r = 0; r < a.getRows(); r++)
+			for (int i = 0; i < a.getCols(); i++)
+				p[r] += aData[r][i] * d[i];
+		
+		return p;
 	}
 
 }
