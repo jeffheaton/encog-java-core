@@ -238,6 +238,10 @@ public class MLTrainFactory {
 
 	public static final String PROPERTY_MAX_PARENTS = "MAXPARENTS";
 
+	public static final String PROPERTY_PARTICLES = "PARTICLES";
+
+	public static final String TYPE_PSO = "pso";
+
 	
 	/**
 	 * Create a trainer.

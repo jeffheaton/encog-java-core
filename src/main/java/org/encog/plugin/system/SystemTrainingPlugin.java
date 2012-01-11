@@ -36,6 +36,7 @@ import org.encog.ml.factory.train.LMAFactory;
 import org.encog.ml.factory.train.ManhattanFactory;
 import org.encog.ml.factory.train.NeighborhoodSOMFactory;
 import org.encog.ml.factory.train.PNNTrainFactory;
+import org.encog.ml.factory.train.PSOFactory;
 import org.encog.ml.factory.train.QuickPropFactory;
 import org.encog.ml.factory.train.RBFSVDFactory;
 import org.encog.ml.factory.train.RPROPFactory;
@@ -125,6 +126,8 @@ public class SystemTrainingPlugin implements EncogPluginService1 {
 	 */
 	private final QuickPropFactory qpropFactory = new QuickPropFactory(); 
 	
+	private final PSOFactory psoFactory = new PSOFactory();
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -207,6 +210,8 @@ public class SystemTrainingPlugin implements EncogPluginService1 {
 			return this.qpropFactory.create(method, training, args2);
 		} else if (MLTrainFactory.TYPE_BAYESIAN.equals(type) ) {
 			return this.bayesianFactory.create(method, training, args2);
+		} else if (MLTrainFactory.TYPE_PSO.equals(type) ) {
+			return this.psoFactory.create(method, training, args2);
 		}
 		else {
 			throw new EncogError("Unknown training type: " + type);
