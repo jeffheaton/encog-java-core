@@ -30,73 +30,71 @@ import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.data.basic.BasicMLSequenceSet;
 import org.encog.ml.hmm.HiddenMarkovModel;
 
-public class MarkovGenerator
-{	
+public class MarkovGenerator {
 	private final HiddenMarkovModel hmm;
 	private int currentState;
-		
-	public MarkovGenerator(HiddenMarkovModel hmm)
-	{	
+
+	public MarkovGenerator(final HiddenMarkovModel hmm) {
 		this.hmm = hmm;
 		newSequence();
 	}
-	
-	public MLDataPair observation()
-	{	
-		MLDataPair o = hmm.getStateDistribution(currentState).generate();
-		double rand = Math.random();
-		
-		for (int j = 0; j < hmm.getStateCount()-1; j++)
-			if ((rand -= hmm.getTransitionProbability(currentState, j)) < 0) {
-				currentState = j;
-				return o;
-			}
-		
-		currentState = hmm.getStateCount() - 1;
-		return o;
-	}
-	
-	public MLDataSet observationSequence(int length)
-	{	
-		MLDataSet sequence = new BasicMLDataSet();		
-		while (length-- > 0)
-			sequence.add(observation());
-		newSequence();
-		
-		return sequence;
-	}
-	
-	
-	public void newSequence()
-	{	
-		double rand = Math.random(), current = 0.0;
-		
-		for (int i = 0; i < hmm.getStateCount() - 1; i++) {
-			current += hmm.getPi(i);
-			
-			if (current > rand) {
-				currentState = i;
-				return;
-			}
-		}
-		
-		currentState = hmm.getStateCount() - 1;
-	}
-	
-	public int getCurrentState()
-	{
-		return currentState;
-	}
-	
-	public MLSequenceSet generateSequences(int observationCount, int observationLength)
-	{
-		MLSequenceSet result = new BasicMLSequenceSet();
-		
+
+	public MLSequenceSet generateSequences(final int observationCount,
+			final int observationLength) {
+		final MLSequenceSet result = new BasicMLSequenceSet();
+
 		for (int i = 0; i < observationCount; i++) {
 			result.startNewSequence();
 			result.add(observationSequence(observationLength));
 		}
 
 		return result;
+	}
+
+	public int getCurrentState() {
+		return this.currentState;
+	}
+
+	public void newSequence() {
+		final double rand = Math.random();
+		double current = 0.0;
+
+		for (int i = 0; i < (this.hmm.getStateCount() - 1); i++) {
+			current += this.hmm.getPi(i);
+
+			if (current > rand) {
+				this.currentState = i;
+				return;
+			}
+		}
+
+		this.currentState = this.hmm.getStateCount() - 1;
+	}
+
+	public MLDataPair observation() {
+		final MLDataPair o = this.hmm.getStateDistribution(this.currentState)
+				.generate();
+		double rand = Math.random();
+
+		for (int j = 0; j < (this.hmm.getStateCount() - 1); j++) {
+			if ((rand -= this.hmm
+					.getTransitionProbability(this.currentState, j)) < 0) {
+				this.currentState = j;
+				return o;
+			}
+		}
+
+		this.currentState = this.hmm.getStateCount() - 1;
+		return o;
+	}
+
+	public MLDataSet observationSequence(int length) {
+		final MLDataSet sequence = new BasicMLDataSet();
+		while (length-- > 0) {
+			sequence.add(observation());
+		}
+		newSequence();
+
+		return sequence;
 	}
 }

@@ -31,93 +31,100 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
 
-public class DiscreteDistribution 
-implements StateDistribution
-{
-	private double[] probabilities;
-	
-	public DiscreteDistribution(int c)
-	{
-		probabilities = new double[c];
-		
-		for (int i = 0; i < c; i++)
-			probabilities[i] = 1. / ((double) c);
-	}
-	
-	
-	public DiscreteDistribution(double[] probabilities)
-	{		
-		if (probabilities.length == 0) 
+public class DiscreteDistribution implements StateDistribution {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private final double[] probabilities;
+
+	public DiscreteDistribution(final double[] probabilities) {
+		if (probabilities.length == 0) {
 			throw new IllegalArgumentException("Invalid empty array");
-		
+		}
+
 		this.probabilities = new double[probabilities.length];
-		
-		for (int i = 0; i < probabilities.length; i++)
-			if ((this.probabilities[i] = probabilities[i]) < 0.)
+
+		for (int i = 0; i < probabilities.length; i++) {
+			if ((this.probabilities[i] = probabilities[i]) < 0.) {
 				throw new IllegalArgumentException();
+			}
+		}
 	}
-	
-	
-	public double probability(MLDataPair o)
-	{
-		if (o.getInput().getData(0) > probabilities.length-1)
-			throw new IllegalArgumentException("Wrong observation value");
-		
-		return probabilities[(int)o.getInput().getData(0)];
+
+	public DiscreteDistribution(final int c) {
+		this.probabilities = new double[c];
+
+		for (int i = 0; i < c; i++) {
+			this.probabilities[i] = 1.0 / c;
+		}
 	}
-	
-	
-	public MLDataPair generate()
-	{	
-		MLData result = new BasicMLData(1);
+
+	@Override
+	public DiscreteDistribution clone() {
+		try {
+			return (DiscreteDistribution) super.clone();
+		} catch (final CloneNotSupportedException e) {
+			throw new AssertionError(e);
+		}
+	}
+
+	@Override
+	public void fit(final MLDataSet co) {
+		if (co.size() < 1) {
+			throw new IllegalArgumentException("Empty observation set");
+		}
+
+		for (int i = 0; i < this.probabilities.length; i++) {
+			this.probabilities[i] = 0.0;
+		}
+
+		for (final MLDataPair o : co) {
+			this.probabilities[(int) o.getInput().getData(0)]++;
+		}
+
+		for (int i = 0; i < this.probabilities.length; i++) {
+			this.probabilities[i] /= co.size();
+		}
+	}
+
+	@Override
+	public void fit(final MLDataSet co, final double[] weights) {
+		if ((co.size() < 1) || (co.size() != weights.length)) {
+			throw new IllegalArgumentException();
+		}
+
+		Arrays.fill(this.probabilities, 0.0);
+
+		int i = 0;
+		for (final MLDataPair o : co) {
+			this.probabilities[(int) o.getInput().getData(0)] += weights[i++];
+		}
+	}
+
+	@Override
+	public MLDataPair generate() {
+		final MLData result = new BasicMLData(1);
 		double rand = Math.random();
-		
-		for (int i = 0; i < probabilities.length - 1; i++)
-			if ((rand -= probabilities[i]) < 0.) {
+
+		for (int i = 0; i < (this.probabilities.length - 1); i++) {
+			if ((rand -= this.probabilities[i]) < 0.0) {
 				result.setData(0, i);
 				return new BasicMLDataPair(result);
 			}
-		
-		result.setData(0, probabilities.length - 1);
+		}
+
+		result.setData(0, this.probabilities.length - 1);
 		return new BasicMLDataPair(result);
 	}
-	
-	public void fit(MLDataSet co)
-	{	
-		if (co.size()<1)
-			throw new IllegalArgumentException("Empty observation set");
-		
-		for (int i = 0; i < probabilities.length; i++)
-			probabilities[i] = 0.;
-		
-		for (MLDataPair o : co)
-			probabilities[(int)o.getInput().getData(0)]++;
-		
-		for (int i = 0; i < probabilities.length; i++)
-			probabilities[i] /= co.size();
-	}	
-	
-	public void fit(MLDataSet co,
-			double[] weights)
-	{	
-		if (co.size()<1 || co.size() != weights.length)
-			throw new IllegalArgumentException();
-		
-		Arrays.fill(probabilities, 0.);
-		
-		int i = 0;
-		for (MLDataPair o : co) 
-			probabilities[(int)o.getInput().getData(0)] += weights[i++];
+
+	@Override
+	public double probability(final MLDataPair o) {
+		if (o.getInput().getData(0) > (this.probabilities.length - 1)) {
+			throw new IllegalArgumentException("Wrong observation value");
+		}
+
+		return this.probabilities[(int) o.getInput().getData(0)];
 	}
-	
-	
-	public DiscreteDistribution clone()
-	{	
-		try {
-			return (DiscreteDistribution) super.clone();
-		} catch(CloneNotSupportedException e) {
-            throw new AssertionError(e);
-        }
-	}
-	
+
 }

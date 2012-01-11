@@ -26,51 +26,42 @@ package org.encog.ml.hmm.alog;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.hmm.HiddenMarkovModel;
 
-public class KullbackLeiblerDistanceCalculator
-{	
+public class KullbackLeiblerDistanceCalculator {
 	private int len = 1000;
 	private int sequenceCount = 10;
-	
-	
-	public double 
-	distance(HiddenMarkovModel hmm1, HiddenMarkovModel hmm2)
-	{			
-		double distance = 0.;
-		
-		for (int i = 0; i < sequenceCount; i++) {
-			
-			MLDataSet oseq = new MarkovGenerator(hmm1).
-			observationSequence(len);
-			
-			distance += (new ForwardBackwardScaledCalculator(oseq, hmm1).
-					lnProbability() -
-					new ForwardBackwardScaledCalculator(oseq, hmm2).
-					lnProbability()) / len;
-		}
-		
-		return distance / sequenceCount;
-	}
 
+	public double distance(final HiddenMarkovModel hmm1,
+			final HiddenMarkovModel hmm2) {
+		double distance = 0.;
+
+		for (int i = 0; i < this.sequenceCount; i++) {
+
+			final MLDataSet oseq = new MarkovGenerator(hmm1)
+					.observationSequence(this.len);
+
+			distance += (new ForwardBackwardScaledCalculator(oseq, hmm1)
+					.lnProbability() - new ForwardBackwardScaledCalculator(
+					oseq, hmm2).lnProbability())
+					/ this.len;
+		}
+
+		return distance / this.sequenceCount;
+	}
 
 	public int getLen() {
-		return len;
+		return this.len;
 	}
 
+	public int getSequenceCount() {
+		return this.sequenceCount;
+	}
 
-	public void setLen(int len) {
+	public void setLen(final int len) {
 		this.len = len;
 	}
 
-
-	public int getSequenceCount() {
-		return sequenceCount;
-	}
-
-
-	public void setSequenceCount(int sequenceCount) {
+	public void setSequenceCount(final int sequenceCount) {
 		this.sequenceCount = sequenceCount;
 	}
-
-	
 
 }

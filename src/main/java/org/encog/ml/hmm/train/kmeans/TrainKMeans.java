@@ -39,226 +39,214 @@ import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
-public class TrainKMeans implements MLTrain
-{	
-	private Clusters clusters;
-	private int states;
-	private MLSequenceSet sequnces;
+public class TrainKMeans implements MLTrain {
+	private final Clusters clusters;
+	private final int states;
+	private final MLSequenceSet sequnces;
 	private boolean done;
-	private HiddenMarkovModel modelHMM;
+	private final HiddenMarkovModel modelHMM;
 	private int iteration;
 	private HiddenMarkovModel method;
-	private MLSequenceSet training;
-	
-	public TrainKMeans(HiddenMarkovModel method,
-			MLSequenceSet sequences)
-	{	
+	private final MLSequenceSet training;
+
+	public TrainKMeans(final HiddenMarkovModel method,
+			final MLSequenceSet sequences) {
 		this.method = method;
 		this.modelHMM = method;
 		this.sequnces = sequences;
 		this.states = method.getStateCount();
 		this.training = sequences;
-		clusters = new Clusters(states, sequences);
-		done = false;
+		this.clusters = new Clusters(this.states, sequences);
+		this.done = false;
 	}
-	
-	private void learnPi(HiddenMarkovModel hmm)
-	{	
-		double[] pi = new double[states];
-		
-		for (int i = 0; i < states; i++)
-			pi[i] = 0.;
-		
-		for (MLDataSet sequence : sequnces.getSequences())
-			pi[clusters.cluster(sequence.get(0))]++;
-		
-		for (int i = 0; i < states; i++)
-			hmm.setPi(i, pi[i] / sequnces.size());
-	}
-	
-	
-	private void learnTransition(HiddenMarkovModel hmm)
-	{	
-		for (int i = 0; i < hmm.getStateCount(); i++)
-			for (int j = 0; j < hmm.getStateCount(); j++)
-				hmm.setTransitionProbability(i, j, 0.);
-		
-		for (MLDataSet obsSeq : sequnces.getSequences()) {
-			if (obsSeq.size() < 2)
-				continue;
-			
-			int first_state;
-			int second_state = clusters.cluster(obsSeq.get(0));
-			for (int i = 1; i < obsSeq.size(); i++) {
-				first_state = second_state;
-				second_state =
-					clusters.cluster(obsSeq.get(i));
-				
-				hmm.setTransitionProbability(first_state, second_state,
-						hmm.getTransitionProbability(first_state, second_state)+1.);
-			}
-		}
-		
-		/* Normalize Aij array */
-		for (int i = 0; i < hmm.getStateCount(); i++) {
-			double sum = 0;
-			
-			for (int j = 0; j < hmm.getStateCount(); j++)
-				sum += hmm.getTransitionProbability(i, j);
-			
-			if (sum == 0.)
-				for (int j = 0; j < hmm.getStateCount(); j++) 
-					hmm.setTransitionProbability(i, j, 1. / hmm.getStateCount());     
-			else
-				for (int j = 0; j < hmm.getStateCount(); j++)
-					hmm.setTransitionProbability(i, j, hmm.getTransitionProbability(i, j) / sum);
-		}
-	}
-	
-	
-	private void learnOpdf(HiddenMarkovModel hmm)
-	{
-		for (int i = 0; i < hmm.getStateCount(); i++) {
-			Collection<MLDataPair> clusterObservations = clusters.cluster(i);
-			
-			if (clusterObservations.size()<1) {
-				StateDistribution o = modelHMM.createNewDistribution();				
-				hmm.setStateDistribution(i, o);
-			}
-			else {
-				MLDataSet temp =  new BasicMLDataSet();
-				for(MLDataPair pair: clusterObservations) {
-					temp.add(pair);
-				}
-				hmm.getStateDistribution(i).fit(temp);
-			}
-		}
-	}
-	
-	
-	/* Return true if no modification */
-	private boolean optimizeCluster(HiddenMarkovModel hmm)
-	{	
-		boolean modif = false;
-		
-		for (MLDataSet obsSeq : sequnces.getSequences()) {
-			ViterbiCalculator vc = new ViterbiCalculator(obsSeq, hmm);
-			int states[] = vc.stateSequence();
-			
-			for (int i = 0; i < states.length; i++) {
-				MLDataPair o = obsSeq.get(i);
-				
-				if (clusters.cluster(o) != states[i]) {
-					modif = true;
-					clusters.remove(o, clusters.cluster(o));
-					clusters.put(o, states[i]);
-				}
-			}
-		}
-		
-		return !modif;
-	}
-
 
 	@Override
-	public TrainingImplementationType getImplementationType() {
-		return TrainingImplementationType.Iterative;
+	public void addStrategy(final Strategy strategy) {
 	}
-
-
-	@Override
-	public boolean isTrainingDone() {
-		return done;
-	}
-
-
-	@Override
-	public MLDataSet getTraining() {
-		return this.training;
-	}
-
-
-	@Override
-	public void iteration() {
-		HiddenMarkovModel hmm = this.modelHMM.cloneStructure();
-		
-		learnPi(hmm);
-		learnTransition(hmm);
-		learnOpdf(hmm);
-		
-		done = optimizeCluster(hmm);
-		
-		this.method = hmm;
-	}
-
-
-	@Override
-	public double getError() {
-		return done?0:100;
-	}
-
-
-	@Override
-	public void finishTraining() {
-		
-	}
-
-
-	@Override
-	public void iteration(int count) {
-		// this.iteration = count;
-		
-	}
-
-
-	@Override
-	public int getIteration() {
-		return iteration;
-	}
-
 
 	@Override
 	public boolean canContinue() {
 		return false;
 	}
 
-
 	@Override
-	public TrainingContinuation pause() {
-		return null;
+	public void finishTraining() {
+
 	}
 
-
 	@Override
-	public void resume(TrainingContinuation state) {
+	public double getError() {
+		return this.done ? 0 : 100;
 	}
 
-
 	@Override
-	public void addStrategy(Strategy strategy) {
+	public TrainingImplementationType getImplementationType() {
+		return TrainingImplementationType.Iterative;
 	}
 
+	@Override
+	public int getIteration() {
+		return this.iteration;
+	}
 
 	@Override
 	public MLMethod getMethod() {
 		return this.method;
 	}
 
-
 	@Override
 	public List<Strategy> getStrategies() {
 		return null;
 	}
 
-
 	@Override
-	public void setError(double error) {
-		
+	public MLDataSet getTraining() {
+		return this.training;
 	}
 
+	@Override
+	public boolean isTrainingDone() {
+		return this.done;
+	}
 
 	@Override
-	public void setIteration(int iteration) {
+	public void iteration() {
+		final HiddenMarkovModel hmm = this.modelHMM.cloneStructure();
+
+		learnPi(hmm);
+		learnTransition(hmm);
+		learnOpdf(hmm);
+
+		this.done = optimizeCluster(hmm);
+
+		this.method = hmm;
+	}
+
+	@Override
+	public void iteration(final int count) {
+		// this.iteration = count;
+
+	}
+
+	private void learnOpdf(final HiddenMarkovModel hmm) {
+		for (int i = 0; i < hmm.getStateCount(); i++) {
+			final Collection<MLDataPair> clusterObservations = this.clusters
+					.cluster(i);
+
+			if (clusterObservations.size() < 1) {
+				final StateDistribution o = this.modelHMM
+						.createNewDistribution();
+				hmm.setStateDistribution(i, o);
+			} else {
+				final MLDataSet temp = new BasicMLDataSet();
+				for (final MLDataPair pair : clusterObservations) {
+					temp.add(pair);
+				}
+				hmm.getStateDistribution(i).fit(temp);
+			}
+		}
+	}
+
+	private void learnPi(final HiddenMarkovModel hmm) {
+		final double[] pi = new double[this.states];
+
+		for (int i = 0; i < this.states; i++) {
+			pi[i] = 0.;
+		}
+
+		for (final MLDataSet sequence : this.sequnces.getSequences()) {
+			pi[this.clusters.cluster(sequence.get(0))]++;
+		}
+
+		for (int i = 0; i < this.states; i++) {
+			hmm.setPi(i, pi[i] / this.sequnces.size());
+		}
+	}
+
+	private void learnTransition(final HiddenMarkovModel hmm) {
+		for (int i = 0; i < hmm.getStateCount(); i++) {
+			for (int j = 0; j < hmm.getStateCount(); j++) {
+				hmm.setTransitionProbability(i, j, 0.);
+			}
+		}
+
+		for (final MLDataSet obsSeq : this.sequnces.getSequences()) {
+			if (obsSeq.size() < 2) {
+				continue;
+			}
+
+			int first_state;
+			int second_state = this.clusters.cluster(obsSeq.get(0));
+			for (int i = 1; i < obsSeq.size(); i++) {
+				first_state = second_state;
+				second_state = this.clusters.cluster(obsSeq.get(i));
+
+				hmm.setTransitionProbability(
+						first_state,
+						second_state,
+						hmm.getTransitionProbability(first_state, second_state) + 1.);
+			}
+		}
+
+		/* Normalize Aij array */
+		for (int i = 0; i < hmm.getStateCount(); i++) {
+			double sum = 0;
+
+			for (int j = 0; j < hmm.getStateCount(); j++) {
+				sum += hmm.getTransitionProbability(i, j);
+			}
+
+			if (sum == 0.) {
+				for (int j = 0; j < hmm.getStateCount(); j++) {
+					hmm.setTransitionProbability(i, j, 1. / hmm.getStateCount());
+				}
+			} else {
+				for (int j = 0; j < hmm.getStateCount(); j++) {
+					hmm.setTransitionProbability(i, j,
+							hmm.getTransitionProbability(i, j) / sum);
+				}
+			}
+		}
+	}
+
+	/* Return true if no modification */
+	private boolean optimizeCluster(final HiddenMarkovModel hmm) {
+		boolean modif = false;
+
+		for (final MLDataSet obsSeq : this.sequnces.getSequences()) {
+			final ViterbiCalculator vc = new ViterbiCalculator(obsSeq, hmm);
+			final int states[] = vc.stateSequence();
+
+			for (int i = 0; i < states.length; i++) {
+				final MLDataPair o = obsSeq.get(i);
+
+				if (this.clusters.cluster(o) != states[i]) {
+					modif = true;
+					this.clusters.remove(o, this.clusters.cluster(o));
+					this.clusters.put(o, states[i]);
+				}
+			}
+		}
+
+		return !modif;
+	}
+
+	@Override
+	public TrainingContinuation pause() {
+		return null;
+	}
+
+	@Override
+	public void resume(final TrainingContinuation state) {
+	}
+
+	@Override
+	public void setError(final double error) {
+
+	}
+
+	@Override
+	public void setIteration(final int iteration) {
 		this.iteration = iteration;
 	}
 }
