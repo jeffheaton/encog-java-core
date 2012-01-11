@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.0 - Java Version
+ * Encog(tm) Core v3.1 - Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  
- * Copyright 2008-2011 Heaton Research, Inc.
+ * Copyright 2008-2012 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,6 @@
  * For more information on Heaton Research copyrights, licenses 
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
- */
-/**
- * This package contains classes for RBF networks.
  */
 package org.encog.neural.rbf;
 
