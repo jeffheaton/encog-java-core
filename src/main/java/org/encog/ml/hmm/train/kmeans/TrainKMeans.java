@@ -39,6 +39,17 @@ import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
+/**
+ * Train a Hidden Markov Model (HMM) with the KMeans algorithm. Makes use of
+ * KMeans clustering to estimate the transitional and observational
+ * probabilities for the HMM.
+ * 
+ * Unlike Baum Welch training, this method does not require a prior estimate of
+ * the HMM model, it starts from scratch.
+ * 
+ * Faber, Clustering and the Continuous k-Means Algorithm, Los Alamos Science,
+ * no. 22, 1994.
+ */
 public class TrainKMeans implements MLTrain {
 	private final Clusters clusters;
 	private final int states;
@@ -209,7 +220,6 @@ public class TrainKMeans implements MLTrain {
 		}
 	}
 
-	/* Return true if no modification */
 	private boolean optimizeCluster(final HiddenMarkovModel hmm) {
 		boolean modif = false;
 

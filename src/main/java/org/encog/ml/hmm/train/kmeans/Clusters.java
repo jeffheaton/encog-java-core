@@ -32,6 +32,10 @@ import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.util.kmeans.KMeansUtil;
 
+/**
+ * Clusters used for the KMeans HMM training algorithm.
+ *
+ */
 public class Clusters {
 	private final Hashtable<MLDataPair, Integer> clustersHash;
 	private final ArrayList<Collection<MLDataPair>> clusters;

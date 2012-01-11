@@ -33,6 +33,22 @@ import org.encog.ml.data.MLSequenceSet;
 import org.encog.ml.hmm.HiddenMarkovModel;
 import org.encog.ml.hmm.alog.ForwardBackwardCalculator;
 
+/**
+ * Baum Welch Learning allows a HMM to be constructed from a series of sequence
+ * observations. This implementation of Baum Welch does not scale and is
+ * susceptible to underflows in long sequences of data.
+ * 
+ * Baum Welch requires a starting point. You should create a HMM that has a
+ * reasonable guess as to the observation and transition probabilities. If you
+ * can make no such guess, you should consider using KMeans training.
+ * 
+ * L. E. Baum, T. Petrie, G. Soules, and N. Weiss,
+ * "A maximization technique occurring in the statistical analysis of probabilistic functions of Markov chains"
+ * , Ann. Math. Statist., vol. 41, no. 1, pp. 164–171, 1970.
+ * 
+ * Hidden Markov Models and the Baum–Welch Algorithm, IEEE Information Theory
+ * Society Newsletter, Dec. 2003.
+ */
 public class TrainBaumWelch extends BaseBaumWelch {
 	public TrainBaumWelch(final HiddenMarkovModel hmm,
 			final MLSequenceSet training) {

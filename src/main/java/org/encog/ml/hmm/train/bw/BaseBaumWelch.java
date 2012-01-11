@@ -37,6 +37,23 @@ import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
+/**
+ * This class provides the base implementation for Baum-Welch learning for
+ * HMM's. There are currently two implementations provided.
+ * 
+ * TrainBaumWelch - Regular Baum Welch Learning.
+ * 
+ * TrainBaumWelchScaled - Regular Baum Welch Learning, which can handle
+ * underflows in long sequences.
+ * 
+ * L. E. Baum, T. Petrie, G. Soules, and N. Weiss,
+ * "A maximization technique occurring in the statistical analysis of probabilistic functions of Markov chains"
+ * , Ann. Math. Statist., vol. 41, no. 1, pp. 164–171, 1970.
+ * 
+ * Hidden Markov Models and the Baum–Welch Algorithm, IEEE Information Theory
+ * Society Newsletter, Dec. 2003.
+ * 
+ */
 public abstract class BaseBaumWelch implements MLTrain {
 	private int iterations;
 	private HiddenMarkovModel method;

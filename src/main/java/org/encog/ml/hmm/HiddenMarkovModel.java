@@ -36,6 +36,39 @@ import org.encog.ml.hmm.distributions.ContinousDistribution;
 import org.encog.ml.hmm.distributions.DiscreteDistribution;
 import org.encog.ml.hmm.distributions.StateDistribution;
 
+/**
+ * A Hidden Markov Model (HMM) is a Machine Learning Method that allows for
+ * predictions to be made about the hidden states and observations of a given
+ * system over time. A HMM can be thought of as a simple dynamic Bayesian
+ * network. The HMM is dynamic as it deals with changes that unfold over time.
+ * 
+ * The Hidden Markov Model is made up of a number of states and observations. A
+ * simple example might be the state of the economy. There are three hidden
+ * states, such as bull market, bear market and level. We do not know which
+ * state we are currently in. However, there are observations that can be made
+ * such as interest rate and the level of the S&P500. The HMM learns what state
+ * we are in by seeing how the observations change over time.
+ * 
+ * The HMM is only in one state at a given time. There is a percent probability
+ * that the HMM will move from one state to any of the other states. These
+ * probabilities are arranged in a grid, and are called the state transition
+ * probabilities.
+ * 
+ * Observations can be discrete or continuous. These observations allow the HMM
+ * to predict state transitions.
+ * 
+ * The HMM can handle single-value or multivariate observations.
+ * 
+ * http://www.heatonresearch.com/wiki/Hidden_Markov_Model
+ * 
+ * Rabiner, Juang, An introduction to Hidden Markov Models, IEEE ASSP Mag.,pp
+ * 4-16, June 1986.
+ * 
+ * Baum, L. E.; Petrie, T. (1966).
+ * "Statistical Inference for Probabilistic Functions of Finite State Markov Chains"
+ * The Annals of Mathematical Statistics 37 (6): 1554–1563.
+ * 
+ */
 public class HiddenMarkovModel implements MLStateSequence, Serializable,
 		Cloneable {
 	/**

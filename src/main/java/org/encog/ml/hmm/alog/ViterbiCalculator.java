@@ -29,6 +29,17 @@ import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.hmm.HiddenMarkovModel;
 
+/**
+ * The Viterbi algorithm is used to find the most likely sequence of hidden
+ * states (called the Viterbi path) that results in a sequence of observed
+ * events. Used for the Markov information sources, and more generally, hidden
+ * Markov models (HMM).
+ * 
+ * Viterbi AJ (April 1967).
+ * "Error bounds for convolutional codes and an asymptotically optimum decoding algorithm"
+ * . IEEE Transactions on Information Theory 13 (2): 260–269.
+ * doi:10.1109/TIT.1967.1054010.
+ */
 public class ViterbiCalculator {
 	private final double[][] delta;
 	private final int[][] psy;

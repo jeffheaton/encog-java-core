@@ -30,6 +30,12 @@ import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.data.basic.BasicMLSequenceSet;
 import org.encog.ml.hmm.HiddenMarkovModel;
 
+/**
+ * This class is used to generate random sequences based on a Hidden Markov
+ * Model. These sequences represent the random probabilities that the HMM
+ * models.
+ * 
+ */
 public class MarkovGenerator {
 	private final HiddenMarkovModel hmm;
 	private int currentState;
