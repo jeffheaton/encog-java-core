@@ -8,5 +8,5 @@ import org.encog.ml.data.MLDataSet;
 public interface MLStateSequence extends MLMethod {
 	public int[] getStatesForSequence(MLDataSet oseq);
 	public double probability(MLDataSet oseq);
-	public double probability(List<MLDataPair> oseq, int[] sseq);
+	public double probability(MLDataSet seq, int[] states);
 }
