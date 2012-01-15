@@ -128,6 +128,7 @@ public class AnalystField {
 		this.name = field.name;
 		this.output = field.output;
 		this.timeSlice = field.timeSlice;
+		fixSingleValue();
 	}
 
 	/**
@@ -145,6 +146,7 @@ public class AnalystField {
 		this.actualHigh = Double.MIN_VALUE;
 		this.actualLow = Double.MAX_VALUE;
 		this.action = NormalizationAction.Normalize;
+		fixSingleValue();
 	}
 
 	/**
@@ -186,6 +188,7 @@ public class AnalystField {
 		this.normalizedHigh = nhigh;
 		this.normalizedLow = nlow;
 		this.name = theName;
+		fixSingleValue();
 	}
 
 	/**
@@ -202,6 +205,7 @@ public class AnalystField {
 		this.action = theAction;
 		this.normalizedHigh = high;
 		this.normalizedLow = low;
+		fixSingleValue();
 	}
 
 	/**
