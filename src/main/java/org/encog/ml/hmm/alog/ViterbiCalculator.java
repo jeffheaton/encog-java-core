@@ -37,7 +37,7 @@ import org.encog.ml.hmm.HiddenMarkovModel;
  * 
  * Viterbi AJ (April 1967).
  * "Error bounds for convolutional codes and an asymptotically optimum decoding algorithm"
- * . IEEE Transactions on Information Theory 13 (2): 260–269.
+ * . IEEE Transactions on Information Theory 13 (2): 260-269.
  * doi:10.1109/TIT.1967.1054010.
  */
 public class ViterbiCalculator {

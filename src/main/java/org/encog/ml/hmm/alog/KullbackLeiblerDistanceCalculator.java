@@ -31,7 +31,7 @@ import org.encog.ml.hmm.HiddenMarkovModel;
  * HMMs. This allows the similarity of two different HMM's to be evaluated.
  * 
  * ^ Kullback, S.; Leibler, R.A. (1951). "On Information and Sufficiency".
- * Annals of Mathematical Statistics 22 (1): 79–86. doi:10.1214/aoms/1177729694.
+ * Annals of Mathematical Statistics 22 (1): 79-86. doi:10.1214/aoms/1177729694.
  * MR39968.
  */
 public class KullbackLeiblerDistanceCalculator {

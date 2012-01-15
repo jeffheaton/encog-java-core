@@ -66,7 +66,7 @@ import org.encog.ml.hmm.distributions.StateDistribution;
  * 
  * Baum, L. E.; Petrie, T. (1966).
  * "Statistical Inference for Probabilistic Functions of Finite State Markov Chains"
- * The Annals of Mathematical Statistics 37 (6): 1554–1563.
+ * The Annals of Mathematical Statistics 37 (6): 1554-1563.
  * 
  */
 public class HiddenMarkovModel implements MLStateSequence, Serializable,

@@ -45,9 +45,9 @@ import org.encog.ml.hmm.alog.ForwardBackwardScaledCalculator;
  * 
  * L. E. Baum, T. Petrie, G. Soules, and N. Weiss,
  * "A maximization technique occurring in the statistical analysis of probabilistic functions of Markov chains"
- * , Ann. Math. Statist., vol. 41, no. 1, pp. 164–171, 1970.
+ * , Ann. Math. Statist., vol. 41, no. 1, pp. 164-171, 1970.
  * 
- * Hidden Markov Models and the Baum–Welch Algorithm, IEEE Information Theory
+ * Hidden Markov Models and the Baum-Welch Algorithm, IEEE Information Theory
  * Society Newsletter, Dec. 2003.
  */
 public class TrainBaumWelchScaled extends BaseBaumWelch {

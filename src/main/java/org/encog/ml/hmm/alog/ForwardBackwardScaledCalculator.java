@@ -32,7 +32,7 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.hmm.HiddenMarkovModel;
 
 /**
- * The forward–backward algorithm is an inference algorithm for hidden Markov
+ * The forward-backward algorithm is an inference algorithm for hidden Markov
  * models which computes the posterior marginals of all hidden state variables
  * given a sequence of observations. This version makes use of scaling, and will
  * not generate underflows with long sequences.
