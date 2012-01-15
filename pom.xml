@@ -45,6 +45,9 @@ Authors of this POM file: iirekm, jheaton
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
   	<scm>
     		<connection>scm:svn:http://encog-java.googlecode.com/svn/trunk/encog-core/</connection>
     		<developerConnection>scm:svn:https://encog-java.googlecode.com/svn/trunk/encog-core/</developerConnection>
