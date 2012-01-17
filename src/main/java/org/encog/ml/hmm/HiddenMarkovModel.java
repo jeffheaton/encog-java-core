@@ -72,14 +72,31 @@ import org.encog.ml.hmm.distributions.StateDistribution;
 public class HiddenMarkovModel implements MLStateSequence, Serializable,
 		Cloneable {
 	/**
-	 * 
+	 * The serial id.
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * The initial probabilities for each state.
+	 */
 	private double pi[];
+	
+	/**
+	 * The transitional probabilities between the states.
+	 */
 	private double transitionProbability[][];
+	
+	/**
+	 * The mapping of observation probabilities to the
+	 * states.
+	 */
 	private final StateDistribution[] stateDistributions;
 	private final int items;
 
+	/**
+	 * Construct a continuous HMM with the specified number of states.
+	 * @param nbStates The number of states.
+	 */
 	public HiddenMarkovModel(final int nbStates) {
 		this.items = -1;
 		this.pi = new double[nbStates];
