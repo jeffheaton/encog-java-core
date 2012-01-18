@@ -30,34 +30,49 @@ import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
+import org.encog.util.EngineArray;
 
 public class DiscreteDistribution implements StateDistribution {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private final double[] probabilities;
+	private final double[][] probabilities;
 
-	public DiscreteDistribution(final double[] probabilities) {
-		if (probabilities.length == 0) {
+	public DiscreteDistribution(final int[][] theProbabilities) {
+		if (theProbabilities.length == 0) {
 			throw new IllegalArgumentException("Invalid empty array");
 		}
 
-		this.probabilities = new double[probabilities.length];
+		this.probabilities = new double[theProbabilities.length][];
 
-		for (int i = 0; i < probabilities.length; i++) {
-			if ((this.probabilities[i] = probabilities[i]) < 0.) {
-				throw new IllegalArgumentException();
+		for (int i = 0; i < theProbabilities.length; i++) {
+			probabilities[i] = new double[theProbabilities[i].length];
+			for (int j = 0; j < probabilities.length; j++) {
+				if ((this.probabilities[i][j] = probabilities[i][j]) < 0.) {
+					throw new IllegalArgumentException();
+				}
+			}
+		}
+	}
+	
+	public int getDimensions() {
+		return this.probabilities.length;
+	}
+
+	public DiscreteDistribution(final int[] c) {
+		this.probabilities = new double[c.length][];
+
+		for (int i = 0; i < c.length; i++) {
+			this.probabilities[i] = new double[c[i]];
+			for (int j = 0; j < c[i]; j++) {
+				this.probabilities[i][j] = 1.0 / c[i];
 			}
 		}
 	}
 
-	public DiscreteDistribution(final int c) {
-		this.probabilities = new double[c];
-
-		for (int i = 0; i < c; i++) {
-			this.probabilities[i] = 1.0 / c;
-		}
+	public DiscreteDistribution(double[] ds) {
+		this.probabilities = new double[][] { ds };
 	}
 
 	@Override
@@ -75,16 +90,19 @@ public class DiscreteDistribution implements StateDistribution {
 			throw new IllegalArgumentException("Empty observation set");
 		}
 
-		for (int i = 0; i < this.probabilities.length; i++) {
-			this.probabilities[i] = 0.0;
-		}
+		for (int i = 0; i < this.getDimensions(); i++) {
+			for (int j = 0; j < this.probabilities.length; j++) {
+				this.probabilities[i][j] = 0.0;
+			}
 
-		for (final MLDataPair o : co) {
-			this.probabilities[(int) o.getInput().getData(0)]++;
-		}
+			for (final MLDataPair o : co) {
+				int idx = (int) o.getInput().getData(i);
+				this.probabilities[i][idx]++;
+			}
 
-		for (int i = 0; i < this.probabilities.length; i++) {
-			this.probabilities[i] /= co.size();
+			for (int j = 0; j < this.probabilities.length; j++) {
+				this.probabilities[i][j] /= co.size();
+			}
 		}
 	}
 
@@ -94,27 +112,32 @@ public class DiscreteDistribution implements StateDistribution {
 			throw new IllegalArgumentException();
 		}
 
-		Arrays.fill(this.probabilities, 0.0);
+		for (int i = 0; i < this.getDimensions(); i++) {
+			EngineArray.fill(this.probabilities[i], 0.0);
 
-		int i = 0;
-		for (final MLDataPair o : co) {
-			this.probabilities[(int) o.getInput().getData(0)] += weights[i++];
+			int j = 0;
+			for (final MLDataPair o : co) {
+				int idx = (int) o.getInput().getData(i);
+				this.probabilities[i][idx] += weights[j++];
+			}
 		}
 	}
 
 	@Override
 	public MLDataPair generate() {
-		final MLData result = new BasicMLData(1);
-		double rand = Math.random();
+		final MLData result = new BasicMLData(getDimensions());
 
-		for (int i = 0; i < (this.probabilities.length - 1); i++) {
-			if ((rand -= this.probabilities[i]) < 0.0) {
-				result.setData(0, i);
-				return new BasicMLDataPair(result);
+		for (int i = 0; i < getDimensions(); i++) {
+			double rand = Math.random();
+
+			for (int j = 0; j < (this.probabilities.length - 1); j++) {
+				if ((rand -= this.probabilities[i][j]) < 0.0) {
+					result.setData(i, j);
+				}
 			}
-		}
 
-		result.setData(0, this.probabilities.length - 1);
+			result.setData(0, this.probabilities.length - 1);
+		}
 		return new BasicMLDataPair(result);
 	}
 
@@ -123,8 +146,14 @@ public class DiscreteDistribution implements StateDistribution {
 		if (o.getInput().getData(0) > (this.probabilities.length - 1)) {
 			throw new IllegalArgumentException("Wrong observation value");
 		}
+		
+		double result = 1.0;
+		
+		for(int i=0;i<o.getInput().size();i++ ) {
+			result*=this.probabilities[i][(int) o.getInput().getData(i)];
+		}
 
-		return this.probabilities[(int) o.getInput().getData(0)];
+		return result;
 	}
 
 }

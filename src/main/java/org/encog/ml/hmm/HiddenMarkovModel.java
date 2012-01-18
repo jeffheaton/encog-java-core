@@ -91,36 +91,40 @@ public class HiddenMarkovModel implements MLStateSequence, Serializable,
 	 * states.
 	 */
 	private final StateDistribution[] stateDistributions;
-	private final int items;
+	
+	/**
+	 * The counts for each item in a discrete HMM.
+	 */
+	private final int[] items;
 
 	/**
-	 * Construct a continuous HMM with the specified number of states.
-	 * @param nbStates The number of states.
+	 * Construct a discrete HMM with the specified number of states.
+	 * @param states The number of states.
 	 */
-	public HiddenMarkovModel(final int nbStates) {
-		this.items = -1;
-		this.pi = new double[nbStates];
-		this.transitionProbability = new double[nbStates][nbStates];
-		this.stateDistributions = new StateDistribution[nbStates];
+	public HiddenMarkovModel(final int states) {
+		this.items = null;
+		this.pi = new double[states];
+		this.transitionProbability = new double[states][states];
+		this.stateDistributions = new StateDistribution[states];
 
-		for (int i = 0; i < nbStates; i++) {
-			this.pi[i] = 1. / nbStates;
+		for (int i = 0; i < states; i++) {
+			this.pi[i] = 1. / states;
 
-			if (isContinuous()) {
-				this.stateDistributions[i] = new ContinousDistribution(
-						getStateCount());
-			} else {
-				this.stateDistributions[i] = new DiscreteDistribution(
-						getStateCount());
-			}
+			this.stateDistributions[i] = new ContinousDistribution(
+					getStateCount());			 
 
-			for (int j = 0; j < nbStates; j++) {
-				this.transitionProbability[i][j] = 1. / nbStates;
+			for (int j = 0; j < states; j++) {
+				this.transitionProbability[i][j] = 1. / states;
 			}
 		}
 	}
-
+	
 	public HiddenMarkovModel(final int theStates, final int theItems) {
+		this(theStates, new int[] { theItems } );
+		
+	}
+
+	public HiddenMarkovModel(final int theStates, final int[] theItems) {
 		this.items = theItems;
 		this.pi = new double[theStates];
 		this.transitionProbability = new double[theStates][theStates];
@@ -169,7 +173,7 @@ public class HiddenMarkovModel implements MLStateSequence, Serializable,
 
 	public StateDistribution createNewDistribution() {
 		if (isContinuous()) {
-			return new ContinousDistribution(this.items);
+			return new ContinousDistribution(getStateCount());
 		} else {
 			return new DiscreteDistribution(this.items);
 		}
@@ -197,7 +201,7 @@ public class HiddenMarkovModel implements MLStateSequence, Serializable,
 	}
 
 	public boolean isContinuous() {
-		return this.items == -1;
+		return this.items == null;
 	}
 
 	public boolean isDiscrete() {
