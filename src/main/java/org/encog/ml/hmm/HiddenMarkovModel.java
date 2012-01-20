@@ -26,6 +26,8 @@ package org.encog.ml.hmm;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.ml.BasicML;
 import org.encog.ml.MLStateSequence;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
@@ -69,12 +71,28 @@ import org.encog.ml.hmm.distributions.StateDistribution;
  * The Annals of Mathematical Statistics 37 (6): 1554-1563.
  * 
  */
-public class HiddenMarkovModel implements MLStateSequence, Serializable,
+public class HiddenMarkovModel extends BasicML implements MLStateSequence, Serializable,
 		Cloneable {
 	/**
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = 1L;
+
+	public static final String TAG_STATES = "sates";
+
+	public static final String TAG_ITEMS = "items";
+
+	public static final String TAG_PI = "pi";
+
+	public static final String TAG_TRANSITION = "transition";
+
+	public static final String TAG_DIST_TYPE = "type";
+
+	public static final String TAG_MEAN = "mean";
+
+	public static final String TAG_COVARIANCE = "covariance";
+
+	public static final String TAG_PROBABILITIES = "probabilities";
 	
 	/**
 	 * The initial probabilities for each state.
@@ -250,5 +268,23 @@ public class HiddenMarkovModel implements MLStateSequence, Serializable,
 	public void setTransitionProbability(final int i, final int j,
 			final double value) {
 		this.transitionProbability[i][j] = value;
+	}
+
+	@Override
+	public void updateProperties() {
+
+		
+	}
+
+	public int[] getItems() {
+		return this.items;
+	}
+
+	public double[] getPi() {
+		return this.pi;
+	}
+
+	public double[][] getTransitionProbability() {
+		return this.transitionProbability;
 	}
 }

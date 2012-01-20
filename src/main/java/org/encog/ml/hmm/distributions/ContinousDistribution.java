@@ -26,6 +26,7 @@ package org.encog.ml.hmm.distributions;
 import java.util.Arrays;
 import java.util.Random;
 
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.MatrixMath;
 import org.encog.mathutil.matrices.decomposition.CholeskyDecomposition;
@@ -155,5 +156,13 @@ public class ContinousDistribution implements StateDistribution {
 		this.covarianceL = this.cd.getL();
 		this.covarianceInv = this.cd.inverseCholesky();
 		this.covarianceDet = this.cd.getDeterminant();
+	}
+
+	public double[] getMean() {
+		return this.mean;
+	}
+
+	public Matrix getCovariance() {
+		return this.covariance;
 	}
 }
