@@ -92,8 +92,8 @@ public class TestHMM extends TestCase {
 		hmm.setPi(0, 0.95);
 		hmm.setPi(1, 0.05);
 		
-		hmm.setStateDistribution(0, new DiscreteDistribution(new double[] { 0.95, 0.05 }));
-		hmm.setStateDistribution(1, new DiscreteDistribution(new double[] { 0.20, 0.80 }));
+		hmm.setStateDistribution(0, new DiscreteDistribution(new double[][] { { 0.95, 0.05 } }));
+		hmm.setStateDistribution(1, new DiscreteDistribution(new double[][] { { 0.20, 0.80 } }));
 		
 		hmm.setTransitionProbability(0, 1, 0.05);
 		hmm.setTransitionProbability(0, 0, 0.95);
@@ -113,8 +113,8 @@ public class TestHMM extends TestCase {
 		hmm.setPi(0, 0.50);
 		hmm.setPi(1, 0.50);
 		
-		hmm.setStateDistribution(0, new DiscreteDistribution(new double[] { 0.8, 0.2 }));
-		hmm.setStateDistribution(1, new DiscreteDistribution(new double[] { 0.1, 0.9 }));
+		hmm.setStateDistribution(0, new DiscreteDistribution(new double[][] { { 0.8, 0.2 } }));
+		hmm.setStateDistribution(1, new DiscreteDistribution(new double[][] { { 0.1, 0.9 } }));
 		
 		hmm.setTransitionProbability(0, 1, 0.2);
 		hmm.setTransitionProbability(0, 0, 0.8);

@@ -30,16 +30,14 @@ import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.util.EngineArray;
 
 public class DiscreteDistribution implements StateDistribution {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private final double[][] probabilities;
 
-	public DiscreteDistribution(final int[][] theProbabilities) {
+	public DiscreteDistribution(final double[][] theProbabilities) {
+		
 		if (theProbabilities.length == 0) {
 			throw new IllegalArgumentException("Invalid empty array");
 		}
@@ -47,32 +45,31 @@ public class DiscreteDistribution implements StateDistribution {
 		this.probabilities = new double[theProbabilities.length][];
 
 		for (int i = 0; i < theProbabilities.length; i++) {
-			probabilities[i] = new double[theProbabilities[i].length];
-			for (int j = 0; j < probabilities.length; j++) {
-				if ((this.probabilities[i][j] = probabilities[i][j]) < 0.) {
+			
+			if (theProbabilities[i].length == 0) {
+				throw new IllegalArgumentException("Invalid empty array");
+			}
+			
+			this.probabilities[i] = new double[theProbabilities[i].length];
+			
+			for (int j = 0; j < probabilities[i].length; j++) {
+				if ((this.probabilities[i][j] = theProbabilities[i][j]) < 0.0) {
 					throw new IllegalArgumentException();
 				}
 			}
-		}
+		}		
 	}
+
+	public DiscreteDistribution(final int[] cx) {
+		this.probabilities = new double[cx.length][];
+		for(int i=0;i<cx.length;i++) {
+			int c = cx[i];
+			this.probabilities[i] = new double[c];
 	
-	public int getDimensions() {
-		return this.probabilities.length;
-	}
-
-	public DiscreteDistribution(final int[] c) {
-		this.probabilities = new double[c.length][];
-
-		for (int i = 0; i < c.length; i++) {
-			this.probabilities[i] = new double[c[i]];
-			for (int j = 0; j < c[i]; j++) {
-				this.probabilities[i][j] = 1.0 / c[i];
+			for (int j = 0; j < c; j++) {
+				this.probabilities[i][j] = 1.0 / c;
 			}
 		}
-	}
-
-	public DiscreteDistribution(double[] ds) {
-		this.probabilities = new double[][] { ds };
 	}
 
 	@Override
@@ -90,17 +87,17 @@ public class DiscreteDistribution implements StateDistribution {
 			throw new IllegalArgumentException("Empty observation set");
 		}
 
-		for (int i = 0; i < this.getDimensions(); i++) {
-			for (int j = 0; j < this.probabilities.length; j++) {
+		for (int i = 0; i < this.probabilities.length; i++) {
+
+			for (int j = 0; j < this.probabilities[i].length; j++) {
 				this.probabilities[i][j] = 0.0;
 			}
 
 			for (final MLDataPair o : co) {
-				int idx = (int) o.getInput().getData(i);
-				this.probabilities[i][idx]++;
+				this.probabilities[i][(int) o.getInput().getData(i)]++;
 			}
 
-			for (int j = 0; j < this.probabilities.length; j++) {
+			for (int j = 0; j < this.probabilities[i].length; j++) {
 				this.probabilities[i][j] /= co.size();
 			}
 		}
@@ -112,45 +109,45 @@ public class DiscreteDistribution implements StateDistribution {
 			throw new IllegalArgumentException();
 		}
 
-		for (int i = 0; i < this.getDimensions(); i++) {
-			EngineArray.fill(this.probabilities[i], 0.0);
+		for(int i=0;i<this.probabilities.length;i++) {
+		Arrays.fill(this.probabilities[i], 0.0);
 
-			int j = 0;
-			for (final MLDataPair o : co) {
-				int idx = (int) o.getInput().getData(i);
-				this.probabilities[i][idx] += weights[j++];
-			}
+		int j = 0;
+		for (final MLDataPair o : co) {
+			this.probabilities[i][(int) o.getInput().getData(i)] += weights[j++];
+		}
 		}
 	}
 
 	@Override
 	public MLDataPair generate() {
-		final MLData result = new BasicMLData(getDimensions());
+		final MLData result = new BasicMLData(this.probabilities.length);
 
-		for (int i = 0; i < getDimensions(); i++) {
+		for (int i = 0; i < this.probabilities.length; i++) {
 			double rand = Math.random();
 
-			for (int j = 0; j < (this.probabilities.length - 1); j++) {
+			result.setData(i, this.probabilities[i].length - 1);
+			for (int j = 0; j < (this.probabilities[i].length - 1); j++) {
 				if ((rand -= this.probabilities[i][j]) < 0.0) {
 					result.setData(i, j);
+					break;
 				}
 			}
-
-			result.setData(0, this.probabilities.length - 1);
 		}
-		return new BasicMLDataPair(result);
+
+	return new BasicMLDataPair(result);
 	}
 
 	@Override
 	public double probability(final MLDataPair o) {
-		if (o.getInput().getData(0) > (this.probabilities.length - 1)) {
-			throw new IllegalArgumentException("Wrong observation value");
-		}
 		
-		double result = 1.0;
+		double result = 1;
 		
-		for(int i=0;i<o.getInput().size();i++ ) {
-			result*=this.probabilities[i][(int) o.getInput().getData(i)];
+		for(int i = 0;i <this.probabilities.length;i++) {
+			if (o.getInput().getData(i) > (this.probabilities[i].length - 1)) {
+				throw new IllegalArgumentException("Wrong observation value");
+			}
+			result *= this.probabilities[i][(int) o.getInput().getData(i)];
 		}
 
 		return result;
