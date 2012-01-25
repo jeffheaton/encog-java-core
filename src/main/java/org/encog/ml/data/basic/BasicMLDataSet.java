@@ -302,6 +302,11 @@ public class BasicMLDataSet implements Serializable, MLDataSet {
 		this.data = theData;
 	}
 
+	/**
+	 * Concert the data set to a list.
+	 * @param theSet The data set to convert.
+	 * @return The list.
+	 */
 	public static List<MLDataPair> toList(MLDataSet theSet) {
 		List<MLDataPair> list = new ArrayList<MLDataPair>();
 		for(MLDataPair pair: theSet) {
@@ -310,11 +315,17 @@ public class BasicMLDataSet implements Serializable, MLDataSet {
 		return list;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int size() {
 		return (int)getRecordCount();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public MLDataPair get(int index) {
 		return this.data.get(index);

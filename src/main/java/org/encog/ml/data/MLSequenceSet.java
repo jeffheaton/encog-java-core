@@ -25,10 +25,43 @@ package org.encog.ml.data;
 
 import java.util.Collection;
 
+/**
+ * A sequence set is a collection of data sets. Where each individual data set
+ * is one "unbroken sequence" within the sequence set. This allows individual
+ * observations to occur individually, indicating a break between them.
+ * 
+ * The sequence set, itself, is a data set, so it can be used with any Encog
+ * trainer. However, not all trainers are aware of sequence sets. Further, some
+ * machine learning methods are unaffected by them. Sequence sets are typically
+ * used with Hidden Markov Models (HMM)'s.
+ */
 public interface MLSequenceSet extends MLDataSet {
+	
+	/**
+	 * Cause a "break" in the data by creating a the beginning of a new sequence.
+	 */
 	void startNewSequence();
+
+	/**
+	 * @return Get a count of the number of sequences.
+	 */
 	int getSequenceCount();
+
+	/**
+	 * Get an individual sequence.
+	 * @param i The index of the sequence.
+	 * @return The sequence.
+	 */
 	MLDataSet getSequence(int i);
+
+	/**
+	 * @return A list of all of the sequences.
+	 */
 	Collection<MLDataSet> getSequences();
+
+	/**
+	 * Add a new sequence.
+	 * @param sequence The sequence to add.
+	 */
 	void add(MLDataSet sequence);
 }
