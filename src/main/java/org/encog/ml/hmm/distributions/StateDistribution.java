@@ -28,14 +28,50 @@ import java.io.Serializable;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 
+/**
+ * This class represents a "state distribution". This is the means by which the
+ * probabilities between the states and observations are mapped. Currently two
+ * are supported. Use ContinousDistribution to use a Gaussian-based continuous
+ * distribution. Use DiscreteDistribution for a item-based distribution.
+ * 
+ */
 public interface StateDistribution extends Cloneable, Serializable {
+
+	/**
+	 * @return A clone of this distribution.
+	 */
 	StateDistribution clone();
 
-	void fit(MLDataSet oa);
+	/**
+	 * Fit this distribution to the specified data set.
+	 * 
+	 * @param set
+	 *            The data set to fit to.
+	 */
+	void fit(MLDataSet set);
 
-	void fit(MLDataSet o, double[] weights);
+	/**
+	 * Fit this distribution to the specified data set, given the specified
+	 * weights, per element.
+	 * 
+	 * @param set
+	 *            The data set to fit to.
+	 * @param weights
+	 *            The weights.
+	 */
+	void fit(MLDataSet set, double[] weights);
 
+	/**
+	 * Generate a random data pair, based on the probabilities.
+	 * 
+	 * @return A random data pair.
+	 */
 	MLDataPair generate();
 
+	/**
+	 * Determine the probability of the specified data pair.
+	 * @param o The pair to consider.
+	 * @return The probability.
+	 */
 	double probability(MLDataPair o);
 }

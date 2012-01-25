@@ -25,7 +25,6 @@ package org.encog.ml.hmm.distributions;
 
 import java.util.Arrays;
 
-import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
