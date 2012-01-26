@@ -230,14 +230,17 @@ public class PersistBasicPNN implements EncogPersistor {
 		out.writeProperty(PersistConst.SIGMA, pnn.getSigma());
 
 		out.addSubSection("SAMPLES");
-		for (final MLDataPair pair : pnn.getSamples()) {
-			for (int i = 0; i < pair.getInput().size(); i++) {
-				out.addColumn(pair.getInput().getData(i));
+		
+		if (pnn.getSamples() != null) {
+			for (final MLDataPair pair : pnn.getSamples()) {
+				for (int i = 0; i < pair.getInput().size(); i++) {
+					out.addColumn(pair.getInput().getData(i));
+				}
+				for (int i = 0; i < pair.getIdeal().size(); i++) {
+					out.addColumn(pair.getIdeal().getData(i));
+				}
+				out.writeLine();
 			}
-			for (int i = 0; i < pair.getIdeal().size(); i++) {
-				out.addColumn(pair.getIdeal().getData(i));
-			}
-			out.writeLine();
 		}
 
 		out.flush();
