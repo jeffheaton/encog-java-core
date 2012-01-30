@@ -191,5 +191,57 @@ public class TemporalWindowArray {
 	public final void setPredictWindow(final int thePredictWindow) {
 		this.predictWindow = thePredictWindow;
 	}
+		
+    /**
+     * Processes the specified data array in an IMLDataset.
+     * You can send a [][] array directly with this method.
+     * @param data The data.
+     * @return The data set.
+     */
+    public MLDataSet process(double[][] data)
+    {
+        MLDataSet result = new BasicMLDataSet();
+        for(double[] doubles : data)
+        {
+            result.add(processToPair(doubles));
+        }
+        return result;
+    }
+	
+    /**
+     * Process the data array and returns an MLdatapair.
+     * @param data The array to process.
+     * @return MLDatapair containing data.
+     */
+    public MLDataPair processToPair(double[] data)
+    {
+
+        MLDataPair pair = null;
+        int totalWindowSize = inputWindow + predictWindow;
+        int stopPoint = data.length - totalWindowSize;
+
+        for (int i = 0; i < stopPoint; i++)
+        {
+            MLData inputData = new BasicMLData(inputWindow);
+            MLData idealData = new BasicMLData(predictWindow);
+
+            int index = i;
+
+            // handle input window
+            for (int j = 0; j < inputWindow; j++)
+            {
+                inputData.setData(j, data[index++]);
+            }
+
+            // handle predict window
+            for (int j = 0; j < predictWindow; j++)
+            {
+                idealData.setData(j, data[index++]);
+            }
+
+            pair = new BasicMLDataPair(inputData, idealData);
+        }
+        return pair;
+    }
 
 }
