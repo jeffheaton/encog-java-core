@@ -35,10 +35,12 @@ import org.encog.ml.data.MLDataError;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.MLSequenceSet;
-import org.encog.ml.data.basic.BasicMLDataSet.BasicMLIterator;
 import org.encog.util.EngineArray;
 import org.encog.util.obj.ObjectCloner;
 
+/**
+ * A basic implementation of the MLSequenceSet.
+ */
 public class BasicMLSequenceSet implements Serializable, MLSequenceSet {
 
 	/**
@@ -54,6 +56,9 @@ public class BasicMLSequenceSet implements Serializable, MLSequenceSet {
 		 */
 		private int currentIndex = 0;
 		
+		/**
+		 * The sequence index.
+		 */
 		private int currentSequenceIndex = 0;
 
 		/**
