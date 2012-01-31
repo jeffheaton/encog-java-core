@@ -23,6 +23,8 @@
  */
 package org.encog.mathutil.matrices.decomposition;
 
+import java.io.Serializable;
+
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.MatrixError;
 
@@ -40,7 +42,7 @@ import org.encog.mathutil.matrices.MatrixError;
  * This file based on a class from the public domain JAMA package.
  * http://math.nist.gov/javanumerics/jama/
  */
-public class CholeskyDecomposition {
+public class CholeskyDecomposition implements Serializable {
 
 
 	/**

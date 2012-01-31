@@ -26,7 +26,7 @@ package org.encog.ml.hmm;
 import java.io.Serializable;
 import java.util.Iterator;
 
-import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.EncogError;
 import org.encog.ml.BasicML;
 import org.encog.ml.MLStateSequence;
 import org.encog.ml.data.MLDataPair;
@@ -197,8 +197,8 @@ public class HiddenMarkovModel extends BasicML implements MLStateSequence, Seria
 		}
 	}
 
-	public double getPi(final int stateNb) {
-		return this.pi[stateNb];
+	public double getPi(final int i) {
+		return this.pi[i];
 	}
 
 	public int getStateCount() {
@@ -256,13 +256,13 @@ public class HiddenMarkovModel extends BasicML implements MLStateSequence, Seria
 						seq.get(states.length - 1));
 	}
 
-	public void setPi(final int stateNb, final double value) {
-		this.pi[stateNb] = value;
+	public void setPi(final int i, final double value) {
+		this.pi[i] = value;
 	}
 
-	public void setStateDistribution(final int stateNb,
-			final StateDistribution opdf) {
-		this.stateDistributions[stateNb] = opdf;
+	public void setStateDistribution(final int i,
+			final StateDistribution dist) {
+		this.stateDistributions[i] = dist;
 	}
 
 	public void setTransitionProbability(final int i, final int j,
@@ -286,5 +286,20 @@ public class HiddenMarkovModel extends BasicML implements MLStateSequence, Seria
 
 	public double[][] getTransitionProbability() {
 		return this.transitionProbability;
+	}
+
+	public void setTransitionProbability(double[][] data) {
+		if( data.length!= this.transitionProbability.length || data[0].length!=this.transitionProbability[0].length) {
+			throw new EncogError("Dimensions of transationalProbability must match number of states.");
+		}
+		this.transitionProbability = data;
+	}
+
+	public void setPi(double[] data) {
+		if( data.length!=this.pi.length ) {
+			throw new EncogError("The length of pi, must match the number of states.");
+		}
+		this.pi = data;
+		
 	}
 }

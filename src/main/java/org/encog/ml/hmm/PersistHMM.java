@@ -2,6 +2,8 @@ package org.encog.ml.hmm;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.encog.mathutil.matrices.Matrix;
@@ -40,9 +42,10 @@ public class PersistHMM implements EncogPersistor {
 	public final Object read(final InputStream is) {
 		int states = 0;
 		int items[];
-		double pi[];
-		Matrix transitionProbability;
+		double pi[] = null;
+		Matrix transitionProbability = null;
 		Map<String,String> properties = null;
+		List<StateDistribution> distributions = new ArrayList<StateDistribution>();
 		
 		final EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;
@@ -58,18 +61,37 @@ public class PersistHMM implements EncogPersistor {
 				final Map<String, String> params = section.parseParams();
 
 				states = EncogFileSection.parseInt(params, HiddenMarkovModel.TAG_STATES);
-				items = EncogFileSection.parseIntArray(params, HiddenMarkovModel.TAG_ITEMS);
+				
+				if( params.containsKey(HiddenMarkovModel.TAG_ITEMS) ) {
+					items = EncogFileSection.parseIntArray(params, HiddenMarkovModel.TAG_ITEMS);
+				}
 				pi = section.parseDoubleArray(params,	HiddenMarkovModel.TAG_PI);
 				transitionProbability = section.parseMatrix(params, HiddenMarkovModel.TAG_TRANSITION);
-			} else if (section.getSectionName().equals("BASIC")
+			} else if (section.getSectionName().equals("HMM")
 					&& section.getSubSectionName().startsWith("DISTRIBUTION-")) {
-				
+				final Map<String, String> params = section.parseParams();
+				String t = params.get(HiddenMarkovModel.TAG_DIST_TYPE);
+				if( "ContinousDistribution".equals(t) ) {
+					double[] mean = section.parseDoubleArray(params, HiddenMarkovModel.TAG_MEAN);
+					Matrix cova = section.parseMatrix(params, HiddenMarkovModel.TAG_COVARIANCE);
+					ContinousDistribution dist = new ContinousDistribution(mean,cova.getData());
+					distributions.add(dist);
+				} else if( "DiscreteDistribution".equals(t) ) {
+					Matrix prob = section.parseMatrix(params, HiddenMarkovModel.TAG_PROBABILITIES);
+					DiscreteDistribution dist = new DiscreteDistribution(prob.getData());
+					distributions.add(dist);
+				}
 			}
 		}
 		
 		final HiddenMarkovModel result = new HiddenMarkovModel(states);
 		result.getProperties().putAll(properties);
-
+		result.setTransitionProbability(transitionProbability.getData());
+		result.setPi(pi);
+		int index = 0;
+		for(StateDistribution dist: distributions) {
+			result.setStateDistribution(index++, dist);
+		}
 		
 
 		return result;
@@ -89,7 +111,9 @@ public class PersistHMM implements EncogPersistor {
 		out.addSubSection("CONFIG");
 
 		out.writeProperty(HiddenMarkovModel.TAG_STATES,net.getStateCount());
-		out.writeProperty(HiddenMarkovModel.TAG_ITEMS,net.getItems());
+		if( net.getItems()!=null ) {
+			out.writeProperty(HiddenMarkovModel.TAG_ITEMS,net.getItems());
+		}
 		out.writeProperty(HiddenMarkovModel.TAG_PI,net.getPi());
 		out.writeProperty(HiddenMarkovModel.TAG_TRANSITION,new Matrix(net.getTransitionProbability()));
 		
@@ -97,9 +121,9 @@ public class PersistHMM implements EncogPersistor {
 			out.addSubSection("DISTRIBUTION-"+i);	
 			StateDistribution sd = net.getStateDistribution(i);
 			out.writeProperty(HiddenMarkovModel.TAG_DIST_TYPE, sd.getClass().getSimpleName());
+			
 			if( sd instanceof ContinousDistribution ) {
 				ContinousDistribution cDist = (ContinousDistribution)sd;
-				
 				out.writeProperty(HiddenMarkovModel.TAG_MEAN, cDist.getMean());
 				out.writeProperty(HiddenMarkovModel.TAG_COVARIANCE, cDist.getCovariance());
 				
