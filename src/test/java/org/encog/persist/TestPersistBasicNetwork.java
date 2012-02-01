@@ -29,9 +29,12 @@ import java.io.IOException;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.neural.art.ART1;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.XOR;
+import org.encog.neural.networks.layers.BasicLayer;
+import org.encog.util.EngineArray;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
 
@@ -66,6 +69,43 @@ public class TestPersistBasicNetwork extends TestCase {
 		BasicNetwork network2 = (BasicNetwork)EncogDirectoryPersistence.loadObject(EG_FILENAME);
 
 		validate(network2);
+	}
+	
+	public void testPersistMediumEG()
+	{
+		BasicNetwork network = new BasicNetwork();
+		network.addLayer(new BasicLayer(null,true,10));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(),true,10));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(),false,10));
+		network.getStructure().finalizeStructure();
+		network.reset();
+
+		EncogDirectoryPersistence.saveObject(EG_FILENAME, network);
+		BasicNetwork network2 = (BasicNetwork)EncogDirectoryPersistence.loadObject(EG_FILENAME);
+
+		double d = EngineArray.euclideanDistance(network.getStructure().getFlat().getWeights(), 
+				network2.getStructure().getFlat().getWeights());
+		
+		Assert.assertTrue(d<0.01);
+	}
+	
+	public void testPersistLargeEG()
+	{
+		BasicNetwork network = new BasicNetwork();
+		network.addLayer(new BasicLayer(null,true,200));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(),true,200));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(),true,200));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(),false,200));
+		network.getStructure().finalizeStructure();
+		network.reset();
+
+		EncogDirectoryPersistence.saveObject(EG_FILENAME, network);
+		BasicNetwork network2 = (BasicNetwork)EncogDirectoryPersistence.loadObject(EG_FILENAME);
+
+		double d = EngineArray.euclideanDistance(network.getStructure().getFlat().getWeights(), 
+				network2.getStructure().getFlat().getWeights());
+		
+		Assert.assertTrue(d<0.01);
 	}
 	
 	public void testPersistSerial() throws IOException, ClassNotFoundException
