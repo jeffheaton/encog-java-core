@@ -192,7 +192,7 @@ public class EncogReadHelper {
 				break;
 			}
 			
-			double[] t = NumberList.fromList(CSVFormat.EG_FORMAT, str);
+			double[] t = NumberList.fromList(CSVFormat.EG_FORMAT, line);
 			EngineArray.arrayCopy(t, 0, result, index, t.length);
 			index+=t.length;
 		}
