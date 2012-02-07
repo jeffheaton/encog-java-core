@@ -158,7 +158,7 @@ public class NeuralPSO extends BasicTraining {
      */
     public NeuralPSO(BasicNetwork network, MLDataSet trainingSet)        
     {   
-    	this(network, new NguyenWidrowRandomizer(-1, 1), new TrainingSetScore(trainingSet), 20);
+    	this(network, new NguyenWidrowRandomizer(), new TrainingSetScore(trainingSet), 20);
     }
 
     /**

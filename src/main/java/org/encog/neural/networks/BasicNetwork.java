@@ -599,7 +599,7 @@ public class BasicNetwork extends BasicML implements ContainsFlat, MLContext,
 		if (getLayerCount() < 3) {
 			(new RangeRandomizer(-1, 1)).randomize(this);
 		} else {
-			(new NguyenWidrowRandomizer(-1, 1)).randomize(this);
+			(new NguyenWidrowRandomizer()).randomize(this);
 		}
 	}
 
@@ -667,7 +667,8 @@ public class BasicNetwork extends BasicML implements ContainsFlat, MLContext,
 	}
 
 	/**
-	 * Set the weight between the two specified neurons.
+	 * Set the weight between the two specified neurons. The bias neuron is always
+	 * the last neuron on a layer.
 	 * @param fromLayer The from layer.
 	 * @param fromNeuron The from neuron.
 	 * @param toNeuron The to neuron.
