@@ -174,6 +174,11 @@ public class AnalystEvaluateCSV extends BasicFile {
 				isExpectInputHeaders(), getFormat());
 
 		MLData output = null;
+		
+		for (final AnalystField field : analyst.getScript().getNormalize()
+				.getNormalizedFields()) {
+			field.init();
+		}
 
 		final int outputLength = this.analyst.determineTotalInputFieldCount();
 
