@@ -268,8 +268,17 @@ public class SVMSearchTrain extends BasicTraining {
 
 				this.internalTrain.setGamma(this.currentGamma);
 				this.internalTrain.setC(this.currentConst);
-				this.internalTrain.iteration();
-				double e = this.internalTrain.getError();
+				
+				double e = 0;
+				try {
+					this.internalTrain.iteration();
+					e = this.internalTrain.getError();
+				} catch(Throwable t) {
+					// sometimes when doing a search-scan in libsvm, an error occurs in libsvm
+					// when the search includes really bad values of gamma/cost.  To account for this
+					// we catch such errors and allow the search to continue.
+					e = 100.0;
+				}
 
 				//System.out.println(this.currentGamma + "," + this.currentConst
 				//		+ "," + e);
