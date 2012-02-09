@@ -34,6 +34,7 @@ import org.encog.ml.svm.SVM;
 import org.encog.ml.train.BasicTraining;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.util.Format;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * Provides training for Support Vector Machine networks.
@@ -191,6 +192,7 @@ public class SVMTrain extends BasicTraining {
 
 		this.network.getParams().C = this.c;
 		this.network.getParams().gamma = this.gamma;
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Training with parameters C = " + c + ", gamma = " + gamma);
 
 		if (this.fold > 1) {
 			// cross validate
