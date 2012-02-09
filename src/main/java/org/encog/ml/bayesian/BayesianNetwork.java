@@ -226,11 +226,22 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		}
 	}
 
+	/**
+	 * Determine if the two events have a dependency.
+	 * @param parentEvent The parent event.
+	 * @param childEvent The child event.
+	 * @return True if a dependency exists.
+	 */
 	private boolean hasDependency(BayesianEvent parentEvent,
 			BayesianEvent childEvent) {
 		return( parentEvent.getChildren().contains(childEvent));
 	}
 
+	/**
+	 * Create a dependency between a parent and multiple children.
+	 * @param parentEvent The parent event.
+	 * @param children The child events.
+	 */
 	public void createDependency(BayesianEvent parentEvent,
 			BayesianEvent... children) {
 		for (BayesianEvent childEvent : children) {
@@ -239,12 +250,20 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		}
 	}
 
+	/**
+	 * Create a dependency between two labels.
+	 * @param parentEventLabel The parent event.
+	 * @param childEventLabel The child event.
+	 */
 	public void createDependency(String parentEventLabel, String childEventLabel) {
 		BayesianEvent parentEvent = getEventError(parentEventLabel);
 		BayesianEvent childEvent = getEventError(childEventLabel);
 		createDependency(parentEvent, childEvent);
 	}
 	
+	/**
+	 * @return The contents as a string. Shows both events and dependences.
+	 */
 	public String getContents() {
 		StringBuilder result = new StringBuilder();
 		boolean first = true;
@@ -259,6 +278,10 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		return result.toString();		
 	}
 	
+	/**
+	 * Define the structure of the Bayesian network as a string.
+	 * @param line The string to define events and relations.
+	 */
 	public void setContents(String line) {
 		List<ParsedProbability> list = ParseProbability.parseProbabilityList(this, line);
 		List<String> labelList = new ArrayList<String>();
@@ -327,12 +350,21 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 
 	}
 
+	/**
+	 * Remove a dependency, if it it exists.
+	 * @param parent The parent event.
+	 * @param child The child event.
+	 */
 	private void removeDependency(BayesianEvent parent, BayesianEvent child) {
 		parent.getChildren().remove(child);
 		child.getParents().remove(parent);
 		
 	}
 
+	/**
+	 * Remove the specified event.
+	 * @param event The event to remove.
+	 */
 	private void removeEvent(BayesianEvent event) {
 		for( BayesianEvent e : event.getParents() ) {
 			e.getChildren().remove(event);
@@ -341,6 +373,9 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		this.events.remove(event);		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		boolean first = true;
@@ -355,6 +390,9 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		return result.toString();
 	}
 
+	/**
+	 * @return The number of parameters in this Bayesian network.
+	 */
 	public int calculateParameterCount() {
 		int result = 0;
 		for (BayesianEvent e : this.eventMap.values()) {
@@ -363,6 +401,9 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		return result;
 	}
 
+	/**
+	 * Finalize the structure of this Bayesian network.
+	 */
 	public void finalizeStructure() {
 		for (BayesianEvent e : this.eventMap.values()) {
 			e.finalizeStructure();
@@ -377,12 +418,21 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		this.classificationTarget = -1;
 	}
 
+	/**
+	 * Validate the structure of this Bayesian network.
+	 */
 	public void validate() {
 		for (BayesianEvent e : this.eventMap.values()) {
 			e.validate();
 		}
 	}
 
+	/**
+	 * Determine if one Bayesian event is in an array of others.
+	 * @param given The events to check.
+	 * @param e See if e is amoung given.
+	 * @return True if e is amoung given.
+	 */
 	private boolean isGiven(BayesianEvent[] given, BayesianEvent e) {
 		for (BayesianEvent e2 : given) {
 			if (e == e2)
@@ -392,6 +442,12 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		return false;
 	}
 
+	/**
+	 * Determine if one event is a descendant of another.
+	 * @param a The event to check.
+	 * @param b The event that has children.
+	 * @return True if a is amoung b's children.
+	 */
 	public boolean isDescendant(BayesianEvent a, BayesianEvent b) {
 		if (a == b)
 			return true;
@@ -403,6 +459,12 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		return false;
 	}
 
+	/**
+	 * True if this event is given or conditionally dependant on the others.
+	 * @param given The others to check.
+	 * @param e The event to check.
+	 * @return
+	 */
 	private boolean isGivenOrDescendant(BayesianEvent[] given, BayesianEvent e) {
 		for (BayesianEvent e2 : given) {
 			if (isDescendant(e2, e))
@@ -412,7 +474,16 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		return false;
 	}
 
-	private boolean isCondIndependant(boolean previousHead, BayesianEvent a,
+	/**
+	 * Help determine if one event is conditionally independent of another.
+	 * @param previousHead The previous head, as we traverse the list.
+	 * @param a The event to check.
+	 * @param goal The goal.
+	 * @param searched List of events searched.
+	 * @param given Given events.
+	 * @return True if conditionally independent.
+	 */
+	private boolean isCondIndependent(boolean previousHead, BayesianEvent a,
 			BayesianEvent goal, Set<BayesianEvent> searched,
 			BayesianEvent... given) {
 
@@ -425,7 +496,7 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		for (BayesianEvent e : a.getChildren()) {
 			if (!searched.contains(e) || !isGiven(given, a)) {
 				searched.add(e);
-				if (!isCondIndependant(true, e, goal, searched, given))
+				if (!isCondIndependent(true, e, goal, searched, given))
 					return false;
 			}
 		}
@@ -435,7 +506,7 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 			if (!searched.contains(e)) {
 				searched.add(e);
 				if (!previousHead || isGivenOrDescendant(given, a))
-					if (!isCondIndependant(false, e, goal, searched, given))
+					if (!isCondIndependent(false, e, goal, searched, given))
 						return false;
 			}
 		}
@@ -443,10 +514,10 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		return true;
 	}
 
-	public boolean isCondIndependant(BayesianEvent a, BayesianEvent b,
+	public boolean isCondIndependent(BayesianEvent a, BayesianEvent b,
 			BayesianEvent... given) {
 		Set<BayesianEvent> searched = new HashSet<BayesianEvent>();
-		return isCondIndependant(false, a, b, searched, given);
+		return isCondIndependent(false, a, b, searched, given);
 	}
 
 	public BayesianQuery getQuery() {
@@ -491,12 +562,21 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		return this.query.getProbability();
 	}
 
+	/**
+	 * Define the probability for an event.
+	 * @param line The event.
+	 * @param probability The probability.
+	 */
 	public void defineProbability(String line, double probability) {
 		ParseProbability parse = new ParseProbability(this);
 		ParsedProbability parsedProbability = parse.parse(line);
 		parsedProbability.defineTruthTable(this, probability);
 	}
 
+	/**
+	 * Define a probability.
+	 * @param line The line to define the probability.
+	 */
 	public void defineProbability(String line) {
 		int index = line.lastIndexOf('=');
 		boolean error = false;
@@ -521,6 +601,11 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		defineProbability(left,prob);
 	}
 
+	/**
+	 * Require the specified event, thrown an error if it does not exist.
+	 * @param label
+	 * @return
+	 */
 	public BayesianEvent requireEvent(String label) {
 		BayesianEvent result = getEvent(label);
 		if( result==null ) {
@@ -529,12 +614,21 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		return result;
 	}
 
+	/**
+	 * Define a relationship.
+	 * @param line The relationship to define.
+	 */
 	public void defineRelationship(String line) {
 		ParseProbability parse = new ParseProbability(this);
 		ParsedProbability parsedProbability = parse.parse(line);
 		parsedProbability.defineRelationships(this);
 	}
 	
+	/**
+	 * Perform a query.
+	 * @param line The query.
+	 * @return The probability.
+	 */
 	public double performQuery(String line) {
 		if( this.query==null ) {
 			throw new BayesianError("This Bayesian network does not have a query to define.");
@@ -586,6 +680,9 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		return -1;
 	}
 
+	/**
+	 * Remove all relations between nodes.
+	 */
 	public void removeAllRelations() {
 		for(BayesianEvent event: this.events) {
 			event.removeAllRelations();

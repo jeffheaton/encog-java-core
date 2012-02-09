@@ -26,6 +26,9 @@ package org.encog.ml.bayesian.bif;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A BIF variable.
+ */
 public class BIFVariable {
 	private String name;
 	private List<String> options = new ArrayList<String>();

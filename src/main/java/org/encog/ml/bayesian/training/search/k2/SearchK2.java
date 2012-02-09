@@ -34,15 +34,45 @@ import org.encog.ml.bayesian.training.TrainBayesian;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 
+/**
+ * Search for optimal Bayes structure with K2.
+ *
+ */
 public class SearchK2 implements BayesSearch {
 
+	/**
+	 * The data to use.
+	 */
 	private MLDataSet data;
+	
+	/**
+	 * The network to optimize.
+	 */
 	private BayesianNetwork network;
+	
+	/**
+	 * The trainer being used.
+	 */
 	private TrainBayesian train;
+	
+	/**
+	 * The last calculated value for p.
+	 */
 	private double lastCalculatedP;
+	
+	/**
+	 * The node ordering.
+	 */
 	private final List<BayesianEvent> nodeOrdering = new ArrayList<BayesianEvent>();
+	
+	/**
+	 * THe current index.
+	 */
 	private int index = -1;
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void init(TrainBayesian theTrainer,BayesianNetwork theNetwork, MLDataSet theData) {
 		this.network = theNetwork;
@@ -73,6 +103,13 @@ public class SearchK2 implements BayesSearch {
 		}
 	}
 	
+	/**
+	 * Find the value for z.
+	 * @param event The event that we are clauclating for.
+	 * @param n The value for n.
+	 * @param old The old value.
+	 * @return The new value for z.
+	 */
 	private BayesianEvent findZ(BayesianEvent event, int n, double old) {
 		BayesianEvent result = null;
 		double maxChildP = Double.NEGATIVE_INFINITY;
@@ -171,6 +208,13 @@ public class SearchK2 implements BayesSearch {
 		return result;
 	}
 
+	/**
+	 * Calculate G.
+	 * @param network The network to calculate for.
+	 * @param event The event to calculate for.
+	 * @param parents The parents.
+	 * @return The value for G.
+	 */
 	public double calculateG(BayesianNetwork network,
 			BayesianEvent event, List<BayesianEvent> parents) {
 		double result = 1.0;
@@ -196,6 +240,9 @@ public class SearchK2 implements BayesSearch {
 	}
 
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean iteration() {
 		

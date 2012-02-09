@@ -32,14 +32,30 @@ import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.util.SimpleParser;
 import org.encog.util.csv.CSVFormat;
 
+/**
+ * Used to parse probability strings for the Bayes networks.
+ */
 public class ParseProbability {
 	
+	/**
+	 * The network used.
+	 */
 	private final BayesianNetwork network;
 	
+	/**
+	 * Parse the probability for the specified network.
+	 * @param theNetwork THe network to parse for.
+	 */
 	public ParseProbability(BayesianNetwork theNetwork) {
 		this.network = theNetwork;
 	}
 	
+	/**
+	 * Add events, as they are pased.
+	 * @param parser The parser.
+	 * @param results The events found.
+	 * @param delim The delimiter to use.
+	 */
 	private void addEvents(SimpleParser parser, List<ParsedEvent> results, String delim) {
 		boolean done = false;
 		StringBuilder l = new StringBuilder();
@@ -125,6 +141,11 @@ public class ParseProbability {
 		
 	}
 	
+	/**
+	 * Parse the given line.
+	 * @param line
+	 * @return The parsed probability.
+	 */
 	public ParsedProbability parse(String line) {
 		
 		ParsedProbability result = new ParsedProbability();
@@ -154,6 +175,12 @@ public class ParseProbability {
 	
 	}
 	
+	/**
+	 * Parse a probability list.
+	 * @param network The network to parse for.
+	 * @param line The line to parse.
+	 * @return The parsed list.
+	 */
 	public static List<ParsedProbability> parseProbabilityList(BayesianNetwork network, String line) {
 		List<ParsedProbability> result = new ArrayList<ParsedProbability>(); 
 		

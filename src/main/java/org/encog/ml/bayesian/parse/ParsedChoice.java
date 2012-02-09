@@ -25,12 +25,32 @@ package org.encog.ml.bayesian.parse;
 
 import org.encog.Encog;
 
+/**
+ * A parsed choice.
+ */
 public class ParsedChoice {
 	
+	/**
+	 * The label for this choice.
+	 */
 	final private String label;
+	
+	/**
+	 * The min value for this choice.
+	 */
 	final double min;
+	
+	/**
+	 * The max value for this choice.
+	 */
 	final double max;
 	
+	/**
+	 * Construct a continuous choice, with a min and max.
+	 * @param label The label, for this chocie.
+	 * @param min The min value, for this choice.
+	 * @param max The max value, for this choice.
+	 */
 	public ParsedChoice(String label, double min, double max) {
 		super();
 		this.label = label;
@@ -38,6 +58,11 @@ public class ParsedChoice {
 		this.max = max;
 	}
 	
+	/**
+	 * Construct a discrete value for this choice.
+	 * @param label The choice label.
+	 * @param index The index.
+	 */
 	public ParsedChoice(String label, int index) {
 		super();
 		this.label = label;
@@ -45,22 +70,37 @@ public class ParsedChoice {
 		this.max = index;
 	}
 
+	/**
+	 * @return The label.
+	 */
 	public String getLabel() {
 		return label;
 	}
 
+	/**
+	 * @return The min value.
+	 */
 	public double getMin() {
 		return min;
 	}
 
+	/**
+	 * @return The max value.
+	 */
 	public double getMax() {
 		return max;
 	}
 	
+	/**
+	 * @return True, if this choice is indexed, or discrete.
+	 */
 	public boolean isIndex() {
 		return Math.abs(this.min-this.max)<Encog.DEFAULT_DOUBLE_EQUAL;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString() {
 		return this.label;
 	}

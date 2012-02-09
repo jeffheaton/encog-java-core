@@ -30,6 +30,9 @@ import org.encog.ml.bayesian.training.TrainBayesian;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 
+/**
+ * A simple probability estimator.
+ */
 public class SimpleEstimator implements BayesEstimator {
 	
 	private MLDataSet data;
@@ -37,6 +40,9 @@ public class SimpleEstimator implements BayesEstimator {
 	private TrainBayesian trainer;
 	private int index;
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void init(TrainBayesian theTrainer,BayesianNetwork theNetwork, MLDataSet theData) {
 		this.network = theNetwork;
@@ -46,6 +52,13 @@ public class SimpleEstimator implements BayesEstimator {
 	} 
 	
 	
+	/**
+	 * Calculate the probability.
+	 * @param event The event.
+	 * @param result The result.
+	 * @param args The arguments.
+	 * @return The probability.
+	 */
 	public double calculateProbability(BayesianEvent event, int result, int[] args) {
 		int eventIndex = this.network.getEvents().indexOf(event);
 		int x = 0;
@@ -88,6 +101,9 @@ public class SimpleEstimator implements BayesEstimator {
 		return num/den;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean iteration() {
 		BayesianEvent event = this.network.getEvents().get(this.index);

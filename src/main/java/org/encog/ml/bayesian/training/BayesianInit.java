@@ -23,8 +23,22 @@
  */
 package org.encog.ml.bayesian.training;
 
+/**
+ * The method by which a Bayesian network should be initialized.
+ */
 public enum BayesianInit {
+	/**
+	 * No init, do not change anything.
+	 */
 	InitNoChange,
+	
+	/**
+	 * Start with no connections.
+	 */
 	InitEmpty,
+	
+	/**
+	 * Init as Naive Bayes.
+	 */
 	InitNaiveBayes
 }

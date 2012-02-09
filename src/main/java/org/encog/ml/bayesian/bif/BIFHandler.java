@@ -33,27 +33,69 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+/**
+ * Handler, used to parse the XML BIF files.
+ */
 public class BIFHandler extends DefaultHandler {
-
+	/**
+	 * The current section.
+	 */
 	private final List<FileSection> currentSection = new ArrayList<FileSection>();
+	
+	/**
+	 * BIF variables.
+	 */
 	private final List<BIFVariable> bifVariables = new ArrayList<BIFVariable>();
+	
+	/**
+	 * BIF definitions.
+	 */
 	private final List<BIFDefinition> bifDefinitions = new ArrayList<BIFDefinition>();
+	
+	/**
+	 * The current variable.
+	 */
 	private BIFVariable currentVariable;
+	
+	/**
+	 * The current definition.
+	 */
 	private BIFDefinition currentDefinition;
+	
+	/**
+	 * THe current string.
+	 */
 	private String currentString;
 
+	
+	/**
+	 * The network bing loaded.
+	 */
 	private BayesianNetwork network;
 
+	/**
+	 * Constructor.
+	 */
 	public BIFHandler() {
 		this.network = new BayesianNetwork();
 	}
 
+	/**
+	 * Handle the beginning of the BIF tag.
+	 * @param qName The name of the tag.
+	 * @param attributes The attributes.
+	 */
 	private void handleBeginBIF(String qName, Attributes attributes) {
 		if (qName.equals("NETWORK")) {
 			this.currentSection.add(FileSection.NETWORK);
 		}
 	}
 
+	/**
+	 * Handle the beginning of the BIF tag.
+	 * @param qName The name of the tag.
+	 * @param attributes The attributes.
+	 */
 	private void handleBeginNETWORK(String qName, Attributes attributes) {
 		if (qName.equals("VARIABLE")) {
 			this.currentSection.add(FileSection.VARIABLE);
@@ -66,6 +108,11 @@ public class BIFHandler extends DefaultHandler {
 		}
 	}
 
+	/**
+	 * Handle the beginning of the BIF tag.
+	 * @param qName The name of the tag.
+	 * @param attributes The attributes.
+	 */
 	private void handleBeginVARIABLE(String qName, Attributes attributes) {
 		if (qName.equals("VARIABLE")) {
 			this.currentVariable = new BIFVariable();
@@ -73,6 +120,10 @@ public class BIFHandler extends DefaultHandler {
 		}
 	}
 
+	/**
+	 * Handle the beginning of the DEFINITION tag.
+	 * @param qName The name of the tag.
+	 */
 	private void handleBeginDEFINITION(String qName, Attributes attributes) {
 		if (qName.equals("DEFINITION")) {
 			this.currentDefinition = new BIFDefinition();
@@ -80,18 +131,30 @@ public class BIFHandler extends DefaultHandler {
 		}
 	}
 
+	/**
+	 * Handle the end of the BIF tag.
+	 * @param qName The name of the tag.
+	 */
 	private void handleEndBIF(String qName) {
 		if (qName.equals("BIF")) {
 			this.currentSection.remove(this.currentSection.size() - 1);
 		}
 	}
 
+	/**
+	 * Handle the end of the NETWORK tag.
+	 * @param qName The name of the tag.
+	 */
 	private void handleEndNETWORK(String qName) {
 		if (qName.equals("NETWORK")) {
 			this.currentSection.remove(this.currentSection.size() - 1);
 		}
 	}
 
+	/**
+	 * Handle the end of the VARIABLE tag.
+	 * @param qName The name of the tag.
+	 */
 	private void handleEndVARIABLE(String qName) {
 		if (qName.equals("NAME")) {
 			this.currentVariable.setName(this.currentString);
@@ -102,6 +165,10 @@ public class BIFHandler extends DefaultHandler {
 		}
 	}
 
+	/**
+	 * Handle the end of the DEFINITION tag.
+	 * @param qName The name of the tag.
+	 */
 	private void handleEndDEFINITION(String qName) {
 		if (qName.equals("FOR")) {
 			this.currentDefinition.setForDefinition(this.currentString);
@@ -114,6 +181,9 @@ public class BIFHandler extends DefaultHandler {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
@@ -141,10 +211,16 @@ public class BIFHandler extends DefaultHandler {
 		}
 	}
 
+	/**
+	 * @return The network being parsed.
+	 */
 	public BayesianNetwork getNetwork() {
 		return network;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
@@ -168,6 +244,9 @@ public class BIFHandler extends DefaultHandler {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void endDocument() throws SAXException {
 		super.endDocument();
@@ -212,6 +291,9 @@ public class BIFHandler extends DefaultHandler {
 	}
 	
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void characters(char[] ch, int start, int length)
 			throws SAXException {

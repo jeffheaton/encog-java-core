@@ -27,8 +27,14 @@ import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.bayesian.training.TrainBayesian;
 import org.encog.ml.data.MLDataSet;
 
+/**
+ * A simple estimator that does nothing.
+ */
 public class EstimatorNone implements BayesEstimator {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void init(TrainBayesian theTrainer, BayesianNetwork theNetwork,
 			MLDataSet theData) {
@@ -36,6 +42,9 @@ public class EstimatorNone implements BayesEstimator {
 		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean iteration() {
 		return false;

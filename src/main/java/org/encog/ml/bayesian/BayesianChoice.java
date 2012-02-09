@@ -28,19 +28,54 @@ import java.io.Serializable;
 import org.encog.Encog;
 import org.encog.util.csv.CSVFormat;
 
+/**
+ * A choice in a Bayesian network. Choices can be either discrete or continuous.
+ * For continuous choices the number must be made discrete by mapping it to
+ * discrete ranges.
+ * 
+ */
 public class BayesianChoice implements Serializable {
-	
+
+	/**
+	 * The label for this choice.
+	 */
 	final private String label;
+
+	/**
+	 * The min values, if continuous, or the index if discrete.
+	 */
 	final double min;
+
+	/**
+	 * The max values, if continuous, or the index if discrete.
+	 */
 	final double max;
-	
+
+	/**
+	 * Construct a continuous choice that covers the specified range.
+	 * 
+	 * @param label
+	 *            The label for this choice.
+	 * @param min
+	 *            The minimum value for this range.
+	 * @param max
+	 *            The maximum value for this range.
+	 */
 	public BayesianChoice(String label, double min, double max) {
 		super();
 		this.label = label;
 		this.min = min;
 		this.max = max;
 	}
-	
+
+	/**
+	 * Construct a discrete choice for the specified index.
+	 * 
+	 * @param label
+	 *            The label for this choice.
+	 * @param index
+	 *            The index for this choice.
+	 */
 	public BayesianChoice(String label, int index) {
 		super();
 		this.label = label;
@@ -48,30 +83,49 @@ public class BayesianChoice implements Serializable {
 		this.max = index;
 	}
 
+	/**
+	 * @return Get the label.
+	 */
 	public String getLabel() {
 		return label;
 	}
 
+	/**
+	 * @return Get the min.
+	 */
 	public double getMin() {
 		return min;
 	}
 
+	/**
+	 * @return Get the max.
+	 */
 	public double getMax() {
 		return max;
 	}
-	
+
+	/**
+	 * @return True, if this choice has an index, as opposed to min/max. If the
+	 *         value has an idex, then it is discrete.
+	 */
 	public boolean isIndex() {
-		return Math.abs(this.min-this.max)<Encog.DEFAULT_DOUBLE_EQUAL;
+		return Math.abs(this.min - this.max) < Encog.DEFAULT_DOUBLE_EQUAL;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString() {
 		return this.label;
 	}
-	
+
+	/**
+	 * @return A string representation of this choice.
+	 */
 	public String toFullString() {
 		StringBuilder result = new StringBuilder();
 		result.append(this.label);
-		if( !isIndex() ) {
+		if (!isIndex()) {
 			result.append(":");
 			result.append(CSVFormat.EG_FORMAT.format(this.min, 4));
 			result.append(" to ");
@@ -79,5 +133,5 @@ public class BayesianChoice implements Serializable {
 		}
 		return result.toString();
 	}
-		
+
 }

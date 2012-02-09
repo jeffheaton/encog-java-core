@@ -28,8 +28,14 @@ import org.encog.ml.bayesian.training.TrainBayesian;
 import org.encog.ml.bayesian.training.search.k2.BayesSearch;
 import org.encog.ml.data.MLDataSet;
 
+/**
+ * Simple class to perform no search for optimal network structure.
+ */
 public class SearchNone implements BayesSearch {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void init(TrainBayesian theTrainer, BayesianNetwork theNetwork,
 			MLDataSet theData) {
@@ -37,6 +43,9 @@ public class SearchNone implements BayesSearch {
 		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean iteration() {
 		return false;

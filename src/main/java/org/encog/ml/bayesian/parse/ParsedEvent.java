@@ -30,27 +30,60 @@ import org.encog.ml.bayesian.BayesianChoice;
 import org.encog.ml.bayesian.BayesianError;
 import org.encog.ml.bayesian.BayesianEvent;
 
+/**
+ * A parsed event.
+ */
 public class ParsedEvent {
+	/**
+	 * The event label.
+	 */
 	private final String label;
+	
+	/**
+	 * The event value.
+	 */
 	private String value;
+	
+	/**
+	 * The choices.
+	 */
 	private final List<ParsedChoice> list = new ArrayList<ParsedChoice>();
 	
+	/**
+	 * Construct a parsed even with the specified label.
+	 * @param theLabel
+	 */
 	public ParsedEvent(String theLabel) {
 		this.label = theLabel;
 	}
 
+	/**
+	 * @return The value for this event, or null if undefined.
+	 */
 	public String getValue() {
 		return value;
 	}
 
+	/**
+	 * Set the value for this event.
+	 * @param value The value for this event.
+	 */
 	public void setValue(String value) {
 		this.value = value;
 	}
 
+	/**
+	 * @return The label for this event.
+	 */
 	public String getLabel() {
 		return label;
 	}
 
+	/**
+	 * Resolve the event to an actual value.
+	 * @param actualEvent The actual event.
+	 * @return The value.
+	 */
 	public int resolveValue(BayesianEvent actualEvent) {
 		int result = 0;
 		
@@ -87,11 +120,16 @@ public class ParsedEvent {
 	}
 	
 	
-	
+	/**
+	 * @return A list of choices.
+	 */
 	public List<ParsedChoice> getList() {
 		return list;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append("[ParsedEvent:label=");

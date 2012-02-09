@@ -56,10 +56,10 @@ public class TestBayesNet extends TestCase {
 		network.createDependency(d, e);
 		network.finalizeStructure();
 		
-		Assert.assertFalse( network.isCondIndependant(c,e,a) );
-		Assert.assertFalse(  network.isCondIndependant(b,d,c,e) );
-		Assert.assertFalse(  network.isCondIndependant(a,c,e) );
-		Assert.assertTrue(  network.isCondIndependant(a,c,b) );
+		Assert.assertFalse( network.isCondIndependent(c,e,a) );
+		Assert.assertFalse(  network.isCondIndependent(b,d,c,e) );
+		Assert.assertFalse(  network.isCondIndependent(a,c,e) );
+		Assert.assertTrue(  network.isCondIndependent(a,c,b) );
 	}
 	
 	public void testIndependant2() {
@@ -73,9 +73,9 @@ public class TestBayesNet extends TestCase {
 		network.createDependency(c, d);
 		network.finalizeStructure();
 		
-		Assert.assertFalse( network.isCondIndependant(b,c) );
-		Assert.assertFalse( network.isCondIndependant(b,c,d) );
-		Assert.assertTrue( network.isCondIndependant(a,c,a) );
-		Assert.assertFalse( network.isCondIndependant(a,c,a,d) );
+		Assert.assertFalse( network.isCondIndependent(b,c) );
+		Assert.assertFalse( network.isCondIndependent(b,c,d) );
+		Assert.assertTrue( network.isCondIndependent(a,c,a) );
+		Assert.assertFalse( network.isCondIndependent(a,c,a,d) );
 	}
 }
