@@ -91,7 +91,7 @@ public class ParsedProbability {
 		BayesianEvent childEvent = network.requireEvent(childParsed.getLabel());
 		for( ParsedEvent event : this.givenEvents) {
 			BayesianEvent parentEvent = network.requireEvent(event.getLabel());
-			network.createDependancy(parentEvent, childEvent);
+			network.createDependency(parentEvent, childEvent);
 		}
 		
 	}

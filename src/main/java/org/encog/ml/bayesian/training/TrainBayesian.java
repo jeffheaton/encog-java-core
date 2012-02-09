@@ -94,7 +94,7 @@ public class TrainBayesian extends BasicTraining {
 		// now link everything to this event
 		for(BayesianEvent event: this.network.getEvents() ) {
 			if( event!=classificationTarget ) {
-				network.createDependancy(classificationTarget, event);
+				network.createDependency(classificationTarget, event);
 			}
 		}
 		

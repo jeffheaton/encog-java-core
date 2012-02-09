@@ -41,7 +41,7 @@ public class TestEnumerationQuery extends TestCase {
 		BayesianEvent a = network.createEvent("a");
 		BayesianEvent b = network.createEvent("b");
 
-		network.createDependancy(a, b);
+		network.createDependency(a, b);
 		network.finalizeStructure();
 		a.getTable().addLine(0.5, true); // P(A) = 0.5
 		b.getTable().addLine(0.2, true, true); // p(b|a) = 0.2
@@ -64,7 +64,7 @@ public class TestEnumerationQuery extends TestCase {
 		BayesianEvent x2 = network.createEvent("x2");
 		BayesianEvent x3 = network.createEvent("x3");
 
-		network.createDependancy(a, x1,x2,x3);
+		network.createDependency(a, x1,x2,x3);
 		network.finalizeStructure();
 		
 		a.getTable().addLine(0.5, true); // P(A) = 0.5
@@ -96,7 +96,7 @@ public class TestEnumerationQuery extends TestCase {
 		BayesianEvent x2 = network.createEvent("x2");
 		BayesianEvent x3 = network.createEvent("x3");
 
-		network.createDependancy(a, x1,x2,x3);
+		network.createDependency(a, x1,x2,x3);
 		network.finalizeStructure();
 		
 		a.getTable().addLine(0.5, true); // P(A) = 0.5

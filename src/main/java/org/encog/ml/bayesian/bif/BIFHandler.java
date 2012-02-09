@@ -189,7 +189,7 @@ public class BIFHandler extends DefaultHandler {
 					.getForDefinition());
 			for (String s : d.getGivenDefinitions()) {
 				BayesianEvent parentEvent = this.network.requireEvent(s);
-				this.network.createDependancy(parentEvent, childEvent);
+				this.network.createDependency(parentEvent, childEvent);
 			}
 		}
 

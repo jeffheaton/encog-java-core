@@ -48,15 +48,50 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.util.EngineArray;
 import org.encog.util.csv.CSVFormat;
 
+/**
+ * The Bayesian Network is a machine learning method that is based on
+ * probability, and particularly Bayes' Rule. The Bayesian Network also forms
+ * the basis for the Hidden Markov Model and Naive Bayesian Network. The
+ * Bayesian Network is either constructed directly or inferred from training
+ * data using an algorithm such as K2.
+ * 
+ * http://www.heatonresearch.com/wiki/Bayesian_Network
+ */
 public class BayesianNetwork extends BasicML implements MLClassification, MLResettable, Serializable, MLError {
 
+	/**
+	 * Default choices for a boolean event.
+	 */
 	public static final String[] CHOICES_TRUE_FALSE = { "true", "false" };
 
+	/**
+	 * Mapping between the event string names, and the actual events.
+	 */
 	private final Map<String, BayesianEvent> eventMap = new HashMap<String, BayesianEvent>();
+	
+	/**
+	 * A listing of all of the events.
+	 */
 	private final List<BayesianEvent> events = new ArrayList<BayesianEvent>();
+	
+	/**
+	 * The current Bayesian query.
+	 */
 	private BayesianQuery query;
+	
+	/**
+	 * Specifies if each input is present.
+	 */
 	private boolean[] inputPresent;
+	
+	/**
+	 * Specifies the classification target.
+	 */
 	private int classificationTarget;
+	
+	/**
+	 * The probabilities of each classification.
+	 */
 	private double[] classificationProbabilities;
 
 	public BayesianNetwork() {
@@ -64,30 +99,52 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 	}
 
 	/**
-	 * @return the events
+	 * @return The mapping from string names to events.
 	 */
 	public Map<String, BayesianEvent> getEventMap() {
 		return eventMap;
 	}
 
+	/**
+	 * @return The events.
+	 */
 	public List<BayesianEvent> getEvents() {
 		return this.events;
 	}
 
+	/**
+	 * Get an event based on the string label.
+	 * @param label The label to locate.
+	 * @return The event found.
+	 */
 	public BayesianEvent getEvent(String label) {
 		return this.eventMap.get(label);
 	}
 
+	/**
+	 * Get an event based on label, throw an error if not found.
+	 * @param label THe event label to find.
+	 * @return The event.
+	 */
 	public BayesianEvent getEventError(String label) {
 		if (!eventExists(label))
 			throw (new BayesianError("Undefined label: " + label));
 		return this.eventMap.get(label);
 	}
 
+	/**
+	 * Return true if the specified event exists.
+	 * @param label The label we are searching for.
+	 * @return True, if the event exists by label.
+	 */
 	public boolean eventExists(String label) {
 		return this.eventMap.containsKey(label);
 	}
 	
+	/**
+	 * Create, or register, the specified event with this bayesian network.
+	 * @param event The event to add.
+	 */
 	public void createEvent(BayesianEvent event) {
 		if( eventExists(event.getLabel())) {
 			throw new BayesianError("The label \"" + event.getLabel()
@@ -98,6 +155,12 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		this.events.add(event);
 	}
 	
+	/**
+	 * Create an event specified on the label and options provided.
+	 * @param label The label to create this event as.
+	 * @param options The options, or states, that this event can have.
+	 * @return The newly created event.
+	 */
 	public BayesianEvent createEvent(String label, List<BayesianChoice> options) {
 		if( label==null) {
 			throw new BayesianError("Can't create event with null label name");
@@ -120,6 +183,12 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		return event;
 	}
 	
+	/**
+	 * Create the specified events based on a variable number of options, or choices.
+	 * @param label The label of the event to create.
+	 * @param options The states that the event can have.
+	 * @return The newly created event.
+	 */
 	public BayesianEvent createEvent(String label, String ... options) {
 		if( label==null) {
 			throw new BayesianError("Can't create event with null label name");
@@ -142,7 +211,12 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		return event;
 	}
 
-	public void createDependancy(BayesianEvent parentEvent,
+	/**
+	 * Create a dependency between two events.
+	 * @param parentEvent The parent event.
+	 * @param childEvent The child event.
+	 */
+	public void createDependency(BayesianEvent parentEvent,
 			BayesianEvent childEvent) {
 		// does the dependency exist?
 		if(!hasDependency(parentEvent,childEvent) ) {		
@@ -157,7 +231,7 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		return( parentEvent.getChildren().contains(childEvent));
 	}
 
-	public void createDependancy(BayesianEvent parentEvent,
+	public void createDependency(BayesianEvent parentEvent,
 			BayesianEvent... children) {
 		for (BayesianEvent childEvent : children) {
 			parentEvent.addChild(childEvent);
@@ -165,10 +239,10 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		}
 	}
 
-	public void createDependancy(String parentEventLabel, String childEventLabel) {
+	public void createDependency(String parentEventLabel, String childEventLabel) {
 		BayesianEvent parentEvent = getEventError(parentEventLabel);
 		BayesianEvent childEvent = getEventError(childEventLabel);
-		createDependancy(parentEvent, childEvent);
+		createDependency(parentEvent, childEvent);
 	}
 	
 	public String getContents() {
@@ -229,7 +303,7 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 			for( ParsedEvent given: prob.getGivenEvents() ) {
 				if( !event.hasGiven(given.getLabel()) ) {
 					BayesianEvent givenEvent = requireEvent(given.getLabel());
-					this.createDependancy(givenEvent, event);					
+					this.createDependency(givenEvent, event);					
 				}
 				givenList.add(given.getLabel());
 			}
@@ -238,7 +312,7 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 			for(int i=0; i<event.getParents().size();i++) {
 				BayesianEvent event2 = event.getParents().get(i);
 				if( !givenList.contains(event2.getLabel()) ) {					
-					removeDependancy(event2,event);
+					removeDependency(event2,event);
 				}
 			}
 		}		
@@ -253,7 +327,7 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 
 	}
 
-	private void removeDependancy(BayesianEvent parent, BayesianEvent child) {
+	private void removeDependency(BayesianEvent parent, BayesianEvent child) {
 		parent.getChildren().remove(child);
 		child.getParents().remove(parent);
 		
@@ -383,11 +457,17 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		this.query = query;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getInputCount() {
 		return this.events.size();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getOutputCount() {
 		return 1;
@@ -489,6 +569,9 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		return q.getProbability();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void updateProperties() {
 		// Not needed		
@@ -509,12 +592,18 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void reset() {
 		reset(0);
 		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void reset(int seed) {
 		for(BayesianEvent event: this.events) {			
@@ -523,6 +612,11 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		
 	}
 
+	/**
+	 * Determine the classes for the specified input.
+	 * @param input The input.
+	 * @return An array of class indexes.
+	 */
 	public int[] determineClasses(MLData input) {
 		int[] result = new int[input.size()];
 		
@@ -535,6 +629,10 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		return result;
 	}
 
+	/**
+	 * Classify the input.
+	 * @param input The input to classify.
+	 */
 	@Override
 	public int classify(MLData input) {
 		
@@ -572,14 +670,27 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		return EngineArray.maxIndex(this.classificationProbabilities);
 	}
 
+	/**
+	 * Get the classification target.
+	 * @return The index of the classification target.
+	 */
 	public int getClassificationTarget() {
 		return classificationTarget;
 	}
 	
+	/**
+	 * Determine if the specified input is present.
+	 * @param idx The index of the input.
+	 * @return True, if the input is present.
+	 */
 	public boolean isInputPresent(int idx) {
 		return this.inputPresent[idx];
 	}
 
+	/**
+	 * Define a classification structure of the form P(A|B) = P(C)
+	 * @param line
+	 */
 	public void defineClassificationStructure(String line) {
 		List<ParsedProbability> list = ParseProbability.parseProbabilityList(this, line);	
 		
@@ -617,6 +728,9 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		
 	}
 
+	/**
+	 * @return The classification target.
+	 */
 	public BayesianEvent getClassificationTargetEvent() {
 		if( this.classificationTarget==-1) {
 			throw new BayesianError("No classification target defined.");			
@@ -625,6 +739,9 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		return this.events.get(this.classificationTarget);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public double calculateError(final MLDataSet data) {
 		
@@ -646,6 +763,10 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		return (double)badCount/(double)totalCount;
 	}
 
+	/**
+	 * @return Returns a string representation of the classification structure.
+	 *         Of the form P(a|b,c,d)
+	 */
 	public String getClassificationStructure() {
 		StringBuilder result = new StringBuilder();
 		
@@ -682,6 +803,9 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		return result.toString();
 	}
 	
+	/**
+	 * @return True if this network has a valid classification target.
+	 */
 	public boolean hasValidClassificationTarget() {
 		if (this.classificationTarget < 0
 				|| this.classificationTarget >= this.events.size()) {

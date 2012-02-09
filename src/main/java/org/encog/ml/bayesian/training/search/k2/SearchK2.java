@@ -208,7 +208,7 @@ public class SearchK2 implements BayesSearch {
 			while(  event.getParents().size()<this.train.getMaximumParents() ) {
 				BayesianEvent z = findZ(event,index,oldP);
 				if(z!=null) {
-					this.network.createDependancy(z, event);
+					this.network.createDependency(z, event);
 					oldP = this.lastCalculatedP;
 				} else {
 					break;

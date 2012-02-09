@@ -25,13 +25,10 @@ package org.encog.ml.bayesian;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
 import java.util.Map;
 
-import org.encog.Encog;
 import org.encog.ml.bayesian.query.BayesianQuery;
 import org.encog.ml.bayesian.query.enumerate.EnumerationQuery;
-import org.encog.ml.bayesian.query.sample.EventState;
 import org.encog.ml.bayesian.query.sample.SamplingQuery;
 import org.encog.ml.bayesian.table.TableLine;
 import org.encog.persist.EncogFileSection;
@@ -40,7 +37,7 @@ import org.encog.persist.EncogReadHelper;
 import org.encog.persist.EncogWriteHelper;
 
 /**
- * Persist a SVM.
+ * Persist a Bayesian network.
  */
 public class PersistBayes implements EncogPersistor {
 
@@ -184,6 +181,9 @@ public class PersistBayes implements EncogPersistor {
 		out.flush();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getPersistClassString() {
 		return "BayesianNetwork";

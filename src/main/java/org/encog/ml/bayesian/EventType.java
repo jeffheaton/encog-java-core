@@ -23,8 +23,24 @@
  */
 package org.encog.ml.bayesian;
 
+/**
+ * The type of event for a Bayesian Network.
+ */
 public enum EventType {
+	/**
+	 * The event is used as evidence to predict the outcome.
+	 */
 	Evidence,
+	
+	/**
+	 * This event is neither evidence our outcome, but still 
+	 * is involved in the Bayesian Graph.
+	 */
 	Hidden,
+	
+	/**
+	 * The event is outcome, which means that we would like to get
+	 * a value for given evidence.
+	 */
 	Outcome
 }

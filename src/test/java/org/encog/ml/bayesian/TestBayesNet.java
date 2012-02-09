@@ -35,10 +35,10 @@ public class TestBayesNet extends TestCase {
 		BayesianEvent c = network.createEvent("c");
 		BayesianEvent d = network.createEvent("d");
 		BayesianEvent e = network.createEvent("e");
-		network.createDependancy(a, b, d, e);
-		network.createDependancy(c, d);
-		network.createDependancy(b, e);
-		network.createDependancy(d, e);
+		network.createDependency(a, b, d, e);
+		network.createDependency(c, d);
+		network.createDependency(b, e);
+		network.createDependency(d, e);
 		network.finalizeStructure();
 		Assert.assertEquals(16, network.calculateParameterCount());
 	}
@@ -50,10 +50,10 @@ public class TestBayesNet extends TestCase {
 		BayesianEvent c = network.createEvent("c");
 		BayesianEvent d = network.createEvent("d");
 		BayesianEvent e = network.createEvent("e");
-		network.createDependancy(a, b, d, e);
-		network.createDependancy(c, d);
-		network.createDependancy(b, e);
-		network.createDependancy(d, e);
+		network.createDependency(a, b, d, e);
+		network.createDependency(c, d);
+		network.createDependency(b, e);
+		network.createDependency(d, e);
 		network.finalizeStructure();
 		
 		Assert.assertFalse( network.isCondIndependant(c,e,a) );
@@ -68,9 +68,9 @@ public class TestBayesNet extends TestCase {
 		BayesianEvent b = network.createEvent("b");
 		BayesianEvent c = network.createEvent("c");
 		BayesianEvent d = network.createEvent("d");
-		network.createDependancy(a, b, c);
-		network.createDependancy(b, d);
-		network.createDependancy(c, d);
+		network.createDependency(a, b, c);
+		network.createDependency(b, d);
+		network.createDependency(c, d);
 		network.finalizeStructure();
 		
 		Assert.assertFalse( network.isCondIndependant(b,c) );
