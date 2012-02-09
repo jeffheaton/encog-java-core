@@ -41,6 +41,9 @@ import org.encog.util.csv.NumberList;
  */
 public class EncogWriteHelper {
 	
+	/**
+	 * The current large array that we are on.
+	 */
 	private int largeArrayNumber;
 
 	/**
