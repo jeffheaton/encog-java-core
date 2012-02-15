@@ -845,7 +845,9 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		if( !this.hasValidClassificationTarget())
 			return 1.0;
 		
+		// do the following just to throw an error if there is no classification target		
 		getClassificationTarget();
+		
 		int badCount = 0;
 		int totalCount = 0;
 		
