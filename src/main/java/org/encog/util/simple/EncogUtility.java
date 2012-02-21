@@ -308,7 +308,9 @@ public final class EncogUtility {
 
 	public static MLDataSet loadEGB2Memory(File filename) {
 		BufferedMLDataSet buffer = new BufferedMLDataSet(filename);
-		return buffer.loadToMemory();
+		MLDataSet result = buffer.loadToMemory();
+		buffer.close();
+		return result;
 	}
 
     /**

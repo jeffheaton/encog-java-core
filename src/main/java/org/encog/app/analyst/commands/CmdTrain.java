@@ -127,6 +127,7 @@ public class CmdTrain extends Cmd {
 		method = trainer.getMethod();
 		EncogDirectoryPersistence.saveObject(resourceFile, method);
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "save to:" + resourceID);
+		trainingSet.close();
 
 		return getAnalyst().shouldStopCommand();
 	}
