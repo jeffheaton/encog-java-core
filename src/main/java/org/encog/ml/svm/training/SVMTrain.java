@@ -23,6 +23,8 @@
  */
 package org.encog.ml.svm.training;
 
+import org.encog.Encog;
+import org.encog.EncogError;
 import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.mathutil.libsvm.svm;
 import org.encog.mathutil.libsvm.svm_parameter;
@@ -238,6 +240,11 @@ public class SVMTrain extends BasicTraining {
 	 */
 	public final void setC(final double theC) {
 		this.c = theC;
+		
+		if( this.c<=0 || this.c<Encog.DEFAULT_DOUBLE_EQUAL ) {
+			throw new EncogError("SVM training cannot use a gamma value less than zero.");
+		}
+		
 	}
 
 	/**
@@ -256,6 +263,11 @@ public class SVMTrain extends BasicTraining {
 	 */
 	public final void setGamma(final double theGamma) {
 		this.gamma = theGamma;
+		
+		if( this.gamma<=0 || this.gamma<Encog.DEFAULT_DOUBLE_EQUAL ) {
+			throw new EncogError("SVM gamma cannot use a const value less than zero.");
+		}
+		
 	}
 
 }
