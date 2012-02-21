@@ -319,6 +319,7 @@ public class EncogEGBFile {
 				this.fc.close();
 				this.fc = null;
 			}
+			System.gc();
 		} catch (final IOException ex) {
 			throw new BufferedDataError(ex);
 		}
