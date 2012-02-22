@@ -215,12 +215,21 @@ public class ScriptLoad {
 			if (!first) {
 				final List<String> cols = EncogFileSection.splitColumns(line);
 				final String name = cols.get(0);
-				final boolean isOutput = cols.get(1).toLowerCase()
-						.equals("output");
+				final String io = cols.get(1);
 				final int timeSlice = Integer.parseInt(cols.get(2));
 				final String action = cols.get(3);
 				final double high = CSVFormat.EG_FORMAT.parse(cols.get(4));
 				final double low = CSVFormat.EG_FORMAT.parse(cols.get(5));
+				
+				boolean isOutput;
+				
+				if( io.equalsIgnoreCase("input") ) {
+					isOutput = false;
+				} else if( io.equalsIgnoreCase("output") ) {
+					isOutput = true;
+				} else {
+					throw new AnalystError("Unknown io type:" + io );
+				}
 
 				NormalizationAction des = null;
 				if (action.equals("range")) {
