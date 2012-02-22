@@ -242,7 +242,7 @@ public class SVMTrain extends BasicTraining {
 		this.c = theC;
 		
 		if( this.c<=0 || this.c<Encog.DEFAULT_DOUBLE_EQUAL ) {
-			throw new EncogError("SVM training cannot use a gamma value less than zero.");
+			throw new EncogError("SVM training cannot use a c value less than zero.");
 		}
 		
 	}
@@ -265,7 +265,7 @@ public class SVMTrain extends BasicTraining {
 		this.gamma = theGamma;
 		
 		if( this.gamma<=0 || this.gamma<Encog.DEFAULT_DOUBLE_EQUAL ) {
-			throw new EncogError("SVM gamma cannot use a const value less than zero.");
+			throw new EncogError("SVM training cannot use a gamma value less than zero.");
 		}
 		
 	}
