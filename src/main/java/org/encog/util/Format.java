@@ -139,6 +139,8 @@ public final class Format {
 	 * @return The formatted percent.
 	 */
 	public static String formatPercent(final double e) {
+		if( Double.isNaN(e) || Double.isInfinite(e) ) 
+			return "NaN";
 		final NumberFormat f = NumberFormat.getPercentInstance();
 		f.setMinimumFractionDigits(6);
 		return f.format(e);
