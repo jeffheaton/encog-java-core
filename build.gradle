@@ -5,8 +5,6 @@ apply plugin: 'maven'
 sourceCompatibility=1.6
 targetCompatibility=1.6
 
-//TODO:  figure out javadoc creation
-
 def props = new Properties();
 def localProperties = new File("local.properties")
 if (localProperties.exists()) localProperties.withInputStream { props.load(it) }
