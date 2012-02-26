@@ -25,7 +25,7 @@ public class NelderMeadTraining extends BasicTraining {
 	private int numres;
 	private BasicNetwork network;
 	private double ynewlo;
-	private boolean converged = true;
+	private boolean converged = false;
 
 	private double ccoeff = 0.5;
 	private double del;
@@ -92,99 +92,159 @@ public class NelderMeadTraining extends BasicTraining {
 
 	@Override
 	public void iteration() {
+
+		if (this.converged)
+			return;
+
 		int n = start.length;
 
+		for (int i = 0; i < n; i++) {
+			p[i + n * n] = start[i];
+		}
+		y[n] = fn(start);
+		icount++;
+
+		for (int j = 0; j < n; j++) {
+			double x = start[j];
+			start[j] = start[j] + step[j] * del;
+			for (int i = 0; i < n; i++) {
+				p[i + j * n] = start[i];
+			}
+			y[j] = fn(start);
+			icount++;
+			start[j] = x;
+		}
+		/*                 
+		  The simplex construction is complete.
+		                    
+		  Find highest and lowest Y values.  YNEWLO = Y(IHI) indicates
+		  the vertex of the simplex to be replaced.
+		*/
+		ylo = y[0];
+		ilo = 0;
+
+		for (int i = 1; i < nn; i++) {
+			if (y[i] < ylo) {
+				ylo = y[i];
+				ilo = i;
+			}
+		}
 		/*
-		  Initial or restarted loop.
+		  Inner loop.
 		*/
 		for (;;) {
-			for (int i = 0; i < n; i++) {
-				p[i + n * n] = start[i];
-			}
-			y[n] = fn(start);
-			icount++;
-
-			for (int j = 0; j < n; j++) {
-				double x = start[j];
-				start[j] = start[j] + step[j] * del;
-				for (int i = 0; i < n; i++) {
-					p[i + j * n] = start[i];
-				}
-				y[j] = fn(start);
-				icount++;
-				start[j] = x;
-			}
-			/*                 
-			  The simplex construction is complete.
-			                    
-			  Find highest and lowest Y values.  YNEWLO = Y(IHI) indicates
-			  the vertex of the simplex to be replaced.
-			*/
-			ylo = y[0];
-			ilo = 0;
+			/*if (kcount <= icount) {
+				break;
+			}*/
+			ynewlo = y[0];
+			ihi = 0;
 
 			for (int i = 1; i < nn; i++) {
-				if (y[i] < ylo) {
-					ylo = y[i];
-					ilo = i;
+				if (ynewlo < y[i]) {
+					ynewlo = y[i];
+					ihi = i;
 				}
 			}
 			/*
-			  Inner loop.
+			  Calculate PBAR, the centroid of the simplex vertices
+			  excepting the vertex with Y value YNEWLO.
 			*/
-			for (;;) {
-				/*if (kcount <= icount) {
-					break;
-				}*/
-				ynewlo = y[0];
-				ihi = 0;
-
-				for (int i = 1; i < nn; i++) {
-					if (ynewlo < y[i]) {
-						ynewlo = y[i];
-						ihi = i;
-					}
+			for (int i = 0; i < n; i++) {
+				z = 0.0;
+				for (int j = 0; j < nn; j++) {
+					z = z + p[i + j * n];
 				}
-				/*
-				  Calculate PBAR, the centroid of the simplex vertices
-				  excepting the vertex with Y value YNEWLO.
-				*/
+				z = z - p[i + ihi * n];
+				pbar[i] = z / n;
+			}
+			/*
+			  Reflection through the centroid.
+			*/
+			for (int i = 0; i < n; i++) {
+				pstar[i] = pbar[i] + rcoeff * (pbar[i] - p[i + ihi * n]);
+			}
+			ystar = fn(pstar);
+			icount++;
+			/*
+			  Successful reflection, so extension.
+			*/
+			if (ystar < ylo) {
 				for (int i = 0; i < n; i++) {
-					z = 0.0;
-					for (int j = 0; j < nn; j++) {
-						z = z + p[i + j * n];
-					}
-					z = z - p[i + ihi * n];
-					pbar[i] = z / n;
+					p2star[i] = pbar[i] + ecoeff * (pstar[i] - pbar[i]);
 				}
-				/*
-				  Reflection through the centroid.
-				*/
-				for (int i = 0; i < n; i++) {
-					pstar[i] = pbar[i] + rcoeff * (pbar[i] - p[i + ihi * n]);
-				}
-				ystar = fn(pstar);
+				y2star = fn(p2star);
 				icount++;
 				/*
-				  Successful reflection, so extension.
+				  Check extension.
 				*/
-				if (ystar < ylo) {
+				if (ystar < y2star) {
 					for (int i = 0; i < n; i++) {
-						p2star[i] = pbar[i] + ecoeff * (pstar[i] - pbar[i]);
+						p[i + ihi * n] = pstar[i];
+					}
+					y[ihi] = ystar;
+				}
+				/*
+				  Retain extension or contraction.
+				*/
+				else {
+					for (int i = 0; i < n; i++) {
+						p[i + ihi * n] = p2star[i];
+					}
+					y[ihi] = y2star;
+				}
+			}
+			/*
+			  No extension.
+			*/
+			else {
+				l = 0;
+				for (int i = 0; i < nn; i++) {
+					if (ystar < y[i]) {
+						l = l + 1;
+					}
+				}
+
+				if (1 < l) {
+					for (int i = 0; i < n; i++) {
+						p[i + ihi * n] = pstar[i];
+					}
+					y[ihi] = ystar;
+				}
+				/*
+				  Contraction on the Y(IHI) side of the centroid.
+				*/
+				else if (l == 0) {
+					for (int i = 0; i < n; i++) {
+						p2star[i] = pbar[i] + ccoeff
+								* (p[i + ihi * n] - pbar[i]);
 					}
 					y2star = fn(p2star);
 					icount++;
 					/*
-					  Check extension.
+					  Contract the whole simplex.
 					*/
-					if (ystar < y2star) {
-						for (int i = 0; i < n; i++) {
-							p[i + ihi * n] = pstar[i];
+					if (y[ihi] < y2star) {
+						for (int j = 0; j < nn; j++) {
+							for (int i = 0; i < n; i++) {
+								p[i + j * n] = (p[i + j * n] + p[i + ilo * n]) * 0.5;
+								this.trainedWeights[i] = p[i + j * n];
+							}
+							y[j] = fn(this.trainedWeights);
+							icount++;
 						}
-						y[ihi] = ystar;
+						ylo = y[0];
+						ilo = 0;
+
+						for (int i = 1; i < nn; i++) {
+							if (y[i] < ylo) {
+								ylo = y[i];
+								ilo = i;
+							}
+						}
+						continue;
 					}
 					/*
-					  Retain extension or contraction.
+					  Retain contraction.
 					*/
 					else {
 						for (int i = 0; i < n; i++) {
@@ -194,164 +254,97 @@ public class NelderMeadTraining extends BasicTraining {
 					}
 				}
 				/*
-				  No extension.
+				  Contraction on the reflection side of the centroid.
 				*/
-				else {
-					l = 0;
-					for (int i = 0; i < nn; i++) {
-						if (ystar < y[i]) {
-							l = l + 1;
-						}
+				else if (l == 1) {
+					for (int i = 0; i < n; i++) {
+						p2star[i] = pbar[i] + ccoeff * (pstar[i] - pbar[i]);
 					}
-
-					if (1 < l) {
+					y2star = fn(p2star);
+					icount++;
+					/*
+					  Retain reflection?
+					*/
+					if (y2star <= ystar) {
+						for (int i = 0; i < n; i++) {
+							p[i + ihi * n] = p2star[i];
+						}
+						y[ihi] = y2star;
+					} else {
 						for (int i = 0; i < n; i++) {
 							p[i + ihi * n] = pstar[i];
 						}
 						y[ihi] = ystar;
 					}
-					/*
-					  Contraction on the Y(IHI) side of the centroid.
-					*/
-					else if (l == 0) {
-						for (int i = 0; i < n; i++) {
-							p2star[i] = pbar[i] + ccoeff
-									* (p[i + ihi * n] - pbar[i]);
-						}
-						y2star = fn(p2star);
-						icount++;
-						/*
-						  Contract the whole simplex.
-						*/
-						if (y[ihi] < y2star) {
-							for (int j = 0; j < nn; j++) {
-								for (int i = 0; i < n; i++) {
-									p[i + j * n] = (p[i + j * n] + p[i + ilo
-											* n]) * 0.5;
-									this.trainedWeights[i] = p[i + j * n];
-								}
-								y[j] = fn(this.trainedWeights);
-								icount++;
-							}
-							ylo = y[0];
-							ilo = 0;
-
-							for (int i = 1; i < nn; i++) {
-								if (y[i] < ylo) {
-									ylo = y[i];
-									ilo = i;
-								}
-							}
-							continue;
-						}
-						/*
-						  Retain contraction.
-						*/
-						else {
-							for (int i = 0; i < n; i++) {
-								p[i + ihi * n] = p2star[i];
-							}
-							y[ihi] = y2star;
-						}
-					}
-					/*
-					  Contraction on the reflection side of the centroid.
-					*/
-					else if (l == 1) {
-						for (int i = 0; i < n; i++) {
-							p2star[i] = pbar[i] + ccoeff * (pstar[i] - pbar[i]);
-						}
-						y2star = fn(p2star);
-						icount++;
-						/*
-						  Retain reflection?
-						*/
-						if (y2star <= ystar) {
-							for (int i = 0; i < n; i++) {
-								p[i + ihi * n] = p2star[i];
-							}
-							y[ihi] = y2star;
-						} else {
-							for (int i = 0; i < n; i++) {
-								p[i + ihi * n] = pstar[i];
-							}
-							y[ihi] = ystar;
-						}
-					}
-				}
-				/*
-				  Check if YLO improved.
-				*/
-				if (y[ihi] < ylo) {
-					ylo = y[ihi];
-					ilo = ihi;
-				}
-				jcount = jcount - 1;
-
-				if (0 < jcount) {
-					continue;
-				}
-				/*
-				  Check to see if minimum reached.
-				*/
-				//if (icount <= kcount) 
-				{
-					jcount = konvge;
-
-					z = 0.0;
-					for (int i = 0; i < nn; i++) {
-						z = z + y[i];
-					}
-					double x = z / nn;
-
-					z = 0.0;
-					for (int i = 0; i < nn; i++) {
-						z = z + Math.pow(y[i] - x, 2);
-					}
-
-					if (z <= rq) {
-						break;
-					}
 				}
 			}
 			/*
-			  Factorial tests to check that YNEWLO is a local minimum.
+			  Check if YLO improved.
 			*/
-			for (int i = 0; i < n; i++) {
-				this.trainedWeights[i] = p[i + ilo * n];
+			if (y[ihi] < ylo) {
+				ylo = y[ihi];
+				ilo = ihi;
 			}
-			ynewlo = y[ilo];
+			jcount = jcount - 1;
 
-			/*if (kcount < icount) {
-				return;
-				//throw new EncogError("Error 2");
-			}*/
+			if (0 < jcount) {
+				continue;
+			}
+			/*
+			  Check to see if minimum reached.
+			*/
+			//if (icount <= kcount) 
+			{
+				jcount = konvge;
 
-			boolean fault = false;
+				z = 0.0;
+				for (int i = 0; i < nn; i++) {
+					z = z + y[i];
+				}
+				double x = z / nn;
 
-			for (int i = 0; i < n; i++) {
-				del = step[i] * eps;
-				this.trainedWeights[i] += del;
-				z = fn(this.trainedWeights);
-				icount++;
-				if (z < ynewlo) {
-					fault = true;
+				z = 0.0;
+				for (int i = 0; i < nn; i++) {
+					z = z + Math.pow(y[i] - x, 2);
+				}
+
+				if (z <= rq) {
 					break;
 				}
-				this.trainedWeights[i] = this.trainedWeights[i] - del - del;
-				z = fn(this.trainedWeights);
-				icount++;
-				if (z < ynewlo) {
-					fault = true;
-					break;
-				}
-				this.trainedWeights[i] += del;
 			}
+		}
+		/*
+		  Factorial tests to check that YNEWLO is a local minimum.
+		*/
+		for (int i = 0; i < n; i++) {
+			this.trainedWeights[i] = p[i + ilo * n];
+		}
+		ynewlo = y[ilo];
 
-			if (!fault) {
+		boolean fault = false;
+
+		for (int i = 0; i < n; i++) {
+			del = step[i] * eps;
+			this.trainedWeights[i] += del;
+			z = fn(this.trainedWeights);
+			icount++;
+			if (z < ynewlo) {
+				fault = true;
 				break;
 			}
+			this.trainedWeights[i] = this.trainedWeights[i] - del - del;
+			z = fn(this.trainedWeights);
+			icount++;
+			if (z < ynewlo) {
+				fault = true;
+				break;
+			}
+			this.trainedWeights[i] += del;
+		}
 
+		if (!fault) {
+			this.converged = true;
+		} else {
 			/*
 			  Restart the procedure.
 			*/
