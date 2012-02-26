@@ -1,0 +1,8 @@
+#cp local.properties.template local.properties
+#edit to needs
+group=org.encog
+version=3.1.0
+
+maven.repository.url=
+maven.repository.user=
+maven.repository.password=
