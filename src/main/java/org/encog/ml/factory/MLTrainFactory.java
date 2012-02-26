@@ -54,6 +54,11 @@ public class MLTrainFactory {
 	/**
 	 * K2 training for Bayesian.
 	 */
+	public static final String TYPE_NELDER_MEAD = "nm";
+	
+	/**
+	 * K2 training for Bayesian.
+	 */
 	public static final String TYPE_BAYESIAN = "bayesian";
 	
 	/**
