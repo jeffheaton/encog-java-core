@@ -26,7 +26,6 @@ package org.encog.ml.hmm.distributions;
 import java.util.Arrays;
 import java.util.Random;
 
-import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.MatrixMath;
 import org.encog.mathutil.matrices.decomposition.CholeskyDecomposition;
@@ -36,20 +35,63 @@ import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.util.EngineArray;
 
+/**
+ * A continuous distribution represents an infinite range of choices between two
+ * real numbers. A gaussian distribution is used to distribute the probability.
+ * 
+ */
 public class ContinousDistribution implements StateDistribution {
+	
 	/**
-	 * 
+	 * The serial id.
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * The dimensions.
+	 */
 	final private int dimension;
+	
+	/**
+	 * The means for each dimension.
+	 */
 	final private double[] mean;
+	
+	/**
+	 * The covariance matrix.
+	 */
 	final private Matrix covariance;
+	
+	/**
+	 * The covariance left side.
+	 */
 	private Matrix covarianceL = null;
+	
+	/**
+	 * The covariance inverse.
+	 */
 	private Matrix covarianceInv = null;
+	
+	/**
+	 * The covariance determinant.
+	 */
 	private double covarianceDet;
+	
+	/**
+	 * Random number generator.
+	 */
 	private final static Random randomGenerator = new Random();
+	
+	/**
+	 * Used to perform a decomposition.
+	 */
 	private CholeskyDecomposition cd;
 
+	/**
+	 * Construct a continuous distribution.
+	 * @param mean The mean.
+	 * @param covariance The covariance.
+	 */
 	public ContinousDistribution(final double[] mean,
 			final double[][] covariance) {
 		this.dimension = covariance.length;
@@ -58,6 +100,10 @@ public class ContinousDistribution implements StateDistribution {
 		update(covariance);
 	}
 
+	/**
+	 * Construct a continuous distribution with the specified number of dimensions.
+	 * @param dimension The dimensions.
+	 */
 	public ContinousDistribution(final int dimension) {
 		if (dimension <= 0) {
 			throw new IllegalArgumentException();
@@ -69,6 +115,9 @@ public class ContinousDistribution implements StateDistribution {
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ContinousDistribution clone() {
 		try {
@@ -78,6 +127,9 @@ public class ContinousDistribution implements StateDistribution {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void fit(final MLDataSet co) {
 		final double[] weights = new double[co.size()];
@@ -86,6 +138,9 @@ public class ContinousDistribution implements StateDistribution {
 		fit(co, weights);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void fit(final MLDataSet co, final double[] weights) {
 		if ((co.size() < 1) || (co.size() != weights.length)) {
@@ -125,6 +180,9 @@ public class ContinousDistribution implements StateDistribution {
 		update(covariance);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public MLDataPair generate() {
 		final double[] d = new double[this.dimension];
@@ -138,6 +196,9 @@ public class ContinousDistribution implements StateDistribution {
 				this.mean)));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public double probability(final MLDataPair o) {
 		final double[] v = o.getInputArray();
@@ -151,6 +212,10 @@ public class ContinousDistribution implements StateDistribution {
 						this.covarianceDet, 0.5));
 	}
 
+	/**
+	 * Update the covariance. 
+	 * @param covariance The new covariance.
+	 */
 	public void update(final double[][] covariance) {
 		this.cd = new CholeskyDecomposition(new Matrix(covariance));
 		this.covarianceL = this.cd.getL();
@@ -158,10 +223,16 @@ public class ContinousDistribution implements StateDistribution {
 		this.covarianceDet = this.cd.getDeterminant();
 	}
 
+	/**
+	 * @return The mean for the dimensions of the gaussian curve.
+	 */
 	public double[] getMean() {
 		return this.mean;
 	}
 
+	/**
+	 * @return The covariance matrix.
+	 */
 	public Matrix getCovariance() {
 		return this.covariance;
 	}
