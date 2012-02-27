@@ -23,19 +23,25 @@
  */
 package org.encog.cloud.basic;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.EncogError;
+
 public class CommunicationLink {	
 	public final int SOCKET_TIMEOUT = 25000;
 	private Socket socket;
+	private ByteArrayOutputStream outputHolder;
 	private DataOutputStream outputToRemote;
 	private DataInputStream inputFromRemote;
+	private OutputStream socketOut;
 
 	public static String simpleHash(String str) {
 		int result = 0;
@@ -52,8 +58,10 @@ public class CommunicationLink {
 		try {
 			this.socket = s;
 			this.socket.setSoTimeout(SOCKET_TIMEOUT);
-			this.outputToRemote = new DataOutputStream(this.socket
-					.getOutputStream());
+			
+			this.socketOut = this.socket.getOutputStream();
+			this.outputHolder = new ByteArrayOutputStream();
+			this.outputToRemote = new DataOutputStream(this.outputHolder);
 			this.inputFromRemote = new DataInputStream(this.socket
 					.getInputStream());
 		} catch (IOException ex) {
@@ -83,9 +91,11 @@ public class CommunicationLink {
 			
 			// write the packet
 			this.outputToRemote.writeByte('E');
-			this.outputToRemote.writeByte('R');
-			this.outputToRemote.writeByte('T');
-			this.outputToRemote.writeByte('P');
+			this.outputToRemote.writeByte('N');
+			this.outputToRemote.writeByte('C');
+			this.outputToRemote.writeByte('O');
+			this.outputToRemote.writeByte('G');
+			this.outputToRemote.writeByte(0);// string terminator
 			this.outputToRemote.writeByte(0);//version
 			this.outputToRemote.writeByte(command);
 			this.outputToRemote.writeByte(0);//count
@@ -105,6 +115,7 @@ public class CommunicationLink {
 			}
 			
 			this.outputToRemote.write(b);
+			this.flushOutput();
 			
 		} catch (IOException ex) {
 			throw new CloudError(ex);
@@ -170,6 +181,16 @@ public class CommunicationLink {
 	public void writePacketIdentify(String name) {
 		String[] args = { name };
 		writePacket(CloudPacket.PACKET_IDENTIFY,args);
+		
+	}
+	
+	private void flushOutput() {
+		try {
+			this.socketOut.write(this.outputHolder.toByteArray());
+			this.outputHolder.reset();	
+		} catch (IOException e) {
+			throw new EncogError(e);
+		}
 		
 	}
 }
