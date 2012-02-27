@@ -1,1 +1,11 @@
-/target/
+.classpath
+.project
+.settings
+target
+local.properties
+encog.*
+iris_*
+test.*
+xor.bin
+build
+bin
