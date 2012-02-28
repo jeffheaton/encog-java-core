@@ -42,18 +42,43 @@ public class ForwardBackwardCalculator {
 		ALPHA, BETA
 	};
 
+	/**
+	 * Alpha matrix.
+	 */
 	protected double[][] alpha = null;
+	
+	/**
+	 * Beta matrix.
+	 */
 	protected double[][] beta = null;
+	
+	/**
+	 * Probability.
+	 */
 	protected double probability;
 
+	/**
+	 * Construct an empty object.
+	 */
 	protected ForwardBackwardCalculator() {
 	};
 
+	/**
+	 * Construct the forward/backward calculator.
+	 * @param oseq The sequence to use.
+	 * @param hmm THe hidden markov model to use.
+	 */
 	public ForwardBackwardCalculator(final MLDataSet oseq,
 			final HiddenMarkovModel hmm) {
 		this(oseq, hmm, EnumSet.of(Computation.ALPHA));
 	}
 
+	/**
+	 * Construct the object. 
+	 * @param oseq The sequence.
+	 * @param hmm The hidden markov model to use.
+	 * @param flags Flags, alpha or beta.
+	 */
 	public ForwardBackwardCalculator(final MLDataSet oseq,
 			final HiddenMarkovModel hmm, final EnumSet<Computation> flags) {
 		if (oseq.size() < 1) {
@@ -71,6 +96,12 @@ public class ForwardBackwardCalculator {
 		computeProbability(oseq, hmm, flags);
 	}
 
+	/**
+	 * Alpha element.
+	 * @param t The row.
+	 * @param i The column.
+	 * @return The element.
+	 */
 	public double alphaElement(final int t, final int i) {
 		if (this.alpha == null) {
 			throw new UnsupportedOperationException("Alpha array has not "
@@ -80,6 +111,12 @@ public class ForwardBackwardCalculator {
 		return this.alpha[t][i];
 	}
 
+	/**
+	 * Beta element, best element.
+	 * @param t From.
+	 * @param i To.
+	 * @return The element.
+	 */
 	public double betaElement(final int t, final int i) {
 		if (this.beta == null) {
 			throw new UnsupportedOperationException("Beta array has not "
@@ -89,6 +126,11 @@ public class ForwardBackwardCalculator {
 		return this.beta[t][i];
 	}
 
+	/**
+	 * Compute alpha.
+	 * @param hmm The hidden markov model.
+	 * @param oseq The sequence.
+	 */
 	protected void computeAlpha(final HiddenMarkovModel hmm,
 			final MLDataSet oseq) {
 		this.alpha = new double[oseq.size()][hmm.getStateCount()];
@@ -111,12 +153,25 @@ public class ForwardBackwardCalculator {
 		}
 	}
 
+	/**
+	 * Compute the alpha init.
+	 * @param hmm THe hidden markov model.
+	 * @param o The element.
+	 * @param i The state.
+	 */
 	protected void computeAlphaInit(final HiddenMarkovModel hmm,
 			final MLDataPair o, final int i) {
 		this.alpha[0][i] = hmm.getPi(i)
 				* hmm.getStateDistribution(i).probability(o);
 	}
 
+	/**
+	 * Compute the alpha step.
+	 * @param hmm The hidden markov model.
+	 * @param o The sequence element.
+	 * @param t The alpha step.
+	 * @param j Thr column.
+	 */
 	protected void computeAlphaStep(final HiddenMarkovModel hmm,
 			final MLDataPair o, final int t, final int j) {
 		double sum = 0.;
@@ -128,6 +183,11 @@ public class ForwardBackwardCalculator {
 		this.alpha[t][j] = sum * hmm.getStateDistribution(j).probability(o);
 	}
 
+	/**
+	 * Compute the beta step.
+	 * @param hmm The hidden markov model.
+	 * @param oseq The sequence.
+	 */
 	protected void computeBeta(final HiddenMarkovModel hmm, final MLDataSet oseq) {
 		this.beta = new double[oseq.size()][hmm.getStateCount()];
 
@@ -142,6 +202,13 @@ public class ForwardBackwardCalculator {
 		}
 	}
 
+	/**
+	 * Compute the beta step.
+	 * @param hmm The hidden markov model.
+	 * @param o THe data par to compute.
+	 * @param t THe matrix row.
+	 * @param i THe matrix column.
+	 */
 	protected void computeBetaStep(final HiddenMarkovModel hmm,
 			final MLDataPair o, final int t, final int i) {
 		double sum = 0.;
@@ -154,6 +221,12 @@ public class ForwardBackwardCalculator {
 		this.beta[t][i] = sum;
 	}
 
+	/**
+	 * Compute the probability.
+	 * @param oseq The sequence.
+	 * @param hmm THe hidden markov model.
+	 * @param flags The flags.
+	 */
 	private void computeProbability(final MLDataSet oseq,
 			final HiddenMarkovModel hmm, final EnumSet<Computation> flags) {
 		this.probability = 0.;
@@ -171,6 +244,9 @@ public class ForwardBackwardCalculator {
 		}
 	}
 
+	/**
+	 * @return The probability.
+	 */
 	public double probability() {
 		return this.probability;
 	}
