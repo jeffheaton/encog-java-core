@@ -246,6 +246,9 @@ public class TrainBayesian extends BasicTraining {
 	 */
 	@Override
 	public void iteration() {
+		
+		postIteration();
+		
 		switch (p) {
 		case Init:
 			iterationInit();
@@ -263,6 +266,8 @@ public class TrainBayesian extends BasicTraining {
 			iterationFinish();
 			break;
 		}
+		
+		preIteration();
 
 	}
 

@@ -552,9 +552,9 @@ public class AnalystWizard {
 					a.append("Type");
 					a.append(i);
 					a.append(":");
-					a.append(CSVFormat.EG_FORMAT.format(low, 4));
+					a.append(CSVFormat.EG_FORMAT.format(low, 16));
 					a.append(" to ");
-					a.append(CSVFormat.EG_FORMAT.format(hi, 4));
+					a.append(CSVFormat.EG_FORMAT.format(hi, 16));
 					first = false;					
 				}
 				a.append("]");
