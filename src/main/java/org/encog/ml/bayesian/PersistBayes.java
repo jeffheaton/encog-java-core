@@ -168,7 +168,7 @@ public class PersistBayes implements EncogPersistor {
 						if( arg>=parentEvent.getChoices().size()) {
 							throw new BayesianError("Argument value " + arg + " is out of range for event " + parentEvent.toString());
 						}
-						str.append(parentEvent.getChoices().get(arg));
+						str.append(parentEvent.getChoice(arg));
 					}
 				}
 				str.append(")=");

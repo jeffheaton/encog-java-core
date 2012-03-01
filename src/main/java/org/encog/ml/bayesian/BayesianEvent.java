@@ -26,6 +26,8 @@ package org.encog.ml.bayesian;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.encog.Encog;
 import org.encog.ml.bayesian.table.BayesianTable;
@@ -56,7 +58,7 @@ public class BayesianEvent implements Serializable {
 	/**
 	 * The discrete choices that make up the state of this event.
 	 */
-	private final List<BayesianChoice> choices = new ArrayList<BayesianChoice>();
+	private final Set<BayesianChoice> choices = new TreeSet<BayesianChoice>();
 	
 	/**
 	 * The truth table for this event.
@@ -243,7 +245,7 @@ public class BayesianEvent implements Serializable {
 	/**
 	 * @return the choices
 	 */
-	public List<BayesianChoice> getChoices() {
+	public Set<BayesianChoice> getChoices() {
 		return choices;
 	}
 
@@ -411,33 +413,37 @@ public class BayesianEvent implements Serializable {
 	 * @return The range that the value was mapped into.
 	 */
 	public int matchChoiceToRange(double d) {
-		if (this.getChoices().size() > 0 && this.getChoices().get(0).isIndex()) {
+		if (this.getChoices().size() > 0 && this.getChoices().iterator().next().isIndex()) {
 			return (int) d;
 		}
 
 		int index = 0;
 		for (BayesianChoice choice : this.choices) {
-			if (d > choice.getMin() && d < choice.getMax()) {
+			if (d < choice.getMin() ) {
 				return index;
 			}
-
-			if (Math.abs(d - choice.getMin()) < Encog.DEFAULT_DOUBLE_EQUAL)
-				return index;
-
-			if (Math.abs(d - choice.getMax()) < Encog.DEFAULT_DOUBLE_EQUAL)
-				return index;
 
 			index++;
 		}
 
-		// out of range?
+		return index;
+	}
 
-		if (d < this.minimumChoice)
-			return this.minimumChoiceIndex;
-		if (d > this.maximumChoice)
-			return this.minimumChoiceIndex;
-
-		throw new BayesianError("Can't find a choice to map the value of " + d
-				+ " to for event " + this.toString());
+	/**
+	 * Return the choice specified by the index.  This requires searching
+	 * through a list.  Do not call in performance critical areas.
+	 * @param arg The argument number.
+	 * @return The bayesian choice found.
+	 */
+	public BayesianChoice getChoice(int arg) {
+		int a = arg;
+		
+		for(BayesianChoice choice : this.choices) {
+			if( a==0 ) {
+				return choice;
+			}
+			a--;
+		}
+		return null;
 	}
 }
