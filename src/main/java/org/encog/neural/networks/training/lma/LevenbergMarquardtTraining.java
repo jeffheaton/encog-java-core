@@ -269,7 +269,7 @@ public class LevenbergMarquardtTraining extends BasicTraining implements MultiTh
 				}
 			} else {
 				if( lambda > LevenbergMarquardtTraining.LAMBDA_MIN ) {
-					this.lambda /= Math.max(LevenbergMarquardtTraining.LAMBDA_MIN,
+					this.lambda = Math.max(LevenbergMarquardtTraining.LAMBDA_MIN,
 							LevenbergMarquardtTraining.SCALE_LAMBDA);	
 				}				
 				done = true;
