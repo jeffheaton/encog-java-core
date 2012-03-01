@@ -419,14 +419,14 @@ public class BayesianEvent implements Serializable {
 
 		int index = 0;
 		for (BayesianChoice choice : this.choices) {
-			if (d < choice.getMin() ) {
+			if (d < choice.getMax() ) {
 				return index;
 			}
 
 			index++;
 		}
 
-		return index;
+		return Math.min(index,this.choices.size()-1);
 	}
 
 	/**

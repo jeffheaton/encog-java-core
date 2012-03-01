@@ -139,7 +139,7 @@ public class BayesianChoice implements Serializable, Comparable<BayesianChoice> 
 	 */
 	@Override
 	public int compareTo(BayesianChoice other) {
-		if( this.min>other.min ) {
+		if( this.max<other.max ) {
 			return -1;
 		} else {
 			return 1;
