@@ -806,7 +806,7 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		
 		// define the base event
 		ParsedProbability prob = list.get(0);
-		
+				
 		if( prob.getBaseEvents().size()==0 ) {
 			return;
 		} 
@@ -823,6 +823,25 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 		
 		this.query.locateEventTypes();
 		
+		// set the values
+		for(ParsedEvent parsedGiven: prob.getGivenEvents()) {
+			BayesianEvent event = this.getEvent( parsedGiven.getLabel() );
+			this.query.setEventValue(event, parseInt(parsedGiven.getValue()) );
+		}
+		
+		this.query.setEventValue(be, parseInt(prob.getBaseEvents().get(0).getValue()) );		
+	}
+	
+	private int parseInt(String str) {
+		if( str==null ) {
+			return 0;
+		}
+		
+		try {
+			return Integer.parseInt(str);
+		} catch(NumberFormatException ex) {
+			return 0;
+		}
 	}
 
 	/**

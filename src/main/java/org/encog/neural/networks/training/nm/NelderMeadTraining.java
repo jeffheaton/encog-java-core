@@ -11,57 +11,93 @@ import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.util.EngineArray;
 
 /**
- * The Nelder–Mead method is a commonly use parameter optimization method that 
- * can be used for neural network training.
+ * The Nelder-Mead method is a commonly used parameter optimization method that
+ * can be used for neural network training. It typically provides a good error
+ * rate and is relatively fast.
  * 
- * This implementation is based on the source code provided by 
- * John Burkardt (http://people.sc.fsu.edu/~jburkardt/)
+ * Nelder-Mead must build a simplex, which is an n*(n+1) matrix of weights. If
+ * you have a large number of weights, this matrix can quickly overflow memory.
+ * 
+ * The biggest enhancement that is needed for this trainer is to make use of
+ * multi-threaded code to evaluate the speed evaluations when training on a
+ * multi-core.
+ * 
+ * This implementation is based on the source code provided by John Burkardt
+ * (http://people.sc.fsu.edu/~jburkardt/)
  * 
  * http://people.sc.fsu.edu/~jburkardt/c_src/asa047/asa047.c
  */
 public class NelderMeadTraining extends BasicTraining {
 
-	private int icount;
-	private int numres;
-	private BasicNetwork network;
+	/**
+	 * The network to be trained.
+	 */
+	private final BasicNetwork network;
+
+	/**
+	 * The best error rate.
+	 */
 	private double ynewlo;
+
+	/**
+	 * True if the network has converged, and no further training is needed.
+	 */
 	private boolean converged = false;
 
-	private double ccoeff = 0.5;
+	/**
+	 * Used to calculate the centroid.
+	 */
+	private final double ccoeff = 0.5;
 	private double del;
-	private double ecoeff = 2.0;
-	private double eps = 0.001;
+	private final double ecoeff = 2.0;
+	private final double eps = 0.001;
 	private int ihi;
 	private int ilo;
 	private int jcount;
 	private int l;
-	private int nn;
-	private double[] p;
-	private double[] p2star;
-	private double[] pbar;
-	private double[] pstar;
-	private double rcoeff = 1.0;
-	private double rq;
-	private double[] y;
+	private final int nn;
+	private final double[] p;
+	private final double[] p2star;
+	private final double[] pbar;
+	private final double[] pstar;
+	private final double rcoeff = 1.0;
+	private final double rq;
+	private final double[] y;
 	private double y2star;
 	private double ylo;
 	private double ystar;
 	private double z;
-	private double[] start;
-	private double[] trainedWeights;
-	private double[] step;
+	private final double[] start;
+	private final double[] trainedWeights;
+	private final double[] step;
 	private int konvge;
 
 	/**
-	 * Construct the LMA object.
+	 * Construct a Nelder Mead trainer with a step size of 100.
 	 * 
 	 * @param network
-	 *            The network to train. Must have a single output neuron.
+	 *            The network to train.
 	 * @param training
-	 *            The training data to use. Must be indexable.
+	 *            The training set to use.
 	 */
 	public NelderMeadTraining(final BasicNetwork network,
 			final MLDataSet training) {
+		this(network, training, 100);
+	}
+
+	/**
+	 * Construct a Nelder Mead trainer with a definable step.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param training
+	 *            The training data to use.
+	 * @param stepValue
+	 *            The step value. This value defines, to some degree the range
+	 *            of different weights that will be tried.
+	 */
+	public NelderMeadTraining(final BasicNetwork network,
+			final MLDataSet training, final double stepValue) {
 		super(TrainingImplementationType.OnePass);
 		this.network = network;
 		setTraining(training);
@@ -69,329 +105,345 @@ public class NelderMeadTraining extends BasicTraining {
 		this.start = NetworkCODEC.networkToArray(network);
 		this.trainedWeights = NetworkCODEC.networkToArray(network);
 
-		int n = this.start.length;
+		final int n = this.start.length;
 
-		p = new double[n * (n + 1)];
-		pstar = new double[n];
-		p2star = new double[n];
-		pbar = new double[n];
-		y = new double[(n + 1)];
+		this.p = new double[n * (n + 1)];
+		this.pstar = new double[n];
+		this.p2star = new double[n];
+		this.pbar = new double[n];
+		this.y = new double[n + 1];
 
-		icount = 0;
-		numres = 0;
+		this.nn = n + 1;
+		this.del = 1.0;
+		this.rq = Encog.DEFAULT_DOUBLE_EQUAL * n;
 
-		nn = n + 1;
-		del = 1.0;
-		rq = Encog.DEFAULT_DOUBLE_EQUAL * n;
-
-		step = new double[NetworkCODEC.networkSize(network)];
-		jcount = this.konvge = 500;
-		EngineArray.fill(step, 100);
+		this.step = new double[NetworkCODEC.networkSize(network)];
+		this.jcount = this.konvge = 500;
+		EngineArray.fill(this.step, stepValue);
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean canContinue() {
+		return false;
+	}
+
+	/**
+	 * Calculate the error for the neural network with a given set of weights.
+	 * 
+	 * @param weights
+	 *            The weights to use.
+	 * @return The current error.
+	 */
+	public double fn(final double[] weights) {
+		NetworkCODEC.arrayToNetwork(weights, this.network);
+		return this.network.calculateError(getTraining());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public MLMethod getMethod() {
+		return this.network;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isTrainingDone() {
+		if (this.converged) {
+			return true;
+		} else {
+			return super.isTrainingDone();
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void iteration() {
 
-		if (this.converged)
+		if (this.converged) {
 			return;
+		}
 
-		int n = start.length;
+		final int n = this.start.length;
 
 		for (int i = 0; i < n; i++) {
-			p[i + n * n] = start[i];
+			this.p[i + n * n] = this.start[i];
 		}
-		y[n] = fn(start);
-		icount++;
-
+		this.y[n] = fn(this.start);
 		for (int j = 0; j < n; j++) {
-			double x = start[j];
-			start[j] = start[j] + step[j] * del;
+			final double x = this.start[j];
+			this.start[j] = this.start[j] + this.step[j] * this.del;
 			for (int i = 0; i < n; i++) {
-				p[i + j * n] = start[i];
+				this.p[i + j * n] = this.start[i];
 			}
-			y[j] = fn(start);
-			icount++;
-			start[j] = x;
+			this.y[j] = fn(this.start);
+			this.start[j] = x;
 		}
-		/*                 
-		  The simplex construction is complete.
-		                    
-		  Find highest and lowest Y values.  YNEWLO = Y(IHI) indicates
-		  the vertex of the simplex to be replaced.
-		*/
-		ylo = y[0];
-		ilo = 0;
+		/*
+		 * The simplex construction is complete.
+		 * 
+		 * Find highest and lowest Y values. YNEWLO = Y(IHI) indicates the
+		 * vertex of the simplex to be replaced.
+		 */
+		this.ylo = this.y[0];
+		this.ilo = 0;
 
-		for (int i = 1; i < nn; i++) {
-			if (y[i] < ylo) {
-				ylo = y[i];
-				ilo = i;
+		for (int i = 1; i < this.nn; i++) {
+			if (this.y[i] < this.ylo) {
+				this.ylo = this.y[i];
+				this.ilo = i;
 			}
 		}
 		/*
-		  Inner loop.
-		*/
+		 * Inner loop.
+		 */
 		for (;;) {
-			/*if (kcount <= icount) {
-				break;
-			}*/
-			ynewlo = y[0];
-			ihi = 0;
+			/*
+			 * if (kcount <= icount) { break; }
+			 */
+			this.ynewlo = this.y[0];
+			this.ihi = 0;
 
-			for (int i = 1; i < nn; i++) {
-				if (ynewlo < y[i]) {
-					ynewlo = y[i];
-					ihi = i;
+			for (int i = 1; i < this.nn; i++) {
+				if (this.ynewlo < this.y[i]) {
+					this.ynewlo = this.y[i];
+					this.ihi = i;
 				}
 			}
 			/*
-			  Calculate PBAR, the centroid of the simplex vertices
-			  excepting the vertex with Y value YNEWLO.
-			*/
+			 * Calculate PBAR, the centroid of the simplex vertices excepting
+			 * the vertex with Y value YNEWLO.
+			 */
 			for (int i = 0; i < n; i++) {
-				z = 0.0;
-				for (int j = 0; j < nn; j++) {
-					z = z + p[i + j * n];
+				this.z = 0.0;
+				for (int j = 0; j < this.nn; j++) {
+					this.z = this.z + this.p[i + j * n];
 				}
-				z = z - p[i + ihi * n];
-				pbar[i] = z / n;
+				this.z = this.z - this.p[i + this.ihi * n];
+				this.pbar[i] = this.z / n;
 			}
 			/*
-			  Reflection through the centroid.
-			*/
+			 * Reflection through the centroid.
+			 */
 			for (int i = 0; i < n; i++) {
-				pstar[i] = pbar[i] + rcoeff * (pbar[i] - p[i + ihi * n]);
+				this.pstar[i] = this.pbar[i] + this.rcoeff
+						* (this.pbar[i] - this.p[i + this.ihi * n]);
 			}
-			ystar = fn(pstar);
-			icount++;
+			this.ystar = fn(this.pstar);
 			/*
-			  Successful reflection, so extension.
-			*/
-			if (ystar < ylo) {
+			 * Successful reflection, so extension.
+			 */
+			if (this.ystar < this.ylo) {
 				for (int i = 0; i < n; i++) {
-					p2star[i] = pbar[i] + ecoeff * (pstar[i] - pbar[i]);
+					this.p2star[i] = this.pbar[i] + this.ecoeff
+							* (this.pstar[i] - this.pbar[i]);
 				}
-				y2star = fn(p2star);
-				icount++;
+				this.y2star = fn(this.p2star);
 				/*
-				  Check extension.
-				*/
-				if (ystar < y2star) {
+				 * Check extension.
+				 */
+				if (this.ystar < this.y2star) {
 					for (int i = 0; i < n; i++) {
-						p[i + ihi * n] = pstar[i];
+						this.p[i + this.ihi * n] = this.pstar[i];
 					}
-					y[ihi] = ystar;
+					this.y[this.ihi] = this.ystar;
 				}
 				/*
-				  Retain extension or contraction.
-				*/
+				 * Retain extension or contraction.
+				 */
 				else {
 					for (int i = 0; i < n; i++) {
-						p[i + ihi * n] = p2star[i];
+						this.p[i + this.ihi * n] = this.p2star[i];
 					}
-					y[ihi] = y2star;
+					this.y[this.ihi] = this.y2star;
 				}
 			}
 			/*
-			  No extension.
-			*/
+			 * No extension.
+			 */
 			else {
-				l = 0;
-				for (int i = 0; i < nn; i++) {
-					if (ystar < y[i]) {
-						l = l + 1;
+				this.l = 0;
+				for (int i = 0; i < this.nn; i++) {
+					if (this.ystar < this.y[i]) {
+						this.l = this.l + 1;
 					}
 				}
 
-				if (1 < l) {
+				if (1 < this.l) {
 					for (int i = 0; i < n; i++) {
-						p[i + ihi * n] = pstar[i];
+						this.p[i + this.ihi * n] = this.pstar[i];
 					}
-					y[ihi] = ystar;
+					this.y[this.ihi] = this.ystar;
 				}
 				/*
-				  Contraction on the Y(IHI) side of the centroid.
-				*/
-				else if (l == 0) {
+				 * Contraction on the Y(IHI) side of the centroid.
+				 */
+				else if (this.l == 0) {
 					for (int i = 0; i < n; i++) {
-						p2star[i] = pbar[i] + ccoeff
-								* (p[i + ihi * n] - pbar[i]);
+						this.p2star[i] = this.pbar[i] + this.ccoeff
+								* (this.p[i + this.ihi * n] - this.pbar[i]);
 					}
-					y2star = fn(p2star);
-					icount++;
+					this.y2star = fn(this.p2star);
 					/*
-					  Contract the whole simplex.
-					*/
-					if (y[ihi] < y2star) {
-						for (int j = 0; j < nn; j++) {
+					 * Contract the whole simplex.
+					 */
+					if (this.y[this.ihi] < this.y2star) {
+						for (int j = 0; j < this.nn; j++) {
 							for (int i = 0; i < n; i++) {
-								p[i + j * n] = (p[i + j * n] + p[i + ilo * n]) * 0.5;
-								this.trainedWeights[i] = p[i + j * n];
+								this.p[i + j * n] = (this.p[i + j * n] + this.p[i
+										+ this.ilo * n]) * 0.5;
+								this.trainedWeights[i] = this.p[i + j * n];
 							}
-							y[j] = fn(this.trainedWeights);
-							icount++;
+							this.y[j] = fn(this.trainedWeights);
 						}
-						ylo = y[0];
-						ilo = 0;
+						this.ylo = this.y[0];
+						this.ilo = 0;
 
-						for (int i = 1; i < nn; i++) {
-							if (y[i] < ylo) {
-								ylo = y[i];
-								ilo = i;
+						for (int i = 1; i < this.nn; i++) {
+							if (this.y[i] < this.ylo) {
+								this.ylo = this.y[i];
+								this.ilo = i;
 							}
 						}
 						continue;
 					}
 					/*
-					  Retain contraction.
-					*/
+					 * Retain contraction.
+					 */
 					else {
 						for (int i = 0; i < n; i++) {
-							p[i + ihi * n] = p2star[i];
+							this.p[i + this.ihi * n] = this.p2star[i];
 						}
-						y[ihi] = y2star;
+						this.y[this.ihi] = this.y2star;
 					}
 				}
 				/*
-				  Contraction on the reflection side of the centroid.
-				*/
-				else if (l == 1) {
+				 * Contraction on the reflection side of the centroid.
+				 */
+				else if (this.l == 1) {
 					for (int i = 0; i < n; i++) {
-						p2star[i] = pbar[i] + ccoeff * (pstar[i] - pbar[i]);
+						this.p2star[i] = this.pbar[i] + this.ccoeff
+								* (this.pstar[i] - this.pbar[i]);
 					}
-					y2star = fn(p2star);
-					icount++;
+					this.y2star = fn(this.p2star);
 					/*
-					  Retain reflection?
-					*/
-					if (y2star <= ystar) {
+					 * Retain reflection?
+					 */
+					if (this.y2star <= this.ystar) {
 						for (int i = 0; i < n; i++) {
-							p[i + ihi * n] = p2star[i];
+							this.p[i + this.ihi * n] = this.p2star[i];
 						}
-						y[ihi] = y2star;
+						this.y[this.ihi] = this.y2star;
 					} else {
 						for (int i = 0; i < n; i++) {
-							p[i + ihi * n] = pstar[i];
+							this.p[i + this.ihi * n] = this.pstar[i];
 						}
-						y[ihi] = ystar;
+						this.y[this.ihi] = this.ystar;
 					}
 				}
 			}
 			/*
-			  Check if YLO improved.
-			*/
-			if (y[ihi] < ylo) {
-				ylo = y[ihi];
-				ilo = ihi;
+			 * Check if YLO improved.
+			 */
+			if (this.y[this.ihi] < this.ylo) {
+				this.ylo = this.y[this.ihi];
+				this.ilo = this.ihi;
 			}
-			jcount = jcount - 1;
+			this.jcount = this.jcount - 1;
 
-			if (0 < jcount) {
+			if (0 < this.jcount) {
 				continue;
 			}
 			/*
-			  Check to see if minimum reached.
-			*/
-			//if (icount <= kcount) 
+			 * Check to see if minimum reached.
+			 */
+			// if (icount <= kcount)
 			{
-				jcount = konvge;
+				this.jcount = this.konvge;
 
-				z = 0.0;
-				for (int i = 0; i < nn; i++) {
-					z = z + y[i];
+				this.z = 0.0;
+				for (int i = 0; i < this.nn; i++) {
+					this.z = this.z + this.y[i];
 				}
-				double x = z / nn;
+				final double x = this.z / this.nn;
 
-				z = 0.0;
-				for (int i = 0; i < nn; i++) {
-					z = z + Math.pow(y[i] - x, 2);
+				this.z = 0.0;
+				for (int i = 0; i < this.nn; i++) {
+					this.z = this.z + Math.pow(this.y[i] - x, 2);
 				}
 
-				if (z <= rq) {
+				if (this.z <= this.rq) {
 					break;
 				}
 			}
 		}
 		/*
-		  Factorial tests to check that YNEWLO is a local minimum.
-		*/
+		 * Factorial tests to check that YNEWLO is a local minimum.
+		 */
 		for (int i = 0; i < n; i++) {
-			this.trainedWeights[i] = p[i + ilo * n];
+			this.trainedWeights[i] = this.p[i + this.ilo * n];
 		}
-		ynewlo = y[ilo];
+		this.ynewlo = this.y[this.ilo];
 
 		boolean fault = false;
 
 		for (int i = 0; i < n; i++) {
-			del = step[i] * eps;
-			this.trainedWeights[i] += del;
-			z = fn(this.trainedWeights);
-			icount++;
-			if (z < ynewlo) {
+			this.del = this.step[i] * this.eps;
+			this.trainedWeights[i] += this.del;
+			this.z = fn(this.trainedWeights);
+			if (this.z < this.ynewlo) {
 				fault = true;
 				break;
 			}
-			this.trainedWeights[i] = this.trainedWeights[i] - del - del;
-			z = fn(this.trainedWeights);
-			icount++;
-			if (z < ynewlo) {
+			this.trainedWeights[i] = this.trainedWeights[i] - this.del
+					- this.del;
+			this.z = fn(this.trainedWeights);
+			if (this.z < this.ynewlo) {
 				fault = true;
 				break;
 			}
-			this.trainedWeights[i] += del;
+			this.trainedWeights[i] += this.del;
 		}
 
 		if (!fault) {
 			this.converged = true;
 		} else {
 			/*
-			  Restart the procedure.
-			*/
+			 * Restart the procedure.
+			 */
 			for (int i = 0; i < n; i++) {
-				start[i] = this.trainedWeights[i];
+				this.start[i] = this.trainedWeights[i];
 			}
-			del = eps;
-			numres++;
+			this.del = this.eps;
 		}
 
-		setError(ynewlo);
-		NetworkCODEC.arrayToNetwork(this.trainedWeights, network);
+		setError(this.ynewlo);
+		NetworkCODEC.arrayToNetwork(this.trainedWeights, this.network);
 	}
 
-	@Override
-	public boolean canContinue() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public TrainingContinuation pause() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void resume(TrainingContinuation state) {
-		// TODO Auto-generated method stub
+	public void resume(final TrainingContinuation state) {
 
-	}
-
-	@Override
-	public MLMethod getMethod() {
-		return this.network;
-	}
-
-	public double fn(double[] weights) {
-		NetworkCODEC.arrayToNetwork(weights, this.network);
-		return network.calculateError(getTraining());
-	}
-
-	public boolean isTrainingDone() {
-		if (this.converged)
-			return true;
-		else
-			return super.isTrainingDone();
 	}
 
 }

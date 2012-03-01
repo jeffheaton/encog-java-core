@@ -72,11 +72,11 @@ public class ParseProbability {
 				if( l.length()>0 && l.charAt(0)=='+' ) {
 					String l2 = l.toString().substring(1);
 					parsedEvent = new ParsedEvent(l2.trim());
-					parsedEvent.setValue("true");
+					parsedEvent.setValue("0");
 				} else if( l.length()>0 && l.charAt(0)=='-') {
 					String l2 = l.toString().substring(1);
 					parsedEvent = new ParsedEvent(l2.trim());
-					parsedEvent.setValue("false");
+					parsedEvent.setValue("1");
 				} else {
 					String l2 = l.toString();
 					parsedEvent = new ParsedEvent(l2.trim());

@@ -47,7 +47,7 @@ public class ForwardBackwardScaledCalculator extends ForwardBackwardCalculator {
 		this(oseq, hmm, EnumSet.of(Computation.ALPHA));
 	}
 
-	public <O extends MLDataPair> ForwardBackwardScaledCalculator(
+	public ForwardBackwardScaledCalculator(
 			final MLDataSet oseq, final HiddenMarkovModel hmm,
 			final EnumSet<Computation> flags) {
 		if (oseq.size() < 1) {
