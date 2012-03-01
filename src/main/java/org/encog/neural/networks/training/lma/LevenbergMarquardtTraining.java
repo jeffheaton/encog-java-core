@@ -52,7 +52,7 @@ import org.encog.util.validate.ValidateNetwork;
  * Descent are used.  A lower lambda results in heavier use of GNA, 
  * whereas a higher lambda results in a heavier use of gradient descent.
  * 
- * Each iteration starts with a low lambda that  builds if the improvement 
+ * Each iteration starts with a low lambda that builds if the improvement 
  * to the neural network is not desirable.  At some point the lambda is
  * high enough that the training method reverts totally to gradient descent.
  * 
@@ -83,6 +83,11 @@ public class LevenbergMarquardtTraining extends BasicTraining implements MultiTh
 	 * The max amount for the LAMBDA.
 	 */
 	public static final double LAMBDA_MAX = 1e25;
+	
+	/**
+	 * The max amount for the LAMBDA.
+	 */
+	public static final double LAMBDA_MIN = 1e-25;
 	
 	/**
 	 * Utility class to compute the Hessian.
@@ -242,26 +247,30 @@ public class LevenbergMarquardtTraining extends BasicTraining implements MultiTh
 
 		final double startingError = currentError;
 		boolean done = false;
+		boolean singular;
 
 		while (!done) {
 			applyLambda();
 			decomposition = new LUDecomposition(this.hessian.getHessianMatrix());
+			
+			singular = decomposition.isNonsingular();
 
-			if (decomposition.isNonsingular()) {
+			if (singular) {
 				this.deltas = decomposition.Solve(this.hessian.getGradients());
-
 				updateWeights();
 				currentError = calculateError();				
 			}
 			
-			if (currentError >= startingError) {
+			if ( !singular ||  currentError >= startingError) {
 				this.lambda *= LevenbergMarquardtTraining.SCALE_LAMBDA;
 				if( this.lambda> LevenbergMarquardtTraining.LAMBDA_MAX ) {
 					this.lambda = LevenbergMarquardtTraining.LAMBDA_MAX;
 					done = true;
 				}
 			} else {
-				this.lambda /= LevenbergMarquardtTraining.SCALE_LAMBDA;
+				if( lambda > LevenbergMarquardtTraining.LAMBDA_MIN ) {
+					this.lambda /= LevenbergMarquardtTraining.SCALE_LAMBDA;	
+				}				
 				done = true;
 			}
 		}
