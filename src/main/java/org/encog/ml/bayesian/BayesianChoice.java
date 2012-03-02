@@ -34,7 +34,7 @@ import org.encog.util.csv.CSVFormat;
  * discrete ranges.
  * 
  */
-public class BayesianChoice implements Serializable {
+public class BayesianChoice implements Serializable, Comparable<BayesianChoice> {
 
 	/**
 	 * The label for this choice.
@@ -132,6 +132,18 @@ public class BayesianChoice implements Serializable {
 			result.append(CSVFormat.EG_FORMAT.format(this.max, 4));
 		}
 		return result.toString();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int compareTo(BayesianChoice other) {
+		if( this.max<other.max ) {
+			return -1;
+		} else {
+			return 1;
+		}
 	}
 
 }
