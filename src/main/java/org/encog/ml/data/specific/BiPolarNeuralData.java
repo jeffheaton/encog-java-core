@@ -207,6 +207,10 @@ public class BiPolarNeuralData implements MLData, Serializable {
 		return (result.toString());
 	}
 
+	/**
+	 * Not supported.
+	 * @return Nothing.
+	 */
 	@Override
 	public Centroid<MLData> createCentroid() {
 		return null;

@@ -234,6 +234,10 @@ public class BasicMLComplexData implements MLComplexData {
 		return builder.toString();
 	}
 
+	/**
+	 * Not supported.
+	 * @return Nothing.
+	 */
 	@Override
 	public Centroid<MLData> createCentroid() {
 		return null;
