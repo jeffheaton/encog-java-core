@@ -172,6 +172,7 @@ public class TrainBayesian extends BasicTraining {
 				network.createDependency(classificationTarget, event);
 			}
 		}
+		this.network.finalizeStructure();
 
 	}
 
@@ -184,6 +185,7 @@ public class TrainBayesian extends BasicTraining {
 		switch (this.initNetwork) {
 		case InitEmpty:
 			this.network.removeAllRelations();
+			this.network.finalizeStructure();
 			break;
 		case InitNoChange:
 			break;
