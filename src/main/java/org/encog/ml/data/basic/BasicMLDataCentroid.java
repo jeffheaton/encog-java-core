@@ -26,38 +26,53 @@ package org.encog.ml.data.basic;
 import org.encog.ml.data.MLData;
 import org.encog.util.kmeans.Centroid;
 
+/**
+ * A basic implementation of a centroid.
+ */
 public class BasicMLDataCentroid
 implements Centroid<MLData>, Cloneable
 {	
+	/**
+	 * The value this centroid is based on.
+	 */
 	private BasicMLData value;
 	
+	/**
+	 * Construct the centroid.
+	 * @param o The object to base the centroid on.
+	 */
 	public BasicMLDataCentroid(MLData o)
 	{
 		this.value = (BasicMLData) o.clone();
 	} 
 	
-	
-	public void add(MLData d,
-			int s)
+	/**
+	 * {@inheritDoc}
+	 */
+	public void add(MLData d)
 	{
 		double[] a = d.getData();
 		
 		for (int i = 0; i < value.size(); i++)
 			value.setData(i,  
-				((value.getData(i) * s) + a[i]) / (s+1));
+				((value.getData(i) * value.size()) + a[i]) / (value.size()+1));
 	}
 	
-	
-	public void remove(MLData d, 
-			int s)
+	/**
+	 * {@inheritDoc}
+	 */
+	public void remove(MLData d)
 	{
 		double[] a = d.getData();
 		
 		for (int i = 0; i < value.size(); i++)
 			value.setData(i,  
-				((value.getData(i) * s) - a[i]) / (s-1));
+				((value.getData(i) * value.size()) - a[i]) / (value.size()-1));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public double distance(MLData d)
 	{
 		MLData diff = value.minus(d);

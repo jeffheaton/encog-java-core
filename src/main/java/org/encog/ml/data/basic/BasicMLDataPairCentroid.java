@@ -38,14 +38,13 @@ implements Centroid<MLDataPair>, Cloneable
 	} 
 	
 
-	public void remove(MLDataPair d, 
-			int s)
+	public void remove(MLDataPair d)
 	{
 		double[] a = d.getInputArray();
 		
 		for (int i = 0; i < value.size(); i++)
 			value.setData(i,  
-				((value.getData(i) * s) - a[i]) / (s-1));
+				((value.getData(i) * value.size()) - a[i]) / (value.size()-1));
 	}
 	
 	public double distance(MLDataPair d)
@@ -61,11 +60,11 @@ implements Centroid<MLDataPair>, Cloneable
 
 
 	@Override
-	public void add(MLDataPair d, int s) 	{
+	public void add(MLDataPair d) 	{
 		double[] a = d.getInputArray();
 		
 		for (int i = 0; i < value.size(); i++)
 			value.setData(i,  
-				((value.getData(i) * s) + a[i]) / (s+1));
+				((value.getData(i) * value.size()) + a[i]) / (value.size()+1));
 	}
 }

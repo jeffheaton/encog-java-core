@@ -23,7 +23,14 @@
  */
 package org.encog.util.kmeans;
 
+/**
+ * An object that can create centroids.
+ * @param <O> The element type for the centroid.
+ */
 public interface CentroidFactory<O>
 {
+	/**
+	 * @return The centroid.
+	 */
 	public Centroid<O> createCentroid();
 }

@@ -57,6 +57,10 @@ public class BasicCluster implements MLCluster {
 	 */
 	private final List<MLData> data = new ArrayList<MLData>();
 
+	/**
+	 * Construct a cluster from another.
+	 * @param cluster The other cluster.
+	 */
 	public BasicCluster(Cluster<BasicMLDataPair> cluster) {
 		this.centroid = (BasicMLDataPairCentroid)cluster.centroid();
 		for(MLDataPair pair : cluster.getContents()) {

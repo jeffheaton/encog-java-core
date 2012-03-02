@@ -166,11 +166,19 @@ public class BasicMLData implements MLData,
 		return builder.toString();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Centroid<MLData> createCentroid() {
 		return new BasicMLDataCentroid(this);
 	}
 	
+	/**
+	 * Add one data element to another.  This does not modify the object.
+	 * @param o The other data element
+	 * @return The result.
+	 */
 	public MLData plus(MLData o)
 	{
 		if (size() != o.size())
@@ -183,6 +191,11 @@ public class BasicMLData implements MLData,
 		return result;
 	}
 	
+	/**
+	 * Multiply one data element with another.  This does not modify the object.
+	 * @param o The other data element
+	 * @return The result.
+	 */
 	public MLData times(double d)
 	{
 		MLData result = new BasicMLData(size());
@@ -193,6 +206,11 @@ public class BasicMLData implements MLData,
 		return result;
 	}
 	
+	/**
+	 * Subtract one data element from another.  This does not modify the object.
+	 * @param o The other data element
+	 * @return The result.
+	 */
 	public MLData minus(MLData o)
 	{
 		if (size() != o.size())

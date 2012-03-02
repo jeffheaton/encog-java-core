@@ -211,6 +211,9 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 		this.significance = significance;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Centroid<MLDataPair> createCentroid() {
 		if( !(this.input instanceof BasicMLData) ) {

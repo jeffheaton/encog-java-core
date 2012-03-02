@@ -23,12 +23,27 @@
  */
 package org.encog.util.kmeans;
 
-
+/**
+ * A centroid.
+ */
 public interface Centroid<O>
 {    
-    public void add(O e, int s);
+	/**
+	 * Add an element to the centroid.
+	 * @param e The element to add.
+	 */
+    public void add(O e);
     
-    public void remove(O o, int sz);
+    /**
+     * Remove an element from the centroid.
+     * @param o The element to remove.
+     */
+    public void remove(O o);
     
+    /**
+     * The distance between this centroid and an element.
+     * @param o The element.
+     * @return The distance.
+     */
     public double distance(O o);
 }

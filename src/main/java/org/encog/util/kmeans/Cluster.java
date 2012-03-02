@@ -26,45 +26,74 @@ package org.encog.util.kmeans;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A cluster.
+ * @param <T> The type of data to cluster.
+ */
 public class Cluster<T extends CentroidFactory<? super T>>
 {
+	/**
+	 * The contents of the cluster.
+	 */
 	final private List<T> contents = new ArrayList<T>();
+	
+	/**
+	 * The centroid of this cluster.
+	 */
 	private Centroid<? super T> centroid;
 	
+	/**
+	 * Create an empty cluster.
+	 */
 	public Cluster()
 	{
 	}
 	
+	/**
+	 * Create a cluster with one initial data point.
+	 * @param d The initial data point.
+	 */
 	public Cluster(T d)
 	{
 		contents.add(d);
 		centroid = d.createCentroid();
 	}
 	
+	/**
+	 * @return The contents of this cluster.
+	 */
 	public List<T> getContents()
 	{
 		return this.contents;
 	}
 	
-	
+	/**
+	 * Add a element to the cluster.
+	 * @param e The element to add.
+	 */
 	public void add(T e)
 	{
 		if (centroid == null)
 			centroid = e.createCentroid();
 		else
-			centroid.add(e, this.contents.size());
+			centroid.add(e);
 		
 		this.contents.add(e);
 	}
 	
-	
+	/**
+	 * Remove the specified index from the cluster.
+	 * @param i The index to remove.
+	 */
 	public void remove(int i)
 	{
-		centroid.remove(this.contents.get(i), this.contents.size());
+		centroid.remove(this.contents.get(i) );
 		this.contents.remove(i);
 	}
 	
-	
+	/**
+	 * @return The centroid of this cluster.
+	 */
 	public Centroid<? super T> centroid()
 	{
 		return centroid;
