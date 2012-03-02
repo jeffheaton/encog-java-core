@@ -288,6 +288,8 @@ public class AnalystWizard {
 	private boolean naiveBayes = false;
 	
 	private int evidenceSegements = 3;
+	
+	private double maxError = DEFAULT_TRAIN_ERROR;
 
 	/**
 	 * Construct the analyst wizard.
@@ -506,7 +508,7 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				"rprop");
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_TRAIN_TARGET_ERROR, DEFAULT_TRAIN_ERROR);
+				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
 	}
 	
 	/**
@@ -601,7 +603,7 @@ public class AnalystWizard {
 		}
 		
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_TRAIN_TARGET_ERROR, DEFAULT_TRAIN_ERROR);
+				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
 	}
 
 	/**
@@ -780,7 +782,7 @@ public class AnalystWizard {
 		}
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
-				DEFAULT_TRAIN_ERROR);
+				this.maxError);
 	}
 
 	/**
@@ -918,7 +920,7 @@ public class AnalystWizard {
 
 		// ScriptProperties.ML_TRAIN_arguments
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_TRAIN_TARGET_ERROR, DEFAULT_TRAIN_ERROR);
+				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
 	}
 
 	/**
@@ -947,7 +949,7 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				MLTrainFactory.TYPE_SVM_SEARCH);
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_TRAIN_TARGET_ERROR, DEFAULT_TRAIN_ERROR);
+				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
 	}
 
 	/**
@@ -1327,6 +1329,16 @@ public class AnalystWizard {
 	public void setEvidenceSegements(int evidenceSegements) {
 		this.evidenceSegements = evidenceSegements;
 	}
+
+	public double getMaxError() {
+		return maxError;
+	}
+
+	public void setMaxError(double maxError) {
+		this.maxError = maxError;
+	}
+
+	
 
 	
 
