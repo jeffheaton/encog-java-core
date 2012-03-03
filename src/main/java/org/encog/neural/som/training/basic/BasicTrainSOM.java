@@ -24,11 +24,14 @@
 package org.encog.neural.som.training.basic;
 
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.MatrixMath;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.train.BasicTraining;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
@@ -294,7 +297,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 		double maxActivation = Double.MIN_VALUE;
 		int maxActivationNeuron = -1;
 
-		final MLData output = this.network.compute(leastRepresented);
+		final MLData output = compute(this.network, leastRepresented);
 
 		// Loop over all of the output neurons. Consider any neurons that were
 		// not the BMU (winner) for any pattern. Track which of these
@@ -390,15 +393,16 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 			final MLData input = pair.getInput();
 
 			final int bmu = this.bmuUtil.calculateBMU(input);
+			won[bmu]++;
 
 			// If we are to force a winner each time, then track how many
 			// times each output neuron becomes the BMU (winner).
 			if (this.forceWinner) {
-				won[bmu]++;
+
 
 				// Get the "output" from the network for this pattern. This
 				// gets the activation level of the BMU.
-				final MLData output = this.network.compute(pair.getInput());
+				final MLData output = compute(this.network,pair.getInput());
 
 				// Track which training entry produces the least BMU. This
 				// pattern is the least represented by the network.
@@ -577,7 +581,27 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 		final int bmu = this.bmuUtil.calculateBMU(input);
 		train(bmu, this.network.getWeights(), input);
 		applyCorrection();
-
 	}
+	
+	/**
+	 * Calculate the output of the SOM, for each output neuron.  Typically,
+	 * you will use the classify method instead of calling this method.
+	 * @param input
+	 *            The input pattern.
+	 * @return The output activation of each output neuron.
+	 */
+	private MLData compute(final SOM som, final MLData input) {
+
+		final MLData result = new BasicMLData(som.getOutputCount());
+
+		for (int i = 0; i < som.getOutputCount(); i++) {
+			final Matrix optr = som.getWeights().getRow(i);
+			final Matrix inputMatrix = Matrix.createRowMatrix(input.getData());
+			result.setData(i, MatrixMath.dotProduct(inputMatrix, optr));
+		}
+
+		return result;
+	}
+
 
 }

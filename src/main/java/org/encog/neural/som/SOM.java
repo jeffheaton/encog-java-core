@@ -60,7 +60,6 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 */
 	private Matrix weights;
 
-
 	/**
 	 * Default constructor.
 	 */
@@ -105,50 +104,23 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 */
 	@Override
 	public final int classify(final MLData input) {
-		if( input.size()>getInputCount() ) {
-			throw new NeuralNetworkError("Can't classify SOM with input size of " + getInputCount() 
-					+ " with input data of count " 
-					+ input.size());
+		if (input.size() > getInputCount()) {
+			throw new NeuralNetworkError(
+					"Can't classify SOM with input size of " + getInputCount()
+							+ " with input data of count " + input.size());
 		}
-		
+
 		double[][] m = this.weights.getData();
 		double[] inputData = input.getData();
 		double minDist = Double.POSITIVE_INFINITY;
 		int result = -1;
-		
-		for(int i=0;i<getOutputCount();i++) {
+
+		for (int i = 0; i < getOutputCount(); i++) {
 			double dist = EngineArray.euclideanDistance(inputData, m[i]);
-			if( dist<minDist ) {
+			if (dist < minDist) {
 				minDist = dist;
 				result = i;
 			}
-		}
-		
-		return result;
-	}
-
-	/**
-	 * Calculate the output of the SOM, for each output neuron.  Typically,
-	 * you will use the classify method instead of calling this method.
-	 * @param input
-	 *            The input pattern.
-	 * @return The output activation of each output neuron.
-	 */
-	public final MLData compute(final MLData input) {
-		
-		if( input.size()>getInputCount() ) {
-			throw new NeuralNetworkError("Can't compute SOM with input size of " + getInputCount() 
-					+ " with input data of count " 
-					+ input.size());
-		}
-
-
-		final MLData result = new BasicMLData(this.getOutputCount());
-
-		for (int i = 0; i < this.getOutputCount(); i++) {
-			final Matrix optr = this.weights.getRow(i);
-			final Matrix inputMatrix = Matrix.createRowMatrix(input.getData());
-			result.setData(i, MatrixMath.dotProduct(inputMatrix, optr));
 		}
 
 		return result;
@@ -211,18 +183,15 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	}
 
 	/**
-	 * Determine the winner for the specified input. This is the number of the
-	 * winning neuron.
+	 * An alias for the classify method, kept for compatibility 
+	 * with earlier versions of Encog.
 	 * 
 	 * @param input
 	 *            The input pattern.
 	 * @return The winning neuron.
 	 */
 	public final int winner(final MLData input) {
-
-		final MLData output = compute(input);
-		final int win = EngineArray.indexOfLargest(output.getData());
-		return win;
+		return classify(input);
 	}
 
 }
