@@ -195,7 +195,7 @@ public class CholeskyDecomposition implements Serializable {
 		
 		for (int j = 0; j < m.length; j++) {
 			if (m[j][j] == 0)
-				throw new IllegalArgumentException("Error, the natrix is not full rank");
+				throw new IllegalArgumentException("Error, the matrix is not full rank");
 			
 			lti[j][j] = 1. / m[j][j];
 			
