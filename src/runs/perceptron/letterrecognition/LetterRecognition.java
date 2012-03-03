@@ -14,7 +14,9 @@ import org.encog.util.simple.EncogUtility;
 
 public class LetterRecognition {
 
-	private static int trainingSetSize = 10000;
+	private static int trainingIterations = 10;
+	
+	private static int trainingSetSize = 15000;
 	private static int outputs;
 	private static int inputs;
 	private static BasicNeuralDataSet trainingSet;
@@ -88,13 +90,17 @@ public class LetterRecognition {
 		train.iteration();
 		double error1 = train.getError();
 
-		for(int i=0;i<10;i++)
+		for(int i=0;i<trainingIterations;i++)
 			train.iteration();
 		
 		double error2 = train.getError();
-		
 		double improve = (error1-error2)/error1;
-		System.out.println("Improvement: " + improve);
+		System.out.println("Training improvement: " + improve);
+		
+		double testerror = network.calculateError(trainingSet);
+		System.out.println("Training error: " + testerror);		
+		double trainerror = network.calculateError(testSet);
+		System.out.println("Test error: " + trainerror);		
 	}
 
 }
