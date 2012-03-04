@@ -239,7 +239,7 @@ public class ReadCSV {
 	 * @return The column as a string.
 	 */
 	public String get(final int i) {
-		if( i>this.data.length ) {
+		if( i>=this.data.length ) {
 			throw new EncogError("Can't access column " + i + " in a file that has only " + data.length + " columns.");
 		}
 		return this.data[i];

@@ -38,7 +38,6 @@ public class EstimatorNone implements BayesEstimator {
 	@Override
 	public void init(TrainBayesian theTrainer, BayesianNetwork theNetwork,
 			MLDataSet theData) {
-		// TODO Auto-generated method stub
 		
 	}
 

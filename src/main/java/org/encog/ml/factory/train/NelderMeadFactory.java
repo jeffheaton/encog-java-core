@@ -12,7 +12,7 @@ import org.encog.util.ParamsHolder;
 
 public class NelderMeadFactory {
 	/**
-	 * Create a Manhattan trainer.
+	 * Create a Nelder Mead trainer.
 	 * 
 	 * @param method
 	 *            The method to use.
