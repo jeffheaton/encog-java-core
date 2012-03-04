@@ -1,6 +1,14 @@
 package org.encog.mathutil.libsvm;
-import java.io.*;
-import java.util.*;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Random;
+import java.util.StringTokenizer;
+
+import org.encog.util.csv.CSVFormat;
 
 /**
  * This class was taken from the libsvm package.  We have made some
@@ -2615,7 +2623,7 @@ public class svm {
 
 	private static double atof(String s)
 	{
-		return Double.valueOf(s).doubleValue();
+		return CSVFormat.EG_FORMAT.parse(s);
 	}
 
 	private static int atoi(String s)
