@@ -28,6 +28,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.Encog;
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.AnalystFileFormat;
 import org.encog.app.analyst.AnalystGoal;
@@ -541,23 +542,31 @@ public class AnalystWizard {
 			} else {
 				a.append("[");
 				// handle ranges
-				double size = field.getMax() - field.getMin();
+				double size = Math.abs(field.getMax() - field.getMin());
 				double per = size / segment;
 				
-				boolean first = true;
-				for(int i=0;i<segment;i++) {
-					if( !first ) {
-						a.append(",");
+				if( size<Encog.DEFAULT_DOUBLE_EQUAL ) {
+					double low = field.getMin() - 0.0001;
+					double hi = field.getMin() + 0.0001;
+					a.append("Type 0: " + low + " to " + hi + ",");
+					a.append("Type NA: " + hi + " to " + Double.MAX_VALUE);
+				} else {				
+					boolean first = true;
+					for (int i = 0; i < segment; i++) {
+						if (!first) {
+							a.append(",");
+						}
+						double low = field.getMin() + (per * i);
+						double hi = i == (segment - 1) ? (field.getMax())
+								: (low + per);
+						a.append("Type");
+						a.append(i);
+						a.append(":");
+						a.append(CSVFormat.EG_FORMAT.format(low, 16));
+						a.append(" to ");
+						a.append(CSVFormat.EG_FORMAT.format(hi, 16));
+						first = false;
 					}					
-					double low = field.getMin()+(per*i);
-					double hi = i==(segment-1)?(field.getMax()):(low+per);
-					a.append("Type");
-					a.append(i);
-					a.append(":");
-					a.append(CSVFormat.EG_FORMAT.format(low, 16));
-					a.append(" to ");
-					a.append(CSVFormat.EG_FORMAT.format(hi, 16));
-					first = false;					
 				}
 				a.append("]");
 			}			

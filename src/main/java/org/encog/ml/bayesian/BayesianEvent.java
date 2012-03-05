@@ -414,6 +414,10 @@ public class BayesianEvent implements Serializable {
 	 */
 	public int matchChoiceToRange(double d) {
 		if (this.getChoices().size() > 0 && this.getChoices().iterator().next().isIndex()) {
+			int result = (int)d;
+			if( result>this.getChoices().size() ) {
+				throw new BayesianError("The item id " + result + " is not valid for event " + this.toString());
+			}
 			return (int) d;
 		}
 
