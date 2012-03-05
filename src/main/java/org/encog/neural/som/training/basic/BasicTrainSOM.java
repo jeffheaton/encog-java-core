@@ -25,6 +25,7 @@ package org.encog.neural.som.training.basic;
 
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.MatrixMath;
+import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
@@ -342,8 +343,8 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final BasicNetwork getMethod() {
-		return null;
+	public final MLMethod getMethod() {
+		return this.network;
 	}
 
 	/**
