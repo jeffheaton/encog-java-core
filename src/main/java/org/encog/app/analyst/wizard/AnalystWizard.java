@@ -548,8 +548,9 @@ public class AnalystWizard {
 				if( size<Encog.DEFAULT_DOUBLE_EQUAL ) {
 					double low = field.getMin() - 0.0001;
 					double hi = field.getMin() + 0.0001;
-					a.append("Type 0: " + low + " to " + hi + ",");
-					a.append("Type NA: " + hi + " to " + Double.MAX_VALUE);
+					a.append("Type BELOW: " + (low-100) + " to " + hi + ",");
+					a.append("Type Type0: " + low + " to " + hi + ",");
+					a.append("Type ABOVE: " + hi + " to " + (hi+100));
 				} else {				
 					boolean first = true;
 					for (int i = 0; i < segment; i++) {
