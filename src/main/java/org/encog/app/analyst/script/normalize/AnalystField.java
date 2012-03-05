@@ -258,9 +258,9 @@ public class AnalystField {
 				/ (this.normalizedLow - this.normalizedHigh);
 		
 		// typically caused by a number that should not have been normalized
-		// (i.e. normalization or actual range is infinitly small.
+		// (i.e. normalization or actual range is infinitely small.
 		if( Double.isNaN(result) ) {
-			return value;
+			return ((this.normalizedHigh-this.normalizedLow)/2)+this.normalizedLow;
 		}
 		return result;
 	}
@@ -657,7 +657,7 @@ public class AnalystField {
 		// typically caused by a number that should not have been normalized
 		// (i.e. normalization or actual range is infinitely small.
 		if( Double.isNaN(result) ) {
-			return value;
+			return ((this.normalizedHigh-this.normalizedLow)/2)+this.normalizedLow;
 		}
 		return result;
 	}
