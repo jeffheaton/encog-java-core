@@ -332,7 +332,8 @@ public class AnalystWizard {
 		this.directClassification = false;
 
 		if ((this.methodType == WizardMethodType.SVM)
-				|| (this.methodType == WizardMethodType.SOM)) {
+				|| (this.methodType == WizardMethodType.SOM)
+				|| (this.methodType == WizardMethodType.PNN)) {
 			this.directClassification = true;
 		}
 	}
@@ -720,6 +721,9 @@ public class AnalystWizard {
 		case SOM:
 			generateSOM(inputColumns);
 			break;
+		case PNN:
+			generatePNN(inputColumns, idealColumns);
+			break;
 		default:
 			throw new AnalystError("Unknown method type");
 		}
@@ -944,7 +948,7 @@ public class AnalystWizard {
 		// ScriptProperties.ML_TRAIN_arguments
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
-	}
+	}	
 
 	/**
 	 * Generate a SVM machine learning method.
@@ -969,6 +973,34 @@ public class AnalystWizard {
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				MLTrainFactory.TYPE_SVM_SEARCH);
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
+	}
+	
+	/**
+	 * Generate a PNN machine learning method.
+	 * @param inputColumns The number of input columns.
+	 * @param outputColumns The number of ideal columns.
+	 */
+	private void generatePNN(final int inputColumns, final int outputColumns) {
+
+		StringBuilder arch = new StringBuilder();
+		arch.append("?->");
+		if (this.goal == AnalystGoal.Classification) {
+			arch.append("C");
+		} else {
+			arch.append("R");
+		}
+		arch.append("(kernel=gaussian)->");
+		arch.append(this.targetField.getClasses().size());
+
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_TYPE, MLMethodFactory.TYPE_PNN);
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_ARCHITECTURE, arch.toString());
+
+		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
+				MLTrainFactory.TYPE_PNN);
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
 	}

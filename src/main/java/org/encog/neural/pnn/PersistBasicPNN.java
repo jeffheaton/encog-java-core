@@ -183,12 +183,8 @@ public class PersistBasicPNN implements EncogPersistor {
 								CSVFormat.EG_FORMAT.parse(cols.get(index++)));
 					}
 					final MLData idealData = new BasicMLData(inputCount);
-					for (int i = 0; i < outputCount; i++) {
-						idealData.setData(i,
-								CSVFormat.EG_FORMAT.parse(cols.get(index++)));
-					}
-					final MLDataPair pair = new BasicMLDataPair(inputData,
-							idealData);
+					idealData.setData(0,CSVFormat.EG_FORMAT.parse(cols.get(index++)));
+					final MLDataPair pair = new BasicMLDataPair(inputData,idealData);
 					samples.add(pair);
 				}
 			}

@@ -45,7 +45,7 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 	/**
 	 * The default max error.
 	 */
-	public static final double DEFAULT_MAX_ERROR = 0.0;
+	public static final double DEFAULT_MAX_ERROR = 0.05;
 
 	/**
 	 * The default minimum improvement before stop.
@@ -654,6 +654,7 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 
 		this.network.setError(Math.abs(globalMinimum.getY2()));
 		this.network.setTrained(true); // Tell other routines net is trained
+		this.setError(network.getError());
 
 		return;
 

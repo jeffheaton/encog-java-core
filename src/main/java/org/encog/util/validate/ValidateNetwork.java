@@ -28,6 +28,7 @@ import org.encog.ml.MLInput;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLOutput;
 import org.encog.ml.data.MLDataSet;
+import org.encog.neural.pnn.BasicPNN;
 
 public class ValidateNetwork {
 	
@@ -55,8 +56,16 @@ public class ValidateNetwork {
 			throw new EncogError("The machine learning method has an input length of " + methodInputCount + ", but the training data has " + trainingInputCount  + ". They must be the same.");
 		}
 		
-		if( trainingOutputCount>0 && methodOutputCount != trainingOutputCount ) {
-			throw new EncogError("The machine learning method has an output length of " + methodOutputCount + ", but the training data has " + trainingOutputCount  + ". They must be the same.");
+		if (!(method instanceof BasicPNN)) {
+			if (trainingOutputCount > 0
+					&& methodOutputCount != trainingOutputCount) {
+				throw new EncogError(
+						"The machine learning method has an output length of "
+								+ methodOutputCount
+								+ ", but the training data has "
+								+ trainingOutputCount
+								+ ". They must be the same.");
+			}
 		}
 		
 	}
