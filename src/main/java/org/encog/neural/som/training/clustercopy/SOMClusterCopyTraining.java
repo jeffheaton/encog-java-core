@@ -62,11 +62,11 @@ public class SOMClusterCopyTraining extends BasicTraining {
 	 */
 	public SOMClusterCopyTraining(final SOM network, final MLDataSet training) {
 		super(TrainingImplementationType.OnePass);
+		this.network = network;
 		if (this.network.getOutputCount() < training.getRecordCount()) {
 			throw new NeuralNetworkError(
 					"To use cluster copy training you must have at least as many output neurons as training elements.");
-		}
-		this.network = network;
+		}		
 		setTraining(training);
 	}
 
