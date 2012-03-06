@@ -207,11 +207,6 @@ public class PerformAnalysis {
 				if (!allowReal && field.isReal() && !field.isInteger()) {
 					field.setClass(false);
 				}
-
-				if (field.isInteger() 
-						&& (field.getAnalyzedClassMembers().size() <= 2)) {
-					field.setClass(false);
-				}
 			}
 		}
 
