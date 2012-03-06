@@ -85,11 +85,6 @@ public class LevenbergMarquardtTraining extends BasicTraining implements MultiTh
 	public static final double LAMBDA_MAX = 1e25;
 	
 	/**
-	 * The max amount for the LAMBDA.
-	 */
-	public static final double LAMBDA_MIN = 1e-25;
-	
-	/**
 	 * Utility class to compute the Hessian.
 	 */
 	private ComputeHessian hessian;
@@ -268,10 +263,7 @@ public class LevenbergMarquardtTraining extends BasicTraining implements MultiTh
 					done = true;
 				}
 			} else {
-				if( lambda > LevenbergMarquardtTraining.LAMBDA_MIN ) {
-					this.lambda = Math.max(LevenbergMarquardtTraining.LAMBDA_MIN,
-							LevenbergMarquardtTraining.SCALE_LAMBDA);	
-				}				
+				this.lambda /= LevenbergMarquardtTraining.SCALE_LAMBDA;					
 				done = true;
 			}
 		}
