@@ -205,12 +205,13 @@ public class AnalyzedField extends DataField {
 		// column having exactly (or nearly exactly) the same value.  Provide a
 		// small range around that value so that every value in this column normalizes
 		// to the midpoint of the desired normalization range, typically 0 or 0.5.
+		double d = Math.abs(getMax()-getMin());
 		if( Math.abs(getMax()-getMin())<Encog.DEFAULT_DOUBLE_EQUAL ) {
-			result.setMin(getMin());
-			result.setMax(getMax());
-		} else {
 			result.setMin(getMin()-0.0001);
 			result.setMin(getMin()+0.0001);
+		} else {
+			result.setMin(getMin());
+			result.setMax(getMax());			
 		} 
 		
 		result.setName(getName());
