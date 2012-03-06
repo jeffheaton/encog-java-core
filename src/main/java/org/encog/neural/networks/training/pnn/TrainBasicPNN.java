@@ -36,6 +36,7 @@ import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.neural.pnn.BasicPNN;
 import org.encog.neural.pnn.PNNKernelType;
 import org.encog.neural.pnn.PNNOutputMode;
+import org.encog.util.EngineArray;
 
 /**
  * Train a PNN.
@@ -268,7 +269,7 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 					output.getData(0);
 				}
 
-				out[0] = output.getData(0);
+				EngineArray.arrayCopy(output.getData(),out);
 
 				for (int i = 0; i < out.length; i++) {
 					if (i == tclass) {

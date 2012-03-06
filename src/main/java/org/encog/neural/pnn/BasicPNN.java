@@ -33,6 +33,7 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.NeuralNetworkError;
+import org.encog.util.EngineArray;
 import org.encog.util.simple.EncogUtility;
 
 /**
@@ -178,9 +179,6 @@ public class BasicPNN extends AbstractPNN implements MLRegression, MLError, MLCl
 				out[i] /= psum;
 			}
 
-			final MLData result = new BasicMLData(1);
-			result.setData(0, EncogMath.maxIndex(out));
-			return result;
 		} else if (getOutputMode() == PNNOutputMode.Unsupervised) {
 			for (int i = 0; i < getInputCount(); i++) {
 				out[i] /= psum;
@@ -266,9 +264,9 @@ public class BasicPNN extends AbstractPNN implements MLRegression, MLError, MLCl
 	@Override
 	public double calculateError(MLDataSet data) {
 		if (getOutputMode() == PNNOutputMode.Classification) {
-			return EncogUtility.calculateRegressionError(this, data);
-		} else {
 			return EncogUtility.calculateClassificationError(this, data);
+		} else {
+			return EncogUtility.calculateRegressionError(this, data);			
 		}
 	}
 
@@ -278,6 +276,6 @@ public class BasicPNN extends AbstractPNN implements MLRegression, MLError, MLCl
 	@Override
 	public int classify(MLData input) {
 		MLData output = compute(input);
-		return (int)output.getData(0);
+		return EngineArray.maxIndex(output.getData());
 	}
 }
