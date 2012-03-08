@@ -1286,6 +1286,7 @@ public class AnalystWizard {
 	public final void wizard(final File analyzeFile, final boolean b,
 			final AnalystFileFormat format) {
 
+		this.script.setBasePath(analyzeFile.getParent());
 		this.script.getProperties().setProperty(
 				ScriptProperties.HEADER_DATASOURCE_SOURCE_HEADERS, b);
 		this.script.getProperties().setProperty(
