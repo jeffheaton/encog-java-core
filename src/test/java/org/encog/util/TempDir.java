@@ -69,6 +69,12 @@ public class TempDir {
 	    fileOrDir.delete();
 	}
 
+	public void clearContents() {
+		for(File innerFile: this.tempdir.listFiles()) {
+			innerFile.delete();
+		}
+	}
+	
 	
 	public void dispose() {
 		//recursiveDelete(this.tempdir);
