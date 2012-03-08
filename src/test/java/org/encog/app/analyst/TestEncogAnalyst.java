@@ -70,7 +70,7 @@ public class TestEncogAnalyst extends TestCase {
 		test.validateMethodError(0.05);
 	}
 	
-	/*public void testIrisClassificationBayes() {
+	public void testIrisClassificationBayes() {
 		AnalystTestingUtility test = new AnalystTestingUtility("org/encog/data/iris.csv");		
 		test.wizard(AnalystGoal.Classification, WizardMethodType.BayesianNetwork, true);
 				
@@ -89,5 +89,5 @@ public class TestEncogAnalyst extends TestCase {
 		test.process(0.05);
 		
 		test.validateMethodError(0.05);
-	}*/
+	}
 }
