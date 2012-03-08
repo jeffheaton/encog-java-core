@@ -363,7 +363,7 @@ public class AnalystWizard {
 				// otherwise, just return the last regression field
 				for (final AnalystField field : fields) {
 					final DataField df = this.script
-							.findDataField(targetFieldName);
+							.findDataField(field.getName());
 					if (!df.isClass() && (df.isReal() || df.isInteger())) {
 						this.targetField = field;
 						success = true;
