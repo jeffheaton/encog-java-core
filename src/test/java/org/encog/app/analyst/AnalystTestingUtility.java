@@ -22,6 +22,7 @@ import org.encog.util.simple.EncogUtility;
 public class AnalystTestingUtility {
 	public static final boolean CONSOLE_OUTPUT = false;
 	public static final int MAX_ITERATIONS = 100000;
+	public static final int MAX_CYCLES = 10;
 	private String baseDataFile;
 	private final TempDir tempDir = new TempDir();
 	private File rawFile;
@@ -65,9 +66,9 @@ public class AnalystTestingUtility {
 			this.encogAnalyst.executeTask("task-full");
 			e = calculateError();
 			cycles++;
-		} while( cycles<=5 && e>maxError );
+		} while( cycles<=MAX_CYCLES && e>maxError );
 		
-		Assert.assertTrue("Too many cycles to perform successful train.", cycles<=5);
+		Assert.assertTrue("Too many cycles to perform successful train.", cycles<=MAX_CYCLES);
 		
 	}
 	
@@ -206,6 +207,21 @@ public class AnalystTestingUtility {
 		Assert.assertEquals(timeSlice, af.getTimeSlice() );
 		Assert.assertEquals(action, af.getAction().toString() );
 	}
+
+	/**
+	 * @return the format
+	 */
+	public AnalystFileFormat getFormat() {
+		return format;
+	}
+
+	/**
+	 * @param format the format to set
+	 */
+	public void setFormat(AnalystFileFormat format) {
+		this.format = format;
+	}
+	
 	
 	
 }
