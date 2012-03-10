@@ -810,8 +810,8 @@ public class AnalystWizard {
 					ScriptProperties.ML_TRAIN_TYPE, "svd");
 		}
 
-		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
-				this.maxError);
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
 	}
 
 	/**
