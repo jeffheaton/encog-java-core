@@ -194,7 +194,7 @@ public class SVMTrain extends BasicTraining {
 
 		this.network.getParams().C = this.c;
 		this.network.getParams().gamma = this.gamma;
-		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Training with parameters C = " + c + ", gamma = " + gamma);
+		EncogLogging.log(EncogLogging.LEVEL_INFO, "Training with parameters C = " + c + ", gamma = " + gamma);
 
 		if (this.fold > 1) {
 			// cross validate
