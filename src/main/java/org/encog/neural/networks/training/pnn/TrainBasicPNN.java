@@ -263,10 +263,8 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 
 				if (deriv) {
 					output = computeDeriv(input, pair.getIdeal());
-					output.getData(0);
 				} else {
 					output = this.network.compute(input);
-					output.getData(0);
 				}
 
 				EngineArray.arrayCopy(output.getData(),out);
@@ -543,13 +541,7 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 			}
 		}
 
-		if (this.network.getOutputMode() == PNNOutputMode.Classification) {
-			final MLData result = new BasicMLData(1);
-			result.setData(0, ibest);
-			return result;
-		}
-
-		return null;
+		return new BasicMLData(out);
 	}
 
 	/**
