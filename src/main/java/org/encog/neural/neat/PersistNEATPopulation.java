@@ -46,6 +46,7 @@ import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
 import org.encog.persist.EncogWriteHelper;
 import org.encog.persist.PersistConst;
+import org.encog.persist.PersistError;
 import org.encog.util.csv.CSVFormat;
 
 public class PersistNEATPopulation implements EncogPersistor {
@@ -207,6 +208,9 @@ public class PersistNEATPopulation implements EncogPersistor {
 		for (Species species : leaderMap.keySet()) {
 			int leaderID = leaderMap.get(species);
 			Genome leader = genomeMap.get(leaderID);
+			if( leader==null) {
+				throw new PersistError("Unknown leader: genome #" + leader);
+			}
 			species.setLeader(leader);
 			((BasicSpecies)species).setPopulation(result);
 		}
@@ -313,6 +317,9 @@ public class PersistNEATPopulation implements EncogPersistor {
 			if( species.getLeader()==null ) {
 				out.addColumn(-1);
 			} else {
+				if( !pop.getGenomes().contains(species.getLeader())) {
+					throw new PersistError("Genome #" + species.getLeader().getGenomeID() + " is a leader, but not in the general population.");
+				}
 				out.addColumn(species.getLeader().getGenomeID());
 			}
 			out.writeLine();
