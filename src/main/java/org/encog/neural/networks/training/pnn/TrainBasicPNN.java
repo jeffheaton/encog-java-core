@@ -593,6 +593,8 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 	@Override
 	public final void iteration() {
 
+		preIteration();
+		
 		if (!this.samplesLoaded) {
 			this.network.setSamples(new BasicMLDataSet(this.training));
 			this.samplesLoaded = true;
@@ -648,8 +650,8 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 		this.network.setError(Math.abs(globalMinimum.getY2()));
 		this.network.setTrained(true); // Tell other routines net is trained
 		this.setError(network.getError());
-
-		return;
+		
+		postIteration();
 
 	}
 
