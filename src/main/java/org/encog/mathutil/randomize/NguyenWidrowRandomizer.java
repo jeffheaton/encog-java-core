@@ -79,7 +79,7 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 	public final void randomize(final MLMethod method) {
 		
 		if( !(method instanceof BasicNetwork) ) {
-			throw new EncogError("Ngyyen Widrow only works on BasicNetwork.");
+			throw new EncogError("Nguyen Widrow only works on BasicNetwork.");
 		}
 		
 		BasicNetwork network = (BasicNetwork)method;

@@ -1,106 +1,92 @@
 package perceptron.letterrecognition;
 
+import java.util.ArrayList;
+
 import org.encog.engine.network.activation.ActivationSigmoid;
-import org.encog.mathutil.randomize.ConsistentRandomizer;
+import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
+import org.encog.ml.data.MLData;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.data.basic.BasicNeuralDataPair;
-import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.training.propagation.back.Backpropagation;
-import org.encog.util.csv.ReadCSV;
-import org.encog.util.simple.EncogUtility;
+import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 
-public class LetterRecognition {
+import perceptron.Mapper;
+import perceptron.Tester;
 
-	private static int trainingIterations = 10;
+class LetterMapper implements Mapper {
 	
-	private static int trainingSetSize = 15000;
-	private static int outputs;
-	private static int inputs;
-	private static BasicNeuralDataSet trainingSet;
-	private static BasicNeuralDataSet testSet;
-	private static BasicNetwork network;
-
-	/**
-	 * @param args
-	 */
-	public static double[] map(String arg) {
-		double [] retVal = new double[outputs];
-		for (int i = 0; i < outputs; i++)
-			retVal[i] = 0.0;
-		int value = arg.charAt(0) - 'A';
-		retVal[value] = 1;
+	private static int _outputs;
+	private static double _activationThreshold;
+	
+	public LetterMapper(int outputs, double activationThreshold)
+	{
+	  _outputs = outputs;
+	  _activationThreshold = activationThreshold;
+	}
+	
+	@Override
+	public MLData map(ArrayList<String> data) {
+		final BasicNeuralData retVal = new BasicNeuralData(_outputs);
+		for (int i = 0; i < _outputs; i++)
+			retVal.add(i, 0.0);
+		int value = data.get(0).charAt(0) - 'A';
+		retVal.setData(value, 1.0);
 		return retVal;
 	}
-	
-	public static char unmap(int arg) {
-		return (char) (arg + 'A');
-	}
-	
-	public static void createNetwork () {
-		network = new BasicNetwork();
-		network.addLayer(new BasicLayer(null,true,inputs));
-		network.addLayer(new BasicLayer(new ActivationSigmoid(),true,20));
-		network.addLayer(new BasicLayer(new ActivationSigmoid(),false,outputs));
-		network.getStructure().finalizeStructure();
-		
-		//network = EncogUtility.simpleFeedForward(inputs, 5, 7, outputs, true);
-		//Important: without proper randomizing the network doesn't train to convergence.
-		(new ConsistentRandomizer(-1,1)).randomize(network);
-	}
-	
-	public static void readData() {
-		int total=0;
-		System.out.println("importing dataset");
-		ReadCSV csv = new ReadCSV("data/letter-recognition.data",false,',');
-		inputs = 16;
-		outputs = 'Z' - 'A' + 1;
-		System.out.println("in: " + inputs + " out: " + outputs);
-		trainingSet = new BasicNeuralDataSet();
-		testSet = new BasicNeuralDataSet();
-		while(csv.next())
-		{
-			BasicNeuralData inputSet = new BasicNeuralData(inputs);
-			BasicNeuralData idealSet = new BasicNeuralData(outputs);
-			//System.out.println("line has " + csv.getColumnCount() + " fields");
-			double[] inputMap = map(csv.get(0));
-			for(int i = 0; i < outputs; i++) {
-				idealSet.setData(i,inputMap[i]);
-			}
-			for(int j = 1; j < inputs; j++) {
-				inputSet.setData(j,csv.getDouble(j));
-			}
-			if (total < trainingSetSize) 
-				trainingSet.add(inputSet, idealSet);
-			else
-				testSet.add(inputSet, idealSet);
-			total++;
-		}
-		System.out.println("found " + total + " items");
-		csv.close();
-		
-	}
-	
-	public static void main(String[] args) {
-		readData();
-		createNetwork();
-		MLTrain train = new Backpropagation(network, trainingSet, 0.7, 0.9);
-		train.iteration();
-		double error1 = train.getError();
 
-		for(int i=0;i<trainingIterations;i++)
-			train.iteration();
-		
-		double error2 = train.getError();
-		double improve = (error1-error2)/error1;
-		System.out.println("Training improvement: " + improve);
-		
-		double testerror = network.calculateError(trainingSet);
-		System.out.println("Training error: " + testerror);		
-		double trainerror = network.calculateError(testSet);
-		System.out.println("Test error: " + trainerror);		
+	@Override
+	public ArrayList<String> unmap(MLData dataSet) {
+		char max = '_';
+		double maxval = _activationThreshold;
+		for(int i=0; i < _outputs; i++)
+			if (dataSet.getData(i) > maxval)
+			{
+				max = (char) ('A' + i);
+				maxval = dataSet.getData(i);
+			}
+		ArrayList<String> retVal = new ArrayList<String>();
+		retVal.add("" + max);
+		return retVal;
+	}
+
+	@Override
+	public boolean compare(ArrayList<String> result, ArrayList<String> expected, boolean print) {
+		if (print) 
+			System.out.println("Exp " + expected.get(0) + " got " + result.get(0));
+		return result.get(0).matches(expected.get(0));
+	}
+	
+}
+
+public class LetterRecognition extends Tester {
+	
+	private static double _activationThreshold = 0.3;
+	private static double _trainToError = 0.1;
+
+	public static BasicNetwork createNetwork() {
+		BasicNetwork network = new BasicNetwork();
+		network.addLayer(new BasicLayer(null,true,getInputs()));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(),true,300));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(),false,getOutputs()));
+		network.getStructure().finalizeStructure();
+		network.reset();
+		return network;
+	}
+
+	public static void main(String[] args) {
+		setInputs(16);
+		setOutputs('Z' - 'A' + 1);
+		setReadInputs(1);
+		setTrainingSetSize(2000);
+		setMapper(new LetterMapper(getOutputs(), _activationThreshold));
+		readData("data/letter-recognition.data");
+		_network = createNetwork();		
+		//Important: without proper randomizing the network doesn't train to convergence.
+		(new NguyenWidrowRandomizer(-1,1)).randomize(_network);
+		MLTrain train = new ResilientPropagation(_network, _trainingSet);
+		//MLTrain train = new ScaledConjugateGradient(network, trainingSet);
+		train(train,_trainToError);
 	}
 
 }
