@@ -89,6 +89,7 @@ public class CmdEvaluate extends Cmd {
 
 		final MLMethod method = (MLMethod) EncogDirectoryPersistence
 				.loadObject(resourceFile);
+		getAnalyst().setMethod(method);
 		
 		if( method instanceof BayesianNetwork ) {
 			((BayesianNetwork)method).defineClassificationStructure(query);
