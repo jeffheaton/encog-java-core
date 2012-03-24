@@ -22,6 +22,7 @@
  * http://www.heatonresearch.com/copyright
  */
 package org.encog.cloud.node;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -32,77 +33,86 @@ import java.util.Map;
 
 import org.encog.cloud.basic.CommunicationLink;
 import org.encog.cloud.basic.CloudError;
+import org.encog.util.logging.EncogLogging;
 
-public class CloudNode implements Runnable
-{
+public class CloudNode implements Runnable {
+	public static final int STANDARD_ENCOG_PORT = 5128;
 	private int port;
 	private ServerSocket listenSocket;
 	private Thread thread;
-	private Map<String,String> accounts = new HashMap<String,String>();
-	private Map<String,List<CloudSignal>> signals = new HashMap<String,List<CloudSignal>>();
-	
-	
+	private Map<String, String> accounts = new HashMap<String, String>();
+	private Map<String, List<CloudSignal>> signals = new HashMap<String, List<CloudSignal>>();
+	private boolean running;
+
 	public CloudNode(int p) {
 		this.port = p;
 	}
-	
+
 	public void addUser(String uid, String pwd) {
 		this.accounts.put(uid.toLowerCase(), CommunicationLink.simpleHash(pwd));
 	}
-	
+
 	public CloudNode() {
-		this(7500);
+		this(STANDARD_ENCOG_PORT);
 	}
-	
-	public Map<String,String> getAccounts() {
+
+	public Map<String, String> getAccounts() {
 		return this.accounts;
 	}
-	
+
 	@Override
 	public void run() {
-		while(true) {
+		this.running = true;
+		while (this.running) {
 			try {
-				System.out.println("Begin listen");
+				EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Begin listen");
 				Socket connectionSocket = listenSocket.accept();
+				EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Connection from: " + connectionSocket.getRemoteSocketAddress().toString());
 				CommunicationLink link = new CommunicationLink(connectionSocket);
-				HandleClient hc = new HandleClient(this,link);
+				HandleClient hc = new HandleClient(this, link);
 				Thread t = new Thread(hc);
-				t.start();				
-			} catch(IOException ex) {
+				t.start();
+			} catch (IOException ex) {
 				throw new CloudError(ex);
 			}
 		}
+
+		try {
+			this.listenSocket.close();
+		} catch (IOException ex) {
+			throw new CloudError(ex);
+		}
 	}
-	
+
 	public void start() {
 		try {
 			this.listenSocket = new ServerSocket(port);
 			this.thread = new Thread(this);
 			this.thread.start();
-		} catch(IOException ex) {
+		} catch (IOException ex) {
 			throw new CloudError(ex);
 		}
 	}
-	
+
 	public void addNeededSignal(String clientName, String signalName) {
 		String cname = clientName.toLowerCase();
-		CloudSignal signal = new CloudSignal(cname,signalName);
-		
-		if( this.signals.containsKey(cname) ) {
+		CloudSignal signal = new CloudSignal(cname, signalName);
+
+		if (this.signals.containsKey(cname)) {
 			List<CloudSignal> list = this.signals.get(cname);
-			list.add(signal);			
+			list.add(signal);
 		} else {
 			List<CloudSignal> list = new ArrayList<CloudSignal>();
 			list.add(signal);
 		}
-		
-		
+
 	}
-	
-   public static void main(String argv[]) throws Exception
-   {
-	   CloudNode server = new CloudNode(7500);
-	   server.addUser("test","test");
-	   server.start();
-   }
+
+	public void shutdown() {
+		this.running = false;
+	}
+
+	public int getPort() {
+		return this.port;
+	}
 }

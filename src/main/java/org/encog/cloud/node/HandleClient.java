@@ -27,6 +27,7 @@ import java.io.IOException;
 
 import org.encog.cloud.basic.CommunicationLink;
 import org.encog.cloud.basic.CloudPacket;
+import org.encog.util.logging.EncogLogging;
 
 public class HandleClient implements Runnable {
 
@@ -91,7 +92,7 @@ public class HandleClient implements Runnable {
 	public void run() {
 		while(!done) {					
 			try {
-				System.out.println("Waiting for packets");
+				EncogLogging.log(EncogLogging.LEVEL_DEBUG,"Waiting for packets");
 				CloudPacket packet = this.link.readPacket();
 				
 				// really do not care if we timeout, just keep listening

@@ -23,10 +23,11 @@
  */
 package org.encog.cloud.basic;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -34,13 +35,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.EncogError;
+import org.encog.util.logging.EncogLogging;
 
 public class CommunicationLink {	
 	public final int SOCKET_TIMEOUT = 25000;
 	private Socket socket;
 	private ByteArrayOutputStream outputHolder;
 	private DataOutputStream outputToRemote;
-	private DataInputStream inputFromRemote;
+	private BufferedReader inputFromRemote;
 	private OutputStream socketOut;
 
 	public static String simpleHash(String str) {
@@ -62,8 +64,7 @@ public class CommunicationLink {
 			this.socketOut = this.socket.getOutputStream();
 			this.outputHolder = new ByteArrayOutputStream();
 			this.outputToRemote = new DataOutputStream(this.outputHolder);
-			this.inputFromRemote = new DataInputStream(this.socket
-					.getInputStream());
+			this.inputFromRemote = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 		} catch (IOException ex) {
 			throw new CloudError(ex);
 		}
@@ -124,51 +125,10 @@ public class CommunicationLink {
 
 	public CloudPacket readPacket() throws IOException {
 		
-		try {
 		String[] args = null;
-
-		if (this.inputFromRemote.readByte() != 'E')
-			return null;
-		if (this.inputFromRemote.readByte() != 'R')
-			return null;
-		if (this.inputFromRemote.readByte() != 'T')
-			return null;
-		if (this.inputFromRemote.readByte() != 'P')
-			return null;
-		
-		int version = this.inputFromRemote.readByte();
-		int command = this.inputFromRemote.readByte();
-		int count = this.inputFromRemote.readByte();
-		long time = this.inputFromRemote.readLong();
-		int size = this.inputFromRemote.readInt();
-		
-		
-		
-		if( size>0 ) {
-			List<String> list = new ArrayList<String>();
-			StringBuilder builder = new StringBuilder();
-			byte[] b = new byte[size];
-			this.inputFromRemote.read(b);
-			for(int i=0;i<b.length;i++) {
-				if( b[i]==0 ) {
-					list.add(builder.toString());
-					builder.setLength(0);
-				} else {
-					builder.append((char)b[i]);
-				}
-			}
-			
-			args = new String[list.size()];
-			for(int i=0;i<args.length;i++) {
-				args[i] = list.get(i);
-			}
-		}
-		
-		return new CloudPacket(command,args);
-		}
-		catch(SocketTimeoutException ex) {
-			return null;
-		}
+		String str = this.inputFromRemote.readLine();
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Received Packet: " + str);
+		return null;
 	}
 
 	public void writeStatus(boolean s, String message) {
