@@ -102,6 +102,8 @@ public class ReadCSV {
 	 * The column names.
 	 */
 	private List<String> columnNames = new ArrayList<String>();
+	
+	private ParseCSVLine parseLine;
 
 	/**
 	 * Construct a CSV reader from an input stream. Allows a delimiter character
@@ -118,6 +120,7 @@ public class ReadCSV {
 			final char delim) {
 		final CSVFormat format = new CSVFormat(CSVFormat.getDecimalCharacter(),
 				delim);
+		this.parseLine = new ParseCSVLine(format);
 		this.reader = new BufferedReader(new InputStreamReader(is));
 		begin(headers, format);
 	}
@@ -155,6 +158,7 @@ public class ReadCSV {
 		try {
 			final CSVFormat format = new CSVFormat(CSVFormat
 					.getDecimalCharacter(), delim);
+			this.parseLine = new ParseCSVLine(format);
 			this.reader = new BufferedReader(new FileReader(filename));
 			begin(headers, format);
 		} catch (final IOException e) {
@@ -177,6 +181,7 @@ public class ReadCSV {
 			final CSVFormat format) {
 		try {
 			this.reader = new BufferedReader(new FileReader(filename));
+			this.parseLine = new ParseCSVLine(format);
 			begin(headers, format);
 		} catch (final IOException e) {
 			throw new EncogError(e);
@@ -192,6 +197,7 @@ public class ReadCSV {
 	 */
 	private void begin(final boolean headers, final CSVFormat format) {
 		try {
+			this.parseLine = new ParseCSVLine(format);
 			this.format = format;
 			// read the column heads
 			if (headers) {
@@ -203,7 +209,7 @@ public class ReadCSV {
 					return;
 				}
 				
-				final List<String> tok = parse(line);
+				final List<String> tok = this.parseLine.parse(line);
 
 				int i = 0;
 				this.columnNames.clear();
@@ -339,7 +345,7 @@ public class ReadCSV {
 	 *            One line from the file
 	 */
 	private void initData(final String line) {
-		final List<String> tok = parse(line);
+		final List<String> tok = this.parseLine.parse(line);
 		this.data = new String[tok.size()];
 
 	}
@@ -365,7 +371,7 @@ public class ReadCSV {
 				initData(line);
 			}
 
-			final List<String> tok = parse(line);
+			final List<String> tok = this.parseLine.parse(line);
 
 			int i = 0;
 			for (final String str : tok) {
@@ -381,75 +387,6 @@ public class ReadCSV {
 
 	}
 	
-	private List<String> parse(final String line) {
-		if( this.format.getSeparator()==' ') {
-			return parseSpaceSep(line);
-		} else {
-			return parseCharSep(line);
-		}
-	}
-	
-	private List<String> parseSpaceSep(final String line) {
-		final List<String> result = new ArrayList<String>();
-		SimpleParser parse  = new SimpleParser(line);
-		
-		while(!parse.eol()) {
-			if( parse.peek()=='\"') {
-				result.add( parse.readQuotedString() );
-			} else {
-				result.add( parse.readToWhiteSpace() );
-			}
-			parse.eatWhiteSpace();
-		}
-		
-		return result;
-	}
-
-	/**
-	 * Parse the line into a list of values.
-	 * 
-	 * @param line
-	 *            The line to parse.
-	 * @return The elements on this line.
-	 */
-	private List<String> parseCharSep(final String line) {
-		final StringBuilder item = new StringBuilder();
-		final List<String> result = new ArrayList<String>();
-		boolean quoted = false;
-		boolean hadQuotes = false;
-
-		for (int i = 0; i < line.length(); i++) {
-			final char ch = line.charAt(i);
-			if ((ch == this.format.getSeparator()) && !quoted) {
-				String s = item.toString();
-				if( !hadQuotes ) {
-					s = s.trim();
-				}
-				result.add(s);
-				item.setLength(0);
-				quoted = false;
-				hadQuotes = false;
-			} else if ((ch == '\"') && quoted) {
-				quoted = false;
-			} else if ((ch == '\"') && (item.length() == 0)) {
-				hadQuotes = true;
-				quoted = true;
-			} else {
-				item.append(ch);
-			}
-		}
-
-		if (item.length() > 0) {
-			String s = item.toString();
-			if( !hadQuotes ) {
-				s = s.trim();
-			}
-			result.add(s);
-		}
-
-		return result;
-	}
-
 	public List<String> getColumnNames() {
 		return this.columnNames;
 	}
