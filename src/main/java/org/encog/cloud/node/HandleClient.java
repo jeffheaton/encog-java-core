@@ -65,12 +65,18 @@ public class HandleClient implements Runnable {
 					if( packet.getCommand().equalsIgnoreCase("hello") ) {
 						this.remoteType = packet.getArgs()[0];
 					}
+					else if( packet.getCommand().equalsIgnoreCase("goodbye") ) {
+						this.done = true;
+					}
 				}				
 			} catch (CloudError ex) {
 				EncogLogging.log(EncogLogging.LEVEL_DEBUG,"Client ended connection.");
-				return;
+				this.done = true;
 			} 
 		}		
+		this.link.close();
+		this.server.getConnections().remove(this);
+		this.server.notifyListenersConnections();
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG,"Shutting down client handler");
 	}
 	

@@ -152,4 +152,13 @@ public class CommunicationLink {
 	public int getPackets() {
 		return this.packets;
 	}
+
+	public void close() {
+		try {
+			this.socket.close();
+		} catch (IOException e) {
+			// ignore, we were trying to close
+		}
+		
+	}
 }
