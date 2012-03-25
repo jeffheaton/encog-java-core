@@ -30,11 +30,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.EncogError;
+import org.encog.cloud.node.CloudNode;
+import org.encog.util.csv.CSVFormat;
+import org.encog.util.csv.ParseCSVLine;
 import org.encog.util.logging.EncogLogging;
 
 public class CommunicationLink {	
@@ -44,6 +45,9 @@ public class CommunicationLink {
 	private DataOutputStream outputToRemote;
 	private BufferedReader inputFromRemote;
 	private OutputStream socketOut;
+	private ParseCSVLine parseLine = new ParseCSVLine(CSVFormat.EG_FORMAT);
+	private int packets;
+	private CloudNode parentNode;
 
 	public static String simpleHash(String str) {
 		int result = 0;
@@ -56,8 +60,9 @@ public class CommunicationLink {
 		return Integer.toHexString(result).toLowerCase();
 	}
 	
-	public CommunicationLink(Socket s) {
+	public CommunicationLink(CloudNode node, Socket s) {
 		try {
+			this.parentNode = node;
 			this.socket = s;
 			this.socket.setSoTimeout(SOCKET_TIMEOUT);
 			
@@ -71,15 +76,6 @@ public class CommunicationLink {
 
 	}
 
-	public void writePacket(int command) {
-		String[] args = new String[0];
-		writePacket(command,args);
-	}
-	
-	public void writePacketLogin(String uid, String pwd) {
-		String[] args = { uid, pwd };
-		writePacket(CloudPacket.PACKET_LOGIN,args);
-	}
 	
 	public void writePacket(int command, String[] args) {
 		try {
@@ -123,24 +119,19 @@ public class CommunicationLink {
 		}
 	}
 
-	public CloudPacket readPacket() throws IOException {
+	public CloudPacket readPacket() {
 		
-		String[] args = null;
-		String str = this.inputFromRemote.readLine();
-		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Received Packet: " + str);
-		return null;
-	}
-
-	public void writeStatus(boolean s, String message) {
-		String[] args = new String[2];
-		args[0] = s ? "1":"0";
-		args[1] = message;
-		writePacket(CloudPacket.PACKET_STATUS,args);		
-	}
-
-	public void writePacketIdentify(String name) {
-		String[] args = { name };
-		writePacket(CloudPacket.PACKET_IDENTIFY,args);
+		try {
+			String str = this.inputFromRemote.readLine();
+			List<String> list = parseLine.parse(str);
+			this.packets++;
+			this.parentNode.notifyListenersPacket();
+			
+			EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Received Packet: " + str);
+			return new CloudPacket(list);	
+		} catch(IOException ex) {
+			throw new CloudError(ex);
+		}
 		
 	}
 	
@@ -152,5 +143,13 @@ public class CommunicationLink {
 			throw new EncogError(e);
 		}
 		
+	}
+
+	public Socket getSocket() {
+		return this.socket;
+	}
+	
+	public int getPackets() {
+		return this.packets;
 	}
 }

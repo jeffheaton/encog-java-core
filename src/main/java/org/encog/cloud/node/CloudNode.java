@@ -31,8 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.encog.cloud.basic.CommunicationLink;
+import org.encog.cloud.CloudListener;
 import org.encog.cloud.basic.CloudError;
+import org.encog.cloud.basic.CommunicationLink;
 import org.encog.util.logging.EncogLogging;
 
 public class CloudNode implements Runnable {
@@ -43,6 +44,8 @@ public class CloudNode implements Runnable {
 	private Map<String, String> accounts = new HashMap<String, String>();
 	private Map<String, List<CloudSignal>> signals = new HashMap<String, List<CloudSignal>>();
 	private boolean running;
+	private final List<HandleClient> connections = new ArrayList<HandleClient>();
+	private final List<CloudListener> listeners = new ArrayList<CloudListener>();
 
 	public CloudNode(int p) {
 		this.port = p;
@@ -68,8 +71,10 @@ public class CloudNode implements Runnable {
 				EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Begin listen");
 				Socket connectionSocket = listenSocket.accept();
 				EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Connection from: " + connectionSocket.getRemoteSocketAddress().toString());
-				CommunicationLink link = new CommunicationLink(connectionSocket);
+				CommunicationLink link = new CommunicationLink(this,connectionSocket);				
+				notifyListenersConnections();
 				HandleClient hc = new HandleClient(this, link);
+				this.connections.add(hc);
 				Thread t = new Thread(hc);
 				t.start();
 			} catch (IOException ex) {
@@ -115,4 +120,40 @@ public class CloudNode implements Runnable {
 	public int getPort() {
 		return this.port;
 	}
+
+	public List<HandleClient> getConnections() {
+		return this.connections;
+	}
+
+	/**
+	 * @return the listeners
+	 */
+	public List<CloudListener> getListeners() {
+		return listeners;
+	}
+	
+	public void addListener(CloudListener listener) {
+		this.listeners.add(listener);
+	}
+	
+	public void removeListener(CloudListener listener) {
+		this.listeners.remove(listener);
+	}
+	
+	public void clearListeners() {
+		this.listeners.clear();
+	}
+	
+	public void notifyListenersConnections() {
+		for( CloudListener listener : this.listeners ) {
+			listener.notifyConnections();
+		}
+	}
+	
+	public void notifyListenersPacket() {
+		for( CloudListener listener : this.listeners ) {
+			listener.notifyPacket();
+		}
+	}
+	
 }

@@ -23,31 +23,28 @@
  */
 package org.encog.cloud.basic;
 
+import java.util.List;
+
 public class CloudPacket {
 	
-	public static final int PACKET_STATUS = 0;
-	public static final int PACKET_LOGIN = 1;
-	public static final int PACKET_LOGOUT = 2;
-	public static final int PACKET_IDENTIFY = 3;
-	
-	private final int command;
+	private final String command;
 	private final String[] args;
 	
-	public CloudPacket(int c, String[] a) {
-		this.command = c;
+	public CloudPacket(List<String> list) {
+		this.command = list.get(0).toUpperCase();
 		
-		if( a==null ) {
+		if( list.size() == 1 ) {
 			this.args = new String[0];
 		} else {
-			this.args = new String[a.length];
+			this.args = new String[list.size()-1];
 		}
 		
-		for(int i=0;i<this.args.length;i++) {
-			this.args[i] = a[i];
+		for(int i=0;i<list.size()-1;i++) {
+			this.args[i] = list.get(i+1);
 		}
 	}
 
-	public int getCommand() {
+	public String getCommand() {
 		return command;
 	}
 
