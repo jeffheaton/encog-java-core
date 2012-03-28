@@ -33,6 +33,7 @@ import java.util.Map;
 
 import org.encog.cloud.CloudListener;
 import org.encog.cloud.basic.CloudError;
+import org.encog.cloud.basic.CloudPacket;
 import org.encog.cloud.basic.CommunicationLink;
 import org.encog.util.logging.EncogLogging;
 
@@ -72,7 +73,7 @@ public class CloudNode implements Runnable {
 				Socket connectionSocket = listenSocket.accept();
 				EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Connection from: " + connectionSocket.getRemoteSocketAddress().toString());
 				CommunicationLink link = new CommunicationLink(this,connectionSocket);				
-				notifyListenersConnections();
+				notifyListenersConnections(link, true);
 				HandleClient hc = new HandleClient(this, link);
 				this.connections.add(hc);
 				Thread t = new Thread(hc);
@@ -144,16 +145,21 @@ public class CloudNode implements Runnable {
 		this.listeners.clear();
 	}
 	
-	public void notifyListenersConnections() {
-		for( CloudListener listener : this.listeners ) {
-			listener.notifyConnections();
+	public void notifyListenersConnections(CommunicationLink link, boolean hasOpened) {
+		Object[] list = this.listeners.toArray();
+		
+		for(int i=0;i<list.length;i++) {
+			CloudListener listener = (CloudListener)list[i];
+			listener.notifyConnections(link, hasOpened);
 		}
 	}
 	
-	public void notifyListenersPacket() {
-		for( CloudListener listener : this.listeners ) {
-			listener.notifyPacket();
+	public void notifyListenersPacket(CloudPacket packet) {
+		Object[] list = this.listeners.toArray();
+		
+		for(int i=0;i<list.length;i++) {
+			CloudListener listener = (CloudListener)list[i];
+			listener.notifyPacket(packet);
 		}
 	}
-	
 }

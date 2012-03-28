@@ -77,43 +77,20 @@ public class CommunicationLink {
 	}
 
 	
-	public void writePacket(int command, String[] args) {
+	public void writePacket(String command, Object[] args) {
 		try {
-			// first determine length
-			int length = 0;
-			for(int i=0;i<args.length;i++) {
-				length+=args[i].length();
-				length++;
+			StringBuilder line = new StringBuilder();
+			line.append("\"");
+			line.append(command);
+			line.append("\"");
+			for (int i = 0; i < args.length; i++) {
+				line.append(",\"");
+				line.append(args[i].toString());
+				line.append("\"");
 			}
-			
-			// write the packet
-			this.outputToRemote.writeByte('E');
-			this.outputToRemote.writeByte('N');
-			this.outputToRemote.writeByte('C');
-			this.outputToRemote.writeByte('O');
-			this.outputToRemote.writeByte('G');
-			this.outputToRemote.writeByte(0);// string terminator
-			this.outputToRemote.writeByte(0);//version
-			this.outputToRemote.writeByte(command);
-			this.outputToRemote.writeByte(0);//count
-			this.outputToRemote.writeLong(0);//time
-			this.outputToRemote.writeInt(length);//size
-			
-			// write the arguments
-			byte[] b = new byte[length];
-			int index = 0;
-			
-			for(int i=0;i<args.length;i++) {
-				String str = args[i];
-				for(int j=0;j<str.length();j++) {
-					b[index++] = (byte)str.charAt(j);
-				}
-				b[index++] = 0;
-			}
-			
-			this.outputToRemote.write(b);
+			line.append("\n");
+			this.outputToRemote.writeChars(line.toString());
 			this.flushOutput();
-			
 		} catch (IOException ex) {
 			throw new CloudError(ex);
 		}
@@ -125,7 +102,6 @@ public class CommunicationLink {
 			String str = this.inputFromRemote.readLine();
 			List<String> list = parseLine.parse(str);
 			this.packets++;
-			this.parentNode.notifyListenersPacket();
 			
 			EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Received Packet: " + str);
 			return new CloudPacket(list);	
@@ -159,6 +135,11 @@ public class CommunicationLink {
 		} catch (IOException e) {
 			// ignore, we were trying to close
 		}
+		
+	}
+
+	public void requestSignal(List<String> dataSource) {
+		writePacket("signals",dataSource.toArray());
 		
 	}
 }

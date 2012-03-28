@@ -68,6 +68,9 @@ public class HandleClient implements Runnable {
 					else if( packet.getCommand().equalsIgnoreCase("goodbye") ) {
 						this.done = true;
 					}
+					else {
+						this.server.notifyListenersPacket(packet);
+					}
 				}				
 			} catch (CloudError ex) {
 				EncogLogging.log(EncogLogging.LEVEL_DEBUG,"Client ended connection.");
@@ -76,7 +79,7 @@ public class HandleClient implements Runnable {
 		}		
 		this.link.close();
 		this.server.getConnections().remove(this);
-		this.server.notifyListenersConnections();
+		this.server.notifyListenersConnections(this.link,false);
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG,"Shutting down client handler");
 	}
 	
