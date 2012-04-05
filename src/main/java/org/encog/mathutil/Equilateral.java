@@ -88,7 +88,7 @@ public class Equilateral implements Serializable {
 	 * @return The activations for the specified sets.
 	 */
 	public final double[] encode(final int set) {
-		if( set>this.matrix.length ) {
+		if( set<0 || set>this.matrix.length ) {
 			throw new EncogError("Class out of range for equilateral: " + set);
 		}
 		return this.matrix[set];
