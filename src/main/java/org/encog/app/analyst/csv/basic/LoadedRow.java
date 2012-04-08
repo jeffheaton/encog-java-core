@@ -23,6 +23,7 @@
  */
 package org.encog.app.analyst.csv.basic;
 
+import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
 /**
@@ -56,6 +57,14 @@ public class LoadedRow {
 		this.data = new String[count + extra];
 		for (int i = 0; i < count; i++) {
 			this.data[i] = csv.get(i);
+		}
+	}
+	
+	public LoadedRow(CSVFormat csvFormat, final double[] d, final int extra) {
+		final int count = d.length;
+		this.data = new String[count + extra];
+		for (int i = 0; i < count; i++) {
+			this.data[i] = csvFormat.format(d[i], 5) + d[i];
 		}
 	}
 

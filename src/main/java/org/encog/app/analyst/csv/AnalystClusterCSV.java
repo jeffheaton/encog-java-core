@@ -36,6 +36,8 @@ import org.encog.app.analyst.util.CSVHeaders;
 import org.encog.app.quant.QuantError;
 import org.encog.ml.MLCluster;
 import org.encog.ml.data.MLData;
+import org.encog.ml.data.basic.BasicMLData;
+import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.kmeans.KMeansClustering;
 import org.encog.util.csv.CSVFormat;
@@ -92,13 +94,10 @@ public class AnalystClusterCSV extends BasicFile {
 
 		while (csv.next() && !shouldStop()) {
 			updateStatus(true);
-
-			final LoadedRow row = new LoadedRow(csv, 1);
-
 			final double[] inputArray = AnalystNormalizeCSV.extractFields(
 					analyst, this.analystHeaders, csv, outputLength, true);
-			final ClusterRow input = new ClusterRow(inputArray, row);
-			this.data.add(input);
+			final MLData input = new BasicMLData(inputArray);
+			this.data.add(new BasicMLDataPair(input));
 
 			recordCount++;
 		}
@@ -138,6 +137,7 @@ public class AnalystClusterCSV extends BasicFile {
 				}
 
 				// now the output fields that will be generated
+				BasicFile.appendSeparator(line, getFormat());
 				line.append("\"cluster\"");
 
 				tw.println(line.toString());
@@ -172,9 +172,8 @@ public class AnalystClusterCSV extends BasicFile {
 		int clusterNum = 0;
 		for (final MLCluster cl : cluster.getClusters()) {
 			for (final MLData item : cl.getData()) {
-				final ClusterRow row = null;//(ClusterRow) item;
-				final int clsIndex = row.getInput().size() - 1;
-				final LoadedRow lr = row.getRow();
+				final int clsIndex = item.size();
+				final LoadedRow lr = new LoadedRow(this.getFormat(),item.getData(),1);
 				lr.getData()[clsIndex] = "" + clusterNum;
 				writeRow(tw, lr);
 			}
