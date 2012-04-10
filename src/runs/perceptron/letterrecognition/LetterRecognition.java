@@ -80,7 +80,7 @@ public class LetterRecognition extends Tester {
 		setReadInputs(1);
 		setTrainingSetSize(2000);
 		setMapper(new LetterMapper(getOutputs(), _activationThreshold));
-		readData("data/letter-recognition.data");
+		readData("../../data/letter-recognition.data");
 		_network = createNetwork();		
 		//Important: without proper randomizing the network doesn't train to convergence.
 		(new NguyenWidrowRandomizer(-1,1)).randomize(_network);

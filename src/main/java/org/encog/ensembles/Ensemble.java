@@ -37,6 +37,20 @@ public interface Ensemble {
 	public MLDataSet getTrainingSet(int setNumber);
 	
 	/**
+	 * Extract a specific MLMethod
+	 * @param memberNumber
+	 * @return
+	 */
+	public EnsembleML getMember(int memberNumber);
+	
+	/**
+	 * Add a member to the ensemble
+	 * @param newMember
+	 * @return
+	 */
+	public void addMember(EnsembleML newMember);
+	
+	/**
 	 * Compute the output for a specific input
 	 * @param input
 	 * @return
