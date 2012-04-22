@@ -89,8 +89,10 @@ public class CommunicationLink {
 				line.append("\"");
 			}
 			line.append("\n");
-			this.outputToRemote.writeChars(line.toString());
-			this.flushOutput();
+			
+			byte[] b = line.toString().getBytes("US-ASCII");
+			this.socketOut.write(b);
+			this.socketOut.flush();
 		} catch (IOException ex) {
 			throw new CloudError(ex);
 		}
@@ -113,7 +115,7 @@ public class CommunicationLink {
 	
 	private void flushOutput() {
 		try {
-			this.socketOut.write(this.outputHolder.toByteArray());
+			this.socketOut.write(this.outputHolder.toString().getBytes("US-ASCII"));
 			this.outputHolder.reset();	
 		} catch (IOException e) {
 			throw new EncogError(e);
