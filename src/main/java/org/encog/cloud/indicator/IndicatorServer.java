@@ -21,42 +21,40 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.cloud.node;
+package org.encog.cloud.indicator;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.encog.cloud.CloudListener;
 import org.encog.cloud.basic.CloudError;
 import org.encog.cloud.basic.CloudPacket;
-import org.encog.cloud.basic.CommunicationLink;
 import org.encog.util.logging.EncogLogging;
 
-public class CloudNode implements Runnable {
+public class IndicatorServer implements Runnable {
 	public static final int STANDARD_ENCOG_PORT = 5128;
 	private int port;
 	private ServerSocket listenSocket;
 	private Thread thread;
 	private Map<String, String> accounts = new HashMap<String, String>();
-	private Map<String, List<CloudSignal>> signals = new HashMap<String, List<CloudSignal>>();
 	private boolean running;
 	private final List<HandleClient> connections = new ArrayList<HandleClient>();
-	private final List<CloudListener> listeners = new ArrayList<CloudListener>();
+	private final List<IndicatorListener> listeners = new ArrayList<IndicatorListener>();
 
-	public CloudNode(int p) {
+	public IndicatorServer(int p) {
 		this.port = p;
 	}
 
 	public void addUser(String uid, String pwd) {
-		this.accounts.put(uid.toLowerCase(), CommunicationLink.simpleHash(pwd));
+		this.accounts.put(uid.toLowerCase(), IndicatorLink.simpleHash(pwd));
 	}
 
-	public CloudNode() {
+	public IndicatorServer() {
 		this(STANDARD_ENCOG_PORT);
 	}
 
@@ -69,16 +67,20 @@ public class CloudNode implements Runnable {
 		this.running = true;
 		while (this.running) {
 			try {
-				EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Begin listen");
+				EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Begin listen");				
 				Socket connectionSocket = listenSocket.accept();
 				EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Connection from: " + connectionSocket.getRemoteSocketAddress().toString());
-				CommunicationLink link = new CommunicationLink(this,connectionSocket);				
+				IndicatorLink link = new IndicatorLink(this,connectionSocket);				
 				notifyListenersConnections(link, true);
 				HandleClient hc = new HandleClient(this, link);
 				this.connections.add(hc);
 				Thread t = new Thread(hc);
 				t.start();
-			} catch (IOException ex) {
+			}
+			catch (SocketTimeoutException ex) {
+				// ignore
+			}
+			catch (IOException ex) {
 				throw new CloudError(ex);
 			}
 		}
@@ -93,25 +95,12 @@ public class CloudNode implements Runnable {
 	public void start() {
 		try {
 			this.listenSocket = new ServerSocket(port);
+			this.listenSocket.setSoTimeout(2000);
 			this.thread = new Thread(this);
 			this.thread.start();
 		} catch (IOException ex) {
 			throw new CloudError(ex);
 		}
-	}
-
-	public void addNeededSignal(String clientName, String signalName) {
-		String cname = clientName.toLowerCase();
-		CloudSignal signal = new CloudSignal(cname, signalName);
-
-		if (this.signals.containsKey(cname)) {
-			List<CloudSignal> list = this.signals.get(cname);
-			list.add(signal);
-		} else {
-			List<CloudSignal> list = new ArrayList<CloudSignal>();
-			list.add(signal);
-		}
-
 	}
 
 	public void shutdown() {
@@ -129,15 +118,15 @@ public class CloudNode implements Runnable {
 	/**
 	 * @return the listeners
 	 */
-	public List<CloudListener> getListeners() {
+	public List<IndicatorListener> getListeners() {
 		return listeners;
 	}
 	
-	public void addListener(CloudListener listener) {
+	public void addListener(IndicatorListener listener) {
 		this.listeners.add(listener);
 	}
 	
-	public void removeListener(CloudListener listener) {
+	public void removeListener(IndicatorListener listener) {
 		this.listeners.remove(listener);
 	}
 	
@@ -145,11 +134,11 @@ public class CloudNode implements Runnable {
 		this.listeners.clear();
 	}
 	
-	public void notifyListenersConnections(CommunicationLink link, boolean hasOpened) {
+	public void notifyListenersConnections(IndicatorLink link, boolean hasOpened) {
 		Object[] list = this.listeners.toArray();
 		
 		for(int i=0;i<list.length;i++) {
-			CloudListener listener = (CloudListener)list[i];
+			IndicatorListener listener = (IndicatorListener)list[i];
 			listener.notifyConnections(link, hasOpened);
 		}
 	}
@@ -158,7 +147,7 @@ public class CloudNode implements Runnable {
 		Object[] list = this.listeners.toArray();
 		
 		for(int i=0;i<list.length;i++) {
-			CloudListener listener = (CloudListener)list[i];
+			IndicatorListener listener = (IndicatorListener)list[i];
 			listener.notifyPacket(packet);
 		}
 	}

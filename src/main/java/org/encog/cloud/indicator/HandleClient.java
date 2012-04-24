@@ -21,22 +21,21 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.cloud.node;
+package org.encog.cloud.indicator;
 
 import org.encog.cloud.basic.CloudError;
 import org.encog.cloud.basic.CloudPacket;
-import org.encog.cloud.basic.CommunicationLink;
 import org.encog.util.logging.EncogLogging;
 
 public class HandleClient implements Runnable {
 
-	private CommunicationLink link;
+	private IndicatorLink link;
 	private boolean done;
-	private CloudNode server;
+	private IndicatorServer server;
 	private String userID;
 	private String remoteType = "Unknown";
 	
-	public HandleClient(CloudNode s, CommunicationLink l) {
+	public HandleClient(IndicatorServer s, IndicatorLink l) {
 		this.link = l;
 		this.server = s;
 	}
@@ -89,7 +88,7 @@ public class HandleClient implements Runnable {
 
 
 
-	public CommunicationLink getLink() {
+	public IndicatorLink getLink() {
 		return this.link;
 	}
 }

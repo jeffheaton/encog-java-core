@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.cloud.basic;
+package org.encog.cloud.indicator;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -33,12 +33,13 @@ import java.net.Socket;
 import java.util.List;
 
 import org.encog.EncogError;
-import org.encog.cloud.node.CloudNode;
+import org.encog.cloud.basic.CloudError;
+import org.encog.cloud.basic.CloudPacket;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ParseCSVLine;
 import org.encog.util.logging.EncogLogging;
 
-public class CommunicationLink {	
+public class IndicatorLink {	
 	public final int SOCKET_TIMEOUT = 25000;
 	private Socket socket;
 	private ByteArrayOutputStream outputHolder;
@@ -47,7 +48,7 @@ public class CommunicationLink {
 	private OutputStream socketOut;
 	private ParseCSVLine parseLine = new ParseCSVLine(CSVFormat.EG_FORMAT);
 	private int packets;
-	private CloudNode parentNode;
+	private IndicatorServer parentNode;
 
 	public static String simpleHash(String str) {
 		int result = 0;
@@ -60,7 +61,7 @@ public class CommunicationLink {
 		return Integer.toHexString(result).toLowerCase();
 	}
 	
-	public CommunicationLink(CloudNode node, Socket s) {
+	public IndicatorLink(IndicatorServer node, Socket s) {
 		try {
 			this.parentNode = node;
 			this.socket = s;
