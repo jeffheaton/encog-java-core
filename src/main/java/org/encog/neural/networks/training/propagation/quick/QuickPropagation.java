@@ -231,10 +231,10 @@ public class QuickPropagation extends Propagation implements
 	}
 
 	/**
-	 * @param outputEpsilon the outputEpsilon to set
+	 * @param theOutputEpsilon the outputEpsilon to set
 	 */
-	public void setOutputEpsilon(double outputEpsilon) {
-		this.setOutputEpsilon( outputEpsilon);
+	public void setOutputEpsilon(double theOutputEpsilon) {
+		this.outputEpsilon = theOutputEpsilon;
 	}
 	
 	/**
