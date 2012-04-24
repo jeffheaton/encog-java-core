@@ -32,8 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.encog.cloud.basic.CloudError;
-import org.encog.cloud.basic.CloudPacket;
 import org.encog.util.logging.EncogLogging;
 
 public class IndicatorServer implements Runnable {
@@ -81,14 +79,14 @@ public class IndicatorServer implements Runnable {
 				// ignore
 			}
 			catch (IOException ex) {
-				throw new CloudError(ex);
+				throw new IndicatorError(ex);
 			}
 		}
 
 		try {
 			this.listenSocket.close();
 		} catch (IOException ex) {
-			throw new CloudError(ex);
+			throw new IndicatorError(ex);
 		}
 	}
 
@@ -99,7 +97,7 @@ public class IndicatorServer implements Runnable {
 			this.thread = new Thread(this);
 			this.thread.start();
 		} catch (IOException ex) {
-			throw new CloudError(ex);
+			throw new IndicatorError(ex);
 		}
 	}
 
@@ -143,7 +141,7 @@ public class IndicatorServer implements Runnable {
 		}
 	}
 	
-	public void notifyListenersPacket(CloudPacket packet) {
+	public void notifyListenersPacket(IndicatorPacket packet) {
 		Object[] list = this.listeners.toArray();
 		
 		for(int i=0;i<list.length;i++) {

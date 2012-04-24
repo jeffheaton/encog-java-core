@@ -23,8 +23,6 @@
  */
 package org.encog.cloud.indicator;
 
-import org.encog.cloud.basic.CloudError;
-import org.encog.cloud.basic.CloudPacket;
 import org.encog.util.logging.EncogLogging;
 
 public class HandleClient implements Runnable {
@@ -55,7 +53,7 @@ public class HandleClient implements Runnable {
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG,"Waiting for packets");
 		while(!done) {					
 			try {
-				CloudPacket packet = this.link.readPacket();
+				IndicatorPacket packet = this.link.readPacket();
 				
 				// really do not care if we timeout, just keep listening
 				if( packet==null ) {
@@ -71,7 +69,7 @@ public class HandleClient implements Runnable {
 						this.server.notifyListenersPacket(packet);
 					}
 				}				
-			} catch (CloudError ex) {
+			} catch (IndicatorError ex) {
 				EncogLogging.log(EncogLogging.LEVEL_DEBUG,"Client ended connection.");
 				this.done = true;
 			} 

@@ -21,14 +21,14 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.cloud.basic;
+package org.encog.cloud.indicator;
 
-public class CloudError extends Error {
-	public CloudError(Throwable t) {
+public class IndicatorError extends Error {
+	public IndicatorError(Throwable t) {
 		super(t);
 	}
 	
-	public CloudError(String s) {
+	public IndicatorError(String s) {
 		super(s);
 	}
 }

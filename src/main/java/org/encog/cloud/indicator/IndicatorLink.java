@@ -33,8 +33,6 @@ import java.net.Socket;
 import java.util.List;
 
 import org.encog.EncogError;
-import org.encog.cloud.basic.CloudError;
-import org.encog.cloud.basic.CloudPacket;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ParseCSVLine;
 import org.encog.util.logging.EncogLogging;
@@ -72,7 +70,7 @@ public class IndicatorLink {
 			this.outputToRemote = new DataOutputStream(this.outputHolder);
 			this.inputFromRemote = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 		} catch (IOException ex) {
-			throw new CloudError(ex);
+			throw new IndicatorError(ex);
 		}
 
 	}
@@ -95,11 +93,11 @@ public class IndicatorLink {
 			this.socketOut.write(b);
 			this.socketOut.flush();
 		} catch (IOException ex) {
-			throw new CloudError(ex);
+			throw new IndicatorError(ex);
 		}
 	}
 
-	public CloudPacket readPacket() {
+	public IndicatorPacket readPacket() {
 		
 		try {
 			String str = this.inputFromRemote.readLine();
@@ -107,9 +105,9 @@ public class IndicatorLink {
 			this.packets++;
 			
 			EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Received Packet: " + str);
-			return new CloudPacket(list);	
+			return new IndicatorPacket(list);	
 		} catch(IOException ex) {
-			throw new CloudError(ex);
+			throw new IndicatorError(ex);
 		}
 		
 	}

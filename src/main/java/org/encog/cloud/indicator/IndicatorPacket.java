@@ -21,16 +21,16 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.cloud.basic;
+package org.encog.cloud.indicator;
 
 import java.util.List;
 
-public class CloudPacket {
+public class IndicatorPacket {
 	
 	private final String command;
 	private final String[] args;
 	
-	public CloudPacket(List<String> list) {
+	public IndicatorPacket(List<String> list) {
 		this.command = list.get(0).toUpperCase();
 		
 		if( list.size() == 1 ) {
