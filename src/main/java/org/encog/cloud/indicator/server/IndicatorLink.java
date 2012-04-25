@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.cloud.indicator;
+package org.encog.cloud.indicator.server;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -33,6 +33,7 @@ import java.net.Socket;
 import java.util.List;
 
 import org.encog.EncogError;
+import org.encog.cloud.indicator.IndicatorError;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ParseCSVLine;
 import org.encog.util.logging.EncogLogging;
@@ -47,17 +48,6 @@ public class IndicatorLink {
 	private ParseCSVLine parseLine = new ParseCSVLine(CSVFormat.EG_FORMAT);
 	private int packets;
 	private IndicatorServer parentNode;
-
-	public static String simpleHash(String str) {
-		int result = 0;
-		for(int i=0;i<str.length();i++) {
-			if( Character.isLetterOrDigit(str.charAt(i)))
-				result+=str.charAt(i)*(i*10);
-			result %= 0xffff;
-		}
-		
-		return Integer.toHexString(result).toLowerCase();
-	}
 	
 	public IndicatorLink(IndicatorServer node, Socket s) {
 		try {

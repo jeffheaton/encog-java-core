@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.cloud.indicator;
+package org.encog.cloud.indicator.server;
 
 import java.util.List;
 

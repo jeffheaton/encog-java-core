@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.cloud.indicator;
+package org.encog.cloud.indicator.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -32,6 +32,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.cloud.indicator.IndicatorConnectionListener;
+import org.encog.cloud.indicator.IndicatorError;
+import org.encog.cloud.indicator.IndicatorFactory;
+import org.encog.cloud.indicator.IndicatorListener;
+import org.encog.cloud.indicator.basic.DownloadIndicatorFactory;
 import org.encog.util.logging.EncogLogging;
 
 public class IndicatorServer implements Runnable {
@@ -39,25 +44,17 @@ public class IndicatorServer implements Runnable {
 	private int port;
 	private ServerSocket listenSocket;
 	private Thread thread;
-	private Map<String, String> accounts = new HashMap<String, String>();
 	private boolean running;
 	private final List<HandleClient> connections = new ArrayList<HandleClient>();
-	private final List<IndicatorListener> listeners = new ArrayList<IndicatorListener>();
+	private final List<IndicatorConnectionListener> listeners = new ArrayList<IndicatorConnectionListener>();
+	private final Map<String,IndicatorFactory> factoryMap = new HashMap<String,IndicatorFactory>(); 
 
 	public IndicatorServer(int p) {
 		this.port = p;
 	}
 
-	public void addUser(String uid, String pwd) {
-		this.accounts.put(uid.toLowerCase(), IndicatorLink.simpleHash(pwd));
-	}
-
 	public IndicatorServer() {
 		this(STANDARD_ENCOG_PORT);
-	}
-
-	public Map<String, String> getAccounts() {
-		return this.accounts;
 	}
 
 	@Override
@@ -70,7 +67,8 @@ public class IndicatorServer implements Runnable {
 				EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Connection from: " + connectionSocket.getRemoteSocketAddress().toString());
 				IndicatorLink link = new IndicatorLink(this,connectionSocket);				
 				notifyListenersConnections(link, true);
-				HandleClient hc = new HandleClient(this, link);
+				IndicatorListener listener = this.factoryMap.values().iterator().next().create();
+				HandleClient hc = new HandleClient(this, link, listener);
 				this.connections.add(hc);
 				Thread t = new Thread(hc);
 				t.start();
@@ -116,15 +114,15 @@ public class IndicatorServer implements Runnable {
 	/**
 	 * @return the listeners
 	 */
-	public List<IndicatorListener> getListeners() {
+	public List<IndicatorConnectionListener> getListeners() {
 		return listeners;
 	}
 	
-	public void addListener(IndicatorListener listener) {
+	public void addListener(IndicatorConnectionListener listener) {
 		this.listeners.add(listener);
 	}
 	
-	public void removeListener(IndicatorListener listener) {
+	public void removeListener(IndicatorConnectionListener listener) {
 		this.listeners.remove(listener);
 	}
 	
@@ -136,17 +134,35 @@ public class IndicatorServer implements Runnable {
 		Object[] list = this.listeners.toArray();
 		
 		for(int i=0;i<list.length;i++) {
-			IndicatorListener listener = (IndicatorListener)list[i];
+			IndicatorConnectionListener listener = (IndicatorConnectionListener)list[i];
 			listener.notifyConnections(link, hasOpened);
 		}
 	}
-	
-	public void notifyListenersPacket(IndicatorPacket packet) {
-		Object[] list = this.listeners.toArray();
-		
-		for(int i=0;i<list.length;i++) {
-			IndicatorListener listener = (IndicatorListener)list[i];
-			listener.notifyPacket(packet);
+
+	public void addIndicatorFactory(DownloadIndicatorFactory ind) {
+		this.factoryMap.put(ind.getName(), ind);		
+	}
+
+	public void waitForIndicatorCompletion() {
+		// first wait for at least one indicator to start up
+		while( this.listeners.size()==0 ) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
+		
+		// now wait for indicators to go to zero
+		while( this.listeners.size()!=0 ) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		// shutdown
+		shutdown();
 	}
 }

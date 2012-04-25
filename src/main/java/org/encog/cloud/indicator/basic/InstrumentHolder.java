@@ -1,4 +1,4 @@
-package org.encog.cloud.indicator;
+package org.encog.cloud.indicator.basic;
 
 import java.util.HashMap;
 import java.util.Map;

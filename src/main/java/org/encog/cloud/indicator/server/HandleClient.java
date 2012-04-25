@@ -21,8 +21,10 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.cloud.indicator;
+package org.encog.cloud.indicator.server;
 
+import org.encog.cloud.indicator.IndicatorError;
+import org.encog.cloud.indicator.IndicatorListener;
 import org.encog.util.logging.EncogLogging;
 
 public class HandleClient implements Runnable {
@@ -32,10 +34,12 @@ public class HandleClient implements Runnable {
 	private IndicatorServer server;
 	private String userID;
 	private String remoteType = "Unknown";
+	private IndicatorListener listener;
 	
-	public HandleClient(IndicatorServer s, IndicatorLink l) {
+	public HandleClient(IndicatorServer s, IndicatorLink l, IndicatorListener theListener) {
 		this.link = l;
 		this.server = s;
+		this.listener = theListener;
 	}
 		
 
@@ -51,6 +55,7 @@ public class HandleClient implements Runnable {
 	@Override
 	public void run() {
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG,"Waiting for packets");
+		this.listener.notifyConnect(this.link);
 		while(!done) {					
 			try {
 				IndicatorPacket packet = this.link.readPacket();
@@ -66,7 +71,7 @@ public class HandleClient implements Runnable {
 						this.done = true;
 					}
 					else {
-						this.server.notifyListenersPacket(packet);
+						this.listener.notifyPacket(packet);
 					}
 				}				
 			} catch (IndicatorError ex) {
@@ -76,6 +81,7 @@ public class HandleClient implements Runnable {
 		}		
 		this.link.close();
 		this.server.getConnections().remove(this);
+		this.listener.notifyTermination();
 		this.server.notifyListenersConnections(this.link,false);
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG,"Shutting down client handler");
 	}
