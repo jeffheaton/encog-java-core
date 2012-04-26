@@ -25,11 +25,25 @@ package org.encog.cloud.indicator.server;
 
 import java.util.List;
 
+/**
+ * An indicator packet.
+ */
 public class IndicatorPacket {
 	
+	/**
+	 * The command.
+	 */
 	private final String command;
+	
+	/**
+	 * The arguments.
+	 */
 	private final String[] args;
 	
+	/**
+	 * Construct a packet from he list of arguments.
+	 * @param list THe argument list.
+	 */
 	public IndicatorPacket(List<String> list) {
 		this.command = list.get(0).toUpperCase();
 		
@@ -44,14 +58,18 @@ public class IndicatorPacket {
 		}
 	}
 
+	/**
+	 * @return The command.
+	 */
 	public String getCommand() {
 		return command;
 	}
 
+	/**
+	 * The arguments.
+	 * @return The arguments.
+	 */
 	public String[] getArgs() {
 		return args;
-	}
-	
-	
-	
+	}	
 }

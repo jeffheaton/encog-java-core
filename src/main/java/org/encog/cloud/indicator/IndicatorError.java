@@ -23,11 +23,25 @@
  */
 package org.encog.cloud.indicator;
 
-public class IndicatorError extends Error {
+import org.encog.cloud.CloudError;
+
+/**
+ * An error has occurred with the external indicator.
+ */
+public class IndicatorError extends CloudError {
+	
+	/**
+	 * Construct a exception based on a throwable.
+	 * @param t The throwable.
+	 */
 	public IndicatorError(Throwable t) {
 		super(t);
 	}
 	
+	/**
+	 * Construct an exception based on a string.
+	 * @param s The message.
+	 */
 	public IndicatorError(String s) {
 		super(s);
 	}

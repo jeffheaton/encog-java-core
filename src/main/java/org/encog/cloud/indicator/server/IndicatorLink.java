@@ -24,40 +24,68 @@
 package org.encog.cloud.indicator.server;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.List;
 
-import org.encog.EncogError;
 import org.encog.cloud.indicator.IndicatorError;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ParseCSVLine;
 import org.encog.util.logging.EncogLogging;
 
+/**
+ * Managed a link to a remote indicator.
+ */
 public class IndicatorLink {	
+	/**
+	 * Default socket timeout.
+	 */
 	public final int SOCKET_TIMEOUT = 25000;
-	private Socket socket;
-	private ByteArrayOutputStream outputHolder;
-	private DataOutputStream outputToRemote;
-	private BufferedReader inputFromRemote;
-	private OutputStream socketOut;
-	private ParseCSVLine parseLine = new ParseCSVLine(CSVFormat.EG_FORMAT);
-	private int packets;
-	private IndicatorServer parentNode;
 	
+	/**
+	 * The socket to use. (client)
+	 */
+	private Socket socket;
+	
+	/**
+	 * Used to read from the remote.
+	 */
+	private BufferedReader inputFromRemote;
+	
+	/**
+	 * Used to output to the socket.
+	 */
+	private OutputStream socketOut;
+	
+	/**
+	 * Used to parse a CSV line(packet) read.
+	 */
+	private ParseCSVLine parseLine = new ParseCSVLine(CSVFormat.EG_FORMAT);
+	
+	/**
+	 * The number of packets received.
+	 */
+	private int packets;
+	
+	/**
+	 * The parent server.
+	 */
+	private final IndicatorServer parentServer;
+	
+	/**
+	 * Construct an indicator link.
+	 * @param node The parent server.
+	 * @param s The socket. (client)
+	 */
 	public IndicatorLink(IndicatorServer node, Socket s) {
 		try {
-			this.parentNode = node;
+			this.parentServer = node;
 			this.socket = s;
 			this.socket.setSoTimeout(SOCKET_TIMEOUT);
 			
 			this.socketOut = this.socket.getOutputStream();
-			this.outputHolder = new ByteArrayOutputStream();
-			this.outputToRemote = new DataOutputStream(this.outputHolder);
 			this.inputFromRemote = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 		} catch (IOException ex) {
 			throw new IndicatorError(ex);
@@ -65,7 +93,12 @@ public class IndicatorLink {
 
 	}
 
-	
+
+	/**
+	 * Write a packet, basically a CSV line.
+	 * @param command The packet command (type).
+	 * @param args The arguments for this packet.
+	 */
 	public void writePacket(String command, Object[] args) {
 		try {
 			StringBuilder line = new StringBuilder();
@@ -87,6 +120,10 @@ public class IndicatorLink {
 		}
 	}
 
+	/**
+	 * Read a packet.
+	 * @return The packet we read.
+	 */
 	public IndicatorPacket readPacket() {
 		
 		try {
@@ -101,34 +138,44 @@ public class IndicatorLink {
 		}
 		
 	}
-	
-	private void flushOutput() {
-		try {
-			this.socketOut.write(this.outputHolder.toString().getBytes("US-ASCII"));
-			this.outputHolder.reset();	
-		} catch (IOException e) {
-			throw new EncogError(e);
-		}
-		
-	}
 
+	/**
+	 * @return The client socket.
+	 */
 	public Socket getSocket() {
 		return this.socket;
 	}
 	
+	/**
+	 * The packet count that we've read.
+	 * @return The number of pakcets read.
+	 */
 	public int getPackets() {
 		return this.packets;
 	}
 
+	/**
+	 * Close the socket.
+	 */
 	public void close() {
 		try {
 			this.socket.close();
 		} catch (IOException e) {
 			// ignore, we were trying to close
-		}
+		}	
+	}
 		
+	/**
+	 * @return The server that created this link.
+	 */
+	public IndicatorServer getParentServer() {
+		return parentServer;
 	}
 
+	/**
+	 * Request the specified signals (i.e. HLOC(high, low, etc)). 
+	 * @param dataSource The data requested.
+	 */
 	public void requestSignal(List<String> dataSource) {
 		writePacket("signals",dataSource.toArray());
 		
