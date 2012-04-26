@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.List;
 
 import org.encog.EncogError;
@@ -39,7 +40,7 @@ import org.encog.util.csv.ParseCSVLine;
 import org.encog.util.logging.EncogLogging;
 
 public class IndicatorLink {	
-	public final int SOCKET_TIMEOUT = 25000;
+	public final int SOCKET_TIMEOUT = 5000;
 	private Socket socket;
 	private ByteArrayOutputStream outputHolder;
 	private DataOutputStream outputToRemote;
@@ -96,7 +97,12 @@ public class IndicatorLink {
 			
 			EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Received Packet: " + str);
 			return new IndicatorPacket(list);	
-		} catch(IOException ex) {
+		} 
+		catch( SocketTimeoutException ex)
+		{
+			return null;
+		}
+		catch(IOException ex) {
 			throw new IndicatorError(ex);
 		}
 		

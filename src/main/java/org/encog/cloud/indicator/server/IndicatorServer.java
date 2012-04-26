@@ -145,7 +145,7 @@ public class IndicatorServer implements Runnable {
 
 	public void waitForIndicatorCompletion() {
 		// first wait for at least one indicator to start up
-		while( this.listeners.size()==0 ) {
+		while( this.connections.size()==0 ) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
@@ -154,7 +154,7 @@ public class IndicatorServer implements Runnable {
 		}
 		
 		// now wait for indicators to go to zero
-		while( this.listeners.size()!=0 ) {
+		while( this.connections.size()!=0 ) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {

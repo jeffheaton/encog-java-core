@@ -75,6 +75,7 @@ public class HandleClient implements Runnable {
 					}
 				}				
 			} catch (IndicatorError ex) {
+				ex.printStackTrace();
 				EncogLogging.log(EncogLogging.LEVEL_DEBUG,"Client ended connection.");
 				this.done = true;
 			} 
