@@ -39,24 +39,72 @@ import org.encog.cloud.indicator.IndicatorListener;
 import org.encog.cloud.indicator.basic.DownloadIndicatorFactory;
 import org.encog.util.logging.EncogLogging;
 
+/**
+ * The Encog Indicator server.  This allows the Encog Framework Indicator to be
+ * used in a trading platform, such as NinjaTrader or MT4/5.  The remote indicator
+ * is always created in whatever native language the trading platform requires. Then
+ * a socketed connection is made back to Encog.  
+ */
 public class IndicatorServer implements Runnable {
+	
+	/**
+	 * The default port.
+	 */
 	public static final int STANDARD_ENCOG_PORT = 5128;
+	
+	/**
+	 * The port actually being used.
+	 */
 	private int port;
+	
+	/**
+	 * The socket that we are listening on.
+	 */
 	private ServerSocket listenSocket;
+	
+	/**
+	 * The background thread used to listen.
+	 */
 	private Thread thread;
+	
+	/**
+	 * True, if the server is running.
+	 */
 	private boolean running;
+	
+	/**
+	 * The connections that have been made to the server.
+	 */
 	private final List<HandleClient> connections = new ArrayList<HandleClient>();
+	
+	/**
+	 * ALl registered listeners.
+	 */
 	private final List<IndicatorConnectionListener> listeners = new ArrayList<IndicatorConnectionListener>();
+	
+	/** 
+	 * The indicator factories by name.
+	 */
 	private final Map<String,IndicatorFactory> factoryMap = new HashMap<String,IndicatorFactory>(); 
 
+	/**
+	 * Construct a server.
+	 * @param p The port.
+	 */
 	public IndicatorServer(int p) {
 		this.port = p;
 	}
 
+	/**
+	 * Construct a server, and use the standard port (5128).
+	 */
 	public IndicatorServer() {
 		this(STANDARD_ENCOG_PORT);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void run() {
 		this.running = true;
@@ -88,6 +136,9 @@ public class IndicatorServer implements Runnable {
 		}
 	}
 
+	/**
+	 * Start the server.
+	 */
 	public void start() {
 		try {
 			this.listenSocket = new ServerSocket(port);
@@ -99,14 +150,23 @@ public class IndicatorServer implements Runnable {
 		}
 	}
 
+	/**
+	 * Shutdown the server.
+	 */
 	public void shutdown() {
 		this.running = false;
 	}
 
+	/**
+	 * @return The port the server is listening on.
+	 */
 	public int getPort() {
 		return this.port;
 	}
 
+	/**
+	 * @return The connections.
+	 */
 	public List<HandleClient> getConnections() {
 		return this.connections;
 	}
@@ -118,10 +178,14 @@ public class IndicatorServer implements Runnable {
 		return listeners;
 	}
 	
+	/**
+	 * Add a listener.
+	 * @param listener The listener to add.
+	 */
 	public void addListener(IndicatorConnectionListener listener) {
 		this.listeners.add(listener);
 	}
-	
+		
 	public void removeListener(IndicatorConnectionListener listener) {
 		this.listeners.remove(listener);
 	}

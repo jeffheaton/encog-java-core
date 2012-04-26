@@ -27,15 +27,42 @@ import org.encog.cloud.indicator.IndicatorError;
 import org.encog.cloud.indicator.IndicatorListener;
 import org.encog.util.logging.EncogLogging;
 
+/**
+ * Handle a remote client, such as Ninja Trader.
+ */
 public class HandleClient implements Runnable {
 
+	/**
+	 * The link to the remote.
+	 */
 	private IndicatorLink link;
+	
+	/**
+	 * Are we done.
+	 */
 	private boolean done;
+	
+	/**
+	 * The indicator server that we belog to.
+	 */
 	private IndicatorServer server;
-	private String userID;
+
+	/**
+	 * The remote type, i.e. Ninja Trader.
+	 */
 	private String remoteType = "Unknown";
+	
+	/**
+	 * The indicator that is listening.
+	 */
 	private IndicatorListener listener;
 	
+	/**
+	 * Construct a client handler.
+	 * @param s The indicator server.
+	 * @param l The indicator link.
+	 * @param theListener The indicator that is listening for packets.
+	 */
 	public HandleClient(IndicatorServer s, IndicatorLink l, IndicatorListener theListener) {
 		this.link = l;
 		this.server = s;
@@ -43,15 +70,9 @@ public class HandleClient implements Runnable {
 	}
 		
 
-	
-	public String getUserID() {
-		return userID;
-	}
-
-	public void setUserID(String userID) {
-		this.userID = userID;
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void run() {
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG,"Waiting for packets");
@@ -87,12 +108,17 @@ public class HandleClient implements Runnable {
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG,"Shutting down client handler");
 	}
 	
+	/**
+	 * @return The remote type, i.e. Ninja Trader.
+	 */
 	public String getRemoteType() {
 		return this.remoteType;
 	}
 
 
-
+	/**
+	 * @return The link that we are using.
+	 */
 	public IndicatorLink getLink() {
 		return this.link;
 	}
