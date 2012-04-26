@@ -43,7 +43,7 @@ public class IndicatorLink {
 	/**
 	 * Default socket timeout.
 	 */
-	public final int SOCKET_TIMEOUT = 25000;
+	public final int SOCKET_TIMEOUT = 1000;
 	
 	/**
 	 * The socket to use. (client)
