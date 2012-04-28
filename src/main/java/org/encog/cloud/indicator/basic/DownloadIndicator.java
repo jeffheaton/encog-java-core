@@ -31,9 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.encog.EncogError;
-import org.encog.cloud.indicator.server.IndicatorLink;
 import org.encog.cloud.indicator.server.IndicatorPacket;
-import org.encog.cloud.indicator.server.IndicatorServer;
 import org.encog.util.logging.EncogLogging;
 
 /**
@@ -42,17 +40,17 @@ import org.encog.util.logging.EncogLogging;
  * native indicators.  This class will download that data and write it to a CSV file.
  */
 public class DownloadIndicator extends BasicIndicator {
-	
+
 	/**
 	 * The default port.
 	 */
 	public static final int PORT = 5128;
-	
+
 	/**
 	 * The number of rows downloaded.
 	 */
 	private int rowsDownloaded;
-	
+
 	/**
 	 * The instruments that we are downloading (i.e. ticker symbols, and their data)
 	 */
@@ -62,13 +60,12 @@ public class DownloadIndicator extends BasicIndicator {
 	 * The target CSV file.
 	 */
 	private File targetFile;
-	
+
 	/**
 	 * Construct the download indicator.
 	 * @param theFile The local CSV file.
 	 */
-	public DownloadIndicator(File theFile) 
-	{		
+	public DownloadIndicator(File theFile) {
 		super(false);
 		this.targetFile = theFile;
 	}
@@ -79,48 +76,40 @@ public class DownloadIndicator extends BasicIndicator {
 	@Override
 	public void notifyPacket(IndicatorPacket packet) {
 		if (packet.getCommand().equalsIgnoreCase("bar")) {
-			try {
-				String security = packet.getArgs()[1];
-				long when = Long.parseLong(packet.getArgs()[0]);
-				String key = security.toLowerCase();
-				InstrumentHolder holder = null;
+			String security = packet.getArgs()[1];
+			long when = Long.parseLong(packet.getArgs()[0]);
+			String key = security.toLowerCase();
+			InstrumentHolder holder = null;
 
-				if (this.data.containsKey(key)) {
-					holder = this.data.get(key);
-				} else {
-					holder = new InstrumentHolder();
-					this.data.put(key, holder);
-				}
-
-				if (holder.record(when, 2, packet.getArgs())) {
-					this.rowsDownloaded++;
-					System.out.println("Received row " + this.rowsDownloaded);
-				}
-			} catch (Exception ex) {
-				EncogLogging.log(ex);
+			if (this.data.containsKey(key)) {
+				holder = this.data.get(key);
+			} else {
+				holder = new InstrumentHolder();
+				this.data.put(key, holder);
 			}
 
-		}		
+			if (holder.record(when, 2, packet.getArgs())) {
+				this.rowsDownloaded++;
+				System.out.println("Received row " + this.rowsDownloaded);
+			}
+		}
 	}
-	
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void notifyTermination()
-	{
+	public void notifyTermination() {
 		try {
 			FileWriter outFile = new FileWriter(targetFile);
 			PrintWriter out = new PrintWriter(outFile);
 
 			out.print("\"INSTRUMENT\",\"WHEN\"");
-			for( String str: this.getDataRequested() ) {
-				out.print(",\""+str+"\"");
+			for (String str : this.getDataRequested()) {
+				out.print(",\"" + str + "\"");
 			}
 			out.println();
-			
-			
+
 			for (String ins : this.data.keySet()) {
 				InstrumentHolder holder = this.data.get(ins);
 				for (Long key : holder.getSorted()) {
@@ -132,6 +121,6 @@ public class DownloadIndicator extends BasicIndicator {
 			out.close();
 		} catch (IOException ex) {
 			throw new EncogError(ex);
-		}		
+		}
 	}
 }

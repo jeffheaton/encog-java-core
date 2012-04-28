@@ -36,7 +36,6 @@ import org.encog.cloud.indicator.IndicatorConnectionListener;
 import org.encog.cloud.indicator.IndicatorError;
 import org.encog.cloud.indicator.IndicatorFactory;
 import org.encog.cloud.indicator.IndicatorListener;
-import org.encog.cloud.indicator.basic.DownloadIndicatorFactory;
 import org.encog.util.logging.EncogLogging;
 
 /**
@@ -202,7 +201,7 @@ public class IndicatorServer implements Runnable {
 		}
 	}
 
-	public void addIndicatorFactory(DownloadIndicatorFactory ind) {
+	public void addIndicatorFactory(IndicatorFactory ind) {
 		this.factoryMap.put(ind.getName(), ind);		
 	}
 
