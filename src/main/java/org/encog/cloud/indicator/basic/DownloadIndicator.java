@@ -69,6 +69,7 @@ public class DownloadIndicator extends BasicIndicator {
 	 */
 	public DownloadIndicator(File theFile) 
 	{		
+		super(false);
 		this.targetFile = theFile;
 	}
 

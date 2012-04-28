@@ -36,12 +36,12 @@ public class HandleClient implements Runnable {
 	 * The link to the remote.
 	 */
 	private IndicatorLink link;
-	
+
 	/**
 	 * Are we done.
 	 */
 	private boolean done;
-	
+
 	/**
 	 * The indicator server that we belog to.
 	 */
@@ -51,63 +51,85 @@ public class HandleClient implements Runnable {
 	 * The remote type, i.e. Ninja Trader.
 	 */
 	private String remoteType = "Unknown";
-	
+
 	/**
 	 * The indicator that is listening.
 	 */
 	private IndicatorListener listener;
-	
+
+	/**
+	 * The name of the indicator.
+	 */
+	private String indicatorName;
+
 	/**
 	 * Construct a client handler.
 	 * @param s The indicator server.
 	 * @param l The indicator link.
 	 * @param theListener The indicator that is listening for packets.
 	 */
-	public HandleClient(IndicatorServer s, IndicatorLink l, IndicatorListener theListener) {
+	public HandleClient(IndicatorServer s, IndicatorLink l) {
 		this.link = l;
 		this.server = s;
-		this.listener = theListener;
 	}
-		
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void run() {
-		EncogLogging.log(EncogLogging.LEVEL_DEBUG,"Waiting for packets");
-		this.listener.notifyConnect(this.link);
-		while(!done) {					
-			try {
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Waiting for packets");
+
+		try {
+			while (!done) {
 				IndicatorPacket packet = this.link.readPacket();
-				
+
 				// really do not care if we timeout, just keep listening
-				if( packet==null ) {
+				if (packet == null) {
 					continue;
 				} else {
-					if( packet.getCommand().equalsIgnoreCase("hello") ) {
+					if (packet.getCommand().equalsIgnoreCase("hello")) {
 						this.remoteType = packet.getArgs()[0];
-					}
-					else if( packet.getCommand().equalsIgnoreCase("goodbye") ) {
+						this.indicatorName = packet.getArgs()[1];
+						this.listener = this.server
+								.resolveIndicator(this.indicatorName);
+						this.listener.notifyConnect(this.link);
+					} else if (packet.getCommand().equalsIgnoreCase("goodbye")) {
 						this.done = true;
-					}
-					else {
+					} else {
 						this.listener.notifyPacket(packet);
 					}
-				}				
-			} catch (IndicatorError ex) {
-				ex.printStackTrace();
-				EncogLogging.log(EncogLogging.LEVEL_DEBUG,"Client ended connection.");
-				this.done = true;
-			} 
-		}		
-		this.link.close();
-		this.server.getConnections().remove(this);
-		this.listener.notifyTermination();
-		this.server.notifyListenersConnections(this.link,false);
-		EncogLogging.log(EncogLogging.LEVEL_DEBUG,"Shutting down client handler");
+				}
+			}
+		} catch (IndicatorError ex) {
+			ex.printStackTrace();
+			if (ex.getCause() == null) {
+				EncogLogging.log(EncogLogging.LEVEL_DEBUG,
+						"Error, ending connection:" + ex.getMessage());
+				String[] args = { ex.getMessage() };
+				link.writePacket("error", args);
+			} else {
+				EncogLogging.log(EncogLogging.LEVEL_DEBUG,
+						"Client ended connection:" + ex.getMessage());
+			}
+			this.done = true;
+		} catch (Throwable t) {
+			EncogLogging.log(EncogLogging.LEVEL_CRITICAL, t);
+			t.printStackTrace();
+		} finally {
+			this.done = true;
+			this.server.getConnections().remove(this);
+			if (this.listener != null) {
+				this.listener.notifyTermination();
+			}
+			this.server.notifyListenersConnections(this.link, false);
+			EncogLogging.log(EncogLogging.LEVEL_DEBUG,
+					"Shutting down client handler");
+			this.link.close();
+		}
+
 	}
-	
+
 	/**
 	 * @return The remote type, i.e. Ninja Trader.
 	 */
@@ -115,6 +137,12 @@ public class HandleClient implements Runnable {
 		return this.remoteType;
 	}
 
+	/**
+	 * @return the indicatorName
+	 */
+	public String getIndicatorName() {
+		return indicatorName;
+	}
 
 	/**
 	 * @return The link that we are using.

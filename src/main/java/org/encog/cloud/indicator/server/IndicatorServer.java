@@ -115,8 +115,7 @@ public class IndicatorServer implements Runnable {
 				EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Connection from: " + connectionSocket.getRemoteSocketAddress().toString());
 				IndicatorLink link = new IndicatorLink(this,connectionSocket);				
 				notifyListenersConnections(link, true);
-				IndicatorListener listener = this.factoryMap.values().iterator().next().create();
-				HandleClient hc = new HandleClient(this, link, listener);
+				HandleClient hc = new HandleClient(this, link);
 				this.connections.add(hc);
 				Thread t = new Thread(hc);
 				t.start();
@@ -228,5 +227,28 @@ public class IndicatorServer implements Runnable {
 		
 		// shutdown
 		shutdown();
+	}
+
+	/**
+	 * Create the specified indicator, if indicatorName is "default" and there is only
+	 * one indicator, then use that indicator.
+	 * @param indicatorName The name of the indicator.
+	 * @return The indicator.
+	 */
+	public IndicatorListener resolveIndicator(String indicatorName) {
+		if( this.factoryMap.size()==0 ) {
+			throw new IndicatorError("No indicators defined.");
+		}
+		if( indicatorName.equalsIgnoreCase("default")) {
+			if( this.factoryMap.size()>1 ) {
+				throw new IndicatorError("Default indicator requested, but more than one indicator defined.");
+			}
+			return this.factoryMap.values().iterator().next().create();
+		}
+		
+		if( !this.factoryMap.containsKey(indicatorName) ) {
+			throw new IndicatorError("Unknown indicator: " + indicatorName);
+		}
+		return this.factoryMap.get(indicatorName).create();
 	}
 }

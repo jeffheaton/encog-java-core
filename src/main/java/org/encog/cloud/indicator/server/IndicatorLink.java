@@ -182,8 +182,10 @@ public class IndicatorLink {
 	 * Request the specified signals (i.e. HLOC(high, low, etc)). 
 	 * @param dataSource The data requested.
 	 */
-	public void requestSignal(List<String> dataSource) {
+	public void initConnection(List<String> dataSource, boolean blocking) {
+		String[] args = new String[1];
+		args[0] = blocking ? "1":"0";
 		writePacket("signals",dataSource.toArray());
-		
+		writePacket("init",args);		
 	}
 }

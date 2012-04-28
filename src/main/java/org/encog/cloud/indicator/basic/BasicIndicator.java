@@ -36,6 +36,11 @@ import org.encog.cloud.indicator.server.IndicatorLink;
 public abstract class BasicIndicator implements IndicatorListener {
 
 	/**
+	 * Is this indicator blocking, should it wait for a result after each bar.
+	 */
+	private final boolean blocking;
+	
+	/**
 	 * The data that has been requested from the remote side.  This is
 	 * typically HLOC(High, Low, Open, Close) data that is needed by the
 	 * Encog indicator to compute.
@@ -46,6 +51,10 @@ public abstract class BasicIndicator implements IndicatorListener {
 	 * The communication link between the indicator and remote.
 	 */
 	private IndicatorLink link;
+	
+	public BasicIndicator(boolean theBlocking) {
+		this.blocking = theBlocking;
+	}
 
 	/**
 	 * @return the dataRequested
@@ -70,6 +79,20 @@ public abstract class BasicIndicator implements IndicatorListener {
 	public void notifyConnect(IndicatorLink theLink)
 	{
 		this.link = theLink;
-		this.link.requestSignal(this.dataRequested);
+		this.link.initConnection(this.dataRequested, this.blocking);
+	}
+
+	/**
+	 * @return the blocking
+	 */
+	public boolean isBlocking() {
+		return blocking;
+	}
+
+	/**
+	 * @return the link
+	 */
+	public IndicatorLink getLink() {
+		return link;
 	}
 }
