@@ -33,7 +33,6 @@ import java.util.Map;
 import org.encog.EncogError;
 import org.encog.cloud.indicator.server.IndicatorLink;
 import org.encog.cloud.indicator.server.IndicatorPacket;
-import org.encog.util.logging.EncogLogging;
 
 /**
  * This indicator is used to download data from an external source.  For example
@@ -70,6 +69,11 @@ public class DownloadIndicator extends BasicIndicator {
 		super(false);
 		this.targetFile = theFile;
 	}
+	
+	public void close() {
+		this.getLink().close();
+		this.data.clear();
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -91,7 +95,6 @@ public class DownloadIndicator extends BasicIndicator {
 
 			if (holder.record(when, 2, packet.getArgs())) {
 				this.rowsDownloaded++;
-				System.out.println("Received row " + this.rowsDownloaded);
 			}
 		}
 	}
@@ -101,7 +104,15 @@ public class DownloadIndicator extends BasicIndicator {
 	 */
 	@Override
 	public void notifyTermination() {
+		save();
+	}
+	
+	public void save() {
 		try {
+			if( this.data.size()==0 ) {
+				return;				
+			}
+			
 			FileWriter outFile = new FileWriter(targetFile);
 			PrintWriter out = new PrintWriter(outFile);
 
@@ -140,5 +151,12 @@ public class DownloadIndicator extends BasicIndicator {
 		} catch (IOException ex) {
 			throw new EncogError(ex);
 		}
+	}
+
+	/**
+	 * @return The number of rows downloaded.
+	 */
+	public int getRowsDownloaded() {
+		return this.rowsDownloaded;
 	}
 }
