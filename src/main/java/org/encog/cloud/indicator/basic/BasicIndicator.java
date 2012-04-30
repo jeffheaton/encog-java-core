@@ -57,6 +57,11 @@ public abstract class BasicIndicator implements IndicatorListener {
 	 */
 	private IndicatorLink link;
 	
+	/**
+	 * The current error message;
+	 */
+	private String errorMessage;
+	
 	public BasicIndicator(boolean theBlocking) {
 		this.blocking = theBlocking;
 	}
@@ -103,7 +108,12 @@ public abstract class BasicIndicator implements IndicatorListener {
 	public void notifyConnect(IndicatorLink theLink)
 	{
 		this.link = theLink;
-		this.link.initConnection(this.dataRequested, this.blocking);
+		if( this.errorMessage!=null ) {
+			String[] args = { this.errorMessage };
+			this.getLink().writePacket(IndicatorLink.PACKET_ERROR, args);
+		} else {
+			this.link.initConnection(this.dataRequested, this.blocking);
+		}
 	}
 
 	/**
@@ -126,6 +136,21 @@ public abstract class BasicIndicator implements IndicatorListener {
 	public List<Integer> getDataCount() {
 		return dataCount;
 	}
+
+	/**
+	 * @return the errorMessage
+	 */
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	/**
+	 * @param errorMessage the errorMessage to set
+	 */
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+	
 	
 	
 }

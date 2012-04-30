@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.encog.EncogError;
+import org.encog.cloud.indicator.server.IndicatorLink;
 import org.encog.cloud.indicator.server.IndicatorPacket;
 import org.encog.util.logging.EncogLogging;
 
@@ -75,7 +76,7 @@ public class DownloadIndicator extends BasicIndicator {
 	 */
 	@Override
 	public void notifyPacket(IndicatorPacket packet) {
-		if (packet.getCommand().equalsIgnoreCase("bar")) {
+		if (packet.getCommand().equalsIgnoreCase(IndicatorLink.PACKET_BAR)) {
 			String security = packet.getArgs()[1];
 			long when = Long.parseLong(packet.getArgs()[0]);
 			String key = security.toLowerCase();

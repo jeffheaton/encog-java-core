@@ -74,12 +74,12 @@ public class IndicatorLink {
 	/**
 	 * The ERROR packet, used to move to an error state.
 	 */
-	public static final String PACKET_WARNING = "ERROR";
+	public static final String PACKET_ERROR = "ERROR";
 	
 	/**
 	 * The WARNING packet, used to log a warning.
 	 */
-	public static final String PACKET_ERROR = "WARNING";
+	public static final String PACKET_WARNING = "WARNING";
 	
 	/**
 	 * Default socket timeout.
@@ -232,6 +232,6 @@ public class IndicatorLink {
 		args[0] = blocking ? "1":"0";
 		args[1] = "1";
 		writePacket(IndicatorLink.PACKET_SIGNALS,dataSource.toArray());
-		writePacket(IndicatorLink.PACKET_HELLO,args);		
+		writePacket(IndicatorLink.PACKET_INIT,args);		
 	}
 }
