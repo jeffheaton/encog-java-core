@@ -40,6 +40,47 @@ import org.encog.util.logging.EncogLogging;
  * Managed a link to a remote indicator.
  */
 public class IndicatorLink {	
+	
+	/**
+	 * The HELLO packet, sent from the client to the server to provide version information.
+	 */
+	public static final String PACKET_HELLO = "HELLO";
+	
+	/**
+	 * The GOODBYE packet, sent from the client to the server to end communication.
+	 */
+	public static final String PACKET_GOODBYE = "GOODBYE";
+	
+	/**
+	 * The SIGNALS packet, sent from the client to the server to specify requested data.
+	 */
+	public static final String PACKET_SIGNALS = "SIGNALS";
+	
+	/**
+	 * The INIT packet, sent from the server to the client to provide config information.
+	 */
+	public static final String PACKET_INIT = "INIT";
+	
+	/**
+	 * The BAR packet, sent from the client to the server at the end of each BAR.
+	 */
+	public static final String PACKET_BAR = "BAR";
+	
+	/**
+	 * The IND packet, sent from the server to the clinet, in response to a BAR. 
+	 */
+	public static final String PACKET_IND = "IND";
+	
+	/**
+	 * The ERROR packet, used to move to an error state.
+	 */
+	public static final String PACKET_WARNING = "ERROR";
+	
+	/**
+	 * The WARNING packet, used to log a warning.
+	 */
+	public static final String PACKET_ERROR = "WARNING";
+	
 	/**
 	 * Default socket timeout.
 	 */
@@ -104,7 +145,7 @@ public class IndicatorLink {
 		try {
 			StringBuilder line = new StringBuilder();
 			line.append("\"");
-			line.append(command);
+			line.append(command.toUpperCase());
 			line.append("\"");
 			for (int i = 0; i < args.length; i++) {
 				line.append(",\"");
@@ -131,6 +172,10 @@ public class IndicatorLink {
 			String str = this.inputFromRemote.readLine();
 			List<String> list = parseLine.parse(str);
 			this.packets++;
+			
+			if( list.size()>0 ) {
+				list.set(0, list.get(0).toUpperCase());
+			}
 			
 			EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Received Packet: " + str);
 			return new IndicatorPacket(list);	
@@ -183,9 +228,10 @@ public class IndicatorLink {
 	 * @param dataSource The data requested.
 	 */
 	public void initConnection(List<String> dataSource, boolean blocking) {
-		String[] args = new String[1];
+		String[] args = new String[2];
 		args[0] = blocking ? "1":"0";
-		writePacket("signals",dataSource.toArray());
-		writePacket("init",args);		
+		args[1] = "1";
+		writePacket(IndicatorLink.PACKET_SIGNALS,dataSource.toArray());
+		writePacket(IndicatorLink.PACKET_HELLO,args);		
 	}
 }

@@ -88,13 +88,13 @@ public class HandleClient implements Runnable {
 				if (packet == null) {
 					continue;
 				} else {
-					if (packet.getCommand().equalsIgnoreCase("hello")) {
+					if (packet.getCommand().equalsIgnoreCase(IndicatorLink.PACKET_HELLO)) {
 						this.remoteType = packet.getArgs()[0];
 						this.indicatorName = packet.getArgs()[1];
 						this.listener = this.server
 								.resolveIndicator(this.indicatorName);
 						this.listener.notifyConnect(this.link);
-					} else if (packet.getCommand().equalsIgnoreCase("goodbye")) {
+					} else if (packet.getCommand().equalsIgnoreCase(IndicatorLink.PACKET_GOODBYE)) {
 						this.done = true;
 					} else {
 						this.listener.notifyPacket(packet);
