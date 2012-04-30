@@ -86,7 +86,9 @@ public class DownloadIndicatorFactory implements IndicatorFactory {
 	public IndicatorListener create() {
 		DownloadIndicator ind = new DownloadIndicator(file);
 		
-		ind.getDataRequested().addAll(this.dataRequested);
+		for(String d : this.dataRequested) {
+			ind.requestData(d);
+		}
 		
 		return ind;
 	}

@@ -48,6 +48,11 @@ public abstract class BasicIndicator implements IndicatorListener {
 	private final List<String> dataRequested = new ArrayList<String>();
 	
 	/**
+	 * The number of bars requested per data item.
+	 */
+	private final List<Integer> dataCount = new ArrayList<Integer>();
+	
+	/**
 	 * The communication link between the indicator and remote.
 	 */
 	private IndicatorLink link;
@@ -69,6 +74,25 @@ public abstract class BasicIndicator implements IndicatorListener {
 	 */
 	public void requestData(String str) {
 		dataRequested.add(str);
+		
+		int idx = str.indexOf('[');
+		
+		if( idx==-1 )
+		{
+			this.dataCount.add(1);
+			return;
+		}
+					
+		int idx2 = str.indexOf(']',idx);
+					
+		if( idx2==-1 )
+		{
+			this.dataCount.add(1);
+			return;
+		}
+		
+		String s = str.substring(idx+1,idx2);
+		this.dataCount.add(Integer.parseInt(s));		
 	}
 	
 	/**
@@ -95,4 +119,13 @@ public abstract class BasicIndicator implements IndicatorListener {
 	public IndicatorLink getLink() {
 		return link;
 	}
+
+	/**
+	 * @return the dataCount
+	 */
+	public List<Integer> getDataCount() {
+		return dataCount;
+	}
+	
+	
 }

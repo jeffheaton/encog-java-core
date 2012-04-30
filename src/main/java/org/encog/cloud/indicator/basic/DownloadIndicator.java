@@ -104,12 +104,29 @@ public class DownloadIndicator extends BasicIndicator {
 			FileWriter outFile = new FileWriter(targetFile);
 			PrintWriter out = new PrintWriter(outFile);
 
+			// output header
 			out.print("\"INSTRUMENT\",\"WHEN\"");
+			int index = 0;
 			for (String str : this.getDataRequested()) {
-				out.print(",\"" + str + "\"");
+				int c = getDataCount().get(index++);
+				if( c<=1 ) {
+					out.print(",\"" + str + "\"");
+				} else {
+					for(int i=0;i<c;i++) {
+						String str2;
+						int ix = str.indexOf('[');
+						if( ix!=-1 ) {
+							str2 = str.substring(0,ix).trim();
+						} else {
+							str2 = str;
+						}
+						out.print(",\"" + str2 + "-b" + i + "\"");	
+					}
+				}
 			}
 			out.println();
 
+			// output data
 			for (String ins : this.data.keySet()) {
 				InstrumentHolder holder = this.data.get(ins);
 				for (Long key : holder.getSorted()) {
