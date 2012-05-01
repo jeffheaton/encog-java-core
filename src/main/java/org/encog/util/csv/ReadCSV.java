@@ -103,6 +103,9 @@ public class ReadCSV {
 	 */
 	private List<String> columnNames = new ArrayList<String>();
 	
+	/**
+	 * Used to parse the CSV.
+	 */
 	private ParseCSVLine parseLine;
 
 	/**
