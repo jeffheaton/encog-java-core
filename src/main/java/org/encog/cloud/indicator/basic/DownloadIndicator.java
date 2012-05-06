@@ -121,17 +121,18 @@ public class DownloadIndicator extends BasicIndicator {
 			int index = 0;
 			for (String str : this.getDataRequested()) {
 				int c = getDataCount().get(index++);
-				if( c<=1 ) {
-					out.print(",\"" + str + "\"");
+				String str2;
+				int ix = str.indexOf('[');
+				if( ix!=-1 ) {
+					str2 = str.substring(0,ix).trim();
 				} else {
-					for(int i=0;i<c;i++) {
-						String str2;
-						int ix = str.indexOf('[');
-						if( ix!=-1 ) {
-							str2 = str.substring(0,ix).trim();
-						} else {
-							str2 = str;
-						}
+					str2 = str;
+				}
+				
+				if( c<=1 ) {
+					out.print(",\"" + str2 + "\"");
+				} else {
+					for(int i=0;i<c;i++) {						
 						out.print(",\"" + str2 + "-b" + i + "\"");	
 					}
 				}
