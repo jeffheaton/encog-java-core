@@ -25,6 +25,15 @@ package org.encog.cloud.indicator;
 
 import org.encog.cloud.indicator.server.IndicatorLink;
 
+/**
+ * Listens for indicator connections.
+ */
 public interface IndicatorConnectionListener {
+	
+	/**
+	 * Notify of a connection.
+	 * @param link The link to the connection.
+	 * @param hasOpened True if this is a connect, false otherwise.
+	 */
 	void notifyConnections(IndicatorLink link, boolean hasOpened);
 }

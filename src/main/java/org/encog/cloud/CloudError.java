@@ -23,17 +23,13 @@
  */
 package org.encog.cloud;
 
+import org.encog.EncogError;
 import org.encog.util.logging.EncogLogging;
 
 /**
  * A cloud error.
  */
-public class CloudError extends RuntimeException {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5909341149180956178L;
+public class CloudError extends EncogError {
 
 	/**
 	 * Construct a message exception.
