@@ -13,8 +13,8 @@ public class WindowDouble {
 	}
 	
 	public void add(double[] a) {
-		this.data.add(a);
-		while( this.data.size()>=this.size) {
+		this.data.add(0, a);
+		while( this.data.size()>this.size) {
 			this.data.remove(this.data.size()-1);
 		}
 	}
@@ -47,5 +47,9 @@ public class WindowDouble {
 		}
 		
 		return result;
+	}
+
+	public double[] getLast() {
+		return this.data.get(0);
 	}
 }
