@@ -34,8 +34,23 @@ import org.encog.app.quant.QuantError;
 import org.encog.util.csv.ReadCSV;
 
 /**
- * A simple class to convert financial data files into the format used 
- * by NinjaTrader for input.
+ * A simple class that shows how to convert financial data into the
+ * form that NinjaTrader can recognize.  The input data must have CSV
+ * headers that indicate the following fields:
+ * 
+ * date
+ * time
+ * high
+ * low
+ * open
+ * close
+ * volume
+ * 
+ * This data will be rearranged to fit the NinjaTrader format, which is
+ * documented here:
+ * 
+ *  http://www.ninjatrader.com/support/helpGuides/nt7/index.html?importing.htm
+ *
  */
 public class NinjaFileConvert extends BasicCachedFile {
 	
