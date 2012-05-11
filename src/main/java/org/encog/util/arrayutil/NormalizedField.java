@@ -490,6 +490,12 @@ public class NormalizedField {
 	 * @return The normalized value.
 	 */
 	public final double normalize(final double value) {
+		if( value>this.actualHigh ) {
+			return this.normalizedHigh;
+		} else if( value<this.actualLow ) {
+			return this.normalizedLow;
+		} 
+		else
 		return ((value - this.actualLow) / (this.actualHigh - this.actualLow))
 				* (this.normalizedHigh - this.normalizedLow)
 				+ this.normalizedLow;
