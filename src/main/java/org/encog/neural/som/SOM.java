@@ -24,7 +24,6 @@
 package org.encog.neural.som;
 
 import org.encog.mathutil.matrices.Matrix;
-import org.encog.mathutil.matrices.MatrixMath;
 import org.encog.ml.BasicML;
 import org.encog.ml.MLClassification;
 import org.encog.ml.MLError;
@@ -32,7 +31,6 @@ import org.encog.ml.MLResettable;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLData;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.som.training.basic.BestMatchingUnit;
 import org.encog.util.EngineArray;
