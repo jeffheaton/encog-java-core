@@ -24,7 +24,6 @@
 package org.encog.ml.schedule;
 
 import org.encog.ml.graph.BasicEdge;
-import org.encog.ml.world.basic.BasicAction;
 
 public class CalculateScheduleTimes {
 	
