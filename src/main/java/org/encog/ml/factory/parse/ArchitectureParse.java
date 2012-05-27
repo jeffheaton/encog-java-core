@@ -30,7 +30,6 @@ import java.util.Map;
 
 import org.encog.EncogError;
 import org.encog.util.SimpleParser;
-import org.encog.util.logging.EncogLogging;
 
 /**
  * This class is used to parse a Encog architecture string.
