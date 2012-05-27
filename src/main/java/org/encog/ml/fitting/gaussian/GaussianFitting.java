@@ -25,12 +25,9 @@ package org.encog.ml.fitting.gaussian;
 
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.MatrixMath;
-import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
-import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
-import org.encog.util.simple.EncogUtility;
 
 public class GaussianFitting implements MLRegression {
 	

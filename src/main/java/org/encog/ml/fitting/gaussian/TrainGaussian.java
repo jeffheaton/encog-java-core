@@ -31,7 +31,6 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.BasicTraining;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.util.EngineArray;
-import org.encog.util.simple.EncogUtility;
 
 
 public class TrainGaussian extends BasicTraining {
