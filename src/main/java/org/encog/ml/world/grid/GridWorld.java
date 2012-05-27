@@ -28,7 +28,6 @@ import java.util.List;
 
 import org.encog.mathutil.EncogMath;
 import org.encog.ml.world.Action;
-import org.encog.ml.world.ActionProbability;
 import org.encog.ml.world.State;
 import org.encog.ml.world.basic.BasicAction;
 import org.encog.ml.world.basic.BasicWorld;
@@ -41,7 +40,6 @@ public class GridWorld extends BasicWorld {
 	public static final Action ACTION_WEST = new BasicAction("WEST");
 
 	private GridState[][] state;
-	private ActionProbability actionEvaluation;
 
 	public GridWorld(int rows, int columns) {
 		addAction(ACTION_NORTH);
