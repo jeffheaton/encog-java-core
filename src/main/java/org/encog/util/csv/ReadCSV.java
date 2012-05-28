@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.EncogError;
-import org.encog.util.SimpleParser;
 
 /**
  * Read and parse CSV format files.

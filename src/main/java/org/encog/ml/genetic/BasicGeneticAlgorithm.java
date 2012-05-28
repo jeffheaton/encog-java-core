@@ -25,7 +25,6 @@ package org.encog.ml.genetic;
 
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.util.concurrency.EngineConcurrency;
-import org.encog.util.concurrency.MultiThreadable;
 import org.encog.util.concurrency.TaskGroup;
 
 /**

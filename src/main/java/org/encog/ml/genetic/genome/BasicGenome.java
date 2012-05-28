@@ -27,7 +27,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.Encog;
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.genetic.population.Population;

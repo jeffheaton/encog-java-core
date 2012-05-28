@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.encog.Encog;
 import org.encog.ml.bayesian.table.BayesianTable;
 
 /**

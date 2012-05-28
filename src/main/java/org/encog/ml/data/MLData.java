@@ -23,7 +23,6 @@
  */
 package org.encog.ml.data;
 
-import org.encog.ml.data.basic.BasicMLData;
 import org.encog.util.kmeans.CentroidFactory;
 
 /**

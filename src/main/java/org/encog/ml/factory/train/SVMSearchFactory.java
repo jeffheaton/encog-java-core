@@ -26,7 +26,6 @@ package org.encog.ml.factory.train;
 import java.util.Map;
 
 import org.encog.EncogError;
-import org.encog.NullStatusReportable;
 import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.factory.parse.ArchitectureParse;

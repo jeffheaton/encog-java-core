@@ -24,10 +24,6 @@
 package org.encog.util;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.UUID;
-
-import org.encog.EncogError;
 
 /**
  * Based on code from:

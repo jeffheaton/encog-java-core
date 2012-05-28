@@ -32,8 +32,6 @@ import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.train.BasicTraining;
-import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.neural.som.SOM;

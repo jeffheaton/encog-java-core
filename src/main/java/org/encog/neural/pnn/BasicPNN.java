@@ -23,7 +23,6 @@
  */
 package org.encog.neural.pnn;
 
-import org.encog.mathutil.EncogMath;
 import org.encog.ml.MLClassification;
 import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
