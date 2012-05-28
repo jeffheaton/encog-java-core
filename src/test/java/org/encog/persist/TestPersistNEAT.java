@@ -36,7 +36,6 @@ import junit.framework.TestCase;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationStep;
-import org.encog.neural.art.ART1;
 import org.encog.neural.neat.NEATLink;
 import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATNeuron;

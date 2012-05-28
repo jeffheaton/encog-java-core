@@ -28,7 +28,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Date;
 
-import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.plugin.EncogPluginBase;
 import org.encog.plugin.EncogPluginLogging1;
 import org.encog.util.logging.EncogLogging;

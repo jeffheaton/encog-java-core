@@ -26,12 +26,11 @@ package org.encog.util.arrayutil;
 import java.io.File;
 import java.io.IOException;
 
-import org.encog.neural.art.ART1;
-import org.encog.util.TempDir;
-import org.encog.util.obj.SerializeObject;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.encog.util.TempDir;
+import org.encog.util.obj.SerializeObject;
 
 public class TestNorm extends TestCase {
 	

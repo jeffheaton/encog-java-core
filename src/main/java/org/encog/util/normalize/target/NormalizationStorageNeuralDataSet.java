@@ -24,7 +24,6 @@
 package org.encog.util.normalize.target;
 
 import org.encog.ml.data.MLDataSet;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.util.normalize.DataNormalization;

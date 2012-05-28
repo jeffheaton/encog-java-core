@@ -2,7 +2,6 @@ package org.encog.persist;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -14,7 +13,6 @@ import org.encog.neural.neat.PersistNEATPopulation;
 import org.encog.neural.neat.training.NEATTraining;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.TrainingSetScore;
-import org.encog.util.file.FileUtil;
 
 public final class TestPersistPopulationNPE extends TestCase
 {

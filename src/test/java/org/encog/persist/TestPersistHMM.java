@@ -33,8 +33,6 @@ import org.encog.ml.hmm.HiddenMarkovModel;
 import org.encog.ml.hmm.alog.KullbackLeiblerDistanceCalculator;
 import org.encog.ml.hmm.distributions.ContinousDistribution;
 import org.encog.ml.hmm.distributions.DiscreteDistribution;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.XOR;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
 

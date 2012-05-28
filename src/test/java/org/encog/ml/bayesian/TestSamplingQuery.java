@@ -26,7 +26,6 @@ package org.encog.ml.bayesian;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.encog.ml.bayesian.query.enumerate.EnumerationQuery;
 import org.encog.ml.bayesian.query.sample.SamplingQuery;
 
 public class TestSamplingQuery extends TestCase {

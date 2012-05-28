@@ -23,8 +23,6 @@
  */
 package org.encog.neural.networks;
 
-import java.io.File;
-
 import junit.framework.TestCase;
 
 import org.encog.mathutil.randomize.ConsistentRandomizer;
