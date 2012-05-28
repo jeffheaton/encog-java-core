@@ -99,9 +99,7 @@ public final class EngineArray {
 		final double[][] result = new double[source.length][source[0].length];
 
 		for (int row = 0; row < source.length; row++) {
-			for (int col = 0; col < source[0].length; col++) {
-				result[row][col] = source[row][col];
-			}
+			System.arraycopy(source[row], 0, result[row], 0, source[0].length);
 		}
 
 		return result;
