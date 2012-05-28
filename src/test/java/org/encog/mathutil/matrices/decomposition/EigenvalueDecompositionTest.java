@@ -23,7 +23,7 @@
  */
 package org.encog.mathutil.matrices.decomposition;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.encog.mathutil.matrices.Matrix;
 import org.junit.Test;
@@ -51,7 +51,7 @@ public class EigenvalueDecompositionTest {
 	}
 
 	@Test
-	public void testGetD_assymentric() {
+	public void testGetD_asymentric() {
 		EigenvalueDecomposition decomposition =
 				new EigenvalueDecomposition(matrix1);
 		Matrix d = decomposition.getD();
@@ -77,7 +77,7 @@ public class EigenvalueDecompositionTest {
 	}
 
 	@Test
-	public void testGetImagEigenvalues_assymentric() {
+	public void testGetImagEigenvalues_asymentric() {
 		EigenvalueDecomposition decomposition =
 				new EigenvalueDecomposition(matrix1);
 		double[] d = decomposition.getImagEigenvalues();
@@ -97,7 +97,7 @@ public class EigenvalueDecompositionTest {
 	}
 
 	@Test
-	public void testGetRealEigenvalues_assymentric() {
+	public void testGetRealEigenvalues_asymentric() {
 		EigenvalueDecomposition decomposition =
 				new EigenvalueDecomposition(matrix1);
 		double[] d = decomposition.getRealEigenvalues();
@@ -117,7 +117,7 @@ public class EigenvalueDecompositionTest {
 	}
 
 	@Test
-	public void testGetV_assymentric() {
+	public void testGetV_asymentric() {
 		EigenvalueDecomposition decomposition =
 				new EigenvalueDecomposition(matrix1);
 		Matrix d = decomposition.getV();
@@ -129,4 +129,49 @@ public class EigenvalueDecompositionTest {
 		assertEquals(1.0, d.get(1, 1), 1e-10);
 	}
 
+	@Test
+	public void testIsSymmetric() {
+		assertTrue(
+				"An empty matrix should be symmetric",
+				EigenvalueDecomposition.isSymmetric(new double[][] { }));
+		assertFalse(
+				"An matrix with a row but no values should not be symmetric",
+				EigenvalueDecomposition.isSymmetric(new double[][] { { } }));
+		assertTrue(
+				"A singleton matrix should be symmetric",
+				EigenvalueDecomposition.isSymmetric(new double[][] { { 0 } }));
+		assertFalse(
+				"A malformed matrix should not be symmetric",
+				EigenvalueDecomposition.isSymmetric(new double[][] {
+						{ 0, 1 }
+				}));
+		assertTrue(
+				"This simple matrix should be symmetric",
+				EigenvalueDecomposition.isSymmetric(new double[][] {
+						{ 0, 1 },
+						{ 1, 0 },
+				}));
+		assertFalse(
+				"This simple matrix should not be symmetric",
+				EigenvalueDecomposition.isSymmetric(new double[][] {
+						{ 0, 1 },
+						{ 2, 0 },
+				}));
+		assertTrue(
+				"This matrix should be symmetric",
+				EigenvalueDecomposition.isSymmetric(new double[][] {
+						{ 0, 1, 3, 8 },
+						{ 1, 5, 7, 1 },
+						{ 3, 7, 9, 0 },
+						{ 8, 1, 0, 6 },
+				}));
+		assertFalse(
+				"This matrix should not be symmetric",
+				EigenvalueDecomposition.isSymmetric(new double[][] {
+						{ 8, 1, 0, 6 },
+						{ 3, 7, 9, 0 },
+						{ 1, 5, 7, 1 },
+						{ 0, 1, 3, 8 },
+				}));
+	}
 }
