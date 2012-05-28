@@ -25,6 +25,7 @@ package org.encog.neural.flat;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.encog.Encog;
@@ -372,9 +373,8 @@ public class FlatNetwork implements Serializable {
 		// update context values
 		final int offset = this.contextTargetOffset[0];
 
-		for (int x = 0; x < this.contextTargetSize[0]; x++) {
-			this.layerOutput[offset + x] = this.layerOutput[x];
-		}
+		EngineArray.arrayCopy(this.layerOutput, 0, layerOutput,
+				offset, this.contextTargetSize[0]);
 
 		EngineArray.arrayCopy(this.layerOutput, 0, output, 0, this.outputCount);
 	}
@@ -413,9 +413,8 @@ public class FlatNetwork implements Serializable {
 		// update context values
 		final int offset = this.contextTargetOffset[currentLayer];
 
-		for (int x = 0; x < this.contextTargetSize[currentLayer]; x++) {
-			this.layerOutput[offset + x] = this.layerOutput[outputIndex + x];
-		}
+		EngineArray.arrayCopy(this.layerOutput, outputIndex,
+				this.layerOutput, offset, this.contextTargetSize[currentLayer]);
 	}
 
 	/**
@@ -727,11 +726,7 @@ public class FlatNetwork implements Serializable {
 	 * @param af The activation functions.
 	 */
 	public final void setActivationFunctions(final ActivationFunction[] af) {
-
-		this.activationFunctions = new ActivationFunction[af.length];
-		for (int i = 0; i < af.length; i++) {
-			this.activationFunctions[i] = af[i];
-		}
+		this.activationFunctions = Arrays.copyOf(af, af.length);
 	}
 
 	/**
