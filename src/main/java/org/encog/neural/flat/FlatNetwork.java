@@ -290,9 +290,8 @@ public class FlatNetwork implements Serializable {
 			final boolean hasBias = (this.layerContextCount[i] + this.layerFeedCounts[i]) != this.layerCounts[i];
 
 			// fill in regular neurons
-			for (int j = 0; j < this.layerFeedCounts[i]; j++) {
-				this.layerOutput[index++] = 0;
-			}
+			Arrays.fill(this.layerOutput, index, this.layerFeedCounts[i], 0);
+			index += this.layerFeedCounts[i];
 
 			// fill in the bias
 			if (hasBias) {
@@ -300,9 +299,8 @@ public class FlatNetwork implements Serializable {
 			}
 
 			// fill in context
-			for (int j = 0; j < this.layerContextCount[i]; j++) {
-				this.layerOutput[index++] = 0;
-			}
+			Arrays.fill(this.layerOutput, index, this.layerContextCount[i], 0);
+			index += this.layerContextCount[i];
 		}
 	}
 
