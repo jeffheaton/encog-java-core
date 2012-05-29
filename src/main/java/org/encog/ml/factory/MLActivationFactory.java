@@ -24,7 +24,6 @@
 package org.encog.ml.factory;
 
 import org.encog.Encog;
-import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.plugin.EncogPluginBase;
 import org.encog.plugin.EncogPluginService1;

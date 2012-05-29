@@ -26,13 +26,12 @@ package org.encog.persist;
 import java.io.File;
 import java.io.IOException;
 
-import org.encog.neural.art.ART1;
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
 import org.encog.neural.cpn.CPN;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class TestPersistCPN extends TestCase {
 	

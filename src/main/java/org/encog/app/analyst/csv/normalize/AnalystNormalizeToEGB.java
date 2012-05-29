@@ -24,18 +24,15 @@
 package org.encog.app.analyst.csv.normalize;
 
 import java.io.File;
-import java.io.PrintWriter;
 
 import org.encog.EncogError;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.csv.TimeSeriesUtil;
 import org.encog.app.analyst.csv.basic.BasicFile;
-import org.encog.app.analyst.missing.HandleMissingValues;
 import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.util.CSVHeaders;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.buffer.BufferedMLDataSet;
-import org.encog.util.arrayutil.NormalizationAction;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 import org.encog.util.logging.EncogLogging;

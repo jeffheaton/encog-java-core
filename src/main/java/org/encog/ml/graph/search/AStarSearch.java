@@ -26,7 +26,6 @@ package org.encog.ml.graph.search;
 import org.encog.ml.graph.BasicGraph;
 import org.encog.ml.graph.BasicNode;
 import org.encog.ml.graph.BasicPath;
-import org.encog.ml.graph.EuclideanNode;
 
 public class AStarSearch extends AbstractGraphSearch {
 

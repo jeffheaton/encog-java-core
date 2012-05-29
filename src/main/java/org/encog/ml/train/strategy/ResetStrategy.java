@@ -23,7 +23,6 @@
  */
 package org.encog.ml.train.strategy;
 
-import org.encog.ml.MLMethod;
 import org.encog.ml.MLResettable;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.training.TrainingError;

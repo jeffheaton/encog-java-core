@@ -29,7 +29,6 @@ import java.io.IOException;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.encog.ml.svm.SVM;
 import org.encog.neural.thermal.HopfieldNetwork;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;

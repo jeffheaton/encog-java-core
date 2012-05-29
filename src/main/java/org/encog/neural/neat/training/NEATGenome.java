@@ -261,7 +261,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			return;
 		}
 
-		int countTrysToFindLoop = numTrysToFindLoop;
 		int countTrysToAddLink = numTrysToFindLoop;
 
 		// the link will be between these two neurons

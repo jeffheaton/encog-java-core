@@ -23,7 +23,6 @@
  */
 package org.encog.ml.world.learning.mdp;
 
-import org.encog.Encog;
 import org.encog.ml.world.Action;
 import org.encog.ml.world.State;
 import org.encog.ml.world.SuccessorState;

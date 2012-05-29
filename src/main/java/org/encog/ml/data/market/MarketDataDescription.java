@@ -25,7 +25,6 @@ package org.encog.ml.data.market;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ml.data.temporal.TemporalDataDescription;
-import org.encog.ml.data.temporal.TemporalDataDescription.Type;
 
 /**
  * This class is used to describe the type of financial data that is needed.

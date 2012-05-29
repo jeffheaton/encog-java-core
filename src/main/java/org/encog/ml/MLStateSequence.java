@@ -23,9 +23,6 @@
  */
 package org.encog.ml;
 
-import java.util.List;
-
-import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 
 /**
