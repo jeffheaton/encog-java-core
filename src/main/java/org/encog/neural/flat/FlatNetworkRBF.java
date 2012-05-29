@@ -24,6 +24,7 @@
 package org.encog.neural.flat;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.mathutil.rbf.RadialBasisFunction;
@@ -117,10 +118,7 @@ public class FlatNetworkRBF extends FlatNetwork implements Serializable {
 	 * @param rbf The RBF's used.
 	 */
 	public final void setRBF(final RadialBasisFunction[] rbf) {
-		this.rbf = new RadialBasisFunction[rbf.length];
-		for(int i=0;i<rbf.length;i++) {
-			this.rbf[i] = rbf[i];
-		}
+		this.rbf = Arrays.copyOf(rbf, rbf.length);
 	}
 
 	/**
