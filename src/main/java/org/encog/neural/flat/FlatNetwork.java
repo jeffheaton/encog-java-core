@@ -290,16 +290,16 @@ public class FlatNetwork implements Serializable {
 			final boolean hasBias = (this.layerContextCount[i] + this.layerFeedCounts[i]) != this.layerCounts[i];
 
 			// fill in regular neurons
-			Arrays.fill(this.layerOutput, index, this.layerFeedCounts[i], 0);
+			Arrays.fill(this.layerOutput, index, index+this.layerFeedCounts[i], 0);
 			index += this.layerFeedCounts[i];
 
 			// fill in the bias
 			if (hasBias) {
 				this.layerOutput[index++] = this.biasActivation[i];
 			}
-
+			
 			// fill in context
-			Arrays.fill(this.layerOutput, index, this.layerContextCount[i], 0);
+			Arrays.fill(this.layerOutput, index, index+this.layerContextCount[i], 0);
 			index += this.layerContextCount[i];
 		}
 	}
