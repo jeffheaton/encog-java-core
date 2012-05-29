@@ -170,9 +170,7 @@ public class DeriveMinimum {
 					}
 					fbest = globalMinimum.getY2();
 				} else {
-					for (int i = 0; i < n; i++) {
-						x[i] = base[i];
-					}
+					System.arraycopy(base, 0, x, 0, n);
 				}
 				break;
 			}
@@ -254,8 +252,8 @@ public class DeriveMinimum {
 			final double[] h, final double[] grad) {
 		int i;
 
+		System.arraycopy(grad, 0, g, 0, n);
 		for (i = 0; i < n; i++) {
-			g[i] = grad[i];
 			grad[i] = h[i] = g[i] + gam * h[i];
 		}
 	}
