@@ -170,6 +170,10 @@ public class IndicatorLink {
 		
 		try {
 			String str = this.inputFromRemote.readLine();
+			if( str==null )
+			{
+				return null;
+			}
 			List<String> list = parseLine.parse(str);
 			this.packets++;
 			
