@@ -1,9 +1,9 @@
-package org.encog.ensembles.bagging;
+package org.encog.ensemble.bagging;
 
 import java.util.Random;
 
-import org.encog.ensembles.EnsembleDataSet;
-import org.encog.ensembles.EnsembleDataSetFactory;
+import org.encog.ensemble.EnsembleDataSet;
+import org.encog.ensemble.EnsembleDataSetFactory;
 import org.encog.ml.data.MLDataSet;
 
 public class BaggingDataSetFactory implements EnsembleDataSetFactory {
@@ -41,4 +41,11 @@ public class BaggingDataSetFactory implements EnsembleDataSetFactory {
 		this.dataSetSize = dataSetSize;
 	}
 
+	public int getInputCount() {
+		return this.dataSource.getInputSize();
+	}
+
+	public int getOutputCount() {
+		return this.dataSource.getIdealSize();
+	}
 }

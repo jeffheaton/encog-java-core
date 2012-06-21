@@ -204,4 +204,15 @@ public class BasicMLData implements MLData,
 		
 		return result;
 	}
+	
+	public MLData threshold(double thresholdValue, double lowValue, double highValue)
+	{
+		MLData result = new BasicMLData(size());
+		for (int i = 0; i < size(); i++)
+			if (getData(i) > thresholdValue)
+				result.setData(i,highValue);
+			else
+				result.setData(i,lowValue);
+		return result;
+	}
 }

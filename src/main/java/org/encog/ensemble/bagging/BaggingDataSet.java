@@ -1,9 +1,9 @@
-package org.encog.ensembles.bagging;
+package org.encog.ensemble.bagging;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.encog.ensembles.EnsembleDataSet;
+import org.encog.ensemble.EnsembleDataSet;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;

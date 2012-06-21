@@ -61,22 +61,25 @@ public class Tester {
 		}
 		return (double) bad / (double) evals;
 	}
-
-	public static void train(MLTrain train, double trainToError)
+	public static void train(MLTrain train, double trainToError, boolean verbose)
 	{
 		double error = 1.0;
 		int epoch = 0;
 		do {
 			train.iteration();
 			error = getExecutionError(_trainingSet, false);
-			//error = train.getError();
-			System.out.println("Epoch " + epoch + ": " + error);
+			if (verbose) System.out.println("Epoch " + epoch + ": " + error);
 			epoch++;
 		} while (error > trainToError);
 		double trainerror = getExecutionError(_trainingSet, true);
 		System.out.println("Training error: " + trainerror);
 		double testerror = getExecutionError(_testSet, true);
 		System.out.println("Test error: " + testerror);
+	}
+
+	public static void train(MLTrain train, double trainToError)
+	{
+		train(train, trainToError, false);
 	}
 	
 	public static void readData(String inputFile) {

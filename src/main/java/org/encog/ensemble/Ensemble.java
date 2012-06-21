@@ -1,4 +1,4 @@
-package org.encog.ensembles;
+package org.encog.ensemble;
 
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
@@ -9,7 +9,7 @@ public interface Ensemble {
 	 * Set the training method to use for this ensemble
 	 * @param newTrain
 	 */
-	public void setTrainingMethod(EnsembleTrain newTrain);
+	public void setTrainingMethod(EnsembleTrainFactory newTrainFactory);
 	
 	/**
 	 * Set which training data to base the training on

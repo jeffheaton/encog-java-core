@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.encog.ensembles;
+package org.encog.ensemble;
 
 import org.encog.ml.train.MLTrain;
 

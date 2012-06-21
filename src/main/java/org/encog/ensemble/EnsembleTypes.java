@@ -1,4 +1,4 @@
-package org.encog.ensembles;
+package org.encog.ensemble;
 
 public class EnsembleTypes {
 	public static enum ProblemType { CLASSIFICATION, REGRESSION}

@@ -65,7 +65,7 @@ public class Haberman extends Tester {
 	public static BasicNetwork createNetwork() {
 		BasicNetwork network = new BasicNetwork();
 		network.addLayer(new BasicLayer(null,true,getInputs()));
-		network.addLayer(new BasicLayer(new ActivationSigmoid(),true,100));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(),true,300));
 		network.addLayer(new BasicLayer(new ActivationSigmoid(),false,getOutputs()));
 		network.getStructure().finalizeStructure();
 		network.reset();
