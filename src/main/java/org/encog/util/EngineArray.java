@@ -393,4 +393,12 @@ public final class EngineArray {
 		}
 		return result;
 	}
+
+	public static double mean(double[] data) {
+		double result = 0;
+		for(int i=0;i<data.length;i++) {
+			result+=(double)data[i];
+		}
+		return result/(double)data.length;
+	}
 }
