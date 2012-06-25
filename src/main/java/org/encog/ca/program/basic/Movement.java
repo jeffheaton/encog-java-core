@@ -1,4 +1,4 @@
-package org.encog.ca.program;
+package org.encog.ca.program.basic;
 
 public class Movement {
 	private final int rowMovement;
