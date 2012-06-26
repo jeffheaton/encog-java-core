@@ -1,7 +1,9 @@
 package org.encog.ca.program.basic;
 
+import org.encog.ca.program.CAProgram;
 
-public class BasicProgram  {
+
+public abstract class BasicProgram implements CAProgram  {
 	
 	private final Movement[] movements;
 	

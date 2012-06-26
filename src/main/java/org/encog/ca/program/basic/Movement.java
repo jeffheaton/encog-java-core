@@ -3,6 +3,11 @@ package org.encog.ca.program.basic;
 public class Movement {
 	private final int rowMovement;
 	private final int columnmMovement;
+
+	public static final Movement[] MOVE_2WAY = { 
+		new Movement(0,1), // E
+		new Movement(0,-1) // W
+	};
 	
 	public static final Movement[] MOVE_4WAY = { 
 		new Movement(-1,0), // N

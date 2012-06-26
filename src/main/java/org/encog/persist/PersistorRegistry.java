@@ -26,6 +26,7 @@ package org.encog.persist;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.encog.ca.universe.basic.PersistBasicUniverse;
 import org.encog.ml.bayesian.PersistBayes;
 import org.encog.ml.hmm.PersistHMM;
 import org.encog.ml.svm.PersistSVM;
@@ -87,6 +88,7 @@ public class PersistorRegistry {
 		add(new PersistTrainingContinuation());
 		add(new PersistBayes());
 		add(new PersistHMM());
+		add(new PersistBasicUniverse());
 	}
 
 	/**

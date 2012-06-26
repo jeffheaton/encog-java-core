@@ -11,27 +11,18 @@ import org.encog.ca.universe.Universe;
 import org.encog.ca.universe.UniverseListener;
 
 public class BasicCARunner implements CARunner, Runnable {
-	private Universe world;
-	private Universe tempWorld;
+	private Universe universe;
+	private Universe tempUniverse;
 	private CAProgram physics;
 	private boolean running;
 	private int iteration;
 	private double diff;
 	private List<UniverseListener> listeners = new ArrayList<UniverseListener>();
+	private Thread thread;
 
-	/**
-	 * The event used to sync waiting for tasks to stop.
-	 */
-	private final Lock accessLock = new ReentrantLock();
-
-	/**
-	 * Condition used to check if we are done.
-	 */
-	private final Condition mightBeDone = this.accessLock.newCondition();
-
-	public BasicCARunner(Universe theWorld, CAProgram thePhysics) {
-		this.world = theWorld;
-		this.tempWorld = (Universe) theWorld.clone();
+	public BasicCARunner(Universe theUniverse, CAProgram thePhysics) {
+		this.universe = theUniverse;
+		this.tempUniverse = (Universe) theUniverse.clone();
 		this.physics = thePhysics;
 	}
 
@@ -44,39 +35,41 @@ public class BasicCARunner implements CARunner, Runnable {
 	}
 
 	public void iteration() {
-		int height = world.getRows();
-		int width = world.getColumns();
+		int height = universe.getRows();
+		int width = universe.getColumns();
 
-		try {
-			this.accessLock.lock();
-			this.tempWorld.copy(this.world);
-			
-			this.physics.setTargetUniverse(this.tempWorld);
-			this.physics.iteration();
-							
-			this.diff = this.tempWorld.compare(world);
-			this.iteration++;
-			
-			this.world.copy(this.tempWorld);
+		this.tempUniverse.copy(this.universe);
 
-			for (UniverseListener listener : this.listeners) {
-				listener.iterationComplete();
-			}
-		} finally {
-			this.accessLock.unlock();
+		this.physics.setTargetUniverse(this.tempUniverse);
+		this.physics.iteration();
+
+		this.diff = this.tempUniverse.compare(universe);
+		this.iteration++;
+
+		this.universe.copy(this.tempUniverse);
+
+		for (UniverseListener listener : this.listeners) {
+			listener.iterationComplete();
 		}
 	}
 
 	public void start() {
 		if (!running) {
 			this.running = true;
-			Thread t = new Thread(this);
-			t.start();
+			this.thread = new Thread(this);
+			thread.start();
 		}
 	}
 
 	public void stop() {
 		this.running = false;
+		try {
+			if (this.thread != null) {
+				this.thread.join();
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -89,24 +82,34 @@ public class BasicCARunner implements CARunner, Runnable {
 	}
 
 	public void reset() {
-		this.accessLock.lock();
 		this.physics.randomize();
-		this.world.randomize();
+		this.universe.randomize();
 		this.iteration = 0;
-		this.accessLock.unlock();
 	}
 
 	public int runToConverge(int maxIterations) {
 		this.iteration = 0;
-		for(;;) {
+		for (;;) {
 			iteration();
-			
-			if( this.iteration>5 && this.diff<0.01 )
+
+			if (this.iteration > 5 && this.diff < 0.01)
 				break;
-			
-			if( this.iteration>maxIterations ) 
+
+			if (this.iteration > maxIterations)
 				break;
 		}
 		return this.iteration;
 	}
+	
+	public boolean isRunning() {
+		return this.running;
+	}
+
+	@Override
+	public Universe getUniverse() {
+		// TODO Auto-generated method stub
+		return this.universe;
+	}
+	
+	
 }

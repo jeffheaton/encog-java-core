@@ -14,4 +14,8 @@ public interface CARunner {
 
 	void reset();
 
+	boolean isRunning();
+
+	Object getUniverse();
+
 }

@@ -6,7 +6,7 @@ import org.encog.ca.program.basic.Movement;
 import org.encog.ca.universe.Universe;
 import org.encog.ca.universe.UniverseCell;
 
-public class ConwayProgram extends BasicProgram implements CAProgram {
+public class ConwayProgram extends BasicProgram {
 	
 	public ConwayProgram(Universe theSourceUniverse) {
 		super(Movement.MOVE_8WAY);

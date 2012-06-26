@@ -278,6 +278,16 @@ public final class PersistConst {
 	 * Sums
 	 */
 	public static final String SUMS = "sums";
+
+	public static final String ROWS = "rows";
+	
+	public static final String COLS = "cols";
+
+	public static final String MAX = "max";
+	
+	public static final String MIN = "min";
+	
+	public static final String SIZE = "size";
 	
 	/**
 	 * Private constructor.

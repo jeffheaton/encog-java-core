@@ -49,4 +49,9 @@ public class BasicDiscreteCell implements DiscreteCell {
 	public void set(int i, double d) {
 		this.data[i] = (int)d;		
 	}
+
+	@Override
+	public int size() {
+		return this.data.length;
+	}
 }

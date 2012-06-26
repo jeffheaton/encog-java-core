@@ -4,10 +4,12 @@ import org.encog.ca.CellularAutomataError;
 import org.encog.ca.universe.Universe;
 import org.encog.ca.universe.UniverseCell;
 import org.encog.ca.universe.UniverseCellFactory;
+import org.encog.ml.BasicML;
 
-public class BasicUniverse implements Universe {
-	private UniverseCell[][] data;
-	private UniverseCellFactory cellFactory;
+public class BasicUniverse extends BasicML implements Universe {
+	public static final String ELEMENT_COUNT = "elementCount";
+	private final UniverseCell[][] data;
+	private final UniverseCellFactory cellFactory;
 	
 	public BasicUniverse(int height, int width, UniverseCellFactory theCellFactory)
 	{
@@ -18,10 +20,6 @@ public class BasicUniverse implements Universe {
 				this.data[row][col] = this.cellFactory.factor();
 			}
 		}
-	}
-	
-	public void init(boolean discrete) {
-		
 	}
 	
 	public Object clone() {
@@ -94,5 +92,17 @@ public class BasicUniverse implements Universe {
 			return false;
 		}
 		return true;
+	}
+	
+	
+
+	public UniverseCellFactory getCellFactory() {
+		return cellFactory;
+	}
+
+	@Override
+	public void updateProperties() {
+		// TODO Auto-generated method stub
+		
 	}
 }

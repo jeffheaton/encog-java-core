@@ -43,4 +43,22 @@ public class BasicCellFactory implements UniverseCellFactory {
 		}		
 	}
 
+	public int getSize() {
+		return size;
+	}
+
+	public double getMin() {
+		return min;
+	}
+
+	public double getMax() {
+		return max;
+	}
+
+	public int getElementCount() {
+		return elementCount;
+	}
+	
+	
+
 }

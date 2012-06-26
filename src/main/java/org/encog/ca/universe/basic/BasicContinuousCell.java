@@ -51,5 +51,10 @@ public class BasicContinuousCell implements ContinuousCell {
 	public void set(int i, double d) {
 		this.data[i] = d;		
 	}
+
+	@Override
+	public int size() {
+		return this.data.length;
+	}
 	
 }
