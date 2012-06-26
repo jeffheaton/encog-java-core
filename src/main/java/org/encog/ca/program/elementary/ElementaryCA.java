@@ -15,6 +15,7 @@ public class ElementaryCA extends BasicProgram {
 	public ElementaryCA(Universe theUniverse, int theRule) {
 		super(Movement.MOVE_2WAY);
 		this.sourceUniverse = theUniverse;
+		this.targetUniverse = theUniverse;
 		this.rule = theRule;
 		this.currentRow = 1;
 		
