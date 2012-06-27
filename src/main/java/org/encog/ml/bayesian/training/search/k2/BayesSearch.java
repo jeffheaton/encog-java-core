@@ -27,7 +27,22 @@ import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.bayesian.training.TrainBayesian;
 import org.encog.ml.data.MLDataSet;
 
+/**
+ * Search for a good Bayes structure.
+ *
+ */
 public interface BayesSearch {
+	/**
+	 * Init the search object.
+	 * @param theTrainer The trainer to use.
+	 * @param theNetwork The network to use
+	 * @param theData The data to use.
+	 */
 	void init(TrainBayesian theTrainer, BayesianNetwork theNetwork, MLDataSet theData);
+	
+	/**
+	 * Perform an iteration.
+	 * @return True to continue.
+	 */
 	boolean iteration();
 }

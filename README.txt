@@ -1,4 +1,4 @@
-Encog 3.1
+Encog 3.2
 
 The following links will be helpful getting started with Encog.
 

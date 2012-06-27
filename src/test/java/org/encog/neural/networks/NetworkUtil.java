@@ -59,7 +59,7 @@ public class NetworkUtil {
         network.addLayer(new BasicLayer(new ActivationSigmoid(),false,3));
         network.addLayer(new BasicLayer(null,false,1));
         network.getStructure().finalizeStructure();
-        (new NguyenWidrowRandomizer(-1,1)).randomize( network );
+        (new NguyenWidrowRandomizer()).randomize( network );
         
         return network;
     }

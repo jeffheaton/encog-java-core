@@ -176,6 +176,12 @@ public class EncogReadHelper {
 
 	}
 
+	/**
+	 * Called internally to read a large array.
+	 * @param line The line containing the beginning of a large array.
+	 * @return The array read.
+	 * @throws IOException Thrown if an error occurs.
+	 */
 	private double[] readLargeArray(String line) throws IOException {
 		String str = line.substring(9);
 		int l = Integer.parseInt(str);

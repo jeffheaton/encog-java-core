@@ -43,7 +43,14 @@ import org.encog.util.kmeans.KMeansUtil;
  */
 public class KMeansClustering implements MLClustering {
 
+	/**
+	 * The kmeans utility.
+	 */
 	private KMeansUtil<BasicMLDataPair> kmeans;
+	
+	/**
+	 * The clusters
+	 */
 	private MLCluster[] clusters;
 	private int k;
 
@@ -92,12 +99,18 @@ public class KMeansClustering implements MLClustering {
 	}
 
 
+	/**
+	 * @return The clusters.
+	 */
 	@Override
 	public MLCluster[] getClusters() {
 		return this.clusters;
 	}
 
 
+	/**
+	 * @return The number of clusters.
+	 */
 	@Override
 	public int numClusters() {
 		return this.k;

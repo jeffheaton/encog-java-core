@@ -27,7 +27,22 @@ import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.bayesian.training.TrainBayesian;
 import org.encog.ml.data.MLDataSet;
 
+/**
+ * An estimator is used during Bayesian training to determine optimal probability values.
+ */
 public interface BayesEstimator {
+	
+	/**
+	 * Init the estimator.
+	 * @param theTrainer The trainer.
+	 * @param theNetwork The network.
+	 * @param theData The data.
+	 */
 	void init(TrainBayesian theTrainer ,BayesianNetwork theNetwork, MLDataSet theData);	
+	
+	/**
+	 * Perform an iteration.
+	 * @return True, if we should contune.
+	 */
 	boolean iteration();
 }

@@ -51,7 +51,9 @@ public class BasicMLComplexData implements MLComplexData {
 	 */
 	public BasicMLComplexData(final double[] d) {
 		this(d.length);
-		System.arraycopy(d, 0, this.data, 0, d.length);
+		for(int i=0;i<this.data.length;i++) {
+			this.data[i] = new ComplexNumber(d[i],0);
+		}
 	}
 
 	/**
@@ -234,6 +236,10 @@ public class BasicMLComplexData implements MLComplexData {
 		return builder.toString();
 	}
 
+	/**
+	 * Not supported.
+	 * @return Nothing.
+	 */
 	@Override
 	public Centroid<MLData> createCentroid() {
 		return null;

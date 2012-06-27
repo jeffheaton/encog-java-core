@@ -48,15 +48,14 @@ public class BasicCluster implements MLCluster {
 	private BasicMLDataPairCentroid centroid;
 	
 	/**
-	 * The sum square.
-	 */
-	private double sumSqr;
-	
-	/**
 	 * The contents of the cluster.
 	 */
 	private final List<MLData> data = new ArrayList<MLData>();
 
+	/**
+	 * Construct a cluster from another.
+	 * @param cluster The other cluster.
+	 */
 	public BasicCluster(Cluster<BasicMLDataPair> cluster) {
 		this.centroid = (BasicMLDataPairCentroid)cluster.centroid();
 		for(MLDataPair pair : cluster.getContents()) {
@@ -99,7 +98,7 @@ public class BasicCluster implements MLCluster {
 	/**
 	 * @return The centroid.
 	 */
-	public final Centroid getCentroid() {
+	public final Centroid<?> getCentroid() {
 		return this.centroid;
 	}
 
@@ -109,13 +108,6 @@ public class BasicCluster implements MLCluster {
 	@Override
 	public final List<MLData> getData() {
 		return this.data;
-	}
-
-	/**
-	 * @return The sum of squares.
-	 */
-	public final double getSumSqr() {
-		return this.sumSqr;
 	}
 
 	/**

@@ -140,14 +140,11 @@ public class PerformAnalysis {
 	 * @param target The Encog analyst object to analyze.
 	 */
 	public final void process(final EncogAnalyst target) {
+		int count = 0;
 		final CSVFormat csvFormat = ConvertStringConst
 				.convertToCSVFormat(this.format);
 		ReadCSV csv = new ReadCSV(this.filename, this.headers, csvFormat);
 		
-		if( !csv.next() ) {
-			throw new AnalystError("Can't analyze file, it is empty.");
-		}
-
 		// pass one, calculate the min/max
 		while (csv.next()) {
 			if (this.fields == null) {
@@ -157,7 +154,13 @@ public class PerformAnalysis {
 			for (int i = 0; i < csv.getColumnCount(); i++) {
 				this.fields[i].analyze1(csv.get(i));
 			}
+			count++;
 		}
+		
+		if( count==0 ) {
+			throw new AnalystError("Can't analyze file, it is empty.");
+		}
+
 
 		for (final AnalyzedField field : this.fields) {
 			field.completePass1();
@@ -202,11 +205,6 @@ public class PerformAnalysis {
 				}
 
 				if (!allowReal && field.isReal() && !field.isInteger()) {
-					field.setClass(false);
-				}
-
-				if (field.isInteger() 
-						&& (field.getAnalyzedClassMembers().size() <= 2)) {
 					field.setClass(false);
 				}
 			}

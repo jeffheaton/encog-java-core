@@ -96,7 +96,7 @@ public class CmdCreate extends Cmd {
 		if( obj instanceof BayesianNetwork ) {
 			final String query = getProp().getPropertyString(
 					ScriptProperties.ML_CONFIG_QUERY);
-			((BayesianNetwork)obj).defineClassificationStructure(query);
+			((BayesianNetwork)obj).defineClassificationStructure(query);			
 		}
 
 		EncogDirectoryPersistence.saveObject(resourceFile, obj);

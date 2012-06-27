@@ -30,6 +30,7 @@ import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLResettable;
+import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.folded.FoldedDataSet;
@@ -127,6 +128,7 @@ public class CmdTrain extends Cmd {
 		method = trainer.getMethod();
 		EncogDirectoryPersistence.saveObject(resourceFile, method);
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "save to:" + resourceID);
+		trainingSet.close();
 
 		return getAnalyst().shouldStopCommand();
 	}
@@ -215,14 +217,18 @@ public class CmdTrain extends Cmd {
 		getAnalyst().reportTrainingBegin();
 		final int maxIteration = getAnalyst().getMaxIteration();
 
-		do {
+		if (train.getImplementationType() == TrainingImplementationType.OnePass) {
 			train.iteration();
 			getAnalyst().reportTraining(train);
-		} while ((train.getError() > targetError)
-				&& !getAnalyst().shouldStopCommand()
-				&& !train.isTrainingDone()
-				&& ((maxIteration == -1) 
-				|| (train.getIteration() < maxIteration)));
+		} else {
+			do {
+				train.iteration();
+				getAnalyst().reportTraining(train);
+			} while ((train.getError() > targetError)
+					&& !getAnalyst().shouldStopCommand()
+					&& !train.isTrainingDone()
+					&& ((maxIteration == -1) || (train.getIteration() < maxIteration)));
+		}
 		train.finishTraining();
 
 		getAnalyst().reportTrainingEnd();

@@ -24,10 +24,6 @@
 package org.encog.util;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.UUID;
-
-import org.encog.EncogError;
 
 /**
  * Based on code from:
@@ -69,6 +65,12 @@ public class TempDir {
 	    fileOrDir.delete();
 	}
 
+	public void clearContents() {
+		for(File innerFile: this.tempdir.listFiles()) {
+			innerFile.delete();
+		}
+	}
+	
 	
 	public void dispose() {
 		//recursiveDelete(this.tempdir);

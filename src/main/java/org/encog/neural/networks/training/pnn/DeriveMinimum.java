@@ -25,6 +25,7 @@ package org.encog.neural.networks.training.pnn;
 
 import org.encog.Encog;
 import org.encog.util.EngineArray;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * This class determines optimal values for multiple sigmas in a PNN kernel.
@@ -90,11 +91,14 @@ public class DeriveMinimum {
 		int poorCJ = 0;
 
 		// Main loop
-		for (int iteration = 0; iteration < maxIterations; iteration++) {
-
+		for (int iteration = 0; iteration < maxIterations; iteration++) {			
+			
 			if (fbest < maxError) {
 				break;
 			}
+			
+			EncogLogging.log(EncogLogging.LEVEL_INFO,
+					"Beginning internal Iteration #" + iteration + ", currentError=" + fbest + ",target=" + maxError);
 
 			// Check for convergence
 			if (prevBest <= 1.0) {
@@ -166,9 +170,7 @@ public class DeriveMinimum {
 					}
 					fbest = globalMinimum.getY2();
 				} else {
-					for (int i = 0; i < n; i++) {
-						x[i] = base[i];
-					}
+					System.arraycopy(base, 0, x, 0, n);
 				}
 				break;
 			}
@@ -250,8 +252,8 @@ public class DeriveMinimum {
 			final double[] h, final double[] grad) {
 		int i;
 
+		System.arraycopy(grad, 0, g, 0, n);
 		for (i = 0; i < n; i++) {
-			g[i] = grad[i];
 			grad[i] = h[i] = g[i] + gam * h[i];
 		}
 	}

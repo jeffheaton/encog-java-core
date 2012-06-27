@@ -319,6 +319,7 @@ public class EncogEGBFile {
 				this.fc.close();
 				this.fc = null;
 			}
+			System.gc();
 		} catch (final IOException ex) {
 			throw new BufferedDataError(ex);
 		}
@@ -342,6 +343,7 @@ public class EncogEGBFile {
 
 			this.file.delete();
 			this.raf = new RandomAccessFile(this.file, "rw");
+			this.raf.setLength(0);
 			this.fc = this.raf.getChannel();
 
 			this.headerBuffer.clear();

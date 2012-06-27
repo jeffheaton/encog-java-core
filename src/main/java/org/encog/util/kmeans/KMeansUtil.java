@@ -27,16 +27,38 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Generic KMeans clustering object.
+ *
+ * @param <K> The type to cluster.
+ */
 public class KMeansUtil<K extends CentroidFactory<? super K>> {
+	
+	/**
+	 * The clusters.
+	 */
 	private final ArrayList<Cluster<K>> clusters;
+	
+	/**
+	 * The number of clusters.
+	 */
 	private final int k;
 
+	/**
+	 * Construct the clusters.  Call process to perform the cluster.
+	 * @param theK The number of clusters.
+	 * @param theElements The elements to cluster.
+	 */
 	public KMeansUtil(int theK, List<? extends K> theElements) {
 		this.k = theK;
 		clusters = new ArrayList<Cluster<K>>(theK);
 		initRandomClusters(theElements);
 	}
 
+	/**
+	 * Create random clusters.
+	 * @param elements The elements to cluster.
+	 */
 	private void initRandomClusters(List<? extends K> elements) {
 
 		int clusterIndex = 0;
@@ -91,6 +113,9 @@ public class KMeansUtil<K extends CentroidFactory<? super K>> {
 
 	}
 
+	/**
+	 * Perform the cluster.
+	 */
 	public void process() {
 
 		boolean done;
@@ -120,6 +145,11 @@ public class KMeansUtil<K extends CentroidFactory<? super K>> {
 		} while (!done);
 	}
 
+	/**
+	 * Find the nearest cluster to the element.
+	 * @param element The element.
+	 * @return The nearest cluster.
+	 */
 	private Cluster<K> nearestCluster(K element) {
 		double distance = Double.MAX_VALUE;
 		Cluster<K> result = null;
@@ -136,14 +166,27 @@ public class KMeansUtil<K extends CentroidFactory<? super K>> {
 		return result;
 	}
 
+	/**
+	 * Get a cluster by index.
+	 * @param index The index to get.
+	 * @return The cluster.
+	 */
 	public Collection<K> get(int index) {
 		return clusters.get(index).getContents();
 	}
 
+	/**
+	 * @return The number of clusters.
+	 */
 	public int size() {
 		return clusters.size();
 	}
 
+	/**
+	 * Get a cluster by index.
+	 * @param index The index to get.
+	 * @return The cluster.
+	 */
 	public Cluster<K> getCluster(int i) {
 		return this.clusters.get(i);
 	}

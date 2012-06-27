@@ -28,6 +28,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.Encog;
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.AnalystFileFormat;
 import org.encog.app.analyst.AnalystGoal;
@@ -73,12 +74,12 @@ public class AnalystWizard {
 	 * The default training percent.
 	 */
 	public static final int DEFAULT_TRAIN_PERCENT = 75;
-	
+
 	/**
 	 * The default evaluation percent.
 	 */
 	public static final int DEFAULT_EVAL_PERCENT = 25;
-	
+
 	/**
 	 * The default training error.
 	 */
@@ -88,52 +89,52 @@ public class AnalystWizard {
 	 * The raw file.
 	 */
 	public static final String FILE_RAW = "FILE_RAW";
-	
+
 	/**
 	 * The normalized file.
 	 */
 	public static final String FILE_NORMALIZE = "FILE_NORMALIZE";
-	
+
 	/**
 	 * The randomized file.
 	 */
 	public static final String FILE_RANDOM = "FILE_RANDOMIZE";
-	
+
 	/**
 	 * The training file.
 	 */
 	public static final String FILE_TRAIN = "FILE_TRAIN";
-	
+
 	/**
 	 * The evaluation file.
 	 */
 	public static final String FILE_EVAL = "FILE_EVAL";
-	
+
 	/**
 	 * The eval file normalization file.
 	 */
 	public static final String FILE_EVAL_NORM = "FILE_EVAL_NORM";
-	
+
 	/**
 	 * The training set.
 	 */
 	public static final String FILE_TRAINSET = "FILE_TRAINSET";
-	
+
 	/**
 	 * The machine learning file.
 	 */
 	public static final String FILE_ML = "FILE_ML";
-	
+
 	/**
 	 * The output file.
 	 */
 	public static final String FILE_OUTPUT = "FILE_OUTPUT";
-	
+
 	/**
 	 * The balanced file.
 	 */
 	public static final String FILE_BALANCE = "FILE_BALANCE";
-	
+
 	/**
 	 * The clustered file.
 	 */
@@ -143,52 +144,52 @@ public class AnalystWizard {
 	 * The raw filename.
 	 */
 	private String filenameRaw;
-	
+
 	/**
 	 * The normalized filename.
 	 */
 	private String filenameNorm;
-	
+
 	/**
 	 * The random file name.
 	 */
 	private String filenameRandom;
-	
+
 	/**
 	 * The training filename.
 	 */
 	private String filenameTrain;
-	
+
 	/**
 	 * The evaluation filename.
 	 */
 	private String filenameEval;
-	
+
 	/**
 	 * The normalization eval file name.
 	 */
 	private String filenameEvalNorm;
-	
+
 	/**
 	 * The training set filename.
 	 */
 	private String filenameTrainSet;
-	
+
 	/**
 	 * The machine learning file name.
 	 */
 	private String filenameML;
-	
+
 	/**
 	 * The output filename.
 	 */
 	private String filenameOutput;
-	
+
 	/**
 	 * The balance filename.
 	 */
 	private String filenameBalance;
-	
+
 	/**
 	 * The cluster filename.
 	 */
@@ -198,96 +199,100 @@ public class AnalystWizard {
 	 * The analyst script.
 	 */
 	private final AnalystScript script;
-	
+
 	/**
 	 * The analyst.
 	 */
 	private final EncogAnalyst analyst;
-	
+
 	/**
 	 * The machine learning method that we will be using.
 	 */
 	private WizardMethodType methodType;
-		
+
 	/**
 	 * Are we using single-field(direct) classification.
 	 */
 	private boolean directClassification = false;
-	
+
 	/**
 	 * The target field, or "" to detect.
 	 */
-	private String targetField;
-	
+	private AnalystField targetField;
+
 	/**
 	 * The analyst goal.
 	 */
 	private AnalystGoal goal;
-	
+
 	/**
 	 * The size of the lag window, if we are doing time-series.
 	 */
 	private int lagWindowSize;
-	
+
 	/**
 	 * The size of the lead window, if we are doing time-series.
 	 */
 	private int leadWindowSize;
-	
+
 	/**
 	 * Should the target field be included in the input, if we are doing 
 	 * time-series.
 	 */
 	private boolean includeTargetField;
-	
+
 	/**
 	 * True if we are doing time-series.
 	 */
 	private boolean timeSeries;
-	
+
 	/**
 	 * True if the segregate command should be generated.
 	 */
 	private boolean taskSegregate = true;
-	
+
 	/**
 	 * True if the randomize command should be generated.
 	 */
 	private boolean taskRandomize = true;
-	
+
 	/**
 	 * True if the normalize command should be generated.
 	 */
 	private boolean taskNormalize = true;
-	
+
 	/**
 	 * True if the balance command should be generated.
 	 */
 	private boolean taskBalance = false;
-	
+
 	/**
 	 * True if the cluster command should be generated.
 	 */
 	private boolean taskCluster = true;
-	
+
 	/**
 	 * The normalization range.
 	 */
 	private NormalizeRange range = NormalizeRange.NegOne2One;
-	
+
 	/**
 	 * What to do with missing values.
 	 */
 	private HandleMissingValues missing = new DiscardMissing();
-	
+
 	/**
 	 * The format being used.
 	 */
 	private AnalystFileFormat format;
-	
+
 	private boolean naiveBayes = false;
-	
+
 	private int evidenceSegements = 3;
+
+	private double maxError = DEFAULT_TRAIN_ERROR;
+
+	private String targetFieldName;
 
 	/**
 	 * Construct the analyst wizard.
@@ -297,7 +302,7 @@ public class AnalystWizard {
 		this.analyst = theAnalyst;
 		this.script = analyst.getScript();
 		this.methodType = WizardMethodType.FeedForward;
-		this.targetField = "";
+		this.targetField = null;
 		this.goal = AnalystGoal.Classification;
 		this.leadWindowSize = 0;
 		this.lagWindowSize = 0;
@@ -327,7 +332,8 @@ public class AnalystWizard {
 		this.directClassification = false;
 
 		if ((this.methodType == WizardMethodType.SVM)
-				|| (this.methodType == WizardMethodType.SOM)) {
+				|| (this.methodType == WizardMethodType.SOM)
+				|| (this.methodType == WizardMethodType.PNN)) {
 			this.directClassification = true;
 		}
 	}
@@ -339,7 +345,7 @@ public class AnalystWizard {
 		final List<AnalystField> fields = this.script.getNormalize()
 				.getNormalizedFields();
 
-		if (this.targetField.trim().length() == 0) {
+		if (this.targetFieldName == null || this.targetFieldName.length()==0 ) {
 			boolean success = false;
 
 			if (this.goal == AnalystGoal.Classification) {
@@ -348,7 +354,7 @@ public class AnalystWizard {
 					final DataField df = this.script.findDataField(field
 							.getName());
 					if (field.getAction().isClassify() && df.isClass()) {
-						this.targetField = field.getName();
+						this.targetField = field;
 						success = true;
 					}
 				}
@@ -356,10 +362,10 @@ public class AnalystWizard {
 
 				// otherwise, just return the last regression field
 				for (final AnalystField field : fields) {
-					final DataField df = this.script.findDataField(field
-							.getName());
+					final DataField df = this.script
+							.findDataField(field.getName());
 					if (!df.isClass() && (df.isReal() || df.isInteger())) {
-						this.targetField = field.getName();
+						this.targetField = field;
 						success = true;
 					}
 				}
@@ -367,12 +373,13 @@ public class AnalystWizard {
 
 			if (!success) {
 				throw new AnalystError(
-						"Can't determine target field automatically, " 
-					+ "please specify one.\nThis can also happen if you " 
-						+ "specified the wrong file format.");
+						"Can't determine target field automatically, "
+								+ "please specify one.\nThis can also happen if you "
+								+ "specified the wrong file format.");
 			}
 		} else {
-			if (this.script.findDataField(this.targetField) == null) {
+			this.targetField = this.script.findAnalystField(this.targetFieldName); 
+			if ( this.targetField == null) {
 				throw new AnalystError("Invalid target field: "
 						+ this.targetField);
 			}
@@ -384,9 +391,9 @@ public class AnalystWizard {
 		if (!this.timeSeries && this.taskBalance) {
 			this.script.getProperties().setProperty(
 					ScriptProperties.BALANCE_CONFIG_BALANCE_FIELD,
-					this.targetField);
+					this.targetField.getName());
 			final DataField field = this.analyst.getScript().findDataField(
-					this.targetField);
+					this.targetField.getName());
 			if ((field != null) && field.isClass()) {
 				final int countPer = field.getMinClassCount();
 				this.script.getProperties().setProperty(
@@ -401,7 +408,7 @@ public class AnalystWizard {
 			for (final AnalystField field : this.analyst.getScript()
 					.getNormalize().getNormalizedFields()) {
 				if ((field.getAction() != NormalizationAction.Ignore)
-						&& field.getName().equalsIgnoreCase(this.targetField)) {
+						&& field == this.targetField) {
 					if ((af == null)
 							|| (af.getTimeSlice() < field.getTimeSlice())) {
 						af = field;
@@ -416,13 +423,13 @@ public class AnalystWizard {
 
 		// set the clusters count
 		if (this.taskCluster) {
-			if ((this.targetField.length() == 0)
+			if ((this.targetField == null)
 					|| (this.goal != AnalystGoal.Classification)) {
 				this.script.getProperties().setProperty(
 						ScriptProperties.CLUSTER_CONFIG_CLUSTERS, 2);
 			} else {
-				final DataField tf = this.script
-						.findDataField(this.targetField);
+				final DataField tf = this.script.findDataField(this.targetField
+						.getName());
 				this.script.getProperties().setProperty(
 						ScriptProperties.CLUSTER_CONFIG_CLUSTERS,
 						tf.getClassMembers().size());
@@ -506,9 +513,9 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				"rprop");
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_TRAIN_TARGET_ERROR, DEFAULT_TRAIN_ERROR);
+				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
 	}
-	
+
 	/**
 	 * Generate a Bayesian network machine learning method.
 	 * @param inputColumns The input column count.
@@ -516,60 +523,79 @@ public class AnalystWizard {
 	 */
 	private void generateBayesian(final int inputColumns,
 			final int outputColumns) {
-		
+
 		int segment = this.evidenceSegements;
 		
+		if( !this.targetField.isClassify() ) {
+			throw new AnalystError("Bayesian networks cannot be used for regression.");
+		}
+
 		StringBuilder a = new StringBuilder();
-		for( DataField field: this.analyst.getScript().getFields()) {
+		for (DataField field : this.analyst.getScript().getFields()) {
 			a.append("P(");
 			a.append(field.getName());
-			
+
 			// handle actual class members
-			if( field.getClassMembers().size()>0 ) {
+			if (field.getClassMembers().size() > 0) {
 				a.append("[");
 				boolean first = true;
-				for( AnalystClassItem item : field.getClassMembers()) {
-					if(!first) {
+				for (AnalystClassItem item : field.getClassMembers()) {
+					if (!first) {
 						a.append(",");
 					}
 					a.append(item.getCode());
 					first = false;
 				}
+				
+				// append a "fake" member, if there is only one
+				if( field.getClassMembers().size()==1 ) {
+					a.append(",Other0");
+				}
+				
 				a.append("]");
 			} else {
 				a.append("[");
 				// handle ranges
-				double size = field.getMax() - field.getMin();
+				double size = Math.abs(field.getMax() - field.getMin());
 				double per = size / segment;
-				
-				boolean first = true;
-				for(int i=0;i<segment;i++) {
-					if( !first ) {
-						a.append(",");
-					}					
-					double low = field.getMin()+(per*i);
-					double hi = i==(segment-1)?(field.getMax()):(low+per);
-					a.append("Type");
-					a.append(i);
-					a.append(":");
-					a.append(CSVFormat.EG_FORMAT.format(low, 4));
-					a.append(" to ");
-					a.append(CSVFormat.EG_FORMAT.format(hi, 4));
-					first = false;					
+
+				if (size < Encog.DEFAULT_DOUBLE_EQUAL) {
+					double low = field.getMin() - 0.0001;
+					double hi = field.getMin() + 0.0001;
+					a.append("BELOW: " + (low - 100) + " to " + hi + ",");
+					a.append("Type0: " + low + " to " + hi + ",");
+					a.append("ABOVE: " + hi + " to " + (hi + 100));
+				} else {
+					boolean first = true;
+					for (int i = 0; i < segment; i++) {
+						if (!first) {
+							a.append(",");
+						}
+						double low = field.getMin() + (per * i);
+						double hi = i == (segment - 1) ? (field.getMax())
+								: (low + per);
+						a.append("Type");
+						a.append(i);
+						a.append(":");
+						a.append(CSVFormat.EG_FORMAT.format(low, 16));
+						a.append(" to ");
+						a.append(CSVFormat.EG_FORMAT.format(hi, 16));
+						first = false;
+					}
 				}
 				a.append("]");
-			}			
-			
+			}
+
 			a.append(") ");
 		}
-		
+
 		StringBuilder q = new StringBuilder();
 		q.append("P(");
-		q.append(this.targetField);
+		q.append(this.targetField.getName());
 		q.append("|");
 		boolean first = true;
-		for( DataField field: this.analyst.getScript().getFields()) {
-			if (!field.getName().equals(this.targetField)) {
+		for (DataField field : this.analyst.getScript().getFields()) {
+			if (!field.getName().equals(this.targetField.getName())) {
 				if (!first) {
 					q.append(",");
 				}
@@ -578,30 +604,31 @@ public class AnalystWizard {
 			}
 		}
 		q.append(")");
-		
+
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_TYPE,
-				MLMethodFactory.TYPE_BAYESIAN);
-		
+				ScriptProperties.ML_CONFIG_TYPE, MLMethodFactory.TYPE_BAYESIAN);
+
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_ARCHITECTURE,
-				a.toString());
-		
-		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_QUERY, q.toString());
+				ScriptProperties.ML_CONFIG_ARCHITECTURE, a.toString());
+
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_QUERY, q.toString());
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				"bayesian");
-		
-		if( this.naiveBayes ) {
-			this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_ARGUMENTS,
-				"maxParents=1,estimator=simple,search=none,init=naive");
+
+		if (this.naiveBayes) {
+			this.script.getProperties().setProperty(
+					ScriptProperties.ML_TRAIN_ARGUMENTS,
+					"maxParents=1,estimator=simple,search=none,init=naive");
 		} else {
-			this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_ARGUMENTS,
-				"maxParents=1,estimator=simple,search=k2,init=naive");	
+			this.script.getProperties().setProperty(
+					ScriptProperties.ML_TRAIN_ARGUMENTS,
+					"maxParents=1,estimator=simple,search=k2,init=naive");
 		}
-		
+
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_TRAIN_TARGET_ERROR, DEFAULT_TRAIN_ERROR);
+				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
 	}
 
 	/**
@@ -655,11 +682,10 @@ public class AnalystWizard {
 			p.setFilename(AnalystWizard.FILE_BALANCE, this.filenameBalance);
 		}
 
-		
 		p.setFilename(AnalystWizard.FILE_TRAINSET, this.filenameTrainSet);
 		p.setFilename(AnalystWizard.FILE_ML, this.filenameML);
 		p.setFilename(AnalystWizard.FILE_OUTPUT, this.filenameOutput);
-			
+
 	}
 
 	/**
@@ -695,6 +721,9 @@ public class AnalystWizard {
 		case SOM:
 			generateSOM(inputColumns);
 			break;
+		case PNN:
+			generatePNN(inputColumns, idealColumns);
+			break;
 		default:
 			throw new AnalystError("Unknown method type");
 		}
@@ -715,12 +744,14 @@ public class AnalystWizard {
 			NormalizationAction action;
 			final boolean isLast = i == this.script.getFields().length - 1;
 
-			if( this.methodType == WizardMethodType.BayesianNetwork ) {
+			if (this.methodType == WizardMethodType.BayesianNetwork) {
 				AnalystField af;
-				if( f.isClass() ) {
-					af = new AnalystField(f.getName(), NormalizationAction.SingleField, 0, 0);
+				if (f.isClass()) {
+					af = new AnalystField(f.getName(),
+							NormalizationAction.SingleField, 0, 0);
 				} else {
-					af = new AnalystField(f.getName(), NormalizationAction.PassThrough, 0, 0);
+					af = new AnalystField(f.getName(),
+							NormalizationAction.PassThrough, 0, 0);
 				}
 				norm.add(af);
 			} else if ((f.isInteger() || f.isReal()) && !f.isClass()) {
@@ -728,7 +759,7 @@ public class AnalystWizard {
 				AnalystField af;
 				if (this.range == NormalizeRange.NegOne2One) {
 					af = new AnalystField(f.getName(), action, 1, -1);
-				} else {					
+				} else {
 					af = new AnalystField(f.getName(), action, 1, 0);
 				}
 				norm.add(af);
@@ -779,8 +810,8 @@ public class AnalystWizard {
 					ScriptProperties.ML_TRAIN_TYPE, "svd");
 		}
 
-		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
-				DEFAULT_TRAIN_ERROR);
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
 	}
 
 	/**
@@ -788,16 +819,14 @@ public class AnalystWizard {
 	 */
 	private void generateSegregate() {
 		if (this.taskSegregate) {
-			final AnalystSegregateTarget[] array 
-				= new AnalystSegregateTarget[2];
-			array[0] = new AnalystSegregateTarget(
-					AnalystWizard.FILE_TRAIN, DEFAULT_TRAIN_PERCENT);
-			array[1] = new AnalystSegregateTarget(
-					AnalystWizard.FILE_EVAL, DEFAULT_EVAL_PERCENT);
+			final AnalystSegregateTarget[] array = new AnalystSegregateTarget[2];
+			array[0] = new AnalystSegregateTarget(AnalystWizard.FILE_TRAIN,
+					DEFAULT_TRAIN_PERCENT);
+			array[1] = new AnalystSegregateTarget(AnalystWizard.FILE_EVAL,
+					DEFAULT_EVAL_PERCENT);
 			this.script.getSegregate().setSegregateTargets(array);
 		} else {
-			final AnalystSegregateTarget[] array 
-				= new AnalystSegregateTarget[0];
+			final AnalystSegregateTarget[] array = new AnalystSegregateTarget[0];
 			this.script.getSegregate().setSegregateTargets(array);
 		}
 	}
@@ -809,12 +838,11 @@ public class AnalystWizard {
 
 		String target;
 		String evalSource;
-		
+
 		// starting point
 		target = AnalystWizard.FILE_RAW;
 		this.script.getProperties().setProperty(
-				ScriptProperties.HEADER_DATASOURCE_RAW_FILE,
-				target);
+				ScriptProperties.HEADER_DATASOURCE_RAW_FILE, target);
 
 		// randomize
 		if (!this.timeSeries && this.taskRandomize) {
@@ -823,8 +851,7 @@ public class AnalystWizard {
 					AnalystWizard.FILE_RAW);
 			target = AnalystWizard.FILE_RANDOM;
 			this.script.getProperties().setProperty(
-					ScriptProperties.RANDOMIZE_CONFIG_TARGET_FILE,
-					target);
+					ScriptProperties.RANDOMIZE_CONFIG_TARGET_FILE, target);
 		}
 
 		// balance
@@ -833,8 +860,7 @@ public class AnalystWizard {
 					ScriptProperties.BALANCE_CONFIG_SOURCE_FILE, target);
 			target = AnalystWizard.FILE_BALANCE;
 			this.script.getProperties().setProperty(
-					ScriptProperties.BALANCE_CONFIG_TARGET_FILE,
-					target);
+					ScriptProperties.BALANCE_CONFIG_TARGET_FILE, target);
 		}
 
 		// segregate
@@ -851,7 +877,7 @@ public class AnalystWizard {
 			target = AnalystWizard.FILE_NORMALIZE;
 			this.script.getProperties().setProperty(
 					ScriptProperties.NORMALIZE_CONFIG_TARGET_FILE, target);
-			
+
 			this.script.getNormalize().setMissingValues(this.missing);
 		}
 
@@ -860,12 +886,11 @@ public class AnalystWizard {
 		} else {
 			evalSource = target;
 		}
-		
+
 		// cluster
 		if (this.taskCluster) {
 			this.script.getProperties().setProperty(
-					ScriptProperties.CLUSTER_CONFIG_SOURCE_FILE,
-					evalSource);
+					ScriptProperties.CLUSTER_CONFIG_SOURCE_FILE, evalSource);
 			this.script.getProperties().setProperty(
 					ScriptProperties.CLUSTER_CONFIG_TARGET_FILE,
 					AnalystWizard.FILE_CLUSTER);
@@ -896,8 +921,7 @@ public class AnalystWizard {
 
 		// other
 		this.script.getProperties().setProperty(
-				ScriptProperties.SETUP_CONFIG_CSV_FORMAT,
-				format);
+				ScriptProperties.SETUP_CONFIG_CSV_FORMAT, format);
 	}
 
 	/**
@@ -905,21 +929,26 @@ public class AnalystWizard {
 	 * @param inputColumns The number of input columns.
 	 */
 	private void generateSOM(final int inputColumns) {
+		
+		if( !this.targetField.isClassify() ) {
+			throw new AnalystError("SOM cannot be used for regression.");
+		}
+		
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_TYPE, MLMethodFactory.TYPE_SOM);
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_ARCHITECTURE, "?->?");
+				ScriptProperties.ML_CONFIG_ARCHITECTURE, "?->" + this.targetField.getClasses().size());
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				MLTrainFactory.TYPE_SOM_NEIGHBORHOOD);
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_TRAIN_ARGUMENTS, 
+				ScriptProperties.ML_TRAIN_ARGUMENTS,
 				"ITERATIONS=1000,NEIGHBORHOOD=rbf1d,RBF_TYPE=gaussian");
 
 		// ScriptProperties.ML_TRAIN_arguments
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_TRAIN_TARGET_ERROR, DEFAULT_TRAIN_ERROR);
-	}
+				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
+	}	
 
 	/**
 	 * Generate a SVM machine learning method.
@@ -927,7 +956,7 @@ public class AnalystWizard {
 	 * @param outputColumns The number of ideal columns.
 	 */
 	private void generateSVM(final int inputColumns, final int outputColumns) {
-		
+
 		StringBuilder arch = new StringBuilder();
 		arch.append("?->");
 		if (this.goal == AnalystGoal.Classification) {
@@ -936,18 +965,44 @@ public class AnalystWizard {
 			arch.append("R");
 		}
 		arch.append("(type=new,kernel=rbf)->?");
-		
-		
+
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_TYPE, MLMethodFactory.TYPE_SVM);
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_ARCHITECTURE,
-				arch.toString());
+				ScriptProperties.ML_CONFIG_ARCHITECTURE, arch.toString());
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				MLTrainFactory.TYPE_SVM_SEARCH);
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_TRAIN_TARGET_ERROR, DEFAULT_TRAIN_ERROR);
+				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
+	}
+	
+	/**
+	 * Generate a PNN machine learning method.
+	 * @param inputColumns The number of input columns.
+	 * @param outputColumns The number of ideal columns.
+	 */
+	private void generatePNN(final int inputColumns, final int outputColumns) {
+
+		StringBuilder arch = new StringBuilder();
+		arch.append("?->");
+		if (this.goal == AnalystGoal.Classification) {
+			arch.append("C");
+		} else {
+			arch.append("R");
+		}
+		arch.append("(kernel=gaussian)->");
+		arch.append(this.targetField.getClasses().size());
+
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_TYPE, MLMethodFactory.TYPE_PNN);
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_ARCHITECTURE, arch.toString());
+
+		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
+				MLTrainFactory.TYPE_PNN);
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
 	}
 
 	/**
@@ -1061,7 +1116,7 @@ public class AnalystWizard {
 	/**
 	 * @return Get the target field.
 	 */
-	public final String getTargetField() {
+	public final AnalystField getTargetField() {
 		return this.targetField;
 	}
 
@@ -1138,8 +1193,7 @@ public class AnalystWizard {
 	 * @param theIncludeTargetField
 	 *            the includeTargetField to set
 	 */
-	public final void setIncludeTargetField(
-			final boolean theIncludeTargetField) {
+	public final void setIncludeTargetField(final boolean theIncludeTargetField) {
 		this.includeTargetField = theIncludeTargetField;
 	}
 
@@ -1179,7 +1233,7 @@ public class AnalystWizard {
 	 * Set the target field.
 	 * @param theTargetField The target field.
 	 */
-	public final void setTargetField(final String theTargetField) {
+	public final void setTargetField(final AnalystField theTargetField) {
 		this.targetField = theTargetField;
 	}
 
@@ -1222,6 +1276,33 @@ public class AnalystWizard {
 	public final void setTaskSegregate(final boolean theTaskSegregate) {
 		this.taskSegregate = theTaskSegregate;
 	}
+	
+	public final void wizardRealTime(List<String> sourceData, File csvFile) 
+	{
+		this.script.setBasePath(csvFile.getParent());
+		this.script.getProperties().setProperty(
+				ScriptProperties.HEADER_DATASOURCE_SOURCE_HEADERS, true);
+		this.script.getProperties().setProperty(
+				ScriptProperties.HEADER_DATASOURCE_RAW_FILE, csvFile);
+
+		this.timeSeries = ((this.lagWindowSize > 0) || (this.leadWindowSize > 0));
+		this.format = AnalystFileFormat.DECPNT_COMMA;
+
+		determineClassification();
+		generateFilenames(csvFile);
+		generateSettings();
+		//this.analyst.analyze(csvFile, b, format);
+		generateNormalizedFields();
+		generateSegregate();
+
+		generateGenerate();
+
+		generateTasks();
+		if (this.timeSeries && (this.lagWindowSize > 0)
+				&& (this.leadWindowSize > 0)) {
+			expandTimeSlices();
+		}
+	}
 
 	/**
 	 * Analyze a file.
@@ -1232,13 +1313,13 @@ public class AnalystWizard {
 	public final void wizard(final File analyzeFile, final boolean b,
 			final AnalystFileFormat format) {
 
+		this.script.setBasePath(analyzeFile.getParent());
 		this.script.getProperties().setProperty(
 				ScriptProperties.HEADER_DATASOURCE_SOURCE_HEADERS, b);
 		this.script.getProperties().setProperty(
 				ScriptProperties.HEADER_DATASOURCE_RAW_FILE, analyzeFile);
 
-		this.timeSeries = ((this.lagWindowSize > 0) 
-				|| (this.leadWindowSize > 0));
+		this.timeSeries = ((this.lagWindowSize > 0) || (this.leadWindowSize > 0));
 		this.format = format;
 
 		determineClassification();
@@ -1270,7 +1351,7 @@ public class AnalystWizard {
 			final AnalystFileFormat format) {
 
 		this.script.setBasePath(saveFile.getParent());
-		
+
 		this.script.getProperties().setProperty(
 				ScriptProperties.HEADER_DATASOURCE_SOURCE_FILE, url);
 		this.script.getProperties().setProperty(
@@ -1328,7 +1409,17 @@ public class AnalystWizard {
 		this.evidenceSegements = evidenceSegements;
 	}
 
-	
+	public double getMaxError() {
+		return maxError;
+	}
+
+	public void setMaxError(double maxError) {
+		this.maxError = maxError;
+	}
+
+	public void setTargetField(String theTargetField) {
+		this.targetFieldName = theTargetField;
+
+	}
 
 }
-

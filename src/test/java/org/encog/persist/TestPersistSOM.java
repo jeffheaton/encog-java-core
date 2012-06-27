@@ -29,7 +29,6 @@ import java.io.IOException;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.encog.neural.art.ART1;
 import org.encog.neural.som.SOM;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;

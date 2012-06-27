@@ -27,27 +27,43 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.util.kmeans.Centroid;
 
+/**
+ * A centroid for BasicMLDataPair.
+ */
 public class BasicMLDataPairCentroid
 implements Centroid<MLDataPair>, Cloneable
 {	
+	/**
+	 * The value the centroid is based on.
+	 */
 	private BasicMLData value;
 	
+	/**
+	 * Construct the centroid.
+	 * @param o The pair to base the centroid on.
+	 */
 	public BasicMLDataPairCentroid(BasicMLDataPair o)
 	{
 		this.value = (BasicMLData) o.getInput().clone();
 	} 
 	
-
-	public void remove(MLDataPair d, 
-			int s)
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void remove(MLDataPair d)
 	{
 		double[] a = d.getInputArray();
 		
 		for (int i = 0; i < value.size(); i++)
 			value.setData(i,  
-				((value.getData(i) * s) - a[i]) / (s-1));
+				((value.getData(i) * value.size()) - a[i]) / (value.size()-1));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public double distance(MLDataPair d)
 	{
 		MLData diff = value.minus(d.getInput());
@@ -59,13 +75,15 @@ implements Centroid<MLDataPair>, Cloneable
 		return Math.sqrt(sum);
 	}
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void add(MLDataPair d, int s) 	{
+	public void add(MLDataPair d) 	{
 		double[] a = d.getInputArray();
 		
 		for (int i = 0; i < value.size(); i++)
 			value.setData(i,  
-				((value.getData(i) * s) + a[i]) / (s+1));
+				((value.getData(i) * value.size()) + a[i]) / (value.size()+1));
 	}
 }

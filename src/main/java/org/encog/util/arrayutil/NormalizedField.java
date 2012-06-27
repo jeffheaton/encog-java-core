@@ -23,6 +23,7 @@
  */
 package org.encog.util.arrayutil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,7 @@ import org.encog.util.csv.CSVFormat;
  * This object holds the normalization stats for a column. This includes the
  * actual and desired high-low range for this column.
  */
-public class NormalizedField {
+public class NormalizedField implements Serializable {
 	
 	/**
 	 * The actual high from the sample data.
@@ -490,6 +491,12 @@ public class NormalizedField {
 	 * @return The normalized value.
 	 */
 	public final double normalize(final double value) {
+		if( value>this.actualHigh ) {
+			return this.normalizedHigh;
+		} else if( value<this.actualLow ) {
+			return this.normalizedLow;
+		} 
+		else
 		return ((value - this.actualLow) / (this.actualHigh - this.actualLow))
 				* (this.normalizedHigh - this.normalizedLow)
 				+ this.normalizedLow;

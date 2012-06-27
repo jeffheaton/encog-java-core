@@ -29,6 +29,9 @@ import java.util.StringTokenizer;
 
 import org.encog.util.csv.CSVFormat;
 
+/**
+ * Holds a BIF definition.
+ */
 public class BIFDefinition {
 	private String forDefinition;
 	private final List<String> givenDefinitions = new ArrayList<String>();

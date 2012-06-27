@@ -99,9 +99,7 @@ public final class EngineArray {
 		final double[][] result = new double[source.length][source[0].length];
 
 		for (int row = 0; row < source.length; row++) {
-			for (int col = 0; col < source[0].length; col++) {
-				result[row][col] = source[row][col];
-			}
+			System.arraycopy(source[row], 0, result[row], 0, source[0].length);
 		}
 
 		return result;
@@ -359,7 +357,7 @@ public final class EngineArray {
 	public static double euclideanDistance(double[] p1, double[] p2) {
 		double sum = 0;
 		for(int i=0;i<p1.length;i++) {
-			double d = p1[0] - p2[0];
+			double d = p1[i] - p2[i];
 			sum+=d*d;
 		}
 		return Math.sqrt(sum);
@@ -394,5 +392,13 @@ public final class EngineArray {
 			result[i] = a[i] - b[i];
 		}
 		return result;
+	}
+
+	public static double mean(double[] data) {
+		double result = 0;
+		for(int i=0;i<data.length;i++) {
+			result+=(double)data[i];
+		}
+		return result/(double)data.length;
 	}
 }

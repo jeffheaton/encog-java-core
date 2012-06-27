@@ -23,7 +23,6 @@
  */
 package org.encog.util.normalize.target;
 
-import org.encog.util.EngineArray;
 import org.encog.util.normalize.DataNormalization;
 
 /**

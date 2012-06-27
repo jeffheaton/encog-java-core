@@ -27,7 +27,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.Encog;
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.genetic.population.Population;
@@ -100,11 +99,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	 * {@inheritDoc}
 	 */
 	public boolean equals(final Genome other) {
-		if( other==this )
-			return true;
-		else {
-			return Math.abs(other.getScore()-getScore())<Encog.DEFAULT_DOUBLE_EQUAL;
-		}
+		return compareTo(other)==0;
 	}
 
 	/**
@@ -113,18 +108,10 @@ public abstract class BasicGenome implements Genome, Serializable {
 	@Override
 	public final int compareTo(final Genome other) {
 
-		if( equals(other) ) {
-			return 0;
-		} else if (this.geneticAlgorithm.getCalculateScore().shouldMinimize()) {
-			if (getScore() > other.getScore()) {
-				return 1;
-			}
-			return -1;
+		if (this.geneticAlgorithm.getCalculateScore().shouldMinimize()) {
+			return Double.compare(getScore(), other.getScore());
 		} else {
-			if (getScore() > other.getScore()) {
-				return -1;
-			}
-			return 1;
+			return Double.compare(other.getScore(), getScore());
 		}
 	}
 	/**

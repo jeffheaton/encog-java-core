@@ -162,6 +162,8 @@ public class CSVFormat implements Serializable {
 		try {
 			if( str.equals("?")) { 
 				return Double.NaN;
+			} if( str.equalsIgnoreCase("NaN") ) {
+				return Double.NaN;
 			} else {
 				return this.numberFormatter.parse(str.trim()).doubleValue();
 			}

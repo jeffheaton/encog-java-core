@@ -63,6 +63,8 @@ public class AnalystNormalizeCSV extends BasicFile {
 		int outputIndex = 0;
 		for (final AnalystField stat : analyst.getScript().getNormalize()
 				.getNormalizedFields()) {
+			
+			stat.init();
 
 			if (stat.getAction() == NormalizationAction.Ignore) {
 				continue;

@@ -35,6 +35,7 @@ import org.encog.ml.factory.train.GeneticFactory;
 import org.encog.ml.factory.train.LMAFactory;
 import org.encog.ml.factory.train.ManhattanFactory;
 import org.encog.ml.factory.train.NeighborhoodSOMFactory;
+import org.encog.ml.factory.train.NelderMeadFactory;
 import org.encog.ml.factory.train.PNNTrainFactory;
 import org.encog.ml.factory.train.PSOFactory;
 import org.encog.ml.factory.train.QuickPropFactory;
@@ -89,6 +90,11 @@ public class SystemTrainingPlugin implements EncogPluginService1 {
 	 * The factory for simulated annealing.
 	 */
 	private final AnnealFactory annealFactory = new AnnealFactory();
+	
+	/**
+	 * Nelder Mead Factory.
+	 */
+	private final NelderMeadFactory nmFactory = new NelderMeadFactory();
 	
 	/**
 	 * The factory for neighborhood SOM.
@@ -210,6 +216,8 @@ public class SystemTrainingPlugin implements EncogPluginService1 {
 			return this.qpropFactory.create(method, training, args2);
 		} else if (MLTrainFactory.TYPE_BAYESIAN.equals(type) ) {
 			return this.bayesianFactory.create(method, training, args2);
+		} else if (MLTrainFactory.TYPE_NELDER_MEAD.equals(type) ) {
+			return this.nmFactory.create(method, training, args2);
 		} else if (MLTrainFactory.TYPE_PSO.equals(type) ) {
 			return this.psoFactory.create(method, training, args2);
 		}

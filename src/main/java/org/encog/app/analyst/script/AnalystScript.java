@@ -318,4 +318,13 @@ public class AnalystScript {
 	public final void setFields(final DataField[] theFields) {
 		this.fields = theFields;
 	}
+
+	public AnalystField findAnalystField(String fieldName) {
+		for(AnalystField field : this.normalize.getNormalizedFields() ) {
+			if( field.getName().equalsIgnoreCase(fieldName) ) {
+				return field;
+			}
+		}
+		return null;
+	}
 }

@@ -276,6 +276,9 @@ public class EnumerationQuery extends BasicQuery implements Serializable {
 		return !eof;
 	}
 	
+	/**
+	 * @return A clone of this object.
+	 */
 	public EnumerationQuery clone() {
 		return new EnumerationQuery(this.getNetwork());
 	}

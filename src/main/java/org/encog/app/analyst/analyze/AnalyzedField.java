@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.Encog;
 import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
@@ -199,9 +200,20 @@ public class AnalyzedField extends DataField {
 	public final DataField finalizeField() {
 		final DataField result = new DataField(getName());
 
+		// if max and min are the same, we are dealing with a zero-sized range,
+		// which will cause other issues.  This is caused by ever number in the
+		// column having exactly (or nearly exactly) the same value.  Provide a
+		// small range around that value so that every value in this column normalizes
+		// to the midpoint of the desired normalization range, typically 0 or 0.5.
+		if( Math.abs(getMax()-getMin())<Encog.DEFAULT_DOUBLE_EQUAL ) {
+			result.setMin(getMin()-0.0001);
+			result.setMax(getMin()+0.0001);
+		} else {
+			result.setMin(getMin());
+			result.setMax(getMax());			
+		} 
+		
 		result.setName(getName());
-		result.setMin(getMin());
-		result.setMax(getMax());
 		result.setMean(getMean());
 		result.setStandardDeviation(getStandardDeviation());
 		result.setInteger(isInteger());

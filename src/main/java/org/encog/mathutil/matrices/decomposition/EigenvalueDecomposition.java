@@ -23,6 +23,8 @@
  */
 package org.encog.mathutil.matrices.decomposition;
 
+import java.util.Arrays;
+
 import org.encog.mathutil.EncogMath;
 import org.encog.mathutil.matrices.Matrix;
 
@@ -55,7 +57,7 @@ public class EigenvalueDecomposition {
 	/**
 	 * Symmetry flag.
 	 */
-	private boolean issymmetric;
+	private final boolean issymmetric;
 
 	/**
 	 * Arrays for internal storage of eigenvalues.
@@ -105,18 +107,12 @@ public class EigenvalueDecomposition {
 		this.d = new double[this.n];
 		this.e = new double[this.n];
 
-		this.issymmetric = true;
-		for (int j = 0; (j < this.n) & this.issymmetric; j++) {
-			for (int i = 0; (i < this.n) & this.issymmetric; i++) {
-				this.issymmetric = (a[i][j] == a[j][i]);
-			}
-		}
+		this.issymmetric = isSymmetric(a);
 
 		if (this.issymmetric) {
+			// Copy matrix a to v.
 			for (int i = 0; i < this.n; i++) {
-				for (int j = 0; j < this.n; j++) {
-					this.v[i][j] = a[i][j];
-				}
+				System.arraycopy(a[i], 0, v[i], 0, this.n);
 			}
 
 			// Tridiagonalize.
@@ -129,10 +125,9 @@ public class EigenvalueDecomposition {
 			this.h = new double[this.n][this.n];
 			this.ort = new double[this.n];
 
+			// Copy matrix a to h.
 			for (int j = 0; j < this.n; j++) {
-				for (int i = 0; i < this.n; i++) {
-					this.h[i][j] = a[i][j];
-				}
+				System.arraycopy(a, 0, h, 0, n);
 			}
 
 			// Reduce to Hessenberg form.
@@ -141,6 +136,45 @@ public class EigenvalueDecomposition {
 			// Reduce Hessenberg to real Schur form.
 			hqr2();
 		}
+	}
+
+	/**
+	 * Returns whether the given arrays make a symmetric matrix. A symmetric
+	 * matrix is defined as a square matrix that is identical when flipped
+	 * around its diagonal. A matrix with no rows and no columns is defined to
+	 * be symmetric.
+	 * 
+	 * @param a the matrix to analyze.
+	 * @return {@code true} iff the matrix is symmetric. Malformed matrices are
+	 *     considered asymetric.
+	 */
+	static boolean isSymmetric(final double[][] a) {
+		// TODO: Perhaps move this to the Matrix class.
+		// Note that we only need to analyze the positions on one side of the
+		// diagonal as the diagonal always stays the same.
+		final int len = a.length;
+		if (len == 0) {
+			return true;
+		}
+		
+		// Because we skip the first row, verify its length explicitly
+		if (a[0].length != len) {
+			return false;
+		}
+		
+		// Loop through all of the rows, skipping the first
+		for (int j = 1; j < len; j++) {
+			if (a[j].length != len) {
+				return false;
+			}
+			// Loop through all of the columns up to the diagonal
+			for (int i = 0; i < j; i++) {
+				if (a[i][j] != a[j][i]) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	// Symmetric tridiagonal QL algorithm.
@@ -171,9 +205,7 @@ public class EigenvalueDecomposition {
 		final Matrix X = new Matrix(this.n, this.n);
 		final double[][] D = X.getData();
 		for (int i = 0; i < this.n; i++) {
-			for (int j = 0; j < this.n; j++) {
-				D[i][j] = 0.0;
-			}
+			Arrays.fill(D[i], 0.0);
 			D[i][i] = this.d[i];
 			if (this.e[i] > 0) {
 				D[i][i + 1] = this.e[i];
@@ -647,9 +679,7 @@ public class EigenvalueDecomposition {
 
 		for (int i = 0; i < nn; i++) {
 			if ((i < low) | (i > high)) {
-				for (int j = i; j < nn; j++) {
-					this.v[i][j] = this.h[i][j];
-				}
+				System.arraycopy(this.h, i, this.v, i, nn - i);
 			}
 		}
 
@@ -731,10 +761,10 @@ public class EigenvalueDecomposition {
 
 		// Accumulate transformations (Algol's ortran).
 
+		// Fill v's diagonal with 1s.
 		for (int i = 0; i < this.n; i++) {
-			for (int j = 0; j < this.n; j++) {
-				this.v[i][j] = (i == j ? 1.0 : 0.0);
-			}
+			Arrays.fill(this.v[i], 0.0);
+			this.v[i][i] = 1.0;
 		}
 
 		for (int m = high - 1; m >= low + 1; m--) {
@@ -885,10 +915,8 @@ public class EigenvalueDecomposition {
 		// Auto. Comp., Vol.ii-Linear Algebra, and the corresponding
 		// Fortran subroutine in EISPACK.
 
-		for (int j = 0; j < this.n; j++) {
-			this.d[j] = this.v[this.n - 1][j];
-		}
-
+		System.arraycopy(this.v[this.n - 1], 0, this.d, 0, this.n);
+		
 		// Householder reduction to tridiagonal form.
 
 		for (int i = this.n - 1; i > 0; i--) {
@@ -923,9 +951,7 @@ public class EigenvalueDecomposition {
 				this.e[i] = scale * g;
 				h = h - f * g;
 				this.d[i - 1] = f - g;
-				for (int j = 0; j < i; j++) {
-					this.e[j] = 0.0;
-				}
+				Arrays.fill(this.e, 0, i, 0.0);
 
 				// Apply similarity transformation to remaining columns.
 
@@ -985,10 +1011,8 @@ public class EigenvalueDecomposition {
 				this.v[k][i + 1] = 0.0;
 			}
 		}
-		for (int j = 0; j < this.n; j++) {
-			this.d[j] = this.v[this.n - 1][j];
-			this.v[this.n - 1][j] = 0.0;
-		}
+		System.arraycopy(this.v[this.n - 1], 0, this.d, 0, this.n);
+		Arrays.fill(this.v[this.n - 1], 0.0);
 		this.v[this.n - 1][this.n - 1] = 1.0;
 		this.e[0] = 0.0;
 	}

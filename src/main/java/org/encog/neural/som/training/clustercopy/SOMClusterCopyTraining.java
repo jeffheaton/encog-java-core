@@ -29,6 +29,7 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.BasicTraining;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.neural.som.SOM;
 
@@ -36,6 +37,10 @@ import org.encog.neural.som.SOM;
  * SOM cluster copy is a very simple trainer for SOM's. Using this trainer all of
  * the training data is copied to the SOM weights. This can provide a functional
  * SOM, or can be used as a starting point for training.
+ * 
+ * For now, this trainer will only work if you have equal or fewer training elements 
+ * to the number of output neurons.  Eventually I hope to expand this by using 
+ * KMeans clustering.
  * 
  */
 public class SOMClusterCopyTraining extends BasicTraining {
@@ -46,6 +51,11 @@ public class SOMClusterCopyTraining extends BasicTraining {
 	private final SOM network;
 
 	/**
+	 * Is training done.
+	 */
+	private boolean done;
+
+	/**
 	 * Construct the object.
 	 * @param network The network to train.
 	 * @param training The training data.
@@ -53,6 +63,10 @@ public class SOMClusterCopyTraining extends BasicTraining {
 	public SOMClusterCopyTraining(final SOM network, final MLDataSet training) {
 		super(TrainingImplementationType.OnePass);
 		this.network = network;
+		if (this.network.getOutputCount() < training.getRecordCount()) {
+			throw new NeuralNetworkError(
+					"To use cluster copy training you must have at least as many output neurons as training elements.");
+		}		
 		setTraining(training);
 	}
 
@@ -62,6 +76,16 @@ public class SOMClusterCopyTraining extends BasicTraining {
 	@Override
 	public final boolean canContinue() {
 		return false;
+	}
+
+	/**
+	 * @return True if training can progress no further.
+	 */
+	public boolean isTrainingDone() {
+		if (super.isTrainingDone())
+			return true;
+		else
+			return done;
 	}
 
 	/**
@@ -98,6 +122,7 @@ public class SOMClusterCopyTraining extends BasicTraining {
 		for (final MLDataPair pair : getTraining()) {
 			copyInputPattern(outputNeuron++, pair.getInput());
 		}
+		this.done = true;
 	}
 
 	/**

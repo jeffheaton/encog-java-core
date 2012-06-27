@@ -150,6 +150,7 @@ public class ScriptSave {
 		out.addColumn("field");
 		out.addColumn("code");
 		out.addColumn("name");
+		out.addColumn("count");
 		out.writeLine();
 
 		for (final DataField field : this.script.getFields()) {

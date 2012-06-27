@@ -30,18 +30,38 @@ import org.encog.ml.bayesian.BayesianError;
 import org.encog.ml.bayesian.BayesianEvent;
 import org.encog.ml.bayesian.BayesianNetwork;
 
+/**
+ * A probability that has been parsed. 
+ */
 public class ParsedProbability {
+	/**
+	 * The base events.
+	 */
 	private final List<ParsedEvent> baseEvents = new ArrayList<ParsedEvent>();
+	
+	/**
+	 * The given events.
+	 */
 	private final List<ParsedEvent> givenEvents = new ArrayList<ParsedEvent>();
 	
 	public void addGivenEvent(ParsedEvent event) {
 		this.givenEvents.add(event);
 	}
 	
+	
+	/**
+	 * Add a base event.
+	 * @param event The base event to add.
+	 */
 	public void addBaseEvent(ParsedEvent event) {
 		this.baseEvents.add(event);
 	}
 	
+	/**
+	 * Get the arguments to this event.
+	 * @param network The network.
+	 * @return The arguments.
+	 */
 	public int[] getArgs(BayesianNetwork network) {
 		int[] result = new int[givenEvents.size()];
 				
@@ -54,6 +74,9 @@ public class ParsedProbability {
 		return result;
 	}
 	
+	/**
+	 * @return The child events.
+	 */
 	public ParsedEvent getChildEvent() {
 		if( this.baseEvents.size()>1 ) {
 			throw new BayesianError("Only one base event may be used to define a probability, i.e. P(a), not P(a,b).");
@@ -66,6 +89,11 @@ public class ParsedProbability {
 		return this.baseEvents.get(0);
 	}
 
+	/**
+	 * Define the truth table.
+	 * @param network The bayesian network.
+	 * @param result The resulting probability.
+	 */
 	public void defineTruthTable(BayesianNetwork network, double result) {
 		
 		ParsedEvent childParsed = getChildEvent();
@@ -77,25 +105,38 @@ public class ParsedProbability {
 		
 	}
 
+	/**
+	 * @return The base events.
+	 */
 	public List<ParsedEvent> getBaseEvents() {
 		return baseEvents;
 	}
 
+	/**
+	 * @return The given events.
+	 */
 	public List<ParsedEvent> getGivenEvents() {
 		return givenEvents;
 	}
 
+	/**
+	 * Define the relationships.
+	 * @param network The network.
+	 */
 	public void defineRelationships(BayesianNetwork network) {
 		// define event relations, if they are not there already
 		ParsedEvent childParsed = getChildEvent();
 		BayesianEvent childEvent = network.requireEvent(childParsed.getLabel());
 		for( ParsedEvent event : this.givenEvents) {
 			BayesianEvent parentEvent = network.requireEvent(event.getLabel());
-			network.createDependancy(parentEvent, childEvent);
+			network.createDependency(parentEvent, childEvent);
 		}
 		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append("[ParsedProbability:baseEvents=");

@@ -26,6 +26,9 @@ package org.encog.ml.bayesian;
 import org.encog.EncogError;
 import org.encog.util.logging.EncogLogging;
 
+/**
+ * Thrown when an error occurs working with Bayesian networks.
+ */
 public class BayesianError extends EncogError {
 	/**
 	 * Construct a message exception.

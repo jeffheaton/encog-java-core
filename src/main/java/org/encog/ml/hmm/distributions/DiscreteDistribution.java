@@ -31,13 +31,29 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
 
+/**
+ * A discrete distribution is a distribution with a finite set of states that it
+ * can be in.
+ * 
+ */
 public class DiscreteDistribution implements StateDistribution {
 
+	/**
+	 * The serial id.
+	 */
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * The probabilities of moving between states.
+	 */
 	private final double[][] probabilities;
 
+	/**
+	 * Construct a discrete distribution with the specified probabilities.
+	 * @param theProbabilities The probabilities.
+	 */
 	public DiscreteDistribution(final double[][] theProbabilities) {
-		
+
 		if (theProbabilities.length == 0) {
 			throw new IllegalArgumentException("Invalid empty array");
 		}
@@ -45,33 +61,40 @@ public class DiscreteDistribution implements StateDistribution {
 		this.probabilities = new double[theProbabilities.length][];
 
 		for (int i = 0; i < theProbabilities.length; i++) {
-			
+
 			if (theProbabilities[i].length == 0) {
 				throw new IllegalArgumentException("Invalid empty array");
 			}
-			
+
 			this.probabilities[i] = new double[theProbabilities[i].length];
-			
+
 			for (int j = 0; j < probabilities[i].length; j++) {
 				if ((this.probabilities[i][j] = theProbabilities[i][j]) < 0.0) {
 					throw new IllegalArgumentException();
 				}
 			}
-		}		
+		}
 	}
 
+	/**
+	 * Construct a discrete distribution.
+	 * @param cx The count of each.
+	 */
 	public DiscreteDistribution(final int[] cx) {
 		this.probabilities = new double[cx.length][];
-		for(int i=0;i<cx.length;i++) {
+		for (int i = 0; i < cx.length; i++) {
 			int c = cx[i];
 			this.probabilities[i] = new double[c];
-	
+
 			for (int j = 0; j < c; j++) {
 				this.probabilities[i][j] = 1.0 / c;
 			}
 		}
 	}
 
+	/**
+	 * @return A clone of the distribution.
+	 */
 	@Override
 	public DiscreteDistribution clone() {
 		try {
@@ -81,6 +104,10 @@ public class DiscreteDistribution implements StateDistribution {
 		}
 	}
 
+	/**
+	 * Fit this distribution to the specified data.
+	 * @param co THe data to fit to.
+	 */
 	@Override
 	public void fit(final MLDataSet co) {
 		if (co.size() < 1) {
@@ -103,22 +130,31 @@ public class DiscreteDistribution implements StateDistribution {
 		}
 	}
 
+	/**
+	 * Fit this distribution to the specified data, with weights.
+	 * @param co The data to fit to.
+	 * @param weights The weights.
+	 */
 	@Override
 	public void fit(final MLDataSet co, final double[] weights) {
 		if ((co.size() < 1) || (co.size() != weights.length)) {
 			throw new IllegalArgumentException();
 		}
 
-		for(int i=0;i<this.probabilities.length;i++) {
-		Arrays.fill(this.probabilities[i], 0.0);
+		for (int i = 0; i < this.probabilities.length; i++) {
+			Arrays.fill(this.probabilities[i], 0.0);
 
-		int j = 0;
-		for (final MLDataPair o : co) {
-			this.probabilities[i][(int) o.getInput().getData(i)] += weights[j++];
-		}
+			int j = 0;
+			for (final MLDataPair o : co) {
+				this.probabilities[i][(int) o.getInput().getData(i)] += weights[j++];
+			}
 		}
 	}
 
+	/**
+	 * Generate a random sequence.
+	 * @return The next element.
+	 */
 	@Override
 	public MLDataPair generate() {
 		final MLData result = new BasicMLData(this.probabilities.length);
@@ -135,15 +171,19 @@ public class DiscreteDistribution implements StateDistribution {
 			}
 		}
 
-	return new BasicMLDataPair(result);
+		return new BasicMLDataPair(result);
 	}
 
+	/**
+	 * Determine the probability of the specified data pair.
+	 * @param o THe data pair.
+	 */
 	@Override
 	public double probability(final MLDataPair o) {
-		
+
 		double result = 1;
-		
-		for(int i = 0;i <this.probabilities.length;i++) {
+
+		for (int i = 0; i < this.probabilities.length; i++) {
 			if (o.getInput().getData(i) > (this.probabilities[i].length - 1)) {
 				throw new IllegalArgumentException("Wrong observation value");
 			}
@@ -153,6 +193,9 @@ public class DiscreteDistribution implements StateDistribution {
 		return result;
 	}
 
+	/**
+	 * @return The state probabilities.
+	 */
 	public double[][] getProbabilities() {
 		return this.probabilities;
 	}

@@ -27,7 +27,6 @@ import org.encog.mathutil.IntRange;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.training.propagation.GradientWorker;
 import org.encog.util.concurrency.DetermineWorkload;
 import org.encog.util.concurrency.EngineConcurrency;
 import org.encog.util.concurrency.MultiThreadable;

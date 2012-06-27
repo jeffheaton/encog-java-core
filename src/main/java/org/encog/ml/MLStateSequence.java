@@ -23,13 +23,32 @@
  */
 package org.encog.ml;
 
-import java.util.List;
-
-import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 
+/**
+ * A state sequence ML method, for example a Hidden Markov Model.
+ */
 public interface MLStateSequence extends MLMethod {
-	public int[] getStatesForSequence(MLDataSet oseq);
-	public double probability(MLDataSet oseq);
-	public double probability(MLDataSet seq, int[] states);
+	
+	/**
+	 * Get the sates for the given sequence.
+	 * @param oseq The sequence.
+	 * @return The states.
+	 */
+	int[] getStatesForSequence(MLDataSet oseq);
+	
+	/**
+	 * Determine the probability of the specified sequence.
+	 * @param oseq The sequence.
+	 * @return The probability.
+	 */
+	double probability(MLDataSet oseq);
+	
+	/**
+	 * Determine the probability for the specified sequence and states.
+	 * @param seq The sequence.
+	 * @param states The states.
+	 * @return The probability.
+	 */
+	double probability(MLDataSet seq, int[] states);
 }

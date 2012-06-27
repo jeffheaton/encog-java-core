@@ -32,8 +32,19 @@ import org.encog.ml.bayesian.BayesianError;
 import org.encog.ml.bayesian.BayesianEvent;
 import org.encog.ml.bayesian.query.enumerate.EnumerationQuery;
 
+/**
+ * Holds a Bayesian truth table.
+ */
 public class BayesianTable implements Serializable {
+	
+	/**
+	 * The event that owns this truth table.
+	 */
 	private final BayesianEvent event;
+	
+	/**
+	 * The lines of the truth table.
+	 */
 	private final List<TableLine> lines = new ArrayList<TableLine>();
 
 	public BayesianTable(BayesianEvent theEvent) {
@@ -41,6 +52,9 @@ public class BayesianTable implements Serializable {
 		reset();
 	}
 
+	/**
+	 * Reset the truth table to zero.
+	 */
 	public void reset() {
 		this.lines.clear();
 		List<BayesianEvent> parents = this.event.getParents();
@@ -55,6 +69,12 @@ public class BayesianTable implements Serializable {
 		} while (EnumerationQuery.roll(parents, args));
 	}
 
+	/**
+	 * Add a new line.
+	 * @param prob The probability.
+	 * @param result The resulting probability.
+	 * @param args The arguments.
+	 */
 	public void addLine(double prob, boolean result, boolean... args) {
 		int[] d = new int[args.length];
 		for (int i = 0; i < args.length; i++) {
@@ -65,6 +85,12 @@ public class BayesianTable implements Serializable {
 		addLine(1.0 - prob, result ? 1 : 0, d);
 	}
 
+	/**
+	 * Add a new line.
+	 * @param prob The probability.
+	 * @param result The resulting probability.
+	 * @param args The arguments.
+	 */
 	public void addLine(double prob, int result, boolean... args) {
 		int[] d = new int[args.length];
 		for (int i = 0; i < args.length; i++) {
@@ -74,6 +100,12 @@ public class BayesianTable implements Serializable {
 		addLine(prob, result, d);
 	}
 
+	/**
+	 * Add a new line.
+	 * @param prob The probability.
+	 * @param result The resulting probability.
+	 * @param args The arguments.
+	 */
 	public void addLine(double prob, int result, int... args) {
 		if (args.length != this.event.getParents().size()) {
 			throw new BayesianError("Truth table line with " + args.length
@@ -96,6 +128,9 @@ public class BayesianTable implements Serializable {
 		}
 	}
 
+	/**
+	 * Validate the truth table.
+	 */
 	public void validate() {
 		if (this.lines.size() != this.getMaxLines()) {
 			throw new BayesianError("Truth table for " + this.event.toString()
@@ -106,6 +141,11 @@ public class BayesianTable implements Serializable {
 
 	}
 
+	/**
+	 * Generate a random sampling based on this truth table.
+	 * @param args The arguemtns.
+	 * @return The result.
+	 */
 	public int generateRandom(int... args) {
 		double r = Math.random();
 		double limit = 0;
@@ -123,6 +163,9 @@ public class BayesianTable implements Serializable {
 				+ this.event.toString());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		for (TableLine line : this.lines) {
@@ -132,10 +175,19 @@ public class BayesianTable implements Serializable {
 		return result.toString();
 	}
 
+	/**
+	 * @return The lines of this truth table.
+	 */
 	public List<TableLine> getLines() {
 		return this.lines;
 	}
 
+	/**
+	 * Find the specified truth table line.
+	 * @param result The result sought.
+	 * @param args The arguments.
+	 * @return The line that matches.
+	 */
 	public TableLine findLine(int result, int[] args) {
 
 		for (TableLine line : this.lines) {
@@ -149,6 +201,9 @@ public class BayesianTable implements Serializable {
 		return null;
 	}
 	
+	/**
+	 * @return The maximum number of lines this truth table would have.
+	 */
 	public int getMaxLines() {
 		return event.calculateParameterCount() * event.getChoices().size();
 	}

@@ -23,6 +23,8 @@
  */
 package org.encog.ml.svm.training;
 
+import org.encog.Encog;
+import org.encog.EncogError;
 import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.mathutil.libsvm.svm;
 import org.encog.mathutil.libsvm.svm_parameter;
@@ -34,41 +36,13 @@ import org.encog.ml.svm.SVM;
 import org.encog.ml.train.BasicTraining;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.util.Format;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * Provides training for Support Vector Machine networks.
  */
 public class SVMTrain extends BasicTraining {
 
-	/**
-	 * The default starting number for C.
-	 */
-	public static final double DEFAULT_CONST_BEGIN = -5;
-
-	/**
-	 * The default ending number for C.
-	 */
-	public static final double DEFAULT_CONST_END = 15;
-
-	/**
-	 * The default step for C.
-	 */
-	public static final double DEFAULT_CONST_STEP = 2;
-
-	/**
-	 * The default gamma begin.
-	 */
-	public static final double DEFAULT_GAMMA_BEGIN = -10;
-
-	/**
-	 * The default gamma end.
-	 */
-	public static final double DEFAULT_GAMMA_END = 10;
-
-	/**
-	 * The default gamma step.
-	 */
-	public static final double DEFAULT_GAMMA_STEP = 1;
 
 	/**
 	 * The network that is to be trained.
@@ -220,6 +194,7 @@ public class SVMTrain extends BasicTraining {
 
 		this.network.getParams().C = this.c;
 		this.network.getParams().gamma = this.gamma;
+		EncogLogging.log(EncogLogging.LEVEL_INFO, "Training with parameters C = " + c + ", gamma = " + gamma);
 
 		if (this.fold > 1) {
 			// cross validate
@@ -265,6 +240,11 @@ public class SVMTrain extends BasicTraining {
 	 */
 	public final void setC(final double theC) {
 		this.c = theC;
+		
+		if( this.c<=0 || this.c<Encog.DEFAULT_DOUBLE_EQUAL ) {
+			throw new EncogError("SVM training cannot use a c value less than zero.");
+		}
+		
 	}
 
 	/**
@@ -283,6 +263,11 @@ public class SVMTrain extends BasicTraining {
 	 */
 	public final void setGamma(final double theGamma) {
 		this.gamma = theGamma;
+		
+		if( this.gamma<=0 || this.gamma<Encog.DEFAULT_DOUBLE_EQUAL ) {
+			throw new EncogError("SVM training cannot use a gamma value less than zero.");
+		}
+		
 	}
 
 }

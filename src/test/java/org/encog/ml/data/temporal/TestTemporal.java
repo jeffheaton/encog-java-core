@@ -30,7 +30,6 @@ import junit.framework.TestCase;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.temporal.TemporalDataDescription.Type;
-import org.encog.neural.data.NeuralDataPair;
 
 public class TestTemporal extends TestCase {
 	public void testBasicTemporal()

@@ -72,8 +72,8 @@ public class TestCompetitive extends TestCase  {
 		final MLData data2 = new BasicMLData(
 				TestCompetitive.SOM_INPUT[1]);
 		
-		int result1 = network.winner(data1);
-		int result2 = network.winner(data2);
+		int result1 = network.classify(data1);
+		int result2 = network.classify(data2);
 		
 		Assert.assertTrue(result1!=result2);
 

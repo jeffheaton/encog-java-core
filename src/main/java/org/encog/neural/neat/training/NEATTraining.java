@@ -682,7 +682,11 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 			final Species s = (Species) element;
 			s.purge();
 
-			if ((s.getGensNoImprovement() > this.params.numGensAllowedNoImprovement)
+			// did the leader die?  If so, disband the species.
+			if( !getPopulation().getGenomes().contains(s.getLeader())) {
+				getPopulation().getSpecies().remove(s);
+			}
+			else if ((s.getGensNoImprovement() > this.params.numGensAllowedNoImprovement)
 					&& getComparator().isBetterThan(this.bestEverScore,
 							s.getBestScore())) {
 				getPopulation().getSpecies().remove(s);

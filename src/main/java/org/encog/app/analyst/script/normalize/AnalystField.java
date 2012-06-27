@@ -256,6 +256,12 @@ public class AnalystField {
 				- this.normalizedHigh * this.actualLow + this.actualHigh
 				* this.normalizedLow)
 				/ (this.normalizedLow - this.normalizedHigh);
+		
+		// typically caused by a number that should not have been normalized
+		// (i.e. normalization or actual range is infinitely small.
+		if( Double.isNaN(result) ) {
+			return ((this.normalizedHigh-this.normalizedLow)/2)+this.normalizedLow;
+		}
 		return result;
 	}
 
@@ -644,9 +650,16 @@ public class AnalystField {
 	 * @return The normalized value.
 	 */
 	public final double normalize(final double value) {
-		return ((value - this.actualLow) / (this.actualHigh - this.actualLow))
+		double result = ((value - this.actualLow) / (this.actualHigh - this.actualLow))
 				* (this.normalizedHigh - this.normalizedLow)
 				+ this.normalizedLow;
+		
+		// typically caused by a number that should not have been normalized
+		// (i.e. normalization or actual range is infinitely small.
+		if( Double.isNaN(result) ) {
+			return ((this.normalizedHigh-this.normalizedLow)/2)+this.normalizedLow;
+		}
+		return result;
 	}
 
 	/**

@@ -25,10 +25,12 @@ package org.encog.app.analyst.commands;
 
 import java.io.File;
 
+import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.csv.AnalystEvaluateRawCSV;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
+import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.util.logging.EncogLogging;
@@ -80,9 +82,14 @@ public class CmdEvaluateRaw extends Cmd {
 
 		final File outputFile = getAnalyst().getScript().resolveFilename(
 				outputID);
+		
+		MLMethod m = (MLMethod) EncogDirectoryPersistence.loadObject(resourceFile);
+		
+		if( !(m instanceof MLRegression) ) {
+			throw new AnalystError("The evaluate raw command can only be used with regression.");
+		}
 
-		final MLRegression method = (MLRegression) EncogDirectoryPersistence
-				.loadObject(resourceFile);
+		final MLRegression method = (MLRegression)m;
 
 		final boolean headers = getScript().expectInputHeaders(evalID);
 

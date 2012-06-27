@@ -26,9 +26,19 @@ package org.encog.ml.factory.method;
 import org.encog.ml.MLMethod;
 import org.encog.ml.bayesian.BayesianNetwork;
 
+/**
+ * Factory to create bayesian networks.
+ *
+ */
 public class BayesianFactory {
 	
-	
+	/**
+	 * Create a bayesian network.
+	 * @param architecture The architecture to use.
+	 * @param input The input neuron count.
+	 * @param output The output neuron count.
+	 * @return The new bayesian network.
+	 */
 	public final MLMethod create(final String architecture, final int input,
 			final int output) {
 		BayesianNetwork method = new BayesianNetwork();

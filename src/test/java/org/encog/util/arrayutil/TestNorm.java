@@ -23,10 +23,19 @@
  */
 package org.encog.util.arrayutil;
 
+import java.io.File;
+import java.io.IOException;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.encog.util.TempDir;
+import org.encog.util.obj.SerializeObject;
+
 public class TestNorm extends TestCase {
+	
+	public final TempDir TEMP_DIR = new TempDir();
+	public final File SERIAL_FILENAME = TEMP_DIR.createFile("encogtest.ser");
 	
 	public void testRoundTrip1() {
 		NormalizedField field = new NormalizedField(NormalizationAction.Normalize, null, 10, 0, -1, 1);
@@ -45,5 +54,13 @@ public class TestNorm extends TestCase {
 		double d3 = field.deNormalize(d2);
 
 		Assert.assertTrue( ((int)d) == ((int)d3) );
+	}
+	
+	public void testSerialize() throws IOException, ClassNotFoundException {
+		NormalizedField field = new NormalizedField(NormalizationAction.Normalize, null, 10, -10, -1, 1);
+		SerializeObject.save(SERIAL_FILENAME, field);
+		NormalizedField field2 = (NormalizedField)SerializeObject.load(SERIAL_FILENAME);
+		Assert.assertEquals(field.getAction(), field2.getAction());
+		
 	}
 }

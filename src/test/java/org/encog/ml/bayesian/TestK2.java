@@ -86,11 +86,11 @@ public class TestK2 extends TestCase {
 		double p = search.calculateG(network, x1, x1.getParents());
 		Assert.assertEquals(3.607503E-4, p, 0.0001);
 		
-		network.createDependancy(x1, x2);
+		network.createDependency(x1, x2);
 		p = search.calculateG(network, x2, x2.getParents());
 		Assert.assertEquals(0.0011111, p, 0.0001);	
 		
-		network.createDependancy(x2, x3);
+		network.createDependency(x2, x3);
 		p = search.calculateG(network, x3, x3.getParents());
 		Assert.assertEquals(0.0011111, p, 0.00555555);			
 	}

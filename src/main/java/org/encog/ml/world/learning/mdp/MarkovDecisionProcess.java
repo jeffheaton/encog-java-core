@@ -25,7 +25,6 @@ package org.encog.ml.world.learning.mdp;
 
 import org.encog.ml.world.State;
 import org.encog.ml.world.World;
-import org.encog.ml.world.WorldError;
 
 public class MarkovDecisionProcess {
 		

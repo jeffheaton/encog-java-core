@@ -23,6 +23,8 @@
  */
 package org.encog.ml.svm.training;
 
+import org.encog.Encog;
+import org.encog.EncogError;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
@@ -30,7 +32,6 @@ import org.encog.ml.svm.KernelType;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.train.BasicTraining;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
-import org.encog.util.Format;
 
 /**
  * Provides training for Support Vector Machine networks.
@@ -40,7 +41,7 @@ public class SVMSearchTrain extends BasicTraining {
 	/**
 	 * The default starting number for C.
 	 */
-	public static final double DEFAULT_CONST_BEGIN = -5;
+	public static final double DEFAULT_CONST_BEGIN = 1;
 
 	/**
 	 * The default ending number for C.
@@ -55,7 +56,7 @@ public class SVMSearchTrain extends BasicTraining {
 	/**
 	 * The default gamma begin.
 	 */
-	public static final double DEFAULT_GAMMA_BEGIN = -10;
+	public static final double DEFAULT_GAMMA_BEGIN = 1;
 
 	/**
 	 * The default gamma end.
@@ -254,7 +255,7 @@ public class SVMSearchTrain extends BasicTraining {
 	 */
 	@Override
 	public final void iteration() {
-
+		
 		if (!this.trainingDone) {
 			if (!this.isSetup) {
 				setup();
@@ -268,8 +269,12 @@ public class SVMSearchTrain extends BasicTraining {
 
 				this.internalTrain.setGamma(this.currentGamma);
 				this.internalTrain.setC(this.currentConst);
+				
+				double e = 0;
+				
 				this.internalTrain.iteration();
-				double e = this.internalTrain.getError();
+				e = this.internalTrain.getError();
+				
 
 				//System.out.println(this.currentGamma + "," + this.currentConst
 				//		+ "," + e);
@@ -386,6 +391,22 @@ public class SVMSearchTrain extends BasicTraining {
 		this.currentGamma = this.gammaBegin;
 		this.bestError = Double.POSITIVE_INFINITY;
 		this.isSetup = true;
+		
+		if( this.currentGamma<=0 || this.currentGamma<Encog.DEFAULT_DOUBLE_EQUAL ) {
+			throw new EncogError("SVM search training cannot use a gamma value less than zero.");
+		}
+		
+		if( this.currentConst<=0 || this.currentConst<Encog.DEFAULT_DOUBLE_EQUAL ) {
+			throw new EncogError("SVM search training cannot use a const value less than zero.");
+		}
+		
+		if( this.gammaStep<0 ) {
+			throw new EncogError("SVM search gamma step cannot use a const value less than zero.");
+		}
+		
+		if( this.constStep<0 ) {
+			throw new EncogError("SVM search const step cannot use a const value less than zero.");
+		}
 	}
 
 }

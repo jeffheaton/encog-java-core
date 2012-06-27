@@ -30,7 +30,6 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.util.Format;
 import org.encog.util.kmeans.Centroid;
-import org.encog.util.kmeans.CentroidFactory;
 
 /**
  * A basic implementation of the MLDataPair interface. This implementation
@@ -211,6 +210,9 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 		this.significance = significance;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Centroid<MLDataPair> createCentroid() {
 		if( !(this.input instanceof BasicMLData) ) {

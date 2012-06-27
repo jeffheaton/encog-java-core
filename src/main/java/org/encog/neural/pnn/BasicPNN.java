@@ -23,13 +23,17 @@
  */
 package org.encog.neural.pnn;
 
-import org.encog.mathutil.EncogMath;
+import org.encog.ml.MLClassification;
+import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.NeuralNetworkError;
+import org.encog.util.EngineArray;
+import org.encog.util.simple.EncogUtility;
 
 /**
  * This class implements either a:
@@ -52,7 +56,7 @@ import org.encog.neural.NeuralNetworkError;
  * by Timothy Masters, PhD (http://www.timothymasters.info/) John Wiley & Sons
  * Inc (Computers); April 3, 1995, ISBN: 0471105880
  */
-public class BasicPNN extends AbstractPNN implements MLRegression {
+public class BasicPNN extends AbstractPNN implements MLRegression, MLError, MLClassification {
 
 	/**
 	 * 
@@ -174,9 +178,6 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 				out[i] /= psum;
 			}
 
-			final MLData result = new BasicMLData(1);
-			result.setData(0, EncogMath.maxIndex(out));
-			return result;
 		} else if (getOutputMode() == PNNOutputMode.Unsupervised) {
 			for (int i = 0; i < getInputCount(); i++) {
 				out[i] /= psum;
@@ -247,9 +248,33 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void updateProperties() {
 		// unneeded
 
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public double calculateError(MLDataSet data) {
+		if (getOutputMode() == PNNOutputMode.Classification) {
+			return EncogUtility.calculateClassificationError(this, data);
+		} else {
+			return EncogUtility.calculateRegressionError(this, data);			
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int classify(MLData input) {
+		MLData output = compute(input);
+		return EngineArray.maxIndex(output.getData());
 	}
 }

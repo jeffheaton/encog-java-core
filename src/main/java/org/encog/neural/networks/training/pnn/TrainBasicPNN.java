@@ -36,6 +36,7 @@ import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.neural.pnn.BasicPNN;
 import org.encog.neural.pnn.PNNKernelType;
 import org.encog.neural.pnn.PNNOutputMode;
+import org.encog.util.EngineArray;
 
 /**
  * Train a PNN.
@@ -45,7 +46,7 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 	/**
 	 * The default max error.
 	 */
-	public static final double DEFAULT_MAX_ERROR = 0.0;
+	public static final double DEFAULT_MAX_ERROR = 0.05;
 
 	/**
 	 * The default minimum improvement before stop.
@@ -262,13 +263,11 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 
 				if (deriv) {
 					output = computeDeriv(input, pair.getIdeal());
-					output.getData(0);
 				} else {
 					output = this.network.compute(input);
-					output.getData(0);
 				}
 
-				out[0] = output.getData(0);
+				EngineArray.arrayCopy(output.getData(),out);
 
 				for (int i = 0; i < out.length; i++) {
 					if (i == tclass) {
@@ -542,13 +541,7 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 			}
 		}
 
-		if (this.network.getOutputMode() == PNNOutputMode.Classification) {
-			final MLData result = new BasicMLData(1);
-			result.setData(0, ibest);
-			return result;
-		}
-
-		return null;
+		return new BasicMLData(out);
 	}
 
 	/**
@@ -600,6 +593,8 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 	@Override
 	public final void iteration() {
 
+		preIteration();
+		
 		if (!this.samplesLoaded) {
 			this.network.setSamples(new BasicMLDataSet(this.training));
 			this.samplesLoaded = true;
@@ -654,8 +649,9 @@ public class TrainBasicPNN extends BasicTraining implements CalculationCriteria 
 
 		this.network.setError(Math.abs(globalMinimum.getY2()));
 		this.network.setTrained(true); // Tell other routines net is trained
-
-		return;
+		this.setError(network.getError());
+		
+		postIteration();
 
 	}
 

@@ -30,7 +30,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.engine.network.activation.ActivationSigmoid;
-import org.encog.neural.art.ART1;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.layers.BasicLayer;

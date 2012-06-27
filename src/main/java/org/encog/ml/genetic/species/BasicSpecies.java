@@ -84,7 +84,7 @@ public class BasicSpecies implements Species, Serializable {
 	/**
 	 * The id of the leader.
 	 */
-	private transient long leaderID;
+	private long leaderID;
 
 	/**
 	 * Default constructor, used mainly for persistence.
