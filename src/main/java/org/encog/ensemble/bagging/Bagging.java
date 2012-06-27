@@ -13,6 +13,8 @@ import org.encog.ensemble.aggregator.EnsembleAggregator;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
+import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.training.Train;
 
 public class Bagging implements Ensemble {
 
@@ -71,7 +73,8 @@ public class Bagging implements Ensemble {
 	public void train(double targetError, boolean verbose) {
 		for (EnsembleML current : members)
 		{
-			MLTrain train = trainFactory.getTraining(current.getMl(), current.getTrainingSet());
+			Train train = trainFactory.getTraining((BasicNetwork)current.getMl(), current.getTrainingSet());
+			//final Train train = new ResilientPropagation(network, trainingSet);
 			System.out.println("Training: " + current.toString());
 			current.train(train, targetError, verbose);
 		}
@@ -90,13 +93,14 @@ public class Bagging implements Ensemble {
 
 	@Override
 	public MLData compute(MLData input) {
-		ArrayList<MLData> outputs = new ArrayList<MLData>();
+		/*ArrayList<MLData> outputs = new ArrayList<MLData>();
 		for(BaggingML member: members) 
 		{
 			MLData computed = member.compute(input);
 			outputs.add(computed);
 		}
-		return aggregator.evaluate(outputs);
+		return aggregator.evaluate(outputs);*/
+		return members.get(0).compute(input);
 	}
 
 	@Override
