@@ -43,8 +43,11 @@ public class BaggingDataSet implements EnsembleDataSet {
 
 	@Override
 	public void getRecord(long index, MLDataPair pair) {
-		// TODO Auto-generated method stub
-
+		final MLDataPair source = this.data.get((int) index);
+		pair.setInputArray(source.getInputArray());
+		if (pair.getIdealArray() != null) {
+			pair.setIdealArray(source.getIdealArray());
+		}
 	}
 
 	@Override
@@ -52,7 +55,7 @@ public class BaggingDataSet implements EnsembleDataSet {
 		BaggingDataSet copy = new BaggingDataSet(idealSize,inputSize);
 		for (MLDataPair line: data) {
 			BasicMLDataPair newLine = new BasicMLDataPair(line.getInput(), line.getIdeal());
-			copy.add(line);
+			copy.add(newLine);
 		}
 		return copy;
 	}

@@ -83,7 +83,7 @@ public class LetterRecognition extends Tester {
 		readData("../../data/letter-recognition.data");
 		_network = createNetwork();		
 		//Important: without proper randomizing the network doesn't train to convergence.
-		(new NguyenWidrowRandomizer(-1,1)).randomize(_network);
+		//(new NguyenWidrowRandomizer(-1,1)).randomize(_network);
 		MLTrain train = new ResilientPropagation(_network, _trainingSet);
 		//MLTrain train = new ScaledConjugateGradient(network, trainingSet);
 		train(train,_trainToError);

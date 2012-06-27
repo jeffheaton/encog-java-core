@@ -81,7 +81,7 @@ public class Haberman extends Tester {
 		setMapper(new IntMapper(getOutputs(), 0.3));
 		readData("../../data/haberman.data");
 		_network = createNetwork();
-		(new NguyenWidrowRandomizer(-1,1)).randomize(_network);
+		//(new NguyenWidrowRandomizer(-1,1)).randomize(_network);
 		MLTrain train = new ResilientPropagation(_network, _trainingSet);
 		train(train,0.06);
 	}

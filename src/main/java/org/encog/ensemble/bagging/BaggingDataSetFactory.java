@@ -48,4 +48,9 @@ public class BaggingDataSetFactory implements EnsembleDataSetFactory {
 	public int getOutputCount() {
 		return this.dataSource.getIdealSize();
 	}
+
+	@Override
+	public MLDataSet getInputData() {
+		return this.dataSource;
+	}
 }
