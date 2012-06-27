@@ -19,12 +19,16 @@ public class DataLoader {
 	private static BasicNeuralDataSet _testSet;
 	private static boolean _inputsReversed;
 	private static DataMapper _dataMapper;
+	private static int _inputs;
+	private static int _readinputs;
 
-	public DataLoader(DataMapper dataMapper) {
+	public DataLoader(DataMapper dataMapper, int readInputs, int inputs) {
 		_dataMapper = dataMapper;
+		_readinputs = readInputs;
+		_inputs = inputs;
 	}
 	
-	public static void readData(String inputFile) {
+	public int readData(String inputFile) {
 		int total=0;
 		System.out.println("importing dataset");
 		ReadCSV csv = new ReadCSV(inputFile,false,',');
@@ -71,12 +75,12 @@ public class DataLoader {
 			else
 				_testSet.add(_normSet.get(i).getInput(),_totalSet.get(i).getIdeal());
 		}
-		System.out.println("found " + total + " items");
 		csv.close();
+		return total;
 		
 	}
 
-	private static long getTrainingSetSize() {
+	private long getTrainingSetSize() {
 		return _trainingSet.getRecordCount();
 	}
 
@@ -84,13 +88,27 @@ public class DataLoader {
 		return _dataMapper;
 	}
 
-	private static int getReadInputs() {
-		// TODO Auto-generated method stub
-		return 0;
+	private static int getInputs() {
+		return _inputs;
 	}
 
-	private static int getInputs() {
-		// TODO Auto-generated method stub
-		return 0;
+	public static void setInputs(int _inputs) {
+		DataLoader._inputs = _inputs;
+	}
+
+	public BasicNeuralDataSet getTestSet() {
+		return _testSet;
+	}
+
+	public static int getReadInputs() {
+		return _readinputs;
+	}
+
+	public static void setReadInputs(int _readinputs) {
+		DataLoader._readinputs = _readinputs;
+	}
+
+	public BasicNeuralDataSet getTrainingSet() {
+		return _trainingSet;
 	}
 }

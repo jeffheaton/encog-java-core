@@ -1,14 +1,14 @@
 package perceptron;
 
+import helpers.EvaluationTechnique;
+
 import java.util.ArrayList;
 
 import org.encog.NullStatusReportable;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
-import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.util.csv.ReadCSV;
@@ -16,7 +16,6 @@ import org.encog.util.normalize.DataNormalization;
 import org.encog.util.normalize.input.InputField;
 import org.encog.util.normalize.input.InputFieldMLDataSet;
 import org.encog.util.normalize.output.OutputFieldRangeMapped;
-import org.encog.util.normalize.target.NormalizationStorageArray2D;
 import org.encog.util.normalize.target.NormalizationStorageNeuralDataSet;
 
 
@@ -61,6 +60,7 @@ public class Tester {
 		}
 		return (double) bad / (double) evals;
 	}
+	
 	public static void train(MLTrain train, double trainToError, boolean verbose)
 	{
 		double error = 1.0;
