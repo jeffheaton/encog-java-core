@@ -15,6 +15,12 @@ public class BaggingDataSet implements EnsembleDataSet {
 	private int idealSize;
 	private int inputSize;
 	
+	BaggingDataSet(int inputSize, int idealSize) {
+		this.idealSize = idealSize;
+		this.inputSize = inputSize;
+		data = new ArrayList<MLDataPair>();
+	}
+	
 	@Override
 	public int getIdealSize() {
 		return idealSize;
@@ -43,8 +49,12 @@ public class BaggingDataSet implements EnsembleDataSet {
 
 	@Override
 	public MLDataSet openAdditional() {
-		// TODO Auto-generated method stub
-		return null;
+		BaggingDataSet copy = new BaggingDataSet(idealSize,inputSize);
+		for (MLDataPair line: data) {
+			BasicMLDataPair newLine = new BasicMLDataPair(line.getInput(), line.getIdeal());
+			copy.add(line);
+		}
+		return copy;
 	}
 
 	@Override

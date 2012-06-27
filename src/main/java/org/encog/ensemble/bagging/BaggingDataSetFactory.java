@@ -19,7 +19,7 @@ public class BaggingDataSetFactory implements EnsembleDataSetFactory {
 	@Override
 	public EnsembleDataSet getNewDataSet() {
 		Random generator = new Random();
-		BaggingDataSet bds = new BaggingDataSet();
+		BaggingDataSet bds = new BaggingDataSet(dataSource.getInputSize(), dataSource.getIdealSize());
 		for (int i = 0; i < dataSetSize; i++)
 		{
 			int candidate = generator.nextInt(dataSource.size());

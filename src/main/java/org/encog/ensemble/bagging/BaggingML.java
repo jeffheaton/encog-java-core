@@ -2,9 +2,11 @@ package org.encog.ensemble.bagging;
 
 import org.encog.ensemble.EnsembleDataSet;
 import org.encog.ensemble.EnsembleML;
-import org.encog.ensemble.EnsembleTrain;
 import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.MLDataSet;
+import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
 
 public class BaggingML implements EnsembleML {
@@ -28,11 +30,12 @@ public class BaggingML implements EnsembleML {
 	}
 
 	@Override
-	public void train(EnsembleTrain train, double targetError) {
-		double error = ml.calculateError(getTrainingSet());
+	public void train(MLTrain train, double targetError, boolean verbose) {
+		double error = 1.0;
 		do {
 			train.iteration();
-			error = ml.calculateError(getTrainingSet());
+			error = train.getError();
+			if (verbose) System.out.println("Error: " + error);
 		} while (error > targetError);
 	}
 
@@ -64,5 +67,10 @@ public class BaggingML implements EnsembleML {
 		return ml.getOutputCount();
 	}
 
+	@Override
+	public void train(MLTrain train, double targetError) {
+		train(train, targetError, false);
+		
+	}
 
 }
