@@ -22,9 +22,9 @@ public class ElementaryCA extends BasicProgram {
 		theUniverse.get(0, theUniverse.getColumns()/2).set(0, 1.0); // seed
 		
 		int c = 1;
-		int idx = 0;
-		while( c<=128) {
-			output[idx++] = (this.rule & c)!=0;
+		int idx = 7;
+		while( idx>0) {
+			output[idx--] = (this.rule & c)!=0;
 			c*=2;
 		}
 	}
