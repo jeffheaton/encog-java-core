@@ -150,6 +150,26 @@ public class CSVFormat implements Serializable {
 	public char getSeparator() {
 		return this.separator;
 	}
+	
+	/**
+	 * Determine if the string can be parsed.
+	 * @param str The string to compare.
+	 * @return True, if the string can be parsed.
+	 */
+	public boolean isValid(final String str) {
+		try {
+			if( str.equals("?")) { 
+				return false;
+			} if( str.equalsIgnoreCase("NaN") ) {
+				return false;
+			} else {
+				this.numberFormatter.parse(str.trim()).doubleValue();
+				return true;
+			}
+		} catch (final Exception e) {
+			return false;
+		}
+	}
 
 	/**
 	 * Parse the specified string to a double.
