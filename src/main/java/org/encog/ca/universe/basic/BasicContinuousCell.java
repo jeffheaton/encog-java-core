@@ -7,6 +7,7 @@ import org.encog.ca.universe.ContinuousCell;
 import org.encog.ca.universe.UniverseCell;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.util.EngineArray;
+import org.encog.util.Format;
 
 public class BasicContinuousCell implements ContinuousCell, Serializable {
 
@@ -93,5 +94,22 @@ public class BasicContinuousCell implements ContinuousCell, Serializable {
 				this.data[i] = high;
 		}
 		
+	}
+	
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("'[");
+		result.append(this.getClass().getSimpleName());
+		result.append(":");
+		for(int i=0;i<this.size();i++) {
+			if( i>0 ) {
+				result.append(',');
+			}
+			result.append(i);
+			result.append("=");
+			result.append(Format.formatDouble(this.data[i], 4));
+		}
+		result.append("]");
+		return result.toString();
 	}
 }

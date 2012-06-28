@@ -44,6 +44,7 @@ public class GenericIO {
 					new File(FileUtil.forceExtension(f.toString(), "eg")));
 			CAProgram physics = (CAProgram)SerializeObject.load(
 					new File(FileUtil.forceExtension(f.toString(), "bin")));
+			physics.setSourceUniverse(universe);
 			runner.init(universe,physics);
 		} catch (IOException ex) {
 			throw new CellularAutomataError(ex);

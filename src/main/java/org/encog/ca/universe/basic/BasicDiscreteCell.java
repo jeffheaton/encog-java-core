@@ -7,6 +7,7 @@ import org.encog.ca.universe.DiscreteCell;
 import org.encog.ca.universe.UniverseCell;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.util.EngineArray;
+import org.encog.util.Format;
 
 public class BasicDiscreteCell implements DiscreteCell, Serializable {
 	
@@ -66,5 +67,22 @@ public class BasicDiscreteCell implements DiscreteCell, Serializable {
 		for(int i=0;i<this.data.length;i++) {
 			this.data[i]=(int)d[idx+i];
 		}
+	}
+	
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("'[");
+		result.append(this.getClass().getSimpleName());
+		result.append(":");
+		for(int i=0;i<this.size();i++) {
+			if( i>0 ) {
+				result.append(',');
+			}
+			result.append(i);
+			result.append("=");
+			result.append(this.data[i]);
+		}
+		result.append("]");
+		return result.toString();
 	}
 }

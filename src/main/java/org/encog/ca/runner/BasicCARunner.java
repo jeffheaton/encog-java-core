@@ -2,12 +2,8 @@ package org.encog.ca.runner;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.encog.ca.program.CAProgram;
-import org.encog.ca.program.generic.GenericCA;
 import org.encog.ca.universe.Universe;
 import org.encog.ca.universe.UniverseListener;
 
@@ -41,14 +37,12 @@ public class BasicCARunner implements CARunner, Runnable {
 	}
 
 	public void iteration() {
-		int height = universe.getRows();
-		int width = universe.getColumns();
-
 		this.tempUniverse.copy(this.universe);
 
+		this.physics.setSourceUniverse(this.universe);
 		this.physics.setTargetUniverse(this.tempUniverse);
 		this.physics.iteration();
-
+		
 		this.diff = this.tempUniverse.compare(universe);
 		this.iteration++;
 
