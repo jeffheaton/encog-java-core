@@ -114,6 +114,21 @@ public class BasicCARunner implements CARunner, Runnable {
 	public CAProgram getPhysics() {
 		return this.physics;
 	}
+
+	@Override
+	public int runToConverge(int i, double desiredScore) {
+		do {
+			this.iteration();
+			//System.out.println(this.iteration);
+		} while( (this.iteration<25 || this.diff>desiredScore) && this.iteration<i);
+		
+		return this.iteration;
+	}
+
+	@Override
+	public double getScore() {
+		return this.diff;
+	}
 	
 	
 }

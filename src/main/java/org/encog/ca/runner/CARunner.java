@@ -24,4 +24,8 @@ public interface CARunner {
 
 	void init(Universe universe, CAProgram physics);
 
+	int runToConverge(int i, double desiredScore);
+
+	double getScore();
+
 }
