@@ -117,8 +117,10 @@ public class BasicCARunner implements CARunner, Runnable {
 
 	@Override
 	public int runToConverge(int i, double desiredScore) {
+		this.iteration = 0;
 		do {
 			this.iteration();
+			//printf("Iteration " + this.iteration + ", diff=" + this.diff);
 			//System.out.println(this.iteration);
 		} while( (this.iteration<25 || this.diff>desiredScore) && this.iteration<i);
 		

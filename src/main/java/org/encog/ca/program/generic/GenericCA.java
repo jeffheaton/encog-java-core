@@ -9,6 +9,7 @@ import org.encog.ca.program.basic.Movement;
 import org.encog.ca.universe.ContinuousCell;
 import org.encog.ca.universe.Universe;
 import org.encog.ca.universe.UniverseCell;
+import org.encog.mathutil.randomize.RangeRandomizer;
 
 public class GenericCA extends BasicProgram implements Serializable {
 
@@ -93,7 +94,7 @@ public class GenericCA extends BasicProgram implements Serializable {
 		double[] d = new double[countPer * this.ruleCount * 2];
 
 		for (int i = 0; i < this.physics.length; i++) {
-			d[i] = (Math.random() * 2.0) - 1;
+			d[i] = RangeRandomizer.randomize(-1, 1);
 		}
 
 		setPhysics(d);
