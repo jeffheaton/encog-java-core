@@ -4,4 +4,6 @@ public interface UniverseCellFactory {
 
 	UniverseCell factor();
 
+	int size();
+
 }

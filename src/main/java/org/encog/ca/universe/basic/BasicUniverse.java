@@ -1,12 +1,18 @@
 package org.encog.ca.universe.basic;
 
+import java.io.Serializable;
+
 import org.encog.ca.CellularAutomataError;
 import org.encog.ca.universe.Universe;
 import org.encog.ca.universe.UniverseCell;
 import org.encog.ca.universe.UniverseCellFactory;
 import org.encog.ml.BasicML;
 
-public class BasicUniverse extends BasicML implements Universe {
+public class BasicUniverse extends BasicML implements Universe, Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final String ELEMENT_COUNT = "elementCount";
 	private final UniverseCell[][] data;
 	private final UniverseCellFactory cellFactory;

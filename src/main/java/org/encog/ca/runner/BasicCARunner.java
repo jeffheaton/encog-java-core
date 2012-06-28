@@ -7,6 +7,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.encog.ca.program.CAProgram;
+import org.encog.ca.program.generic.GenericCA;
 import org.encog.ca.universe.Universe;
 import org.encog.ca.universe.UniverseListener;
 
@@ -21,6 +22,11 @@ public class BasicCARunner implements CARunner, Runnable {
 	private Thread thread;
 
 	public BasicCARunner(Universe theUniverse, CAProgram thePhysics) {
+		init(theUniverse, thePhysics);
+	}
+	
+	public void init(Universe theUniverse, CAProgram thePhysics)
+	{
 		this.universe = theUniverse;
 		this.tempUniverse = (Universe) theUniverse.clone();
 		this.physics = thePhysics;
@@ -107,8 +113,12 @@ public class BasicCARunner implements CARunner, Runnable {
 
 	@Override
 	public Universe getUniverse() {
-		// TODO Auto-generated method stub
 		return this.universe;
+	}
+
+	@Override
+	public CAProgram getPhysics() {
+		return this.physics;
 	}
 	
 	

@@ -17,5 +17,7 @@ public interface Universe {
 	double compare(Universe world);
 
 	void randomize();
+	
+	UniverseCellFactory getCellFactory();
 
 }

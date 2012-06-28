@@ -1,13 +1,19 @@
 package org.encog.ca.universe.basic;
 
+import java.io.Serializable;
+
 import org.encog.ca.CellularAutomataError;
 import org.encog.ca.universe.DiscreteCell;
 import org.encog.ca.universe.UniverseCell;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.util.EngineArray;
 
-public class BasicDiscreteCell implements DiscreteCell {
+public class BasicDiscreteCell implements DiscreteCell, Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int[] data;
 	private int elementCount;
 	
@@ -53,5 +59,12 @@ public class BasicDiscreteCell implements DiscreteCell {
 	@Override
 	public int size() {
 		return this.data.length;
+	}
+
+	@Override
+	public void set(int idx, double[] d) {
+		for(int i=0;i<this.data.length;i++) {
+			this.data[i]=(int)d[idx+i];
+		}
 	}
 }
