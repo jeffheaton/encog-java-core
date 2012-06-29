@@ -83,7 +83,7 @@ public class GenericCA extends BasicProgram implements Serializable {
 
 		Trans trans2 = findTrans(finalTrans, acc);
 		acc = trans2.calculate(acc);
-		((ContinuousCell) acc).clamp(0, 1);
+		((ContinuousCell) acc).clamp(-0.1, 1.1);
 		targetCell.copy(acc);
 
 	}

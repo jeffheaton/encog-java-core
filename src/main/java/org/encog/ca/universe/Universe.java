@@ -20,4 +20,6 @@ public interface Universe {
 	
 	UniverseCellFactory getCellFactory();
 
+	double calculatePercentInvalid();
+
 }

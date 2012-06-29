@@ -111,4 +111,23 @@ public class BasicUniverse extends BasicML implements Universe, Serializable {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public double calculatePercentInvalid() {
+		int result = 0;
+		int total = 0;
+		for(int row = 0; row<getRows(); row++) {			
+			for(int col=0; col<getColumns(); col++) {
+				UniverseCell cell = get(row,col);
+				for(int i=0;i<cell.size();i++) {
+					if( cell.get(i)<-1 || cell.get(i)>1 ) {
+						result++;
+					}
+					total++;
+				}				
+			}
+		}
+		
+		return (double)result/(double)total;
+	}
 }

@@ -13,7 +13,8 @@ public class BasicCARunner implements CARunner, Runnable {
 	private CAProgram physics;
 	private boolean running;
 	private int iteration;
-	private double diff;
+	private double percentChanged;
+	private double percentInvalid;
 	private List<UniverseListener> listeners = new ArrayList<UniverseListener>();
 	private Thread thread;
 
@@ -33,7 +34,7 @@ public class BasicCARunner implements CARunner, Runnable {
 	}
 
 	public String toString() {
-		return "Iteration: " + this.iteration + ", Diff=" + diff;
+		return "Iteration: " + this.iteration + ", Diff=" + percentChanged+ ", Invalid="+ this.percentInvalid+", Score=" + this.getScore();
 	}
 
 	public void iteration() {
@@ -43,7 +44,8 @@ public class BasicCARunner implements CARunner, Runnable {
 		this.physics.setTargetUniverse(this.tempUniverse);
 		this.physics.iteration();
 		
-		this.diff = this.tempUniverse.compare(universe);
+		this.percentChanged = this.tempUniverse.compare(universe);
+		this.percentInvalid = this.tempUniverse.calculatePercentInvalid();
 		this.iteration++;
 
 		this.universe.copy(this.tempUniverse);
@@ -92,7 +94,7 @@ public class BasicCARunner implements CARunner, Runnable {
 		for (;;) {
 			iteration();
 
-			if (this.iteration > 5 && this.diff < 0.01)
+			if (this.iteration > 5 && this.percentChanged < 0.01)
 				break;
 
 			if (this.iteration > maxIterations)
@@ -120,16 +122,21 @@ public class BasicCARunner implements CARunner, Runnable {
 		this.iteration = 0;
 		do {
 			this.iteration();
-			//printf("Iteration " + this.iteration + ", diff=" + this.diff);
-			//System.out.println(this.iteration);
-		} while( (this.iteration<25 || this.diff>desiredScore) && this.iteration<i);
+
+		} while( (this.iteration<25 || this.percentChanged>desiredScore) && this.iteration<i);
 		
 		return this.iteration;
 	}
 
 	@Override
 	public double getScore() {
-		return this.diff;
+		if( this.percentChanged<0.2 || this.percentChanged >0.5 ) {
+			return 0;
+		}
+		
+		double score = 1.0 + ( 0.5 - (this.percentChanged-0.2) - this.percentInvalid);
+		
+		return score;
 	}
 	
 	
