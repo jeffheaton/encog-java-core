@@ -101,6 +101,8 @@ public class GenericCA extends BasicProgram implements Serializable {
 	}
 
 	public void setPhysics(double[] d) {
+		this.finalTrans.clear();
+		this.stepTrans.clear();
 		this.physics = d.clone();
 		int cellSize = this.sourceUniverse.getCellFactory().size();
 		int countPer = (cellSize * 3) + 1;
