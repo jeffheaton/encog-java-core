@@ -1,7 +1,5 @@
 package perceptron;
 
-import helpers.EvaluationTechnique;
-
 import java.util.ArrayList;
 
 import org.encog.NullStatusReportable;
@@ -17,6 +15,7 @@ import org.encog.util.normalize.input.InputField;
 import org.encog.util.normalize.input.InputFieldMLDataSet;
 import org.encog.util.normalize.output.OutputFieldRangeMapped;
 import org.encog.util.normalize.target.NormalizationStorageNeuralDataSet;
+import helpers.DataMapper;
 
 
 public class Tester {
@@ -28,10 +27,10 @@ public class Tester {
 	protected static BasicNeuralDataSet _trainingSet;
 	protected static BasicNeuralDataSet _testSet;
 	protected static BasicNetwork _network;
-	private static Mapper _mapper;
+	private static DataMapper _mapper;
 	private static boolean _inputsReversed = false;
 
-	public Tester(int trainingSetSize, int inputs, int readInputs, int outputs, BasicNetwork network, Mapper mapper)
+	public Tester(int trainingSetSize, int inputs, int readInputs, int outputs, BasicNetwork network, DataMapper mapper)
 	{
 		setTrainingSetSize(trainingSetSize);
 		setInputs(inputs);
@@ -154,11 +153,11 @@ public class Tester {
 		Tester._inputs = _inputs;
 	}
 
-	public static Mapper getMapper() {
+	public static DataMapper getMapper() {
 		return _mapper;
 	}
 
-	public static void setMapper(Mapper _mapper) {
+	public static void setMapper(DataMapper _mapper) {
 		Tester._mapper = _mapper;
 	}
 

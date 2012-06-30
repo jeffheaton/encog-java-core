@@ -8,7 +8,7 @@ import org.encog.ml.data.MLDataSet;
 
 public class BaggingDataSetFactory implements EnsembleDataSetFactory {
 
-	private MLDataSet dataSource;
+	private MLDataSet dataSource = null;
 	private int dataSetSize;
 	
 	@Override

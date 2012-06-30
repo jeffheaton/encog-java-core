@@ -21,11 +21,14 @@ public class DataLoader {
 	private static DataMapper _dataMapper;
 	private static int _inputs;
 	private static int _readinputs;
+	private static int _trainingSetSize;
 
-	public DataLoader(DataMapper dataMapper, int readInputs, int inputs) {
+	public DataLoader(DataMapper dataMapper, int trainingSetSize, int readInputs, int inputs, boolean inputsReversed) {
 		_dataMapper = dataMapper;
 		_readinputs = readInputs;
 		_inputs = inputs;
+		_inputsReversed = inputsReversed;
+		_trainingSetSize = trainingSetSize;
 	}
 	
 	public int readData(String inputFile) {
@@ -70,7 +73,7 @@ public class DataLoader {
 		normalizer.process();
 		for (int i = 0; i < total; i++)
 		{
-			if (i < getTrainingSetSize()) 
+			if (i < _trainingSetSize) 
 				_trainingSet.add(_normSet.get(i).getInput(),_totalSet.get(i).getIdeal());
 			else
 				_testSet.add(_normSet.get(i).getInput(),_totalSet.get(i).getIdeal());
@@ -80,11 +83,7 @@ public class DataLoader {
 		
 	}
 
-	private long getTrainingSetSize() {
-		return _trainingSet.getRecordCount();
-	}
-
-	private static DataMapper getMapper() {
+	public DataMapper getMapper() {
 		return _dataMapper;
 	}
 

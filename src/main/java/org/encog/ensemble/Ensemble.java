@@ -26,8 +26,9 @@ public interface Ensemble {
 	/**
 	 * Train the ensemble to a target accuracy
 	 * @param targetAccuracy
+	 * @return
 	 */
-	public void train(double targetAccuracy);
+	public int train(double targetAccuracy);
 	
 	/**
 	 * Extract a specific training set from the Ensemble

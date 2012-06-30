@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import org.encog.ml.data.MLData;
 import org.encog.neural.data.basic.BasicNeuralData;
 
-import perceptron.Mapper;
-
-public class LetterMapper implements Mapper {
+public class LetterMapper implements DataMapper {
 	
 	private static int _outputs;
 	private static double _activationThreshold;

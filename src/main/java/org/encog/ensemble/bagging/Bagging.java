@@ -69,18 +69,21 @@ public class Bagging implements Ensemble {
 		initMembers();
 	}
 
-	public void train(double targetError, boolean verbose) {
+	public int train(double targetError, boolean verbose) {
+		int iteration = 0;
 		for (EnsembleML current : members)
 		{
+			iteration++;
 			MLTrain train = trainFactory.getTraining((BasicNetwork)current.getMl(), current.getTrainingSet());
-			System.out.println("Training: " + current.toString());
+			if(verbose) System.out.println("Training: " + current.toString());
 			current.train(train, targetError, verbose);
 		}
+		return iteration;
 	}
 
 	@Override
-	public void train(double targetError) {
-		train(targetError, false);
+	public int train(double targetError) {
+		return train(targetError, false);
 	}
 	
 
