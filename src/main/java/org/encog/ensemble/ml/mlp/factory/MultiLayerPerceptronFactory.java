@@ -28,5 +28,13 @@ public class MultiLayerPerceptronFactory implements EnsembleMLMethodFactory {
 		network.reset();
 		return network;
 	}
+	
+	@Override
+	public String toString() {
+		String ret = "mlp{";
+		for (int layerSize: layers)
+			ret = ret + "," + layerSize;
+		return ret + "}";
+	}
 
 }

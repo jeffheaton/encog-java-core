@@ -13,5 +13,10 @@ public class ResilientPropagationFactory implements EnsembleTrainFactory {
 	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData) {
 		return (MLTrain) new ResilientPropagation((BasicNetwork) mlMethod, trainingData);
 	}
+	
+	@Override
+	public String toString() {
+		return "resprop";
+	}
 
 }

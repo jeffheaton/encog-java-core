@@ -13,5 +13,10 @@ public class ScaledConjugateGradientFactory implements EnsembleTrainFactory {
 	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData) {
 		return (MLTrain) new ScaledConjugateGradient((BasicNetwork) mlMethod, trainingData);
 	}
+	
+	@Override
+	public String toString() {
+		return "scg";
+	}
 
 }

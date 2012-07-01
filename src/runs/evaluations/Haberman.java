@@ -27,31 +27,32 @@ public class Haberman {
 	private static int readInputs = 1;
 	private static boolean inputsReversed = true;
 	private static String inputFile = "data/haberman.data";
-	private static List<Integer> splits = Arrays.asList(1,3,10);
-	private static List<Integer> dataSetSizes = Arrays.asList(10,30,100,300);
-	private static List<Double> trainingErrors = Arrays.asList(0.3,0.1,0.03,0.01,0.003,0.001);
-	private static int trainingSetSize = 260;
+	private static List<Integer> splits = Arrays.asList(1,3,10,30,100);
+	private static List<Integer> dataSetSizes = Arrays.asList(30,100,300,1000);
+	private static List<Double> trainingErrors = Arrays.asList(0.3,0.1,0.03);
+	private static int trainingSetSize = 250;
 	
-	public static void loop(EnsembleTrainFactory tf, String label, EnsembleMLMethodFactory mlfact, EnsembleAggregator agg) {
+	public static void loop(EnsembleTrainFactory tf, EnsembleMLMethodFactory mlfact, EnsembleAggregator agg) {
+		for(Integer dataSetSize : dataSetSizes)
 		for(Integer split : splits)
-			for(Integer dataSetSize : dataSetSizes) {
-				String fullLabel = "bagging," + label + "," + split + "," + dataSetSize;
-				bagging = new BaggingET(split, dataSetSize, fullLabel, mlfact, tf, agg);
-				for (double te: trainingErrors) {
-					Evaluator ev = new Evaluator(bagging, dataLoader, te);
-					ev.getResults(fullLabel+","+te);
-				}
+		{
+			String fullLabel = "bagging," + tf.toString() + "," + mlfact.toString() +
+							   "," + agg.toString() + "," + split + "," + dataSetSize;
+			bagging = new BaggingET(split, dataSetSize, fullLabel, mlfact, tf, agg);
+			for (double te: trainingErrors) {
+				Evaluator ev = new Evaluator(bagging, dataLoader, te);
+				ev.getResults(fullLabel+","+te);
 			}
+		}
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(System.getProperty("user.dir"));
 		dataLoader = new DataLoader(new IntMapper(outputs,0.3),trainingSetSize,readInputs,inputs,inputsReversed);
 		dataLoader.readData(inputFile);
-		EnsembleTrainFactory rpf = new ResilientPropagationFactory();
-		MultiLayerPerceptronFactory mlpf = new MultiLayerPerceptronFactory();
-		mlpf.setParameters(Arrays.asList(4,4), new ActivationSigmoid());
+		EnsembleTrainFactory etf = new ResilientPropagationFactory();
+		MultiLayerPerceptronFactory mlf = new MultiLayerPerceptronFactory();
+		mlf.setParameters(Arrays.asList(100), new ActivationSigmoid());
 		MajorityVoting mv = new MajorityVoting();
-		loop(rpf,"resprop,mpl{4,4},majorityvoting",mlpf,mv);
+		loop(etf,mlf,mv);
 	}
 }
