@@ -1,4 +1,4 @@
-package perceptron.haberman;
+package perceptron;
 
 
 import helpers.IntMapper;
@@ -9,7 +9,6 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 
-import perceptron.Tester;
 
 public class Haberman extends Tester {
 

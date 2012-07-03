@@ -1,4 +1,4 @@
-package evaluations;
+package ensembles;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,22 +15,24 @@ import bagging.BaggingET;
 import helpers.DataLoader;
 import helpers.Evaluator;
 import helpers.IntMapper;
+import helpers.LetterMapper;
 
-public class Haberman {
+public class LetterRecognition {
 
 	Evaluator ev;
 	static BaggingET bagging;
 	static DataLoader dataLoader;
 	
-	private static int outputs = 2;
-	private static int inputs = 3;
+	private static int outputs = 'Z' - 'A' + 1;
+	private static int inputs = 16;
 	private static int readInputs = 1;
-	private static boolean inputsReversed = true;
-	private static String inputFile = "data/haberman.data";
+	private static boolean inputsReversed = false;
+	private static String inputFile = "data/letter-recognition.data";
 	private static List<Integer> splits = Arrays.asList(1,3,10,30,100);
-	private static List<Integer> dataSetSizes = Arrays.asList(30,100,300,1000);
+	private static List<Integer> dataSetSizes = Arrays.asList(2000);
 	private static List<Double> trainingErrors = Arrays.asList(0.3,0.1,0.03);
-	private static int trainingSetSize = 250;
+	private static int trainingSetSize = 2000;
+	private static double activationThreshold = 0.3;
 	
 	public static void loop(EnsembleTrainFactory tf, EnsembleMLMethodFactory mlfact, EnsembleAggregator agg) {
 		for(Integer dataSetSize : dataSetSizes)
@@ -47,11 +49,11 @@ public class Haberman {
 	}
 	
 	public static void main(String[] args) {
-		dataLoader = new DataLoader(new IntMapper(outputs,0.3),trainingSetSize,readInputs,inputs,inputsReversed);
+		dataLoader = new DataLoader(new LetterMapper(outputs, activationThreshold),trainingSetSize,readInputs,inputs,inputsReversed);
 		dataLoader.readData(inputFile);
 		EnsembleTrainFactory etf = new ResilientPropagationFactory();
 		MultiLayerPerceptronFactory mlf = new MultiLayerPerceptronFactory();
-		mlf.setParameters(Arrays.asList(100), new ActivationSigmoid());
+		mlf.setParameters(Arrays.asList(300), new ActivationSigmoid());
 		MajorityVoting mv = new MajorityVoting();
 		loop(etf,mlf,mv);
 	}
