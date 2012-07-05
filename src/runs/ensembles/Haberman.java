@@ -6,6 +6,7 @@ import java.util.List;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
+import org.encog.ensemble.aggregator.Averaging;
 import org.encog.ensemble.aggregator.EnsembleAggregator;
 import org.encog.ensemble.aggregator.MajorityVoting;
 import org.encog.ensemble.ml.mlp.factory.MultiLayerPerceptronFactory;
@@ -53,7 +54,6 @@ public class Haberman {
 		EnsembleTrainFactory etf = new ResilientPropagationFactory();
 		MultiLayerPerceptronFactory mlf = new MultiLayerPerceptronFactory();
 		mlf.setParameters(Arrays.asList(100), new ActivationSigmoid());
-		MajorityVoting mv = new MajorityVoting();
-		loop(etf,mlf,mv);
+		loop(etf,mlf,new Averaging());
 	}
 }
