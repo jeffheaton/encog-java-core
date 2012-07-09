@@ -99,13 +99,13 @@ public class AnalyzedField extends DataField {
 		this.instances++;
 
 		if (isReal()) {
-			try {
+			if (this.script.determineFormat().isValid(str)) {
 				final double d = this.script.determineFormat().parse(str);
 				setMax(Math.max(d, getMax()));
 				setMin(Math.min(d, getMin()));
 				this.total += d;
 				accountedFor = true;
-			} catch (final CSVError ex) {
+			} else {
 				setReal(false);
 				if (!isInteger()) {
 					setMax(0);

@@ -79,7 +79,7 @@ public class PersistBasicUniverse implements EncogPersistor {
 					int idx = 0;
 					for(int col=0;col<cols;col++) {
 						UniverseCell cell = result.get(row, col);
-						for(int i=0;i<ec;i++) {
+						for(int i=0;i<size;i++) {
 							cell.set(i, d[idx++]);
 						}
 					}
@@ -110,7 +110,7 @@ public class PersistBasicUniverse implements EncogPersistor {
 			out.writeProperty(BasicUniverse.ELEMENT_COUNT, factory2.getElementCount());
 			out.writeProperty(PersistConst.MAX, factory2.getMax());
 			out.writeProperty(PersistConst.MIN, factory2.getMin());
-			out.writeProperty(PersistConst.SIZE, factory2.getSize());
+			out.writeProperty(PersistConst.SIZE, factory2.size());
 		} else {
 			throw new CellularAutomataError("Unknown cell factory: " + className);
 		}

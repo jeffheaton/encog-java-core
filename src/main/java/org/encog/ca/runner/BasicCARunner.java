@@ -2,9 +2,6 @@ package org.encog.ca.runner;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.encog.ca.program.CAProgram;
 import org.encog.ca.universe.Universe;
@@ -16,11 +13,17 @@ public class BasicCARunner implements CARunner, Runnable {
 	private CAProgram physics;
 	private boolean running;
 	private int iteration;
-	private double diff;
+	private double percentChanged;
+	private double percentInvalid;
 	private List<UniverseListener> listeners = new ArrayList<UniverseListener>();
 	private Thread thread;
 
 	public BasicCARunner(Universe theUniverse, CAProgram thePhysics) {
+		init(theUniverse, thePhysics);
+	}
+	
+	public void init(Universe theUniverse, CAProgram thePhysics)
+	{
 		this.universe = theUniverse;
 		this.tempUniverse = (Universe) theUniverse.clone();
 		this.physics = thePhysics;
@@ -31,19 +34,18 @@ public class BasicCARunner implements CARunner, Runnable {
 	}
 
 	public String toString() {
-		return "Iteration: " + this.iteration + ", Diff=" + diff;
+		return "Iteration: " + this.iteration + ", Diff=" + percentChanged+ ", Invalid="+ this.percentInvalid+", Score=" + this.getScore();
 	}
 
 	public void iteration() {
-		int height = universe.getRows();
-		int width = universe.getColumns();
-
 		this.tempUniverse.copy(this.universe);
 
+		this.physics.setSourceUniverse(this.universe);
 		this.physics.setTargetUniverse(this.tempUniverse);
 		this.physics.iteration();
-
-		this.diff = this.tempUniverse.compare(universe);
+		
+		this.percentChanged = this.tempUniverse.compare(universe);
+		this.percentInvalid = this.tempUniverse.calculatePercentInvalid();
 		this.iteration++;
 
 		this.universe.copy(this.tempUniverse);
@@ -92,7 +94,7 @@ public class BasicCARunner implements CARunner, Runnable {
 		for (;;) {
 			iteration();
 
-			if (this.iteration > 5 && this.diff < 0.01)
+			if (this.iteration > 5 && this.percentChanged < 0.01)
 				break;
 
 			if (this.iteration > maxIterations)
@@ -107,8 +109,34 @@ public class BasicCARunner implements CARunner, Runnable {
 
 	@Override
 	public Universe getUniverse() {
-		// TODO Auto-generated method stub
 		return this.universe;
+	}
+
+	@Override
+	public CAProgram getPhysics() {
+		return this.physics;
+	}
+
+	@Override
+	public int runToConverge(int i, double desiredScore) {
+		this.iteration = 0;
+		do {
+			this.iteration();
+
+		} while( (this.iteration<25 || this.percentChanged>desiredScore) && this.iteration<i);
+		
+		return this.iteration;
+	}
+
+	@Override
+	public double getScore() {
+		if( this.percentChanged<0.2 || this.percentChanged >0.5 ) {
+			return 0;
+		}
+		
+		double score = 1.0 + ( 0.5 - (this.percentChanged-0.2) - this.percentInvalid);
+		
+		return score;
 	}
 	
 	
