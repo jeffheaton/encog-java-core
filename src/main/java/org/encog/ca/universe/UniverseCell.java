@@ -11,6 +11,8 @@ public interface UniverseCell {
 	double get(int i);
 
 	void set(int i, double d);
+	
+	void set(int i, double[] d);
 
 	int size();
 

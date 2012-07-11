@@ -1,5 +1,7 @@
 package org.encog.ca.runner;
 
+import org.encog.ca.program.CAProgram;
+import org.encog.ca.universe.Universe;
 import org.encog.ca.universe.UniverseListener;
 
 public interface CARunner {
@@ -16,6 +18,14 @@ public interface CARunner {
 
 	boolean isRunning();
 
-	Object getUniverse();
+	Universe getUniverse();
+
+	CAProgram getPhysics();
+
+	void init(Universe universe, CAProgram physics);
+
+	int runToConverge(int i, double desiredScore);
+
+	double getScore();
 
 }

@@ -1,6 +1,8 @@
 package org.encog.ca.program.basic;
 
-public class Movement {
+import java.io.Serializable;
+
+public class Movement implements Serializable {
 	private final int rowMovement;
 	private final int columnmMovement;
 

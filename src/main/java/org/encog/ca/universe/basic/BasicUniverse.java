@@ -1,12 +1,18 @@
 package org.encog.ca.universe.basic;
 
+import java.io.Serializable;
+
 import org.encog.ca.CellularAutomataError;
 import org.encog.ca.universe.Universe;
 import org.encog.ca.universe.UniverseCell;
 import org.encog.ca.universe.UniverseCellFactory;
 import org.encog.ml.BasicML;
 
-public class BasicUniverse extends BasicML implements Universe {
+public class BasicUniverse extends BasicML implements Universe, Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final String ELEMENT_COUNT = "elementCount";
 	private final UniverseCell[][] data;
 	private final UniverseCellFactory cellFactory;
@@ -104,5 +110,24 @@ public class BasicUniverse extends BasicML implements Universe {
 	public void updateProperties() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public double calculatePercentInvalid() {
+		int result = 0;
+		int total = 0;
+		for(int row = 0; row<getRows(); row++) {			
+			for(int col=0; col<getColumns(); col++) {
+				UniverseCell cell = get(row,col);
+				for(int i=0;i<cell.size();i++) {
+					if( cell.get(i)<-1 || cell.get(i)>1 ) {
+						result++;
+					}
+					total++;
+				}				
+			}
+		}
+		
+		return (double)result/(double)total;
 	}
 }

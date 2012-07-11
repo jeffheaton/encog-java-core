@@ -1,10 +1,16 @@
 package org.encog.ca.universe.basic;
 
+import java.io.Serializable;
+
 import org.encog.ca.universe.UniverseCell;
 import org.encog.ca.universe.UniverseCellFactory;
 
-public class BasicCellFactory implements UniverseCellFactory {
+public class BasicCellFactory implements UniverseCellFactory, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final int size;
 	private final double min;
 	private final double max;
@@ -43,7 +49,7 @@ public class BasicCellFactory implements UniverseCellFactory {
 		}		
 	}
 
-	public int getSize() {
+	public int size() {
 		return size;
 	}
 
