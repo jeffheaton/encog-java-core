@@ -28,16 +28,16 @@ public class IntMapper implements DataMapper {
 
 	@Override
 	public ArrayList<String> unmap(MLData dataSet) {
-		char max = '0';
+		int max = 0;
 		double maxval = _activationThreshold;
 		for(int i=0; i < _outputs; i++)
 			if (dataSet.getData(i) > maxval)
 			{
-				max = (char) ('1' + i);
+				max = (i + 1);
 				maxval = dataSet.getData(i);
 			}
 		ArrayList<String> retVal = new ArrayList<String>();
-		retVal.add("" + max);
+		retVal.add(Integer.toString(max));
 		return retVal;
 	}
 

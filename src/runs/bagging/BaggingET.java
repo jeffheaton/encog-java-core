@@ -14,6 +14,7 @@ import org.encog.neural.data.basic.BasicNeuralDataSet;
 import helpers.DataLoader;
 import helpers.DataMapper;
 import helpers.EvaluationTechnique;
+import helpers.PerfResults;
 
 public class BaggingET implements EvaluationTechnique {
 
@@ -37,7 +38,7 @@ public class BaggingET implements EvaluationTechnique {
 	}
 	
 	@Override
-	public double getError(BasicNeuralDataSet evalSet, DataMapper dataMapper) {
+	public double getMisclassification(BasicNeuralDataSet evalSet, DataMapper dataMapper) {
 		int bad = 0;
 		int evals = 0;
 		for(int i = 0; i < evalSet.getRecordCount(); i++)
@@ -50,12 +51,13 @@ public class BaggingET implements EvaluationTechnique {
 				bad++;
 			evals++;
 		}
-		return (double) bad / (double) evals;
+		double error = (double) bad / (double) evals;
+		return error;
 	}
 
 	@Override
-	public int train(double trainToError) {
-		return bagging.train(trainToError);
+	public int train(double trainToError, boolean verbose) {
+		return bagging.train(trainToError,verbose);
 	}
 
 	@Override
@@ -91,5 +93,35 @@ public class BaggingET implements EvaluationTechnique {
 		this.testSet = testSet;
 	}
 
+	@Override
+	public PerfResults testPerformance(BasicNeuralDataSet evalSet, DataMapper dataMapper) {
+		int outputs = evalSet.getIdealSize();
+		long size = evalSet.getRecordCount();
+		int tp[] = new int[outputs];
+		int tn[] = new int[outputs];
+		int fp[] = new int[outputs];
+		int fn[] = new int[outputs];
+		for(int i = 0; i < size; i++)
+		{
+			MLDataPair pair = evalSet.get(i);
+			MLData output = bagging.compute(pair.getInput());
+			for(int thisClass = 0; thisClass < outputs; thisClass++) {
+				if (output.getData(thisClass) > 0.5) {
+					if (pair.getIdeal().getData(thisClass) > 0.5) {
+						tp[thisClass]++;
+					} else {
+						fp[thisClass]++;
+					}
+				} else {
+					if (pair.getIdeal().getData(thisClass) < 0.5) {
+						tn[thisClass]++;
+					} else {
+						fn[thisClass]++;						
+					}
+				}
+			}
+		}
+		return new PerfResults(tp,fp,tn,fn,outputs);
+	}
 	
 }

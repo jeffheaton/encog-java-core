@@ -1,5 +1,7 @@
 package helpers;
 
+import org.encog.neural.data.basic.BasicNeuralDataSet;
+
 public class Evaluator {
 
 	private EvaluationTechnique technique;
@@ -10,19 +12,35 @@ public class Evaluator {
 		dataLoader = new DataLoader(mapper,inputCols,inputs,trainingSetSize,inputsReversed);
 		dataLoader.readData(dataFile);
 		this.technique.init(dataLoader);
-		this.technique.train(targetTrainingError);
+		this.technique.train(targetTrainingError,false);
 	}
 	
 	public Evaluator(EvaluationTechnique technique, DataLoader dataLoader, double targetTrainingError) {
 		this.setTechnique(technique);
 		this.dataLoader = dataLoader;
 		this.technique.init(dataLoader);
-		this.technique.train(targetTrainingError);
+		this.technique.train(targetTrainingError,false);
+	}
+	
+	public void makeLine(String type, String prefix, BasicNeuralDataSet dataSet) {
+		DataMapper dataMapper = dataLoader.getMapper();
+		PerfResults perf = this.technique.testPerformance(dataSet, dataMapper);
+		System.out.println(prefix + "," + type + "," + 
+				(this.technique.getMisclassification(dataSet,dataMapper)) + "," +
+				(perf.getAccuracy(PerfResults.AveragingMethod.MICRO)) + "," +
+				(perf.getPrecision(PerfResults.AveragingMethod.MICRO)) + "," +
+				(perf.getRecall(PerfResults.AveragingMethod.MICRO)) + "," +
+				(perf.FScore(1.0, PerfResults.AveragingMethod.MICRO)) + "," +
+				(perf.getAccuracy(PerfResults.AveragingMethod.MACRO)) + "," +
+				(perf.getPrecision(PerfResults.AveragingMethod.MACRO)) + "," +
+				(perf.getRecall(PerfResults.AveragingMethod.MACRO)) + "," +
+				(perf.FScore(1.0, PerfResults.AveragingMethod.MACRO))
+		);
 	}
 	
 	public void getResults (String prefix) {
-		System.out.println(prefix + ",train," + (1 - this.technique.getError(this.dataLoader.getTrainingSet(),dataLoader.getMapper())));
-		System.out.println(prefix + ",test," + (1 - this.technique.getError(this.dataLoader.getTestSet(),dataLoader.getMapper())));
+		makeLine(prefix,"train",this.dataLoader.getTrainingSet());
+		makeLine(prefix,"test",this.dataLoader.getTestSet());
 	}
 
 	public EvaluationTechnique getTechnique() {
