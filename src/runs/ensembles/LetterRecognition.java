@@ -29,8 +29,8 @@ public class LetterRecognition {
 	private static boolean inputsReversed = false;
 	private static String inputFile = "data/letter-recognition.data";
 	private static List<Integer> splits = Arrays.asList(1,3,10,30,100);
-	private static List<Integer> dataSetSizes = Arrays.asList(1000,5000,10000,16000);
-	private static List<Double> trainingErrors = Arrays.asList(0.01);
+	private static List<Integer> dataSetSizes = Arrays.asList(16000);
+	private static List<Double> trainingErrors = Arrays.asList(0.02);
 	private static int trainingSetSize = 16000;
 	private static double activationThreshold = 0.3;
 	
