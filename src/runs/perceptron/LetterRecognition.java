@@ -13,7 +13,8 @@ import org.encog.neural.networks.training.propagation.resilient.ResilientPropaga
 
 public class LetterRecognition extends Tester {
 	
-	private static double _activationThreshold = 0.3;
+	private static double _activationThreshold = 0.0;
+	private static double _lowBound = -1.0;
 	private static double _trainToError = 0.1;
 
 	public static BasicNetwork createNetwork() {
@@ -31,7 +32,7 @@ public class LetterRecognition extends Tester {
 		setOutputs('Z' - 'A' + 1);
 		setReadInputs(1);
 		setTrainingSetSize(2000);
-		setMapper(new LetterMapper(getOutputs(), _activationThreshold));
+		setMapper(new LetterMapper(getOutputs(), _activationThreshold, _lowBound));
 		readData("../data/letter-recognition.data");
 		_network = createNetwork();		
 		//Important: without proper randomizing the network doesn't train to convergence.

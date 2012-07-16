@@ -19,7 +19,7 @@ public class Evaluator {
 		this.setTechnique(technique);
 		this.dataLoader = dataLoader;
 		this.technique.init(dataLoader);
-		this.technique.train(targetTrainingError,false);
+		this.technique.train(targetTrainingError,true);
 	}
 	
 	public void makeLine(String type, String prefix, BasicNeuralDataSet dataSet) {

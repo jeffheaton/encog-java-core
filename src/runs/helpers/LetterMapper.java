@@ -9,18 +9,20 @@ public class LetterMapper implements DataMapper {
 	
 	private static int _outputs;
 	private static double _activationThreshold;
+	private static double _lowBound;
 	
-	public LetterMapper(int outputs, double activationThreshold)
+	public LetterMapper(int outputs, double activationThreshold, double lowBound)
 	{
 	  _outputs = outputs;
 	  _activationThreshold = activationThreshold;
+	  _lowBound = lowBound;
 	}
 	
 	@Override
 	public MLData map(ArrayList<String> data) {
 		final BasicNeuralData retVal = new BasicNeuralData(_outputs);
 		for (int i = 0; i < _outputs; i++)
-			retVal.add(i, 0.0);
+			retVal.add(i, _lowBound);
 		int value = data.get(0).charAt(0) - 'A';
 		retVal.setData(value, 1.0);
 		return retVal;

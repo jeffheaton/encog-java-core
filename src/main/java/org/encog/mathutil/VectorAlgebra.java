@@ -163,4 +163,18 @@ public class VectorAlgebra {
         }
     }
 
+    /**
+     * Return the dot product (sum of internal products) of two equally sized vectors
+     * @param v1
+     * @param v2
+     * @return
+     */
+    public double dotProduct(double[] v1, double[] v2) {
+    	assert(v1.length == v2.length);
+    	double sum = 0;
+    	for (int i = 0; i < v1.length; i++)
+    		sum += v1[i] * v2[i];
+    	return sum;
+    }
+
 }

@@ -4,7 +4,15 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 
 public interface Ensemble {
-	
+
+	public class NotPossibleInThisMethod extends Exception {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 5118253806179408868L;
+		
+	}
 	/**
 	 * Set the training method to use for this ensemble
 	 * @param newTrain
@@ -48,8 +56,9 @@ public interface Ensemble {
 	 * Add a member to the ensemble
 	 * @param newMember
 	 * @return
+	 * @throws NotPossibleInThisMethod 
 	 */
-	public void addMember(EnsembleML newMember);
+	public void addMember(EnsembleML newMember) throws NotPossibleInThisMethod;
 	
 	/**
 	 * Compute the output for a specific input

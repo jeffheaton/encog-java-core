@@ -49,6 +49,7 @@ public class Haberman {
 	}
 	
 	public static void main(String[] args) {
+		//TODO: use args
 		dataLoader = new DataLoader(new IntMapper(outputs,activationThreshold),trainingSetSize,readInputs,inputs,inputsReversed);
 		dataLoader.readData(inputFile);
 		EnsembleTrainFactory etf = new ResilientPropagationFactory();
