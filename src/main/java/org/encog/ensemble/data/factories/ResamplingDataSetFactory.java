@@ -1,6 +1,9 @@
-package org.encog.ensemble;
+package org.encog.ensemble.data.factories;
 
 import java.util.Random;
+
+import org.encog.ensemble.data.EnsembleDataSet;
+
 
 public class ResamplingDataSetFactory extends EnsembleDataSetFactory {
 	@Override

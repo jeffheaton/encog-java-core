@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.encog.ensemble;
+package org.encog.ensemble.data;
 
 import java.util.ArrayList;
 import java.util.Iterator;

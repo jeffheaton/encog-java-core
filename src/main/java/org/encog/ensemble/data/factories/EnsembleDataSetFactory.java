@@ -1,7 +1,8 @@
-package org.encog.ensemble;
+package org.encog.ensemble.data.factories;
 
 import java.util.ArrayList;
 
+import org.encog.ensemble.data.EnsembleDataSet;
 import org.encog.ml.data.MLDataSet;
 
 public abstract class EnsembleDataSetFactory {

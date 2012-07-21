@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 
 import org.encog.ensemble.aggregator.EnsembleAggregator;
+import org.encog.ensemble.data.factories.EnsembleDataSetFactory;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;

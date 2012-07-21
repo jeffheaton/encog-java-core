@@ -1,7 +1,6 @@
 package org.encog.ensemble.adaboost;
 
 import org.encog.ensemble.Ensemble;
-import org.encog.ensemble.EnsembleDataSetFactory;
 import org.encog.ensemble.EnsembleML;
 import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
@@ -9,6 +8,7 @@ import org.encog.ensemble.EnsembleTypes;
 import org.encog.ensemble.EnsembleTypes.ProblemType;
 import org.encog.ensemble.aggregator.EnsembleAggregator;
 import org.encog.ensemble.bagging.BaggingML;
+import org.encog.ensemble.data.factories.EnsembleDataSetFactory;
 import org.encog.mathutil.VectorAlgebra;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;

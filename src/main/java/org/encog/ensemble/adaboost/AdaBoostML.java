@@ -1,7 +1,7 @@
 package org.encog.ensemble.adaboost;
 
-import org.encog.ensemble.EnsembleDataSet;
 import org.encog.ensemble.EnsembleML;
+import org.encog.ensemble.data.EnsembleDataSet;
 import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLData;
 import org.encog.ml.train.MLTrain;

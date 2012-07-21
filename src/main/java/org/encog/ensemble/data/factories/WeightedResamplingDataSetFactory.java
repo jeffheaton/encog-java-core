@@ -1,7 +1,9 @@
-package org.encog.ensemble;
+package org.encog.ensemble.data.factories;
 
 import java.util.Random;
 
+import org.encog.ensemble.data.EnsembleDataPair;
+import org.encog.ensemble.data.EnsembleDataSet;
 import org.encog.ml.data.MLDataSet;
 
 public class WeightedResamplingDataSetFactory extends EnsembleDataSetFactory {

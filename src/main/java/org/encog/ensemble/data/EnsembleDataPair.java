@@ -1,4 +1,4 @@
-package org.encog.ensemble;
+package org.encog.ensemble.data;
 
 import org.encog.ml.data.MLDataPair;
 

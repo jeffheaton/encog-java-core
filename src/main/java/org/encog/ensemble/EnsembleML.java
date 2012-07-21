@@ -3,6 +3,7 @@
  */
 package org.encog.ensemble;
 
+import org.encog.ensemble.data.EnsembleDataSet;
 import org.encog.ml.MLClassification;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
