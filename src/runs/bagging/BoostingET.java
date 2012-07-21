@@ -5,7 +5,6 @@ import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.adaboost.AdaBoost;
 import org.encog.ensemble.aggregator.EnsembleAggregator;
 import org.encog.ml.data.MLData;
-import org.encog.ml.data.MLDataSet;
 
 import helpers.DataLoader;
 import helpers.EvaluationTechnique;
@@ -14,10 +13,6 @@ public class BoostingET extends EvaluationTechnique {
 
 	private AdaBoost boosting;
 	private int T;
-	private EnsembleMLMethodFactory mlMethod;
-	private EnsembleTrainFactory trainFactory;
-	private EnsembleAggregator aggregator;
-	private MLDataSet trainingSet;
 	
 	public BoostingET(int T, String label, EnsembleMLMethodFactory mlMethod, EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator) {
 		this.T = T;
@@ -26,7 +21,6 @@ public class BoostingET extends EvaluationTechnique {
 		this.trainFactory = trainFactory;
 		this.aggregator = aggregator;
 	}
-
 
 	@Override
 	public int train(double trainToError, boolean verbose) {
@@ -40,7 +34,6 @@ public class BoostingET extends EvaluationTechnique {
 		setTestSet(dataLoader.getTestSet());
 		boosting.setTrainingData(trainingSet);
 	}
-
 
 	@Override
 	public MLData compute(MLData input) {

@@ -14,9 +14,6 @@ public class BaggingET extends EvaluationTechnique {
 	private Bagging bagging;
 	private int splits;
 	private int dataSetSize;
-	private EnsembleMLMethodFactory mlMethod;
-	private EnsembleTrainFactory trainFactory;
-	private EnsembleAggregator aggregator;
 
 	public BaggingET(int splits, int dataSetSize, String label, EnsembleMLMethodFactory mlMethod, EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator) {
 		this.splits = splits;
@@ -44,7 +41,5 @@ public class BaggingET extends EvaluationTechnique {
 	public MLData compute(MLData input) {
 		return bagging.compute(input);
 	}
-
-
 	
 }

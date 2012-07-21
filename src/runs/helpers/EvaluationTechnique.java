@@ -2,6 +2,9 @@ package helpers;
 
 import java.util.ArrayList;
 
+import org.encog.ensemble.EnsembleMLMethodFactory;
+import org.encog.ensemble.EnsembleTrainFactory;
+import org.encog.ensemble.aggregator.EnsembleAggregator;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
@@ -12,6 +15,9 @@ public abstract class EvaluationTechnique {
 	protected String label;
 	protected MLDataSet trainingSet;
 	private MLDataSet testSet;
+	protected EnsembleMLMethodFactory mlMethod;
+	protected EnsembleTrainFactory trainFactory;
+	protected EnsembleAggregator aggregator;
 	
 	public double getMisclassification(BasicNeuralDataSet evalSet, DataMapper dataMapper) {
 		int bad = 0;
