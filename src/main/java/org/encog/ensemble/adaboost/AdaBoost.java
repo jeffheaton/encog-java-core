@@ -24,12 +24,13 @@ public class AdaBoost extends Ensemble {
 	private VectorAlgebra va;
 	private ArrayList<Double> weights;
 	
-	public AdaBoost(int iterationsT, EnsembleMLMethodFactory mlFactory, EnsembleAggregator aggregator) {
+	public AdaBoost(int iterationsT, EnsembleMLMethodFactory mlFactory, EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator) {
 		this.T = iterationsT;
 		this.mlFactory = mlFactory;
 		this.va = new VectorAlgebra();
 		this.weights = new ArrayList<Double>();
 		this.members = new ArrayList<EnsembleML>();
+		this.trainFactory = trainFactory;
 	}
 	
 	public int train(double targetAccuracy, boolean verbose) {
