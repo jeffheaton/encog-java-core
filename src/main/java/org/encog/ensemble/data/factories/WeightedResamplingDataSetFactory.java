@@ -12,27 +12,27 @@ public class WeightedResamplingDataSetFactory extends EnsembleDataSetFactory {
 	
 	EnsembleDataPair getCandidate(double weight) {
 		double weightSoFar = 0;
-		for (int i = 0; i < dataSetSize; i++) {
+		for (int i = 0; i < dataSource.size(); i++) {
 			weightSoFar += dataSource.get(i).getSignificance();
 			if (weightSoFar > weight)
 				return (EnsembleDataPair) dataSource.get(i);
 		}
-		return (EnsembleDataPair) dataSource.get(dataSetSize);
+		return (EnsembleDataPair) dataSource.get(dataSource.size());
 	}
 	
 	@Override
 	public EnsembleDataSet getNewDataSet() {
 		double weightSum = 0;
-		for (int i = 0; i < dataSetSize; i++)
+		for (int i = 0; i < dataSource.size(); i++)
 			weightSum += dataSource.get(i).getSignificance();
 		Random generator = new Random();
-		EnsembleDataSet bds = new EnsembleDataSet(dataSource.getInputSize(), dataSource.getIdealSize());
+		EnsembleDataSet ds = new EnsembleDataSet(dataSource.getInputSize(), dataSource.getIdealSize());
 		for (int i = 0; i < dataSetSize; i++)
 		{
 			double candidate = generator.nextDouble() * weightSum;
-			bds.add(getCandidate(candidate));
+			ds.add(getCandidate(candidate));
 		}
-		return bds;
+		return ds;
 	}
 
 }
