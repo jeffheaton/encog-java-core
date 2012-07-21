@@ -5,7 +5,10 @@ import org.encog.ensemble.EnsembleDataSetFactory;
 import org.encog.ensemble.EnsembleML;
 import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
+import org.encog.ensemble.EnsembleTypes;
 import org.encog.ensemble.EnsembleTypes.ProblemType;
+import org.encog.ensemble.aggregator.EnsembleAggregator;
+import org.encog.ensemble.bagging.BaggingML;
 import org.encog.mathutil.VectorAlgebra;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
@@ -15,59 +18,37 @@ import org.encog.ml.train.MLTrain;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-public class AdaBoost implements Ensemble {
+public class AdaBoost extends Ensemble {
 
 	private int T;
-	private MLDataSet trainingData;
-	private EnsembleTrainFactory tf;
-	private AdaBoostDataSetFactory dataSetFactory;
-	private EnsembleMLMethodFactory mlFactory;
-	private TreeMap<AdaBoostML,Double> members;
 	private VectorAlgebra va;
+	private ArrayList<Double> weights;
 	
-	public AdaBoost(int iterationsT, EnsembleMLMethodFactory mlFactory) {
+	public AdaBoost(int iterationsT, EnsembleMLMethodFactory mlFactory, EnsembleAggregator aggregator) {
 		this.T = iterationsT;
 		this.mlFactory = mlFactory;
 		this.va = new VectorAlgebra();
+		this.weights = new ArrayList<Double>();
+		this.members = new ArrayList<EnsembleML>();
 	}
 	
-	@Override
-	public void setTrainingMethod(EnsembleTrainFactory newTrainFactory) {
-		this.tf = newTrainFactory;
-	}
-
-	@Override
-	public void setTrainingData(MLDataSet trainingData) {
-		this.trainingData = trainingData;
-		if(dataSetFactory != null) dataSetFactory.setInputData(trainingData); 
-	}
-
-	@Override
-	public void setTrainingDataFactory(EnsembleDataSetFactory dataSetFactory) {
-		this.dataSetFactory = (AdaBoostDataSetFactory) dataSetFactory;
-	}
-
 	public int train(double targetAccuracy, boolean verbose) {
 		ArrayList<Double> D = new ArrayList<Double>();
-		for (int k = 0; k < trainingData.size(); k++)
-			D.add(1.0 / (float) trainingData.size());
+		int dss = dataSetFactory.getInputData().size();
+		for (int k = 0; k < dss; k++)
+			D.add(1.0 / (float) dss);
 		for (int i = 0; i < T; i++) {
-			//TODO: use internal dataSet significance
-			dataSetFactory.setWeights(D);
+			dataSetFactory.setSignificance(D);
 			MLDataSet thisSet = dataSetFactory.getNewDataSet();
-			AdaBoostML newML = new AdaBoostML(mlFactory.createML(this.trainingData.getInputSize(), this.trainingData.getIdealSize()));
-			MLTrain train = tf.getTraining(newML.getMl(), thisSet);
+			AdaBoostML newML = new AdaBoostML(mlFactory.createML(dataSetFactory.getInputData().getInputSize(), dataSetFactory.getInputData().getIdealSize()));
+			MLTrain train = trainFactory.getTraining(newML.getMl(), thisSet);
 			newML.train(train,targetAccuracy,verbose);
-			double newWeight = getWeightedError(newML,D,thisSet);
-			members.put(newML,newWeight);
+			double newWeight = getWeightedError(newML,thisSet);
+			members.add(newML);
+			weights.add(newWeight);
 			D = updateD(newML,thisSet,D);
 		}
 		return T;
-	}
-
-	@Override
-	public int train(double targetError) {
-		return train(targetError, false);
 	}
 
 	private double epsilon(AdaBoostML ml, MLDataSet dataSet) {
@@ -89,24 +70,20 @@ public class AdaBoost implements Ensemble {
 		}
 		return D_tplus1;
 	}
-
-	private double getWeightedError(AdaBoostML newML, ArrayList<Double> D, MLDataSet dataSet) {
+	
+	@Override
+	public void initMembers() {
+		//This cannot do anything, as member generation is strictly linked to training!
+	}
+	
+	private double getWeightedError(AdaBoostML newML, MLDataSet dataSet) {
 		double sum = 0;
-		for (int i = 0; i < dataSet.size(); i++)
-			if (newML.classify(dataSet.get(i).getInput()) != newML.winner(dataSet.get(i).getIdeal()))
-				sum += D.get(i);
+		for (int i = 0; i < dataSet.size(); i++) {
+			MLDataPair currentData = dataSet.get(i);
+			if (newML.classify(currentData.getInput()) != newML.winner(currentData.getIdeal()))
+				sum += currentData.getSignificance();
+		}
 		return sum;
-	}
-
-	@Override
-	public MLDataSet getTrainingSet(int setNumber) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public EnsembleML getMember(int memberNumber) {
-		return (EnsembleML) members.keySet().toArray()[memberNumber];
 	}
 
 	@Override
@@ -115,21 +92,8 @@ public class AdaBoost implements Ensemble {
 	}
 
 	@Override
-	public MLData compute(MLData input) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public double getCrossValidationError() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public ProblemType getProblemType() {
-		// TODO Auto-generated method stub
-		return null;
+		return EnsembleTypes.ProblemType.CLASSIFICATION;
 	}
 
 }

@@ -8,6 +8,7 @@ import org.encog.ensemble.EnsembleML;
 import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.EnsembleTypes;
+import org.encog.ensemble.ResamplingDataSetFactory;
 import org.encog.ensemble.EnsembleTypes.ProblemType;
 import org.encog.ensemble.aggregator.EnsembleAggregator;
 import org.encog.ml.data.MLData;
@@ -15,34 +16,24 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
 
-public class Bagging implements Ensemble {
+public class Bagging extends Ensemble {
 
-	private BaggingDataSetFactory dataSetFactory;
-	private EnsembleTrainFactory trainFactory;
-	private EnsembleAggregator aggregator;
-	private ArrayList<BaggingML> members;
-	private EnsembleMLMethodFactory mlFactory;
 	private int splits;
 	
 	public Bagging(int splits, int dataSetSize, EnsembleMLMethodFactory mlFactory, EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator)
 	{
-		this.dataSetFactory = new BaggingDataSetFactory();
-		dataSetFactory.setDataSetSize(dataSetSize);
+		this.dataSetFactory = new ResamplingDataSetFactory();
+		((ResamplingDataSetFactory) dataSetFactory).setDataSetSize(dataSetSize);
 		this.splits = splits;
 		this.mlFactory = mlFactory;
 		this.trainFactory = trainFactory;
-		this.members = new ArrayList<BaggingML>();
+		this.members = new ArrayList<EnsembleML>();
 		this.aggregator = aggregator;
 		initMembers();
 	}
 	
 	@Override
-	public void setTrainingMethod(EnsembleTrainFactory newTrainFactory) {
-		this.trainFactory = newTrainFactory;
-		initMembers();
-	}
-
-	private void initMembers()
+	public void initMembers()
 	{
 		if ((this.dataSetFactory != null) && 
 			(this.splits > 0) &&
@@ -56,60 +47,10 @@ public class Bagging implements Ensemble {
 			}
 		}
 	}
-	
-	@Override
-	public void setTrainingData(MLDataSet data) {
-		dataSetFactory.setInputData(data);
-		initMembers();
-	}
 
 	@Override
-	public void setTrainingDataFactory(EnsembleDataSetFactory dataSetFactory) {
-		this.dataSetFactory = (BaggingDataSetFactory) dataSetFactory;
-		initMembers();
-	}
 
-	public int train(double targetError, boolean verbose) {
-		int iteration = 0;
-		for (EnsembleML current : members)
-		{
-			iteration++;
-			MLTrain train = trainFactory.getTraining((BasicNetwork)current.getMl(), current.getTrainingSet());
-			if(verbose) System.out.println("Training: " + current.toString());
-			current.train(train, targetError, verbose);
-		}
-		return iteration;
-	}
 
-	@Override
-	public int train(double targetError) {
-		return train(targetError, false);
-	}
-	
-
-	@Override
-	public MLDataSet getTrainingSet(int setNumber) {
-		return members.get(setNumber).getTrainingSet();
-	}
-
-	@Override
-	public MLData compute(MLData input) {
-		ArrayList<MLData> outputs = new ArrayList<MLData>();
-		for(BaggingML member: members) 
-		{
-			MLData computed = member.compute(input);
-			outputs.add(computed);
-		}
-		return aggregator.evaluate(outputs);
-	}
-
-	@Override
-	public double getCrossValidationError() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public ProblemType getProblemType() {
 		return EnsembleTypes.ProblemType.CLASSIFICATION;
 	}
@@ -119,17 +60,5 @@ public class Bagging implements Ensemble {
 		return members.get(memberNumber);
 	}
 
-	@Override
-	public void addMember(EnsembleML newMember) {
-		members.add((BaggingML) newMember);
-	}
-
-	public EnsembleAggregator getAggregator() {
-		return aggregator;
-	}
-
-	public void setAggregator(EnsembleAggregator aggregator) {
-		this.aggregator = aggregator;
-	}
 
 }

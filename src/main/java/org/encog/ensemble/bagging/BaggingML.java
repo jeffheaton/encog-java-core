@@ -70,5 +70,8 @@ public class BaggingML implements EnsembleML {
 		train(train, targetError, false);
 		
 	}
-
+	
+	public int winner(MLData input) {
+		return ml.winner(input);
+	}
 }

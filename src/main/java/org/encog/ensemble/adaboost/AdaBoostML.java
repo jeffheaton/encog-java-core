@@ -8,6 +8,7 @@ import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
 
 public class AdaBoostML implements EnsembleML {
+	private EnsembleDataSet trainingSet;
 	private BasicNetwork ml;
 	
 	public AdaBoostML(MLMethod fromML) {
@@ -20,32 +21,18 @@ public class AdaBoostML implements EnsembleML {
 	}
 
 	@Override
-	public int getInputCount() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getOutputCount() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public MLData compute(MLData input) {
 		return ml.compute(input);
 	}
 
 	@Override
 	public void setTrainingSet(EnsembleDataSet dataSet) {
-		// TODO Auto-generated method stub
-		
+		this.trainingSet = dataSet;
 	}
 
 	@Override
 	public EnsembleDataSet getTrainingSet() {
-		// TODO Auto-generated method stub
-		return null;
+		return trainingSet;
 	}
 
 	@Override
@@ -55,8 +42,12 @@ public class AdaBoostML implements EnsembleML {
 
 	@Override
 	public void train(MLTrain train, double targetError, boolean verbose) {
-		// TODO Auto-generated method stub
-		
+		double error;
+		do {
+			train.iteration();
+			error = train.getError();
+			if (verbose) System.out.println("Error: " + error);
+		} while (error > targetError);
 	}
 
 	@Override
@@ -71,6 +62,16 @@ public class AdaBoostML implements EnsembleML {
 
 	public int winner(MLData input) {
 		return ml.winner(input);
+	}
+	
+	@Override
+	public int getInputCount() {
+		return ml.getInputCount();
+	}
+
+	@Override
+	public int getOutputCount() {
+		return ml.getOutputCount();
 	}
 
 }
