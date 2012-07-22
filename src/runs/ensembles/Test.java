@@ -47,7 +47,7 @@ public class Test {
 		}
 	}
 	
-	public static int main(String[] args) {
+	public static void main(String[] args) {
 		if (args.length != 10) {
 			help();
 		} 
@@ -68,7 +68,6 @@ public class Test {
 		
 		dataLoader = problem.getDataLoader(activationThreshold,trainingSetSize);
 		loop(etf,mlf,agg);
-		return 0;
 	}
 
 	private static void help() {
