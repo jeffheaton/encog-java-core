@@ -17,11 +17,11 @@ public class Evaluator {
 		this.technique.train(targetTrainingError,false);
 	}
 	
-	public Evaluator(EvaluationTechnique technique, DataLoader dataLoader, double targetTrainingError) {
+	public Evaluator(EvaluationTechnique technique, DataLoader dataLoader, double targetTrainingError, boolean verbose) {
 		this.setTechnique(technique);
 		this.dataLoader = dataLoader;
 		this.technique.init(dataLoader);
-		this.technique.train(targetTrainingError,true);
+		this.technique.train(targetTrainingError,verbose);
 	}
 	
 	public void makeLine(String type, String prefix, BasicNeuralDataSet dataSet) {

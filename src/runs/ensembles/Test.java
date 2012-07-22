@@ -41,7 +41,7 @@ public class Test {
 				help();
 			}
 			for (double te: trainingErrors) {
-				Evaluator ev = new Evaluator(et, dataLoader, te);
+				Evaluator ev = new Evaluator(et, dataLoader, te, false);
 				ev.getResults(fullLabel+","+te);
 			}
 		}
@@ -52,16 +52,16 @@ public class Test {
 			help();
 		} 
 		try {
-			etType = args[1];
-			problem = ArgParser.problem(args[2]);
-			sizes = ArgParser.intList(args[3]);
-			dataSetSizes = ArgParser.intList(args[4]);
-			trainingErrors = ArgParser.doubleList(args[5]);
-			trainingSetSize = ArgParser.intSingle(args[6]);
-			activationThreshold = ArgParser.doubleSingle(args[7]);
-			etf = ArgParser.ETF(args[8]);
-			mlf = ArgParser.MLF(args[9]);
-			agg = ArgParser.AGG(args[10]);
+			etType = args[0];
+			problem = ArgParser.problem(args[1]);
+			sizes = ArgParser.intList(args[2]);
+			dataSetSizes = ArgParser.intList(args[3]);
+			trainingErrors = ArgParser.doubleList(args[4]);
+			trainingSetSize = ArgParser.intSingle(args[5]);
+			activationThreshold = ArgParser.doubleSingle(args[6]);
+			etf = ArgParser.ETF(args[7]);
+			mlf = ArgParser.MLF(args[8]);
+			agg = ArgParser.AGG(args[9]);
 		} catch (BadArgument e) {
 			help();
 		}
