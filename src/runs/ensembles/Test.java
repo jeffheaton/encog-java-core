@@ -12,7 +12,7 @@ import helpers.DataLoader;
 import helpers.Evaluator;
 import helpers.ProblemDescription;
 
-public class BaggingMain {
+public class Test {
 
 	Evaluator ev;
 	static DataLoader dataLoader;
@@ -72,7 +72,7 @@ public class BaggingMain {
 	}
 
 	private static void help() {
-		System.err.println("Usage: test <technique> <problem> <sizes> <dataSetSizes> <trainingErrors> <trainingSetSize> <activationThreshold> <training> <memebertype> <aggregator>");
+		System.err.println("Usage: Test <technique> <problem> <sizes> <dataSetSizes> <trainingErrors> <trainingSetSize> <activationThreshold> <training> <memebertype> <aggregator>");
 		System.exit(2);
 	}
 }
