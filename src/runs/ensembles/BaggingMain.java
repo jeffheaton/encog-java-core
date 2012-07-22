@@ -5,10 +5,7 @@ import java.util.List;
 import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.aggregator.EnsembleAggregator;
-
-import techniques.BaggingET;
 import techniques.EvaluationTechnique;
-
 import helpers.ArgParser;
 import helpers.ArgParser.BadArgument;
 import helpers.DataLoader;
@@ -75,7 +72,7 @@ public class BaggingMain {
 	}
 
 	private static void help() {
-		// TODO Auto-generated method stub
+		System.err.println("Usage: test <technique> <problem> <sizes> <dataSetSizes> <trainingErrors> <trainingSetSize> <activationThreshold> <training> <memebertype> <aggregator>");
 		System.exit(2);
 	}
 }
