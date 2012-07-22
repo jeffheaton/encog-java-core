@@ -7,16 +7,13 @@ import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.EnsembleTypes;
 import org.encog.ensemble.EnsembleTypes.ProblemType;
 import org.encog.ensemble.aggregator.EnsembleAggregator;
-import org.encog.ensemble.bagging.BaggingML;
-import org.encog.ensemble.data.factories.EnsembleDataSetFactory;
+import org.encog.ensemble.data.factories.ResamplingDataSetFactory;
 import org.encog.mathutil.VectorAlgebra;
-import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
 
 import java.util.ArrayList;
-import java.util.TreeMap;
 
 public class AdaBoost extends Ensemble {
 
@@ -24,7 +21,8 @@ public class AdaBoost extends Ensemble {
 	private VectorAlgebra va;
 	private ArrayList<Double> weights;
 	
-	public AdaBoost(int iterationsT, EnsembleMLMethodFactory mlFactory, EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator) {
+	public AdaBoost(int iterationsT, int dataSetSize, EnsembleMLMethodFactory mlFactory, EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator) {
+		this.dataSetFactory = new ResamplingDataSetFactory(dataSetSize);
 		this.T = iterationsT;
 		this.mlFactory = mlFactory;
 		this.va = new VectorAlgebra();

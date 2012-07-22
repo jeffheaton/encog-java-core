@@ -6,7 +6,7 @@ import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.aggregator.MajorityVoting;
 import org.encog.ensemble.ml.mlp.factory.MultiLayerPerceptronFactory;
-import org.encog.ensemble.training.backpropagation.ResilientPropagationFactory;
+import org.encog.ensemble.training.ResilientPropagationFactory;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.XOR;

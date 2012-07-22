@@ -1,4 +1,8 @@
-package helpers;
+package techniques;
+
+import helpers.DataLoader;
+import helpers.DataMapper;
+import helpers.PerfResults;
 
 import java.util.ArrayList;
 
@@ -12,12 +16,12 @@ import org.encog.neural.data.basic.BasicNeuralDataSet;
 
 public abstract class EvaluationTechnique {
 
-	protected String label;
 	protected MLDataSet trainingSet;
 	private MLDataSet testSet;
 	protected EnsembleMLMethodFactory mlMethod;
 	protected EnsembleTrainFactory trainFactory;
 	protected EnsembleAggregator aggregator;
+	protected String label;
 	
 	public double getMisclassification(BasicNeuralDataSet evalSet, DataMapper dataMapper) {
 		int bad = 0;
@@ -43,7 +47,7 @@ public abstract class EvaluationTechnique {
 	public String getLabel() {
 		return label;
 	}
-
+	
 	public MLDataSet getTrainingSet() {
 		return trainingSet;
 	}

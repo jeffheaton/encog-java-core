@@ -10,6 +10,10 @@ public abstract class EnsembleDataSetFactory {
 	protected MLDataSet dataSource = null;
 	protected int dataSetSize;
 
+	public EnsembleDataSetFactory(int dataSetSize) {
+		setDataSetSize(dataSetSize);
+	}
+	
 	public void setInputData(MLDataSet dataSource) {
 		this.dataSource = dataSource;
 	}

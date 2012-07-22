@@ -4,8 +4,12 @@ import java.util.Random;
 
 import org.encog.ensemble.data.EnsembleDataSet;
 
-
 public class ResamplingDataSetFactory extends EnsembleDataSetFactory {
+
+	public ResamplingDataSetFactory(int dataSetSize) {
+		super(dataSetSize);
+	}
+
 	@Override
 	public EnsembleDataSet getNewDataSet() {
 		Random generator = new Random();

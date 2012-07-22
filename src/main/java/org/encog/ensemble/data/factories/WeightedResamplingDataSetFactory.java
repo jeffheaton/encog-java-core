@@ -8,6 +8,10 @@ import org.encog.ml.data.MLDataSet;
 
 public class WeightedResamplingDataSetFactory extends EnsembleDataSetFactory {
 
+	public WeightedResamplingDataSetFactory(int dataSetSize) {
+		super(dataSetSize);
+	}
+
 	MLDataSet originalData;
 	
 	EnsembleDataPair getCandidate(double weight) {

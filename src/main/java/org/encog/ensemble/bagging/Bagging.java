@@ -9,12 +9,7 @@ import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.EnsembleTypes;
 import org.encog.ensemble.EnsembleTypes.ProblemType;
 import org.encog.ensemble.aggregator.EnsembleAggregator;
-import org.encog.ensemble.data.factories.EnsembleDataSetFactory;
 import org.encog.ensemble.data.factories.ResamplingDataSetFactory;
-import org.encog.ml.data.MLData;
-import org.encog.ml.data.MLDataSet;
-import org.encog.ml.train.MLTrain;
-import org.encog.neural.networks.BasicNetwork;
 
 public class Bagging extends Ensemble {
 
@@ -22,8 +17,7 @@ public class Bagging extends Ensemble {
 	
 	public Bagging(int splits, int dataSetSize, EnsembleMLMethodFactory mlFactory, EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator)
 	{
-		this.dataSetFactory = new ResamplingDataSetFactory();
-		((ResamplingDataSetFactory) dataSetFactory).setDataSetSize(dataSetSize);
+		this.dataSetFactory = new ResamplingDataSetFactory(dataSetSize);
 		this.splits = splits;
 		this.mlFactory = mlFactory;
 		this.trainFactory = trainFactory;

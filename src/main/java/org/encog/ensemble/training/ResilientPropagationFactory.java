@@ -1,4 +1,4 @@
-package org.encog.ensemble.training.backpropagation;
+package org.encog.ensemble.training;
 
 import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ml.MLMethod;

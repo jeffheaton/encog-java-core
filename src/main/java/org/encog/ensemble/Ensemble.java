@@ -20,7 +20,7 @@ public abstract class Ensemble {
 	public class NotPossibleInThisMethod extends Exception {
 
 		/**
-		 * 
+		 * This means you the current feature is not applicable in the specified method
 		 */
 		private static final long serialVersionUID = 5118253806179408868L;
 		

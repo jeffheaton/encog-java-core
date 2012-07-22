@@ -2,6 +2,8 @@ package helpers;
 
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 
+import techniques.EvaluationTechnique;
+
 public class Evaluator {
 
 	private EvaluationTechnique technique;

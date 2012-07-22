@@ -1,22 +1,21 @@
-package bagging;
+package techniques;
 
 import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
+import org.encog.ensemble.adaboost.AdaBoost;
 import org.encog.ensemble.aggregator.EnsembleAggregator;
-import org.encog.ensemble.bagging.Bagging;
 import org.encog.ml.data.MLData;
 
 import helpers.DataLoader;
-import helpers.EvaluationTechnique;
 
-public class BaggingET extends EvaluationTechnique {
+public class AdaBoostET extends EvaluationTechnique {
 
-	private Bagging bagging;
-	private int splits;
+	private AdaBoost boosting;
+	private int T;
 	private int dataSetSize;
 
-	public BaggingET(int splits, int dataSetSize, String label, EnsembleMLMethodFactory mlMethod, EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator) {
-		this.splits = splits;
+	public AdaBoostET(int T, int dataSetSize, String label, EnsembleMLMethodFactory mlMethod, EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator) {
+		this.T = T;
 		this.dataSetSize = dataSetSize;
 		this.label = label;
 		this.mlMethod = mlMethod;
@@ -26,20 +25,20 @@ public class BaggingET extends EvaluationTechnique {
 
 	@Override
 	public int train(double trainToError, boolean verbose) {
-		return bagging.train(trainToError,verbose);
+		return boosting.train(trainToError,verbose);
 	}
 
 	@Override
 	public void init(DataLoader dataLoader) {
-		bagging = new Bagging(splits,dataSetSize,mlMethod,trainFactory,aggregator);
+		boosting = new AdaBoost(T,dataSetSize,mlMethod,trainFactory,aggregator);
 		setTrainingSet(dataLoader.getTrainingSet());
 		setTestSet(dataLoader.getTestSet());
-		bagging.setTrainingData(trainingSet);
+		boosting.setTrainingData(trainingSet);
 	}
 
 	@Override
 	public MLData compute(MLData input) {
-		return bagging.compute(input);
+		return boosting.compute(input);
 	}
 	
 }
