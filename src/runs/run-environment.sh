@@ -28,6 +28,11 @@ function boosting-letterrecognition() {
 	averaging-rprop adaboost uci_letterrecognition $1 $2 $3 $4 $5
 }
 
+function logged_run() {
+	date=$(date +%Y-%m-%d.%H.%M)
+	($1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} > /home/nitbix/projects/mscproject/runs_output/${date}_$1.${BASHPID}.output)
+}
+
 echo "Compiling source.."
 javac -sourcepath .:../main/java ensembles/Test.java
 
