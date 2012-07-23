@@ -16,6 +16,18 @@ function bagging-haberman() {
 	averaging-rprop bagging uci_haberman $1 $2 $3 $4 $5
 }
 
+function boosting-haberman() {
+	averaging-rprop adaboost uci_haberman $1 $2 $3 $4 $5
+}
+
+function bagging-letterrecognition() {
+	averaging-rprop bagging uci_letterrecognition $1 $2 $3 $4 $5
+}
+
+function boosting-letterrecognition() {
+	averaging-rprop adaboost uci_letterrecognition $1 $2 $3 $4 $5
+}
+
 echo "Compiling source.."
 javac -sourcepath .:../main/java ensembles/Test.java
 
