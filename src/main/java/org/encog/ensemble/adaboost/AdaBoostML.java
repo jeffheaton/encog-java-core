@@ -6,6 +6,7 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLData;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.util.EngineArray;
 
 public class AdaBoostML implements EnsembleML {
 	private EnsembleDataSet trainingSet;
@@ -61,7 +62,7 @@ public class AdaBoostML implements EnsembleML {
 	}
 
 	public int winner(MLData input) {
-		return ml.winner(input);
+		return EngineArray.maxIndex(input.getData());
 	}
 	
 	@Override
