@@ -29,6 +29,7 @@ public class AdaBoost extends Ensemble {
 		this.weights = new ArrayList<Double>();
 		this.members = new ArrayList<EnsembleML>();
 		this.trainFactory = trainFactory;
+		this.aggregator = aggregator;
 	}
 	
 	public int train(double targetAccuracy, boolean verbose) {

@@ -1,6 +1,10 @@
 .classpath
 .project
 .settings
+*.class
+*.o
+*.so
+cache.bin
 target
 local.properties
 encog.*

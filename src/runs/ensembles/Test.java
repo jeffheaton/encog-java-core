@@ -27,6 +27,7 @@ public class Test {
 	private static EnsembleMLMethodFactory mlf;
 	private static EnsembleAggregator agg;
 	private static String etType;
+	private static boolean verbose;
 	
 	public static void loop(EnsembleTrainFactory etf, EnsembleMLMethodFactory mlf, EnsembleAggregator agg) {
 		for(Integer dataSetSize : dataSetSizes)
@@ -41,14 +42,14 @@ public class Test {
 				help();
 			}
 			for (double te: trainingErrors) {
-				Evaluator ev = new Evaluator(et, dataLoader, te, false);
+				Evaluator ev = new Evaluator(et, dataLoader, te, verbose);
 				ev.getResults(fullLabel+","+te);
 			}
 		}
 	}
 	
 	public static void main(String[] args) {
-		if (args.length != 10) {
+		if (args.length != 11) {
 			help();
 		} 
 		try {
@@ -62,6 +63,7 @@ public class Test {
 			etf = ArgParser.ETF(args[7]);
 			mlf = ArgParser.MLF(args[8]);
 			agg = ArgParser.AGG(args[9]);
+			verbose = Boolean.parseBoolean(args[10]);
 		} catch (BadArgument e) {
 			help();
 		}
@@ -71,7 +73,7 @@ public class Test {
 	}
 
 	private static void help() {
-		System.err.println("Usage: Test <technique> <problem> <sizes> <dataSetSizes> <trainingErrors> <trainingSetSize> <activationThreshold> <training> <memebertype> <aggregator>");
+		System.err.println("Usage: Test <technique> <problem> <sizes> <dataSetSizes> <trainingErrors> <trainingSetSize> <activationThreshold> <training> <memebertype> <aggregator> <verbose>");
 		System.exit(2);
 	}
 }
