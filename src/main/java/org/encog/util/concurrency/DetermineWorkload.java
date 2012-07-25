@@ -85,8 +85,8 @@ public class DetermineWorkload {
 			final long recordCount = this.workloadSize;
 			final long workPerThread = recordCount / num;
 
-			if (workPerThread < 100) {
-				num = Math.max(1, (int) (recordCount / 100));
+			if (workPerThread < 1000) {
+				num = Math.max(1, (int) (recordCount / 1000));
 			}
 
 			this.threadCount = num;

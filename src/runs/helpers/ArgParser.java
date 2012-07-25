@@ -1,6 +1,7 @@
 package helpers;
 
 import helpers.datasets.HabermanPS;
+import helpers.datasets.LandsatPS;
 import helpers.datasets.LetterRecognitionPS;
 
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ public class ArgParser {
 	public enum Problems {
 		UCI_HABERMAN,
 		UCI_LETTERRECOGNITION,
+		STATLOG_LANDSAT,
 	}
 	
 	public enum Techniques {
@@ -124,6 +126,7 @@ public class ArgParser {
 		switch (Problems.valueOf(string.toUpperCase())) {
 			case UCI_HABERMAN: return new HabermanPS();
 			case UCI_LETTERRECOGNITION: return new LetterRecognitionPS();
+			case STATLOG_LANDSAT: return new LandsatPS();
 			default: throw new BadArgument();
 		}
 	}
