@@ -28,6 +28,14 @@ function boosting-letterrecognition() {
 	averaging-rprop adaboost uci_letterrecognition $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
 }
 
+function bagging-landsat() {
+	averaging-rprop bagging statlog_landsat $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+}
+
+function boosting-landsat() {
+	averaging-rprop adaboost statlog_landsat $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+}
+
 function logged_run() {
 	date=$(date +%Y-%m-%d.%H.%M)
 	($1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13} > /home/nitbix/projects/mscproject/runs_output/${date}_$1.${BASHPID}.output)
