@@ -24,14 +24,15 @@ public class Test {
 	private static int trainingSetSize;
 	private static double activationThreshold;
 	private static EnsembleTrainFactory etf;
-	private static EnsembleMLMethodFactory mlf;
+	private static List<EnsembleMLMethodFactory> mlfs;
 	private static EnsembleAggregator agg;
 	private static String etType;
 	private static boolean verbose;
 	
-	public static void loop(EnsembleTrainFactory etf, EnsembleMLMethodFactory mlf, EnsembleAggregator agg) {
+	public static void loop() {
 		for(Integer dataSetSize : dataSetSizes)
 		for(Integer size : sizes)
+		for(EnsembleMLMethodFactory mlf: mlfs)
 		{
 			String fullLabel = etType + "," + etf.toString() + "," + mlf.toString() +
 							   "," + agg.toString() + "," + size + "," + dataSetSize;
@@ -61,7 +62,7 @@ public class Test {
 			trainingSetSize = ArgParser.intSingle(args[5]);
 			activationThreshold = ArgParser.doubleSingle(args[6]);
 			etf = ArgParser.ETF(args[7]);
-			mlf = ArgParser.MLF(args[8]);
+			mlfs = ArgParser.MLFS(args[8]);
 			agg = ArgParser.AGG(args[9]);
 			verbose = Boolean.parseBoolean(args[10]);
 		} catch (BadArgument e) {
@@ -74,7 +75,7 @@ public class Test {
 	}
 
 	private static void help() {
-		System.err.println("Usage: Test <technique> <problem> <sizes> <dataSetSizes> <trainingErrors> <trainingSetSize> <activationThreshold> <training> <memebertype> <aggregator> <verbose>");
+		System.err.println("Usage: Test <technique> <problem> <sizes> <dataSetSizes> <trainingErrors> <trainingSetSize> <activationThreshold> <training> <memebertypes> <aggregator> <verbose>");
 		System.exit(2);
 	}
 }
