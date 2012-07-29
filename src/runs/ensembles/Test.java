@@ -70,7 +70,7 @@ public class Test {
 		}
 		
 		dataLoader = problem.getDataLoader(activationThreshold,trainingSetSize);
-		loop(etf,mlf,agg);
+		loop();
 		System.exit(0);
 	}
 
