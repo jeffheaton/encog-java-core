@@ -109,7 +109,7 @@ public class ArgParser {
 
 	public static ArrayList<EnsembleMLMethodFactory> MLFS(String string) throws BadArgument {
 		ArrayList<EnsembleMLMethodFactory> res = new ArrayList<EnsembleMLMethodFactory>();
-		String values[] = string.split("|");
+		String values[] = string.split("_");
 		for (String value: values) {
 			res.add(MLF(value));
 		}
