@@ -107,6 +107,14 @@ public class ArgParser {
 		}
 	}
 
+	public static ArrayList<EnsembleMLMethodFactory> MLFS(String string) throws BadArgument {
+		ArrayList<EnsembleMLMethodFactory> res = new ArrayList<EnsembleMLMethodFactory>();
+		String values[] = string.split("|");
+		for (String value: values) {
+			res.add(MLF(value));
+		}
+		return res;
+	}
 	private static ActivationFunction activation(String string) throws BadArgument {
 		switch (Activations.valueOf(string.toUpperCase())) {
 			case SIGMOID: return new ActivationSigmoid();
