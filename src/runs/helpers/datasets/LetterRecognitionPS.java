@@ -45,4 +45,10 @@ public class LetterRecognitionPS implements ProblemDescription {
 		return inputFile;
 	}
 
+	@Override
+	public String getLabel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

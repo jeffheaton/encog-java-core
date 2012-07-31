@@ -131,11 +131,10 @@ public class ArgParser {
 	}
 
 	public static ProblemDescription problem(String string) throws BadArgument {
-		switch (Problems.valueOf(string.toUpperCase())) {
-			case UCI_HABERMAN: return new HabermanPS();
-			case UCI_LETTERRECOGNITION: return new LetterRecognitionPS();
-			case STATLOG_LANDSAT: return new LandsatPS();
-			default: throw new BadArgument();
+		try {
+			return new ProblemDescriptionLoader(string);
+		} catch (ProblemDescriptionLoader.BadArgument e) {
+			throw new BadArgument();
 		}
 	}
 

@@ -34,8 +34,8 @@ public class Test {
 		for(Integer size : sizes)
 		for(EnsembleMLMethodFactory mlf: mlfs)
 		{
-			String fullLabel = etType + "," + etf.toString() + "," + mlf.toString() +
-							   "," + agg.toString() + "," + size + "," + dataSetSize;
+			String fullLabel = problem.getLabel() + "," +etType + "," + etf.toString() + "," 
+							 + mlf.toString() + "," + agg.toString() + "," + size + "," + dataSetSize;
 			EvaluationTechnique et = null;
 			try {
 				et = ArgParser.technique(etType,size,dataSetSize,fullLabel,mlf,etf,agg);
@@ -69,7 +69,12 @@ public class Test {
 			help();
 		}
 		
-		dataLoader = problem.getDataLoader(activationThreshold,trainingSetSize);
+		try {
+			dataLoader = problem.getDataLoader(activationThreshold,trainingSetSize);
+		} catch (helpers.ProblemDescriptionLoader.BadArgument e) {
+			System.err.println("Could not get dataLoader - perhaps the mapper_type property is wrong");
+			e.printStackTrace();
+		}
 		loop();
 		System.exit(0);
 	}

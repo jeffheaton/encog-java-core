@@ -33,7 +33,7 @@ public class DataLoader {
 	
 	public int readData(String inputFile) {
 		int total=0;
-		System.out.println("importing dataset");
+		//System.out.println("importing dataset");
 		ReadCSV csv = new ReadCSV(inputFile,false,',');
 		_trainingSet = new BasicNeuralDataSet();
 		_testSet = new BasicNeuralDataSet();

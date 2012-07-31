@@ -1,0 +1,7 @@
+#UCI Letter Recognition problem
+label="letterrecognition"
+outputs=26
+inputs=16
+read_inputs=1
+inputs_reversed=false
+data_file=data/letter-recognition.data
