@@ -34,7 +34,8 @@ public class BaggingML implements EnsembleML {
 			train.iteration();
 			error = train.getError();
 			if (verbose) System.out.println("Error: " + error);
-		} while (error > targetError);
+		} while ((error > targetError) && train.canContinue());
+		train.finishTraining();
 	}
 
 	@Override
