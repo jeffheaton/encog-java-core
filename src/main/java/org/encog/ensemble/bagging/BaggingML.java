@@ -30,10 +30,12 @@ public class BaggingML implements EnsembleML {
 	@Override
 	public void train(MLTrain train, double targetError, boolean verbose) {
 		double error;
+		int iteration=0;
 		do {
 			train.iteration();
+			iteration++;
 			error = train.getError();
-			if (verbose) System.out.println("Error: " + error);
+			if (verbose) System.out.println(iteration + " " + error);
 		} while ((error > targetError) && train.canContinue());
 		train.finishTraining();
 	}

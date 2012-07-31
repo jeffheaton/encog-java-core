@@ -43,8 +43,6 @@ public class Bagging extends Ensemble {
 	}
 
 	@Override
-
-
 	public ProblemType getProblemType() {
 		return EnsembleTypes.ProblemType.CLASSIFICATION;
 	}
