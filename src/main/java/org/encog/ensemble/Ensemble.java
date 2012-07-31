@@ -70,7 +70,7 @@ public abstract class Ensemble {
 		{
 			iteration++;
 			MLTrain train = trainFactory.getTraining((BasicNetwork)current.getMl(), current.getTrainingSet());
-			if(verbose) System.out.println("Training: " + current.toString());
+			//if(verbose) System.out.println("Training: " + current.toString());
 			current.train(train, targetError, verbose);
 		}
 		return iteration;

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function run() {
-	$do java -cp .:../main/java ensembles.Test $1 $2 $3 $4 $5 $6 0.3 $8 $9 ${10} ${11} ${12}
+	$do java -cp build/classes ensembles.Test $1 $2 $3 $4 $5 $6 0.3 $8 $9 ${10} ${11} ${12}
 }
 
 function runWithDefaults() {
@@ -50,15 +50,12 @@ function build_lib_file() {
 }
 
 function rebuild_from_scratch() {
-	$do find ../main/java -name '*.class' -exec rm \{} \;
-	for source in `find ../main/java -name '*.java'`; do
-		build_lib_file $source;
-	done
-	$do javac -sourcepath .:../main/java ensembles/Test.java
+	ant clean
+	ant build
 }
 
 echo "Compiling source.."
-javac -sourcepath .:../main/java ensembles/Test.java
+ant build 
 
 echo "Encog Ensemble Test suite ready"
 
