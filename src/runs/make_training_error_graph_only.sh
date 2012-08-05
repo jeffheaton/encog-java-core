@@ -2,22 +2,7 @@
 problem=$1
 technique=$2
 neurons=$3
-setsize=$4
-fixedline=$5
-pause=$6
-
-. run-environment.sh
-
-function training() {
-	${technique}-${problem} 1 $setsize 0.01 $setsize mlp:${neurons}:sigmoid true &
-	pid=$!
-	sleep $pause
-	kill $(($pid + 2))
-}
-
-training > ~/projects/mscproject/data_plots/training_curves/${technique}-${problem}-${neurons}-1.data
-training > ~/projects/mscproject/data_plots/training_curves/${technique}-${problem}-${neurons}-2.data
-training > ~/projects/mscproject/data_plots/training_curves/${technique}-${problem}-${neurons}-3.data
+fixedline=$4
 
 gnuplot <<EOF
 set title "Training Error ($technique - $problem - $neurons neurons)"
