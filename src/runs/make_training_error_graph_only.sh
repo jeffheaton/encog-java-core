@@ -1,19 +1,18 @@
 #!/bin/bash
 problem=$1
-technique=$2
-neurons=$3
-fixedline=$4
+neurons=$2
+fixedline=$3
 
 gnuplot <<EOF
-set title "Training Error ($technique - $problem - $neurons neurons)"
+set title "Training Error ($problem - $neurons neurons)"
 set xlabel "i"
-set ylabel "MSE"
-plot "~/projects/mscproject/data_plots/training_curves/${technique}-${problem}-${neurons}-1.data" with lines title "1","~/projects/mscproject/data_plots/training_curves/${technique}-${problem}-${neurons}-2.data" with lines title "2","~/projects/mscproject/data_plots/training_curves/${technique}-${problem}-${neurons}-3.data" with lines title "3",$fixedline
+set ylabel "error"
+plot "~/projects/mscproject/data_plots/training_curves/${problem}-${neurons}.data" using 1:2 with lines title "MSE","~/projects/mscproject/data_plots/training_curves/${problem}-${neurons}.data" using 1:3 with lines title "test misclass.","~/projects/mscproject/data_plots/training_curves/${problem}-${neurons}.data" using 1:4 with lines title "train misclass.",$fixedline
 pause 10
-set term epslatex color 
-set out "~/projects/mscproject/data_plots/training_curves/${technique}-${problem}-${neurons}.tex"
+set terminal postscript eps enhanced color  
+set out "~/projects/mscproject/data_plots/training_curves/${problem}-${neurons}.eps"
 replot
 set term png
-set out "~/projects/mscproject/data_plots/training_curves/${technique}-${problem}-${neurons}.png"
+set out "~/projects/mscproject/data_plots/training_curves/${problem}-${neurons}.png"
 replot
 EOF
