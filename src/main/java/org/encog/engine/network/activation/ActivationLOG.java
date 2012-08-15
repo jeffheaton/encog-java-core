@@ -24,6 +24,8 @@
 package org.encog.engine.network.activation;
 
 import org.encog.mathutil.BoundMath;
+import org.encog.ml.factory.MLActivationFactory;
+import org.encog.util.obj.ActivationUtil;
 
 /**
  * An activation function based on the logarithm function.
@@ -124,5 +126,13 @@ public class ActivationLOG implements ActivationFunction {
 	public final void setParam(final int index, final double value) {
 		this.params[index] = value;
 
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getFactoryCode() {
+		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_LOG, this);
 	}
 }

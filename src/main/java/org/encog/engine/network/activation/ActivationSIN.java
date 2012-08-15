@@ -24,6 +24,8 @@
 package org.encog.engine.network.activation;
 
 import org.encog.mathutil.BoundMath;
+import org.encog.ml.factory.MLActivationFactory;
+import org.encog.util.obj.ActivationUtil;
 
 /**
  * An activation function based on the sin function, with a double period.
@@ -114,6 +116,14 @@ public class ActivationSIN implements ActivationFunction {
 	@Override
 	public final void setParam(final int index, final double value) {
 		this.params[index] = value;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getFactoryCode() {
+		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_SIN, this);
 	}
 
 }

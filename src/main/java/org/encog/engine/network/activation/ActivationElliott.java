@@ -23,6 +23,9 @@
  */
 package org.encog.engine.network.activation;
 
+import org.encog.ml.factory.MLActivationFactory;
+import org.encog.util.obj.ActivationUtil;
+
 /**
  * Computationally efficient alternative to ActivationSigmoid.
  * Its output is in the range [0, 1], and it is derivable.
@@ -114,5 +117,13 @@ public class ActivationElliott implements ActivationFunction {
     public final void setParam(final int index, final double value) {
         this.params[index] = value;
     }
+    
+    /**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getFactoryCode() {
+		return null;
+	}
 
 }

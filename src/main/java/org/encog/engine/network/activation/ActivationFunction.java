@@ -109,4 +109,10 @@ public interface ActivationFunction extends Serializable, Cloneable {
 	 */
 	ActivationFunction clone();
 
+	/**
+	 * @return The string for the Encog factory code.  Return null if you do not care
+	 * to be support for creating of your activation through factory.
+	 */
+	String getFactoryCode();
+
 }

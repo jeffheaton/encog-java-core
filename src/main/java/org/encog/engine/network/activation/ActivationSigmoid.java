@@ -24,6 +24,8 @@
 package org.encog.engine.network.activation;
 
 import org.encog.mathutil.BoundMath;
+import org.encog.ml.factory.MLActivationFactory;
+import org.encog.util.obj.ActivationUtil;
 
 /**
  * The sigmoid activation function takes on a sigmoidal shape. Only positive
@@ -107,5 +109,13 @@ public class ActivationSigmoid implements ActivationFunction {
 	@Override
 	public final void setParam(final int index, final double value) {
 		this.params[index] = value;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getFactoryCode() {
+		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_SIGMOID, this);
 	}
 }
