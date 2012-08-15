@@ -24,6 +24,8 @@
 package org.encog.engine.network.activation;
 
 import org.encog.EncogError;
+import org.encog.ml.factory.MLActivationFactory;
+import org.encog.util.obj.ActivationUtil;
 
 /**
  * An activation function that only allows a specified number, usually one, of
@@ -172,5 +174,13 @@ public class ActivationCompetitive implements ActivationFunction {
 	@Override
 	public final void setParam(final int index, final double value) {
 		this.params[index] = value;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getFactoryCode() {
+		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_COMPETITIVE, this);
 	}
 }

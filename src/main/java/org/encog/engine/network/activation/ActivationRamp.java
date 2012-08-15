@@ -23,6 +23,9 @@
  */
 package org.encog.engine.network.activation;
 
+import org.encog.ml.factory.MLActivationFactory;
+import org.encog.util.obj.ActivationUtil;
+
 /**
  * A ramp activation function. This function has a high and low threshold. If
  * the high threshold is exceeded a fixed value is returned. Likewise, if the
@@ -234,6 +237,14 @@ public class ActivationRamp implements ActivationFunction {
 	 */
 	public final void setThresholdLow(final double d) {
 		setParam(ActivationRamp.PARAM_RAMP_LOW_THRESHOLD, d);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getFactoryCode() {
+		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_RAMP, this);
 	}
 
 }

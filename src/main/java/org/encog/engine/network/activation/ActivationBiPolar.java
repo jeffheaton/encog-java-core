@@ -23,6 +23,9 @@
  */
 package org.encog.engine.network.activation;
 
+import org.encog.ml.factory.MLActivationFactory;
+import org.encog.util.obj.ActivationUtil;
+
 /**
  * BiPolar activation function. This will scale the neural data into the bipolar
  * range. Greater than zero becomes 1, less than or equal to zero becomes -1.
@@ -120,5 +123,13 @@ public class ActivationBiPolar implements ActivationFunction {
 	@Override
 	public final void setParam(final int index, final double value) {
 		this.params[index] = value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getFactoryCode() {
+		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_BIPOLAR, this);
 	}
 }
