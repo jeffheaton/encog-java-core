@@ -32,11 +32,13 @@ import org.encog.ml.MLClassification;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLEncodable;
 import org.encog.ml.MLError;
+import org.encog.ml.MLFactory;
 import org.encog.ml.MLRegression;
 import org.encog.ml.MLResettable;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
+import org.encog.ml.factory.MLMethodFactory;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.networks.layers.Layer;
@@ -65,7 +67,8 @@ import org.encog.util.simple.EncogUtility;
  * 
  */
 public class BasicNetwork extends BasicML implements ContainsFlat, MLContext,
-		MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
+		MLRegression, MLEncodable, MLResettable, MLClassification, MLError,
+		MLFactory {
 
 	/**
 	 * Tag used for the connection limit.
@@ -755,4 +758,46 @@ public class BasicNetwork extends BasicML implements ContainsFlat, MLContext,
 		final MLData output = compute(input);
 		return EngineArray.maxIndex(output.getData());
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getFactoryType() {
+		return MLMethodFactory.TYPE_FEEDFORWARD;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getFactoryArchitecture() {
+		StringBuilder result = new StringBuilder();
+		
+		//?:B->SIGMOID->4:B->SIGMOID->?
+		
+		for(int currentLayer = 0; currentLayer< this.getLayerCount(); currentLayer++) {
+						
+			// need arrow from prvious levels?
+			if( currentLayer>0 ) {
+				result.append("->");
+			}
+			
+			// handle activation function
+			if( currentLayer>0 && this.getActivation(currentLayer)!=null ) {
+				ActivationFunction activationFunction = getActivation(currentLayer);
+				result.append(activationFunction.getFactoryCode());
+				result.append("->");
+			}
+			
+			result.append(this.getLayerNeuronCount(currentLayer));
+			if( this.isLayerBiased(currentLayer) ) {
+				result.append(":B");
+			}						
+		}
+						
+		return result.toString();
+	}
+	
+	
 }
