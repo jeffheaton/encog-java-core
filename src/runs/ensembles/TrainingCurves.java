@@ -80,7 +80,7 @@ public class TrainingCurves {
 	}
 
 	private static void help() {
-		System.err.println("Usage: TrainingCurves <technique> <problem> <maxTrainingError> <trainingSetSize> <activationThreshold> <training> <membertypes> <maxIterations>");
+		System.err.println("Usage: TrainingCurves <technique> <problem> <trainingSetSize> <activationThreshold> <training> <membertypes> <maxIterations>");
 		System.exit(2);
 	}
 }
