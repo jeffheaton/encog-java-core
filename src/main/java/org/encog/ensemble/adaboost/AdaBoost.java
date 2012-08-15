@@ -32,7 +32,7 @@ public class AdaBoost extends Ensemble {
 		this.aggregator = aggregator;
 	}
 	
-	public int train(double targetAccuracy, boolean verbose) {
+	public void train(double targetAccuracy, boolean verbose) {
 		ArrayList<Double> D = new ArrayList<Double>();
 		int dss = dataSetFactory.getInputData().size();
 		for (int k = 0; k < dss; k++)
@@ -42,13 +42,13 @@ public class AdaBoost extends Ensemble {
 			MLDataSet thisSet = dataSetFactory.getNewDataSet();
 			AdaBoostML newML = new AdaBoostML(mlFactory.createML(dataSetFactory.getInputData().getInputSize(), dataSetFactory.getInputData().getIdealSize()));
 			MLTrain train = trainFactory.getTraining(newML.getMl(), thisSet);
-			newML.train(train,targetAccuracy,verbose);
+			newML.setTraining(train);
+			newML.train(targetAccuracy,verbose);
 			double newWeight = getWeightedError(newML,thisSet);
 			members.add(newML);
 			weights.add(newWeight);
 			D = updateD(newML,thisSet,D);
 		}
-		return T;
 	}
 
 	private double epsilon(AdaBoostML ml, MLDataSet dataSet) {

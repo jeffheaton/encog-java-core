@@ -12,6 +12,7 @@ public class BaggingML implements EnsembleML {
 	private EnsembleDataSet trainingSet;
 	//TODO: this needs to become a generic type
 	private BasicNetwork ml;
+	private MLTrain trainer;
 	
 	public BaggingML(MLMethod fromML) {
 		setMl(fromML);
@@ -28,16 +29,16 @@ public class BaggingML implements EnsembleML {
 	}
 
 	@Override
-	public void train(MLTrain train, double targetError, boolean verbose) {
+	public void train(double targetError, boolean verbose) {
 		double error;
 		int iteration=0;
 		do {
-			train.iteration();
+			trainer.iteration();
 			iteration++;
-			error = train.getError();
+			error = trainer.getError();
 			if (verbose) System.out.println(iteration + " " + error);
-		} while ((error > targetError) && train.canContinue());
-		train.finishTraining();
+		} while ((error > targetError) && trainer.canContinue());
+		trainer.finishTraining();
 	}
 
 	@Override
@@ -69,12 +70,27 @@ public class BaggingML implements EnsembleML {
 	}
 
 	@Override
-	public void train(MLTrain train, double targetError) {
-		train(train, targetError, false);
+	public void train(double targetError) {
+		train(targetError, false);
 		
 	}
 	
 	public int winner(MLData input) {
 		return ml.winner(input);
+	}
+
+	@Override
+	public void setTraining(MLTrain train) {
+		trainer = train;
+	}
+
+	@Override
+	public MLTrain getTraining() {
+		return trainer;
+	}
+
+	@Override
+	public void trainStep() {
+		trainer.iteration();
 	}
 }

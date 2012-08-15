@@ -11,6 +11,7 @@ import org.encog.util.EngineArray;
 public class AdaBoostML implements EnsembleML {
 	private EnsembleDataSet trainingSet;
 	private BasicNetwork ml;
+	private MLTrain trainer;
 	
 	public AdaBoostML(MLMethod fromML) {
 		setMl(fromML);
@@ -37,21 +38,21 @@ public class AdaBoostML implements EnsembleML {
 	}
 
 	@Override
-	public void train(MLTrain train, double targetError) {
-		train (train,targetError,false);
+	public void train(double targetError) {
+		train (targetError,false);
 	}
 
 	@Override
-	public void train(MLTrain train, double targetError, boolean verbose) {
+	public void train(double targetError, boolean verbose) {
 		double error;
 		int iteration=0;
 		do {
-			train.iteration();
+			trainer.iteration();
 			iteration++;
-			error = train.getError();
+			error = trainer.getError();
 			if (verbose) System.out.println(iteration + " " + error);
-		} while ((error > targetError) && train.canContinue());
-		train.finishTraining();
+		} while ((error > targetError) && trainer.canContinue());
+		trainer.finishTraining();
 	}
 
 	@Override
@@ -76,6 +77,20 @@ public class AdaBoostML implements EnsembleML {
 	@Override
 	public int getOutputCount() {
 		return ml.getOutputCount();
+	}
+
+	@Override
+	public void setTraining(MLTrain train) {
+		trainer = train;
+	}
+
+	@Override
+	public MLTrain getTraining() {
+		return trainer;
+	}
+
+	@Override
+	public void trainStep() {
 	}
 
 }

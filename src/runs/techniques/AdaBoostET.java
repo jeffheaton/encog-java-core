@@ -24,8 +24,8 @@ public class AdaBoostET extends EvaluationTechnique {
 	}
 
 	@Override
-	public int train(double trainToError, boolean verbose) {
-		return boosting.train(trainToError,verbose);
+	public void train(double trainToError, boolean verbose) {
+		boosting.train(trainToError,verbose);
 	}
 
 	@Override
@@ -39,6 +39,16 @@ public class AdaBoostET extends EvaluationTechnique {
 	@Override
 	public MLData compute(MLData input) {
 		return boosting.compute(input);
+	}
+
+	@Override
+	public void trainStep() {
+		System.err.println("Can't to this in Boosting");
+	}
+
+	@Override
+	public double trainError() {
+		return 0;
 	}
 	
 }

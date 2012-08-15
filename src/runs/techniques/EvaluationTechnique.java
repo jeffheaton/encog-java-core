@@ -40,7 +40,11 @@ public abstract class EvaluationTechnique {
 		return error;
 	}
 	
-	public abstract int train(double trainToError, boolean verbose);
+	public abstract void train(double trainToError, boolean verbose);
+	
+	public abstract void trainStep();
+	
+	public abstract double trainError();
 	
 	public abstract void init(DataLoader dataLoader);
 	

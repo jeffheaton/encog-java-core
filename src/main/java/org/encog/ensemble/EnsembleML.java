@@ -22,17 +22,29 @@ public interface EnsembleML extends MLMethod, MLClassification, MLRegression {
 	public void setTrainingSet(EnsembleDataSet dataSet);
 
 	/**
+	 * Set the training for this member
+	 * @param dataSet
+	 */
+	public void setTraining(MLTrain train);
+
+	/**
 	 * Get the dataset for this member
 	 * @return
 	 */
 	public EnsembleDataSet getTrainingSet();
 
 	/**
+	 * Get the dataset for this member
+	 * @return
+	 */
+	public MLTrain getTraining();
+
+	/**
 	 * Train the ML to a certain accuracy
 	 * @param train
 	 * @param targetAccuracy
 	 */
-	public void train(MLTrain train, double targetError);
+	public void train(double targetError);
 	
 	/**
 	 * Train the ML to a certain accuracy
@@ -40,8 +52,8 @@ public interface EnsembleML extends MLMethod, MLClassification, MLRegression {
 	 * @param targetAccuracy
 	 * @param verbose
 	 */
-	public void train(MLTrain train, double targetError, boolean verbose);
-	
+	public void train(double targetError, boolean verbose);
+
 	/**
 	 * Set the MLMethod to run
 	 * @param newMlMethod
@@ -53,6 +65,8 @@ public interface EnsembleML extends MLMethod, MLClassification, MLRegression {
 	 * @return
 	 */
 	public MLMethod getMl();
+
+	public void trainStep();
 	
 	/**
 	 * Calculates the error in classification as 1 - accuracy

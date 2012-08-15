@@ -13,6 +13,7 @@ function training() {
 	pid=$!
 	sleep $pause
 	kill $(($pid + 2))
+	kill $(($pid + 3))
 }
 
 training > ~/projects/mscproject/data_plots/training_curves/${technique}-${problem}-${neurons}-1.data

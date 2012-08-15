@@ -64,16 +64,11 @@ public abstract class Ensemble {
 	 * @param verbose
 	 * @return
 	 */
-	public int train(double targetError, boolean verbose) {
-		int iteration = 0;
+	public void train(double targetError, boolean verbose) {
 		for (EnsembleML current : members)
 		{
-			iteration++;
-			MLTrain train = trainFactory.getTraining((BasicNetwork)current.getMl(), current.getTrainingSet());
-			//if(verbose) System.out.println("Training: " + current.toString());
-			current.train(train, targetError, verbose);
+			current.train(targetError, verbose);
 		}
-		return iteration;
 	}
 	
 	/**
@@ -81,8 +76,8 @@ public abstract class Ensemble {
 	 * @param targetAccuracy
 	 * @return
 	 */
-	public int train(double targetError) {
-		return train(targetError, false);
+	public void train(double targetError) {
+		train(targetError, false);
 	}
 	
 	/**

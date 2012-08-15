@@ -10,6 +10,8 @@ import org.encog.ensemble.EnsembleTypes;
 import org.encog.ensemble.EnsembleTypes.ProblemType;
 import org.encog.ensemble.aggregator.EnsembleAggregator;
 import org.encog.ensemble.data.factories.ResamplingDataSetFactory;
+import org.encog.ml.train.MLTrain;
+import org.encog.neural.networks.BasicNetwork;
 
 public class Bagging extends Ensemble {
 
@@ -37,6 +39,7 @@ public class Bagging extends Ensemble {
 			{
 				BaggingML newML = new BaggingML(mlFactory.createML(this.dataSetFactory.getInputCount(), this.dataSetFactory.getOutputCount()));
 				newML.setTrainingSet(dataSetFactory.getNewDataSet());
+				newML.setTraining(trainFactory.getTraining(newML.getMl(), newML.getTrainingSet()));
 				members.add(newML);
 			}
 		}
@@ -50,6 +53,13 @@ public class Bagging extends Ensemble {
 	@Override
 	public EnsembleML getMember(int memberNumber) {
 		return members.get(memberNumber);
+	}
+
+	public void trainStep() {
+		for (EnsembleML current : members)
+		{
+			current.trainStep();
+		}
 	}
 
 

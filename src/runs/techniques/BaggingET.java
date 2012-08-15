@@ -24,8 +24,8 @@ public class BaggingET extends EvaluationTechnique {
 	}
 
 	@Override
-	public int train(double trainToError, boolean verbose) {
-		return bagging.train(trainToError,verbose);
+	public void train(double trainToError, boolean verbose) {
+		bagging.train(trainToError,verbose);
 	}
 
 	@Override
@@ -39,6 +39,16 @@ public class BaggingET extends EvaluationTechnique {
 	@Override
 	public MLData compute(MLData input) {
 		return bagging.compute(input);
+	}
+
+	@Override
+	public void trainStep() {
+		bagging.trainStep();
+	}
+
+	@Override
+	public double trainError() {
+		return bagging.getMember(0).getTraining().getError();
 	}
 	
 }
