@@ -23,6 +23,9 @@
  */
 package org.encog.engine.network.activation;
 
+import org.encog.ml.factory.MLActivationFactory;
+import org.encog.util.obj.ActivationUtil;
+
 /**
  * The hyperbolic tangent activation function takes the curved shape of the
  * hyperbolic tangent. This activation function produces both positive and
@@ -107,6 +110,14 @@ public class ActivationTANH implements ActivationFunction {
 	@Override
 	public final void setParam(final int index, final double value) {
 		this.params[index] = value;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getFactoryCode() {
+		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_TANH, this);
 	}
 
 }

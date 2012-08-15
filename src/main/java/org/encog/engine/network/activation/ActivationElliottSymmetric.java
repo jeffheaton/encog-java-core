@@ -23,6 +23,9 @@
  */
 package org.encog.engine.network.activation;
 
+import org.encog.ml.factory.MLActivationFactory;
+import org.encog.util.obj.ActivationUtil;
+
 /**
  * Computationally efficient alternative to ActivationTANH.
  * Its output is in the range [-1, 1], and it is derivable.
@@ -110,5 +113,13 @@ public class ActivationElliottSymmetric implements ActivationFunction {
     public final void setParam(final int index, final double value) {
         this.params[index] = value;
     }
+    
+    /**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getFactoryCode() {
+		return null;
+	}
 
 }

@@ -23,6 +23,9 @@
  */
 package org.encog.engine.network.activation;
 
+import org.encog.ml.factory.MLActivationFactory;
+import org.encog.util.obj.ActivationUtil;
+
 /**
  * The Steepened Sigmoid is an activation function typically used with NEAT.
  * 
@@ -106,5 +109,13 @@ public class ActivationSteepenedSigmoid implements ActivationFunction {
     public final void setParam(final int index, final double value) {
         this.params[index] = value;
     }
+    
+    /**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getFactoryCode() {
+		return null;
+	}
 
 }

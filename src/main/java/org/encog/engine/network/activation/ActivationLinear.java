@@ -23,6 +23,9 @@
  */
 package org.encog.engine.network.activation;
 
+import org.encog.ml.factory.MLActivationFactory;
+import org.encog.util.obj.ActivationUtil;
+
 /**
  * The Linear layer is really not an activation function at all. The input is
  * simply passed on, unmodified, to the output. This activation function is
@@ -113,5 +116,13 @@ public class ActivationLinear implements ActivationFunction {
 	@Override
 	public final void setParam(final int index, final double value) {
 		this.params[index] = value;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getFactoryCode() {
+		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_LINEAR, this);
 	}
 }
