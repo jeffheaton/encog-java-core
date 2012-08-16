@@ -293,7 +293,7 @@ public class AnalystScript {
 			return new File(name);
 		}
 	}
-
+	
 	/**
 	 * Save to the specified output stream.
 	 * @param stream The output stream.

@@ -77,6 +77,7 @@ public class ScriptSave {
 		saveSubSection(out, "RANDOMIZE", "CONFIG");
 		saveSubSection(out, "CLUSTER", "CONFIG");
 		saveSubSection(out, "BALANCE", "CONFIG");
+		saveSubSection(out, "CODE", "CONFIG");
 
 		if (this.script.getSegregate().getSegregateTargets() != null) {
 			saveSegregate(out);
@@ -267,16 +268,18 @@ public class ScriptSave {
 		out.addSubSection(subSection);
 		final List<PropertyEntry> list = PropertyConstraints.getInstance()
 				.getEntries(section, subSection);
-		Collections.sort(list);
-		for (final PropertyEntry entry : list) {
-			final String key = section + ":" + subSection + "_"
-					+ entry.getName();
-			final String value = this.script.getProperties().getPropertyString(
-					key);
-			if (value != null) {
-				out.writeProperty(entry.getName(), value);
-			} else {
-				out.writeProperty(entry.getName(), "");
+		if (list != null) {
+			Collections.sort(list);
+			for (final PropertyEntry entry : list) {
+				final String key = section + ":" + subSection + "_"
+						+ entry.getName();
+				final String value = this.script.getProperties()
+						.getPropertyString(key);
+				if (value != null) {
+					out.writeProperty(entry.getName(), value);
+				} else {
+					out.writeProperty(entry.getName(), "");
+				}
 			}
 		}
 	}

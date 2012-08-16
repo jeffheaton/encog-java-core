@@ -42,6 +42,7 @@ import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
+import org.encog.app.generate.TargetLanguage;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.util.arrayutil.NormalizationAction;
@@ -139,6 +140,11 @@ public class AnalystWizard {
 	 * The clustered file.
 	 */
 	public static final String FILE_CLUSTER = "FILE_CLUSTER";
+	
+	/**
+	 * The generated code file.
+	 */
+	public static final String FILE_CODE = "FILE_CODE";
 
 	/**
 	 * The raw filename.
@@ -194,6 +200,11 @@ public class AnalystWizard {
 	 * The cluster filename.
 	 */
 	private String filenameCluster;
+	
+	/**
+	 * The filename that code will be generated to.
+	 */
+	private String filenameCode;
 
 	/**
 	 * The analyst script.
@@ -293,6 +304,10 @@ public class AnalystWizard {
 	private double maxError = DEFAULT_TRAIN_ERROR;
 
 	private String targetFieldName;
+	
+	private TargetLanguage codeTargetLanguage;
+	
+	private boolean codeEmbedData;
 
 	/**
 	 * Construct the analyst wizard.
@@ -656,6 +671,8 @@ public class AnalystWizard {
 				.getName();
 		this.filenameCluster = FileUtil.addFilenameBase(rawFile, "_cluster")
 				.getName();
+		this.filenameCode = FileUtil.forceExtension( FileUtil.addFilenameBase(rawFile, "_code").getName(), 
+				this.codeTargetLanguage.getExtension());
 
 		final ScriptProperties p = this.script.getProperties();
 
@@ -680,6 +697,10 @@ public class AnalystWizard {
 
 		if (this.taskBalance) {
 			p.setFilename(AnalystWizard.FILE_BALANCE, this.filenameBalance);
+		}
+		
+		if (this.codeTargetLanguage != TargetLanguage.NoGeneration ) {
+			p.setFilename(AnalystWizard.FILE_CODE, this.filenameCode);
 		}
 
 		p.setFilename(AnalystWizard.FILE_TRAINSET, this.filenameTrainSet);
@@ -1030,6 +1051,10 @@ public class AnalystWizard {
 		task1.getLines().add("create");
 		task1.getLines().add("train");
 		task1.getLines().add("evaluate");
+		
+		if( this.codeTargetLanguage!=TargetLanguage.NoGeneration) {
+			task1.getLines().add("code");
+		}
 
 		final AnalystTask task2 = new AnalystTask("task-generate");
 		if (!this.timeSeries && this.taskRandomize) {
@@ -1068,6 +1093,9 @@ public class AnalystWizard {
 
 		final AnalystTask task7 = new AnalystTask("task-cluster");
 		task7.getLines().add("cluster");
+		
+		final AnalystTask task8 = new AnalystTask("task-code");
+		task7.getLines().add("code");
 
 		this.script.addTask(task1);
 		this.script.addTask(task2);
@@ -1076,6 +1104,7 @@ public class AnalystWizard {
 		this.script.addTask(task5);
 		this.script.addTask(task6);
 		this.script.addTask(task7);
+		this.script.addTask(task8);
 	}
 
 	/**
@@ -1328,7 +1357,7 @@ public class AnalystWizard {
 		this.analyst.analyze(analyzeFile, b, format);
 		generateNormalizedFields();
 		generateSegregate();
-
+		generateCode();
 		generateGenerate();
 
 		generateTasks();
@@ -1336,6 +1365,12 @@ public class AnalystWizard {
 				&& (this.leadWindowSize > 0)) {
 			expandTimeSlices();
 		}
+	}
+	
+	private void generateCode() {
+		this.script.getProperties().setProperty(ScriptProperties.CODE_CONFIG_EMBED_DATA, this.codeEmbedData);
+		this.script.getProperties().setProperty(ScriptProperties.CODE_CONFIG_TARGET_LANGUAGE, this.codeTargetLanguage);
+		this.script.getProperties().setProperty(ScriptProperties.CODE_CONFIG_TARGET_FILE, AnalystWizard.FILE_CODE);
 	}
 
 	/**
@@ -1361,7 +1396,7 @@ public class AnalystWizard {
 		this.format = format;
 
 		generateFilenames(analyzeFile);
-		generateSettings();
+		generateSettings();		
 		this.analyst.download();
 
 		wizard(analyzeFile, b, format);
@@ -1421,5 +1456,38 @@ public class AnalystWizard {
 		this.targetFieldName = theTargetField;
 
 	}
+
+	/**
+	 * @return the codeTargetLanguage
+	 */
+	public TargetLanguage getCodeTargetLanguage() {
+		return codeTargetLanguage;
+	}
+
+	/**
+	 * @param codeTargetLanguage the codeTargetLanguage to set
+	 */
+	public void setCodeTargetLanguage(TargetLanguage codeTargetLanguage) {
+		this.codeTargetLanguage = codeTargetLanguage;
+	}
+
+	/**
+	 * @return the codeEmbedData
+	 */
+	public boolean isCodeEmbedData() {
+		return codeEmbedData;
+	}
+
+	/**
+	 * @param codeEmbedData the codeEmbedData to set
+	 */
+	public void setCodeEmbedData(boolean codeEmbedData) {
+		this.codeEmbedData = codeEmbedData;
+	}
+
+
+	
+	
+
 
 }
