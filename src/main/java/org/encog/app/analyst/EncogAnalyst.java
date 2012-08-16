@@ -40,6 +40,7 @@ import org.encog.app.analyst.analyze.PerformAnalysis;
 import org.encog.app.analyst.commands.Cmd;
 import org.encog.app.analyst.commands.CmdBalance;
 import org.encog.app.analyst.commands.CmdCluster;
+import org.encog.app.analyst.commands.CmdCode;
 import org.encog.app.analyst.commands.CmdCreate;
 import org.encog.app.analyst.commands.CmdEvaluate;
 import org.encog.app.analyst.commands.CmdEvaluateRaw;
@@ -137,6 +138,7 @@ public class EncogAnalyst {
 		addCommand(new CmdSet(this));
 		addCommand(new CmdReset(this));
 		addCommand(new CmdCluster(this));
+		addCommand(new CmdCode(this));
 	}
 
 	/**
