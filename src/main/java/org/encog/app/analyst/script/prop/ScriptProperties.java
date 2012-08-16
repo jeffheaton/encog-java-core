@@ -36,6 +36,7 @@ import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.AnalystFileFormat;
 import org.encog.app.analyst.AnalystGoal;
 import org.encog.app.analyst.util.ConvertStringConst;
+import org.encog.app.generate.TargetLanguage;
 import org.encog.util.csv.CSVFormat;
 
 /**
@@ -253,6 +254,24 @@ public class ScriptProperties {
 	 */
 	public static final String CLUSTER_CONFIG_CLUSTERS 
 		= "CLUSTER:CONFIG_clusters";
+	
+	/**
+	 * Property for: "GENERATE:CONFIG_targetLanguage". 
+	 */
+	public static final String CODE_CONFIG_TARGET_LANGUAGE 
+		= "CODE:CONFIG_targetLanguage";
+	
+	/**
+	 * Property for: "GENERATE:CONFIG_targetFile". 
+	 */
+	public static final String CODE_CONFIG_TARGET_FILE 
+		= "CODE:CONFIG_targetFile";
+	
+	/**
+	 * Property for: "GENERATE:CONFIG_embedData". 
+	 */
+	public static final String CODE_CONFIG_EMBED_DATA 
+		= "CODE:CONFIG_embedData";
 
 	/**
 	 * Convert a key to the dot form.
@@ -574,7 +593,35 @@ public class ScriptProperties {
 	 */
 	public final void setProperty(final String name, final URL url) {
 		this.data.put(name, url.toExternalForm());
-
+	}
+	
+	/**
+	 * Set a property as a target language.
+	 * @param name The name of the property.
+	 * @param targetLanguage The target language.
+	 */
+	public final void setProperty(final String name, final TargetLanguage targetLanguage) {		
+		this.data.put(name, targetLanguage.toString().toUpperCase());
+	}
+	
+	/**
+	 * Get the property as a target language.
+	 * @param name The name of the property.
+	 * @return The target language.
+	 */
+	public final TargetLanguage getPropertyTargetLanguage(final String name) {
+		if (!this.data.containsKey(name)) {
+			return null;
+		}
+		
+		String value = this.data.get(name);
+		
+		for(TargetLanguage v : TargetLanguage.values() ) {
+			if( v.toString().equalsIgnoreCase(value)) {
+				return v;
+			}
+		}
+		return TargetLanguage.NoGeneration;
 	}
 
 	/** {@inheritDoc} */
