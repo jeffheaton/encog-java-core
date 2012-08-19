@@ -2,9 +2,9 @@ package ensembles;
 
 import java.util.List;
 
+import org.encog.ensemble.EnsembleAggregator;
 import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
-import org.encog.ensemble.aggregator.EnsembleAggregator;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 
 import techniques.EvaluationTechnique;

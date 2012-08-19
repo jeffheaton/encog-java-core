@@ -1,4 +1,4 @@
-package org.encog.ensemble.aggregator;
+package org.encog.ensemble;
 
 import java.util.ArrayList;
 

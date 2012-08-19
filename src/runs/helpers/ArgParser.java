@@ -9,10 +9,10 @@ import java.util.List;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationSigmoid;
+import org.encog.ensemble.EnsembleAggregator;
 import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.aggregator.Averaging;
-import org.encog.ensemble.aggregator.EnsembleAggregator;
 import org.encog.ensemble.aggregator.MajorityVoting;
 import org.encog.ensemble.ml.mlp.factory.MultiLayerPerceptronFactory;
 import org.encog.ensemble.training.BackpropagationFactory;

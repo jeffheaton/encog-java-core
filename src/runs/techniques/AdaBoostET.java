@@ -1,9 +1,9 @@
 package techniques;
 
+import org.encog.ensemble.EnsembleAggregator;
 import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.adaboost.AdaBoost;
-import org.encog.ensemble.aggregator.EnsembleAggregator;
 import org.encog.ml.data.MLData;
 
 import helpers.DataLoader;

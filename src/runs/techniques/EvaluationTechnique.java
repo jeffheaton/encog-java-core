@@ -6,9 +6,9 @@ import helpers.PerfResults;
 
 import java.util.ArrayList;
 
+import org.encog.ensemble.EnsembleAggregator;
 import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
-import org.encog.ensemble.aggregator.EnsembleAggregator;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
