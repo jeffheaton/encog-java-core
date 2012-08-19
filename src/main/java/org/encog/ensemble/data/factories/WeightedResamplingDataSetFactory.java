@@ -2,8 +2,8 @@ package org.encog.ensemble.data.factories;
 
 import java.util.Random;
 
-import org.encog.ensemble.data.EnsembleDataPair;
 import org.encog.ensemble.data.EnsembleDataSet;
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 
 public class WeightedResamplingDataSetFactory extends EnsembleDataSetFactory {
@@ -14,14 +14,14 @@ public class WeightedResamplingDataSetFactory extends EnsembleDataSetFactory {
 
 	MLDataSet originalData;
 	
-	EnsembleDataPair getCandidate(double weight) {
+	MLDataPair getCandidate(double weight) {
 		double weightSoFar = 0;
 		for (int i = 0; i < dataSource.size(); i++) {
 			weightSoFar += dataSource.get(i).getSignificance();
 			if (weightSoFar > weight)
-				return (EnsembleDataPair) dataSource.get(i);
+				return (MLDataPair) dataSource.get(i);
 		}
-		return (EnsembleDataPair) dataSource.get(dataSource.size());
+		return (MLDataPair) dataSource.get(dataSource.size());
 	}
 	
 	@Override
