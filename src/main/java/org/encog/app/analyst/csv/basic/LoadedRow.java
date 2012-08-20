@@ -71,7 +71,7 @@ public class LoadedRow {
 	/**
 	 * @return The row data.
 	 */
-	public final String[] getData() {
+	public String[] getData() {
 		return this.data;
 	}
 }

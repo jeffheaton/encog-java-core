@@ -59,7 +59,7 @@ public class BufferedDataSetIterator implements Iterator<MLDataPair> {
 	 * @return True if there is are more records to read.
 	 */
 	@Override
-	public final boolean hasNext() {
+	public boolean hasNext() {
 		return this.current < this.data.getRecordCount();
 	}
 
@@ -67,7 +67,7 @@ public class BufferedDataSetIterator implements Iterator<MLDataPair> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final MLDataPair next() {
+	public MLDataPair next() {
 
 		if (!hasNext()) {
 			return null;
@@ -83,7 +83,7 @@ public class BufferedDataSetIterator implements Iterator<MLDataPair> {
 	 * Not supported.
 	 */
 	@Override
-	public final void remove() {
+	public void remove() {
 		throw new MLDataError("Remove is not supported.");
 	}
 

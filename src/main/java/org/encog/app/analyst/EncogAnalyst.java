@@ -145,7 +145,7 @@ public class EncogAnalyst {
 	 * Add a listener.
 	 * @param listener The listener to add.
 	 */
-	public final void addAnalystListener(final AnalystListener listener) {
+	public void addAnalystListener(final AnalystListener listener) {
 		this.listeners.add(listener);
 	}
 
@@ -153,7 +153,7 @@ public class EncogAnalyst {
 	 * Add a command.
 	 * @param cmd The command to add.
 	 */
-	public final void addCommand(final Cmd cmd) {
+	public void addCommand(final Cmd cmd) {
 		this.commands.put(cmd.getName(), cmd);
 	}
 
@@ -163,7 +163,7 @@ public class EncogAnalyst {
 	 * @param headers True if headers are present.
 	 * @param format The format of the file.
 	 */
-	public final void analyze(final File file, final boolean headers,
+	public void analyze(final File file, final boolean headers,
 			final AnalystFileFormat format) {
 		this.script.getProperties().setFilename(AnalystWizard.FILE_RAW,
 				file.toString());
@@ -181,7 +181,7 @@ public class EncogAnalyst {
 	 * Determine the input count.  This is the actual number of columns.
 	 * @return The input count.
 	 */
-	public final int determineInputCount() {
+	public int determineInputCount() {
 		int result = 0;
 		for (final AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
@@ -197,7 +197,7 @@ public class EncogAnalyst {
 	 * than columns.
 	 * @return The input field count.
 	 */
-	public final int determineInputFieldCount() {
+	public int determineInputFieldCount() {
 		int result = 0;
 		for (final AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
@@ -214,7 +214,7 @@ public class EncogAnalyst {
 	 * columns needed.
 	 * @return The output count.
 	 */
-	public final int determineOutputCount() {
+	public int determineOutputCount() {
 		int result = 0;
 		for (final AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
@@ -230,7 +230,7 @@ public class EncogAnalyst {
 	 * level than columns.
 	 * @return The output field count.
 	 */
-	public final int determineOutputFieldCount() {
+	public int determineOutputFieldCount() {
 		int result = 0;
 		for (final AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
@@ -252,7 +252,7 @@ public class EncogAnalyst {
 	 * counted multiple times.
 	 * @return The number of columns.
 	 */
-	public final int determineUniqueColumns() {
+	public int determineUniqueColumns() {
 		final Map<String, Object> used = new HashMap<String, Object>();
 		int result = 0;
 
@@ -274,7 +274,7 @@ public class EncogAnalyst {
 	 * counted multiple times.
 	 * @return The number of unique input fields.
 	 */
-	public final int determineUniqueInputFieldCount() {
+	public int determineUniqueInputFieldCount() {
 		final Map<String, Object> map = new HashMap<String, Object>();
 
 		int result = 0;
@@ -294,7 +294,7 @@ public class EncogAnalyst {
 	 * Determine the total input field count, minus ignored fields.
 	 * @return The number of unique input fields.
 	 */
-	public final int determineTotalInputFieldCount() {
+	public int determineTotalInputFieldCount() {
 
 		int result = 0;
 		for (final AnalystField field : this.script.getNormalize()
@@ -312,7 +312,7 @@ public class EncogAnalyst {
 	 * multiple times.
 	 * @return The unique output field count.
 	 */
-	public final int determineUniqueOutputFieldCount() {
+	public int determineUniqueOutputFieldCount() {
 		final Map<String, Object> map = new HashMap<String, Object>();
 		int result = 0;
 		for (final AnalystField field : this.script.getNormalize()
@@ -330,7 +330,7 @@ public class EncogAnalyst {
 	/**
 	 * Download a raw file from the Internet.
 	 */
-	public final void download() {
+	public void download() {
 		final URL sourceURL = this.script.getProperties().getPropertyURL(
 				ScriptProperties.HEADER_DATASOURCE_SOURCE_FILE);
 
@@ -461,7 +461,7 @@ public class EncogAnalyst {
 	 * Execute a task.
 	 * @param task The task to execute.
 	 */
-	public final void executeTask(final AnalystTask task) {
+	public void executeTask(final AnalystTask task) {
 		final int total = task.getLines().size();
 		int current = 1;
 		for (String line : task.getLines()) {
@@ -505,7 +505,7 @@ public class EncogAnalyst {
 	 * Execute a task.
 	 * @param name The name of the task to execute.
 	 */
-	public final void executeTask(final String name) {
+	public void executeTask(final String name) {
 		EncogLogging.log(EncogLogging.LEVEL_INFO, 
 				"Analyst execute task:" + name);
 		final AnalystTask task = this.script.getTask(name);
@@ -519,7 +519,7 @@ public class EncogAnalyst {
 	/**
 	 * @return The lag depth.
 	 */
-	public final int getLagDepth() {
+	public int getLagDepth() {
 		int result = 0;
 		for (final AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
@@ -533,7 +533,7 @@ public class EncogAnalyst {
 	/**
 	 * @return The lead depth.
 	 */
-	public final int getLeadDepth() {
+	public int getLeadDepth() {
 		int result = 0;
 		for (final AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
@@ -547,28 +547,28 @@ public class EncogAnalyst {
 	/**
 	 * @return the listeners
 	 */
-	public final List<AnalystListener> getListeners() {
+	public List<AnalystListener> getListeners() {
 		return this.listeners;
 	}
 
 	/**
 	 * @return The max iterations.
 	 */
-	public final int getMaxIteration() {
+	public int getMaxIteration() {
 		return this.maxIteration;
 	}
 
 	/**
 	 * @return The reverted data.
 	 */
-	public final Map<String, String> getRevertData() {
+	public Map<String, String> getRevertData() {
 		return this.revertData;
 	}
 
 	/**
 	 * @return the script
 	 */
-	public final AnalystScript getScript() {
+	public AnalystScript getScript() {
 		return this.script;
 	}
 
@@ -576,7 +576,7 @@ public class EncogAnalyst {
 	 * Load the specified script file.
 	 * @param file The file to load.
 	 */
-	public final void load(final File file) {
+	public void load(final File file) {
 		InputStream fis = null;
 		this.script.setBasePath(file.getParent());
 
@@ -600,7 +600,7 @@ public class EncogAnalyst {
 	 * Load from an input stream.
 	 * @param stream The stream to load from.
 	 */
-	public final void load(final InputStream stream) {
+	public void load(final InputStream stream) {
 		this.script.load(stream);
 		this.revertData = this.script.getProperties().prepareRevert();
 	}
@@ -609,7 +609,7 @@ public class EncogAnalyst {
 	 * Load from the specified filename.
 	 * @param filename The filename to load from.
 	 */
-	public final void load(final String filename) {
+	public void load(final String filename) {
 		load(new File(filename));
 	}
 
@@ -617,7 +617,7 @@ public class EncogAnalyst {
 	 * Remove a listener.
 	 * @param listener The listener to remove.
 	 */
-	public final void removeAnalystListener(final AnalystListener listener) {
+	public void removeAnalystListener(final AnalystListener listener) {
 		this.listeners.remove(listener);
 	}
 
@@ -661,7 +661,7 @@ public class EncogAnalyst {
 	 * Report training.
 	 * @param train The trainer.
 	 */
-	public final void reportTraining(final MLTrain train) {
+	public void reportTraining(final MLTrain train) {
 		for (final AnalystListener listener : this.listeners) {
 			listener.reportTraining(train);
 		}
@@ -670,7 +670,7 @@ public class EncogAnalyst {
 	/**
 	 * Report that training has begun.
 	 */
-	public final void reportTrainingBegin() {
+	public void reportTrainingBegin() {
 		for (final AnalystListener listener : this.listeners) {
 			listener.reportTrainingBegin();
 		}
@@ -679,7 +679,7 @@ public class EncogAnalyst {
 	/**
 	 * Report that training has ended.
 	 */
-	public final void reportTrainingEnd() {
+	public void reportTrainingEnd() {
 		for (final AnalystListener listener : this.listeners) {
 			listener.reportTrainingEnd();
 		}
@@ -689,7 +689,7 @@ public class EncogAnalyst {
 	 * Save the script to a file.
 	 * @param file The file to save to.
 	 */
-	public final void save(final File file) {
+	public void save(final File file) {
 		OutputStream fos = null;
 
 		try {
@@ -713,7 +713,7 @@ public class EncogAnalyst {
 	 * Save the script to a stream.
 	 * @param stream The stream to save to.
 	 */
-	public final void save(final OutputStream stream) {
+	public void save(final OutputStream stream) {
 		this.script.save(stream);
 
 	}
@@ -722,7 +722,7 @@ public class EncogAnalyst {
 	 * Save the script to a filename.
 	 * @param filename The filename to save to.
 	 */
-	public final void save(final String filename) {
+	public void save(final String filename) {
 		save(new File(filename));
 	}
 
@@ -730,7 +730,7 @@ public class EncogAnalyst {
 	 * Set the current task.
 	 * @param task The current task.
 	 */
-	public final synchronized void setCurrentQuantTask(final QuantTask task) {
+	public synchronized void setCurrentQuantTask(final QuantTask task) {
 		this.currentQuantTask = task;
 	}
 
@@ -738,7 +738,7 @@ public class EncogAnalyst {
 	 * Set the max iterations.
 	 * @param i The value for max iterations.
 	 */
-	public final void setMaxIteration(final int i) {
+	public void setMaxIteration(final int i) {
 		this.maxIteration = i;
 	}
 
@@ -759,7 +759,7 @@ public class EncogAnalyst {
 	 * Should the current command be stopped.
 	 * @return True if the current command should be stopped.
 	 */
-	public final boolean shouldStopCommand() {
+	public boolean shouldStopCommand() {
 		for (final AnalystListener listener : this.listeners) {
 			if (listener.shouldStopCommand()) {
 				return true;
@@ -771,7 +771,7 @@ public class EncogAnalyst {
 	/**
 	 * Stop the current task.
 	 */
-	public final synchronized void stopCurrentTask() {
+	public synchronized void stopCurrentTask() {
 		if (this.currentQuantTask != null) {
 			this.currentQuantTask.requestStop();
 		}
@@ -780,7 +780,7 @@ public class EncogAnalyst {
 	/**
 	 * @return True, if any field has a time slice.
 	 */
-	public final boolean isTimeSeries() {
+	public boolean isTimeSeries() {
 		for (AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
 			if (field.getTimeSlice() != 0) {

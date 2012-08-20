@@ -112,7 +112,7 @@ public class CPN extends BasicML implements MLRegression,
 	 * @return The error percentage.
 	 */
 	@Override
-	public final double calculateError(final MLDataSet data) {
+	public double calculateError(final MLDataSet data) {
 		return EncogUtility.calculateRegressionError(this, data);
 	}
 
@@ -120,7 +120,7 @@ public class CPN extends BasicML implements MLRegression,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final MLData compute(final MLData input) {
+	public MLData compute(final MLData input) {
 		final MLData temp = computeInstar(input);
 		return computeOutstar(temp);
 	}
@@ -130,7 +130,7 @@ public class CPN extends BasicML implements MLRegression,
 	 * @param input The input.
 	 * @return The output.
 	 */
-	public final MLData computeInstar(final MLData input) {
+	public MLData computeInstar(final MLData input) {
 		final MLData result = new BasicMLData(this.instarCount);
 		int w, i, j;
 		double sum, sumWinners, maxOut;
@@ -174,7 +174,7 @@ public class CPN extends BasicML implements MLRegression,
 	 * @param input The input.
 	 * @return The output.
 	 */
-	public final MLData computeOutstar(final MLData input) {
+	public MLData computeOutstar(final MLData input) {
 		final MLData result = new BasicMLData(this.outstarCount);
 
 		double sum = 0;
@@ -193,14 +193,14 @@ public class CPN extends BasicML implements MLRegression,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getInputCount() {
+	public int getInputCount() {
 		return this.inputCount;
 	}
 
 	/**
 	 * @return The instar count, same as the input count.
 	 */
-	public final int getInstarCount() {
+	public int getInstarCount() {
 		return this.instarCount;
 	}
 
@@ -208,35 +208,35 @@ public class CPN extends BasicML implements MLRegression,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getOutputCount() {
+	public int getOutputCount() {
 		return this.outstarCount;
 	}
 
 	/**
 	 * @return The outstar count, same as the output count.
 	 */
-	public final int getOutstarCount() {
+	public int getOutstarCount() {
 		return this.outstarCount;
 	}
 
 	/**
 	 * @return The weights between the input and instar.
 	 */
-	public final Matrix getWeightsInputToInstar() {
+	public Matrix getWeightsInputToInstar() {
 		return this.weightsInputToInstar;
 	}
 
 	/**
 	 * @return The weights between the instar and outstar.
 	 */
-	public final Matrix getWeightsInstarToOutstar() {
+	public Matrix getWeightsInstarToOutstar() {
 		return this.weightsInstarToOutstar;
 	}
 
 	/**
 	 * @return The winner count.
 	 */
-	public final int getWinnerCount() {
+	public int getWinnerCount() {
 		return this.winnerCount;
 	}
 
@@ -244,7 +244,7 @@ public class CPN extends BasicML implements MLRegression,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void reset() {
+	public void reset() {
 		reset(0);
 	}
 
@@ -252,7 +252,7 @@ public class CPN extends BasicML implements MLRegression,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void reset(final int seed) {
+	public void reset(final int seed) {
 		final ConsistentRandomizer randomize = new ConsistentRandomizer(-1, 1,
 				seed);
 		randomize.randomize(this.weightsInputToInstar);

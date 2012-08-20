@@ -104,7 +104,7 @@ public class CmdTrain extends Cmd {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean executeCommand(final String args) {
+	public boolean executeCommand(final String args) {
 
 		this.kfold = obtainCross();
 		final MLDataSet trainingSet = obtainTrainingSet();
@@ -137,7 +137,7 @@ public class CmdTrain extends Cmd {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String getName() {
+	public String getName() {
 		return CmdTrain.COMMAND_NAME;
 	}
 

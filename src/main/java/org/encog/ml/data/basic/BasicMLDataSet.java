@@ -195,7 +195,7 @@ public class BasicMLDataSet implements Serializable, MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final Object clone() {
+	public Object clone() {
 		return ObjectCloner.deepCopy(this);
 	}
 
@@ -203,7 +203,7 @@ public class BasicMLDataSet implements Serializable, MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void close() {
+	public void close() {
 		// nothing to close
 	}
 
@@ -212,7 +212,7 @@ public class BasicMLDataSet implements Serializable, MLDataSet {
 	 * 
 	 * @return the data
 	 */
-	public final List<MLDataPair> getData() {
+	public List<MLDataPair> getData() {
 		return this.data;
 	}
 
@@ -220,7 +220,7 @@ public class BasicMLDataSet implements Serializable, MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getIdealSize() {
+	public int getIdealSize() {
 		if (this.data.isEmpty()) {
 			return 0;
 		}
@@ -236,7 +236,7 @@ public class BasicMLDataSet implements Serializable, MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getInputSize() {
+	public int getInputSize() {
 		if (this.data.isEmpty()) {
 			return 0;
 		}
@@ -248,7 +248,7 @@ public class BasicMLDataSet implements Serializable, MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void getRecord(final long index, final MLDataPair pair) {
+	public void getRecord(final long index, final MLDataPair pair) {
 
 		final MLDataPair source = this.data.get((int) index);
 		pair.setInputArray(source.getInputArray());
@@ -262,7 +262,7 @@ public class BasicMLDataSet implements Serializable, MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final long getRecordCount() {
+	public long getRecordCount() {
 		return this.data.size();
 	}
 
@@ -270,7 +270,7 @@ public class BasicMLDataSet implements Serializable, MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean isSupervised() {
+	public boolean isSupervised() {
 		if (this.data.size() == 0) {
 			return false;
 		}
@@ -281,7 +281,7 @@ public class BasicMLDataSet implements Serializable, MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final Iterator<MLDataPair> iterator() {
+	public Iterator<MLDataPair> iterator() {
 		final BasicMLIterator result = new BasicMLIterator();
 		return result;
 	}
@@ -290,7 +290,7 @@ public class BasicMLDataSet implements Serializable, MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final MLDataSet openAdditional() {
+	public MLDataSet openAdditional() {
 		return new BasicMLDataSet(this.data);
 	}
 
@@ -298,7 +298,7 @@ public class BasicMLDataSet implements Serializable, MLDataSet {
 	 * @param theData
 	 *            the data to set
 	 */
-	public final void setData(final List<MLDataPair> theData) {
+	public void setData(final List<MLDataPair> theData) {
 		this.data = theData;
 	}
 

@@ -68,7 +68,7 @@ public abstract class Cmd {
 	/**
 	 * @return The analyst used with this command.
 	 */
-	public final EncogAnalyst getAnalyst() {
+	public EncogAnalyst getAnalyst() {
 		return this.analyst;
 	}
 
@@ -80,20 +80,20 @@ public abstract class Cmd {
 	/**
 	 * @return The properties used with this command.
 	 */
-	public final ScriptProperties getProp() {
+	public ScriptProperties getProp() {
 		return this.properties;
 	}
 
 	/**
 	 * @return The script used with this command.
 	 */
-	public final AnalystScript getScript() {
+	public AnalystScript getScript() {
 		return this.script;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final String toString() {
+	public String toString() {
 		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" name=");

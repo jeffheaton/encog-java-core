@@ -236,7 +236,7 @@ public class SVM extends BasicML implements MLRegression, MLClassification,
 	 * @return The error percentage.
 	 */
 	@Override
-	public final double calculateError(final MLDataSet data) {
+	public double calculateError(final MLDataSet data) {
 
 		switch (getSVMType()) {
 		case SupportVectorClassification:
@@ -257,7 +257,7 @@ public class SVM extends BasicML implements MLRegression, MLClassification,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int classify(final MLData input) {
+	public int classify(final MLData input) {
 		if (this.model == null) {
 			throw new EncogError(
 					"Can't use the SVM yet, it has not been trained, " 
@@ -276,7 +276,7 @@ public class SVM extends BasicML implements MLRegression, MLClassification,
 	 * @return The results from the SVM.
 	 */
 	@Override
-	public final MLData compute(final MLData input) {
+	public MLData compute(final MLData input) {
 
 		if (this.model == null) {
 			throw new EncogError(
@@ -298,14 +298,14 @@ public class SVM extends BasicML implements MLRegression, MLClassification,
 	 * @return The input count.
 	 */
 	@Override
-	public final int getInputCount() {
+	public int getInputCount() {
 		return this.inputCount;
 	}
 
 	/**
 	 * @return The kernel type.
 	 */
-	public final KernelType getKernelType() {
+	public KernelType getKernelType() {
 		switch (this.params.kernel_type) {
 		case svm_parameter.LINEAR:
 			return KernelType.Linear;
@@ -325,7 +325,7 @@ public class SVM extends BasicML implements MLRegression, MLClassification,
 	/**
 	 * @return The SVM models for each output.
 	 */
-	public final svm_model getModel() {
+	public svm_model getModel() {
 		return this.model;
 	}
 
@@ -333,7 +333,7 @@ public class SVM extends BasicML implements MLRegression, MLClassification,
 	 * @return For a SVM, the output count is always one.
 	 */
 	@Override
-	public final int getOutputCount() {
+	public int getOutputCount() {
 		return 1;
 	}
 
@@ -347,7 +347,7 @@ public class SVM extends BasicML implements MLRegression, MLClassification,
 	/**
 	 * @return The SVM type.
 	 */
-	public final SVMType getSVMType() {
+	public SVMType getSVMType() {
 		switch (this.params.svm_type) {
 		case svm_parameter.C_SVC:
 			return SVMType.SupportVectorClassification;
@@ -371,7 +371,7 @@ public class SVM extends BasicML implements MLRegression, MLClassification,
 	 *            The data to convert.
 	 * @return The SVM sparse data.
 	 */
-	public final svm_node[] makeSparse(final MLData data) {
+	public svm_node[] makeSparse(final MLData data) {
 		final svm_node[] result = new svm_node[data.size()];
 		for (int i = 0; i < data.size(); i++) {
 			result[i] = new svm_node();
@@ -386,7 +386,7 @@ public class SVM extends BasicML implements MLRegression, MLClassification,
 	 * Set the input count.
 	 * @param i The new input count.
 	 */
-	public final void setInputCount(final int i) {
+	public void setInputCount(final int i) {
 		this.inputCount = i;
 
 	}
@@ -395,7 +395,7 @@ public class SVM extends BasicML implements MLRegression, MLClassification,
 	 * Set the model.
 	 * @param theModel The model.
 	 */
-	public final void setModel(final svm_model theModel) {
+	public void setModel(final svm_model theModel) {
 		this.model = theModel;
 
 	}

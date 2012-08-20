@@ -48,7 +48,7 @@ public class PersistBasicNetwork implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getFileVersion() {
+	public int getFileVersion() {
 		return 1;
 	}
 
@@ -56,7 +56,7 @@ public class PersistBasicNetwork implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String getPersistClassString() {
+	public String getPersistClassString() {
 		return "BasicNetwork";
 	}
 
@@ -64,7 +64,7 @@ public class PersistBasicNetwork implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final Object read(final InputStream is) {
+	public Object read(final InputStream is) {
 		final BasicNetwork result = new BasicNetwork();
 		final FlatNetwork flat = new FlatNetwork();
 		final EncogReadHelper in = new EncogReadHelper(is);
@@ -156,7 +156,7 @@ public class PersistBasicNetwork implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void save(final OutputStream os, final Object obj) {
+	public void save(final OutputStream os, final Object obj) {
 		final EncogWriteHelper out = new EncogWriteHelper(os);
 		final BasicNetwork net = (BasicNetwork) obj;
 		final FlatNetwork flat = net.getStructure().getFlat();

@@ -44,14 +44,14 @@ public class CharGene extends BasicGene {
 	 * @param gene The source gene.
 	 */
 	@Override
-	public final void copy(final Gene gene) {
+	public void copy(final Gene gene) {
 		this.value = ((CharGene) gene).getValue();
 	}
 
 	/**
 	 * @return The value of this gene.
 	 */
-	public final char getValue() {
+	public char getValue() {
 		return this.value;
 	}
 
@@ -59,7 +59,7 @@ public class CharGene extends BasicGene {
 	 * Set the value of this gene.
 	 * @param theValue The new value of this gene.
 	 */
-	public final void setValue(final char theValue) {
+	public void setValue(final char theValue) {
 		this.value = theValue;
 	}
 
@@ -67,7 +67,7 @@ public class CharGene extends BasicGene {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String toString() {
+	public String toString() {
 		return "" + this.value;
 	}
 

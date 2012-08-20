@@ -104,7 +104,7 @@ public class SmartMomentum implements Strategy {
 	 * @param train
 	 *            The training algorithm.
 	 */
-	public final void init(final MLTrain train) {
+	public void init(final MLTrain train) {
 		this.train = train;
 		this.setter = (Momentum) train;
 		this.ready = false;
@@ -116,7 +116,7 @@ public class SmartMomentum implements Strategy {
 	/**
 	 * Called just after a training iteration.
 	 */
-	public final void postIteration() {
+	public void postIteration() {
 		if (this.ready) {
 			final double currentError = this.train.getError();
 			this.lastImprovement = (currentError - this.lastError)
@@ -153,7 +153,7 @@ public class SmartMomentum implements Strategy {
 	/**
 	 * Called just before a training iteration.
 	 */
-	public final void preIteration() {
+	public void preIteration() {
 		this.lastError = this.train.getError();
 	}
 

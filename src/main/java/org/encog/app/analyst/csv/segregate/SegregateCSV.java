@@ -49,7 +49,7 @@ public class SegregateCSV extends BasicFile {
 	/**
 	 * The segregation targets.
 	 */
-	private final List<SegregateTargetPercent> targets 
+	private List<SegregateTargetPercent> targets 
 		= new ArrayList<SegregateTargetPercent>();
 
 	/**
@@ -62,7 +62,7 @@ public class SegregateCSV extends BasicFile {
 	 * @param format
 	 *            The format of the input file.
 	 */
-	public final void analyze(final File inputFile, final boolean headers,
+	public void analyze(final File inputFile, final boolean headers,
 			final CSVFormat format) {
 		setInputFilename(inputFile);
 		setExpectInputHeaders(headers);
@@ -114,14 +114,14 @@ public class SegregateCSV extends BasicFile {
 	/**
 	 * @return The segregation targets.
 	 */
-	public final List<SegregateTargetPercent> getTargets() {
+	public List<SegregateTargetPercent> getTargets() {
 		return this.targets;
 	}
 
 	/**
 	 * Process the input file and segregate into the output files.
 	 */
-	public final void process() {
+	public void process() {
 		validate();
 
 		final ReadCSV csv = new ReadCSV(getInputFilename().toString(),

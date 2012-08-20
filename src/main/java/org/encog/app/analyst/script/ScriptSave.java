@@ -64,7 +64,7 @@ public class ScriptSave {
 	 * @param stream
 	 *            The output stream.
 	 */
-	public final void save(final OutputStream stream) {
+	public void save(final OutputStream stream) {
 		final EncogWriteHelper out = new EncogWriteHelper(stream);
 		saveSubSection(out, "HEADER", "DATASOURCE");
 		saveConfig(out);

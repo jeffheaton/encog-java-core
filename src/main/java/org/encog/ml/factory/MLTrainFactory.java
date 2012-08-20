@@ -242,7 +242,7 @@ public class MLTrainFactory {
 	 * @param args The training args.
 	 * @return The new training method.
 	 */
-	public final MLTrain create(final MLMethod method, 
+	public MLTrain create(final MLMethod method, 
 			final MLDataSet training,
 			final String type, final String args) {
 		

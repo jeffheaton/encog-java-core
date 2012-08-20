@@ -72,7 +72,7 @@ public class AnalystClusterCSV extends BasicFile {
 	 * @param headers True, if the input file has headers.
 	 * @param format The format of the input file.
 	 */
-	public final void analyze(final EncogAnalyst theAnalyst, 
+	public void analyze(final EncogAnalyst theAnalyst, 
 			final File inputFile,
 			final boolean headers, final CSVFormat format) {
 		this.setInputFilename(inputFile);
@@ -157,7 +157,7 @@ public class AnalystClusterCSV extends BasicFile {
 	 * @param theAnalyst The analyst to use.
 	 * @param iterations The number of iterations to use.
 	 */
-	public final void process(final File outputFile, final int clusters,
+	public void process(final File outputFile, final int clusters,
 			final EncogAnalyst theAnalyst, final int iterations) {
 
 		final PrintWriter tw = this.prepareOutputFile(outputFile, analyst

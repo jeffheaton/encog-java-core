@@ -64,35 +64,35 @@ public class AnalystClassItem implements Comparable<AnalystClassItem> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int compareTo(final AnalystClassItem o) {
+	public int compareTo(final AnalystClassItem o) {
 		return this.code.compareTo(o.getCode());
 	}
 
 	/**
 	 * @return the code
 	 */
-	public final String getCode() {
+	public String getCode() {
 		return this.code;
 	}
 
 	/**
 	 * @return The count.
 	 */
-	public final int getCount() {
+	public int getCount() {
 		return this.count;
 	}
 
 	/**
 	 * @return the name
 	 */
-	public final String getName() {
+	public String getName() {
 		return this.name;
 	}
 
 	/**
 	 * Increase the count.
 	 */
-	public final void increaseCount() {
+	public void increaseCount() {
 		this.count++;
 	}
 
@@ -100,7 +100,7 @@ public class AnalystClassItem implements Comparable<AnalystClassItem> {
 	 * @param theCode
 	 *            the code to set
 	 */
-	public final void setCode(final String theCode) {
+	public void setCode(final String theCode) {
 		this.code = theCode;
 	}
 
@@ -108,13 +108,13 @@ public class AnalystClassItem implements Comparable<AnalystClassItem> {
 	 * @param theName
 	 *            the name to set
 	 */
-	public final void setName(final String theName) {
+	public void setName(final String theName) {
 		this.name = theName;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final String toString() {
+	public String toString() {
 		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" name=");

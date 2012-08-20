@@ -69,7 +69,7 @@ public class NeuralDataSetCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getInputSize() {
+	public int getInputSize() {
 		return inputSize;
 	}
 
@@ -77,7 +77,7 @@ public class NeuralDataSetCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getIdealSize() {
+	public int getIdealSize() {
 		return idealSize;
 	}
 
@@ -85,7 +85,7 @@ public class NeuralDataSetCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean read(final double[] input, final double[] ideal, final double[] significance) {
+	public boolean read(final double[] input, final double[] ideal, final double[] significance) {
 		if (!iterator.hasNext()) {
 			return false;
 		} else {
@@ -101,7 +101,7 @@ public class NeuralDataSetCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void write(final double[] input, final double[] ideal, double significance) {
+	public void write(final double[] input, final double[] ideal, double significance) {
 		MLDataPair pair = BasicMLDataPair.createPair(inputSize,
 				idealSize);
 		EngineArray.arrayCopy(input, pair.getIdealArray());
@@ -113,7 +113,7 @@ public class NeuralDataSetCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void prepareWrite(final int recordCount, 
+	public void prepareWrite(final int recordCount, 
 			final int theInputSize, final int theIdealSize) {
 		this.inputSize = theInputSize;
 		this.idealSize = theIdealSize;
@@ -123,7 +123,7 @@ public class NeuralDataSetCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void prepareRead() {
+	public void prepareRead() {
 		this.iterator = this.dataset.iterator();
 	}
 

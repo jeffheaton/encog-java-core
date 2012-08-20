@@ -88,7 +88,7 @@ public class GlobalMinimumSearch {
 	 *            The error at x2.
 	 * @return The best error.
 	 */
-	public final double brentmin(final int maxIterations,
+	public double brentmin(final int maxIterations,
 			final double maxError, final double eps, final double tol,
 			final CalculationCriteria network, final double y) {
 		double prevdist = 0.0;
@@ -264,7 +264,7 @@ public class GlobalMinimumSearch {
 	 * @param network
 	 *            The network to evaluate.
 	 */
-	public final void findBestRange(final double low, final double high,
+	public void findBestRange(final double low, final double high,
 			int numberOfPoints, final boolean useLog, final double minError,
 			final CalculationCriteria network) {
 		int i, ibest;
@@ -452,14 +452,14 @@ public class GlobalMinimumSearch {
 	 * @return X1, which is a gamma to the left(lower) of the best(middle)
 	 *         gamma.
 	 */
-	public final double getX1() {
+	public double getX1() {
 		return this.x1;
 	}
 
 	/**
 	 * @return X2, which is the middle(best) gamma.
 	 */
-	public final double getX2() {
+	public double getX2() {
 		return this.x2;
 	}
 
@@ -467,14 +467,14 @@ public class GlobalMinimumSearch {
 	 * @return X3, which is a gamma to the right(higher) of the middle(best)
 	 *         gamma.
 	 */
-	public final double getX3() {
+	public double getX3() {
 		return this.x3;
 	}
 
 	/**
 	 * @return Y1, which is the value y1 is the error for x1.
 	 */
-	public final double getY1() {
+	public double getY1() {
 		return this.y1;
 	}
 
@@ -482,14 +482,14 @@ public class GlobalMinimumSearch {
 	 * @return Y2, which is the value y2 is the error for x2. This is the
 	 *         best(middle) error.
 	 */
-	public final double getY2() {
+	public double getY2() {
 		return this.y2;
 	}
 
 	/**
 	 * @return Y3, which is the value y1 is the error for x1.
 	 */
-	public final double getY3() {
+	public double getY3() {
 		return this.y3;
 	}
 
@@ -498,7 +498,7 @@ public class GlobalMinimumSearch {
 	 *            Set X1, which is a gamma to the left(lower) of the
 	 *            best(middle) gamma.
 	 */
-	public final void setX1(final double x1) {
+	public void setX1(final double x1) {
 		this.x1 = x1;
 	}
 
@@ -506,7 +506,7 @@ public class GlobalMinimumSearch {
 	 * @param x2
 	 *            Set X2, which is the middle(best) gamma.
 	 */
-	public final void setX2(final double x2) {
+	public void setX2(final double x2) {
 		this.x2 = x2;
 	}
 
@@ -515,7 +515,7 @@ public class GlobalMinimumSearch {
 	 *            Set X3, which is a gamma to the right(higher) of the
 	 *            middle(best) gamma.
 	 */
-	public final void setX3(final double x3) {
+	public void setX3(final double x3) {
 		this.x3 = x3;
 	}
 
@@ -523,7 +523,7 @@ public class GlobalMinimumSearch {
 	 * @param y1
 	 *            Set Y1, which is the value y1 is the error for x1.
 	 */
-	public final void setY1(final double y1) {
+	public void setY1(final double y1) {
 		this.y1 = y1;
 	}
 
@@ -532,7 +532,7 @@ public class GlobalMinimumSearch {
 	 *            Set Y2, which is the value y2 is the error for x2. This is the
 	 *            best(middle) error.
 	 */
-	public final void setY2(final double y2) {
+	public void setY2(final double y2) {
 		this.y2 = y2;
 	}
 
@@ -540,7 +540,7 @@ public class GlobalMinimumSearch {
 	 * @param y3
 	 *            Set Y3, which is the value y3 is the error for x3.
 	 */
-	public final void setY3(final double y3) {
+	public void setY3(final double y3) {
 		this.y3 = y3;
 	}
 

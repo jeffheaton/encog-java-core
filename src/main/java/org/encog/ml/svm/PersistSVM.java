@@ -126,7 +126,7 @@ public class PersistSVM implements EncogPersistor {
 	 * @return The file version.
 	 */
 	@Override
-	public final int getFileVersion() {
+	public int getFileVersion() {
 		return 1;
 	}
 
@@ -134,7 +134,7 @@ public class PersistSVM implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String getPersistClassString() {
+	public String getPersistClassString() {
 		return SVM.class.getSimpleName();
 	}
 
@@ -142,7 +142,7 @@ public class PersistSVM implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final Object read(final InputStream is) {
+	public Object read(final InputStream is) {
 		final SVM result = new SVM();
 		final EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;
@@ -211,7 +211,7 @@ public class PersistSVM implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void save(final OutputStream os, final Object obj) {
+	public void save(final OutputStream os, final Object obj) {
 		final EncogWriteHelper out = new EncogWriteHelper(os);
 		final SVM svm2 = (SVM) obj;
 		out.addSection("SVM");

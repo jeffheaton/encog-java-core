@@ -55,7 +55,7 @@ public class PSOFactory {
 	 *            The arguments to use.
 	 * @return The newly created trainer.
 	 */
-	public final MLTrain create(final MLMethod method,
+	public MLTrain create(final MLMethod method,
 			final MLDataSet training, final String argsStr) {
 
 		final Map<String, String> args = ArchitectureParse.parseParams(argsStr);

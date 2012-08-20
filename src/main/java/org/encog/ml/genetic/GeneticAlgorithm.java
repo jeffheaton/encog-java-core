@@ -103,7 +103,7 @@ public abstract class GeneticAlgorithm  implements MultiThreadable {
 	 * @param genome
 	 *            The genome to add.
 	 */
-	public final void addSpeciesMember(final Species species, 
+	public void addSpeciesMember(final Species species, 
 			final Genome genome) {
 
 		if (getComparator().isBetterThan(genome.getScore(),
@@ -123,7 +123,7 @@ public abstract class GeneticAlgorithm  implements MultiThreadable {
 	 * @param g
 	 *            The genome to calculate for.
 	 */
-	public final void calculateScore(final Genome g) {
+	public void calculateScore(final Genome g) {
 		if (g.getOrganism() instanceof MLContext) {
 			((MLContext) g.getOrganism()).clearContext();
 		}
@@ -134,21 +134,21 @@ public abstract class GeneticAlgorithm  implements MultiThreadable {
 	/**
 	 * @return The score calculation object.
 	 */
-	public final CalculateGenomeScore getCalculateScore() {
+	public CalculateGenomeScore getCalculateScore() {
 		return this.calculateScore;
 	}
 
 	/**
 	 * @return The comparator.
 	 */
-	public final GenomeComparator getComparator() {
+	public GenomeComparator getComparator() {
 		return this.comparator;
 	}
 
 	/**
 	 * @return The crossover object.
 	 */
-	public final Crossover getCrossover() {
+	public Crossover getCrossover() {
 		return this.crossover;
 	}
 
@@ -157,14 +157,14 @@ public abstract class GeneticAlgorithm  implements MultiThreadable {
 	 * 
 	 * @return The mating population percent.
 	 */
-	public final double getMatingPopulation() {
+	public double getMatingPopulation() {
 		return this.matingPopulation;
 	}
 
 	/**
 	 * @return The mutate object.
 	 */
-	public final Mutate getMutate() {
+	public Mutate getMutate() {
 		return this.mutate;
 	}
 
@@ -173,7 +173,7 @@ public abstract class GeneticAlgorithm  implements MultiThreadable {
 	 * 
 	 * @return The mutation percent.
 	 */
-	public final double getMutationPercent() {
+	public double getMutationPercent() {
 		return this.mutationPercent;
 	}
 
@@ -182,14 +182,14 @@ public abstract class GeneticAlgorithm  implements MultiThreadable {
 	 * 
 	 * @return The percent to mate.
 	 */
-	public final double getPercentToMate() {
+	public double getPercentToMate() {
 		return this.percentToMate;
 	}
 
 	/**
 	 * @return The population.
 	 */
-	public final Population getPopulation() {
+	public Population getPopulation() {
 		return this.population;
 	}
 
@@ -200,7 +200,7 @@ public abstract class GeneticAlgorithm  implements MultiThreadable {
 	 * @param theCalculateScore
 	 *            The score calculation object.
 	 */
-	public final void setCalculateScore(
+	public void setCalculateScore(
 			final CalculateGenomeScore theCalculateScore) {
 		this.calculateScore = theCalculateScore;
 	}
@@ -211,7 +211,7 @@ public abstract class GeneticAlgorithm  implements MultiThreadable {
 	 * @param theComparator
 	 *            The comparator.
 	 */
-	public final void setComparator(final GenomeComparator theComparator) {
+	public void setComparator(final GenomeComparator theComparator) {
 		this.comparator = theComparator;
 	}
 
@@ -221,7 +221,7 @@ public abstract class GeneticAlgorithm  implements MultiThreadable {
 	 * @param theCrossover
 	 *            The crossover object.
 	 */
-	public final void setCrossover(final Crossover theCrossover) {
+	public void setCrossover(final Crossover theCrossover) {
 		this.crossover = theCrossover;
 	}
 
@@ -231,7 +231,7 @@ public abstract class GeneticAlgorithm  implements MultiThreadable {
 	 * @param theMatingPopulation
 	 *            The mating population percent.
 	 */
-	public final void setMatingPopulation(final double theMatingPopulation) {
+	public void setMatingPopulation(final double theMatingPopulation) {
 		this.matingPopulation = theMatingPopulation;
 	}
 
@@ -241,7 +241,7 @@ public abstract class GeneticAlgorithm  implements MultiThreadable {
 	 * @param theMutate
 	 *            The mutate object.
 	 */
-	public final void setMutate(final Mutate theMutate) {
+	public void setMutate(final Mutate theMutate) {
 		this.mutate = theMutate;
 	}
 
@@ -251,7 +251,7 @@ public abstract class GeneticAlgorithm  implements MultiThreadable {
 	 * @param theMutationPercent
 	 *            The percent to mutate.
 	 */
-	public final void setMutationPercent(final double theMutationPercent) {
+	public void setMutationPercent(final double theMutationPercent) {
 		this.mutationPercent = theMutationPercent;
 	}
 
@@ -261,7 +261,7 @@ public abstract class GeneticAlgorithm  implements MultiThreadable {
 	 * @param thePercentToMate
 	 *            The percent to mate.
 	 */
-	public final void setPercentToMate(final double thePercentToMate) {
+	public void setPercentToMate(final double thePercentToMate) {
 		this.percentToMate = thePercentToMate;
 	}
 
@@ -271,7 +271,7 @@ public abstract class GeneticAlgorithm  implements MultiThreadable {
 	 * @param thePopulation
 	 *            The population.
 	 */
-	public final void setPopulation(final Population thePopulation) {
+	public void setPopulation(final Population thePopulation) {
 		this.population = thePopulation;
 	}
 	

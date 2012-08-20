@@ -80,7 +80,7 @@ public class JordanPattern implements NeuralNetworkPattern {
 	 *            The number of neurons in this hidden layer.
 	 */
 	@Override
-	public final void addHiddenLayer(final int count) {
+	public void addHiddenLayer(final int count) {
 		if (this.hiddenNeurons != -1) {
 			throw new PatternError(
 					"A Jordan neural network should have only one hidden "
@@ -95,7 +95,7 @@ public class JordanPattern implements NeuralNetworkPattern {
 	 * Clear out any hidden neurons.
 	 */
 	@Override
-	public final void clear() {
+	public void clear() {
 		this.hiddenNeurons = -1;
 	}
 
@@ -105,7 +105,7 @@ public class JordanPattern implements NeuralNetworkPattern {
 	 * @return A Jordan neural network.
 	 */
 	@Override
-	public final MLMethod generate() {
+	public MLMethod generate() {
 
 		BasicLayer hidden, output;
 
@@ -129,7 +129,7 @@ public class JordanPattern implements NeuralNetworkPattern {
 	 *            The activation function.
 	 */
 	@Override
-	public final void setActivationFunction(final ActivationFunction activation) {
+	public void setActivationFunction(final ActivationFunction activation) {
 		this.activation = activation;
 	}
 
@@ -140,7 +140,7 @@ public class JordanPattern implements NeuralNetworkPattern {
 	 *            Neuron count.
 	 */
 	@Override
-	public final void setInputNeurons(final int count) {
+	public void setInputNeurons(final int count) {
 		this.inputNeurons = count;
 	}
 
@@ -151,7 +151,7 @@ public class JordanPattern implements NeuralNetworkPattern {
 	 *            Neuron count.
 	 */
 	@Override
-	public final void setOutputNeurons(final int count) {
+	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
 	}
 

@@ -1110,91 +1110,91 @@ public class AnalystWizard {
 	/**
 	 * @return The analyst goal.
 	 */
-	public final AnalystGoal getGoal() {
+	public AnalystGoal getGoal() {
 		return this.goal;
 	}
 
 	/**
 	 * @return the lagWindowSize
 	 */
-	public final int getLagWindowSize() {
+	public int getLagWindowSize() {
 		return this.lagWindowSize;
 	}
 
 	/**
 	 * @return the leadWindowSize
 	 */
-	public final int getLeadWindowSize() {
+	public int getLeadWindowSize() {
 		return this.leadWindowSize;
 	}
 
 	/**
 	 * @return the methodType
 	 */
-	public final WizardMethodType getMethodType() {
+	public WizardMethodType getMethodType() {
 		return this.methodType;
 	}
 
 	/**
 	 * @return the range
 	 */
-	public final NormalizeRange getRange() {
+	public NormalizeRange getRange() {
 		return this.range;
 	}
 
 	/**
 	 * @return Get the target field.
 	 */
-	public final AnalystField getTargetField() {
+	public AnalystField getTargetField() {
 		return this.targetField;
 	}
 
 	/**
 	 * @return the includeTargetField
 	 */
-	public final boolean isIncludeTargetField() {
+	public boolean isIncludeTargetField() {
 		return this.includeTargetField;
 	}
 
 	/**
 	 * @return the taskBalance
 	 */
-	public final boolean isTaskBalance() {
+	public boolean isTaskBalance() {
 		return this.taskBalance;
 	}
 
 	/**
 	 * @return the taskCluster
 	 */
-	public final boolean isTaskCluster() {
+	public boolean isTaskCluster() {
 		return this.taskCluster;
 	}
 
 	/**
 	 * @return the taskNormalize
 	 */
-	public final boolean isTaskNormalize() {
+	public boolean isTaskNormalize() {
 		return this.taskNormalize;
 	}
 
 	/**
 	 * @return the taskRandomize
 	 */
-	public final boolean isTaskRandomize() {
+	public boolean isTaskRandomize() {
 		return this.taskRandomize;
 	}
 
 	/**
 	 * @return the taskSegregate
 	 */
-	public final boolean isTaskSegregate() {
+	public boolean isTaskSegregate() {
 		return this.taskSegregate;
 	}
 
 	/**
 	 * Reanalyze column ranges.
 	 */
-	public final void reanalyze() {
+	public void reanalyze() {
 		final String rawID = this.script.getProperties().getPropertyFile(
 				ScriptProperties.HEADER_DATASOURCE_RAW_FILE);
 
@@ -1214,7 +1214,7 @@ public class AnalystWizard {
 	 * Set the goal.
 	 * @param theGoal The goal.
 	 */
-	public final void setGoal(final AnalystGoal theGoal) {
+	public void setGoal(final AnalystGoal theGoal) {
 		this.goal = theGoal;
 	}
 
@@ -1222,7 +1222,7 @@ public class AnalystWizard {
 	 * @param theIncludeTargetField
 	 *            the includeTargetField to set
 	 */
-	public final void setIncludeTargetField(final boolean theIncludeTargetField) {
+	public void setIncludeTargetField(final boolean theIncludeTargetField) {
 		this.includeTargetField = theIncludeTargetField;
 	}
 
@@ -1230,7 +1230,7 @@ public class AnalystWizard {
 	 * @param theLagWindowSize
 	 *            the lagWindowSize to set
 	 */
-	public final void setLagWindowSize(final int theLagWindowSize) {
+	public void setLagWindowSize(final int theLagWindowSize) {
 		this.lagWindowSize = theLagWindowSize;
 	}
 
@@ -1238,7 +1238,7 @@ public class AnalystWizard {
 	 * @param theLeadWindowSize
 	 *            the leadWindowSize to set
 	 */
-	public final void setLeadWindowSize(final int theLeadWindowSize) {
+	public void setLeadWindowSize(final int theLeadWindowSize) {
 		this.leadWindowSize = theLeadWindowSize;
 	}
 
@@ -1246,7 +1246,7 @@ public class AnalystWizard {
 	 * @param theMethodType
 	 *            the methodType to set
 	 */
-	public final void setMethodType(final WizardMethodType theMethodType) {
+	public void setMethodType(final WizardMethodType theMethodType) {
 		this.methodType = theMethodType;
 	}
 
@@ -1254,7 +1254,7 @@ public class AnalystWizard {
 	 * @param theRange
 	 *            the range to set
 	 */
-	public final void setRange(final NormalizeRange theRange) {
+	public void setRange(final NormalizeRange theRange) {
 		this.range = theRange;
 	}
 
@@ -1262,7 +1262,7 @@ public class AnalystWizard {
 	 * Set the target field.
 	 * @param theTargetField The target field.
 	 */
-	public final void setTargetField(final AnalystField theTargetField) {
+	public void setTargetField(final AnalystField theTargetField) {
 		this.targetField = theTargetField;
 	}
 
@@ -1270,7 +1270,7 @@ public class AnalystWizard {
 	 * @param theTaskBalance
 	 *            the taskBalance to set
 	 */
-	public final void setTaskBalance(final boolean theTaskBalance) {
+	public void setTaskBalance(final boolean theTaskBalance) {
 		this.taskBalance = theTaskBalance;
 	}
 
@@ -1278,7 +1278,7 @@ public class AnalystWizard {
 	 * @param theTaskCluster
 	 *            the taskCluster to set
 	 */
-	public final void setTaskCluster(final boolean theTaskCluster) {
+	public void setTaskCluster(final boolean theTaskCluster) {
 		this.taskCluster = theTaskCluster;
 	}
 
@@ -1286,7 +1286,7 @@ public class AnalystWizard {
 	 * @param theTaskNormalize
 	 *            the taskNormalize to set
 	 */
-	public final void setTaskNormalize(final boolean theTaskNormalize) {
+	public void setTaskNormalize(final boolean theTaskNormalize) {
 		this.taskNormalize = theTaskNormalize;
 	}
 
@@ -1294,7 +1294,7 @@ public class AnalystWizard {
 	 * @param theTaskRandomize
 	 *            the taskRandomize to set
 	 */
-	public final void setTaskRandomize(final boolean theTaskRandomize) {
+	public void setTaskRandomize(final boolean theTaskRandomize) {
 		this.taskRandomize = theTaskRandomize;
 	}
 
@@ -1302,11 +1302,11 @@ public class AnalystWizard {
 	 * @param theTaskSegregate
 	 *            the taskSegregate to set
 	 */
-	public final void setTaskSegregate(final boolean theTaskSegregate) {
+	public void setTaskSegregate(final boolean theTaskSegregate) {
 		this.taskSegregate = theTaskSegregate;
 	}
 	
-	public final void wizardRealTime(List<String> sourceData, File csvFile) 
+	public void wizardRealTime(List<String> sourceData, File csvFile) 
 	{
 		this.script.setBasePath(csvFile.getParent());
 		this.script.getProperties().setProperty(
@@ -1339,7 +1339,7 @@ public class AnalystWizard {
 	 * @param b True if there are headers.
 	 * @param format The file format.
 	 */
-	public final void wizard(final File analyzeFile, final boolean b,
+	public void wizard(final File analyzeFile, final boolean b,
 			final AnalystFileFormat format) {
 
 		this.script.setBasePath(analyzeFile.getParent());
@@ -1381,7 +1381,7 @@ public class AnalystWizard {
 	 * @param b True if there are headers.
 	 * @param format The file format.
 	 */
-	public final void wizard(final URL url, final File saveFile,
+	public void wizard(final URL url, final File saveFile,
 			final File analyzeFile, final boolean b,
 			final AnalystFileFormat format) {
 

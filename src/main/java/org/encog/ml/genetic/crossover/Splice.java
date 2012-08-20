@@ -56,7 +56,7 @@ public class Splice implements Crossover {
 	 * @param offspring2
 	 *            Returns the second offspring.
 	 */
-	public final void mate(final Chromosome mother, final Chromosome father,
+	public void mate(final Chromosome mother, final Chromosome father,
 			final Chromosome offspring1, final Chromosome offspring2) {
 		final int geneLength = mother.getGenes().size();
 

@@ -67,7 +67,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining implements MultiThread
 		/**
 		 * @return The error from the last iteration.
 		 */
-		public final double getError() {
+		public double getError() {
 			final Genome genome = getPopulation().getBest();
 			return genome.getScore();
 		}
@@ -77,7 +77,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining implements MultiThread
 		 * 
 		 * @return The current best neural network.
 		 */
-		public final MLMethod getMethod() {
+		public MLMethod getMethod() {
 			final Genome genome = getPopulation().getBest();
 			return (BasicNetwork) genome.getOrganism();
 		}
@@ -138,14 +138,14 @@ public class NeuralGeneticAlgorithm extends BasicTraining implements MultiThread
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean canContinue() {
+	public boolean canContinue() {
 		return false;
 	}
 
 	/**
 	 * @return The genetic algorithm implementation.
 	 */
-	public final NeuralGeneticAlgorithmHelper getGenetic() {
+	public NeuralGeneticAlgorithmHelper getGenetic() {
 		return this.genetic;
 	}
 
@@ -153,7 +153,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining implements MultiThread
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final MLMethod getMethod() {
+	public MLMethod getMethod() {
 		return getGenetic().getMethod();
 	}
 
@@ -161,7 +161,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining implements MultiThread
 	 * Perform one training iteration.
 	 */
 	@Override
-	public final void iteration() {
+	public void iteration() {
 
 		EncogLogging.log(EncogLogging.LEVEL_INFO,
 				"Performing Genetic iteration.");
@@ -175,7 +175,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining implements MultiThread
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final TrainingContinuation pause() {
+	public TrainingContinuation pause() {
 		return null;
 	}
 
@@ -183,7 +183,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining implements MultiThread
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void resume(final TrainingContinuation state) {
+	public void resume(final TrainingContinuation state) {
 
 	}
 
@@ -193,7 +193,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining implements MultiThread
 	 * @param genetic
 	 *            The genetic helper class.
 	 */
-	public final void setGenetic(final NeuralGeneticAlgorithmHelper genetic) {
+	public void setGenetic(final NeuralGeneticAlgorithmHelper genetic) {
 		this.genetic = genetic;
 	}
 

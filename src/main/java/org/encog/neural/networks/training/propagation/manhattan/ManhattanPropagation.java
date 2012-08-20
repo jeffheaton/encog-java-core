@@ -88,7 +88,7 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	/**
 	 * @return The learning rate that was specified in the constructor.
 	 */
-	public final double getLearningRate() {
+	public double getLearningRate() {
 		return this.learningRate;
 	}
 
@@ -98,7 +98,7 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 * @param rate
 	 *            The new learning rate.
 	 */
-	public final void setLearningRate(final double rate) {
+	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
 
@@ -107,7 +107,7 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 * @return Always returns false.
 	 */
 	@Override
-	public final boolean canContinue() {
+	public boolean canContinue() {
 		return false;
 	}
 
@@ -116,7 +116,7 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 * @return Always returns null.
 	 */
 	@Override
-	public final TrainingContinuation pause() {
+	public TrainingContinuation pause() {
 		return null;
 	}
 
@@ -125,7 +125,7 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 * @param state Not used.
 	 */
 	@Override
-	public final void resume(final TrainingContinuation state) {
+	public void resume(final TrainingContinuation state) {
 		
 	}
 
@@ -141,7 +141,7 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 * @return The amount to change the weight by.
 	 */
 	@Override
-	public final double updateWeight(final double[] gradients,
+	public double updateWeight(final double[] gradients,
 			final double[] lastGradient, final int index) {
 		if (Math.abs(gradients[index]) < this.zeroTolerance) {
 			return 0;

@@ -66,7 +66,7 @@ public class PersistRBFNetwork implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final Object read(final InputStream is) {
+	public Object read(final InputStream is) {
 		final RBFNetwork result = new RBFNetwork();
 		final FlatNetworkRBF flat = (FlatNetworkRBF) result.getFlat();
 
@@ -195,7 +195,7 @@ public class PersistRBFNetwork implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void save(final OutputStream os, final Object obj) {
+	public void save(final OutputStream os, final Object obj) {
 		final EncogWriteHelper out = new EncogWriteHelper(os);
 		final RBFNetwork net = (RBFNetwork) obj;
 		final FlatNetworkRBF flat = (FlatNetworkRBF) net.getFlat();

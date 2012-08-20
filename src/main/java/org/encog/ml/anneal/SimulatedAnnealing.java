@@ -97,49 +97,49 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	/**
 	 * @return the cycles
 	 */
-	public final int getCycles() {
+	public int getCycles() {
 		return this.cycles;
 	}
 
 	/**
 	 * @return the globalScore
 	 */
-	public final double getScore() {
+	public double getScore() {
 		return this.score;
 	}
 
 	/**
 	 * @return the startTemperature
 	 */
-	public final double getStartTemperature() {
+	public double getStartTemperature() {
 		return this.startTemperature;
 	}
 
 	/**
 	 * @return the stopTemperature
 	 */
-	public final double getStopTemperature() {
+	public double getStopTemperature() {
 		return this.stopTemperature;
 	}
 
 	/**
 	 * @return the temperature
 	 */
-	public final double getTemperature() {
+	public double getTemperature() {
 		return this.temperature;
 	}
 
 	/**
 	 * @return True if the score should be minimized.
 	 */
-	public final boolean isShouldMinimize() {
+	public boolean isShouldMinimize() {
 		return this.shouldMinimize;
 	}
 
 	/**
 	 * Called to perform one cycle of the annealing process.
 	 */
-	public final void iteration() {
+	public void iteration() {
 		UNIT_TYPE[] bestArray;
 
 		setScore(calculateScore());
@@ -189,7 +189,7 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	 * @param theCycles
 	 *            the cycles to set
 	 */
-	public final void setCycles(final int theCycles) {
+	public void setCycles(final int theCycles) {
 		this.cycles = theCycles;
 	}
 
@@ -199,7 +199,7 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	 * @param theScore
 	 *            The score to set.
 	 */
-	public final void setScore(final double theScore) {
+	public void setScore(final double theScore) {
 		this.score = theScore;
 	}
 
@@ -209,7 +209,7 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	 * @param theShouldMinimize
 	 *            True if the score should be minimized.
 	 */
-	public final void setShouldMinimize(final boolean theShouldMinimize) {
+	public void setShouldMinimize(final boolean theShouldMinimize) {
 		this.shouldMinimize = theShouldMinimize;
 	}
 
@@ -217,7 +217,7 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	 * @param theStartTemperature
 	 *            the startTemperature to set
 	 */
-	public final void setStartTemperature(final double theStartTemperature) {
+	public void setStartTemperature(final double theStartTemperature) {
 		this.startTemperature = theStartTemperature;
 	}
 
@@ -225,7 +225,7 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	 * @param theStopTemperature
 	 *            the stopTemperature to set
 	 */
-	public final void setStopTemperature(final double theStopTemperature) {
+	public void setStopTemperature(final double theStopTemperature) {
 		this.stopTemperature = theStopTemperature;
 	}
 
@@ -233,7 +233,7 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	 * @param theTemperature
 	 *            the temperature to set
 	 */
-	public final void setTemperature(final double theTemperature) {
+	public void setTemperature(final double theTemperature) {
 		this.temperature = theTemperature;
 	}
 
