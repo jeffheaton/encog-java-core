@@ -74,7 +74,7 @@ public class MateWorker implements EngineTask {
 	/**
 	 * Mate the two chromosomes.
 	 */
-	public final void run() {
+	public void run() {
 		mother.mate(father, child1, child2);
 	}
 

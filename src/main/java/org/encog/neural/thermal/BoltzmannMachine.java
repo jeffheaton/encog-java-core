@@ -110,7 +110,7 @@ public class BoltzmannMachine extends ThermalNetwork {
 	 * @return The new current state.
 	 */
 	@Override
-	public final MLData compute(final MLData input) {
+	public MLData compute(final MLData input) {
 		final BiPolarNeuralData result = new BiPolarNeuralData(input.size());
 		EngineArray.arrayCopy(input.getData(), getCurrentState().getData());
 		run();
@@ -124,14 +124,14 @@ public class BoltzmannMachine extends ThermalNetwork {
 	 * @param d
 	 *            The amount to decrease by.
 	 */
-	public final void decreaseTemperature(final double d) {
+	public void decreaseTemperature(final double d) {
 		this.temperature *= d;
 	}
 
 	/**
 	 * Run the network until thermal equilibrium is established.
 	 */
-	public final void establishEquilibrium() {
+	public void establishEquilibrium() {
 		final int count = getNeuronCount();
 
 		if (this.on == null) {
@@ -165,7 +165,7 @@ public class BoltzmannMachine extends ThermalNetwork {
 	/**
 	 * @return the annealCycles
 	 */
-	public final int getAnnealCycles() {
+	public int getAnnealCycles() {
 		return this.annealCycles;
 	}
 
@@ -181,35 +181,35 @@ public class BoltzmannMachine extends ThermalNetwork {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getOutputCount() {
+	public int getOutputCount() {
 		return getNeuronCount();
 	}
 
 	/**
 	 * @return the runCycles
 	 */
-	public final int getRunCycles() {
+	public int getRunCycles() {
 		return this.runCycles;
 	}
 
 	/**
 	 * @return The temperature the network is currently operating at.
 	 */
-	public final double getTemperature() {
+	public double getTemperature() {
 		return this.temperature;
 	}
 
 	/**
 	 * @return the threshold
 	 */
-	public final double[] getThreshold() {
+	public double[] getThreshold() {
 		return this.threshold;
 	}
 
 	/**
 	 * Run the network for all neurons present.
 	 */
-	public final void run() {
+	public void run() {
 		final int count = getNeuronCount();
 		for (int i = 0; i < count; i++) {
 			run(i);
@@ -222,7 +222,7 @@ public class BoltzmannMachine extends ThermalNetwork {
 	 * @param i
 	 *            The neuron to run for.
 	 */
-	public final void run(final int i) {
+	public void run(final int i) {
 		int j;
 		double sum, probability;
 
@@ -245,7 +245,7 @@ public class BoltzmannMachine extends ThermalNetwork {
 	 * @param annealCycles
 	 *            the annealCycles to set
 	 */
-	public final void setAnnealCycles(final int annealCycles) {
+	public void setAnnealCycles(final int annealCycles) {
 		this.annealCycles = annealCycles;
 	}
 
@@ -253,7 +253,7 @@ public class BoltzmannMachine extends ThermalNetwork {
 	 * @param runCycles
 	 *            the runCycles to set
 	 */
-	public final void setRunCycles(final int runCycles) {
+	public void setRunCycles(final int runCycles) {
 		this.runCycles = runCycles;
 	}
 
@@ -263,7 +263,7 @@ public class BoltzmannMachine extends ThermalNetwork {
 	 * @param temperature
 	 *            The temperature to operate the network at.
 	 */
-	public final void setTemperature(final double temperature) {
+	public void setTemperature(final double temperature) {
 		this.temperature = temperature;
 	}
 
@@ -271,7 +271,7 @@ public class BoltzmannMachine extends ThermalNetwork {
 	 * Set the thresholds.
 	 * @param t The thresholds.
 	 */
-	public final void setThreshold(final double[] t) {
+	public void setThreshold(final double[] t) {
 		this.threshold = t;
 
 	}

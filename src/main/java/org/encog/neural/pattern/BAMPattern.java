@@ -54,14 +54,14 @@ public class BAMPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            Not used.
 	 */
-	public final void addHiddenLayer(final int count) {
+	public void addHiddenLayer(final int count) {
 		throw new PatternError("A BAM network has no hidden layers.");
 	}
 
 	/**
 	 * Clear any settings on the pattern.
 	 */
-	public final void clear() {
+	public void clear() {
 		this.f1Neurons = 0;
 		this.f2Neurons = 0;
 
@@ -70,7 +70,7 @@ public class BAMPattern implements NeuralNetworkPattern {
 	/**
 	 * @return The generated network.
 	 */
-	public final MLMethod generate() {
+	public MLMethod generate() {
 		BAM bam = new BAM(this.f1Neurons,this.f2Neurons);
 		return bam;
 	}
@@ -81,7 +81,7 @@ public class BAMPattern implements NeuralNetworkPattern {
 	 * @param activation
 	 *            Not used.
 	 */
-	public final void setActivationFunction(final ActivationFunction activation) {
+	public void setActivationFunction(final ActivationFunction activation) {
 		throw new PatternError("A BAM network can't specify a custom activation function.");
 	}
 
@@ -93,7 +93,7 @@ public class BAMPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of neurons in the first layer.
 	 */
-	public final void setF1Neurons(final int count) {
+	public void setF1Neurons(final int count) {
 		this.f1Neurons = count;
 	}
 
@@ -105,7 +105,7 @@ public class BAMPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of neurons in the second layer.
 	 */
-	public final void setF2Neurons(final int count) {
+	public void setF2Neurons(final int count) {
 		this.f2Neurons = count;
 	}
 
@@ -115,7 +115,7 @@ public class BAMPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of input neurons.
 	 */
-	public final void setInputNeurons(final int count) {
+	public void setInputNeurons(final int count) {
 		throw new PatternError( "A BAM network has no input layer, consider setting F1 layer.");
 	}
 
@@ -125,7 +125,7 @@ public class BAMPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The output neuron count.
 	 */
-	public final void setOutputNeurons(final int count) {
+	public void setOutputNeurons(final int count) {
 		throw new PatternError("A BAM network has no output layer, consider setting F2 layer.");
 	}
 

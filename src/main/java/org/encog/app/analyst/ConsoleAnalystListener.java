@@ -57,7 +57,7 @@ public class ConsoleAnalystListener implements AnalystListener {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void report(final int total, final int current, 
+	public void report(final int total, final int current, 
 			final String message) {
 		if (total == 0) {
 			System.out.println(current + " : " + message);
@@ -71,7 +71,7 @@ public class ConsoleAnalystListener implements AnalystListener {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void reportCommandBegin(final int total, final int current,
+	public void reportCommandBegin(final int total, final int current,
 			final String name) {
 		System.out.println();
 		if (total == 0) {
@@ -88,7 +88,7 @@ public class ConsoleAnalystListener implements AnalystListener {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void reportCommandEnd(final boolean cancel) {
+	public void reportCommandEnd(final boolean cancel) {
 		String cancelStr = "";
 		this.cancelCommand = false;
 		this.stopwatch.stop();
@@ -113,7 +113,7 @@ public class ConsoleAnalystListener implements AnalystListener {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void reportTraining(final MLTrain train) {
+	public void reportTraining(final MLTrain train) {
 
 		System.out.println("Iteration #"
 				+ Format.formatInteger(train.getIteration())
@@ -144,7 +144,7 @@ public class ConsoleAnalystListener implements AnalystListener {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final synchronized void requestCancelCommand() {
+	public synchronized void requestCancelCommand() {
 		this.cancelCommand = true;
 	}
 
@@ -152,7 +152,7 @@ public class ConsoleAnalystListener implements AnalystListener {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final synchronized void requestShutdown() {
+	public synchronized void requestShutdown() {
 		this.shutdownRequested = true;
 
 	}
@@ -161,7 +161,7 @@ public class ConsoleAnalystListener implements AnalystListener {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final synchronized boolean shouldShutDown() {
+	public synchronized boolean shouldShutDown() {
 		return this.shutdownRequested;
 	}
 
@@ -169,7 +169,7 @@ public class ConsoleAnalystListener implements AnalystListener {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final synchronized boolean shouldStopCommand() {
+	public synchronized boolean shouldStopCommand() {
 		return this.cancelCommand;
 	}
 

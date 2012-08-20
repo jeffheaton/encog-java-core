@@ -54,40 +54,40 @@ public class ArchitectureLayer {
 	/**
 	 * Holds any paramaters that were specified for the layer.
 	 */
-	private final Map<String, String> params = new HashMap<String, String>();
+	private Map<String, String> params = new HashMap<String, String>();
 
 	/**
 	 * @return the count.
 	 */
-	public final int getCount() {
+	public int getCount() {
 		return this.count;
 	}
 
 	/**
 	 * @return the name
 	 */
-	public final String getName() {
+	public String getName() {
 		return this.name;
 	}
 
 	/**
 	 * @return the params
 	 */
-	public final Map<String, String> getParams() {
+	public Map<String, String> getParams() {
 		return this.params;
 	}
 
 	/**
 	 * @return the bias
 	 */
-	public final boolean isBias() {
+	public boolean isBias() {
 		return this.bias;
 	}
 
 	/**
 	 * @return the usedDefault
 	 */
-	public final boolean isUsedDefault() {
+	public boolean isUsedDefault() {
 		return this.usedDefault;
 	}
 
@@ -95,7 +95,7 @@ public class ArchitectureLayer {
 	 * @param theBias
 	 *            the bias to set
 	 */
-	public final void setBias(final boolean theBias) {
+	public void setBias(final boolean theBias) {
 		this.bias = theBias;
 	}
 
@@ -103,7 +103,7 @@ public class ArchitectureLayer {
 	 * @param theCount
 	 *            the count to set
 	 */
-	public final void setCount(final int theCount) {
+	public void setCount(final int theCount) {
 		this.count = theCount;
 	}
 
@@ -111,7 +111,7 @@ public class ArchitectureLayer {
 	 * @param theName
 	 *            the name to set
 	 */
-	public final void setName(final String theName) {
+	public void setName(final String theName) {
 		this.name = theName;
 	}
 
@@ -119,7 +119,7 @@ public class ArchitectureLayer {
 	 * @param theUsedDefault
 	 *            the usedDefault to set
 	 */
-	public final void setUsedDefault(final boolean theUsedDefault) {
+	public void setUsedDefault(final boolean theUsedDefault) {
 		this.usedDefault = theUsedDefault;
 	}
 

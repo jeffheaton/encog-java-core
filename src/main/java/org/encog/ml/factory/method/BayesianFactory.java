@@ -39,7 +39,7 @@ public class BayesianFactory {
 	 * @param output The output neuron count.
 	 * @return The new bayesian network.
 	 */
-	public final MLMethod create(final String architecture, final int input,
+	public MLMethod create(final String architecture, final int input,
 			final int output) {
 		BayesianNetwork method = new BayesianNetwork();
 		method.setContents(architecture);

@@ -50,7 +50,7 @@ public class AnalystReportBridge implements StatusReportable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void report(final int total, final int current, 
+	public void report(final int total, final int current, 
 			final String message) {
 		for (final AnalystListener listener : this.analyst.getListeners()) {
 			listener.report(total, current, message);

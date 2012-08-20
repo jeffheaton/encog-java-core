@@ -55,14 +55,14 @@ public class AnalystTask {
 	/**
 	 * @return the lines
 	 */
-	public final List<String> getLines() {
+	public List<String> getLines() {
 		return this.lines;
 	}
 
 	/**
 	 * @return the name
 	 */
-	public final String getName() {
+	public String getName() {
 		return this.name;
 	}
 
@@ -70,13 +70,13 @@ public class AnalystTask {
 	 * @param theName
 	 *            the name to set
 	 */
-	public final void setName(final String theName) {
+	public void setName(final String theName) {
 		this.name = theName;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final String toString() {
+	public String toString() {
 		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" name=");

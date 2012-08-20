@@ -71,11 +71,11 @@ public class ConcurrentTrainingPerformerCPU implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final ConcurrentTrainingManager getManager() {
+	public ConcurrentTrainingManager getManager() {
 		return this.manager;
 	}
 
-	public final int getNumber() {
+	public int getNumber() {
 		return this.number;
 	}
 
@@ -83,7 +83,7 @@ public class ConcurrentTrainingPerformerCPU implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void perform(final TrainingJob job) {
+	public void perform(final TrainingJob job) {
 		if (!this.ready.get()) {
 			throw new NeuralNetworkError(
 					"Performer is already performing a job.");
@@ -100,7 +100,7 @@ public class ConcurrentTrainingPerformerCPU implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean ready() {
+	public boolean ready() {
 		return this.ready.get();
 	}
 
@@ -108,7 +108,7 @@ public class ConcurrentTrainingPerformerCPU implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void run() {
+	public void run() {
 		final Stopwatch watch = new Stopwatch();
 		try {
 			watch.start();
@@ -134,7 +134,7 @@ public class ConcurrentTrainingPerformerCPU implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setManager(final ConcurrentTrainingManager manager) {
+	public void setManager(final ConcurrentTrainingManager manager) {
 		this.manager = manager;
 	}
 
@@ -142,7 +142,7 @@ public class ConcurrentTrainingPerformerCPU implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String toString() {
+	public String toString() {
 		return "[CPU-Performer: " + this.number + "]";
 	}
 

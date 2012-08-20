@@ -54,14 +54,14 @@ public class ExcludedField {
 	/**
 	 * @return the fieldNumber
 	 */
-	public final int getFieldNumber() {
+	public int getFieldNumber() {
 		return this.fieldNumber;
 	}
 
 	/**
 	 * @return the fieldValue
 	 */
-	public final String getFieldValue() {
+	public String getFieldValue() {
 		return this.fieldValue;
 	}
 
@@ -69,7 +69,7 @@ public class ExcludedField {
 	 * @param theFieldNumber
 	 *            the fieldNumber to set
 	 */
-	public final void setFieldNumber(final int theFieldNumber) {
+	public void setFieldNumber(final int theFieldNumber) {
 		this.fieldNumber = theFieldNumber;
 	}
 
@@ -77,13 +77,13 @@ public class ExcludedField {
 	 * @param theFieldValue
 	 *            the fieldValue to set
 	 */
-	public final void setFieldValue(final String theFieldValue) {
+	public void setFieldValue(final String theFieldValue) {
 		this.fieldValue = theFieldValue;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final String toString() {
+	public String toString() {
 		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" fieldNumber=");

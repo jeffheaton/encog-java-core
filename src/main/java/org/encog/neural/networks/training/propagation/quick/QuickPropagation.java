@@ -123,14 +123,14 @@ public class QuickPropagation extends Propagation implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean canContinue() {
+	public boolean canContinue() {
 		return false;
 	}
 
 	/**
 	 * @return The last delta values.
 	 */
-	public final double[] getLastDelta() {
+	public double[] getLastDelta() {
 		return this.lastDelta;
 	}
 
@@ -140,7 +140,7 @@ public class QuickPropagation extends Propagation implements
 	 *         matrix to allow learning.
 	 */
 	@Override
-	public final double getLearningRate() {
+	public double getLearningRate() {
 		return this.learningRate;
 	}
 
@@ -152,7 +152,7 @@ public class QuickPropagation extends Propagation implements
 	 * @return True if the specified continuation object is valid for this
 	 *         training method and network.
 	 */
-	public final boolean isValidResume(final TrainingContinuation state) {
+	public boolean isValidResume(final TrainingContinuation state) {
 		if (!state.getContents().containsKey(QuickPropagation.LAST_GRADIENTS)) {
 			return false;
 		}
@@ -171,7 +171,7 @@ public class QuickPropagation extends Propagation implements
 	 * @return A training continuation object to continue with.
 	 */
 	@Override
-	public final TrainingContinuation pause() {
+	public TrainingContinuation pause() {
 		final TrainingContinuation result = new TrainingContinuation();
 		result.setTrainingType(this.getClass().getSimpleName());
 		result.set(QuickPropagation.LAST_GRADIENTS, this.getLastGradient());
@@ -185,7 +185,7 @@ public class QuickPropagation extends Propagation implements
 	 *            The training state to return to.
 	 */
 	@Override
-	public final void resume(final TrainingContinuation state) {
+	public void resume(final TrainingContinuation state) {
 		if (!isValidResume(state)) {
 			throw new TrainingError("Invalid training resume data length");
 		}
@@ -205,7 +205,7 @@ public class QuickPropagation extends Propagation implements
 	 *            The learning rate.
 	 */
 	@Override
-	public final void setLearningRate(final double rate) {
+	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
 	
@@ -258,7 +258,7 @@ public class QuickPropagation extends Propagation implements
 	 * @return The weight delta.
 	 */
 	@Override
-	public final double updateWeight(final double[] gradients,
+	public double updateWeight(final double[] gradients,
 			final double[] lastGradient, final int index) {
 
 		final double w = this.network.getFlat().getWeights()[index];

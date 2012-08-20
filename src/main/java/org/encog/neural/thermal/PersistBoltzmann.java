@@ -45,7 +45,7 @@ public class PersistBoltzmann implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getFileVersion() {
+	public int getFileVersion() {
 		return 1;
 	}
 
@@ -53,7 +53,7 @@ public class PersistBoltzmann implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String getPersistClassString() {
+	public String getPersistClassString() {
 		return "BoltzmannMachine";
 	}
 
@@ -61,7 +61,7 @@ public class PersistBoltzmann implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final Object read(final InputStream is) {
+	public Object read(final InputStream is) {
 		final BoltzmannMachine result = new BoltzmannMachine();
 		final EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;
@@ -100,7 +100,7 @@ public class PersistBoltzmann implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void save(final OutputStream os, final Object obj) {
+	public void save(final OutputStream os, final Object obj) {
 		final EncogWriteHelper out = new EncogWriteHelper(os);
 		final BoltzmannMachine boltz = (BoltzmannMachine) obj;
 		out.addSection("BOLTZMANN");

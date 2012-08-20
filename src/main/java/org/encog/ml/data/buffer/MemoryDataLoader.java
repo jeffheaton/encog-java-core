@@ -115,21 +115,21 @@ public class MemoryDataLoader {
 	/**
 	 * @return The CODEC that is being used.
 	 */
-	public final DataSetCODEC getCodec() {
+	public DataSetCODEC getCodec() {
 		return this.codec;
 	}
 
 	/**
 	 * @return The resuling dataset.
 	 */
-	public final BasicMLDataSet getResult() {
+	public BasicMLDataSet getResult() {
 		return this.result;
 	}
 
 	/**
 	 * @return The object that status is reported to.
 	 */
-	public final StatusReportable getStatus() {
+	public StatusReportable getStatus() {
 		return this.status;
 	}
 
@@ -139,7 +139,7 @@ public class MemoryDataLoader {
 	 * @param theResult
 	 *            The resulting dataset.
 	 */
-	public final void setResult(final BasicMLDataSet theResult) {
+	public void setResult(final BasicMLDataSet theResult) {
 		this.result = theResult;
 	}
 
@@ -149,7 +149,7 @@ public class MemoryDataLoader {
 	 * @param theStatus
 	 *            The object to report status to.
 	 */
-	public final void setStatus(final StatusReportable theStatus) {
+	public void setStatus(final StatusReportable theStatus) {
 		this.status = theStatus;
 	}
 

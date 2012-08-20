@@ -133,7 +133,7 @@ public class CmdGenerate extends Cmd {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean executeCommand(final String args) {
+	public boolean executeCommand(final String args) {
 		// get filenames
 		final String sourceID = getProp().getPropertyString(
 				ScriptProperties.GENERATE_CONFIG_SOURCE_FILE);
@@ -168,7 +168,7 @@ public class CmdGenerate extends Cmd {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String getName() {
+	public String getName() {
 		return CmdGenerate.COMMAND_NAME;
 	}
 

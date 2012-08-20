@@ -73,14 +73,14 @@ public class FlatLayer {
 	/**
 	 * @return the activation
 	 */
-	public final ActivationFunction getActivation() {
+	public ActivationFunction getActivation() {
 		return this.activation;
 	}
 
 	/**
 	 * @return Get the bias activation.
 	 */
-	public final double getBiasActivation() {
+	public double getBiasActivation() {
 		if (hasBias()) {
 			return this.biasActivation;
 		} else {
@@ -91,7 +91,7 @@ public class FlatLayer {
 	/**
 	 * @return The number of neurons our context is fed by.
 	 */
-	public final int getContextCount() {
+	public int getContextCount() {
 		if (this.contextFedBy == null) {
 			return 0;
 		} else {
@@ -102,14 +102,14 @@ public class FlatLayer {
 	/**
 	 * @return The layer that feeds this layer's context.
 	 */
-	public final FlatLayer getContextFedBy() {
+	public FlatLayer getContextFedBy() {
 		return this.contextFedBy;
 	}
 
 	/**
 	 * @return the count
 	 */
-	public final int getCount() {
+	public int getCount() {
 		return this.count;
 	}
 
@@ -117,7 +117,7 @@ public class FlatLayer {
 	 * @return The total number of neurons on this layer, includes context, bias
 	 *         and regular.
 	 */
-	public final int getTotalCount() {
+	public int getTotalCount() {
 		if (this.contextFedBy == null) {
 			return getCount() + (hasBias() ? 1 : 0);
 		} else {
@@ -129,7 +129,7 @@ public class FlatLayer {
 	/**
 	 * @return the bias
 	 */
-	public final boolean hasBias() {
+	public boolean hasBias() {
 		return Math.abs(this.biasActivation) > Encog.DEFAULT_DOUBLE_EQUAL;
 	}
 
@@ -137,7 +137,7 @@ public class FlatLayer {
 	 * @param activation
 	 *            the activation to set
 	 */
-	public final void setActivation(final ActivationFunction activation) {
+	public void setActivation(final ActivationFunction activation) {
 		this.activation = activation;
 	}
 
@@ -157,7 +157,7 @@ public class FlatLayer {
 	 * @param from
 	 *            The layer feeding.
 	 */
-	public final void setContextFedBy(final FlatLayer from) {
+	public void setContextFedBy(final FlatLayer from) {
 		this.contextFedBy = from;
 	}
 
@@ -165,7 +165,7 @@ public class FlatLayer {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String toString() {
+	public String toString() {
 		final StringBuilder result = new StringBuilder();
 		result.append("[");
 		result.append(this.getClass().getSimpleName());

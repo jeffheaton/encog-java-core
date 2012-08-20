@@ -53,7 +53,7 @@ public class GeneticFactory {
 	 *            The arguments to use.
 	 * @return The newly created trainer.
 	 */
-	public final MLTrain create(final MLMethod method,
+	public MLTrain create(final MLMethod method,
 			final MLDataSet training, final String argsStr) {
 
 		if (!(method instanceof BasicNetwork)) {

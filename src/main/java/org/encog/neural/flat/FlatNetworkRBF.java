@@ -82,7 +82,7 @@ public class FlatNetworkRBF extends FlatNetwork implements Serializable {
 	 * @return A clone of the network.
 	 */
 	@Override
-	public final FlatNetworkRBF clone() {
+	public FlatNetworkRBF clone() {
 		final FlatNetworkRBF result = new FlatNetworkRBF();
 		cloneFlatNetwork(result);
 		result.rbf = this.rbf;
@@ -98,7 +98,7 @@ public class FlatNetworkRBF extends FlatNetwork implements Serializable {
 	 *            Output will be placed here.
 	 */
 	@Override
-	public final void compute(final double[] x, final double[] output) {
+	public void compute(final double[] x, final double[] output) {
 
 		int outputIndex = this.getLayerIndex()[1];
 
@@ -117,14 +117,14 @@ public class FlatNetworkRBF extends FlatNetwork implements Serializable {
 	 * Set the RBF's used.
 	 * @param rbf The RBF's used.
 	 */
-	public final void setRBF(final RadialBasisFunction[] rbf) {
+	public void setRBF(final RadialBasisFunction[] rbf) {
 		this.rbf = Arrays.copyOf(rbf, rbf.length);
 	}
 
 	/**
 	 * @return The RBF's used.
 	 */
-	public final RadialBasisFunction[] getRBF() {
+	public RadialBasisFunction[] getRBF() {
 		return this.rbf;
 	}
 

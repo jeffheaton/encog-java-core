@@ -155,7 +155,7 @@ public class ResilientPropagation extends Propagation {
 	 * @return True, as RPROP can continue.
 	 */
 	@Override
-	public final boolean canContinue() {
+	public boolean canContinue() {
 		return true;
 	}
 
@@ -167,7 +167,7 @@ public class ResilientPropagation extends Propagation {
 	 * @return True if the specified continuation object is valid for this
 	 *         training method and network.
 	 */
-	public final boolean isValidResume(final TrainingContinuation state) {
+	public boolean isValidResume(final TrainingContinuation state) {
 		if (!state.getContents().containsKey(
 				ResilientPropagation.LAST_GRADIENTS)
 				|| !state.getContents().containsKey(
@@ -190,7 +190,7 @@ public class ResilientPropagation extends Propagation {
 	 * @return A training continuation object to continue with.
 	 */
 	@Override
-	public final TrainingContinuation pause() {
+	public TrainingContinuation pause() {
 		final TrainingContinuation result = new TrainingContinuation();
 
 		result.setTrainingType(this.getClass().getSimpleName());
@@ -208,7 +208,7 @@ public class ResilientPropagation extends Propagation {
 	 *            The training state to return to.
 	 */
 	@Override
-	public final void resume(final TrainingContinuation state) {
+	public void resume(final TrainingContinuation state) {
 		if (!isValidResume(state)) {
 			throw new TrainingError("Invalid training resume data length");
 		}

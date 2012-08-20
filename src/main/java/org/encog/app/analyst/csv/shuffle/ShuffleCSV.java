@@ -74,7 +74,7 @@ public class ShuffleCSV extends BasicFile {
 	 * @param format
 	 *            The format of the CSV file.
 	 */
-	public final void analyze(final File inputFile, final boolean headers,
+	public void analyze(final File inputFile, final boolean headers,
 			final CSVFormat format) {
 		setInputFilename(inputFile);
 		setExpectInputHeaders(headers);
@@ -89,7 +89,7 @@ public class ShuffleCSV extends BasicFile {
 	 * @return The buffer size. This is how many rows of data are loaded(and
 	 *         randomized), at a time. The default is 5,000.
 	 */
-	public final int getBufferSize() {
+	public int getBufferSize() {
 		return this.bufferSize;
 	}
 
@@ -143,7 +143,7 @@ public class ShuffleCSV extends BasicFile {
 	 * @param outputFile
 	 *            The output file.
 	 */
-	public final void process(final File outputFile) {
+	public void process(final File outputFile) {
 		validateAnalyzed();
 
 		final ReadCSV csv = new ReadCSV(getInputFilename().toString(),
@@ -168,7 +168,7 @@ public class ShuffleCSV extends BasicFile {
 	 * @param s
 	 *            The new buffer size.
 	 */
-	public final void setBufferSize(final int s) {
+	public void setBufferSize(final int s) {
 		this.bufferSize = s;
 		this.buffer = new LoadedRow[this.bufferSize];
 	}

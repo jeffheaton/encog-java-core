@@ -86,7 +86,7 @@ public class BasicMLData implements MLData,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void add(final int index, final double value) {
+	public void add(final int index, final double value) {
 		this.data[index] += value;
 	}
 
@@ -94,7 +94,7 @@ public class BasicMLData implements MLData,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void clear() {
+	public void clear() {
 		for (int i = 0; i < this.data.length; i++) {
 			this.data[i] = 0;
 		}
@@ -104,7 +104,7 @@ public class BasicMLData implements MLData,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final MLData clone() {
+	public MLData clone() {
 		return new BasicMLData(this);
 	}
 
@@ -112,7 +112,7 @@ public class BasicMLData implements MLData,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double[] getData() {
+	public double[] getData() {
 		return this.data;
 	}
 
@@ -120,7 +120,7 @@ public class BasicMLData implements MLData,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double getData(final int index) {
+	public double getData(final int index) {
 		return this.data[index];
 	}
 
@@ -128,7 +128,7 @@ public class BasicMLData implements MLData,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setData(final double[] theData) {
+	public void setData(final double[] theData) {
 		this.data = theData;
 	}
 
@@ -136,7 +136,7 @@ public class BasicMLData implements MLData,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setData(final int index, final double d) {
+	public void setData(final int index, final double d) {
 		this.data[index] = d;
 	}
 
@@ -144,7 +144,7 @@ public class BasicMLData implements MLData,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int size() {
+	public int size() {
 		return this.data.length;
 	}
 
@@ -152,7 +152,7 @@ public class BasicMLData implements MLData,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String toString() {
+	public String toString() {
 		final StringBuilder builder = new StringBuilder("[");
 		builder.append(this.getClass().getSimpleName());
 		builder.append(":");

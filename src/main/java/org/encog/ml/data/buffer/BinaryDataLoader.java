@@ -64,7 +64,7 @@ public class BinaryDataLoader {
 	 * @param binaryFile
 	 *            The binary file to create.
 	 */
-	public final void external2Binary(final File binaryFile) {
+	public void external2Binary(final File binaryFile) {
 
 		status.report(0, 0, "Importing to binary file: "
 				+ binaryFile.toString());
@@ -113,7 +113,7 @@ public class BinaryDataLoader {
 	 * @param binaryFile
 	 *            THe binary file to use.
 	 */
-	public final void binary2External(final File binaryFile) {
+	public void binary2External(final File binaryFile) {
 		status.report(0, 0, "Exporting binary file: " + binaryFile.toString());
 
 		EncogEGBFile egb = new EncogEGBFile(binaryFile);
@@ -165,7 +165,7 @@ public class BinaryDataLoader {
 	/**
 	 * @return The object that status is reported to.
 	 */
-	public final StatusReportable getStatus() {
+	public StatusReportable getStatus() {
 		return status;
 	}
 
@@ -173,14 +173,14 @@ public class BinaryDataLoader {
 	 * Set the object that status is reported to.
 	 * @param theStatus The object to report status to.
 	 */
-	public final void setStatus(final StatusReportable theStatus) {
+	public void setStatus(final StatusReportable theStatus) {
 		this.status = theStatus;
 	}
 
 	/**
 	 * @return The CODEC that is being used.
 	 */
-	public final DataSetCODEC getCodec() {
+	public DataSetCODEC getCodec() {
 		return codec;
 	}
 

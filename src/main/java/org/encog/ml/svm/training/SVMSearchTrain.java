@@ -170,7 +170,7 @@ public class SVMSearchTrain extends BasicTraining {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean canContinue() {
+	public boolean canContinue() {
 		return false;
 	}
 
@@ -178,7 +178,7 @@ public class SVMSearchTrain extends BasicTraining {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void finishTraining() {
+	public void finishTraining() {
 		this.internalTrain.setGamma(this.bestGamma);
 		this.internalTrain.setC(this.bestConst);
 		this.internalTrain.iteration();
@@ -188,49 +188,49 @@ public class SVMSearchTrain extends BasicTraining {
 	/**
 	 * @return the constBegin
 	 */
-	public final double getConstBegin() {
+	public double getConstBegin() {
 		return this.constBegin;
 	}
 
 	/**
 	 * @return the constEnd
 	 */
-	public final double getConstEnd() {
+	public double getConstEnd() {
 		return this.constEnd;
 	}
 
 	/**
 	 * @return the constStep
 	 */
-	public final double getConstStep() {
+	public double getConstStep() {
 		return this.constStep;
 	}
 
 	/**
 	 * @return the fold
 	 */
-	public final int getFold() {
+	public int getFold() {
 		return this.fold;
 	}
 
 	/**
 	 * @return the gammaBegin
 	 */
-	public final double getGammaBegin() {
+	public double getGammaBegin() {
 		return this.gammaBegin;
 	}
 
 	/**
 	 * @return the gammaEnd
 	 */
-	public final double getGammaEnd() {
+	public double getGammaEnd() {
 		return this.gammaEnd;
 	}
 
 	/**
 	 * @return the gammaStep
 	 */
-	public final double getGammaStep() {
+	public double getGammaStep() {
 		return this.gammaStep;
 	}
 
@@ -238,7 +238,7 @@ public class SVMSearchTrain extends BasicTraining {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final MLMethod getMethod() {
+	public MLMethod getMethod() {
 		return this.network;
 	}
 
@@ -246,7 +246,7 @@ public class SVMSearchTrain extends BasicTraining {
 	 * @return True if the training is done.
 	 */
 	@Override
-	public final boolean isTrainingDone() {
+	public boolean isTrainingDone() {
 		return this.trainingDone;
 	}
 
@@ -254,7 +254,7 @@ public class SVMSearchTrain extends BasicTraining {
 	 * Perform one training iteration.
 	 */
 	@Override
-	public final void iteration() {
+	public void iteration() {
 		
 		if (!this.trainingDone) {
 			if (!this.isSetup) {
@@ -314,7 +314,7 @@ public class SVMSearchTrain extends BasicTraining {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final TrainingContinuation pause() {
+	public TrainingContinuation pause() {
 		return null;
 	}
 
@@ -330,7 +330,7 @@ public class SVMSearchTrain extends BasicTraining {
 	 * @param theConstBegin
 	 *            the constBegin to set
 	 */
-	public final void setConstBegin(final double theConstBegin) {
+	public void setConstBegin(final double theConstBegin) {
 		this.constBegin = theConstBegin;
 	}
 
@@ -338,7 +338,7 @@ public class SVMSearchTrain extends BasicTraining {
 	 * @param theConstEnd
 	 *            the constEnd to set
 	 */
-	public final void setConstEnd(final double theConstEnd) {
+	public void setConstEnd(final double theConstEnd) {
 		this.constEnd = theConstEnd;
 	}
 
@@ -346,7 +346,7 @@ public class SVMSearchTrain extends BasicTraining {
 	 * @param theConstStep
 	 *            the constStep to set
 	 */
-	public final void setConstStep(final double theConstStep) {
+	public void setConstStep(final double theConstStep) {
 		this.constStep = theConstStep;
 	}
 
@@ -354,7 +354,7 @@ public class SVMSearchTrain extends BasicTraining {
 	 * @param theFold
 	 *            the fold to set
 	 */
-	public final void setFold(final int theFold) {
+	public void setFold(final int theFold) {
 		this.fold = theFold;
 	}
 
@@ -362,7 +362,7 @@ public class SVMSearchTrain extends BasicTraining {
 	 * @param theGammaBegin
 	 *            the gammaBegin to set
 	 */
-	public final void setGammaBegin(final double theGammaBegin) {
+	public void setGammaBegin(final double theGammaBegin) {
 		this.gammaBegin = theGammaBegin;
 	}
 

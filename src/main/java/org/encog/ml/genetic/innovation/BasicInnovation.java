@@ -37,7 +37,7 @@ public class BasicInnovation implements Innovation {
 	/**
 	 * @return The innovation ID.
 	 */
-	public final long getInnovationID() {
+	public long getInnovationID() {
 		return innovationID;
 	}
 
@@ -45,7 +45,7 @@ public class BasicInnovation implements Innovation {
 	 * Set the innovation id.
 	 * @param theInnovationID The innovation id.
 	 */
-	public final void setInnovationID(final long theInnovationID) {
+	public void setInnovationID(final long theInnovationID) {
 		this.innovationID = theInnovationID;
 	}
 

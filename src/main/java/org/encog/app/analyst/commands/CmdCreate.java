@@ -58,7 +58,7 @@ public class CmdCreate extends Cmd {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean executeCommand(final String args) {
+	public boolean executeCommand(final String args) {
 		// get filenames
 		final String trainingID = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_TRAINING_FILE);
@@ -108,7 +108,7 @@ public class CmdCreate extends Cmd {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String getName() {
+	public String getName() {
 		return CmdCreate.COMMAND_NAME;
 	}
 

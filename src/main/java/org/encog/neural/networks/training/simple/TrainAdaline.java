@@ -82,7 +82,7 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean canContinue() {
+	public boolean canContinue() {
 		return false;
 	}
 
@@ -90,7 +90,7 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double getLearningRate() {
+	public double getLearningRate() {
 		return this.learningRate;
 	}
 
@@ -98,7 +98,7 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final MLMethod getMethod() {
+	public MLMethod getMethod() {
 		return this.network;
 	}
 
@@ -106,7 +106,7 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void iteration() {
+	public void iteration() {
 
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 
@@ -145,7 +145,7 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final TrainingContinuation pause() {
+	public TrainingContinuation pause() {
 		return null;
 	}
 
@@ -164,7 +164,7 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 	 *            The new learning rate.
 	 */
 	@Override
-	public final void setLearningRate(final double rate) {
+	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
 

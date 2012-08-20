@@ -102,7 +102,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean canContinue() {
+	public boolean canContinue() {
 		return false;
 	}
 
@@ -111,7 +111,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	 * 
 	 * @return The network as an array of doubles.
 	 */
-	public final double[] getArray() {
+	public double[] getArray() {
 		return NetworkCODEC
 				.networkToArray(NeuralSimulatedAnnealing.this.network);
 	}
@@ -119,14 +119,14 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	/**
 	 * @return A copy of the annealing array.
 	 */
-	public final double[] getArrayCopy() {
+	public double[] getArrayCopy() {
 		return getArray();
 	}
 
 	/**
 	 * @return The object used to calculate the score.
 	 */
-	public final CalculateScore getCalculateScore() {
+	public CalculateScore getCalculateScore() {
 		return this.calculateScore;
 	}
 
@@ -134,7 +134,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final BasicNetwork getMethod() {
+	public BasicNetwork getMethod() {
 		return this.network;
 	}
 
@@ -142,7 +142,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	 * Perform one iteration of simulated annealing.
 	 */
 	@Override
-	public final void iteration() {
+	public void iteration() {
 		EncogLogging.log(EncogLogging.LEVEL_INFO,
 				"Performing Simulated Annealing iteration.");
 		preIteration();
@@ -162,7 +162,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	 * @param array
 	 *            An array.
 	 */
-	public final void putArray(final double[] array) {
+	public void putArray(final double[] array) {
 		NetworkCODEC.arrayToNetwork(array,
 				NeuralSimulatedAnnealing.this.network);
 	}
@@ -173,7 +173,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	 * according to the current temperature. The higher the temperature the more
 	 * randomness.
 	 */
-	public final void randomize() {
+	public void randomize() {
 		final double[] array = NetworkCODEC
 				.networkToArray(NeuralSimulatedAnnealing.this.network);
 

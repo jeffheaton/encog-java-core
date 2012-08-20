@@ -63,7 +63,7 @@ public class PNNPattern implements NeuralNetworkPattern {
 	 *            The number of hidden neurons.
 	 */
 	@Override
-	public final void addHiddenLayer(final int count) {
+	public void addHiddenLayer(final int count) {
 		throw new PatternError("A PNN network does not have hidden layers.");
 	}
 
@@ -80,7 +80,7 @@ public class PNNPattern implements NeuralNetworkPattern {
 	 * @return The neural network.
 	 */
 	@Override
-	public final MLMethod generate() {
+	public MLMethod generate() {
 		final BasicPNN pnn = new BasicPNN(this.kernel, this.outmodel,
 				this.inputNeurons, this.outputNeurons);
 		return pnn;
@@ -89,28 +89,28 @@ public class PNNPattern implements NeuralNetworkPattern {
 	/**
 	 * @return The number of input neurons.
 	 */
-	public final int getInputNeurons() {
+	public int getInputNeurons() {
 		return this.inputNeurons;
 	}
 
 	/**
 	 * @return The kernel.
 	 */
-	public final PNNKernelType getKernel() {
+	public PNNKernelType getKernel() {
 		return this.kernel;
 	}
 
 	/**
 	 * @return The output model.
 	 */
-	public final PNNOutputMode getOutmodel() {
+	public PNNOutputMode getOutmodel() {
 		return this.outmodel;
 	}
 
 	/**
 	 * @return The number of output neurons.
 	 */
-	public final int getOutputNeurons() {
+	public int getOutputNeurons() {
 		return this.outputNeurons;
 	}
 
@@ -122,7 +122,7 @@ public class PNNPattern implements NeuralNetworkPattern {
 	 *            The activation function to use.
 	 */
 	@Override
-	public final void setActivationFunction(final ActivationFunction activation) {
+	public void setActivationFunction(final ActivationFunction activation) {
 		throw new PatternError(
 				"A SOM network can't define an activation function.");
 
@@ -135,7 +135,7 @@ public class PNNPattern implements NeuralNetworkPattern {
 	 *            The number of neurons.
 	 */
 	@Override
-	public final void setInputNeurons(final int count) {
+	public void setInputNeurons(final int count) {
 		this.inputNeurons = count;
 
 	}
@@ -146,7 +146,7 @@ public class PNNPattern implements NeuralNetworkPattern {
 	 * @param kernel
 	 *            The kernel type.
 	 */
-	public final void setKernel(final PNNKernelType kernel) {
+	public void setKernel(final PNNKernelType kernel) {
 		this.kernel = kernel;
 	}
 
@@ -154,7 +154,7 @@ public class PNNPattern implements NeuralNetworkPattern {
 	 * Set the output model.
 	 * @param outmodel The output model.
 	 */
-	public final void setOutmodel(final PNNOutputMode outmodel) {
+	public void setOutmodel(final PNNOutputMode outmodel) {
 		this.outmodel = outmodel;
 	}
 
@@ -165,7 +165,7 @@ public class PNNPattern implements NeuralNetworkPattern {
 	 *            The number of neurons.
 	 */
 	@Override
-	public final void setOutputNeurons(final int count) {
+	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
 	}
 

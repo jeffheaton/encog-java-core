@@ -60,7 +60,7 @@ public class CmdBalance extends Cmd {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean executeCommand(final String args) {
+	public boolean executeCommand(final String args) {
 		// get filenames
 		final String sourceID = getProp().getPropertyString(
 				ScriptProperties.BALANCE_CONFIG_SOURCE_FILE);
@@ -120,7 +120,7 @@ public class CmdBalance extends Cmd {
 	 * {@inheritDoc} 
 	 */
 	@Override
-	public final String getName() {
+	public String getName() {
 		return CmdBalance.COMMAND_NAME;
 	}
 

@@ -43,7 +43,7 @@ public class DoubleGene extends BasicGene {
 	 * Copy another gene to this one.
 	 * @param gene The other gene to copy.
 	 */
-	public final void copy(final Gene gene) {
+	public void copy(final Gene gene) {
 		value = ((DoubleGene) gene).getValue();
 
 	}
@@ -51,7 +51,7 @@ public class DoubleGene extends BasicGene {
 	/**
 	 * @return The gene value.
 	 */
-	public final double getValue() {
+	public double getValue() {
 		return value;
 	}
 
@@ -59,7 +59,7 @@ public class DoubleGene extends BasicGene {
 	 * Set the value of the gene.
 	 * @param theValue The gene's value.
 	 */
-	public final void setValue(final double theValue) {
+	public void setValue(final double theValue) {
 		this.value = theValue;
 	}
 
@@ -67,7 +67,7 @@ public class DoubleGene extends BasicGene {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String toString() {
+	public String toString() {
 		return "" + value;
 	}
 

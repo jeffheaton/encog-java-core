@@ -107,7 +107,7 @@ public class FoldedDataSet implements MLDataSet {
 	 *            Not used.
 	 */
 	@Override
-	public final void add(final MLData data1) {
+	public void add(final MLData data1) {
 		throw new TrainingError(FoldedDataSet.ADD_NOT_SUPPORTED);
 
 	}
@@ -121,7 +121,7 @@ public class FoldedDataSet implements MLDataSet {
 	 *            Not used.
 	 */
 	@Override
-	public final void add(final MLData inputData, final MLData idealData) {
+	public void add(final MLData inputData, final MLData idealData) {
 		throw new TrainingError(FoldedDataSet.ADD_NOT_SUPPORTED);
 
 	}
@@ -133,7 +133,7 @@ public class FoldedDataSet implements MLDataSet {
 	 *            Not used.
 	 */
 	@Override
-	public final void add(final MLDataPair inputData) {
+	public void add(final MLDataPair inputData) {
 		throw new TrainingError(FoldedDataSet.ADD_NOT_SUPPORTED);
 
 	}
@@ -142,7 +142,7 @@ public class FoldedDataSet implements MLDataSet {
 	 * Close the dataset.
 	 */
 	@Override
-	public final void close() {
+	public void close() {
 		this.underlying.close();
 	}
 
@@ -152,7 +152,7 @@ public class FoldedDataSet implements MLDataSet {
 	 * @param theNumFolds
 	 *            The number of folds.
 	 */
-	public final void fold(final int theNumFolds) {
+	public void fold(final int theNumFolds) {
 		this.numFolds = (int) Math.min(theNumFolds,
 				this.underlying.getRecordCount());
 		this.foldSize = (int) (this.underlying.getRecordCount() 
@@ -165,7 +165,7 @@ public class FoldedDataSet implements MLDataSet {
 	/**
 	 * @return the currentFold
 	 */
-	public final int getCurrentFold() {
+	public int getCurrentFold() {
 		if (this.owner != null) {
 			return this.owner.getCurrentFold();
 		} else {
@@ -176,7 +176,7 @@ public class FoldedDataSet implements MLDataSet {
 	/**
 	 * @return the currentFoldOffset
 	 */
-	public final int getCurrentFoldOffset() {
+	public int getCurrentFoldOffset() {
 		if (this.owner != null) {
 			return this.owner.getCurrentFoldOffset();
 		} else {
@@ -187,7 +187,7 @@ public class FoldedDataSet implements MLDataSet {
 	/**
 	 * @return the currentFoldSize
 	 */
-	public final int getCurrentFoldSize() {
+	public int getCurrentFoldSize() {
 		if (this.owner != null) {
 			return this.owner.getCurrentFoldSize();
 		} else {
@@ -199,7 +199,7 @@ public class FoldedDataSet implements MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getIdealSize() {
+	public int getIdealSize() {
 		return this.underlying.getIdealSize();
 	}
 
@@ -207,21 +207,21 @@ public class FoldedDataSet implements MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getInputSize() {
+	public int getInputSize() {
 		return this.underlying.getInputSize();
 	}
 
 	/**
 	 * @return the numFolds
 	 */
-	public final int getNumFolds() {
+	public int getNumFolds() {
 		return this.numFolds;
 	}
 
 	/**
 	 * @return The owner.
 	 */
-	public final FoldedDataSet getOwner() {
+	public FoldedDataSet getOwner() {
 		return this.owner;
 	}
 
@@ -229,7 +229,7 @@ public class FoldedDataSet implements MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void getRecord(final long index, final MLDataPair pair) {
+	public void getRecord(final long index, final MLDataPair pair) {
 		this.underlying.getRecord(getCurrentFoldOffset() + index, pair);
 	}
 
@@ -237,14 +237,14 @@ public class FoldedDataSet implements MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final long getRecordCount() {
+	public long getRecordCount() {
 		return getCurrentFoldSize();
 	}
 
 	/**
 	 * @return The underlying dataset.
 	 */
-	public final MLDataSet getUnderlying() {
+	public MLDataSet getUnderlying() {
 		return this.underlying;
 	}
 
@@ -252,7 +252,7 @@ public class FoldedDataSet implements MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean isSupervised() {
+	public boolean isSupervised() {
 		return this.underlying.isSupervised();
 	}
 
@@ -260,7 +260,7 @@ public class FoldedDataSet implements MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final Iterator<MLDataPair> iterator() {
+	public Iterator<MLDataPair> iterator() {
 		return new FoldedIterator(this);
 	}
 
@@ -268,7 +268,7 @@ public class FoldedDataSet implements MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final MLDataSet openAdditional() {
+	public MLDataSet openAdditional() {
 		final FoldedDataSet folded = new FoldedDataSet(
 				this.underlying.openAdditional());
 		folded.setOwner(this);
@@ -281,7 +281,7 @@ public class FoldedDataSet implements MLDataSet {
 	 * @param theCurrentFold
 	 *            the currentFold to set
 	 */
-	public final void setCurrentFold(final int theCurrentFold) {
+	public void setCurrentFold(final int theCurrentFold) {
 
 		if (this.owner != null) {
 			throw new TrainingError(
@@ -307,7 +307,7 @@ public class FoldedDataSet implements MLDataSet {
 	 * @param theOwner
 	 *            The owner.
 	 */
-	public final void setOwner(final FoldedDataSet theOwner) {
+	public void setOwner(final FoldedDataSet theOwner) {
 		this.owner = theOwner;
 	}
 	

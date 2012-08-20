@@ -53,14 +53,14 @@ public class AnalystSegregateTarget {
 	/**
 	 * @return the file
 	 */
-	public final String getFile() {
+	public String getFile() {
 		return this.file;
 	}
 
 	/**
 	 * @return the percent
 	 */
-	public final int getPercent() {
+	public int getPercent() {
 		return this.percent;
 	}
 
@@ -68,7 +68,7 @@ public class AnalystSegregateTarget {
 	 * @param theFile
 	 *            the file to set
 	 */
-	public final void setFile(final String theFile) {
+	public void setFile(final String theFile) {
 		this.file = theFile;
 	}
 
@@ -76,13 +76,13 @@ public class AnalystSegregateTarget {
 	 * @param thePercent
 	 *            the percent to set
 	 */
-	public final void setPercent(final int thePercent) {
+	public void setPercent(final int thePercent) {
 		this.percent = thePercent;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final String toString() {
+	public String toString() {
 		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" file=");

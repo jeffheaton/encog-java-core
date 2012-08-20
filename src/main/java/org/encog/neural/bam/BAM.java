@@ -98,7 +98,7 @@ public class BAM extends BasicML {
 	 * @param outputPattern
 	 *            The output pattern(for this input).
 	 */
-	public final void addPattern(final MLData inputPattern, 
+	public void addPattern(final MLData inputPattern, 
 			final MLData outputPattern) {
 
 		int weight;
@@ -117,7 +117,7 @@ public class BAM extends BasicML {
 	/**
 	 * Clear any connection weights.
 	 */
-	public final void clear() {
+	public void clear() {
 		this.weightsF1toF2.clear();
 		this.weightsF2toF1.clear();
 	}
@@ -130,7 +130,7 @@ public class BAM extends BasicML {
 	 *            NOT USED
 	 * @return NOT USED
 	 */
-	public final MLData compute(final MLData input) {
+	public MLData compute(final MLData input) {
 		throw new NeuralNetworkError(
 				"Compute on BasicNetwork cannot be used, rather call"
 						+ " the compute(NeuralData) method on the BAMLogic.");
@@ -144,7 +144,7 @@ public class BAM extends BasicML {
 	 *            The input to the network.
 	 * @return The output from the network.
 	 */
-	public final NeuralDataMapping compute(final NeuralDataMapping input) {
+	public NeuralDataMapping compute(final NeuralDataMapping input) {
 
 		boolean stable1 = true, stable2 = true;
 
@@ -162,14 +162,14 @@ public class BAM extends BasicML {
 	/**
 	 * @return the f1Count
 	 */
-	public final int getF1Count() {
+	public int getF1Count() {
 		return this.f1Count;
 	}
 
 	/**
 	 * @return the f2Count
 	 */
-	public final int getF2Count() {
+	public int getF2Count() {
 		return this.f2Count;
 	}
 
@@ -199,14 +199,14 @@ public class BAM extends BasicML {
 	/**
 	 * @return the weightsF1toF2
 	 */
-	public final Matrix getWeightsF1toF2() {
+	public Matrix getWeightsF1toF2() {
 		return this.weightsF1toF2;
 	}
 
 	/**
 	 * @return the weightsF2toF1
 	 */
-	public final Matrix getWeightsF2toF1() {
+	public Matrix getWeightsF2toF1() {
 		return this.weightsF2toF1;
 	}
 
@@ -253,7 +253,7 @@ public class BAM extends BasicML {
 	 * Set the F1 neuron count.
 	 * @param i The count.
 	 */
-	public final void setF1Count(final int i) {
+	public void setF1Count(final int i) {
 		this.f1Count = i;
 	}
 
@@ -261,7 +261,7 @@ public class BAM extends BasicML {
 	 * Set the F2 neuron count.
 	 * @param i The count.
 	 */
-	public final void setF2Count(final int i) {
+	public void setF2Count(final int i) {
 		this.f2Count = i;
 	}
 
@@ -269,7 +269,7 @@ public class BAM extends BasicML {
 	 * Set the weights for F1 to F2.
 	 * @param matrix The weight matrix.
 	 */
-	public final void setWeightsF1toF2(final Matrix matrix) {
+	public void setWeightsF1toF2(final Matrix matrix) {
 		this.weightsF1toF2 = matrix;
 	}
 
@@ -277,7 +277,7 @@ public class BAM extends BasicML {
 	 * Set the weights for F2 to F1.
 	 * @param matrix The weight matrix.
 	 */
-	public final void setWeightsF2toF1(final Matrix matrix) {
+	public void setWeightsF2toF1(final Matrix matrix) {
 		this.weightsF2toF1 = matrix;
 	}
 
@@ -286,6 +286,5 @@ public class BAM extends BasicML {
 	 */
 	@Override
 	public void updateProperties() {
-		// TODO Auto-generated method stub
 	}
 }

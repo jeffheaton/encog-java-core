@@ -89,7 +89,7 @@ public class SVDTraining extends BasicTraining {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final RBFNetwork getMethod() {
+	public RBFNetwork getMethod() {
 		return this.network;
 	}
 
@@ -97,7 +97,7 @@ public class SVDTraining extends BasicTraining {
 	 * Perform one iteration.
 	 */
 	@Override
-	public final void iteration() {
+	public void iteration() {
 		final int length = this.network.getRBF().length;
 
 		final RadialBasisFunction[] funcs = new RadialBasisFunction[length];

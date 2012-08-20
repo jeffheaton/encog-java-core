@@ -115,7 +115,7 @@ public class EncogEGBFile {
 	 * @param isInput
 	 *            Is this an input column?
 	 */
-	public final void addColumn(final int col, final boolean isInput) {
+	public void addColumn(final int col, final boolean isInput) {
 		try {
 			// process the file
 
@@ -213,7 +213,7 @@ public class EncogEGBFile {
 	 * @param row
 	 *            Where to add the row.
 	 */
-	public final void addRow(final int row) {
+	public void addRow(final int row) {
 		try {
 			this.numberOfRecords++;
 
@@ -309,7 +309,7 @@ public class EncogEGBFile {
 	/**
 	 * Close the file.
 	 */
-	public final void close() {
+	public void close() {
 		try {
 			if (this.raf != null) {
 				this.raf.close();
@@ -333,7 +333,7 @@ public class EncogEGBFile {
 	 * @param theIdealCount
 	 *            The ideal count.
 	 */
-	public final void create(final int theInputCount, final int theIdealCount) {
+	public void create(final int theInputCount, final int theIdealCount) {
 		try {
 			this.inputCount = theInputCount;
 			this.idealCount = theIdealCount;
@@ -379,7 +379,7 @@ public class EncogEGBFile {
 	 * @param col
 	 *            The column to delete.
 	 */
-	public final void deleteCol(final int col) {
+	public void deleteCol(final int col) {
 
 		try {
 			// process the file
@@ -473,7 +473,7 @@ public class EncogEGBFile {
 	 * @param row
 	 *            The row to delete.
 	 */
-	public final void deleteRow(final int row) {
+	public void deleteRow(final int row) {
 		try {
 			for (int i = row; i < this.numberOfRecords - 1; i++) {
 				final int s = EncogEGBFile.HEADER_SIZE + (this.recordSize * i)
@@ -499,77 +499,77 @@ public class EncogEGBFile {
 	/**
 	 * @return the fc
 	 */
-	public final FileChannel getFc() {
+	public FileChannel getFc() {
 		return this.fc;
 	}
 
 	/**
 	 * @return the file
 	 */
-	public final File getFile() {
+	public File getFile() {
 		return this.file;
 	}
 
 	/**
 	 * @return the headerBuffer
 	 */
-	public final ByteBuffer getHeaderBuffer() {
+	public ByteBuffer getHeaderBuffer() {
 		return this.headerBuffer;
 	}
 
 	/**
 	 * @return the idealCount
 	 */
-	public final int getIdealCount() {
+	public int getIdealCount() {
 		return this.idealCount;
 	}
 
 	/**
 	 * @return the inputCount
 	 */
-	public final int getInputCount() {
+	public int getInputCount() {
 		return this.inputCount;
 	}
 
 	/**
 	 * @return the numberOfRecords
 	 */
-	public final int getNumberOfRecords() {
+	public int getNumberOfRecords() {
 		return this.numberOfRecords;
 	}
 
 	/**
 	 * @return the raf
 	 */
-	public final RandomAccessFile getRaf() {
+	public RandomAccessFile getRaf() {
 		return this.raf;
 	}
 
 	/**
 	 * @return the recordBuffer
 	 */
-	public final ByteBuffer getRecordBuffer() {
+	public ByteBuffer getRecordBuffer() {
 		return this.recordBuffer;
 	}
 
 	/**
 	 * @return the recordCount
 	 */
-	public final int getRecordCount() {
+	public int getRecordCount() {
 		return this.recordCount;
 	}
 
 	/**
 	 * @return the recordSize
 	 */
-	public final int getRecordSize() {
+	public int getRecordSize() {
 		return this.recordSize;
 	}
 
 	/**
 	 * OPen an existing EGB file.
 	 */
-	public final void open() {
+	public void open() {
 		try {
 			this.raf = new RandomAccessFile(this.file, "rw");
 			this.fc = this.raf.getChannel();
@@ -634,7 +634,7 @@ public class EncogEGBFile {
 	 * 
 	 * @return The double read.
 	 */
-	public final double read() {
+	public double read() {
 		try {
 			clear();
 			this.recordBuffer.limit(EncogEGBFile.DOUBLE_SIZE);
@@ -652,7 +652,7 @@ public class EncogEGBFile {
 	 * @param d
 	 *            The array to read into.
 	 */
-	public final void read(final double[] d) {
+	public void read(final double[] d) {
 		try {
 			clear();
 			this.recordBuffer.limit(EncogEGBFile.DOUBLE_SIZE * d.length);
@@ -674,7 +674,7 @@ public class EncogEGBFile {
 	 * @param d
 	 *            The array to read into.
 	 */
-	public final void read(final int row, final double[] d) {
+	public void read(final int row, final double[] d) {
 		try {
 			clear();
 			this.recordBuffer.limit(EncogEGBFile.DOUBLE_SIZE * d.length);
@@ -698,7 +698,7 @@ public class EncogEGBFile {
 	 *            The column to read.
 	 * @return The value read.
 	 */
-	public final double read(final int row, final int col) {
+	public double read(final int row, final int col) {
 		try {
 			clear();
 			this.recordBuffer.limit(EncogEGBFile.DOUBLE_SIZE);
@@ -717,7 +717,7 @@ public class EncogEGBFile {
 	 * @param row
 	 *            The row.
 	 */
-	public final void setLocation(final int row) {
+	public void setLocation(final int row) {
 		try {
 			this.fc.position(calculateIndex(row));
 		} catch (final IOException ex) {
@@ -731,7 +731,7 @@ public class EncogEGBFile {
 	 * @param b
 	 *            The byte to write.
 	 */
-	public final void write(final byte b) {
+	public void write(final byte b) {
 		try {
 			clear();
 			this.recordBuffer.put(b);
@@ -748,7 +748,7 @@ public class EncogEGBFile {
 	 * @param v
 	 *            The array to write.
 	 */
-	public final void write(final double[] v) {
+	public void write(final double[] v) {
 		try {
 			clear();
 			for (final double element : v) {
@@ -769,7 +769,7 @@ public class EncogEGBFile {
 	 * @param v
 	 *            The array to write.
 	 */
-	public final void write(final int row, final double[] v) {
+	public void write(final int row, final double[] v) {
 		try {
 			clear();
 			for (final double element : v) {
@@ -793,7 +793,7 @@ public class EncogEGBFile {
 	 * @param v
 	 *            The value.
 	 */
-	public final void write(final int row, final int col, final double v) {
+	public void write(final int row, final int col, final double v) {
 		try {
 			clear();
 			this.recordBuffer.putDouble(v);

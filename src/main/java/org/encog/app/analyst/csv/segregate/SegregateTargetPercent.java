@@ -63,21 +63,21 @@ public class SegregateTargetPercent {
 	/**
 	 * @return the filename
 	 */
-	public final File getFilename() {
+	public File getFilename() {
 		return this.filename;
 	}
 
 	/**
 	 * @return the numberRemaining
 	 */
-	public final int getNumberRemaining() {
+	public int getNumberRemaining() {
 		return this.numberRemaining;
 	}
 
 	/**
 	 * @return the percent
 	 */
-	public final int getPercent() {
+	public int getPercent() {
 		return this.percent;
 	}
 
@@ -85,7 +85,7 @@ public class SegregateTargetPercent {
 	 * @param theFilename
 	 *            the filename to set
 	 */
-	public final  void setFilename(final File theFilename) {
+	public void setFilename(final File theFilename) {
 		this.filename = theFilename;
 	}
 
@@ -93,7 +93,7 @@ public class SegregateTargetPercent {
 	 * @param theNumberRemaining
 	 *            the numberRemaining to set
 	 */
-	public final void setNumberRemaining(final int theNumberRemaining) {
+	public void setNumberRemaining(final int theNumberRemaining) {
 		this.numberRemaining = theNumberRemaining;
 	}
 
@@ -101,13 +101,13 @@ public class SegregateTargetPercent {
 	 * @param thePercent
 	 *            the percent to set
 	 */
-	public final void setPercent(final int thePercent) {
+	public void setPercent(final int thePercent) {
 		this.percent = thePercent;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final String toString() {
+	public String toString() {
 		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" filename=");

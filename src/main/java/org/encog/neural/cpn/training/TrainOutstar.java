@@ -87,7 +87,7 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean canContinue() {
+	public boolean canContinue() {
 		return false;
 	}
 
@@ -95,7 +95,7 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double getLearningRate() {
+	public double getLearningRate() {
 		return this.learningRate;
 	}
 
@@ -103,7 +103,7 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final MLMethod getMethod() {
+	public MLMethod getMethod() {
 		return this.network;
 	}
 
@@ -125,7 +125,7 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void iteration() {
+	public void iteration() {
 
 		if (this.mustInit) {
 			initWeight();
@@ -155,7 +155,7 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final TrainingContinuation pause() {
+	public TrainingContinuation pause() {
 		return null;
 	}
 
@@ -163,7 +163,7 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void resume(final TrainingContinuation state) {
+	public void resume(final TrainingContinuation state) {
 
 	}
 
@@ -171,7 +171,7 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setLearningRate(final double rate) {
+	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
 
