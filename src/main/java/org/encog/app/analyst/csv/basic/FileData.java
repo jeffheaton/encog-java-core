@@ -90,7 +90,7 @@ public class FileData extends BaseCachedColumn {
 	/**
 	 * @return The index of this field.
 	 */
-	public final int getIndex() {
+	public int getIndex() {
 		return this.index;
 	}
 
@@ -100,7 +100,7 @@ public class FileData extends BaseCachedColumn {
 	 * @param theIndex
 	 *            The index of this field.
 	 */
-	public final void setIndex(final int theIndex) {
+	public void setIndex(final int theIndex) {
 		this.index = theIndex;
 	}
 }

@@ -161,35 +161,35 @@ public class BasicFile implements QuantTask {
 	/**
 	 * @return The column count.
 	 */
-	public final int getColumnCount() {
+	public int getColumnCount() {
 		return this.columnCount;
 	}
 
 	/**
 	 * @return The input filename.
 	 */
-	public final File getInputFilename() {
+	public File getInputFilename() {
 		return this.inputFilename;
 	}
 
 	/**
 	 * @return THe input format.
 	 */
-	public final CSVFormat getFormat() {
+	public CSVFormat getFormat() {
 		return this.format;
 	}
 
 	/**
 	 * @return The input headings.
 	 */
-	public final String[] getInputHeadings() {
+	public String[] getInputHeadings() {
 		return this.inputHeadings;
 	}
 
 	/**
 	 * @return The precision to use.
 	 */
-	public final int getPrecision() {
+	public int getPrecision() {
 		return this.precision;
 	}
 
@@ -197,7 +197,7 @@ public class BasicFile implements QuantTask {
 	 * @return Get the record count. File must have been analyzed first to read
 	 *         the record count.
 	 */
-	public final int getRecordCount() {
+	public int getRecordCount() {
 		if (!this.analyzed) {
 			throw new QuantError("Must analyze file first.");
 		}
@@ -208,7 +208,7 @@ public class BasicFile implements QuantTask {
 	/**
 	 * @return The status reporting object.
 	 */
-	public final StatusReportable getReport() {
+	public StatusReportable getReport() {
 		return this.report;
 	}
 
@@ -216,28 +216,28 @@ public class BasicFile implements QuantTask {
 	 * @return The reporting interval, an update will be sent for every block of
 	 *         rows that matches the size of this property.
 	 */
-	public final int getReportInterval() {
+	public int getReportInterval() {
 		return this.reportInterval;
 	}
 
 	/**
 	 * @return Has the file been analyzed.
 	 */
-	public final boolean isAnalyzed() {
+	public boolean isAnalyzed() {
 		return this.analyzed;
 	}
 
 	/**
 	 * @return True if we are expecting input headers.
 	 */
-	public final boolean isExpectInputHeaders() {
+	public boolean isExpectInputHeaders() {
 		return this.expectInputHeaders;
 	}
 
 	/**
 	 * @return the produceOutputHeaders
 	 */
-	public final boolean isProduceOutputHeaders() {
+	public boolean isProduceOutputHeaders() {
 		return this.produceOutputHeaders;
 	}
 
@@ -245,7 +245,7 @@ public class BasicFile implements QuantTask {
 	 * Perform a basic analyze of the file. This method is used mostly
 	 * internally.
 	 */
-	public final void performBasicCounts() {
+	public void performBasicCounts() {
 
 		resetStatus();
 		int rc = 0;
@@ -270,7 +270,7 @@ public class BasicFile implements QuantTask {
 	 *            The name of the output file.
 	 * @return The output stream for the text file.
 	 */
-	public final PrintWriter prepareOutputFile(final File outputFile) {
+	public PrintWriter prepareOutputFile(final File outputFile) {
 		try {
 			final PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
 
@@ -312,7 +312,7 @@ public class BasicFile implements QuantTask {
 	 * @param csv
 	 *            The CSV file to read from.
 	 */
-	public final void readHeaders(final ReadCSV csv) {
+	public void readHeaders(final ReadCSV csv) {
 		if (this.expectInputHeaders) {
 			this.inputHeadings = new String[csv.getColumnNames().size()];
 			for (int i = 0; i < csv.getColumnNames().size(); i++) {
@@ -341,7 +341,7 @@ public class BasicFile implements QuantTask {
 	 * @param isAnalyzing
 	 *            True if we are analyzing.
 	 */
-	public final void reportDone(final boolean isAnalyzing) {
+	public void reportDone(final boolean isAnalyzing) {
 		if (isAnalyzing) {
 			this.report.report(this.recordCount, this.recordCount,
 					"Done analyzing");
@@ -357,7 +357,7 @@ public class BasicFile implements QuantTask {
 	 * @param task
 	 *            The message.
 	 */
-	public final void reportDone(final String task) {
+	public void reportDone(final String task) {
 		this.report.report(this.recordCount, this.recordCount, task);
 	}
 
@@ -365,14 +365,14 @@ public class BasicFile implements QuantTask {
 	 * Request a stop.
 	 */
 	@Override
-	public final void requestStop() {
+	public void requestStop() {
 		this.cancel = true;
 	}
 
 	/**
 	 * Reset the reporting stats. Used internally.
 	 */
-	public final void resetStatus() {
+	public void resetStatus() {
 		this.lastUpdate = 0;
 		this.currentRecord = 0;
 	}
@@ -383,7 +383,7 @@ public class BasicFile implements QuantTask {
 	 * @param theAnalyzed
 	 *            True, if the file has been analyzed.
 	 */
-	public final void setAnalyzed(final boolean theAnalyzed) {
+	public void setAnalyzed(final boolean theAnalyzed) {
 		this.analyzed = theAnalyzed;
 	}
 
@@ -393,7 +393,7 @@ public class BasicFile implements QuantTask {
 	 * @param theColumnCount
 	 *            The new column count.
 	 */
-	public final void setColumnCount(final int theColumnCount) {
+	public void setColumnCount(final int theColumnCount) {
 		this.columnCount = theColumnCount;
 	}
 
@@ -402,7 +402,7 @@ public class BasicFile implements QuantTask {
 	 * 
 	 * @param theExpectInputHeaders Are input headers expected?
 	 */
-	public final void setExpectInputHeaders(
+	public void setExpectInputHeaders(
 			final boolean theExpectInputHeaders) {
 		this.expectInputHeaders = theExpectInputHeaders;
 	}
@@ -413,7 +413,7 @@ public class BasicFile implements QuantTask {
 	 * @param theInputFilename
 	 *            The input filename.
 	 */
-	public final void setInputFilename(final File theInputFilename) {
+	public void setInputFilename(final File theInputFilename) {
 		this.inputFilename = theInputFilename;
 	}
 
@@ -423,7 +423,7 @@ public class BasicFile implements QuantTask {
 	 * @param theInputFormat
 	 *            The new inputFormat format.
 	 */
-	public final void setInputFormat(final CSVFormat theInputFormat) {
+	public void setInputFormat(final CSVFormat theInputFormat) {
 		this.format = theInputFormat;
 	}
 
@@ -433,7 +433,7 @@ public class BasicFile implements QuantTask {
 	 * @param theInputHeadings
 	 *            The new input headings.
 	 */
-	public final void setInputHeadings(final String[] theInputHeadings) {
+	public void setInputHeadings(final String[] theInputHeadings) {
 		this.inputHeadings = theInputHeadings;
 	}
 
@@ -443,7 +443,7 @@ public class BasicFile implements QuantTask {
 	 * @param thePrecision
 	 *            The precision to use.
 	 */
-	public final void setPrecision(final int thePrecision) {
+	public void setPrecision(final int thePrecision) {
 		this.precision = thePrecision;
 	}
 
@@ -451,7 +451,7 @@ public class BasicFile implements QuantTask {
 	 * @param theProduceOutputHeaders
 	 *            the produceOutputHeaders to set
 	 */
-	public final void setProduceOutputHeaders(
+	public void setProduceOutputHeaders(
 			final boolean theProduceOutputHeaders) {
 		this.produceOutputHeaders = theProduceOutputHeaders;
 	}
@@ -462,7 +462,7 @@ public class BasicFile implements QuantTask {
 	 * @param v
 	 *            The record count.
 	 */
-	public final void setRecordCount(final int v) {
+	public void setRecordCount(final int v) {
 		this.recordCount = v;
 	}
 
@@ -472,7 +472,7 @@ public class BasicFile implements QuantTask {
 	 * @param theReport
 	 *            The status reporting object.
 	 */
-	public final void setReport(final StatusReportable theReport) {
+	public void setReport(final StatusReportable theReport) {
 		this.report = theReport;
 	}
 
@@ -482,7 +482,7 @@ public class BasicFile implements QuantTask {
 	 * @param theReportInterval
 	 *            The new reporting interval.
 	 */
-	public final void setReportInterval(final int theReportInterval) {
+	public void setReportInterval(final int theReportInterval) {
 		this.reportInterval = theReportInterval;
 	}
 
@@ -490,13 +490,13 @@ public class BasicFile implements QuantTask {
 	 * @return Should we stop?
 	 */
 	@Override
-	public final boolean shouldStop() {
+	public boolean shouldStop() {
 		return this.cancel;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final String toString() {
+	public String toString() {
 		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" inputFilename=");
@@ -513,7 +513,7 @@ public class BasicFile implements QuantTask {
 	 * @param isAnalyzing
 	 *            True if we are in the process of analyzing.
 	 */
-	public final void updateStatus(final boolean isAnalyzing) {
+	public void updateStatus(final boolean isAnalyzing) {
 		if (isAnalyzing) {
 			updateStatus("Analyzing");
 		} else {
@@ -527,7 +527,7 @@ public class BasicFile implements QuantTask {
 	 * @param task
 	 *            The string to report.
 	 */
-	public final void updateStatus(final String task) {
+	public void updateStatus(final String task) {
 		boolean shouldDisplay = false;
 
 		if (this.currentRecord == 0) {
@@ -550,7 +550,7 @@ public class BasicFile implements QuantTask {
 	/**
 	 * Validate that the file has been analyzed. Throw an error, if it has not.
 	 */
-	public final void validateAnalyzed() {
+	public void validateAnalyzed() {
 		if (!this.analyzed) {
 			throw new QuantError("File must be analyzed first.");
 		}
@@ -564,7 +564,7 @@ public class BasicFile implements QuantTask {
 	 * @param row
 	 *            The row to write out.
 	 */
-	public final void writeRow(final PrintWriter tw, final LoadedRow row) {
+	public void writeRow(final PrintWriter tw, final LoadedRow row) {
 		final StringBuilder line = new StringBuilder();
 
 		for (int i = 0; i < row.getData().length; i++) {
@@ -578,14 +578,14 @@ public class BasicFile implements QuantTask {
 	/**
 	 * @return the script
 	 */
-	public final AnalystScript getScript() {
+	public AnalystScript getScript() {
 		return script;
 	}
 
 	/**
 	 * @param theScript the script to set
 	 */
-	public final void setScript(final AnalystScript theScript) {
+	public void setScript(final AnalystScript theScript) {
 		this.script = theScript;
 	}
 

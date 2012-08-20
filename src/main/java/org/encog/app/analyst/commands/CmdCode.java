@@ -58,7 +58,7 @@ public class CmdCode extends Cmd {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean executeCommand(final String args) {
+	public boolean executeCommand(final String args) {
 		// get filenames
 		final String targetID = getProp().getPropertyString(
 				ScriptProperties.CODE_CONFIG_TARGET_FILE);
@@ -85,7 +85,7 @@ public class CmdCode extends Cmd {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String getName() {
+	public String getName() {
 		return CmdCode.COMMAND_NAME;
 	}
 

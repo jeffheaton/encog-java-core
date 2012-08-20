@@ -68,7 +68,7 @@ public class AnalystNormalize {
 	/**
 	 * @return Calculate the input columns.
 	 */
-	public final int calculateInputColumns() {
+	public int calculateInputColumns() {
 		int result = 0;
 		for (final AnalystField field : this.normalizedFields) {
 			if (field.isInput()) {
@@ -82,7 +82,7 @@ public class AnalystNormalize {
 	 * Calculate the output columns.
 	 * @return The output columns.
 	 */
-	public final int calculateOutputColumns() {
+	public int calculateOutputColumns() {
 		int result = 0;
 		for (final AnalystField field : this.normalizedFields) {
 			if (field.isOutput()) {
@@ -95,7 +95,7 @@ public class AnalystNormalize {
 	/**
 	 * @return Count the active fields.
 	 */
-	public final int countActiveFields() {
+	public int countActiveFields() {
 		int result = 0;
 		for (final AnalystField field : this.normalizedFields) {
 			if (field.getAction() != NormalizationAction.Ignore) {
@@ -108,7 +108,7 @@ public class AnalystNormalize {
 	/**
 	 * @return the normalizedFields
 	 */
-	public final List<AnalystField> getNormalizedFields() {
+	public List<AnalystField> getNormalizedFields() {
 		return this.normalizedFields;
 	}
 
@@ -116,7 +116,7 @@ public class AnalystNormalize {
 	 * Init the normalized fields.
 	 * @param script The script.
 	 */
-	public final void init(final AnalystScript script) {
+	public void init(final AnalystScript script) {
 
 		if (this.normalizedFields == null) {
 			return;
@@ -150,7 +150,7 @@ public class AnalystNormalize {
 
 	/** {@inheritDoc} */
 	@Override
-	public final String toString() {
+	public String toString() {
 		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(": ");

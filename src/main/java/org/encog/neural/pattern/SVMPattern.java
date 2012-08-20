@@ -66,7 +66,7 @@ public class SVMPattern implements NeuralNetworkPattern {
 	 *            Not used.
 	 */
 	@Override
-	public final void addHiddenLayer(final int count) {
+	public void addHiddenLayer(final int count) {
 		throw new PatternError("A SVM network has no hidden layers.");
 	}
 
@@ -74,7 +74,7 @@ public class SVMPattern implements NeuralNetworkPattern {
 	 * Clear any settings on the pattern.
 	 */
 	@Override
-	public final void clear() {
+	public void clear() {
 		this.inputNeurons = 0;
 		this.outputNeurons = 0;
 
@@ -84,7 +84,7 @@ public class SVMPattern implements NeuralNetworkPattern {
 	 * @return The generated network.
 	 */
 	@Override
-	public final MLMethod generate() {
+	public MLMethod generate() {
 		if (this.outputNeurons != 1) {
 			throw new PatternError("A SVM may only have one output.");
 		}
@@ -96,21 +96,21 @@ public class SVMPattern implements NeuralNetworkPattern {
 	/**
 	 * @return The input neuron count.
 	 */
-	public final int getInputNeurons() {
+	public int getInputNeurons() {
 		return this.inputNeurons;
 	}
 
 	/**
 	 * @return The input output count.
 	 */
-	public final int getOutputNeurons() {
+	public int getOutputNeurons() {
 		return this.outputNeurons;
 	}
 
 	/**
 	 * @return True, if this is regression.
 	 */
-	public final boolean isRegression() {
+	public boolean isRegression() {
 		return this.regression;
 	}
 
@@ -121,7 +121,7 @@ public class SVMPattern implements NeuralNetworkPattern {
 	 *            Not used.
 	 */
 	@Override
-	public final void setActivationFunction(
+	public void setActivationFunction(
 			final ActivationFunction activation) {
 		throw new PatternError(
 				"A SVM network can't specify a custom activation function.");
@@ -134,7 +134,7 @@ public class SVMPattern implements NeuralNetworkPattern {
 	 *            The number of input neurons.
 	 */
 	@Override
-	public final void setInputNeurons(final int count) {
+	public void setInputNeurons(final int count) {
 		this.inputNeurons = count;
 	}
 
@@ -142,7 +142,7 @@ public class SVMPattern implements NeuralNetworkPattern {
 	 * Set the kernel type.
 	 * @param kernelType The kernel type.
 	 */
-	public final void setKernelType(final KernelType kernelType) {
+	public void setKernelType(final KernelType kernelType) {
 		this.kernelType = kernelType;
 	}
 
@@ -153,7 +153,7 @@ public class SVMPattern implements NeuralNetworkPattern {
 	 *            The output neuron count.
 	 */
 	@Override
-	public final void setOutputNeurons(final int count) {
+	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
 	}
 
@@ -161,7 +161,7 @@ public class SVMPattern implements NeuralNetworkPattern {
 	 * Set if regression is used.
 	 * @param regression True if regression is used.
 	 */
-	public final void setRegression(final boolean regression) {
+	public void setRegression(final boolean regression) {
 		this.regression = regression;
 	}
 
@@ -169,7 +169,7 @@ public class SVMPattern implements NeuralNetworkPattern {
 	 * Set the SVM type.
 	 * @param svmType The SVM type.
 	 */
-	public final void setSVMType(final SVMType svmType) {
+	public void setSVMType(final SVMType svmType) {
 		this.svmType = svmType;
 	}
 }

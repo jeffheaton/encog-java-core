@@ -78,14 +78,14 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            Not used.
 	 */
-	public final void addHiddenLayer(final int count) {
+	public void addHiddenLayer(final int count) {
 		throw new PatternError("A ART1 network has no hidden layers.");
 	}
 
 	/**
 	 * Clear any properties set for this network.
 	 */
-	public final void clear() {
+	public void clear() {
 		this.inputNeurons = 0; 
 		this.outputNeurons = 0;
 
@@ -96,7 +96,7 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	 * 
 	 * @return The generated neural network.
 	 */
-	public final MLMethod generate() {
+	public MLMethod generate() {
 
 		ART1 art = new ART1(this.inputNeurons, this.outputNeurons);
 		art.setA1(this.a1);
@@ -111,42 +111,42 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	/**
 	 * @return The A1 parameter.
 	 */
-	public final double getA1() {
+	public double getA1() {
 		return this.a1;
 	}
 
 	/**
 	 * @return The B1 parameter.
 	 */
-	public final double getB1() {
+	public double getB1() {
 		return this.b1;
 	}
 
 	/**
 	 * @return The C1 parameter.
 	 */
-	public final double getC1() {
+	public double getC1() {
 		return this.c1;
 	}
 
 	/**
 	 * @return The D1 parameter.
 	 */
-	public final double getD1() {
+	public double getD1() {
 		return this.d1;
 	}
 
 	/**
 	 * @return The L parameter.
 	 */
-	public final double getL() {
+	public double getL() {
 		return this.l;
 	}
 
 	/**
 	 * @return The vigilance for the network.
 	 */
-	public final double getVigilance() {
+	public double getVigilance() {
 		return this.vigilance;
 	}
 
@@ -156,7 +156,7 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	 * @param a1
 	 *            The new value.
 	 */
-	public final void setA1(final double a1) {
+	public void setA1(final double a1) {
 		this.a1 = a1;
 	}
 
@@ -167,7 +167,7 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	 * @param activation
 	 *            The activation function.
 	 */
-	public final void setActivationFunction(final ActivationFunction activation) {
+	public void setActivationFunction(final ActivationFunction activation) {
 		throw new PatternError("Can't set the activation function for an ART1.");
 	}
 
@@ -177,7 +177,7 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	 * @param b1
 	 *            The new value.
 	 */
-	public final void setB1(final double b1) {
+	public void setB1(final double b1) {
 		this.b1 = b1;
 	}
 
@@ -187,7 +187,7 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	 * @param c1
 	 *            The new value.
 	 */
-	public final void setC1(final double c1) {
+	public void setC1(final double c1) {
 		this.c1 = c1;
 	}
 
@@ -197,7 +197,7 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	 * @param d1
 	 *            The new value.
 	 */
-	public final void setD1(final double d1) {
+	public void setD1(final double d1) {
 		this.d1 = d1;
 	}
 
@@ -207,7 +207,7 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The input neuron count.
 	 */
-	public final void setInputNeurons(final int count) {
+	public void setInputNeurons(final int count) {
 		this.inputNeurons = count;
 	}
 
@@ -217,7 +217,7 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	 * @param l
 	 *            The new value.
 	 */
-	public final void setL(final double l) {
+	public void setL(final double l) {
 		this.l = l;
 	}
 
@@ -227,7 +227,7 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The output neuron count.
 	 */
-	public final void setOutputNeurons(final int count) {
+	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
 	}
 
@@ -237,7 +237,7 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	 * @param vigilance
 	 *            The new value.
 	 */
-	public final void setVigilance(final double vigilance) {
+	public void setVigilance(final double vigilance) {
 		this.vigilance = vigilance;
 	}
 }

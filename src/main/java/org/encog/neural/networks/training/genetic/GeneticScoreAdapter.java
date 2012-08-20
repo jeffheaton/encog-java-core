@@ -52,7 +52,7 @@ public class GeneticScoreAdapter implements CalculateGenomeScore {
 	 * @param genome The genome to calculate for.
 	 * @return The calculated score.
 	 */
-	public final double calculateScore(final Genome genome) {
+	public double calculateScore(final Genome genome) {
 		final MLRegression network = (MLRegression) genome.getOrganism();
 		return this.calculateScore.calculateScore(network);
 	}
@@ -60,7 +60,7 @@ public class GeneticScoreAdapter implements CalculateGenomeScore {
 	/**
 	 * @return True, if the score should be minimized.
 	 */
-	public final boolean shouldMinimize() {
+	public boolean shouldMinimize() {
 		return this.calculateScore.shouldMinimize();
 	}
 

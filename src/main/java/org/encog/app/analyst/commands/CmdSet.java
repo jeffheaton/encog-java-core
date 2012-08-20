@@ -50,7 +50,7 @@ public class CmdSet extends Cmd {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean executeCommand(final String args) {
+	public boolean executeCommand(final String args) {
 		final int index = args.indexOf('=');
 		final String dots = args.substring(0, index).trim();
 		String value = args.substring(index + 1).trim();
@@ -85,7 +85,7 @@ public class CmdSet extends Cmd {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String getName() {
+	public String getName() {
 		return CmdSet.COMMAND_NAME;
 	}
 

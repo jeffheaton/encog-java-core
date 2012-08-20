@@ -119,7 +119,7 @@ public class BasicSpecies implements Species, Serializable {
 	 * Calculate the amount to spawn.
 	 */
 	@Override
-	public final void calculateSpawnAmount() {
+	public void calculateSpawnAmount() {
 		this.spawnsRequired = 0;
 		for (final Genome genome : this.members) {
 			this.spawnsRequired += genome.getAmountToSpawn();
@@ -134,7 +134,7 @@ public class BasicSpecies implements Species, Serializable {
 	 * @return The parent.
 	 */
 	@Override
-	public final Genome chooseParent() {
+	public Genome chooseParent() {
 		Genome baby;
 
 		// If there is a single member, then choose that one.
@@ -158,7 +158,7 @@ public class BasicSpecies implements Species, Serializable {
 	 * @return The age of this species.
 	 */
 	@Override
-	public final int getAge() {
+	public int getAge() {
 		return this.age;
 	}
 
@@ -166,7 +166,7 @@ public class BasicSpecies implements Species, Serializable {
 	 * @return The best score for this species.
 	 */
 	@Override
-	public final double getBestScore() {
+	public double getBestScore() {
 		return this.bestScore;
 	}
 
@@ -174,7 +174,7 @@ public class BasicSpecies implements Species, Serializable {
 	 * @return The number of generations with no improvement.
 	 */
 	@Override
-	public final int getGensNoImprovement() {
+	public int getGensNoImprovement() {
 		return this.gensNoImprovement;
 	}
 
@@ -182,7 +182,7 @@ public class BasicSpecies implements Species, Serializable {
 	 * @return THe leader of this species.
 	 */
 	@Override
-	public final Genome getLeader() {
+	public Genome getLeader() {
 		return this.leader;
 	}
 
@@ -190,7 +190,7 @@ public class BasicSpecies implements Species, Serializable {
 	 * @return The members of this species.
 	 */
 	@Override
-	public final List<Genome> getMembers() {
+	public List<Genome> getMembers() {
 		return this.members;
 	}
 
@@ -198,14 +198,14 @@ public class BasicSpecies implements Species, Serializable {
 	 * @return The number to spawn.
 	 */
 	@Override
-	public final double getNumToSpawn() {
+	public double getNumToSpawn() {
 		return this.spawnsRequired;
 	}
 
 	/**
 	 * @return The population that this species belongs to.
 	 */
-	public final Population getPopulation() {
+	public Population getPopulation() {
 		return this.population;
 	}
 
@@ -213,7 +213,7 @@ public class BasicSpecies implements Species, Serializable {
 	 * @return The spawns required.
 	 */
 	@Override
-	public final double getSpawnsRequired() {
+	public double getSpawnsRequired() {
 		return this.spawnsRequired;
 	}
 
@@ -221,14 +221,14 @@ public class BasicSpecies implements Species, Serializable {
 	 * @return The species ID.
 	 */
 	@Override
-	public final long getSpeciesID() {
+	public long getSpeciesID() {
 		return this.speciesID;
 	}
 
 	/**
 	 * @return the leaderID
 	 */
-	public final long getTempLeaderID() {
+	public long getTempLeaderID() {
 		return this.leaderID;
 	}
 
@@ -237,7 +237,7 @@ public class BasicSpecies implements Species, Serializable {
 	 * generations with no improvement.
 	 */
 	@Override
-	public final void purge() {
+	public void purge() {
 		this.members.clear();
 		this.age++;
 		this.gensNoImprovement++;
@@ -252,7 +252,7 @@ public class BasicSpecies implements Species, Serializable {
 	 *            The age of this species.
 	 */
 	@Override
-	public final void setAge(final int theAge) {
+	public void setAge(final int theAge) {
 		this.age = theAge;
 	}
 
@@ -263,7 +263,7 @@ public class BasicSpecies implements Species, Serializable {
 	 *            The best score.
 	 */
 	@Override
-	public final void setBestScore(final double theBestScore) {
+	public void setBestScore(final double theBestScore) {
 		this.bestScore = theBestScore;
 	}
 
@@ -274,7 +274,7 @@ public class BasicSpecies implements Species, Serializable {
 	 *            The number of generations.
 	 */
 	@Override
-	public final void setGensNoImprovement(final int theGensNoImprovement) {
+	public void setGensNoImprovement(final int theGensNoImprovement) {
 		this.gensNoImprovement = theGensNoImprovement;
 	}
 
@@ -285,7 +285,7 @@ public class BasicSpecies implements Species, Serializable {
 	 *            The new leader.
 	 */
 	@Override
-	public final void setLeader(final Genome theLeader) {
+	public void setLeader(final Genome theLeader) {
 		this.leader = theLeader;
 	}
 
@@ -293,7 +293,7 @@ public class BasicSpecies implements Species, Serializable {
 	 * @param thePopulation
 	 *            the population to set
 	 */
-	public final void setPopulation(final Population thePopulation) {
+	public void setPopulation(final Population thePopulation) {
 		this.population = thePopulation;
 	}
 
@@ -304,7 +304,7 @@ public class BasicSpecies implements Species, Serializable {
 	 *            The number of spawns required.
 	 */
 	@Override
-	public final void setSpawnsRequired(final double theSpawnsRequired) {
+	public void setSpawnsRequired(final double theSpawnsRequired) {
 		this.spawnsRequired = theSpawnsRequired;
 	}
 
@@ -314,7 +314,7 @@ public class BasicSpecies implements Species, Serializable {
 	 * @param i
 	 *            The new species id.
 	 */
-	public final void setSpeciesID(final int i) {
+	public void setSpeciesID(final int i) {
 		this.speciesID = i;
 	}
 
@@ -325,7 +325,7 @@ public class BasicSpecies implements Species, Serializable {
 	 * @param theLeaderID
 	 *            the leaderID to set
 	 */
-	public final void setTempLeaderID(final long theLeaderID) {
+	public void setTempLeaderID(final long theLeaderID) {
 		this.leaderID = theLeaderID;
 	}
 

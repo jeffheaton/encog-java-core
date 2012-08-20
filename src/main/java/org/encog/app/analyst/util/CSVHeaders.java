@@ -180,7 +180,7 @@ public class CSVHeaders {
 	 * @param name The column name.
 	 * @return The index of the column.
 	 */
-	public final int find(final String name) {
+	public int find(final String name) {
 		String key = name.toLowerCase();
 		
 		if (!this.columnMapping.containsKey(key)) {
@@ -195,7 +195,7 @@ public class CSVHeaders {
 	 * @param index The index of the header.
 	 * @return The base header.
 	 */
-	public final String getBaseHeader(final int index) {
+	public String getBaseHeader(final int index) {
 		String result = this.headerList.get(index);
 
 		final int loc = result.indexOf('(');
@@ -211,14 +211,14 @@ public class CSVHeaders {
 	 * @param index The index of the header to get.
 	 * @return The header value.
 	 */
-	public final String getHeader(final int index) {
+	public String getHeader(final int index) {
 		return this.headerList.get(index);
 	}
 
 	/**
 	 * @return The headers.
 	 */
-	public final List<String> getHeaders() {
+	public List<String> getHeaders() {
 		return this.headerList;
 	}
 
@@ -227,7 +227,7 @@ public class CSVHeaders {
 	 * @param currentIndex The index to get the time slice for.
 	 * @return The timeslice.
 	 */
-	public final int getSlice(final int currentIndex) {
+	public int getSlice(final int currentIndex) {
 		final String name = this.headerList.get(currentIndex);
 		final int index1 = name.indexOf('(');
 		if (index1 == -1) {
@@ -273,7 +273,7 @@ public class CSVHeaders {
 	/**
 	 * @return The number of headers.
 	 */
-	public final int size() {
+	public int size() {
 		return this.headerList.size();
 	}
 

@@ -65,7 +65,7 @@ public class BasicMLSequenceSet implements Serializable, MLSequenceSet {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public final boolean hasNext() {
+		public boolean hasNext() {
 			
 			if( this.currentSequenceIndex>=sequences.size() ) {
 				return false;
@@ -84,7 +84,7 @@ public class BasicMLSequenceSet implements Serializable, MLSequenceSet {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public final MLDataPair next() {
+		public MLDataPair next() {
 			if (!hasNext()) {
 				return null;
 			}
@@ -105,7 +105,7 @@ public class BasicMLSequenceSet implements Serializable, MLSequenceSet {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public final void remove() {
+		public void remove() {
 			throw new EncogError("Called remove, unsupported operation.");
 		}
 	}
@@ -222,7 +222,7 @@ public class BasicMLSequenceSet implements Serializable, MLSequenceSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final Object clone() {
+	public Object clone() {
 		return ObjectCloner.deepCopy(this);
 	}
 
@@ -230,7 +230,7 @@ public class BasicMLSequenceSet implements Serializable, MLSequenceSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void close() {
+	public void close() {
 		// nothing to close
 	}
 
@@ -239,7 +239,7 @@ public class BasicMLSequenceSet implements Serializable, MLSequenceSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getIdealSize() {
+	public int getIdealSize() {
 		if (this.sequences.get(0).getRecordCount()==0) {
 			return 0;
 		}
@@ -250,7 +250,7 @@ public class BasicMLSequenceSet implements Serializable, MLSequenceSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getInputSize() {
+	public int getInputSize() {
 		if (this.sequences.get(0).getRecordCount()==0) {
 			return 0;
 		}
@@ -261,7 +261,7 @@ public class BasicMLSequenceSet implements Serializable, MLSequenceSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void getRecord(final long index, final MLDataPair pair) {
+	public void getRecord(final long index, final MLDataPair pair) {
 		long recordIndex = index;
 		int sequenceIndex = 0;
 		
@@ -280,7 +280,7 @@ public class BasicMLSequenceSet implements Serializable, MLSequenceSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final long getRecordCount() {
+	public long getRecordCount() {
 		long result = 0;
 		for(MLDataSet ds: this.sequences) {
 			result+=ds.getRecordCount();
@@ -292,7 +292,7 @@ public class BasicMLSequenceSet implements Serializable, MLSequenceSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean isSupervised() {
+	public boolean isSupervised() {
 		if (this.sequences.get(0).getRecordCount() == 0) {
 			return false;
 		}
@@ -303,7 +303,7 @@ public class BasicMLSequenceSet implements Serializable, MLSequenceSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final Iterator<MLDataPair> iterator() {
+	public Iterator<MLDataPair> iterator() {
 		final BasicMLSeqIterator result = new BasicMLSeqIterator();
 		return result;
 	}
@@ -312,7 +312,7 @@ public class BasicMLSequenceSet implements Serializable, MLSequenceSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final MLDataSet openAdditional() {
+	public MLDataSet openAdditional() {
 		return new BasicMLSequenceSet(this);
 	}
 

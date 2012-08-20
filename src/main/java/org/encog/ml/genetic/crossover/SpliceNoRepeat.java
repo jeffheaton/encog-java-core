@@ -62,7 +62,7 @@ public class SpliceNoRepeat implements Crossover {
 	/**
 	 * The cut length.
 	 */
-	private final int cutLength;
+	private int cutLength;
 
 	/**
 	 * Construct a splice crossover.
@@ -86,7 +86,7 @@ public class SpliceNoRepeat implements Crossover {
 	 * @param offspring2
 	 *            Returns the second offspring.
 	 */
-	public final void mate(final Chromosome mother, final Chromosome father,
+	public void mate(final Chromosome mother, final Chromosome father,
 			final Chromosome offspring1, final Chromosome offspring2) {
 		final int geneLength = father.getGenes().size();
 

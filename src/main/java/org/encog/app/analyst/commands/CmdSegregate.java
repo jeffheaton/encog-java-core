@@ -61,7 +61,7 @@ public class CmdSegregate extends Cmd {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean executeCommand(final String args) {
+	public boolean executeCommand(final String args) {
 		// get filenames
 		final String sourceID = getProp().getPropertyString(
 				ScriptProperties.SEGREGATE_CONFIG_SOURCE_FILE);
@@ -104,7 +104,7 @@ public class CmdSegregate extends Cmd {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String getName() {
+	public String getName() {
 		return CmdSegregate.COMMAND_NAME;
 	}
 

@@ -78,42 +78,42 @@ public class BaseCachedColumn {
 	 * @param length
 	 *            The length of this column.
 	 */
-	public final void allocate(final int length) {
+	public void allocate(final int length) {
 		this.data = new double[length];
 	}
 
 	/**
 	 * @return The data for this column.
 	 */
-	public final double[] getData() {
+	public double[] getData() {
 		return this.data;
 	}
 
 	/**
 	 * @return The name of this column
 	 */
-	public final String getName() {
+	public String getName() {
 		return this.name;
 	}
 
 	/**
 	 * @return Is this column ignored?
 	 */
-	public final boolean isIgnore() {
+	public boolean isIgnore() {
 		return this.ignore;
 	}
 
 	/**
 	 * @return Is this column used for input?
 	 */
-	public final boolean isInput() {
+	public boolean isInput() {
 		return this.input;
 	}
 
 	/**
 	 * @return Is this column used for output?
 	 */
-	public final boolean isOutput() {
+	public boolean isOutput() {
 		return this.output;
 	}
 
@@ -123,7 +123,7 @@ public class BaseCachedColumn {
 	 * @param theIgnore
 	 *            True, if this column is to be ignored.
 	 */
-	public final void setIgnore(final boolean theIgnore) {
+	public void setIgnore(final boolean theIgnore) {
 		this.ignore = theIgnore;
 	}
 
@@ -133,7 +133,7 @@ public class BaseCachedColumn {
 	 * @param theIgnore
 	 *            Is this column used for input.
 	 */
-	public final void setInput(final boolean theIgnore) {
+	public void setInput(final boolean theIgnore) {
 		this.input = theIgnore;
 	}
 
@@ -143,7 +143,7 @@ public class BaseCachedColumn {
 	 * @param theName
 	 *            The name of this column.
 	 */
-	public final void setName(final String theName) {
+	public void setName(final String theName) {
 		this.name = theName;
 	}
 
@@ -153,7 +153,7 @@ public class BaseCachedColumn {
 	 * @param theOutput
 	 *            Is this column used for output.
 	 */
-	public final void setOutput(final boolean theOutput) {
+	public void setOutput(final boolean theOutput) {
 		this.output = theOutput;
 	}
 

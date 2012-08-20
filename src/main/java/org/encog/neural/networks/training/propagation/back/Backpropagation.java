@@ -125,14 +125,14 @@ public class Backpropagation extends Propagation implements Momentum,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean canContinue() {
+	public boolean canContinue() {
 		return false;
 	}
 
 	/**
-	 * @return Ther last delta values.
+	 * @return The last delta values.
 	 */
-	public final double[] getLastDelta() {
+	public double[] getLastDelta() {
 		return this.lastDelta;
 	}
 
@@ -142,7 +142,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 *         matrix to allow learning.
 	 */
 	@Override
-	public final double getLearningRate() {
+	public double getLearningRate() {
 		return this.learningRate;
 	}
 
@@ -152,7 +152,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 *         training iteration. This can be useful to overcome local minima.
 	 */
 	@Override
-	public final double getMomentum() {
+	public double getMomentum() {
 		return this.momentum;
 	}
 
@@ -164,7 +164,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 * @return True if the specified continuation object is valid for this
 	 *         training method and network.
 	 */
-	public final boolean isValidResume(final TrainingContinuation state) {
+	public boolean isValidResume(final TrainingContinuation state) {
 		if (!state.getContents().containsKey(Backpropagation.LAST_DELTA)) {
 			return false;
 		}
@@ -183,7 +183,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 * @return A training continuation object to continue with.
 	 */
 	@Override
-	public final TrainingContinuation pause() {
+	public TrainingContinuation pause() {
 		final TrainingContinuation result = new TrainingContinuation();
 		result.setTrainingType(this.getClass().getSimpleName());
 		result.set(Backpropagation.LAST_DELTA, this.lastDelta);
@@ -197,7 +197,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 *            The training state to return to.
 	 */
 	@Override
-	public final void resume(final TrainingContinuation state) {
+	public void resume(final TrainingContinuation state) {
 		if (!isValidResume(state)) {
 			throw new TrainingError("Invalid training resume data length");
 		}
@@ -215,7 +215,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 *            The learning rate.
 	 */
 	@Override
-	public final void setLearningRate(final double rate) {
+	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
 
@@ -228,7 +228,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 *            The momentum.
 	 */
 	@Override
-	public final void setMomentum(final double m) {
+	public void setMomentum(final double m) {
 		this.momentum = m;
 	}
 	
@@ -244,7 +244,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 * @return The weight delta.
 	 */
 	@Override
-	public final double updateWeight(final double[] gradients,
+	public double updateWeight(final double[] gradients,
 			final double[] lastGradient, final int index) {
 		final double delta = (gradients[index] * this.learningRate)
 				+ (this.lastDelta[index] * this.momentum);

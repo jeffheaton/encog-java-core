@@ -45,14 +45,14 @@ public abstract class BasicML implements MLMethod, MLProperties, Serializable {
 	 * Properties about the neural network. Some NeuralLogic classes require
 	 * certain properties to be set.
 	 */
-	private final Map<String, String> properties 
+	private Map<String, String> properties 
 		= new HashMap<String, String>();
 
 	/**
 	 * @return A map of all properties.
 	 */
 	@Override
-	public final Map<String, String> getProperties() {
+	public Map<String, String> getProperties() {
 		return this.properties;
 	}
 
@@ -64,7 +64,7 @@ public abstract class BasicML implements MLMethod, MLProperties, Serializable {
 	 * @return The property as a double.
 	 */
 	@Override
-	public final double getPropertyDouble(final String name) {
+	public double getPropertyDouble(final String name) {
 		return Double.parseDouble(this.properties.get(name));
 	}
 
@@ -76,7 +76,7 @@ public abstract class BasicML implements MLMethod, MLProperties, Serializable {
 	 * @return The value of the specified property.
 	 */
 	@Override
-	public final long getPropertyLong(final String name) {
+	public long getPropertyLong(final String name) {
 		return Long.parseLong(this.properties.get(name));
 	}
 
@@ -88,7 +88,7 @@ public abstract class BasicML implements MLMethod, MLProperties, Serializable {
 	 * @return The value of the property.
 	 */
 	@Override
-	public final String getPropertyString(final String name) {
+	public String getPropertyString(final String name) {
 		return this.properties.get(name);
 	}
 
@@ -101,7 +101,7 @@ public abstract class BasicML implements MLMethod, MLProperties, Serializable {
 	 *            The value of the property.
 	 */
 	@Override
-	public final void setProperty(final String name, final double d) {
+	public void setProperty(final String name, final double d) {
 		this.properties.put(name,
 				"" + CSVFormat.EG_FORMAT.format(d, Encog.DEFAULT_PRECISION));
 		updateProperties();
@@ -116,7 +116,7 @@ public abstract class BasicML implements MLMethod, MLProperties, Serializable {
 	 *            The value of the property.
 	 */
 	@Override
-	public final void setProperty(final String name, final long l) {
+	public void setProperty(final String name, final long l) {
 		this.properties.put(name, "" + l);
 		updateProperties();
 	}
@@ -130,7 +130,7 @@ public abstract class BasicML implements MLMethod, MLProperties, Serializable {
 	 *            The value of the property.
 	 */
 	@Override
-	public final void setProperty(final String name, final String value) {
+	public void setProperty(final String name, final String value) {
 		this.properties.put(name, value);
 		updateProperties();
 	}

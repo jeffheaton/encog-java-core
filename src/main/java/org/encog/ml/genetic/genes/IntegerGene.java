@@ -45,7 +45,7 @@ public class IntegerGene extends BasicGene {
 	 * @param gene
 	 *            The other gene to copy.
 	 */
-	public final void copy(final Gene gene) {
+	public void copy(final Gene gene) {
 		this.value = ((IntegerGene) gene).getValue();
 	}
 
@@ -53,7 +53,7 @@ public class IntegerGene extends BasicGene {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean equals(final Object obj) {
+	public boolean equals(final Object obj) {
 		if (obj instanceof IntegerGene) {
 			return (((IntegerGene) obj).getValue() == this.value);
 		} else {
@@ -64,7 +64,7 @@ public class IntegerGene extends BasicGene {
 	/**
 	 * @return The value of this gene.
 	 */
-	public final int getValue() {
+	public int getValue() {
 		return this.value;
 	}
 
@@ -72,7 +72,7 @@ public class IntegerGene extends BasicGene {
 	 * @return a hash code.
 	 */
 	@Override
-	public final int hashCode() {
+	public int hashCode() {
 		return this.value;
 	}
 
@@ -82,7 +82,7 @@ public class IntegerGene extends BasicGene {
 	 * @param theValue
 	 *            The value of this gene.
 	 */
-	public final void setValue(final int theValue) {
+	public void setValue(final int theValue) {
 		this.value = theValue;
 	}
 
@@ -90,7 +90,7 @@ public class IntegerGene extends BasicGene {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String toString() {
+	public String toString() {
 		return "" + this.value;
 	}
 }

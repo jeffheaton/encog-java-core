@@ -65,7 +65,7 @@ public class RPROPJob extends TrainingJob {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void createTrainer(final boolean singleThreaded) {
+	public void createTrainer(final boolean singleThreaded) {
 		final Propagation train = new ResilientPropagation(getNetwork(),
 				getTraining(), getInitialUpdate(), getMaxStep());
 
@@ -85,14 +85,14 @@ public class RPROPJob extends TrainingJob {
 	/**
 	 * @return the initialUpdate
 	 */
-	public final double getInitialUpdate() {
+	public double getInitialUpdate() {
 		return this.initialUpdate;
 	}
 
 	/**
 	 * @return the maxStep
 	 */
-	public final double getMaxStep() {
+	public double getMaxStep() {
 		return this.maxStep;
 	}
 
@@ -100,7 +100,7 @@ public class RPROPJob extends TrainingJob {
 	 * @param initialUpdate
 	 *            the initialUpdate to set
 	 */
-	public final void setInitialUpdate(final double initialUpdate) {
+	public void setInitialUpdate(final double initialUpdate) {
 		this.initialUpdate = initialUpdate;
 	}
 
@@ -108,7 +108,7 @@ public class RPROPJob extends TrainingJob {
 	 * @param maxStep
 	 *            the maxStep to set
 	 */
-	public final void setMaxStep(final double maxStep) {
+	public void setMaxStep(final double maxStep) {
 		this.maxStep = maxStep;
 	}
 

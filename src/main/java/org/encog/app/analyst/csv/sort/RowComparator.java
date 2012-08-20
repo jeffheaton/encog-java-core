@@ -57,7 +57,7 @@ public class RowComparator implements Comparator<LoadedRow> {
 	 * @return 0 if the same, <0 x is less, >0 y is less.
 	 */
 	@Override
-	public final int compare(final LoadedRow x, final LoadedRow y) {
+	public int compare(final LoadedRow x, final LoadedRow y) {
 		for (final SortedField t : this.sort.getSortOrder()) {
 			final int index = t.getIndex();
 			final String xStr = x.getData()[index];

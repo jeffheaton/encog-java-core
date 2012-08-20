@@ -37,7 +37,7 @@ public class AnalystSegregate {
 	/**
 	 * @return the segregateTargets.
 	 */
-	public final AnalystSegregateTarget[] getSegregateTargets() {
+	public AnalystSegregateTarget[] getSegregateTargets() {
 		return this.segregateTargets;
 	}
 
@@ -45,7 +45,7 @@ public class AnalystSegregate {
 	 * @param theSegregateTargets
 	 *            the segregateTargets to set.
 	 */
-	public final void setSegregateTargets(
+	public void setSegregateTargets(
 			final AnalystSegregateTarget[] theSegregateTargets) {
 		this.segregateTargets = theSegregateTargets;
 	}

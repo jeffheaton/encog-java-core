@@ -86,7 +86,7 @@ public class AnalyzedField extends DataField {
 	 * Perform a pass one analysis of this field.
 	 * @param str The current value.
 	 */
-	public final void analyze1(final String v) {
+	public void analyze1(final String v) {
 
 		boolean accountedFor = false;
 		String str = v.trim();
@@ -159,7 +159,7 @@ public class AnalyzedField extends DataField {
 	 * Perform a pass two analysis of this field.
 	 * @param str The current value.
 	 */
-	public final void analyze2(final String str) {
+	public void analyze2(final String str) {
 		if (str.trim().length() == 0) {
 			return;
 		}
@@ -175,7 +175,7 @@ public class AnalyzedField extends DataField {
 	/**
 	 * Complete pass 1.
 	 */
-	public final void completePass1() {
+	public void completePass1() {
 
 		this.devTotal = 0;
 
@@ -189,7 +189,7 @@ public class AnalyzedField extends DataField {
 	/**
 	 * Complete pass 2.
 	 */
-	public final void completePass2() {
+	public void completePass2() {
 		setStandardDeviation(Math.sqrt(this.devTotal / this.instances));
 	}
 
@@ -197,7 +197,7 @@ public class AnalyzedField extends DataField {
 	 * Finalize the field, and create a DataField.
 	 * @return The new DataField.
 	 */
-	public final DataField finalizeField() {
+	public DataField finalizeField() {
 		final DataField result = new DataField(getName());
 
 		// if max and min are the same, we are dealing with a zero-sized range,
@@ -235,7 +235,7 @@ public class AnalyzedField extends DataField {
 	 * Get the class members.
 	 * @return The class members.
 	 */
-	public final List<AnalystClassItem> getAnalyzedClassMembers() {
+	public List<AnalystClassItem> getAnalyzedClassMembers() {
 		final List<String> sorted = new ArrayList<String>();
 		sorted.addAll(this.classMap.keySet());
 		Collections.sort(sorted);
@@ -250,7 +250,7 @@ public class AnalyzedField extends DataField {
 
 	/** {@inheritDoc} */
 	@Override
-	public final String toString() {
+	public String toString() {
 		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" total=");

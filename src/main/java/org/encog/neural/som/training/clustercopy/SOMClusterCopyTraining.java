@@ -117,7 +117,7 @@ public class SOMClusterCopyTraining extends BasicTraining {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void iteration() {
+	public void iteration() {
 		int outputNeuron = 0;
 		for (final MLDataPair pair : getTraining()) {
 			copyInputPattern(outputNeuron++, pair.getInput());
@@ -129,7 +129,7 @@ public class SOMClusterCopyTraining extends BasicTraining {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final TrainingContinuation pause() {
+	public TrainingContinuation pause() {
 		return null;
 	}
 

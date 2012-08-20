@@ -61,7 +61,7 @@ public class BalanceCSV extends BasicFile {
 	 * @param format
 	 *            The format of the CSV file.
 	 */
-	public final void analyze(final File inputFile, final boolean headers,
+	public void analyze(final File inputFile, final boolean headers,
 			final CSVFormat format) {
 		this.setInputFilename(inputFile);
 		setExpectInputHeaders(headers);
@@ -77,7 +77,7 @@ public class BalanceCSV extends BasicFile {
 	 * 
 	 * @return The counts per class.
 	 */
-	public final String dumpCounts() {
+	public String dumpCounts() {
 		final StringBuilder result = new StringBuilder();
 		for (final String key : this.counts.keySet()) {
 			result.append(key);
@@ -91,7 +91,7 @@ public class BalanceCSV extends BasicFile {
 	/**
 	 * @return Tracks the counts of each class.
 	 */
-	public final Map<String, Integer> getCounts() {
+	public Map<String, Integer> getCounts() {
 		return this.counts;
 	}
 
@@ -106,7 +106,7 @@ public class BalanceCSV extends BasicFile {
 	 * @param countPer
 	 *            The desired count per class.
 	 */
-	public final void process(final File outputFile, final int targetField,
+	public void process(final File outputFile, final int targetField,
 			final int countPer) {
 		validateAnalyzed();
 		final PrintWriter tw = prepareOutputFile(outputFile);

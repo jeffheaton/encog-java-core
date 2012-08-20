@@ -137,7 +137,7 @@ public class ExcelCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void close() {
+	public void close() {
 		if (this.readZipFile != null) {
 			try {
 				this.readZipFile.close();
@@ -192,7 +192,7 @@ public class ExcelCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getIdealSize() {
+	public int getIdealSize() {
 		return this.idealCount;
 	}
 
@@ -200,7 +200,7 @@ public class ExcelCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getInputSize() {
+	public int getInputSize() {
 		return this.inputCount;
 	}
 
@@ -208,7 +208,7 @@ public class ExcelCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void prepareRead() {
+	public void prepareRead() {
 		try {
 			this.readZipFile = new ZipFile(this.file);
 
@@ -244,7 +244,7 @@ public class ExcelCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void prepareWrite(final int recordCount, final int inputSize,
+	public void prepareWrite(final int recordCount, final int inputSize,
 			final int idealSize) {
 		this.inputCount = inputSize;
 		this.idealCount = idealSize;
@@ -325,7 +325,7 @@ public class ExcelCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean read(final double[] input, final double[] ideal, double[] significance) {
+	public boolean read(final double[] input, final double[] ideal, double[] significance) {
 
 		int ch;
 
@@ -393,7 +393,7 @@ public class ExcelCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void write(final double[] input, final double[] ideal, 
+	public void write(final double[] input, final double[] ideal, 
 			final double significance) {
 		final StringBuilder builder = new StringBuilder();
 		builder.append("1");

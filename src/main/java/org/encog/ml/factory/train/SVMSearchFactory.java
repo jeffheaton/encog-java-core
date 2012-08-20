@@ -80,7 +80,7 @@ public class SVMSearchFactory {
 	 *            The arguments to use.
 	 * @return The newly created trainer.
 	 */
-	public final MLTrain create(final MLMethod method, 
+	public MLTrain create(final MLMethod method, 
 			final MLDataSet training,
 			final String argsStr) {
 

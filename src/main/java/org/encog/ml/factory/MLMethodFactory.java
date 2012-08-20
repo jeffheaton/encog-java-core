@@ -77,7 +77,7 @@ public class MLMethodFactory {
 	 *            The output count.
 	 * @return The newly created machine learning method.
 	 */
-	public final MLMethod create(final String methodType,
+	public MLMethod create(final String methodType,
 			final String architecture, final int input, final int output) {
 		for (EncogPluginBase plugin : Encog.getInstance().getPlugins()) {
 			if (plugin instanceof EncogPluginService1) {

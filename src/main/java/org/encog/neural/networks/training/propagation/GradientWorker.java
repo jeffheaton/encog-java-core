@@ -179,14 +179,14 @@ public class GradientWorker implements EngineTask {
 	/**
 	 * @return The network being processed.
 	 */
-	public final FlatNetwork getNetwork() {
+	public FlatNetwork getNetwork() {
 		return this.network;
 	}
 
 	/**
 	 * @return The weights for this network.
 	 */
-	public final double[] getWeights() {
+	public double[] getWeights() {
 		return this.weights;
 	}
 

@@ -306,7 +306,7 @@ public class ScriptLoad {
 	 * Load an Encog script.
 	 * @param stream The stream to load from.
 	 */
-	public final void load(final InputStream stream) {
+	public void load(final InputStream stream) {
 		EncogReadHelper reader = null;
 
 		try {
