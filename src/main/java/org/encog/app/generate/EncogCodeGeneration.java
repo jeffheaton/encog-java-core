@@ -14,6 +14,7 @@ public class EncogCodeGeneration {
 	private final File targetFile;
 	private final StringBuilder contents = new StringBuilder();
 	private boolean embedData;
+	private MLMethod method;
 	
 	public EncogCodeGeneration(TargetLanguage theTargetLanguage, File theTargetFile) {
 		this.targetLanguage = theTargetLanguage;
