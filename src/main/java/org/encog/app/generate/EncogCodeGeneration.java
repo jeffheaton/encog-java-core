@@ -5,11 +5,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.encog.ml.MLMethod;
+import org.encog.ml.data.MLDataSet;
+
 public class EncogCodeGeneration {
 	
 	private final TargetLanguage targetLanguage; 
 	private final File targetFile;
 	private final StringBuilder contents = new StringBuilder();
+	private boolean embedData;
 	
 	public EncogCodeGeneration(TargetLanguage theTargetLanguage, File theTargetFile) {
 		this.targetLanguage = theTargetLanguage;
@@ -59,4 +63,18 @@ public class EncogCodeGeneration {
 			e.printStackTrace();
 		}
 	}
+
+
+
+	public boolean isEmbedData() {
+		return embedData;
+	}
+
+
+
+	public void setEmbedData(boolean embedData) {
+		this.embedData = embedData;
+	}
+	
+	
 }

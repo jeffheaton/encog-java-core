@@ -75,6 +75,7 @@ public class CmdCode extends Cmd {
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "target language:" + targetLanguage.toString());
 		
 		EncogCodeGeneration code = new EncogCodeGeneration(targetLanguage,targetFile);
+		code.setEmbedData(embedData);
 		code.generate();
 		
 
