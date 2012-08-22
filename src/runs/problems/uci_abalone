@@ -1,0 +1,8 @@
+#UCI Abalone 
+label=abalone
+outputs=1
+inputs=7
+read_inputs=1
+inputs_reversed=true
+mapper_type=int
+data_file=data/abalone.data
