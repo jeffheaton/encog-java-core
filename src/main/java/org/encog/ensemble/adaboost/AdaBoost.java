@@ -7,6 +7,7 @@ import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.EnsembleTypes;
 import org.encog.ensemble.EnsembleTypes.ProblemType;
+import org.encog.ensemble.GenericEnsembleML;
 import org.encog.ensemble.data.factories.ResamplingDataSetFactory;
 import org.encog.mathutil.VectorAlgebra;
 import org.encog.ml.data.MLDataPair;
@@ -40,7 +41,7 @@ public class AdaBoost extends Ensemble {
 		for (int i = 0; i < T; i++) {
 			dataSetFactory.setSignificance(D);
 			MLDataSet thisSet = dataSetFactory.getNewDataSet();
-			AdaBoostML newML = new AdaBoostML(mlFactory.createML(dataSetFactory.getInputData().getInputSize(), dataSetFactory.getInputData().getIdealSize()));
+			GenericEnsembleML newML = new GenericEnsembleML(mlFactory.createML(dataSetFactory.getInputData().getInputSize(), dataSetFactory.getInputData().getIdealSize()));
 			MLTrain train = trainFactory.getTraining(newML.getMl(), thisSet);
 			newML.setTraining(train);
 			newML.train(targetAccuracy,verbose);
@@ -51,7 +52,7 @@ public class AdaBoost extends Ensemble {
 		}
 	}
 
-	private double epsilon(AdaBoostML ml, MLDataSet dataSet) {
+	private double epsilon(GenericEnsembleML ml, MLDataSet dataSet) {
 		int bad = 0;
 		for (MLDataPair data: dataSet) {
 			if (ml.classify(data.getInput()) != ml.winner(data.getIdeal()))
@@ -60,7 +61,7 @@ public class AdaBoost extends Ensemble {
 		return (float) bad / (float) dataSet.size();
 	}
 	
-	private ArrayList<Double> updateD(AdaBoostML ml, MLDataSet dataSet, ArrayList<Double> D_t) {
+	private ArrayList<Double> updateD(GenericEnsembleML ml, MLDataSet dataSet, ArrayList<Double> D_t) {
 		ArrayList<Double> D_tplus1 = new ArrayList<Double>();
 		double epsilon = epsilon(ml, dataSet);
 		double alpha_t = Math.log(1 - epsilon / epsilon);
@@ -76,7 +77,7 @@ public class AdaBoost extends Ensemble {
 		//This cannot do anything, as member generation is strictly linked to training!
 	}
 	
-	private double getWeightedError(AdaBoostML newML, MLDataSet dataSet) {
+	private double getWeightedError(GenericEnsembleML newML, MLDataSet dataSet) {
 		double sum = 0;
 		for (int i = 0; i < dataSet.size(); i++) {
 			MLDataPair currentData = dataSet.get(i);

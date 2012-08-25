@@ -1,4 +1,4 @@
-package org.encog.ensemble.bagging;
+package org.encog.ensemble.stacking;
 
 import java.util.ArrayList;
 
@@ -9,15 +9,16 @@ import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.EnsembleTypes;
 import org.encog.ensemble.EnsembleTypes.ProblemType;
-import org.encog.ensemble.data.factories.ResamplingDataSetFactory;
+import org.encog.ensemble.data.factories.WrappingNonResamplingDataSetFactory;
 
-public class Bagging extends Ensemble {
+public class Stacking extends Ensemble {
 
 	private int splits;
 	
-	public Bagging(int splits, int dataSetSize, EnsembleMLMethodFactory mlFactory, EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator)
+	public Stacking(int splits, int dataSetSize, EnsembleMLMethodFactory mlFactory, EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator)
 	{
-		this.dataSetFactory = new ResamplingDataSetFactory(dataSetSize);
+		int dataSplits = aggregator.needsTraining() ? splits + 1 : splits;
+		this.dataSetFactory = new WrappingNonResamplingDataSetFactory(dataSplits);
 		this.splits = splits;
 		this.mlFactory = mlFactory;
 		this.trainFactory = trainFactory;
@@ -31,7 +32,7 @@ public class Bagging extends Ensemble {
 	{
 		this.initMembersBySplits(this.splits);
 	}
-
+	
 	@Override
 	public ProblemType getProblemType() {
 		return EnsembleTypes.ProblemType.CLASSIFICATION;

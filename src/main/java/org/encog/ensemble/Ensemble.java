@@ -3,11 +3,13 @@ package org.encog.ensemble;
 import java.util.ArrayList;
 
 
+import org.encog.ensemble.data.EnsembleDataSet;
 import org.encog.ensemble.data.factories.EnsembleDataSetFactory;
 import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.train.MLTrain;
-import org.encog.neural.networks.BasicNetwork;
+import org.encog.ml.data.basic.BasicMLData;
+
 public abstract class Ensemble {
 
 	protected EnsembleDataSetFactory dataSetFactory;
@@ -15,6 +17,7 @@ public abstract class Ensemble {
 	protected EnsembleAggregator aggregator;
 	protected ArrayList<EnsembleML> members;
 	protected EnsembleMLMethodFactory mlFactory;
+	protected MLDataSet aggregatorDataSet;
 
 	public class NotPossibleInThisMethod extends Exception {
 
@@ -29,6 +32,24 @@ public abstract class Ensemble {
 	 * Initialise ensemble components
 	 */
 	abstract public void initMembers();
+	
+	public void initMembersBySplits(int splits)
+	{
+		if ((this.dataSetFactory != null) && 
+			(splits > 0) &&
+			(this.dataSetFactory.hasSource()))
+		{
+			for (int i = 0; i < splits; i++)
+			{
+				GenericEnsembleML newML = new GenericEnsembleML(mlFactory.createML(this.dataSetFactory.getInputCount(), this.dataSetFactory.getOutputCount()));
+				newML.setTrainingSet(dataSetFactory.getNewDataSet());
+				newML.setTraining(trainFactory.getTraining(newML.getMl(), newML.getTrainingSet()));
+				members.add(newML);
+			}
+		}
+		if(aggregator.needsTraining()) 
+			aggregatorDataSet = dataSetFactory.getNewDataSet();
+	}
 	
 	/**
 	 * Set the training method to use for this ensemble
@@ -64,9 +85,25 @@ public abstract class Ensemble {
 	 * @return
 	 */
 	public void train(double targetError, boolean verbose) {
+		
 		for (EnsembleML current : members)
 		{
 			current.train(targetError, verbose);
+		}
+		if(aggregator.needsTraining()) {
+			EnsembleDataSet aggTrainingSet = new EnsembleDataSet(members.size() * aggregatorDataSet.getInputSize(),aggregatorDataSet.getIdealSize());
+			for (MLDataPair trainingInput:aggregatorDataSet) {
+				BasicMLData trainingInstance = new BasicMLData(0);
+				for(EnsembleML member:members){
+					int index = 0;
+					for(double val:member.compute(trainingInput.getInput()).getData()) {
+						trainingInstance.add(index++, val);
+					}
+				}
+				aggTrainingSet.add(trainingInstance,trainingInput.getIdeal());
+			}
+			aggregator.setTrainingSet(aggTrainingSet);
+			aggregator.train();			
 		}
 	}
 	

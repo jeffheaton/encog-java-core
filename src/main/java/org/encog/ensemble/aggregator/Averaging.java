@@ -3,6 +3,7 @@ package org.encog.ensemble.aggregator;
 import java.util.ArrayList;
 
 import org.encog.ensemble.EnsembleAggregator;
+import org.encog.ensemble.data.EnsembleDataSet;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLData;
 
@@ -27,4 +28,18 @@ public class Averaging implements EnsembleAggregator {
 		return "averaging";
 	}
 
+	@Override
+	public void train() {
+		//This is a no-op in this aggregator
+	}
+	
+	@Override
+	public void setTrainingSet(EnsembleDataSet trainingSet) {
+		// This is a no-op in this aggregator.
+	}
+
+	@Override
+	public boolean needsTraining() {
+		return false;
+	}
 }

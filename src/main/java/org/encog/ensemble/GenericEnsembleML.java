@@ -1,20 +1,18 @@
-package org.encog.ensemble.bagging;
+package org.encog.ensemble;
 
-import org.encog.ensemble.EnsembleML;
 import org.encog.ensemble.data.EnsembleDataSet;
 import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLData;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
 
-public class BaggingML implements EnsembleML {
+public class GenericEnsembleML implements EnsembleML {
 
 	private EnsembleDataSet trainingSet;
-	//TODO: this needs to become a generic type
 	private BasicNetwork ml;
 	private MLTrain trainer;
 	
-	public BaggingML(MLMethod fromML) {
+	public GenericEnsembleML(MLMethod fromML) {
 		setMl(fromML);
 	}
 	
@@ -51,10 +49,12 @@ public class BaggingML implements EnsembleML {
 		return ml;
 	}
 
+	@Override
 	public int classify(MLData input) {
 		return ml.classify(input);
 	}
 	
+	@Override
 	public MLData compute(MLData input) {
 		return ml.compute(input);
 	}
@@ -72,7 +72,6 @@ public class BaggingML implements EnsembleML {
 	@Override
 	public void train(double targetError) {
 		train(targetError, false);
-		
 	}
 	
 	public int winner(MLData input) {

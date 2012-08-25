@@ -1,9 +1,5 @@
 package helpers;
 
-import helpers.datasets.HabermanPS;
-import helpers.datasets.LandsatPS;
-import helpers.datasets.LetterRecognitionPS;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +8,10 @@ import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ensemble.EnsembleAggregator;
 import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
+import org.encog.ensemble.GenericEnsembleML;
 import org.encog.ensemble.aggregator.Averaging;
 import org.encog.ensemble.aggregator.MajorityVoting;
+import org.encog.ensemble.aggregator.MetaClassifier;
 import org.encog.ensemble.ml.mlp.factory.MultiLayerPerceptronFactory;
 import org.encog.ensemble.training.BackpropagationFactory;
 import org.encog.ensemble.training.ResilientPropagationFactory;
@@ -22,6 +20,7 @@ import org.encog.ensemble.training.ScaledConjugateGradientFactory;
 import techniques.AdaBoostET;
 import techniques.BaggingET;
 import techniques.EvaluationTechnique;
+import techniques.StackingET;
 
 public class ArgParser {
 	
@@ -49,6 +48,7 @@ public class ArgParser {
 	public enum Aggregators {
 		MAJORITYVOTING,
 		AVERAGING,
+		METACLASSIFIER,
 	}
 	
 	public enum Problems {
@@ -60,6 +60,7 @@ public class ArgParser {
 	public enum Techniques {
 		BAGGING,
 		ADABOOST,
+		STACKING,
 		SINGLE
 	}
 
@@ -123,9 +124,16 @@ public class ArgParser {
 	}
 
 	public static EnsembleAggregator AGG(String string) throws BadArgument {
-		switch (Aggregators.valueOf(string.toUpperCase())) {
+		String values[] = string.split("-");
+		switch (Aggregators.valueOf(values[0].toUpperCase())) {
 			case AVERAGING: return new Averaging();
 			case MAJORITYVOTING: return new MajorityVoting();
+			case METACLASSIFIER: 
+				EnsembleMLMethodFactory mlf = MLF(values[1]);
+				return new MetaClassifier(
+						doubleSingle(values[4]),
+						new GenericEnsembleML(mlf.createML(intSingle(values[2]), intSingle(values[3]))) 
+				);
 			default: throw new BadArgument();
 		}
 	}
@@ -144,6 +152,7 @@ public class ArgParser {
 		switch (Techniques.valueOf(etType.toUpperCase())) {
 			case BAGGING: return new BaggingET(size,dataSetSize,fullLabel,mlf,etf,agg);
 			case ADABOOST: return new AdaBoostET(size,dataSetSize,fullLabel,mlf,etf,agg);
+			case STACKING: return new StackingET(size,dataSetSize,fullLabel,mlf,etf,agg);
 			default: throw new BadArgument();
 		}
 	}

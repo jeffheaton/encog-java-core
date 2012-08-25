@@ -6,6 +6,7 @@ import helpers.PerfResults;
 
 import java.util.ArrayList;
 
+import org.encog.ensemble.Ensemble;
 import org.encog.ensemble.EnsembleAggregator;
 import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
@@ -21,6 +22,7 @@ public abstract class EvaluationTechnique {
 	protected EnsembleMLMethodFactory mlMethod;
 	protected EnsembleTrainFactory trainFactory;
 	protected EnsembleAggregator aggregator;
+	protected Ensemble ensemble;
 	protected String label;
 	
 	public double getMisclassification(BasicNeuralDataSet evalSet, DataMapper dataMapper) {
@@ -40,11 +42,16 @@ public abstract class EvaluationTechnique {
 		return error;
 	}
 	
-	public abstract void train(double trainToError, boolean verbose);
+	public void train(double trainToError, boolean verbose) {
+		ensemble.train(trainToError,verbose);
+	}
+
+	public void trainStep() {		
+	}
 	
-	public abstract void trainStep();
-	
-	public abstract double trainError();
+	public double trainError() {
+		return ensemble.getMember(0).getTraining().getError();
+	}
 	
 	public abstract void init(DataLoader dataLoader);
 	
@@ -68,7 +75,9 @@ public abstract class EvaluationTechnique {
 		this.testSet = testSet;
 	}
 	
-	public abstract MLData compute(MLData input);
+	public MLData compute(MLData input) {
+		return ensemble.compute(input);
+	}
 	
 	public PerfResults testPerformance(BasicNeuralDataSet evalSet, DataMapper dataMapper) {
 		int outputs = evalSet.getIdealSize();
