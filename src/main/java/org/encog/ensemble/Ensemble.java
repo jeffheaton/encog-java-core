@@ -91,11 +91,11 @@ public abstract class Ensemble {
 			current.train(targetError, verbose);
 		}
 		if(aggregator.needsTraining()) {
-			EnsembleDataSet aggTrainingSet = new EnsembleDataSet(members.size() * aggregatorDataSet.getInputSize(),aggregatorDataSet.getIdealSize());
+			EnsembleDataSet aggTrainingSet = new EnsembleDataSet(members.size() * aggregatorDataSet.getIdealSize(),aggregatorDataSet.getIdealSize());
 			for (MLDataPair trainingInput:aggregatorDataSet) {
-				BasicMLData trainingInstance = new BasicMLData(members.size() * aggregatorDataSet.getInputSize());
+				BasicMLData trainingInstance = new BasicMLData(members.size() * aggregatorDataSet.getIdealSize());
+				int index = 0;
 				for(EnsembleML member:members){
-					int index = 0;
 					for(double val:member.compute(trainingInput.getInput()).getData()) {
 						trainingInstance.add(index++, val);
 					}

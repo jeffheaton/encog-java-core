@@ -3,6 +3,7 @@ package helpers;
 import java.util.ArrayList;
 
 import org.encog.ml.data.MLData;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.neural.data.basic.BasicNeuralData;
 
 public class LetterMapper implements DataMapper {
@@ -20,7 +21,7 @@ public class LetterMapper implements DataMapper {
 	
 	@Override
 	public MLData map(ArrayList<String> data) {
-		final BasicNeuralData retVal = new BasicNeuralData(_outputs);
+		final BasicMLData retVal = new BasicMLData(_outputs);
 		for (int i = 0; i < _outputs; i++)
 			retVal.add(i, _lowBound);
 		int value = data.get(0).charAt(0) - 'A';

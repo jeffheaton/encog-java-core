@@ -79,7 +79,7 @@ public abstract class EvaluationTechnique {
 		return ensemble.compute(input);
 	}
 	
-	public PerfResults testPerformance(BasicNeuralDataSet evalSet, DataMapper dataMapper) {
+	public PerfResults testPerformance(BasicNeuralDataSet evalSet, DataMapper dataMapper, boolean debug) {
 		int outputs = evalSet.getIdealSize();
 		long size = evalSet.getRecordCount();
 		int tp[] = new int[outputs];
@@ -90,6 +90,10 @@ public abstract class EvaluationTechnique {
 		{
 			MLDataPair pair = evalSet.get(i);
 			MLData output = compute(pair.getInput());
+			if (debug) {
+				System.out.println("Computed class " + dataMapper.unmap(output).toString() + 
+						" for " + dataMapper.unmap(pair.getIdeal()).toString());
+			}
 			for(int thisClass = 0; thisClass < outputs; thisClass++) {
 				if (output.getData(thisClass) > 0.5) {
 					if (pair.getIdeal().getData(thisClass) > 0.5) {
