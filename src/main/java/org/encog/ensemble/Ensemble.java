@@ -22,7 +22,7 @@ public abstract class Ensemble {
 	public class NotPossibleInThisMethod extends Exception {
 
 		/**
-		 * This means you the current feature is not applicable in the specified method
+		 * This means the current feature is not applicable in the specified method
 		 */
 		private static final long serialVersionUID = 5118253806179408868L;
 		
@@ -41,14 +41,14 @@ public abstract class Ensemble {
 		{
 			for (int i = 0; i < splits; i++)
 			{
-				GenericEnsembleML newML = new GenericEnsembleML(mlFactory.createML(this.dataSetFactory.getInputCount(), this.dataSetFactory.getOutputCount()));
+				GenericEnsembleML newML = new GenericEnsembleML(mlFactory.createML(this.dataSetFactory.getInputCount(), this.dataSetFactory.getOutputCount()),mlFactory.getLabel());
 				newML.setTrainingSet(dataSetFactory.getNewDataSet());
 				newML.setTraining(trainFactory.getTraining(newML.getMl(), newML.getTrainingSet()));
 				members.add(newML);
 			}
+			if(aggregator.needsTraining()) 
+				aggregatorDataSet = dataSetFactory.getNewDataSet();
 		}
-		if(aggregator.needsTraining()) 
-			aggregatorDataSet = dataSetFactory.getNewDataSet();
 	}
 	
 	/**
@@ -93,7 +93,7 @@ public abstract class Ensemble {
 		if(aggregator.needsTraining()) {
 			EnsembleDataSet aggTrainingSet = new EnsembleDataSet(members.size() * aggregatorDataSet.getInputSize(),aggregatorDataSet.getIdealSize());
 			for (MLDataPair trainingInput:aggregatorDataSet) {
-				BasicMLData trainingInstance = new BasicMLData(0);
+				BasicMLData trainingInstance = new BasicMLData(members.size() * aggregatorDataSet.getInputSize());
 				for(EnsembleML member:members){
 					int index = 0;
 					for(double val:member.compute(trainingInput.getInput()).getData()) {

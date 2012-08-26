@@ -41,7 +41,7 @@ public class AdaBoost extends Ensemble {
 		for (int i = 0; i < T; i++) {
 			dataSetFactory.setSignificance(D);
 			MLDataSet thisSet = dataSetFactory.getNewDataSet();
-			GenericEnsembleML newML = new GenericEnsembleML(mlFactory.createML(dataSetFactory.getInputData().getInputSize(), dataSetFactory.getInputData().getIdealSize()));
+			GenericEnsembleML newML = new GenericEnsembleML(mlFactory.createML(dataSetFactory.getInputData().getInputSize(), dataSetFactory.getInputData().getIdealSize()),mlFactory.getLabel());
 			MLTrain train = trainFactory.getTraining(newML.getMl(), thisSet);
 			newML.setTraining(train);
 			newML.train(targetAccuracy,verbose);

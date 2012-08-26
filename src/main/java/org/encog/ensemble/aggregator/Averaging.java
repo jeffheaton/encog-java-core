@@ -24,7 +24,7 @@ public class Averaging implements EnsembleAggregator {
 	}
 	
 	@Override
-	public String toString() {
+	public String getLabel() {
 		return "averaging";
 	}
 

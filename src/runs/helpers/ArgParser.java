@@ -8,7 +8,6 @@ import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ensemble.EnsembleAggregator;
 import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
-import org.encog.ensemble.GenericEnsembleML;
 import org.encog.ensemble.aggregator.Averaging;
 import org.encog.ensemble.aggregator.MajorityVoting;
 import org.encog.ensemble.aggregator.MetaClassifier;
@@ -129,11 +128,8 @@ public class ArgParser {
 			case AVERAGING: return new Averaging();
 			case MAJORITYVOTING: return new MajorityVoting();
 			case METACLASSIFIER: 
-				EnsembleMLMethodFactory mlf = MLF(values[1]);
-				return new MetaClassifier(
-						doubleSingle(values[4]),
-						new GenericEnsembleML(mlf.createML(intSingle(values[2]), intSingle(values[3]))) 
-				);
+				if (values.length != 4) throw new BadArgument();
+				return new MetaClassifier(doubleSingle(values[2]),MLF(values[1]), ETF(values[3]));
 			default: throw new BadArgument();
 		}
 	}

@@ -20,6 +20,10 @@ function boosting-haberman() {
 	averaging-rprop adaboost problems/uci_haberman $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
 }
 
+function stacking-haberman() {
+	averaging-rprop stacking problems/uci_haberman $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+}
+
 function bagging-letterrecognition() {
 	averaging-rprop bagging problems/uci_letterrecognition $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
 }
@@ -28,12 +32,20 @@ function boosting-letterrecognition() {
 	averaging-rprop adaboost problems/uci_letterrecognition $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
 }
 
+function stacking-letterrecognition() {
+	averaging-rprop stacking problems/uci_letterrecognition $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+}
+
 function bagging-landsat() {
 	averaging-rprop bagging problems/statlog_landsat $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
 }
 
 function boosting-landsat() {
 	averaging-rprop adaboost problems/statlog_landsat $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+}
+
+function stacking-landsat() {
+	averaging-rprop stacking problems/statlog_landsat $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
 }
 
 function logged_run() {

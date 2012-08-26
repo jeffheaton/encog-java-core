@@ -13,5 +13,9 @@ public class BackpropagationFactory implements EnsembleTrainFactory {
 	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData) {
 		return (MLTrain) new Backpropagation((BasicNetwork) mlMethod, trainingData);
 	}
+	
+	public String getLabel() {
+		return "backprop";
+	}
 
 }

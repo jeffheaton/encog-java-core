@@ -12,5 +12,6 @@ public interface EnsembleAggregator {
 	public boolean needsTraining();
 	void setTrainingSet(EnsembleDataSet trainingSet);
 	void train();
+	public String getLabel();
 	
 }

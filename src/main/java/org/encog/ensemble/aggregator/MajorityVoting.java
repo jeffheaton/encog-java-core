@@ -29,7 +29,7 @@ public class MajorityVoting implements EnsembleAggregator {
 	}
 	
 	@Override
-	public String toString() {
+	public String getLabel() {
 		return "majorityvoting";
 	}
 

@@ -7,5 +7,6 @@ import org.encog.ml.train.MLTrain;
 public interface EnsembleTrainFactory {
 
 	public MLTrain getTraining(MLMethod method, MLDataSet trainingData);
-
+	public String getLabel();
+	
 }

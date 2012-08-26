@@ -15,7 +15,7 @@ public class ScaledConjugateGradientFactory implements EnsembleTrainFactory {
 	}
 	
 	@Override
-	public String toString() {
+	public String getLabel() {
 		return "scg";
 	}
 

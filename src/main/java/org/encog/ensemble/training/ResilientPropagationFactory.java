@@ -15,7 +15,7 @@ public class ResilientPropagationFactory implements EnsembleTrainFactory {
 	}
 	
 	@Override
-	public String toString() {
+	public String getLabel() {
 		return "resprop";
 	}
 

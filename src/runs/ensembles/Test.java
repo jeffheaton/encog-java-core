@@ -18,7 +18,7 @@ public class Test {
 	static DataLoader dataLoader;
 	static ProblemDescription problem;
 	
-	private static List<Integer> sizes;
+	private static Integer size;
 	private static List<Integer> dataSetSizes;
 	private static List<Double> trainingErrors;
 	private static int trainingSetSize;
@@ -31,11 +31,10 @@ public class Test {
 	
 	public static void loop() {
 		for(Integer dataSetSize : dataSetSizes)
-		for(Integer size : sizes)
 		for(EnsembleMLMethodFactory mlf: mlfs)
 		{
-			String fullLabel = problem.getLabel() + "," +etType + "," + etf.toString() + "," 
-							 + mlf.toString() + "," + agg.toString() + "," + size + "," + dataSetSize;
+			String fullLabel = problem.getLabel() + "," +etType + "," + etf.getLabel() + "," 
+							 + mlf.getLabel() + "," + agg.getLabel() + "," + size + "," + dataSetSize;
 			EvaluationTechnique et = null;
 			try {
 				et = ArgParser.technique(etType,size,dataSetSize,fullLabel,mlf,etf,agg);
@@ -56,7 +55,7 @@ public class Test {
 		try {
 			etType = args[0];
 			problem = ArgParser.problem(args[1]);
-			sizes = ArgParser.intList(args[2]);
+			size = ArgParser.intSingle(args[2]);
 			dataSetSizes = ArgParser.intList(args[3]);
 			trainingErrors = ArgParser.doubleList(args[4]);
 			trainingSetSize = ArgParser.intSingle(args[5]);
@@ -72,7 +71,7 @@ public class Test {
 		try {
 			dataLoader = problem.getDataLoader(activationThreshold,trainingSetSize);
 		} catch (helpers.ProblemDescriptionLoader.BadArgument e) {
-			System.err.println("Could not get dataLoader - perhaps the mapper_type property is wrong");
+			System.err.println("Could not create dataLoader - perhaps the mapper_type property is wrong");
 			e.printStackTrace();
 		}
 		loop();

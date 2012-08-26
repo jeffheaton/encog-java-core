@@ -67,6 +67,8 @@ public interface EnsembleML extends MLMethod, MLClassification, MLRegression {
 	public MLMethod getMl();
 
 	public void trainStep();
+
+	public String getLabel();
 	
 	/**
 	 * Calculates the error in classification as 1 - accuracy

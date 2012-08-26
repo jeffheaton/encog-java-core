@@ -11,9 +11,11 @@ public class GenericEnsembleML implements EnsembleML {
 	private EnsembleDataSet trainingSet;
 	private BasicNetwork ml;
 	private MLTrain trainer;
+	private String label;
 	
-	public GenericEnsembleML(MLMethod fromML) {
+	public GenericEnsembleML(MLMethod fromML, String description) {
 		setMl(fromML);
+		this.label = description;
 	}
 	
 	@Override
@@ -91,5 +93,10 @@ public class GenericEnsembleML implements EnsembleML {
 	@Override
 	public void trainStep() {
 		trainer.iteration();
+	}
+
+	@Override
+	public String getLabel() {
+		return label;
 	}
 }

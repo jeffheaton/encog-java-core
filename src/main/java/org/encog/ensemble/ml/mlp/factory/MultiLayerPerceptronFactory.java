@@ -30,7 +30,7 @@ public class MultiLayerPerceptronFactory implements EnsembleMLMethodFactory {
 	}
 	
 	@Override
-	public String toString() {
+	public String getLabel() {
 		String ret = "mlp{";
 		for (int layerSize: layers)
 			ret = ret + "," + layerSize;
