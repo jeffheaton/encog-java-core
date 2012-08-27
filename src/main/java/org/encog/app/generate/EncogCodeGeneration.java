@@ -76,6 +76,19 @@ public class EncogCodeGeneration {
 	public void setEmbedData(boolean embedData) {
 		this.embedData = embedData;
 	}
+
+
+
+	public MLMethod getMethod() {
+		return method;
+	}
+
+
+
+	public void setMethod(MLMethod method) {
+		this.method = method;
+	}
+	
 	
 	
 }
