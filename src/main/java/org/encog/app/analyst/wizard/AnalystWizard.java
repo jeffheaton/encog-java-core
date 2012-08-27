@@ -305,7 +305,7 @@ public class AnalystWizard {
 
 	private String targetFieldName;
 	
-	private TargetLanguage codeTargetLanguage;
+	private TargetLanguage codeTargetLanguage = TargetLanguage.NoGeneration;
 	
 	private boolean codeEmbedData;
 
