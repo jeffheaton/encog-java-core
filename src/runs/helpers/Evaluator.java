@@ -26,7 +26,7 @@ public class Evaluator {
 	
 	public void makeLine(String type, String prefix, BasicNeuralDataSet dataSet) {
 		DataMapper dataMapper = dataLoader.getMapper();
-		PerfResults perf = this.technique.testPerformance(dataSet, dataMapper,true);
+		PerfResults perf = this.technique.testPerformance(dataSet, dataMapper,false);
 		System.out.println(prefix + "," + type + "," + 
 				(this.technique.getMisclassification(dataSet,dataMapper)) + "," +
 				(perf.getAccuracy(PerfResults.AveragingMethod.MICRO)) + "," +
