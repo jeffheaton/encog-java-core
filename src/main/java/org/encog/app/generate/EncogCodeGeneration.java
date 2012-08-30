@@ -1,28 +1,33 @@
 package org.encog.app.generate;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 
+import org.encog.app.generate.generators.LanguageSpecificGenerator;
+import org.encog.app.generate.generators.java.GenerateEncogJava;
+import org.encog.app.generate.program.EncogProgram;
+import org.encog.app.generate.program.EncogProgramNode;
 import org.encog.ml.MLMethod;
-import org.encog.ml.data.MLDataSet;
 
 public class EncogCodeGeneration {
 	
 	private final TargetLanguage targetLanguage; 
 	private final File targetFile;
-	private final StringBuilder contents = new StringBuilder();
 	private boolean embedData;
 	private MLMethod method;
+	private LanguageSpecificGenerator generator;
+	private final EncogProgram program = new EncogProgram();	
 	
 	public EncogCodeGeneration(TargetLanguage theTargetLanguage, File theTargetFile) {
 		this.targetLanguage = theTargetLanguage;
 		this.targetFile = theTargetFile;
+		
+		switch( theTargetLanguage ) {
+			case Java:
+				this.generator = new GenerateEncogJava();
+				break;
+		}
 	}
-	
-	
-	
+		
 	/**
 	 * @return the targetLanguage
 	 */
@@ -30,42 +35,22 @@ public class EncogCodeGeneration {
 		return targetLanguage;
 	}
 
-
-
 	/**
 	 * @return the targetFile
 	 */
 	public File getTargetFile() {
 		return targetFile;
 	}
-	
-	private void addComment(String comment) {
-		this.contents.append("// " + comment);
-		addBreak();
-	}
-	
-	private void addBreak() {
-		this.contents.append("\n");
-	}
+
 
 	public void generate() {
-		addComment("Hello World");
-		writeContents();
+		this.program.addComment("Hello World");
+		EncogProgramNode mainClass = this.program.createClass("EncogExample");
+		EncogProgramNode mainFunction = mainClass.createMainFunction();
+		
+		this.generator.generate(this.program);
+		this.generator.writeContents(this.targetFile);
 	}
-
-
-	public void writeContents() {
-		try {
-			FileWriter outFile = new FileWriter(this.targetFile);
-			PrintWriter out = new PrintWriter(outFile);
-			out.print(this.contents.toString());
-			out.close();
-		} catch (IOException e){
-			e.printStackTrace();
-		}
-	}
-
-
 
 	public boolean isEmbedData() {
 		return embedData;
