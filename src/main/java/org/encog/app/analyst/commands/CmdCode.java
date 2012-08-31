@@ -29,6 +29,7 @@ import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.generate.EncogCodeGeneration;
 import org.encog.app.generate.TargetLanguage;
+import org.encog.ml.MLMethod;
 import org.encog.util.logging.EncogLogging;
 
 /**
@@ -74,10 +75,12 @@ public class CmdCode extends Cmd {
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "target file:" + targetID);
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "target language:" + targetLanguage.toString());
 		
-		EncogCodeGeneration code = new EncogCodeGeneration(targetLanguage,targetFile);
-		code.generate();
+		MLMethod method = obtainMethod();
 		
-
+		EncogCodeGeneration code = new EncogCodeGeneration(targetLanguage,targetFile);
+		code.setEmbedData(embedData);
+		code.setMethod(method);
+		code.generate(getAnalyst());		
 		return false;
 	}
 

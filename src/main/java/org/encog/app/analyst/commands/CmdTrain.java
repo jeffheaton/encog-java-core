@@ -55,11 +55,6 @@ public class CmdTrain extends Cmd {
 	public static final String COMMAND_NAME = "TRAIN";
 	
 	/**
-	 * The number of folds, if kfold is used.
-	 */
-	private int kfold;
-
-	/**
 	 * Construct the train command.
 	 * @param analyst The analyst to use.
 	 */
@@ -93,8 +88,8 @@ public class CmdTrain extends Cmd {
 
 		MLTrain train = factory.create(method, trainingSet, type, args);
 
-		if (this.kfold > 0) {
-			train = new CrossValidationKFold(train, this.kfold);
+		if ( getKfold() > 0) {
+			train = new CrossValidationKFold(train, getKfold() );
 		}
 
 		return train;
@@ -106,7 +101,7 @@ public class CmdTrain extends Cmd {
 	@Override
 	public boolean executeCommand(final String args) {
 
-		this.kfold = obtainCross();
+		setKfold( obtainCross() );
 		final MLDataSet trainingSet = obtainTrainingSet();
 		MLMethod method = obtainMethod();
 		final MLTrain trainer = createTrainer(method, trainingSet);
@@ -141,66 +136,7 @@ public class CmdTrain extends Cmd {
 		return CmdTrain.COMMAND_NAME;
 	}
 
-	/**
-	 * Obtain the number of folds for cross validation.
-	 * @return The number of folds.
-	 */
-	private int obtainCross() {
-		final String cross = getProp().getPropertyString(
-				ScriptProperties.ML_TRAIN_CROSS);
-		if ((cross == null) || (cross.length() == 0)) {
-			return 0;
-		} else if (cross.toLowerCase().startsWith("kfold:")) {
-			final String str = cross.substring(6);
-			try {
-				return Integer.parseInt(str);
-			} catch (final NumberFormatException ex) {
-				throw new AnalystError("Invalid kfold :" + str);
-			}
-		} else {
-			throw new AnalystError("Unknown cross validation: " + cross);
-		}
-	}
 
-	/**
-	 * Obtain the ML method.
-	 * @return The method.
-	 */
-	private MLMethod obtainMethod() {
-		final String resourceID = getProp().getPropertyString(
-				ScriptProperties.ML_CONFIG_MACHINE_LEARNING_FILE);
-		final File resourceFile = getScript().resolveFilename(resourceID);
-
-		final MLMethod method = (MLMethod) EncogDirectoryPersistence
-				.loadObject(resourceFile);
-
-		if (!(method instanceof MLMethod)) {
-			throw new AnalystError(
-					"The object to be trained must be an instance of MLMethod. "
-							+ method.getClass().getSimpleName());
-		}
-
-		return method;
-	}
-
-	/**
-	 * Obtain the training set.
-	 * @return The training set.
-	 */
-	private MLDataSet obtainTrainingSet() {
-		final String trainingID = getProp().getPropertyString(
-				ScriptProperties.ML_CONFIG_TRAINING_FILE);
-
-		final File trainingFile = getScript().resolveFilename(trainingID);
-
-		MLDataSet trainingSet = EncogUtility.loadEGB2Memory(trainingFile);
-
-		if (this.kfold > 0) {
-			trainingSet = new FoldedDataSet(trainingSet);
-		}
-
-		return trainingSet;
-	}
 
 	/**
 	 * Perform the training.

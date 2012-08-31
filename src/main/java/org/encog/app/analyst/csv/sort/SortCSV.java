@@ -53,7 +53,7 @@ public class SortCSV extends BasicFile {
 	/**
 	 * @return Used to specify the sort order.
 	 */
-	public final List<SortedField> getSortOrder() {
+	public List<SortedField> getSortOrder() {
 		return this.sortOrder;
 	}
 
@@ -69,7 +69,7 @@ public class SortCSV extends BasicFile {
 	 * @param format
 	 *            The format of the file.
 	 */
-	public final void process(final File inputFile, final File outputFile,
+	public void process(final File inputFile, final File outputFile,
 			final boolean headers, final CSVFormat format) {
 		setInputFilename(inputFile);
 		setExpectInputHeaders(headers);
