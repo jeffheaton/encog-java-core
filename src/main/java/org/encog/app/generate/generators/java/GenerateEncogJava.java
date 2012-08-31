@@ -25,6 +25,11 @@ public class GenerateEncogJava extends AbstractGenerator {
 		unIndentLine("}");
 	}
 	
+	private void generateConst(EncogProgramNode node) {
+		addLine("public static final ");
+		
+	}
+	
 	private void generateNode(EncogProgramNode node) {
 		switch(node.getType()) {
 			case Comment:
@@ -35,6 +40,9 @@ public class GenerateEncogJava extends AbstractGenerator {
 				break;
 			case MainFunction:
 				generateMainFunction(node);
+				break;
+			case Const:
+				generateConst(node);
 				break;
 		}
 	}

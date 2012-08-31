@@ -48,5 +48,13 @@ public class EncogProgramNode extends EncogTreeNode {
 				NodeType.MainFunction, null);
 		this.getChildren().add(node);
 		return node;
+	}
+
+	public void defineConst(EncogArgType type, String name, String value) {
+		EncogProgramNode node = new EncogProgramNode(getProgram(), this,
+				NodeType.Const, name);
+		node.addArg(value);
+		node.addArg(type.toString());
+		this.getChildren().add(node);		
 	}	
 }

@@ -2,8 +2,10 @@ package org.encog.app.generate;
 
 import java.io.File;
 
+import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.generate.generators.LanguageSpecificGenerator;
 import org.encog.app.generate.generators.java.GenerateEncogJava;
+import org.encog.app.generate.program.EncogArgType;
 import org.encog.app.generate.program.EncogProgram;
 import org.encog.app.generate.program.EncogProgramNode;
 import org.encog.ml.MLMethod;
@@ -15,7 +17,7 @@ public class EncogCodeGeneration {
 	private boolean embedData;
 	private MLMethod method;
 	private LanguageSpecificGenerator generator;
-	private final EncogProgram program = new EncogProgram();	
+	private final EncogProgram program = new EncogProgram();
 	
 	public EncogCodeGeneration(TargetLanguage theTargetLanguage, File theTargetFile) {
 		this.targetLanguage = theTargetLanguage;
@@ -25,6 +27,13 @@ public class EncogCodeGeneration {
 			case Java:
 				this.generator = new GenerateEncogJava();
 				break;
+		}
+	}
+	
+	private void generateFileNames(EncogAnalyst analyst, EncogProgramNode mainClass) {
+		for(String str: analyst.getScript().getProperties().getFilenames() ) {
+			String value = analyst.getScript().getProperties().getFilename(str);
+			mainClass.defineConst(EncogArgType.String,str,value);
 		}
 	}
 		
@@ -43,10 +52,11 @@ public class EncogCodeGeneration {
 	}
 
 
-	public void generate() {
+	public void generate(EncogAnalyst analyst) {		
 		this.program.addComment("Hello World");
 		EncogProgramNode mainClass = this.program.createClass("EncogExample");
 		EncogProgramNode mainFunction = mainClass.createMainFunction();
+		generateFileNames(analyst,mainClass);
 		
 		this.generator.generate(this.program);
 		this.generator.writeContents(this.targetFile);

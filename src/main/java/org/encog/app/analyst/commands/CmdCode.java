@@ -80,9 +80,7 @@ public class CmdCode extends Cmd {
 		EncogCodeGeneration code = new EncogCodeGeneration(targetLanguage,targetFile);
 		code.setEmbedData(embedData);
 		code.setMethod(method);
-		code.generate();
-		
-
+		code.generate(getAnalyst());		
 		return false;
 	}
 
