@@ -5,13 +5,18 @@ setsize=$3
 training=$4
 fixedline=$5
 pause=$6
+howmany=200
+
+if [[ "$7" != "" ]]; then
+  howmany=$7
+fi
 
 if [[ "$ENCOG_ENV_LOADED" == "" ]]; then
   . run-environment.sh
 fi
 
 function training() {
-  java -cp build/classes ensembles/TrainingCurves bagging problems/${problem} ${setsize} 0.3 ${training} mlp:${neurons}:sigmoid 200
+  java -cp build/classes ensembles/TrainingCurves bagging problems/${problem} ${setsize} 0.3 ${training} mlp:${neurons}:sigmoid ${howmany}
 	pid=$!
 #	sleep $pause
 #  kill $pid
