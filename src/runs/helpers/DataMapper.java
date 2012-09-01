@@ -7,5 +7,6 @@ import org.encog.ml.data.MLData;
 public interface DataMapper {
 	public MLData map(ArrayList<String> readIn);
 	public ArrayList<String> unmap (MLData dataSet);
+	public String getClassLabel(int classNumber);
 	public boolean compare(ArrayList<String> result, ArrayList<String> expected, boolean print);
 }

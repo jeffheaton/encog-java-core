@@ -15,6 +15,26 @@ public class PerfResults {
 		this.setLength(size);
 	}
 	
+	public int getTP(int classNumber)
+	{
+		return tp[classNumber];
+	}
+	
+	public int getTN(int classNumber)
+	{
+		return tn[classNumber];
+	}
+	
+	public int getFP(int classNumber)
+	{
+		return fp[classNumber];
+	}
+	
+	public int getFN(int classNumber)
+	{
+		return fn[classNumber];
+	}
+	
 	public double FScore(double beta, AveragingMethod avg) {
 		return ((1 + beta * beta) * getPrecision(avg) * getRecall(avg)) / ( beta * beta * getPrecision(avg) + getRecall(avg));
 	}

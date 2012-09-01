@@ -27,7 +27,7 @@ public class Evaluator {
 	public void makeLine(String type, String prefix, BasicNeuralDataSet dataSet) {
 		DataMapper dataMapper = dataLoader.getMapper();
 		PerfResults perf = this.technique.testPerformance(dataSet, dataMapper,false);
-		System.out.println(prefix + "," + type + "," + 
+		System.out.println(type + "," + prefix + "," +
 				(this.technique.getMisclassification(dataSet,dataMapper)) + "," +
 				(perf.getAccuracy(PerfResults.AveragingMethod.MICRO)) + "," +
 				(perf.getPrecision(PerfResults.AveragingMethod.MICRO)) + "," +
@@ -38,11 +38,21 @@ public class Evaluator {
 				(perf.getRecall(PerfResults.AveragingMethod.MACRO)) + "," +
 				(perf.FScore(1.0, PerfResults.AveragingMethod.MACRO))
 		);
+		int outputs = dataSet.getIdealSize();
+		for (int output = 0; output < outputs; output ++)
+		{
+			System.out.println("for-class-" + prefix + "," + dataMapper.getClassLabel(output) + 
+				"," + perf.getTP(output) + 
+				"," + perf.getTN(output) +
+				"," + perf.getFP(output) +
+				"," + perf.getFN(output) 
+			);
+		}
 	}
 	
 	public void getResults (String prefix) {
-		makeLine(prefix,"train",this.dataLoader.getTrainingSet());
-		makeLine(prefix,"test",this.dataLoader.getTestSet());
+		makeLine("train",prefix,this.dataLoader.getTrainingSet());
+		makeLine("test",prefix,this.dataLoader.getTestSet());
 	}
 
 	public EvaluationTechnique getTechnique() {

@@ -48,5 +48,10 @@ public class IntMapper implements DataMapper {
 		return result.get(0).matches(expected.get(0));
 	}
 
+	@Override
+	public String getClassLabel(int classNumber) {
+		return Integer.toString(classNumber);
+	}
+
 	
 }

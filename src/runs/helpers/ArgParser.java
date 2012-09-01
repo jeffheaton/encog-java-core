@@ -13,6 +13,8 @@ import org.encog.ensemble.aggregator.MajorityVoting;
 import org.encog.ensemble.aggregator.MetaClassifier;
 import org.encog.ensemble.ml.mlp.factory.MultiLayerPerceptronFactory;
 import org.encog.ensemble.training.BackpropagationFactory;
+import org.encog.ensemble.training.LevenbergMarquardtFactory;
+import org.encog.ensemble.training.ManhattanPropagationFactory;
 import org.encog.ensemble.training.ResilientPropagationFactory;
 import org.encog.ensemble.training.ScaledConjugateGradientFactory;
 
@@ -34,6 +36,8 @@ public class ArgParser {
 		BACKPROP,
 		RPROP,
 		SCG,
+		MANHATTAN,
+		LMA,
 	}
 	
 	public enum MLMethodFactories {
@@ -88,10 +92,17 @@ public class ArgParser {
 	}
 
 	public static EnsembleTrainFactory ETF(String string) throws BadArgument {
-		switch (TrainFactories.valueOf(string.toUpperCase())) {
+		String values[] = string.split("-");
+		switch (TrainFactories.valueOf(values[0].toUpperCase())) {
 			case BACKPROP: return new BackpropagationFactory();
 			case RPROP: return new ResilientPropagationFactory();
 			case SCG: return new ScaledConjugateGradientFactory();
+			case MANHATTAN:
+				ManhattanPropagationFactory mpf = new ManhattanPropagationFactory();
+				if(values.length > 1)
+					mpf.setLearningRate(doubleSingle(values[1]));
+				return mpf;
+			case LMA: return new LevenbergMarquardtFactory();
 			default: throw new BadArgument();
 		}
 	}

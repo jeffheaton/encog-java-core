@@ -50,5 +50,10 @@ public class LetterMapper implements DataMapper {
 			System.out.println("Exp " + expected.get(0) + " got " + result.get(0));
 		return result.get(0).matches(expected.get(0));
 	}
+
+	@Override
+	public String getClassLabel(int classNumber) {
+		return "" + (char) ('A' + classNumber);
+	}
 	
 }
