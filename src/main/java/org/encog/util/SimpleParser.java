@@ -187,4 +187,16 @@ public class SimpleParser {
 	public String getLine() {
 		return this.line;
 	}
+
+	public boolean lookAhead(String c) {
+		return lookAhead(c,false);
+	}
+	
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[Parser: ");
+		result.append(this.line.substring(this.currentPosition));
+		result.append("]");
+		return result.toString();
+	}
 }
