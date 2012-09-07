@@ -1334,9 +1334,11 @@ public class AnalystWizard {
 				ScriptProperties.HEADER_DATASOURCE_SOURCE_HEADERS, true);
 		this.script.getProperties().setProperty(
 				ScriptProperties.HEADER_DATASOURCE_RAW_FILE, csvFile);
+		this.script.getProperties().setProperty(
+				ScriptProperties.SETUP_CONFIG_INPUT_HEADERS, true);
 
 		this.lagWindowSize = 10;
-		this.leadWindowSize = 5;
+		this.leadWindowSize = 1;
 		this.timeSeries = true;
 		this.format = AnalystFileFormat.DECPNT_COMMA;
 		this.methodType = WizardMethodType.FeedForward;
