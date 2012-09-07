@@ -167,6 +167,14 @@ public class ScriptLoad {
 				final double amin = CSVFormat.EG_FORMAT.parse(cols.get(6));
 				final double mean = CSVFormat.EG_FORMAT.parse(cols.get(7));
 				final double sdev = CSVFormat.EG_FORMAT.parse(cols.get(8));
+				String source = "";
+				
+				// source was added in Encog 3.2, so it might not be there
+				if( cols.size()>9 ) {
+					source = cols.get(9);
+				}
+				
+				
 				final DataField df = new DataField(name);
 				df.setClass(isclass);
 				df.setComplete(iscomplete);
@@ -176,6 +184,7 @@ public class ScriptLoad {
 				df.setMin(amin);
 				df.setMean(mean);
 				df.setStandardDeviation(sdev);
+				df.setSource(source);
 				dfs.add(df);
 			} else {
 				first = false;

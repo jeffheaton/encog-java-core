@@ -131,6 +131,7 @@ public class ScriptSave {
 		out.addColumn("amin");
 		out.addColumn("mean");
 		out.addColumn("sdev");
+		out.addColumn("source");
 		out.writeLine();
 
 		for (final DataField field : this.script.getFields()) {
@@ -143,6 +144,7 @@ public class ScriptSave {
 			out.addColumn(field.getMin());
 			out.addColumn(field.getMean());
 			out.addColumn(field.getStandardDeviation());
+			out.addColumn(field.getSource());
 			out.writeLine();
 		}
 		out.flush();

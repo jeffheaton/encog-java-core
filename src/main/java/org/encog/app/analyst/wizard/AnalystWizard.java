@@ -35,6 +35,8 @@ import org.encog.app.analyst.AnalystGoal;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.missing.DiscardMissing;
 import org.encog.app.analyst.missing.HandleMissingValues;
+import org.encog.app.analyst.missing.MeanAndModeMissing;
+import org.encog.app.analyst.missing.NegateMissing;
 import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
@@ -1306,7 +1308,26 @@ public class AnalystWizard {
 		this.taskSegregate = theTaskSegregate;
 	}
 	
-	public void wizardRealTime(List<String> sourceData, File csvFile) 
+	private void generateSourceData(List<SourceElement> sourceData) {
+		DataField[] fields = new DataField[sourceData.size()];
+		int index = 0;
+		
+		for(SourceElement element : sourceData) {
+			DataField df = new DataField(element.getName());
+			df.setSource(element.getSource());
+			df.setInteger(false);
+			df.setClass(false);
+			df.setMax(0);
+			df.setMean(0);
+			df.setMin(0);
+			df.setStandardDeviation(0);
+			fields[index++] = df;
+		}
+		
+		this.script.setFields(fields);
+	}
+	
+	public void wizardRealTime(List<SourceElement> sourceData, File csvFile) 
 	{
 		this.script.setBasePath(csvFile.getParent());
 		this.script.getProperties().setProperty(
@@ -1314,13 +1335,28 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.HEADER_DATASOURCE_RAW_FILE, csvFile);
 
-		this.timeSeries = ((this.lagWindowSize > 0) || (this.leadWindowSize > 0));
+		this.lagWindowSize = 10;
+		this.leadWindowSize = 5;
+		this.timeSeries = true;
 		this.format = AnalystFileFormat.DECPNT_COMMA;
+		this.methodType = WizardMethodType.FeedForward;
+		setMissing(new DiscardMissing());
+		
+		setGoal(AnalystGoal.Regression);
+		setRange(NormalizeRange.NegOne2One);
+		setTaskNormalize(true);
+		setTaskRandomize(false);
+		setTaskSegregate(true);
+		setTaskBalance(false);
+		setTaskCluster(false);
+		setMaxError(0.05);
+		setCodeTargetLanguage(TargetLanguage.NinjaScript);
+		setCodeEmbedData(false);
 
 		determineClassification();
 		generateFilenames(csvFile);
 		generateSettings();
-		//this.analyst.analyze(csvFile, b, format);
+		generateSourceData(sourceData);
 		generateNormalizedFields();
 		generateSegregate();
 

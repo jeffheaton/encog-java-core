@@ -77,6 +77,11 @@ public class DataField {
 	 * Is this field complete.
 	 */
 	private boolean isComplete;
+	
+	/**
+	 * The source for this field.  This is usually used by Ninjatrader ot MT.
+	 */
+	private String source = "";
 
 	/**
 	 * The class members.
@@ -258,5 +263,15 @@ public class DataField {
 	public void setStandardDeviation(final double theStandardDeviation) {
 		this.standardDeviation = theStandardDeviation;
 	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+	
+	
 
 }
