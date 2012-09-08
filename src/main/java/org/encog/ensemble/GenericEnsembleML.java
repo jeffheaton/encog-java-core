@@ -5,6 +5,7 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLData;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.util.EngineArray;
 
 public class GenericEnsembleML implements EnsembleML {
 
@@ -76,8 +77,8 @@ public class GenericEnsembleML implements EnsembleML {
 		train(targetError, false);
 	}
 	
-	public int winner(MLData input) {
-		return ml.winner(input);
+	public int winner(MLData output) {
+		return EngineArray.maxIndex(output.getData());
 	}
 
 	@Override
