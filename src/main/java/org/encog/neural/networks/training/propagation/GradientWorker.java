@@ -232,7 +232,7 @@ public class GradientWorker implements EngineTask {
 
 		final int index = this.weightIndex[currentLevel];
 		final ActivationFunction activation = this.network
-				.getActivationFunctions()[currentLevel + 1];
+				.getActivationFunctions()[currentLevel];
 		final double currentFlatSpot = this.flatSpot[currentLevel + 1];
 
 		// handle weights
