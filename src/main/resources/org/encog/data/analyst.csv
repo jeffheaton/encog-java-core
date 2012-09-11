@@ -45,3 +45,6 @@ CLUSTER:CONFIG,clusters,int
 CODE:CONFIG,targetLanguage,string
 CODE:CONFIG,embedData,boolean
 CODE:CONFIG,targetFile,string
+TRANSFORM:CONFIG,sourceFile,string
+TRANSFORM:CONFIG,targetFile,string
+TRANSFORM:CONFIG,mode,int
