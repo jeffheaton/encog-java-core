@@ -153,4 +153,21 @@ public final class EncogMath {
 	public static double square(double d) {
 		return d*d;
 	}
+	
+	/**
+	 * Determine the sign of the value.
+	 * 
+	 * @param value
+	 *            The value to check.
+	 * @return -1 if less than zero, 1 if greater, or 0 if zero.
+	 */
+	public static int sign(final double value) {
+		if (Math.abs(value) < Encog.DEFAULT_DOUBLE_EQUAL) {
+			return 0;
+		} else if (value > 0) {
+			return 1;
+		} else {
+			return -1;
+		}
+	}
 }
