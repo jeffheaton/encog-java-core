@@ -50,6 +50,8 @@ import org.encog.ml.data.specific.CSVNeuralDataSet;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.training.SVMTrain;
 import org.encog.ml.train.MLTrain;
+import org.encog.neural.freeform.FreeformNetwork;
+import org.encog.neural.freeform.training.FreeformResilientPropagation;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.propagation.Propagation;
@@ -266,6 +268,8 @@ public final class EncogUtility {
 
 		if (method instanceof SVM) {
 			train = new SVMTrain((SVM)method, dataSet);
+		} if(method instanceof FreeformNetwork ) {
+			train = new FreeformResilientPropagation((FreeformNetwork) method, dataSet);
 		} else {
 			train = new ResilientPropagation((ContainsFlat)method, dataSet);
 		}
