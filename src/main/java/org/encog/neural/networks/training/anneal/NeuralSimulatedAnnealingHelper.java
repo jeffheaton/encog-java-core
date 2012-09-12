@@ -23,6 +23,7 @@
  */
 package org.encog.neural.networks.training.anneal;
 
+import org.encog.ml.MLRegression;
 import org.encog.ml.anneal.SimulatedAnnealing;
 import org.encog.util.EngineArray;
 
@@ -64,7 +65,7 @@ public class NeuralSimulatedAnnealingHelper extends SimulatedAnnealing<Double> {
 	@Override
 	public double calculateScore() {
 		return owner.getCalculateScore().calculateScore(
-				this.owner.getMethod());
+				(MLRegression)this.owner.getMethod());
 	}
 
 	/**

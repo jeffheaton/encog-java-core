@@ -23,11 +23,13 @@
  */
 package org.encog.neural.networks.training.anneal;
 
+import org.encog.ml.MLEncodable;
+import org.encog.ml.MLRegression;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.train.BasicTraining;
-import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.CalculateScore;
+import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.util.logging.EncogLogging;
 
@@ -59,7 +61,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	/**
 	 * The neural network that is to be trained.
 	 */
-	private final BasicNetwork network;
+	private final MLEncodable network;
 
 	/**
 	 * This class actually performs the training.
@@ -72,12 +74,12 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	private final CalculateScore calculateScore;
 
 	/**
-	 * Construct a simulated annleaing trainer for a feedforward neural network.
+	 * Construct a simulated annleaing trainer for a encodable MLMethod.
 	 * 
 	 * @param network
 	 *            The neural network to be trained.
 	 * @param calculateScore
-	 *            Used to calculate the score for a neural network.
+	 *            Used to calculate the score for a MLMethod.
 	 * @param startTemp
 	 *            The starting temperature.
 	 * @param stopTemp
@@ -85,10 +87,15 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	 * @param cycles
 	 *            The number of cycles in a training iteration.
 	 */
-	public NeuralSimulatedAnnealing(final BasicNetwork network,
+	public NeuralSimulatedAnnealing(final MLEncodable network,
 			final CalculateScore calculateScore, final double startTemp,
 			final double stopTemp, final int cycles) {
 		super(TrainingImplementationType.Iterative);
+		
+		if( !(network instanceof MLRegression) ) {
+			throw new TrainingError("Simulated annealing requires the MLMethod to support MLRegression.");
+		}
+		
 		this.network = network;
 		this.calculateScore = calculateScore;
 		this.anneal = new NeuralSimulatedAnnealingHelper(this);
@@ -134,7 +141,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public BasicNetwork getMethod() {
+	public MLEncodable getMethod() {
 		return this.network;
 	}
 

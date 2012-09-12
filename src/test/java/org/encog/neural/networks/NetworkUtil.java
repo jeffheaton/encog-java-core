@@ -29,6 +29,8 @@ import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.mathutil.randomize.ConsistentRandomizer;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.ml.train.MLTrain;
+import org.encog.neural.freeform.FreeformLayer;
+import org.encog.neural.freeform.FreeformNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 
 public class NetworkUtil {
@@ -77,6 +79,19 @@ public class NetworkUtil {
 		double improve = (error1-error2)/error1;
 		Assert.assertTrue("Improve rate too low for " + train.getClass().getSimpleName() + 
 				",Improve="+improve+",Needed="+requiredImprove, improve>=requiredImprove);
+	}
+
+	public static FreeformNetwork createXORFreeformNetworkUntrained() {
+		FreeformNetwork network = new FreeformNetwork();
+		FreeformLayer inputLayer = network.createInputLayer(2);
+		FreeformLayer hiddenLayer1 = network.createLayer(3);
+		FreeformLayer outputLayer = network.createOutputLayer(1);
+		
+		network.connectLayers(inputLayer, hiddenLayer1, new ActivationSigmoid(), 1.0, false);
+		network.connectLayers(hiddenLayer1, outputLayer, new ActivationSigmoid(), 1.0, false);
+		
+		network.reset(1000);
+		return network;
 	}
 }
 

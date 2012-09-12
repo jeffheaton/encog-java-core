@@ -1,6 +1,8 @@
 package org.encog.neural.freeform;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.encog.Encog;
@@ -105,6 +107,7 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 			// The bias is added after connections so it has no inputs
 			if( network.isLayerBiased(currentLayerIndex) ) {
 				BasicFreeformNeuron biasNeuron = new BasicFreeformNeuron(null);
+				biasNeuron.setBias(true);
 				biasNeuron.setActivation(network.getLayerBiasActivation(currentLayerIndex));
 				currentLayer.add(biasNeuron);
 			}
@@ -129,6 +132,7 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 		if( biasActivation> Encog.DEFAULT_DOUBLE_EQUAL ) {
 			BasicFreeformNeuron biasNeuron = new BasicFreeformNeuron(null);
 			biasNeuron.setActivation(biasActivation);
+			biasNeuron.setBias(true);
 			source.add(biasNeuron);
 		}
 		
@@ -224,21 +228,95 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 
 	@Override
 	public int encodedArrayLength() {
+		int result = 0;
+		Set<FreeformNeuron> visited = new HashSet<FreeformNeuron>();
+		List<FreeformNeuron> queue = new ArrayList<FreeformNeuron>();
 		
+		// first copy outputs to queue
+		for(FreeformNeuron neuron: this.outputLayer.getNeurons()) {
+			queue.add(neuron);
+		}
+		
+		while( queue.size()>0 ) {
+			// pop a neuron off the queue
+			FreeformNeuron neuron = queue.get(0);
+			queue.remove(0);
+			visited.add(neuron);
+			
+			// find anymore neurons and add them to the queue.
+			if( neuron.getInputSummation()!=null ) {
+				for( FreeformConnection connection : neuron.getInputSummation().list()) {
+					result++;
+					FreeformNeuron nextNeuron = connection.getSource();
+					if( !visited.contains(nextNeuron) ) {
+						queue.add(nextNeuron);
+					}
+				}
+			}
+		}
 
-		return 0;
+		return result;
 	}
 
 	@Override
 	public void encodeToArray(double[] encoded) {
-		// TODO Auto-generated method stub
+		int index = 0;
+		Set<FreeformNeuron> visited = new HashSet<FreeformNeuron>();
+		List<FreeformNeuron> queue = new ArrayList<FreeformNeuron>();
+		
+		// first copy outputs to queue
+		for(FreeformNeuron neuron: this.outputLayer.getNeurons()) {
+			queue.add(neuron);
+		}
+		
+		while( queue.size()>0 ) {
+			// pop a neuron off the queue
+			FreeformNeuron neuron = queue.get(0);
+			queue.remove(0);
+			visited.add(neuron);
+			
+			// find anymore neurons and add them to the queue.
+			if( neuron.getInputSummation()!=null ) {
+				for( FreeformConnection connection : neuron.getInputSummation().list()) {
+					encoded[index++] = connection.getWeight();
+					FreeformNeuron nextNeuron = connection.getSource();
+					if( !visited.contains(nextNeuron) ) {
+						queue.add(nextNeuron);
+					}
+				}
+			}
+		}
 		
 	}
 
 	@Override
 	public void decodeFromArray(double[] encoded) {
-		// TODO Auto-generated method stub
+		int index = 0;
+		Set<FreeformNeuron> visited = new HashSet<FreeformNeuron>();
+		List<FreeformNeuron> queue = new ArrayList<FreeformNeuron>();
 		
+		// first copy outputs to queue
+		for(FreeformNeuron neuron: this.outputLayer.getNeurons()) {
+			queue.add(neuron);
+		}
+		
+		while( queue.size()>0 ) {
+			// pop a neuron off the queue
+			FreeformNeuron neuron = queue.get(0);
+			queue.remove(0);
+			visited.add(neuron);
+			
+			// find anymore neurons and add them to the queue.
+			if( neuron.getInputSummation()!=null ) {
+				for( FreeformConnection connection : neuron.getInputSummation().list()) {
+					connection.setWeight(encoded[index++]);
+					FreeformNeuron nextNeuron = connection.getSource();
+					if( !visited.contains(nextNeuron) ) {
+						queue.add(nextNeuron);
+					}
+				}
+			}
+		}
 	}
 
 	@Override
