@@ -9,6 +9,7 @@ import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.mathutil.randomize.ConsistentRandomizer;
+import org.encog.ml.BasicML;
 import org.encog.ml.MLClassification;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLEncodable;
@@ -33,7 +34,7 @@ import org.encog.util.EngineArray;
 import org.encog.util.obj.ObjectCloner;
 import org.encog.util.simple.EncogUtility;
 
-public class FreeformNetwork implements MLContext, Cloneable,
+public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 	
 	private FreeformLayer inputLayer;
@@ -449,6 +450,11 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 	public Object clone() {
 		final BasicNetwork result = (BasicNetwork) ObjectCloner.deepCopy(this);
 		return result;
+	}
+
+	@Override
+	public void updateProperties() {
+		// not needed
 	}
 
 }

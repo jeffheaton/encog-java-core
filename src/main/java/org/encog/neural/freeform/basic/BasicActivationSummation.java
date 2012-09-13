@@ -1,5 +1,6 @@
 package org.encog.neural.freeform.basic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,8 +8,12 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.freeform.FreeformConnection;
 import org.encog.neural.freeform.InputSummation;
 
-public class BasicActivationSummation implements InputSummation {
+public class BasicActivationSummation implements InputSummation, Serializable {
 
+	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
 	private ActivationFunction activationFunction;
 	private final List<FreeformConnection> inputs = new ArrayList<FreeformConnection>();
 	private double sum;

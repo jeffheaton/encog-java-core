@@ -1,11 +1,18 @@
 package org.encog.neural.freeform.training;
 
+import java.io.Serializable;
+
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.freeform.FreeformConnection;
 import org.encog.neural.freeform.FreeformNetwork;
 
-public class FreeformBackPropagation extends FreeformPropagationTraining {
+public class FreeformBackPropagation extends FreeformPropagationTraining implements Serializable {
 
+	/**
+	 * The serial ID.
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private double learningRate;
 	private double momentum;
 	

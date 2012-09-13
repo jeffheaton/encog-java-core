@@ -1,5 +1,6 @@
 package org.encog.neural.freeform.basic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,8 +8,13 @@ import org.encog.neural.freeform.FreeformConnection;
 import org.encog.neural.freeform.FreeformNeuron;
 import org.encog.neural.freeform.InputSummation;
 
-public class BasicFreeformNeuron implements FreeformNeuron {
+public class BasicFreeformNeuron implements FreeformNeuron, Serializable {
 
+	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private InputSummation inputSummation;
 	private final List<FreeformConnection> outputConnections = new ArrayList<FreeformConnection>();
 	private double activation;

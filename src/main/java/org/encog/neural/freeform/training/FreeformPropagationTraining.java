@@ -1,5 +1,6 @@
 package org.encog.neural.freeform.training;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,7 +20,12 @@ import org.encog.neural.freeform.FreeformNeuron;
 import org.encog.neural.freeform.task.ConnectionTask;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
-public abstract class FreeformPropagationTraining implements MLTrain {
+public abstract class FreeformPropagationTraining implements MLTrain, Serializable {
+	
+	/**
+	 * The serial ID.
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public static final double FLAT_SPOT_CONST = 0.1;
 	private FreeformNetwork network;

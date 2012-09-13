@@ -1,5 +1,7 @@
 package org.encog.neural.freeform.training;
 
+import java.io.Serializable;
+
 import org.encog.mathutil.EncogMath;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.freeform.FreeformConnection;
@@ -7,8 +9,13 @@ import org.encog.neural.freeform.FreeformNetwork;
 import org.encog.neural.freeform.task.ConnectionTask;
 import org.encog.neural.networks.training.propagation.resilient.RPROPConst;
 
-public class FreeformResilientPropagation extends FreeformPropagationTraining {
+public class FreeformResilientPropagation extends FreeformPropagationTraining implements Serializable {
 
+	/**
+	 * The serial ID.
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	public static final int TEMP_GRADIENT = 0;
 	public static final int TEMP_LAST_GRADIENT = 1;
 	public static final int TEMP_UPDATE = 2;
