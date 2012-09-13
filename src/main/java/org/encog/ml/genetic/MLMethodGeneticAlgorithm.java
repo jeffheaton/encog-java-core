@@ -41,8 +41,9 @@ import org.encog.util.concurrency.MultiThreadable;
 import org.encog.util.logging.EncogLogging;
 
 /**
- * Implements a genetic algorithm that allows a feedforward or simple recurrent
- * neural network to be trained using a genetic algorithm.
+ * Implements a genetic algorithm that allows an MLMethod that is encodable (MLEncodable)
+ * to be trained.  It works well with both BasicNetwork and FreeformNetwork class, as well
+ * as any MLEncodable class.
  * 
  * There are essentially two ways you can make use of this class.
  * 
@@ -74,9 +75,9 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 		}
 
 		/**
-		 * Get the current best neural network.
+		 * Get the current best method.
 		 * 
-		 * @return The current best neural network.
+		 * @return The current best method.
 		 */
 		public MLMethod getMethod() {
 			final Genome genome = getPopulation().getBest();
@@ -92,14 +93,12 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 	private MLMethodGeneticAlgorithmHelper genetic;
 
 	/**
-	 * Construct a neural genetic algorithm.
+	 * Construct a method genetic algorithm.
 	 * 
 	 * @param network
 	 *            The network to base this on.
-	 * @param randomizer
-	 *            The randomizer used to create this initial population.
-	 * @param calculateScore
-	 *            The score calculation object.
+	 * @param factory
+	 * 				This is used to create the initial population.
 	 * @param populationSize
 	 *            The population size.
 	 * @param mutationPercent
