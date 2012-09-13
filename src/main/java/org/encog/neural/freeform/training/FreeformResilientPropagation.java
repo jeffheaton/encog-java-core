@@ -7,6 +7,7 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.neural.freeform.FreeformConnection;
 import org.encog.neural.freeform.FreeformNetwork;
 import org.encog.neural.freeform.task.ConnectionTask;
+import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.neural.networks.training.propagation.resilient.RPROPConst;
 
 public class FreeformResilientPropagation extends FreeformPropagationTraining implements Serializable {
@@ -85,5 +86,19 @@ public class FreeformResilientPropagation extends FreeformPropagationTraining im
 		connection.addWeight(weightChange);		
 		connection.setTempTraining(TEMP_LAST_WEIGHT_DELTA, weightChange);
 	}
+
+	@Override
+	public TrainingContinuation pause() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void resume(TrainingContinuation state) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 
 }

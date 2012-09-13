@@ -12,7 +12,7 @@ import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.train.MLTrain;
+import org.encog.ml.train.BasicTraining;
 import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.freeform.FreeformConnection;
 import org.encog.neural.freeform.FreeformNetwork;
@@ -20,7 +20,7 @@ import org.encog.neural.freeform.FreeformNeuron;
 import org.encog.neural.freeform.task.ConnectionTask;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
-public abstract class FreeformPropagationTraining implements MLTrain, Serializable {
+public abstract class FreeformPropagationTraining extends BasicTraining implements Serializable {
 	
 	/**
 	 * The serial ID.
@@ -36,6 +36,7 @@ public abstract class FreeformPropagationTraining implements MLTrain, Serializab
 	private boolean fixFlatSopt = true;
 	
 	public FreeformPropagationTraining(final FreeformNetwork theNetwork, final MLDataSet theTraining) {
+		super(TrainingImplementationType.Iterative);
 		this.network = theNetwork;
 		this.training = theTraining;		
 	}
@@ -47,7 +48,6 @@ public abstract class FreeformPropagationTraining implements MLTrain, Serializab
 
 	@Override
 	public boolean isTrainingDone() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -180,32 +180,8 @@ public abstract class FreeformPropagationTraining implements MLTrain, Serializab
 	}
 
 	@Override
-	public TrainingContinuation pause() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void resume(TrainingContinuation state) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void addStrategy(Strategy strategy) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public MLMethod getMethod() {
 		return this.network;
-	}
-
-	@Override
-	public List<Strategy> getStrategies() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

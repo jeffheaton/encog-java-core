@@ -116,6 +116,12 @@ public class BasicFreeformNeuron implements FreeformNeuron, Serializable {
 	public void addTempTraining(int i, double value) {
 		this.tempTraining[i]+=value;
 	}
+
+	@Override
+	public void updateContext() {
+		// nothing to do for a non-context neuron
+		
+	}
 	
 
 }

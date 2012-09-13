@@ -5,6 +5,7 @@ import java.io.Serializable;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.freeform.FreeformConnection;
 import org.encog.neural.freeform.FreeformNetwork;
+import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
 public class FreeformBackPropagation extends FreeformPropagationTraining implements Serializable {
 
@@ -30,6 +31,18 @@ public class FreeformBackPropagation extends FreeformPropagationTraining impleme
 		double delta = (gradient * this.learningRate) + (connection.getTempTraining(1) * this.momentum);
 		connection.setTempTraining(1, delta);
 		connection.addWeight(delta);
+	}
+
+	@Override
+	public TrainingContinuation pause() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void resume(TrainingContinuation state) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

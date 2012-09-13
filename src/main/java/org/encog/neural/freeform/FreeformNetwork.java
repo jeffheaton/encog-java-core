@@ -48,22 +48,32 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 	}
 	
 	public FreeformLayer createInputLayer(final int neuronCount) {
+		if( neuronCount<1 ) {
+			throw new FreeformNetworkError("Input layer must have at least one neuron.");
+		}
 		this.inputLayer = createLayer(neuronCount);
 		return this.inputLayer;
 	}
 	
 	public FreeformLayer createOutputLayer(final int neuronCount) {
+		if( neuronCount<1 ) {
+			throw new FreeformNetworkError("Output layer must have at least one neuron.");
+		}
 		this.outputLayer = createLayer(neuronCount);
 		return this.outputLayer;
 	}
 	
 	public FreeformLayer createLayer(final int neuronCount)
 	{
+		if( neuronCount<1 ) {
+			throw new FreeformNetworkError("Layer must have at least one neuron.");
+		}
+		
 		FreeformLayer result = layerFactory.factor();
 		
 		// Add the neurons for this layer
 		for(int i=0;i<neuronCount;i++) {
-			result.add(this.neuronFactory.factor(null));
+			result.add(this.neuronFactory.factorRegular(null));
 		}
 		
 		return result;
@@ -98,7 +108,7 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 				}
 				
 				// add the new neuron
-				currentLayer.add(neuronFactory.factor(summation));
+				currentLayer.add(neuronFactory.factorRegular(summation));
 			}
 			
 			// Fully connect this layer to previous
@@ -116,7 +126,7 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 			// Add the bias neuron
 			// The bias is added after connections so it has no inputs
 			if( network.isLayerBiased(currentLayerIndex) ) {
-				FreeformNeuron biasNeuron = this.neuronFactory.factor(null);
+				FreeformNeuron biasNeuron = this.neuronFactory.factorRegular(null);
 				biasNeuron.setBias(true);
 				biasNeuron.setActivation(network.getLayerBiasActivation(currentLayerIndex));
 				currentLayer.add(biasNeuron);
@@ -129,6 +139,39 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 		
 		// finally, set the output layer.
 		this.outputLayer = previousLayer;
+	}
+	
+	public FreeformLayer createContext(FreeformLayer source, FreeformLayer target) {
+		double biasActivation = 0.0;
+		ActivationFunction activatonFunction = null;
+		
+		if( source.getNeurons().get(0).getOutputs().size()<1 ) {
+			throw new FreeformNetworkError("A layer cannot have a context layer connected if there are no other outbound connections from the source layer.  Please connect the source layer somewhere else first.");
+		}
+		
+		activatonFunction = source.getNeurons().get(0).getInputSummation().getActivationFunction();
+		
+		// first create the context layer
+		FreeformLayer result = this.layerFactory.factor();
+		
+		for(int i=0;i<source.size();i++) {
+			FreeformNeuron neuron = source.getNeurons().get(i);
+			if( neuron.isBias() ) {
+				FreeformNeuron biasNeuron = this.neuronFactory.factorRegular(null);
+				biasNeuron.setBias(true);
+				biasNeuron.setActivation(neuron.getActivation());
+				result.add(biasNeuron);
+			} else {
+				FreeformNeuron contextNeuron = this.neuronFactory.factorContext(neuron);
+				result.add(contextNeuron);
+			}
+		}
+		
+		// now connect the context layer to the target layer
+		
+		connectLayers(result,target,activatonFunction,biasActivation,false);
+		
+		return result;
 	}
 
 	public void connectLayers(
@@ -144,7 +187,7 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 			if( source.hasBias() ) {
 				throw new FreeformNetworkError("The source layer already has a bias neuron, you cannot create a second.");
 			}
-			FreeformNeuron biasNeuron = this.neuronFactory.factor(null);
+			FreeformNeuron biasNeuron = this.neuronFactory.factorRegular(null);
 			biasNeuron.setActivation(biasActivation);
 			biasNeuron.setBias(true);
 			source.add(biasNeuron);
@@ -356,13 +399,28 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 			result.setData(i,outputNeuron.getActivation());
 		}
 		
+		updateContext();
+		
 		return result;
 	}
 
 	@Override
 	public void clearContext() {
-		// TODO Auto-generated method stub
-		
+		performNeuronTask(new NeuronTask(){
+			@Override
+			public void task(FreeformNeuron neuron) {
+				if( neuron instanceof FreeformContextNeuron ) {
+					neuron.setActivation(0);
+				}
+			}});
+	}
+	
+	public void updateContext() {
+		performNeuronTask(new NeuronTask(){
+			@Override
+			public void task(FreeformNeuron neuron) {
+				neuron.updateContext();
+			}});
 	}
 	
 	public void performNeuronTask(NeuronTask task) {
@@ -464,6 +522,48 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 	@Override
 	public void updateProperties() {
 		// not needed
+	}
+
+	public static FreeformNetwork createElman(int input, int hidden1, int output,
+			ActivationFunction af) {
+		
+		FreeformNetwork network = new FreeformNetwork();
+		FreeformLayer inputLayer = network.createInputLayer(2);
+		FreeformLayer hiddenLayer1 = network.createLayer(3);
+		FreeformLayer outputLayer = network.createOutputLayer(1);
+		
+		network.connectLayers(inputLayer, hiddenLayer1, af, 1.0, false);
+		network.connectLayers(hiddenLayer1, outputLayer, af, 1.0, false);
+		network.createContext(hiddenLayer1, hiddenLayer1);
+		network.reset();
+		
+		return network;
+	}
+
+	public static FreeformNetwork createFeedforward(int input, int hidden1, int hidden2, int output,
+			ActivationFunction af) {
+		FreeformNetwork network = new FreeformNetwork();
+		FreeformLayer lastLayer = network.createInputLayer(input);
+		FreeformLayer currentLayer;
+		
+		if( hidden1>0 ) {
+			currentLayer = network.createLayer(hidden1);
+			network.connectLayers(lastLayer, currentLayer, af, 1.0, false);
+			lastLayer = currentLayer;
+		}
+		
+		if( hidden2>0 ) {
+			currentLayer = network.createLayer(hidden2);
+			network.connectLayers(lastLayer, currentLayer, af, 1.0, false);
+			lastLayer = currentLayer;
+		}
+		
+		currentLayer = network.createOutputLayer(output);
+		network.connectLayers(lastLayer, currentLayer, af, 1.0, false);
+		
+		network.reset();
+		
+		return network;
 	}
 
 }
