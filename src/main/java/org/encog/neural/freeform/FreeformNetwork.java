@@ -26,9 +26,10 @@ import org.encog.neural.freeform.task.ConnectionTask;
 import org.encog.neural.freeform.task.NeuronTask;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.util.EngineArray;
+import org.encog.util.obj.ObjectCloner;
 import org.encog.util.simple.EncogUtility;
 
-public class FreeformNetwork implements MLContext,
+public class FreeformNetwork implements MLContext, Cloneable,
 MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 	
 	private FreeformLayer inputLayer;
@@ -428,6 +429,18 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 
 	public FreeformLayer getOutputLayer() {
 		return this.outputLayer;
+	}
+	
+	/**
+	 * Return a clone of this neural network. Including structure, weights and
+	 * bias values. This is a deep copy.
+	 * 
+	 * @return A cloned copy of the neural network.
+	 */
+	@Override
+	public Object clone() {
+		final BasicNetwork result = (BasicNetwork) ObjectCloner.deepCopy(this);
+		return result;
 	}
 
 }

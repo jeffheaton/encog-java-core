@@ -3,8 +3,11 @@ package org.encog.neural.freeform;
 import junit.framework.TestCase;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.ml.MLMethod;
+import org.encog.ml.MethodFactory;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.encog.ml.genetic.MLMethodGeneticAlgorithm;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.freeform.training.FreeformBackPropagation;
 import org.encog.neural.freeform.training.FreeformResilientPropagation;
@@ -54,10 +57,15 @@ public class TestFreeformTraining extends TestCase {
 	@Test
 	public void testGenetic() throws Throwable
 	{
-		/*MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);		
-		FreeformNetwork network = NetworkUtil.createXORFreeformNetworkUntrained();
+		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);		
 		CalculateScore score = new TrainingSetScore(trainingData);
-		NeuralGeneticAlgorithm genetic = new NeuralGeneticAlgorithm(network, new RangeRandomizer(-1,1), score, 500,0.1,0.25);
-		NetworkUtil.testTraining(genetic,0.00001);*/
+		MLMethodGeneticAlgorithm genetic = new MLMethodGeneticAlgorithm(new MethodFactory(){
+			@Override
+			public MLMethod factor() {
+				FreeformNetwork network = NetworkUtil.createXORFreeformNetworkUntrained();
+				network.reset();
+				return network;
+			}}, score, 500,0.1,0.25);
+		NetworkUtil.testTraining(genetic,0.00001);
 	}
 }

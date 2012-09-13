@@ -26,10 +26,14 @@ package org.encog.ml.factory.train;
 import java.util.Map;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.ml.MLEncodable;
 import org.encog.ml.MLMethod;
+import org.encog.ml.MLResettable;
+import org.encog.ml.MethodFactory;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.factory.parse.ArchitectureParse;
+import org.encog.ml.genetic.MLMethodGeneticAlgorithm;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.CalculateScore;
@@ -37,6 +41,7 @@ import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.TrainingSetScore;
 import org.encog.neural.networks.training.genetic.NeuralGeneticAlgorithm;
 import org.encog.util.ParamsHolder;
+import org.encog.util.obj.ObjectCloner;
 
 /**
  * A factory to create genetic algorithm trainers.
@@ -56,9 +61,9 @@ public class GeneticFactory {
 	public MLTrain create(final MLMethod method,
 			final MLDataSet training, final String argsStr) {
 
-		if (!(method instanceof BasicNetwork)) {
+		if (!(method instanceof MLEncodable)) {
 			throw new TrainingError(
-					"Invalid method type, requires BasicNetwork");
+					"Invalid method type, requires an encodable MLMethod");
 		}
 
 		final CalculateScore score = new TrainingSetScore(training);
@@ -71,10 +76,14 @@ public class GeneticFactory {
 				MLTrainFactory.PROPERTY_MUTATION, false, 0.1);
 		final double mate = holder.getDouble(MLTrainFactory.PROPERTY_MATE,
 				false, 0.25);
-
-		final MLTrain train = new NeuralGeneticAlgorithm((BasicNetwork) method,
-				new RangeRandomizer(-1, 1), score, populationSize, mutation,
-				mate);
+		
+		MLTrain train = new MLMethodGeneticAlgorithm(new MethodFactory(){
+			@Override
+			public MLMethod factor() {
+				final MLMethod result = (MLMethod) ObjectCloner.deepCopy(method);
+				((MLResettable)result).reset();
+				return result;
+			}}, score, populationSize, mutation, mate);
 
 		return train;
 	}
