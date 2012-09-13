@@ -46,5 +46,15 @@ public class BasicFreeformLayer implements FreeformLayer, Serializable {
 		}
 		return result;
 	}
+
+	@Override
+	public boolean hasBias() {
+		for(FreeformNeuron neuron: this.neurons) {
+			if( neuron.isBias() ) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 }

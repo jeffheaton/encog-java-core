@@ -8,4 +8,5 @@ public interface FreeformLayer {
 	void add(FreeformNeuron basicFreeformNeuron);
 	void setActivation(int i, double data);
 	int sizeNonBias();
+	boolean hasBias();
 }

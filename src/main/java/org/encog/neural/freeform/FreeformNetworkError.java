@@ -28,7 +28,7 @@ import org.encog.util.logging.EncogLogging;
 /**
  * Freeform neural network error.
  */
-public class FreeformNeuralNetworkError extends RuntimeException {
+public class FreeformNetworkError extends RuntimeException {
 
 	/**
 	 * Construct a message exception.
@@ -36,7 +36,7 @@ public class FreeformNeuralNetworkError extends RuntimeException {
 	 * @param msg
 	 *            The exception message.
 	 */
-	public FreeformNeuralNetworkError(final String msg) {
+	public FreeformNetworkError(final String msg) {
 		super(msg);
 		EncogLogging.log(EncogLogging.LEVEL_ERROR, msg);
 	}
@@ -47,7 +47,7 @@ public class FreeformNeuralNetworkError extends RuntimeException {
 	 * @param t
 	 *            The other exception.
 	 */
-	public FreeformNeuralNetworkError(final Throwable t) {
+	public FreeformNetworkError(final Throwable t) {
 		super(t);
 		EncogLogging.log(EncogLogging.LEVEL_ERROR, t);
 	}
@@ -60,7 +60,7 @@ public class FreeformNeuralNetworkError extends RuntimeException {
 	 * @param t
 	 *            The other exception.
 	 */
-	public FreeformNeuralNetworkError(final String msg, final Throwable t) {
+	public FreeformNetworkError(final String msg, final Throwable t) {
 		super(msg, t);
 		EncogLogging.log(EncogLogging.LEVEL_ERROR, msg);
 		EncogLogging.log(EncogLogging.LEVEL_ERROR, t);

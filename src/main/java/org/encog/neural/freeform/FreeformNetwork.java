@@ -72,7 +72,7 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 	public FreeformNetwork(BasicNetwork network) {
 		
 		if( network.getLayerCount()<2 ) {
-			throw new FreeformNeuralNetworkError("The BasicNetwork must have at least two layers to be converted.");
+			throw new FreeformNetworkError("The BasicNetwork must have at least two layers to be converted.");
 		}
 		
 		// handle each layer
@@ -140,6 +140,10 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 				
 		// create bias, if requested
 		if( biasActivation> Encog.DEFAULT_DOUBLE_EQUAL ) {
+			// does the source already have a bias?
+			if( source.hasBias() ) {
+				throw new FreeformNetworkError("The source layer already has a bias neuron, you cannot create a second.");
+			}
 			FreeformNeuron biasNeuron = this.neuronFactory.factor(null);
 			biasNeuron.setActivation(biasActivation);
 			biasNeuron.setBias(true);
@@ -149,8 +153,13 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 		// create connections
 		for(FreeformNeuron targetNeuron: target.getNeurons()) {
 			// create the summation for the target
-			InputSummation summation = this.summationFactory.factor(theActivationFunction);
-			targetNeuron.setInputSummation(summation);
+			InputSummation summation = targetNeuron.getInputSummation();
+			
+			// do not create a second input summation
+			if( summation==null ) {
+				summation = this.summationFactory.factor(theActivationFunction);
+				targetNeuron.setInputSummation(summation);
+			}
 			
 			// connect the source neurons to the target neuron
 			for(FreeformNeuron sourceNeuron: source.getNeurons()) {				
