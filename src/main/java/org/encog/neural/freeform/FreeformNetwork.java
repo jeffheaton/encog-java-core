@@ -18,10 +18,14 @@ import org.encog.ml.MLResettable;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
-import org.encog.neural.freeform.basic.BasicActivationSummation;
-import org.encog.neural.freeform.basic.BasicFreeformConnection;
-import org.encog.neural.freeform.basic.BasicFreeformLayer;
-import org.encog.neural.freeform.basic.BasicFreeformNeuron;
+import org.encog.neural.freeform.basic.BasicActivationSummationFactory;
+import org.encog.neural.freeform.basic.BasicFreeformConnectionFactory;
+import org.encog.neural.freeform.basic.BasicFreeformLayerFactory;
+import org.encog.neural.freeform.basic.BasicFreeformNeuronFactory;
+import org.encog.neural.freeform.factory.FreeformConnectionFactory;
+import org.encog.neural.freeform.factory.FreeformLayerFactory;
+import org.encog.neural.freeform.factory.FreeformNeuronFactory;
+import org.encog.neural.freeform.factory.InputSummationFactory;
 import org.encog.neural.freeform.task.ConnectionTask;
 import org.encog.neural.freeform.task.NeuronTask;
 import org.encog.neural.networks.BasicNetwork;
@@ -34,7 +38,11 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 	
 	private FreeformLayer inputLayer;
 	private FreeformLayer outputLayer;
-
+	private FreeformConnectionFactory connectionFactory = new BasicFreeformConnectionFactory();
+	private FreeformLayerFactory layerFactory = new BasicFreeformLayerFactory();
+	private FreeformNeuronFactory neuronFactory = new BasicFreeformNeuronFactory();
+	private InputSummationFactory summationFactory = new BasicActivationSummationFactory();
+	
 	public FreeformNetwork() {	
 	}
 	
@@ -50,11 +58,11 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 	
 	public FreeformLayer createLayer(final int neuronCount)
 	{
-		FreeformLayer result = new BasicFreeformLayer();
+		FreeformLayer result = layerFactory.factor();
 		
 		// Add the neurons for this layer
 		for(int i=0;i<neuronCount;i++) {
-			result.add(new BasicFreeformNeuron(null));
+			result.add(this.neuronFactory.factor(null));
 		}
 		
 		return result;
@@ -72,7 +80,7 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 		
 		for(int currentLayerIndex = 0; currentLayerIndex<network.getLayerCount();currentLayerIndex++) {
 			// create the layer
-			currentLayer = new BasicFreeformLayer();
+			currentLayer = this.layerFactory.factor();
 			
 			// Is this the input layer?
 			if( this.inputLayer == null) {
@@ -82,14 +90,14 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 			// Add the neurons for this layer
 			for(int i=0;i<network.getLayerNeuronCount(currentLayerIndex);i++) {
 				// obtain the summation object.
-				BasicActivationSummation summation = null;
+				InputSummation summation = null;
 				
 				if( previousLayer!=null ) {
-					summation = new BasicActivationSummation(network.getActivation(currentLayerIndex));
+					summation = this.summationFactory.factor(network.getActivation(currentLayerIndex));
 				}
 				
 				// add the new neuron
-				currentLayer.add(new BasicFreeformNeuron(summation));
+				currentLayer.add(neuronFactory.factor(summation));
 			}
 			
 			// Fully connect this layer to previous
@@ -107,7 +115,7 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 			// Add the bias neuron
 			// The bias is added after connections so it has no inputs
 			if( network.isLayerBiased(currentLayerIndex) ) {
-				BasicFreeformNeuron biasNeuron = new BasicFreeformNeuron(null);
+				FreeformNeuron biasNeuron = this.neuronFactory.factor(null);
 				biasNeuron.setBias(true);
 				biasNeuron.setActivation(network.getLayerBiasActivation(currentLayerIndex));
 				currentLayer.add(biasNeuron);
@@ -131,7 +139,7 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 				
 		// create bias, if requested
 		if( biasActivation> Encog.DEFAULT_DOUBLE_EQUAL ) {
-			BasicFreeformNeuron biasNeuron = new BasicFreeformNeuron(null);
+			FreeformNeuron biasNeuron = this.neuronFactory.factor(null);
 			biasNeuron.setActivation(biasActivation);
 			biasNeuron.setBias(true);
 			source.add(biasNeuron);
@@ -140,12 +148,12 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 		// create connections
 		for(FreeformNeuron targetNeuron: target.getNeurons()) {
 			// create the summation for the target
-			InputSummation summation = new BasicActivationSummation(theActivationFunction);
+			InputSummation summation = this.summationFactory.factor(theActivationFunction);
 			targetNeuron.setInputSummation(summation);
 			
 			// connect the source neurons to the target neuron
 			for(FreeformNeuron sourceNeuron: source.getNeurons()) {				
-				FreeformConnection connection = new BasicFreeformConnection(sourceNeuron,targetNeuron);
+				FreeformConnection connection = this.connectionFactory.factor(sourceNeuron,targetNeuron);
 				sourceNeuron.addOutput(connection);
 				targetNeuron.addInput(connection);
 			}	
@@ -180,7 +188,7 @@ MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 					continue;
 				}
 				
-				FreeformConnection connection = new BasicFreeformConnection(sourceNeuron,targetNeuron);
+				FreeformConnection connection = this.connectionFactory.factor(sourceNeuron,targetNeuron);
 				sourceNeuron.addOutput(connection);
 				targetNeuron.addInput(connection);
 				double weight = network.getWeight(fromLayerIdx, sourceNeuronIdx, targetNeuronIdx);

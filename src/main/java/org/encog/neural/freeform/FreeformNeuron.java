@@ -13,5 +13,6 @@ public interface FreeformNeuron extends TempTrainingData {
 	void setInputSummation(InputSummation theInputSummation);
 	boolean isBias();
 	double getSum();
+	void setBias(boolean b);
 	
 }
