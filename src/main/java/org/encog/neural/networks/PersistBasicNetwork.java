@@ -124,8 +124,7 @@ public class PersistBasicNetwork implements EncogPersistor {
 					ActivationFunction af = null;
 					final List<String> cols = EncogFileSection
 							.splitColumns(line);
-					final String name = "org.encog.engine.network.activation."
-							+ cols.get(0);
+					final String name = cols.get(0);
 					try {
 						final Class<?> clazz = Class.forName(name);
 						af = (ActivationFunction) clazz.newInstance();
@@ -191,7 +190,7 @@ public class PersistBasicNetwork implements EncogPersistor {
 				flat.getBiasActivation());
 		out.addSubSection("ACTIVATION");
 		for (final ActivationFunction af : flat.getActivationFunctions()) {
-			out.addColumn(af.getClass().getSimpleName());
+			out.addColumn(af.getClass().getName());
 			for (int i = 0; i < af.getParams().length; i++) {
 				out.addColumn(af.getParams()[i]);
 			}
