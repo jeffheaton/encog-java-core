@@ -3,51 +3,51 @@
 export ENCOG_ENV=1.0
 
 function run() {
-	$do java -cp build/classes ensembles.Test $1 $2 $3 $4 $5 $6 0.3 $8 $9 ${10} ${11} ${12}
+	$do java -cp build/classes ensembles.Test $1 $2 $3 $4 $5 $6 0.3 $8 $9 ${10} ${11} ${12} ${13} ${14} ${15}
 }
 
 function runWithDefaults() {
-	run $1 $2 $3 $4 $5 $6 0.3 $7 $8 $9 ${10} ${11}
+	run $1 $2 $3 $4 $5 $6 0.3 $7 $8 $9 ${10} ${11} ${12} ${13} ${14}
 }
 
 function averaging-rprop() {
-	runWithDefaults $1 $2 $3 $4 $5 $6 rprop $7 averaging $8 $9 ${10}
+	runWithDefaults $1 $2 $3 $4 $5 $6 rprop $7 averaging $8 $9 ${10} ${11} ${12} ${13}
 }
 
 function bagging-haberman() {
-	averaging-rprop bagging problems/uci_haberman $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+	averaging-rprop bagging problems/uci_haberman $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13}
 }
 
 function boosting-haberman() {
-	averaging-rprop adaboost problems/uci_haberman $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+	averaging-rprop adaboost problems/uci_haberman $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13}
 }
 
 function stacking-haberman() {
-	averaging-rprop stacking problems/uci_haberman $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+	averaging-rprop stacking problems/uci_haberman $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13}
 }
 
 function bagging-letterrecognition() {
-	averaging-rprop bagging problems/uci_letterrecognition $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+	averaging-rprop bagging problems/uci_letterrecognition $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13}
 }
 
 function boosting-letterrecognition() {
-	averaging-rprop adaboost problems/uci_letterrecognition $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+	averaging-rprop adaboost problems/uci_letterrecognition $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13}
 }
 
 function stacking-letterrecognition() {
-	averaging-rprop stacking problems/uci_letterrecognition $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+	averaging-rprop stacking problems/uci_letterrecognition $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13}
 }
 
 function bagging-landsat() {
-	averaging-rprop bagging problems/statlog_landsat $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+	averaging-rprop bagging problems/statlog_landsat $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13}
 }
 
 function boosting-landsat() {
-	averaging-rprop adaboost problems/statlog_landsat $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+	averaging-rprop adaboost problems/statlog_landsat $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13}
 }
 
 function stacking-landsat() {
-	averaging-rprop stacking problems/statlog_landsat $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+	averaging-rprop stacking problems/statlog_landsat $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13}
 }
 
 function logged_run() {
