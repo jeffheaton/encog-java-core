@@ -1,0 +1,9 @@
+#UCI Magic Gamma Telescope 
+label=ionosphere
+outputs=2
+inputs=24
+read_inputs=1
+inputs_reversed=false
+#1=b,2=g
+mapper_type=int
+data_file=data/ionosphere.data
