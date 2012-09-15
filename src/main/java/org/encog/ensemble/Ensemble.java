@@ -90,6 +90,7 @@ public abstract class Ensemble {
 		for (EnsembleML current : members)
 		{
 			do {
+				mlFactory.reInit(current.getMl());
 				current.train(targetError, verbose);
 				if (verbose) {System.out.println("test MSE: " + current.getError(testset));};
 			} while (current.getError(testset) > selectionError);

@@ -37,4 +37,9 @@ public class MultiLayerPerceptronFactory implements EnsembleMLMethodFactory {
 		return ret + layers.toArray()[layers.size() - 1] + "}";
 	}
 
+	@Override
+	public void reInit(MLMethod ml) {
+		((BasicNetwork) ml).reset();
+	}
+
 }
