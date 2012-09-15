@@ -82,13 +82,16 @@ public abstract class Ensemble {
 	 * Train the ensemble to a target accuracy
 	 * @param targetAccuracy
 	 * @param verbose
+	 * @param testset 
 	 * @return
 	 */
-	public void train(double targetError, boolean verbose) {
+	public void train(double targetError, double selectionError, EnsembleDataSet testset, boolean verbose) {
 		
 		for (EnsembleML current : members)
 		{
-			current.train(targetError, verbose);
+			do {
+				current.train(targetError, verbose);
+			} while (current.getError(testset) < selectionError);
 		}
 		if(aggregator.needsTraining()) {
 			EnsembleDataSet aggTrainingSet = new EnsembleDataSet(members.size() * aggregatorDataSet.getIdealSize(),aggregatorDataSet.getIdealSize());
@@ -112,8 +115,8 @@ public abstract class Ensemble {
 	 * @param targetAccuracy
 	 * @return
 	 */
-	public void train(double targetError) {
-		train(targetError, false);
+	public void train(double targetError, double selectionError, EnsembleDataSet testset) {
+		train(targetError, selectionError, testset, false);
 	}
 	
 	/**

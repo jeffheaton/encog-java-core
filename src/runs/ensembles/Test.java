@@ -28,6 +28,7 @@ public class Test {
 	private static EnsembleAggregator agg;
 	private static String etType;
 	private static boolean verbose;
+	private static double selectionError;
 	
 	public static void loop() {
 		for(Integer dataSetSize : dataSetSizes)
@@ -42,7 +43,7 @@ public class Test {
 				help();
 			}
 			for (double te: trainingErrors) {
-				Evaluator ev = new Evaluator(et, dataLoader, te, verbose);
+				Evaluator ev = new Evaluator(et, dataLoader, te, selectionError, verbose);
 				ev.getResults(fullLabel+","+te);
 			}
 		}
@@ -64,6 +65,7 @@ public class Test {
 			mlfs = ArgParser.MLFS(args[8]);
 			agg = ArgParser.AGG(args[9]);
 			verbose = Boolean.parseBoolean(args[10]);
+			selectionError = ArgParser.doubleSingle(args[11]);
 		} catch (BadArgument e) {
 			help();
 		}

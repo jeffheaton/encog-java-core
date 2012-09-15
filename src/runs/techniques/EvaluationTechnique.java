@@ -10,6 +10,7 @@ import org.encog.ensemble.Ensemble;
 import org.encog.ensemble.EnsembleAggregator;
 import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
+import org.encog.ensemble.data.EnsembleDataSet;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
@@ -17,8 +18,8 @@ import org.encog.neural.data.basic.BasicNeuralDataSet;
 
 public abstract class EvaluationTechnique {
 
-	protected MLDataSet trainingSet;
-	private MLDataSet testSet;
+	protected EnsembleDataSet trainingSet;
+	private EnsembleDataSet testSet;
 	protected EnsembleMLMethodFactory mlMethod;
 	protected EnsembleTrainFactory trainFactory;
 	protected EnsembleAggregator aggregator;
@@ -42,16 +43,20 @@ public abstract class EvaluationTechnique {
 		return error;
 	}
 	
-	public void train(double trainToError, boolean verbose) {
-		ensemble.train(trainToError,verbose);
+	public void train(double trainToError, double selectionError, boolean verbose) {
+		ensemble.train(trainToError,selectionError,(EnsembleDataSet) testSet,verbose);
 	}
 
 	public void trainStep() {		
 	}
 	
 	public double trainError() {
-		return ensemble.getMember(0).getTraining().getError();
+		return ensemble.getMember(0).getError(trainingSet);
 	}
+	
+	public double testError() {
+		return ensemble.getMember(0).getError(testSet);
+	}	
 	
 	public abstract void init(DataLoader dataLoader);
 	
@@ -68,11 +73,11 @@ public abstract class EvaluationTechnique {
 	}
 
 	public void setTrainingSet(MLDataSet trainingSet) {
-		this.trainingSet = trainingSet;
+		this.trainingSet = new EnsembleDataSet(trainingSet);
 	}
 
 	public void setTestSet(MLDataSet testSet) {
-		this.testSet = testSet;
+		this.testSet = new EnsembleDataSet(testSet);
 	}
 	
 	public MLData compute(MLData input) {

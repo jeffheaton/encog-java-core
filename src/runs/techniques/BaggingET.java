@@ -10,7 +10,6 @@ import helpers.DataLoader;
 
 public class BaggingET extends EvaluationTechnique {
 
-	private Bagging bagging;
 	private int splits;
 	private int dataSetSize;
 
@@ -23,32 +22,28 @@ public class BaggingET extends EvaluationTechnique {
 		this.aggregator = aggregator;
 	}
 
-	@Override
-	public void train(double trainToError, boolean verbose) {
-		bagging.train(trainToError,verbose);
-	}
 
 	@Override
 	public void init(DataLoader dataLoader) {
-		bagging = new Bagging(splits,dataSetSize,mlMethod,trainFactory,aggregator);
+		ensemble = new Bagging(splits,dataSetSize,mlMethod,trainFactory,aggregator);
 		setTrainingSet(dataLoader.getTrainingSet());
 		setTestSet(dataLoader.getTestSet());
-		bagging.setTrainingData(trainingSet);
+		ensemble.setTrainingData(trainingSet);
 	}
 
 	@Override
 	public MLData compute(MLData input) {
-		return bagging.compute(input);
+		return ensemble.compute(input);
 	}
 
 	@Override
 	public void trainStep() {
-		bagging.trainStep();
+		((Bagging) ensemble).trainStep();
 	}
 
 	@Override
 	public double trainError() {
-		return bagging.getMember(0).getTraining().getError();
+		return ensemble.getMember(0).getTraining().getError();
 	}
 	
 }

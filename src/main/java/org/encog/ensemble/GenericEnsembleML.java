@@ -100,4 +100,9 @@ public class GenericEnsembleML implements EnsembleML {
 	public String getLabel() {
 		return label;
 	}
+
+	@Override
+	public double getError(EnsembleDataSet testset) {
+		return ml.calculateError(testset);
+	}
 }

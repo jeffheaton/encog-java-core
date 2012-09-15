@@ -9,19 +9,19 @@ public class Evaluator {
 	private EvaluationTechnique technique;
 	private DataLoader dataLoader;
 	
-	Evaluator(EvaluationTechnique technique, DataMapper mapper, int inputCols, int inputs, String dataFile, boolean inputsReversed, int trainingSetSize, double targetTrainingError) {
+	Evaluator(EvaluationTechnique technique, DataMapper mapper, int inputCols, int inputs, String dataFile, boolean inputsReversed, int trainingSetSize, double targetTrainingError, double selectionError) {
 		this.setTechnique(technique);
 		dataLoader = new DataLoader(mapper,inputCols,inputs,trainingSetSize,inputsReversed);
 		dataLoader.readData(dataFile);
 		this.technique.init(dataLoader);
-		this.technique.train(targetTrainingError,false);
+		this.technique.train(targetTrainingError, selectionError, false);
 	}
 	
-	public Evaluator(EvaluationTechnique technique, DataLoader dataLoader, double targetTrainingError, boolean verbose) {
+	public Evaluator(EvaluationTechnique technique, DataLoader dataLoader, double targetTrainingError, double selectionError, boolean verbose) {
 		this.setTechnique(technique);
 		this.dataLoader = dataLoader;
 		this.technique.init(dataLoader);
-		this.technique.train(targetTrainingError,verbose);
+		this.technique.train(targetTrainingError, selectionError, verbose);
 	}
 	
 	public void makeLine(String type, String prefix, BasicNeuralDataSet dataSet) {

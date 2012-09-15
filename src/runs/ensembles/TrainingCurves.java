@@ -44,10 +44,12 @@ public class TrainingCurves {
 			et.init(dataLoader);
 			for (int i=0; i < maxIterations; i++) {
 				et.trainStep();
-				double mse = et.trainError();
+				double trainMSE = et.trainError();
+				double testMSE = et.testError();
 				double trainMisc = et.getMisclassification(testSet, dataMapper);
 				double testMisc = et.getMisclassification(trainingSet, dataMapper);
-				System.out.println(i + " " + mse + " " + trainMisc + " " + testMisc);
+				System.out.println(i + " " + trainMSE + " " + testMSE
+									 + " " + trainMisc + " " + testMisc);
 			}
 		}
 	}

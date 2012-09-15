@@ -27,6 +27,16 @@ public class EnsembleDataSet implements MLDataSet {
 		data = new ArrayList<MLDataPair>();
 	}
 	
+	public EnsembleDataSet(MLDataSet mlds) {
+		this.idealSize = mlds.getIdealSize();
+		this.inputSize = mlds.getInputSize();
+		Iterator<MLDataPair> it = mlds.iterator();
+		data = new ArrayList<MLDataPair>();
+		while(it.hasNext()) {
+			data.add(it.next());
+		}
+	}
+	
 	@Override
 	public int getIdealSize() {
 		return idealSize;

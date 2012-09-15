@@ -10,7 +10,6 @@ import helpers.DataLoader;
 
 public class AdaBoostET extends EvaluationTechnique {
 
-	private AdaBoost boosting;
 	private int T;
 	private int dataSetSize;
 
@@ -24,21 +23,16 @@ public class AdaBoostET extends EvaluationTechnique {
 	}
 
 	@Override
-	public void train(double trainToError, boolean verbose) {
-		boosting.train(trainToError,verbose);
-	}
-
-	@Override
 	public void init(DataLoader dataLoader) {
-		boosting = new AdaBoost(T,dataSetSize,mlMethod,trainFactory,aggregator);
+		ensemble = new AdaBoost(T,dataSetSize,mlMethod,trainFactory,aggregator);
 		setTrainingSet(dataLoader.getTrainingSet());
 		setTestSet(dataLoader.getTestSet());
-		boosting.setTrainingData(trainingSet);
+		ensemble.setTrainingData(trainingSet);
 	}
 
 	@Override
 	public MLData compute(MLData input) {
-		return boosting.compute(input);
+		return ensemble.compute(input);
 	}
 
 	@Override

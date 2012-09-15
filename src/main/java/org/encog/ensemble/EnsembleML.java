@@ -55,6 +55,11 @@ public interface EnsembleML extends MLMethod, MLClassification, MLRegression {
 	public void train(double targetError, boolean verbose);
 
 	/**
+	 * Get the error for this ML on the dataset
+	 */
+	public double getError(EnsembleDataSet testset);
+	
+	/**
 	 * Set the MLMethod to run
 	 * @param newMlMethod
 	 */

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.aggregator.MajorityVoting;
+import org.encog.ensemble.data.EnsembleDataSet;
 import org.encog.ensemble.ml.mlp.factory.MultiLayerPerceptronFactory;
 import org.encog.ensemble.training.ResilientPropagationFactory;
 import org.encog.ml.data.MLData;
@@ -33,7 +34,7 @@ public class TestBagging extends TestCase {
 		MajorityVoting mv = new MajorityVoting();
 		Bagging testBagging = new Bagging(numSplits, dataSetSize, mlpFactory, trainingStrategy, mv);
 		testBagging.setTrainingData(trainingData);
-		testBagging.train(1E-2);
+		testBagging.train(1E-2,1E-2,(EnsembleDataSet) trainingData);
 		for (int j = 0; j < trainingData.size(); j++) {
 			MLData input = trainingData.get(j).getInput();
 			MLData result = testBagging.compute(input);
