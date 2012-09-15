@@ -50,7 +50,7 @@ public class Test {
 	}
 	
 	public static void main(String[] args) {
-		if (args.length != 11) {
+		if (args.length != 12) {
 			help();
 		} 
 		try {
@@ -81,7 +81,7 @@ public class Test {
 	}
 
 	private static void help() {
-		System.err.println("Usage: Test <technique> <problem> <sizes> <dataSetSizes> <trainingErrors> <trainingSetSize> <activationThreshold> <training> <membertypes> <aggregator> <verbose>");
+		System.err.println("Usage: Test <technique> <problem> <sizes> <dataSetSizes> <trainingErrors> <trainingSetSize> <activationThreshold> <training> <membertypes> <aggregator> <verbose> <selectionError>");
 		System.exit(2);
 	}
 }
