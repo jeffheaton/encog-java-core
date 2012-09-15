@@ -28,7 +28,6 @@ public abstract class EvaluationTechnique {
 	
 	public double getMisclassification(BasicNeuralDataSet evalSet, DataMapper dataMapper) {
 		int bad = 0;
-		int evals = 0;
 		for(int i = 0; i < evalSet.getRecordCount(); i++)
 		{
 			MLDataPair pair = evalSet.get(i);
@@ -37,10 +36,23 @@ public abstract class EvaluationTechnique {
 			ArrayList<String> expected = dataMapper.unmap(pair.getIdeal());
 			if (!dataMapper.compare(result,expected,false))
 				bad++;
-			evals++;
 		}
-		double error = (double) bad / (double) evals;
+		double error = (double) bad / (double) evalSet.getRecordCount();
 		return error;
+	}
+	
+	public int getMisclassificationCount(BasicNeuralDataSet evalSet, DataMapper dataMapper) {
+		int bad = 0;
+		for(int i = 0; i < evalSet.getRecordCount(); i++)
+		{
+			MLDataPair pair = evalSet.get(i);
+			MLData output = compute(pair.getInput());
+			ArrayList<String> result = dataMapper.unmap(output);
+			ArrayList<String> expected = dataMapper.unmap(pair.getIdeal());
+			if (!dataMapper.compare(result,expected,false))
+				bad++;
+		}
+		return bad;
 	}
 	
 	public void train(double trainToError, double selectionError, boolean verbose) {

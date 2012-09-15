@@ -91,7 +91,8 @@ public abstract class Ensemble {
 		{
 			do {
 				current.train(targetError, verbose);
-			} while (current.getError(testset) < selectionError);
+				if (verbose) {System.out.println("test MSE: " + current.getError(testset));};
+			} while (current.getError(testset) > selectionError);
 		}
 		if(aggregator.needsTraining()) {
 			EnsembleDataSet aggTrainingSet = new EnsembleDataSet(members.size() * aggregatorDataSet.getIdealSize(),aggregatorDataSet.getIdealSize());

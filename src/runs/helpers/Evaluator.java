@@ -36,7 +36,8 @@ public class Evaluator {
 				(perf.getAccuracy(PerfResults.AveragingMethod.MACRO)) + "," +
 				(perf.getPrecision(PerfResults.AveragingMethod.MACRO)) + "," +
 				(perf.getRecall(PerfResults.AveragingMethod.MACRO)) + "," +
-				(perf.FScore(1.0, PerfResults.AveragingMethod.MACRO))
+				(perf.FScore(1.0, PerfResults.AveragingMethod.MACRO)) + "," +
+				(this.technique.getMisclassificationCount(dataSet,dataMapper))
 		);
 		int outputs = dataSet.getIdealSize();
 		for (int output = 0; output < outputs; output ++)
