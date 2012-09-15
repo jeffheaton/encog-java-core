@@ -148,7 +148,8 @@ public class PersistBasicNetwork implements EncogPersistor {
 		}
 
 		result.getStructure().setFlat(flat);
-
+		result.updateProperties();
+		
 		return result;
 	}
 
