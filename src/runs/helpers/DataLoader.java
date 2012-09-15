@@ -68,7 +68,7 @@ public class DataLoader {
 		InputField[] a = new InputField[getInputs()];
 		for(int j = 0; j < getInputs(); j++) {
 			normalizer.addInputField(a[j] = new InputFieldMLDataSet(false,_totalSet,j));
-			normalizer.addOutputField(new OutputFieldRangeMapped(a[j],0.1,0.9));
+			normalizer.addOutputField(new OutputFieldRangeMapped(a[j],0.0,1.0));
 		}
 		normalizer.process();
 		for (int i = 0; i < total; i++)
