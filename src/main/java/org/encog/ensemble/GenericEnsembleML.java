@@ -31,14 +31,26 @@ public class GenericEnsembleML implements EnsembleML {
 
 	@Override
 	public void train(double targetError, boolean verbose) {
-		double error;
-		int iteration=0;
+		double error = 0;
+		double previouserror = 0;
+		double errordelta = 0;
+		int iteration = 0;
 		do {
 			trainer.iteration();
 			iteration++;
+			if (iteration > 1) {
+				previouserror = error;
+			}
 			error = trainer.getError();
+			if (iteration > 1) {
+				errordelta = previouserror - error;
+			}
 			if (verbose) System.out.println(iteration + " " + error);
-		} while ((error > targetError) && trainer.canContinue());
+		} while ((error > targetError) && 
+				 trainer.canContinue() && 
+				 errordelta > -0.1 && 
+				 //make this a parameter
+				 iteration < 2000);
 		trainer.finishTraining();
 	}
 
