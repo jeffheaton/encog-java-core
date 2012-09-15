@@ -1,5 +1,7 @@
 package org.encog.mathutil.dimension;
 
+import java.util.Arrays;
+
 /**
  * Handle multi-dimensional integer-based dimensions. Depending on how the
  * values are interpreted, this structure can be used to either represent a
@@ -31,6 +33,10 @@ public class MultiDimension {
 		for(int i=0;i<theSize;i++) {
 			this.dimensions[i] = (int)theArray[i];
 		}
+	}
+
+	public MultiDimension(MultiDimension lower) {
+		this.dimensions = lower.getDimensions().clone();
 	}
 
 	/**
@@ -116,6 +122,10 @@ public class MultiDimension {
 	public void setDimension(int d, int value) {
 		this.dimensions[d] = value;
 
+	}
+	
+	public String toString() {
+		return Arrays.toString(this.dimensions);
 	}
 
 }
