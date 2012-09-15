@@ -6,5 +6,6 @@ for size in 10 30 100 300; do
   ./make_training_error_graph_only.sh uci_letterrecognition $size $training 0.015
   ./make_training_error_graph_only.sh statlog_landsat $size $training 0.05
   ./make_training_error_graph_only.sh uci_magic $size $training 0.10
+  ./make_training_error_graph_only.sh uci_ionosphere $size $training 0.05
 done
 done
