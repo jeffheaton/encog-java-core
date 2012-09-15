@@ -14,6 +14,7 @@ public class MultiDimension {
 	 * The dimensions.
 	 */
 	private final int[] dimensions;
+	
 
 	/**
 	 * Allocate a MultiDimension.
@@ -23,6 +24,13 @@ public class MultiDimension {
 	 */
 	public MultiDimension(int n) {
 		this.dimensions = new int[n];
+	}
+
+	public MultiDimension(double[] theArray, int theStart, int theSize) {
+		this.dimensions = new int[theSize];
+		for(int i=0;i<theSize;i++) {
+			this.dimensions[i] = (int)theArray[i];
+		}
 	}
 
 	/**
