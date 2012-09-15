@@ -8,6 +8,7 @@ import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.EnsembleTypes;
 import org.encog.ensemble.EnsembleTypes.ProblemType;
 import org.encog.ensemble.GenericEnsembleML;
+import org.encog.ensemble.data.EnsembleDataSet;
 import org.encog.ensemble.data.factories.ResamplingDataSetFactory;
 import org.encog.mathutil.VectorAlgebra;
 import org.encog.ml.data.MLDataPair;
@@ -33,7 +34,8 @@ public class AdaBoost extends Ensemble {
 		this.aggregator = aggregator;
 	}
 	
-	public void train(double targetAccuracy, boolean verbose) {
+	@Override
+	public void train(double targetAccuracy, double selectionError, EnsembleDataSet testset, boolean verbose) {
 		ArrayList<Double> D = new ArrayList<Double>();
 		int dss = dataSetFactory.getInputData().size();
 		for (int k = 0; k < dss; k++)
@@ -42,9 +44,12 @@ public class AdaBoost extends Ensemble {
 			dataSetFactory.setSignificance(D);
 			MLDataSet thisSet = dataSetFactory.getNewDataSet();
 			GenericEnsembleML newML = new GenericEnsembleML(mlFactory.createML(dataSetFactory.getInputData().getInputSize(), dataSetFactory.getInputData().getIdealSize()),mlFactory.getLabel());
-			MLTrain train = trainFactory.getTraining(newML.getMl(), thisSet);
-			newML.setTraining(train);
-			newML.train(targetAccuracy,verbose);
+			do {
+				mlFactory.reInit(newML);
+				MLTrain train = trainFactory.getTraining(newML.getMl(), thisSet);
+				newML.setTraining(train);
+				newML.train(targetAccuracy,verbose);
+			} while (newML.getError(testset) > selectionError);
 			double newWeight = getWeightedError(newML,thisSet);
 			members.add(newML);
 			weights.add(newWeight);
