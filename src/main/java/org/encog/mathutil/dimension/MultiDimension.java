@@ -101,7 +101,7 @@ public class MultiDimension {
 	 * @return The flat 1d index.
 	 */
 	public int flatten(DimensionConstraint constraint) {
-		int result = this.dimensions[0];
+		int result = 0;
 		int mult = 1;
 
 		for (int i = 0; i < size(); i++) {
@@ -126,6 +126,20 @@ public class MultiDimension {
 	
 	public String toString() {
 		return Arrays.toString(this.dimensions);
+	}
+
+	public double calculateLowerStep(DimensionConstraint constraint, int d) {
+		if( this.dimensions[d]<=constraint.getLower(d))
+			return 0;
+		else
+			return -1;
+	}
+
+	public double calculateUpperStep(DimensionConstraint constraint, int d) {
+		if( this.dimensions[d]<=constraint.getLower(d))
+			return 0;
+		else
+			return 1;
 	}
 
 }

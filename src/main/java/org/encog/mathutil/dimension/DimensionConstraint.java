@@ -81,7 +81,7 @@ public class DimensionConstraint {
 	 * @return The range for the specified dimension.
 	 */
 	public int getRange(int d) {
-		return upper.getDimension(d) - lower.getDimension(d);
+		return (upper.getDimension(d) - lower.getDimension(d))+1;
 	}
 
 }
