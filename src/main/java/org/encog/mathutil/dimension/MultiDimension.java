@@ -28,13 +28,6 @@ public class MultiDimension {
 		this.dimensions = new int[n];
 	}
 
-	public MultiDimension(double[] theArray, int theStart, int theSize) {
-		this.dimensions = new int[theSize];
-		for(int i=0;i<theSize;i++) {
-			this.dimensions[i] = (int)theArray[i];
-		}
-	}
-
 	public MultiDimension(MultiDimension lower) {
 		this.dimensions = lower.getDimensions().clone();
 	}

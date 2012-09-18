@@ -84,4 +84,8 @@ public class DimensionConstraint {
 		return (upper.getDimension(d) - lower.getDimension(d))+1;
 	}
 
+	public int getMiddle(int d) {
+		return getRange(d)/2;
+	}
+
 }
