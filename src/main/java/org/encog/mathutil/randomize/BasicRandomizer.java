@@ -199,4 +199,9 @@ public abstract class BasicRandomizer implements Randomizer {
 	public final void setRandom(final Random theRandom) {
 		this.random = theRandom;
 	}
+	
+	
+	public final void setSeed(long seed) {
+		this.random.setSeed(seed);
+	}
 }
