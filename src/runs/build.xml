@@ -1,6 +1,8 @@
 <project>
 	<target name="clean">
-		<delete dir="build/classes"/>
+    <delete includeEmptyDirs="true" failonerror="false">
+      <fileset dir="build/classes" followsymlinks="false"/>
+    </delete>
 	</target>
 	<target name="build">
 		<mkdir dir="build/classes"/>
