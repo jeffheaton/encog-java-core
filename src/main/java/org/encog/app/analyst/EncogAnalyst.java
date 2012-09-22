@@ -51,6 +51,7 @@ import org.encog.app.analyst.commands.CmdReset;
 import org.encog.app.analyst.commands.CmdSegregate;
 import org.encog.app.analyst.commands.CmdSet;
 import org.encog.app.analyst.commands.CmdTrain;
+import org.encog.app.analyst.commands.CmdProcess;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
@@ -139,6 +140,7 @@ public class EncogAnalyst {
 		addCommand(new CmdReset(this));
 		addCommand(new CmdCluster(this));
 		addCommand(new CmdCode(this));
+		addCommand(new CmdProcess(this));
 	}
 
 	/**

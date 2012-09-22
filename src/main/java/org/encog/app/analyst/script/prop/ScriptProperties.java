@@ -272,6 +272,18 @@ public class ScriptProperties {
 	 */
 	public static final String CODE_CONFIG_EMBED_DATA 
 		= "CODE:CONFIG_embedData";
+	
+	/**
+	 * Property for: "PROCESS:CONFIG,sourceFile".
+	 */
+	public static final String PROCESS_CONFIG_SOURCE_FILE = 
+			"PROCESS:CONFIG_sourceFile";
+
+	/**
+	 * Property for: "PROCESS:CONFIG,targetFile".
+	 */
+	public static final String PROCESS_CONFIG_TARGET_FILE = 
+			"PROCESS:CONFIG_targetFile";
 
 	/**
 	 * Convert a key to the dot form.

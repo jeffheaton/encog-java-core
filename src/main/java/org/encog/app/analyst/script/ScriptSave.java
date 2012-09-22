@@ -74,6 +74,7 @@ public class ScriptSave {
 			saveNormalize(out);
 		}
 
+		saveSubSection(out, "PROCESS", "CONFIG");
 		saveSubSection(out, "RANDOMIZE", "CONFIG");
 		saveSubSection(out, "CLUSTER", "CONFIG");
 		saveSubSection(out, "BALANCE", "CONFIG");

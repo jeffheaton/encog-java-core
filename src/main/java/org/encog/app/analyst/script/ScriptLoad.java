@@ -423,6 +423,9 @@ public class ScriptLoad {
 		} else if (currentSection.equals("CODE")
 				&& currentSubsection.equalsIgnoreCase("CONFIG")) {
 			loadSubSection(section);
+		} else if (currentSection.equals("PROCESS")
+				&& currentSubsection.equalsIgnoreCase("CONFIG")) {
+			loadSubSection(section);
 		}
 	}
 

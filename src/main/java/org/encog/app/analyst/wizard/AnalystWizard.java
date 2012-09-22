@@ -87,6 +87,12 @@ public class AnalystWizard {
 	 * The default training error.
 	 */
 	public static final double DEFAULT_TRAIN_ERROR = 0.05;
+	
+	/**
+	 * The processed data.
+	 */	
+	public static final String FILE_PRE = "FILE_PROCESSED";
+	
 
 	/**
 	 * The raw file.
@@ -199,6 +205,11 @@ public class AnalystWizard {
 	private String filenameBalance;
 
 	/**
+	 * The processed filename.
+	 */
+	private String filenameProcess;
+	
+	/**
 	 * The cluster filename.
 	 */
 	private String filenameCluster;
@@ -310,6 +321,8 @@ public class AnalystWizard {
 	private TargetLanguage codeTargetLanguage = TargetLanguage.NoGeneration;
 	
 	private boolean codeEmbedData;
+	
+	private boolean preprocess = false;
 
 	/**
 	 * Construct the analyst wizard.
@@ -654,6 +667,12 @@ public class AnalystWizard {
 	 */
 	private void generateFilenames(final File rawFile) {
 		this.filenameRaw = rawFile.getName();
+		
+		if( this.preprocess ) {
+			this.filenameProcess = FileUtil.addFilenameBase(rawFile, "_process")
+					.getName();
+		}
+		
 		this.filenameNorm = FileUtil.addFilenameBase(rawFile, "_norm")
 				.getName();
 		this.filenameRandom = FileUtil.addFilenameBase(rawFile, "_random")
@@ -679,6 +698,11 @@ public class AnalystWizard {
 		final ScriptProperties p = this.script.getProperties();
 
 		p.setFilename(AnalystWizard.FILE_RAW, this.filenameRaw);
+		
+		if( this.preprocess ) {
+			p.setFilename(AnalystWizard.FILE_PRE, this.filenameProcess);
+		}
+		
 		if (this.taskNormalize) {
 			p.setFilename(AnalystWizard.FILE_NORMALIZE, this.filenameNorm);
 		}
@@ -867,11 +891,21 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.HEADER_DATASOURCE_RAW_FILE, target);
 
+		// preprocess
+		if( this.preprocess ) {
+			this.script.getProperties().setProperty(
+					ScriptProperties.PROCESS_CONFIG_SOURCE_FILE,
+					target);
+			target = AnalystWizard.FILE_PRE;
+			this.script.getProperties().setProperty(
+					ScriptProperties.PROCESS_CONFIG_TARGET_FILE, target);
+		}
+		
 		// randomize
 		if (!this.timeSeries && this.taskRandomize) {
 			this.script.getProperties().setProperty(
 					ScriptProperties.RANDOMIZE_CONFIG_SOURCE_FILE,
-					AnalystWizard.FILE_RAW);
+					target);
 			target = AnalystWizard.FILE_RANDOM;
 			this.script.getProperties().setProperty(
 					ScriptProperties.RANDOMIZE_CONFIG_TARGET_FILE, target);
@@ -1033,6 +1067,10 @@ public class AnalystWizard {
 	 */
 	private void generateTasks() {
 		final AnalystTask task1 = new AnalystTask(EncogAnalyst.TASK_FULL);
+		if( this.preprocess ) {
+			task1.getLines().add("process");
+		}
+		
 		if (!this.timeSeries && this.taskRandomize) {
 			task1.getLines().add("randomize");
 		}
@@ -1329,6 +1367,7 @@ public class AnalystWizard {
 	
 	public void wizardRealTime(List<SourceElement> sourceData, File csvFile) 
 	{
+		this.preprocess = true;
 		this.script.setBasePath(csvFile.getParent());
 		this.script.getProperties().setProperty(
 				ScriptProperties.HEADER_DATASOURCE_SOURCE_HEADERS, true);
@@ -1523,9 +1562,11 @@ public class AnalystWizard {
 		this.codeEmbedData = codeEmbedData;
 	}
 
+	public boolean isPreprocess() {
+		return preprocess;
+	}
 
-	
-	
-
-
+	public void setPreprocess(boolean preprocess) {
+		this.preprocess = preprocess;
+	}
 }
