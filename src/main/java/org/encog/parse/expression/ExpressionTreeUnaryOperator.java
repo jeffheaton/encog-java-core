@@ -1,5 +1,7 @@
 package org.encog.parse.expression;
 
+import org.encog.parse.expression.expvalue.ExpressionValue;
+
 public class ExpressionTreeUnaryOperator extends ExpressionTreeElement {
 	private final String name;
 	private final ExpressionTreeElement argA;
@@ -19,9 +21,9 @@ public class ExpressionTreeUnaryOperator extends ExpressionTreeElement {
 	}
 
 	@Override
-	public double evaluate() {
+	public ExpressionValue evaluate() {
 		if( name.equals("-") ) {
-			return -this.argA.evaluate();
+			return new ExpressionValue(-this.argA.evaluate().toFloatValue());
 		} else {
 			throw new ExpressionError("Unknown operator: " + name);
 		}

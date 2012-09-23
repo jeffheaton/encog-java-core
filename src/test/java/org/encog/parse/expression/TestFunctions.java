@@ -7,7 +7,7 @@ import org.encog.Encog;
 
 public class TestFunctions extends TestCase {
 	public void testBasicFunctions() {
-		Assert.assertEquals( 3, ExpressionHolder.parse("sqrt(9)"),Encog.DEFAULT_DOUBLE_EQUAL);
-		Assert.assertEquals( 100, ExpressionHolder.parse("pow(10,2)"),Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals( 3, ExpressionHolder.parseFloat("sqrt(9)"),Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals( 100, ExpressionHolder.parseFloat("pow(10,2)"),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 }

@@ -9,7 +9,7 @@ public class TestExpressionVar extends TestCase {
 	public void testAssignment() {
 		ExpressionHolder expression = new ExpressionHolder("a");
 		expression.set("a",5);
-		Assert.assertEquals(5,expression.evaluate(),Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(5,expression.evaluate().getFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 	
 	public void testAssignment2() {
@@ -17,7 +17,7 @@ public class TestExpressionVar extends TestCase {
 		expression.set("aa",1);
 		expression.set("bbb",2);
 		expression.set("cccc",3);
-		Assert.assertEquals(9,expression.evaluate(),Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(9,expression.evaluate().toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 	
 	public void testError() {

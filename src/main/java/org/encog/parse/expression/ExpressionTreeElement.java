@@ -1,5 +1,7 @@
 package org.encog.parse.expression;
 
+import org.encog.parse.expression.expvalue.ExpressionValue;
+
 public abstract class ExpressionTreeElement {
-	public abstract double evaluate();
+	public abstract ExpressionValue evaluate();
 }

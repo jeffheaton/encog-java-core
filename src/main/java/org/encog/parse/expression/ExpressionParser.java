@@ -3,6 +3,7 @@ package org.encog.parse.expression;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.parse.expression.expvalue.ExpressionValue;
 import org.encog.util.SimpleParser;
 
 public class ExpressionParser {
@@ -247,7 +248,7 @@ public class ExpressionParser {
 
 		if (neg)
 			value = -value;
-		return new ExpressionTreeConst(value);
+		return new ExpressionTreeConst(new ExpressionValue(value));
 	}
 
 	public ExpressionHolder getHolder() {
