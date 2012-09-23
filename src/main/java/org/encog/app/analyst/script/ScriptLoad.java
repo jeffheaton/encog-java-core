@@ -33,6 +33,7 @@ import java.util.Map.Entry;
 
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.script.normalize.AnalystField;
+import org.encog.app.analyst.script.process.ProcessField;
 import org.encog.app.analyst.script.prop.PropertyConstraints;
 import org.encog.app.analyst.script.prop.PropertyEntry;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
@@ -426,6 +427,9 @@ public class ScriptLoad {
 		} else if (currentSection.equals("PROCESS")
 				&& currentSubsection.equalsIgnoreCase("CONFIG")) {
 			loadSubSection(section);
+		} else if (currentSection.equals("PROCESS")
+				&& currentSubsection.equalsIgnoreCase("FIELDS")) {
+			handleProcessFields(section);
 		}
 	}
 
@@ -445,6 +449,25 @@ public class ScriptLoad {
 					+ PropertyEntry.dotForm(section, subSection, name));
 		}
 		entry.validate(section, subSection, name, value);
+	}
+	
+	private void handleProcessFields(final EncogFileSection section) {		
+		List<ProcessField> fields = this.script.getProcess().getFields();
+		boolean first = true;
+		
+		fields.clear();
+		
+		for (final String line : section.getLines()) {
+			if (!first) {
+				final List<String> cols = EncogFileSection.splitColumns(line);
+				final String name = cols.get(0);
+				final String command = cols.get(1);
+				final ProcessField pf = new ProcessField(name,command);
+				fields.add(pf);
+			} else {
+				first = false;
+			}
+		}
 	}
 
 }

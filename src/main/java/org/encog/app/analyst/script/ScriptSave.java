@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.script.normalize.AnalystField;
+import org.encog.app.analyst.script.process.ProcessField;
 import org.encog.app.analyst.script.prop.PropertyConstraints;
 import org.encog.app.analyst.script.prop.PropertyEntry;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
@@ -74,7 +75,8 @@ public class ScriptSave {
 			saveNormalize(out);
 		}
 
-		saveSubSection(out, "PROCESS", "CONFIG");
+		saveProcess(out);
+		
 		saveSubSection(out, "RANDOMIZE", "CONFIG");
 		saveSubSection(out, "CLUSTER", "CONFIG");
 		saveSubSection(out, "BALANCE", "CONFIG");
@@ -86,6 +88,22 @@ public class ScriptSave {
 		saveSubSection(out, "GENERATE", "CONFIG");
 		saveMachineLearning(out);
 		saveTasks(out);
+		out.flush();
+	}
+
+	private void saveProcess(EncogWriteHelper out) {
+		saveSubSection(out, "PROCESS", "CONFIG");
+		
+		out.addSubSection("FIELDS");
+		out.addColumn("name");
+		out.addColumn("command");
+		out.writeLine();
+
+		for (final ProcessField field : this.script.getProcess().getFields()) {
+			out.addColumn(field.getName());
+			out.addColumn(field.getCommand());
+			out.writeLine();
+		}
 		out.flush();
 	}
 

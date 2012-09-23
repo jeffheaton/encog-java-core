@@ -41,6 +41,7 @@ import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.normalize.AnalystField;
+import org.encog.app.analyst.script.process.ProcessField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
@@ -1400,8 +1401,8 @@ public class AnalystWizard {
 		generateSourceData(sourceData);
 		generateNormalizedFields();
 		generateSegregate();
-
 		generateGenerate();
+		generateProcess();
 
 		generateTasks();
 		if (this.timeSeries && (this.lagWindowSize > 0)
@@ -1568,5 +1569,17 @@ public class AnalystWizard {
 
 	public void setPreprocess(boolean preprocess) {
 		this.preprocess = preprocess;
+	}
+	
+	private void generateProcess() {
+		List<ProcessField> fields = this.script.getProcess().getFields();
+		fields.clear();
+		for(DataField df: this.script.getFields()) {
+			StringBuilder command = new StringBuilder();
+			command.append("field(\"");
+			command.append(df.getName());
+			command.append("\")");
+			fields.add(new ProcessField(df.getName(), command.toString()));
+		}
 	}
 }

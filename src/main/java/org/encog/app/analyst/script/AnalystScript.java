@@ -35,6 +35,7 @@ import org.encog.Encog;
 import org.encog.app.analyst.AnalystFileFormat;
 import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.normalize.AnalystNormalize;
+import org.encog.app.analyst.script.process.AnalystProcess;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregate;
 import org.encog.app.analyst.script.task.AnalystTask;
@@ -64,6 +65,11 @@ public class AnalystScript {
 	 * Information about how to segregate.
 	 */
 	private final AnalystSegregate segregate = new AnalystSegregate();
+	
+	/**
+	 * Information about the process command.
+	 */
+	private final AnalystProcess process = new AnalystProcess();
 	
 	/**
 	 * Tracks which files were generated.
@@ -327,4 +333,10 @@ public class AnalystScript {
 		}
 		return null;
 	}
+
+	public AnalystProcess getProcess() {
+		return process;
+	}
+	
+	
 }
