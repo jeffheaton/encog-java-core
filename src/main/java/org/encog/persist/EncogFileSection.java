@@ -34,6 +34,7 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
+import org.encog.util.csv.ParseCSVLine;
 
 /**
  * This class is used internally to parse Encog files. A file section is part of
@@ -242,19 +243,8 @@ public class EncogFileSection {
 	 * @return The string split.
 	 */
 	public static List<String> splitColumns(final String line) {
-		final List<String> result = new ArrayList<String>();
-		final StringTokenizer tok = new StringTokenizer(line, ",");
-		while (tok.hasMoreTokens()) {
-			String str = tok.nextToken().trim();
-			if ((str.length() > 0) && (str.charAt(0) == '\"')) {
-				str = str.substring(1);
-				if (str.endsWith("\"")) {
-					str = str.substring(0, str.length() - 1);
-				}
-			}
-			result.add(str);
-		}
-		return result;
+		ParseCSVLine csvLine = new ParseCSVLine(CSVFormat.EG_FORMAT);
+		return csvLine.parse(line);
 	}
 
 	/**

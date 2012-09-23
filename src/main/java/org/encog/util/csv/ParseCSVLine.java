@@ -63,7 +63,12 @@ public class ParseCSVLine {
 				quoted = false;
 				hadQuotes = false;
 			} else if ((ch == '\"') && quoted) {
-				quoted = false;
+				if( (i+1)<line.length() && line.charAt(i+1)=='\"' ) {
+					i++;
+					item.append("\"");
+				} else {
+					quoted = false;
+				}
 			} else if ((ch == '\"') && (item.length() == 0)) {
 				hadQuotes = true;
 				quoted = true;

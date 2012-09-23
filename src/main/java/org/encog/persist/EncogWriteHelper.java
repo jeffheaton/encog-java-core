@@ -123,10 +123,19 @@ public class EncogWriteHelper {
 		if (this.line.length() > 0) {
 			this.line.append(EncogWriteHelper.COMMA);
 		}
-
-		this.line.append(EncogWriteHelper.QUOTE);
-		this.line.append(str);
-		this.line.append(EncogWriteHelper.QUOTE);
+		
+		if( str.length()>0 ) {
+			this.line.append(EncogWriteHelper.QUOTE);
+			for(int i=0;i<str.length();i++) {
+				char ch = str.charAt(i);
+				if( ch=='\"' ) {
+					this.line.append("\"\"");
+				} else {
+					this.line.append(ch);
+				}
+			}
+			this.line.append(EncogWriteHelper.QUOTE);
+		}		
 	}
 
 	/**
