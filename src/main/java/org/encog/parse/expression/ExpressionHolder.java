@@ -38,11 +38,16 @@ public class ExpressionHolder {
 
 	public static double parseFloat(String str) {
 		ExpressionHolder holder = new ExpressionHolder(str);
-		return holder.evaluate().getFloatValue();
+		return holder.evaluate().toFloatValue();
 	}
 
 	public void set(String name, double d) {
 		set(name,new ExpressionValue(d));
 		
+	}
+
+	public static String parseString(String str) {
+		ExpressionHolder holder = new ExpressionHolder(str);
+		return holder.evaluate().toStringValue();
 	}
 }

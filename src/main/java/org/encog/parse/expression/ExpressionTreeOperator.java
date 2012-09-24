@@ -1,5 +1,6 @@
 package org.encog.parse.expression;
 
+import org.encog.parse.expression.expvalue.EvaluateExpr;
 import org.encog.parse.expression.expvalue.ExpressionValue;
 
 public class ExpressionTreeOperator extends ExpressionTreeElement {
@@ -30,15 +31,15 @@ public class ExpressionTreeOperator extends ExpressionTreeElement {
 	@Override
 	public ExpressionValue evaluate() {
 		if( name.equals("+") ) {
-			return new ExpressionValue(this.argA.evaluate().getFloatValue() + this.argB.evaluate().getFloatValue());
+			return EvaluateExpr.add(this.argA.evaluate(), this.argB.evaluate());
 		} else if( name.equals("-") ) {
-			return new ExpressionValue(this.argA.evaluate().getFloatValue() - this.argB.evaluate().getFloatValue());
+			return EvaluateExpr.sub(this.argA.evaluate(), this.argB.evaluate());
 		} else if( name.equals("/") ) {
-			return new ExpressionValue(this.argA.evaluate().getFloatValue() / this.argB.evaluate().getFloatValue());
+			return EvaluateExpr.div(this.argA.evaluate(), this.argB.evaluate());
 		} else if( name.equals("*") ) {
-			return new ExpressionValue(this.argA.evaluate().getFloatValue() * this.argB.evaluate().getFloatValue());
+			return EvaluateExpr.mul(this.argA.evaluate(), this.argB.evaluate());
 		} else if( name.equals("^") ) {
-			return new ExpressionValue(Math.pow(this.argA.evaluate().toFloatValue(), this.argB.evaluate().toFloatValue()));
+			return EvaluateExpr.pow(this.argA.evaluate(), this.argB.evaluate());
 		} else {
 			throw new ExpressionError("Unknown operator: " + name);
 		}

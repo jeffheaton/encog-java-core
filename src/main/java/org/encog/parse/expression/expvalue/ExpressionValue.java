@@ -21,18 +21,6 @@ public class ExpressionValue {
 		setValue( theValue );
 	}
 	
-	public String getStringValue() {
-		return stringValue;
-	}
-
-	public double getFloatValue() {
-		return floatValue;
-	}
-	
-	public boolean isBoolValue() {
-		return boolValue;
-	}
-	
 	public ValueType getCurrentType() {
 		return currentType;
 	}
@@ -106,6 +94,10 @@ public class ExpressionValue {
 		result.append(toStringValue());
 		result.append("]");
 		return result.toString();
+	}
+
+	public boolean isString() {
+		return this.currentType==ValueType.stringType;
 	}
 
 }

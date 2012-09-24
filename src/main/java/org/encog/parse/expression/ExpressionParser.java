@@ -144,7 +144,7 @@ public class ExpressionParser {
 			}
 		} else if ((this.parser.peek() == '+') || (this.parser.peek() == '-')
 				|| Character.isDigit(this.parser.peek())
-				|| (this.parser.peek() == '.') || (this.parser.peek() == '\"'))
+				|| (this.parser.peek() == '.') )
 			target = parseConstant();
 		else if (this.parser.peek() == '(') {
 			this.parenCount++;
@@ -154,6 +154,9 @@ public class ExpressionParser {
 				this.parenCount--;
 				this.parser.advance();
 			}
+		} 
+		else if( this.parser.peek() == '\"' ) {
+			target = this.parseString();
 		} else
 			throw (new ExpressionError("Syntax error"));
 
@@ -164,11 +167,10 @@ public class ExpressionParser {
 		return target;
 	}
 
-	private String parseString() {
+	private ExpressionTreeConst parseString() {
 		StringBuilder str = new StringBuilder();
 
 		char ch;
-		int i = 0;
 
 		if (this.parser.peek() == '\"')
 			this.parser.advance();
@@ -187,7 +189,7 @@ public class ExpressionParser {
 
 		if (ch != 34)
 			throw (new ExpressionError("Unterminated string"));
-		return str.toString();
+		return new ExpressionTreeConst(new ExpressionValue(str.toString()));
 	}
 
 	private ExpressionTreeElement parseConstant() {
