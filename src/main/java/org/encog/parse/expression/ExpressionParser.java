@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.parse.expression.expvalue.ExpressionValue;
+import org.encog.parse.expression.operators.ExpressionOperatorAdd;
+import org.encog.parse.expression.operators.ExpressionOperatorDiv;
+import org.encog.parse.expression.operators.ExpressionOperatorMul;
+import org.encog.parse.expression.operators.ExpressionOperatorPow;
+import org.encog.parse.expression.operators.ExpressionOperatorSub;
 import org.encog.util.SimpleParser;
 
 public class ExpressionParser {
@@ -49,10 +54,10 @@ public class ExpressionParser {
 			
 			if (ch=='-') {
 				ExpressionTreeElement t = expr1();
-				target = new ExpressionTreeOperator("-", target, t);
+				target = new ExpressionOperatorSub(target, t);
 			} else if (ch == '+') {
 				ExpressionTreeElement t = expr1();
-				target = new ExpressionTreeOperator("+", target, t);
+				target = new ExpressionOperatorAdd(target, t);
 			}
 		}
 		
@@ -77,10 +82,10 @@ public class ExpressionParser {
 		while (nextchar > 0 && ("/*<>=".indexOf(nextchar) != -1)) {
 			switch (this.parser.readChar()) {
 			case '*':
-				return new ExpressionTreeOperator("*", target, expr1p5());
+				return new ExpressionOperatorMul(target, expr1p5());
 
 			case '/':
-				return new ExpressionTreeOperator("/", target, expr1p5());
+				return new ExpressionOperatorDiv(target, expr1p5());
 			}
 		}
 		return target;
@@ -162,7 +167,7 @@ public class ExpressionParser {
 
 		while (this.parser.peek() == '^') {
 			this.parser.advance();
-			return new ExpressionTreeOperator("^", target, expr1p5());
+			return new ExpressionOperatorPow(target, expr1p5());
 		}
 		return target;
 	}
