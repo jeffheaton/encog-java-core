@@ -5,15 +5,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.app.analyst.commands.ProcessExtension;
 import org.encog.parse.expression.expvalue.ExpressionValue;
+import org.encog.parse.expression.extension.ExpressionExtension;
+import org.encog.parse.expression.extension.StandardFunctionsExtension;
+import org.encog.util.csv.CSVFormat;
 
 public class ExpressionHolder {
 
 	private final List<ExpressionTreeElement> expressions = new ArrayList<ExpressionTreeElement>();
 	private final Map<String,ExpressionValue> memory = new HashMap<String,ExpressionValue>();
+	private final List<ExpressionExtension> extensions = new ArrayList<ExpressionExtension>();
+	private CSVFormat format = CSVFormat.EG_FORMAT;
 
 	public ExpressionHolder(String expression) {
+		this();
 		compileExpression(expression);
+	}
+
+	public ExpressionHolder() {
+		this.extensions.add(new StandardFunctionsExtension());
 	}
 
 	public static ExpressionValue parse(String str) {
@@ -62,6 +73,27 @@ public class ExpressionHolder {
 	public List<ExpressionTreeElement> getExpressions() {
 		return expressions;
 	}
+
+	public void addExtension(ProcessExtension extension) {
+		this.extensions.add(extension);
+	}
+	
+	public void removeExtension(ProcessExtension extension) {
+		this.extensions.remove(extension);
+	}
+	
+	public List<ExpressionExtension> getExtensions() {
+		return this.extensions;
+	}
+
+	public CSVFormat getFormat() {
+		return format;
+	}
+
+	public void setFormat(CSVFormat format) {
+		this.format = format;
+	}
+
 	
 	
 }

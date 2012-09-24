@@ -26,10 +26,11 @@ package org.encog.app.analyst.commands;
 import java.io.File;
 
 import org.encog.app.analyst.EncogAnalyst;
-import org.encog.app.analyst.csv.shuffle.ShuffleCSV;
-import org.encog.app.analyst.csv.transform.AnalystTransform;
+import org.encog.app.analyst.csv.transform.AnalystProcess;
+import org.encog.app.analyst.script.process.ProcessField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
+import org.encog.parse.expression.ExpressionHolder;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.logging.EncogLogging;
 
@@ -79,7 +80,7 @@ public class CmdProcess extends Cmd {
 		getScript().markGenerated(targetID);
 
 		// prepare to transform
-		final AnalystTransform norm = new AnalystTransform();
+		final AnalystProcess norm = new AnalystProcess(getAnalyst());
 		norm.setScript(getScript());
 		getAnalyst().setCurrentQuantTask(norm);
 		norm.setReport(new AnalystReportBridge(getAnalyst()));

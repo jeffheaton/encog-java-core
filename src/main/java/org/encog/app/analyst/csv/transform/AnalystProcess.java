@@ -26,25 +26,44 @@ package org.encog.app.analyst.csv.transform;
 import java.io.File;
 import java.io.PrintWriter;
 
+import org.encog.app.analyst.EncogAnalyst;
+import org.encog.app.analyst.commands.ProcessExtension;
 import org.encog.app.analyst.csv.basic.BasicFile;
 import org.encog.app.analyst.csv.basic.LoadedRow;
+import org.encog.app.analyst.script.process.ProcessField;
+import org.encog.parse.expression.ExpressionHolder;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
 /**
  * Perform many different types of transformations on a CSV.
  */
-public class AnalystTransform extends BasicFile {
+public class AnalystProcess extends BasicFile {
 
 	/**
 	 * The buffer.
 	 */
 	private LoadedRow[] buffer;
-
+	
+	private final ExpressionHolder expressionFields;
+	private final ProcessExtension extension;
+	private final EncogAnalyst analyst;
+	
+	
 	/**
 	 * Construct the object.
 	 */
-	public AnalystTransform() {
+	public AnalystProcess(EncogAnalyst theAnalyst) {
+		this.analyst = theAnalyst;
+		
+		this.expressionFields = new ExpressionHolder();
+		
+		for(ProcessField field : this.analyst.getScript().getProcess().getFields() ) {
+			this.expressionFields.compileExpression(field.getCommand());
+		}
+		
+		extension = new ProcessExtension();
+		this.expressionFields.addExtension(this.extension);
 	}
 
 	/**

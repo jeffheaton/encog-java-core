@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.parse.expression.expvalue.ExpressionValue;
+import org.encog.parse.expression.extension.ExpressionExtension;
+import org.encog.parse.expression.extension.StandardFunctionsExtension;
 import org.encog.parse.expression.operators.ExpressionOperatorAdd;
 import org.encog.parse.expression.operators.ExpressionOperatorDiv;
 import org.encog.parse.expression.operators.ExpressionOperatorMul;
@@ -126,7 +128,17 @@ public class ExpressionParser {
 		}
 		this.parser.advance();
 		
-		return new ExpressionTreeFunction(this.holder,name,args);
+		ExpressionTreeFunction fn = null;
+		
+		for(ExpressionExtension extension: this.holder.getExtensions()) {
+			fn = extension.factorFunction(this.holder, name, args);
+		}
+		
+		if( fn!=null ) {
+			return fn;
+		} else {
+			throw new ExpressionError("Undefined function: " + name);
+		}
 	}
 
 	private ExpressionTreeElement expr1p5() {
@@ -228,7 +240,9 @@ public class ExpressionParser {
 
 			int i = 1;
 			while (Character.isDigit(this.parser.peek())) {
-				value += (this.parser.readChar() - '0')/(10.0*i);
+				double f = (this.parser.readChar() - '0');
+				f/=Math.pow(10.0, i);
+				value+=f;
 				i++;
 			}
 		}
