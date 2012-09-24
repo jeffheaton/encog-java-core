@@ -1,27 +1,35 @@
 package org.encog.parse.expression;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.encog.parse.expression.expvalue.ExpressionValue;
 
 public class ExpressionHolder {
 
-	private final ExpressionTreeElement root;
+	private final List<ExpressionTreeElement> expressions = new ArrayList<ExpressionTreeElement>();
 	private final Map<String,ExpressionValue> memory = new HashMap<String,ExpressionValue>();
 
 	public ExpressionHolder(String expression) {
-		ExpressionParser parser = new ExpressionParser(this);
-		this.root = parser.parse(expression);
+		compileExpression(expression);
 	}
 
 	public static ExpressionValue parse(String str) {
 		ExpressionHolder holder = new ExpressionHolder(str);
-		return holder.evaluate();
+		return holder.evaluate(0);
+	}
+	
+	public ExpressionTreeElement compileExpression(String expression) {
+		ExpressionParser parser = new ExpressionParser(this);
+		ExpressionTreeElement e = parser.parse(expression);
+		this.expressions.add(e);
+		return e;
 	}
 
-	public ExpressionValue evaluate() {
-		return root.evaluate();
+	public ExpressionValue evaluate(int i) {
+		return this.expressions.get(0).evaluate();
 	}
 
 	public void set(String name, ExpressionValue value) {
@@ -38,7 +46,7 @@ public class ExpressionHolder {
 
 	public static double parseFloat(String str) {
 		ExpressionHolder holder = new ExpressionHolder(str);
-		return holder.evaluate().toFloatValue();
+		return holder.evaluate(0).toFloatValue();
 	}
 
 	public void set(String name, double d) {
@@ -48,6 +56,12 @@ public class ExpressionHolder {
 
 	public static String parseString(String str) {
 		ExpressionHolder holder = new ExpressionHolder(str);
-		return holder.evaluate().toStringValue();
+		return holder.evaluate(0).toStringValue();
 	}
+
+	public List<ExpressionTreeElement> getExpressions() {
+		return expressions;
+	}
+	
+	
 }
