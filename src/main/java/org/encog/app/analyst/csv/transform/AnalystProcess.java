@@ -24,13 +24,15 @@
 package org.encog.app.analyst.csv.transform;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 import org.encog.app.analyst.EncogAnalyst;
-import org.encog.app.analyst.commands.ProcessExtension;
 import org.encog.app.analyst.csv.basic.BasicFile;
 import org.encog.app.analyst.csv.basic.LoadedRow;
 import org.encog.app.analyst.script.process.ProcessField;
+import org.encog.app.quant.QuantError;
 import org.encog.parse.expression.ExpressionHolder;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
@@ -48,22 +50,26 @@ public class AnalystProcess extends BasicFile {
 	private final ExpressionHolder expressionFields;
 	private final ProcessExtension extension;
 	private final EncogAnalyst analyst;
+	private final int forwardWindowSize;
+	private final int backwardWindowSize;
 	
 	
 	/**
 	 * Construct the object.
 	 */
-	public AnalystProcess(EncogAnalyst theAnalyst) {
+	public AnalystProcess(EncogAnalyst theAnalyst, int theBackwardWindowSize, int theForwardWindowSize) {
 		this.analyst = theAnalyst;
 		
+		this.backwardWindowSize = theBackwardWindowSize;
+		this.forwardWindowSize = theForwardWindowSize;
+		
 		this.expressionFields = new ExpressionHolder();
+		extension = new ProcessExtension();
+		this.expressionFields.addExtension(this.extension);
 		
 		for(ProcessField field : this.analyst.getScript().getProcess().getFields() ) {
 			this.expressionFields.compileExpression(field.getCommand());
 		}
-		
-		extension = new ProcessExtension();
-		this.expressionFields.addExtension(this.extension);
 	}
 
 	/**
@@ -101,6 +107,42 @@ public class AnalystProcess extends BasicFile {
 			return null;
 		}		
 	}
+	
+	/**
+	 * Prepare the output file, write headers if needed.
+	 * 
+	 * @param outputFile
+	 *            The name of the output file.
+	 * @return The output stream for the text file.
+	 */
+	public PrintWriter prepareOutputFile(final File outputFile) {
+		try {
+			final PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
+
+			// write headers, if needed
+			if (this.isProduceOutputHeaders()) {
+				int index = 0;
+				final StringBuilder line = new StringBuilder();
+
+				for( ProcessField field : this.analyst.getScript().getProcess().getFields() ) {
+					if (line.length() > 0) {
+						line.append(this.getFormat().getSeparator());
+					}
+					line.append("\"");
+					line.append(field.getName());
+					line.append("\"");
+					index++;
+				}
+				
+				tw.println(line.toString());
+			}
+
+			return tw;
+
+		} catch (final IOException e) {
+			throw new QuantError(e);
+		}
+	}
 
 
 	/**
@@ -117,9 +159,13 @@ public class AnalystProcess extends BasicFile {
 		LoadedRow row;
 
 		final PrintWriter tw = prepareOutputFile(outputFile);
+		this.extension.init(csv, 
+				this.forwardWindowSize,
+				this.backwardWindowSize);
 
 		resetStatus();
 		while ((row = getNextRow(csv)) != null) {
+			this.extension.processLine(row);
 			writeRow(tw, row);
 			updateStatus(false);
 		}

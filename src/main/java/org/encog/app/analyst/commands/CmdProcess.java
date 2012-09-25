@@ -65,6 +65,11 @@ public class CmdProcess extends Cmd {
 				ScriptProperties.PROCESS_CONFIG_SOURCE_FILE);
 		final String targetID = getProp().getPropertyString(
 				ScriptProperties.PROCESS_CONFIG_TARGET_FILE);
+		
+		final int forwardSize = getProp().getPropertyInt(
+				ScriptProperties.PROCESS_CONFIG_FORWARD_SIZE);
+		final int backwardSize = getProp().getPropertyInt(
+				ScriptProperties.PROCESS_CONFIG_BACKWARD_SIZE);
 
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Beginning randomize");
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "source file:" + sourceID);
@@ -80,7 +85,7 @@ public class CmdProcess extends Cmd {
 		getScript().markGenerated(targetID);
 
 		// prepare to transform
-		final AnalystProcess norm = new AnalystProcess(getAnalyst());
+		final AnalystProcess norm = new AnalystProcess(getAnalyst(),backwardSize,forwardSize);
 		norm.setScript(getScript());
 		getAnalyst().setCurrentQuantTask(norm);
 		norm.setReport(new AnalystReportBridge(getAnalyst()));

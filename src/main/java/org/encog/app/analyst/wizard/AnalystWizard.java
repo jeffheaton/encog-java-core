@@ -1376,6 +1376,10 @@ public class AnalystWizard {
 				ScriptProperties.HEADER_DATASOURCE_RAW_FILE, csvFile);
 		this.script.getProperties().setProperty(
 				ScriptProperties.SETUP_CONFIG_INPUT_HEADERS, true);
+		
+		
+		this.script.getProperties().setProperty(ScriptProperties.PROCESS_CONFIG_BACKWARD_SIZE, 30);
+		this.script.getProperties().setProperty(ScriptProperties.PROCESS_CONFIG_FORWARD_SIZE, 30);
 
 		this.lagWindowSize = 10;
 		this.leadWindowSize = 1;

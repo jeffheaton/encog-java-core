@@ -284,6 +284,18 @@ public class ScriptProperties {
 	 */
 	public static final String PROCESS_CONFIG_TARGET_FILE = 
 			"PROCESS:CONFIG_targetFile";
+	
+	/**
+	 * Property for: "PROCESS:CONFIG,backwardSize".
+	 */
+	public static final String PROCESS_CONFIG_BACKWARD_SIZE = 
+			"PROCESS:CONFIG_backwardSize";
+	
+	/**
+	 * Property for: "PROCESS:CONFIG,forwardSize".
+	 */
+	public static final String PROCESS_CONFIG_FORWARD_SIZE = 
+			"PROCESS:CONFIG_forwardSize";
 
 	/**
 	 * Convert a key to the dot form.

@@ -47,3 +47,5 @@ CODE:CONFIG,embedData,boolean
 CODE:CONFIG,targetFile,string
 PROCESS:CONFIG,sourceFile,string
 PROCESS:CONFIG,targetFile,string
+PROCESS:CONFIG,backwardSize,int
+PROCESS:CONFIG,forwardSize,int
