@@ -25,8 +25,38 @@ public class GenerateEncogJava extends AbstractGenerator {
 		unIndentLine("}");
 	}
 	
+	private void generateFunctionCall(EncogProgramNode node) {
+		addBreak();
+		StringBuilder line = new StringBuilder();
+		line.append(node.getName());
+		line.append("();");
+		addLine(line.toString());		
+	}
+	
+	private void generateFunction(EncogProgramNode node) {
+		addBreak();
+		
+		StringBuilder line = new StringBuilder();
+		line.append("public static void ");
+		line.append(node.getName());
+		line.append("() {");
+		indentLine(line.toString());
+		
+		generateForChildren(node);
+		unIndentLine("}");
+	}
+	
 	private void generateConst(EncogProgramNode node) {
-		addLine("public static final ");
+		StringBuilder line = new StringBuilder();
+		line.append("public static final ");
+		line.append(node.getArgs().get(1).getValue());
+		line.append(" ");
+		line.append(node.getName());
+		line.append(" = \"");
+		line.append(node.getArgs().get(0).getValue());
+		line.append("\";");
+		
+		addLine(line.toString());
 		
 	}
 	
@@ -43,6 +73,12 @@ public class GenerateEncogJava extends AbstractGenerator {
 				break;
 			case Const:
 				generateConst(node);
+				break;
+			case StaticFunction:
+				generateFunction(node);
+				break;
+			case FunctionCall:
+				generateFunctionCall(node);
 				break;
 		}
 	}

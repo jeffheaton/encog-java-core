@@ -7,5 +7,7 @@ public enum NodeType {
 	Class,	
 	ForLoop,
 	WhileLoop, 
-	Const
+	Const, 
+	StaticFunction,
+	FunctionCall
 }

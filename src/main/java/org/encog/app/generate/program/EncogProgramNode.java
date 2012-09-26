@@ -42,6 +42,13 @@ public class EncogProgramNode extends EncogTreeNode {
 		EncogProgramArg arg = new EncogProgramArg(argValue);
 		this.args.add(arg);
 	}
+	
+	public EncogProgramNode createFunction(String theName) {
+		EncogProgramNode node = new EncogProgramNode(getProgram(), this,
+				NodeType.StaticFunction, theName);
+		this.getChildren().add(node);
+		return node;
+	}
 
 	public EncogProgramNode createMainFunction() {
 		EncogProgramNode node = new EncogProgramNode(getProgram(), this,
@@ -56,5 +63,13 @@ public class EncogProgramNode extends EncogTreeNode {
 		node.addArg(value);
 		node.addArg(type.toString());
 		this.getChildren().add(node);		
+	}
+
+	public EncogProgramNode createFunctionCall(EncogProgramNode funct) {
+		EncogProgramNode node = new EncogProgramNode(getProgram(), this,
+				NodeType.FunctionCall, funct.getName());
+		this.getChildren().add(node);
+		return node;
+		
 	}	
 }

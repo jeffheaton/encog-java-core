@@ -55,7 +55,11 @@ public class EncogCodeGeneration {
 	public void generate(EncogAnalyst analyst) {		
 		this.program.addComment("Hello World");
 		EncogProgramNode mainClass = this.program.createClass("EncogExample");
+		EncogProgramNode randomizeFunction = mainClass.createFunction("randomize");
+		
 		EncogProgramNode mainFunction = mainClass.createMainFunction();
+		mainFunction.createFunctionCall(randomizeFunction);
+		
 		generateFileNames(analyst,mainClass);
 		
 		this.generator.generate(this.program);
