@@ -132,6 +132,9 @@ public class ExpressionParser {
 		
 		for(ExpressionExtension extension: this.holder.getExtensions()) {
 			fn = extension.factorFunction(this.holder, name, args);
+			if( fn!=null ) {
+				break;
+			}
 		}
 		
 		if( fn!=null ) {

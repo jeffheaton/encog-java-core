@@ -1580,11 +1580,20 @@ public class AnalystWizard {
 		fields.clear();
 		for(DataField df: this.script.getFields()) {
 			StringBuilder command = new StringBuilder();
-			command.append("field(\"");
-			command.append(df.getName());
-			command.append("\",0");
-			command.append(")");
-			fields.add(new ProcessField(df.getName(), command.toString()));
+			
+			if( df.getName().equalsIgnoreCase("time") ) {
+				command.append("cint(field(\"");
+				command.append(df.getName());
+				command.append("\",0");
+				command.append("))");
+				fields.add(new ProcessField(df.getName(), command.toString()));
+			} else {
+				command.append("cfloat(field(\"");
+				command.append(df.getName());
+				command.append("\",0");
+				command.append("))");
+				fields.add(new ProcessField(df.getName(), command.toString()));
+			}
 		}
 	}
 }

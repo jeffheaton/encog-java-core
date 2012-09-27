@@ -8,7 +8,7 @@ public class ExpressionValue {
 	private double floatValue;
 	private boolean boolValue;
 	private ValueType currentType;
-	private int intValue;
+	private long intValue;
 	
 	public ExpressionValue(String theValue) {
 		setValue( theValue );
@@ -22,7 +22,7 @@ public class ExpressionValue {
 		setValue( theValue );
 	}
 	
-	public ExpressionValue(int theValue) {
+	public ExpressionValue(long theValue) {
 		setValue( theValue );
 	}
 	
@@ -43,7 +43,7 @@ public class ExpressionValue {
 		this.currentType = ValueType.floatingType;
 	}
 	
-	public void setValue(int intValue) {
+	public void setValue(long intValue) {
 		this.intValue = intValue;
 		this.currentType = ValueType.intType;
 	}
@@ -120,8 +120,8 @@ public class ExpressionValue {
 		return this.currentType==ValueType.intType;
 	}
 
-	public int toIntValue() {
-		return(int)toFloatValue();
+	public long toIntValue() {
+		return(long)toFloatValue();
 	}
 
 }
