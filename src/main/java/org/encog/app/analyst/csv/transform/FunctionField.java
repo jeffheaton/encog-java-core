@@ -19,7 +19,7 @@ public class FunctionField extends ExpressionTreeFunction {
 	@Override
 	public ExpressionValue evaluate() {
 		String fieldName = this.getArgs().get(0).evaluate().toStringValue();
-		int fieldIndex = (int)this.getArgs().get(0).evaluate().toFloatValue();
+		int fieldIndex = (int)this.getArgs().get(1).evaluate().toFloatValue();
 		String value = this.extension.getField(fieldName,fieldIndex);
 		return new ExpressionValue(value);
 	}

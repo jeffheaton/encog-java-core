@@ -34,6 +34,8 @@ import org.encog.app.analyst.csv.basic.LoadedRow;
 import org.encog.app.analyst.script.process.ProcessField;
 import org.encog.app.quant.QuantError;
 import org.encog.parse.expression.ExpressionHolder;
+import org.encog.parse.expression.ExpressionTreeElement;
+import org.encog.parse.expression.expvalue.ExpressionValue;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
@@ -143,6 +145,27 @@ public class AnalystProcess extends BasicFile {
 			throw new QuantError(e);
 		}
 	}
+	
+	private void processRow(PrintWriter tw) {
+		StringBuilder line = new StringBuilder();
+		
+		for(ExpressionTreeElement expr: this.expressionFields.getExpressions()) {
+			ExpressionValue result = expr.evaluate();
+			
+			BasicFile.appendSeparator(line, this.getFormat());
+			
+			if( result.isString() ) {
+				line.append("\"");
+			}
+			
+			line.append(result.toStringValue());
+			
+			if( result.isString() ) {
+				line.append("\"");
+			}
+		}
+		tw.println(line.toString());
+	}
 
 
 	/**
@@ -166,7 +189,7 @@ public class AnalystProcess extends BasicFile {
 		resetStatus();
 		while ((row = getNextRow(csv)) != null) {
 			this.extension.processLine(row);
-			writeRow(tw, row);
+			processRow(tw);
 			updateStatus(false);
 		}
 		reportDone(false);

@@ -214,6 +214,7 @@ public class ExpressionParser {
 		boolean neg = false;
 		String str = "";
 		char sign = '+';
+		boolean isFloat = false;
 
 		switch (this.parser.peek()) {
 		case '-':
@@ -236,6 +237,7 @@ public class ExpressionParser {
 
 		// Optional fractional
 		if (this.parser.peek() == '.') {
+			isFloat = true;
 			this.parser.advance();
 
 			int i = 1;
@@ -261,6 +263,7 @@ public class ExpressionParser {
 			}
 			
 			if (sign == '-') {
+				isFloat = true;
 				exponent = -exponent;
 			}
 
@@ -269,7 +272,11 @@ public class ExpressionParser {
 
 		if (neg)
 			value = -value;
-		return new ExpressionTreeConst(new ExpressionValue(value));
+		
+		if( isFloat )
+			return new ExpressionTreeConst(new ExpressionValue((double)value));
+		else
+			return new ExpressionTreeConst(new ExpressionValue((int)value));
 	}
 
 	public ExpressionHolder getHolder() {

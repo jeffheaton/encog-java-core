@@ -8,6 +8,7 @@ public class ExpressionValue {
 	private double floatValue;
 	private boolean boolValue;
 	private ValueType currentType;
+	private int intValue;
 	
 	public ExpressionValue(String theValue) {
 		setValue( theValue );
@@ -18,6 +19,10 @@ public class ExpressionValue {
 	}
 	
 	public ExpressionValue(boolean theValue) {
+		setValue( theValue );
+	}
+	
+	public ExpressionValue(int theValue) {
 		setValue( theValue );
 	}
 	
@@ -38,6 +43,11 @@ public class ExpressionValue {
 		this.currentType = ValueType.floatingType;
 	}
 	
+	public void setValue(int intValue) {
+		this.intValue = intValue;
+		this.currentType = ValueType.intType;
+	}
+	
 	public void setValue(boolean boolValue) {
 		this.boolValue = boolValue;
 		this.currentType = ValueType.booleanType;
@@ -45,6 +55,8 @@ public class ExpressionValue {
 
 	public double toFloatValue() {
 		switch(currentType) {
+			case intType:
+				return this.intValue;
 			case floatingType:
 				return this.floatValue;
 			case booleanType:
@@ -53,7 +65,7 @@ public class ExpressionValue {
 				try {
 					return Double.parseDouble(this.stringValue);
 				} catch(NumberFormatException ex) {
-					throw(new ExpressionError("Type Mismatch: can't "+this.stringValue+" to floating point."));
+					throw(new ExpressionError("Type Mismatch: can't convert "+this.stringValue+" to floating point."));
 				}
 			default:
 				throw(new ExpressionError("Unknown type: " + this.currentType));
@@ -62,6 +74,8 @@ public class ExpressionValue {
 	
 	public String toStringValue() {
 		switch(currentType) {
+			case intType:
+				return ""+this.intValue;
 			case floatingType:
 				return ""+this.floatValue;
 			case booleanType:
@@ -75,6 +89,8 @@ public class ExpressionValue {
 	
 	public String toBooleanValue() {
 		switch(currentType) {
+			case intType:
+				throw(new ExpressionError("Type Mismatch: can't "+this.intValue+" to boolean."));
 			case floatingType:
 				throw(new ExpressionError("Type Mismatch: can't "+this.floatValue+" to boolean."));
 			case booleanType:
@@ -98,6 +114,14 @@ public class ExpressionValue {
 
 	public boolean isString() {
 		return this.currentType==ValueType.stringType;
+	}
+
+	public boolean isInt() {
+		return this.currentType==ValueType.intType;
+	}
+
+	public int toIntValue() {
+		return(int)toFloatValue();
 	}
 
 }

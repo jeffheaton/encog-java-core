@@ -1582,7 +1582,8 @@ public class AnalystWizard {
 			StringBuilder command = new StringBuilder();
 			command.append("field(\"");
 			command.append(df.getName());
-			command.append("\")");
+			command.append("\",0");
+			command.append(")");
 			fields.add(new ProcessField(df.getName(), command.toString()));
 		}
 	}
