@@ -2,9 +2,9 @@ package org.encog.app.generate.program;
 
 public class EncogProgramArg {
 	final EncogArgType type;
-	final String value;
+	final Object value;
 	
-	public EncogProgramArg(EncogArgType type, String value) {
+	public EncogProgramArg(EncogArgType type, Object value) {
 		super();
 		this.type = type;
 		this.value = value;
@@ -22,11 +22,15 @@ public class EncogProgramArg {
 		this(EncogArgType.Float,""+value);
 	}
 
+	public EncogProgramArg(Object argValue) {
+		this(EncogArgType.ObjectType, argValue);
+	}
+
 	public EncogArgType getType() {
 		return type;
 	}
 
-	public String getValue() {
+	public Object getValue() {
 		return value;
 	}	
 }

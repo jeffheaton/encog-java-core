@@ -9,5 +9,7 @@ public enum NodeType {
 	WhileLoop, 
 	Const, 
 	StaticFunction,
-	FunctionCall
+	FunctionCall,
+	CreateNetwork,
+	InitArray
 }
