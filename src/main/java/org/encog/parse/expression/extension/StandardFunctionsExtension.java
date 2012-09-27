@@ -6,6 +6,7 @@ import org.encog.parse.expression.ExpressionError;
 import org.encog.parse.expression.ExpressionHolder;
 import org.encog.parse.expression.ExpressionTreeElement;
 import org.encog.parse.expression.ExpressionTreeFunction;
+import org.encog.parse.expression.expvalue.EvaluateExpr;
 import org.encog.parse.expression.expvalue.ExpressionValue;
 
 public class StandardFunctionsExtension implements ExpressionExtension {
@@ -272,6 +273,46 @@ public class StandardFunctionsExtension implements ExpressionExtension {
 					String result = str.substring(0,idx);
 					
 					return new ExpressionValue( result );
+
+				}
+			};
+		}
+		else if (theName.equals("cint")) {
+			return new ExpressionTreeFunction(theOwner, theName, theArgs) {
+				@Override
+				public ExpressionValue evaluate() {
+					;
+					return new ExpressionValue( this.getArgs().get(0).evaluate().toIntValue() );
+
+				}
+			};
+		}
+		else if (theName.equals("cfloat")) {
+			return new ExpressionTreeFunction(theOwner, theName, theArgs) {
+				@Override
+				public ExpressionValue evaluate() {
+					;
+					return new ExpressionValue( this.getArgs().get(0).evaluate().toFloatValue() );
+
+				}
+			};
+		}
+		else if (theName.equals("cstr")) {
+			return new ExpressionTreeFunction(theOwner, theName, theArgs) {
+				@Override
+				public ExpressionValue evaluate() {
+					;
+					return new ExpressionValue( this.getArgs().get(0).evaluate().toStringValue() );
+
+				}
+			};
+		}
+		else if (theName.equals("cbool")) {
+			return new ExpressionTreeFunction(theOwner, theName, theArgs) {
+				@Override
+				public ExpressionValue evaluate() {
+					;
+					return new ExpressionValue( this.getArgs().get(0).evaluate().toBooleanValue() );
 
 				}
 			};
