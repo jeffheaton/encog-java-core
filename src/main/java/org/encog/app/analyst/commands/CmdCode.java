@@ -75,11 +75,8 @@ public class CmdCode extends Cmd {
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "target file:" + targetID);
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "target language:" + targetLanguage.toString());
 		
-		MLMethod method = obtainMethod();
-		
 		EncogCodeGeneration code = new EncogCodeGeneration(targetLanguage);
 		code.setEmbedData(embedData);
-		code.setMethod(method);
 		code.generate(getAnalyst());		
 		code.save(targetFile);
 		return false;

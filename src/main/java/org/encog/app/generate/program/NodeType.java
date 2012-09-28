@@ -11,5 +11,6 @@ public enum NodeType {
 	StaticFunction,
 	FunctionCall,
 	CreateNetwork,
-	InitArray
+	InitArray, 
+	EmbedTraining
 }

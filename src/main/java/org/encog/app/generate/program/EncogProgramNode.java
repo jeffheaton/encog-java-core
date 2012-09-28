@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.ml.MLMethod;
+import org.encog.ml.data.MLDataSet;
 
 public class EncogProgramNode extends EncogTreeNode {	
 	private final List<EncogProgramArg> args = new ArrayList<EncogProgramArg>();	
@@ -96,5 +97,13 @@ public class EncogProgramNode extends EncogTreeNode {
 		node.addArg(a);
 		this.getChildren().add(node);
 		return node;
+	}
+
+	public EncogProgramNode embedTraining(MLDataSet data) {
+		EncogProgramNode node = new EncogProgramNode(getProgram(), this,
+				NodeType.EmbedTraining, "");
+		node.addArg(data);
+		this.getChildren().add(node);
+		return node;		
 	}	
 }

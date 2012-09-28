@@ -10,6 +10,7 @@ import org.encog.app.generate.program.EncogProgram;
 import org.encog.app.generate.program.EncogProgramNode;
 import org.encog.ml.MLEncodable;
 import org.encog.ml.MLMethod;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.persist.EncogDirectoryPersistence;
 
@@ -17,7 +18,6 @@ public class EncogCodeGeneration {
 	
 	private final TargetLanguage targetLanguage; 
 	private boolean embedData;
-	private MLMethod method;
 	private LanguageSpecificGenerator generator;
 	private final EncogProgram program = new EncogProgram();
 	
@@ -53,10 +53,7 @@ public class EncogCodeGeneration {
 		return this.generator.getContents();
 	}
 	
-	public void generate(MLMethod method) {
-		this.program.addComment("Hello World");
-		EncogProgramNode mainClass = this.program.createClass("EncogExample");
-		
+	private void generateForMethod(EncogProgramNode mainClass, MLMethod method) {
 		MLEncodable encodable = (MLEncodable)method;
 		double[] weights = new double[encodable.encodedArrayLength()];
 		encodable.encodeToArray(weights);
@@ -67,6 +64,20 @@ public class EncogCodeGeneration {
 				
 		EncogProgramNode mainFunction = mainClass.createMainFunction();
 		mainFunction.createFunctionCall(createNetworkFunction, "MLMethod", "method");
+	}
+	
+	public void generate(MLMethod method, MLDataSet data) {
+		this.program.addComment("Hello World");
+		EncogProgramNode mainClass = this.program.createClass("EncogExample");
+		
+		if( method!=null ) {
+			generateForMethod(mainClass, method);
+		}
+		
+		if( data!=null ) {
+			mainClass.embedTraining(data);
+		}
+		
 		
 		this.generator.generate(this.program);		
 	}
@@ -81,7 +92,7 @@ public class EncogCodeGeneration {
 		
 		MLMethod method = (MLMethod)EncogDirectoryPersistence.loadObject(resourceFile);
 		
-		generate(method);
+		generate(method, null);
 	}
 
 	public boolean isEmbedData() {
@@ -94,18 +105,6 @@ public class EncogCodeGeneration {
 		this.embedData = embedData;
 	}
 
-
-
-	public MLMethod getMethod() {
-		return method;
-	}
-
-
-
-	public void setMethod(MLMethod method) {
-		this.method = method;
-	}
-	
 	public static boolean isSupported(MLMethod method) {
 		if( method instanceof BasicNetwork ) {
 			return true;

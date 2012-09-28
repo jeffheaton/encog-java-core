@@ -8,7 +8,11 @@ import org.encog.app.generate.program.EncogProgramNode;
 import org.encog.app.generate.program.EncogTreeNode;
 import org.encog.ml.MLFactory;
 import org.encog.ml.MLMethod;
+import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.MLDataSet;
 import org.encog.util.csv.CSVFormat;
+import org.encog.util.csv.NumberList;
 
 public class GenerateEncogJava extends AbstractGenerator {
 	
@@ -188,9 +192,50 @@ public class GenerateEncogJava extends AbstractGenerator {
 			case InitArray:
 				generateArrayInit(node);
 				break;
+			case EmbedTraining:
+				generateEmbedTraining(node);
+				break;
 		}
 	}
 	
+	private void generateEmbedTraining(EncogProgramNode node) {
+		
+		MLDataSet data = (MLDataSet)node.getArgs().get(0).getValue();
+		
+		// generate the input data
+		
+		this.indentLine("public static final double[][] INPUT_DATA = {");
+		for(MLDataPair pair: data) {
+			MLData item = pair.getInput();
+						
+			StringBuilder line = new StringBuilder();
+			
+			NumberList.toList(CSVFormat.EG_FORMAT, line, item.getData());
+			line.insert(0, "{ ");
+			line.append(" },");
+			this.addLine(line.toString());
+		}
+		this.unIndentLine("};");
+		
+		this.addBreak();
+		
+		// generate the ideal data
+		
+		this.indentLine("public static final double[][] IDEAL_DATA = {");
+		for(MLDataPair pair: data) {
+			MLData item = pair.getIdeal();
+						
+			StringBuilder line = new StringBuilder();
+			
+			NumberList.toList(CSVFormat.EG_FORMAT, line, item.getData());
+			line.insert(0, "{ ");
+			line.append(" },");
+			this.addLine(line.toString());
+		}
+		this.unIndentLine("};");
+		
+	}
+
 	private void generateForChildren(EncogTreeNode parent) {
 		for(EncogProgramNode node : parent.getChildren()) {
 			generateNode(node);
