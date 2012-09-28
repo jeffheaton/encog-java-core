@@ -101,7 +101,7 @@ public class GenerateEncogJava extends AbstractGenerator {
 		addLine(line.toString());
 		
 		line.setLength(0);
-		line.append("((MLEncodable)method).decodeFromArray(WEIGHTS);");
+		line.append("((MLEncodable)result).decodeFromArray(WEIGHTS);");
 		addLine(line.toString());
 		
 		// return
@@ -157,7 +157,7 @@ public class GenerateEncogJava extends AbstractGenerator {
 		
 		
 		
-		unIndentLine("}");
+		unIndentLine("};");
 	}
 	
 	private void generateNode(EncogProgramNode node) {
