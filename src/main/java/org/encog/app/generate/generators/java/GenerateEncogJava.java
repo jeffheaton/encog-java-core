@@ -6,7 +6,6 @@ import org.encog.app.generate.generators.AbstractGenerator;
 import org.encog.app.generate.program.EncogProgram;
 import org.encog.app.generate.program.EncogProgramNode;
 import org.encog.app.generate.program.EncogTreeNode;
-import org.encog.ml.MLEncodable;
 import org.encog.ml.MLFactory;
 import org.encog.ml.MLMethod;
 import org.encog.util.csv.CSVFormat;
@@ -74,6 +73,7 @@ public class GenerateEncogJava extends AbstractGenerator {
 		String methodArchitecture = factoryMethod.getFactoryArchitecture();
 		
 		// header
+		addInclude("org.encog.ml.MLMethod");
 		StringBuilder line = new StringBuilder();
 		line.append("public static MLMethod ");
 		line.append(node.getName());
@@ -82,6 +82,7 @@ public class GenerateEncogJava extends AbstractGenerator {
 		
 		// create factory
 		line.setLength(0);
+		addInclude("org.encog.ml.factory.MLMethodFactory");
 		line.append("MLMethodFactory methodFactory = new MLMethodFactory();");
 		addLine(line.toString());
 		
@@ -101,6 +102,7 @@ public class GenerateEncogJava extends AbstractGenerator {
 		addLine(line.toString());
 		
 		line.setLength(0);
+		addInclude("org.encog.ml.MLEncodable");
 		line.append("((MLEncodable)result).decodeFromArray(WEIGHTS);");
 		addLine(line.toString());
 		
@@ -197,5 +199,20 @@ public class GenerateEncogJava extends AbstractGenerator {
 	
 	public void generate(EncogProgram program) {
 		generateForChildren(program);		
+		generateImports(program);
+	}
+
+	private void generateImports(EncogProgram program) {
+		StringBuilder imports = new StringBuilder();
+		for(String str: this.getIncludes()) {
+			imports.append("import ");
+			imports.append(str);
+			imports.append(";\n");
+		}
+		
+		imports.append("\n");
+		
+		addToBeginning(imports.toString());
+		
 	}
 }

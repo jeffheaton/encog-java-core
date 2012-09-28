@@ -4,12 +4,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Set;
+import java.util.TreeSet;
 
 public abstract class AbstractGenerator implements LanguageSpecificGenerator {
 	public static final int INDENT_SPACES = 4;
 	
 	private final StringBuilder contents = new StringBuilder();
 	private int currentIndent = 0;
+	private final Set<String> includes = new TreeSet<String>();
 	
 	public void addLine(String line) {
 		for(int i=0;i<currentIndent;i++) {
@@ -37,6 +40,14 @@ public abstract class AbstractGenerator implements LanguageSpecificGenerator {
 		return contents.toString();
 	}
 	
+	public void addInclude(String str) {
+		this.includes.add(str);
+	}
+	
+	public Set<String> getIncludes() {
+		return includes;
+	}
+
 	public void writeContents(File targetFile) {
 		try {
 			FileWriter outFile = new FileWriter(targetFile);
@@ -46,6 +57,10 @@ public abstract class AbstractGenerator implements LanguageSpecificGenerator {
 		} catch (IOException e){
 			e.printStackTrace();
 		}
+	}
+	
+	public void addToBeginning(String str) {
+		this.contents.insert(0, str);
 	}
 	
 	
