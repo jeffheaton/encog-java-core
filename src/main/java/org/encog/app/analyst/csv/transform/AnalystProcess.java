@@ -187,9 +187,12 @@ public class AnalystProcess extends BasicFile {
 				this.backwardWindowSize);
 
 		resetStatus();
-		while ((row = getNextRow(csv)) != null) {
-			this.extension.processLine(row);
-			processRow(tw);
+		while ((row = getNextRow(csv)) != null) {	
+			this.extension.loadRow(row);
+		
+			if(this.extension.isDataReady() ) {
+				processRow(tw);
+			}
 			updateStatus(false);
 		}
 		reportDone(false);

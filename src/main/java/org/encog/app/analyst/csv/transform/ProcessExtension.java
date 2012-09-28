@@ -40,7 +40,7 @@ public class ProcessExtension implements ExpressionExtension {
 		return this.data.get(fieldIndex).getData()[idx];
 	}
 
-	public void processLine(LoadedRow row) {
+	public void loadRow(LoadedRow row) {
 		data.add(0, row);
 		if( data.size()>this.totalWindowSize) {
 			data.remove(data.size()-1);
@@ -58,5 +58,23 @@ public class ProcessExtension implements ExpressionExtension {
 			map.put(name,i++);
 		}
 	}
+
+	public boolean isDataReady() {
+		return this.data.size()>=this.totalWindowSize;
+	}
+
+	public int getForwardWindowSize() {
+		return forwardWindowSize;
+	}
+
+	public int getBackwardWindowSize() {
+		return backwardWindowSize;
+	}
+
+	public int getTotalWindowSize() {
+		return totalWindowSize;
+	}
+	
+	
 
 }
