@@ -10,20 +10,19 @@ import org.encog.app.generate.program.EncogProgram;
 import org.encog.app.generate.program.EncogProgramNode;
 import org.encog.ml.MLEncodable;
 import org.encog.ml.MLMethod;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.persist.EncogDirectoryPersistence;
 
 public class EncogCodeGeneration {
 	
 	private final TargetLanguage targetLanguage; 
-	private final File targetFile;
 	private boolean embedData;
 	private MLMethod method;
 	private LanguageSpecificGenerator generator;
 	private final EncogProgram program = new EncogProgram();
 	
-	public EncogCodeGeneration(TargetLanguage theTargetLanguage, File theTargetFile) {
+	public EncogCodeGeneration(TargetLanguage theTargetLanguage) {
 		this.targetLanguage = theTargetLanguage;
-		this.targetFile = theTargetFile;
 		
 		switch( theTargetLanguage ) {
 			case Java:
@@ -45,12 +44,13 @@ public class EncogCodeGeneration {
 	public TargetLanguage getTargetLanguage() {
 		return targetLanguage;
 	}
-
-	/**
-	 * @return the targetFile
-	 */
-	public File getTargetFile() {
-		return targetFile;
+	
+	public void save(File file) {
+		this.generator.writeContents(file);
+	}
+	
+	public String save() {
+		return this.generator.getContents();
 	}
 	
 	public void generate(MLMethod method) {
@@ -68,8 +68,7 @@ public class EncogCodeGeneration {
 		EncogProgramNode mainFunction = mainClass.createMainFunction();
 		mainFunction.createFunctionCall(createNetworkFunction, "MLMethod", "method");
 		
-		this.generator.generate(this.program);
-		this.generator.writeContents(this.targetFile);
+		this.generator.generate(this.program);		
 	}
 
 
@@ -107,6 +106,13 @@ public class EncogCodeGeneration {
 		this.method = method;
 	}
 	
+	public static boolean isSupported(MLMethod method) {
+		if( method instanceof BasicNetwork ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 	
 }

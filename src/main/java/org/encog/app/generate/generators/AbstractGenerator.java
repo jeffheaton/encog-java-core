@@ -33,8 +33,8 @@ public abstract class AbstractGenerator implements LanguageSpecificGenerator {
 		this.contents.append("\n");
 	}
 
-	public StringBuilder getContents() {
-		return contents;
+	public String getContents() {
+		return contents.toString();
 	}
 	
 	public void writeContents(File targetFile) {

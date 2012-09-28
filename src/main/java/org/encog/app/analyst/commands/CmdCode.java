@@ -77,10 +77,11 @@ public class CmdCode extends Cmd {
 		
 		MLMethod method = obtainMethod();
 		
-		EncogCodeGeneration code = new EncogCodeGeneration(targetLanguage,targetFile);
+		EncogCodeGeneration code = new EncogCodeGeneration(targetLanguage);
 		code.setEmbedData(embedData);
 		code.setMethod(method);
 		code.generate(getAnalyst());		
+		code.save(targetFile);
 		return false;
 	}
 
