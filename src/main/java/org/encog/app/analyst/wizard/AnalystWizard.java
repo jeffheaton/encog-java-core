@@ -1595,5 +1595,8 @@ public class AnalystWizard {
 				fields.add(new ProcessField(df.getName(), command.toString()));
 			}
 		}
+		
+		fields.add(new ProcessField("max","fieldmax(\"close\",-5,-1)"));
+		
 	}
 }

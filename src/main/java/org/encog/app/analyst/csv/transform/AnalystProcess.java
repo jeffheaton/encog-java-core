@@ -44,13 +44,8 @@ import org.encog.util.csv.ReadCSV;
  */
 public class AnalystProcess extends BasicFile {
 
-	/**
-	 * The buffer.
-	 */
-	private LoadedRow[] buffer;
-	
-	private final ExpressionHolder expressionFields;
-	private final ProcessExtension extension;
+	private ExpressionHolder expressionFields;
+	private ProcessExtension extension;
 	private final EncogAnalyst analyst;
 	private final int forwardWindowSize;
 	private final int backwardWindowSize;
@@ -64,14 +59,6 @@ public class AnalystProcess extends BasicFile {
 		
 		this.backwardWindowSize = theBackwardWindowSize;
 		this.forwardWindowSize = theForwardWindowSize;
-		
-		this.expressionFields = new ExpressionHolder();
-		extension = new ProcessExtension();
-		this.expressionFields.addExtension(this.extension);
-		
-		for(ProcessField field : this.analyst.getScript().getProcess().getFields() ) {
-			this.expressionFields.compileExpression(field.getCommand());
-		}
 	}
 
 	/**
@@ -93,6 +80,14 @@ public class AnalystProcess extends BasicFile {
 		setAnalyzed(true);
 
 		performBasicCounts();
+		
+		this.expressionFields = new ExpressionHolder();
+		extension = new ProcessExtension(this.getFormat());
+		this.expressionFields.addExtension(this.extension);
+		
+		for(ProcessField field : this.analyst.getScript().getProcess().getFields() ) {
+			this.expressionFields.compileExpression(field.getCommand());
+		}
 	}
 
 	/**

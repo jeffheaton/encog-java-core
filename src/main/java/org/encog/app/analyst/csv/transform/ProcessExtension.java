@@ -11,6 +11,7 @@ import org.encog.parse.expression.ExpressionHolder;
 import org.encog.parse.expression.ExpressionTreeElement;
 import org.encog.parse.expression.ExpressionTreeFunction;
 import org.encog.parse.expression.extension.ExpressionExtension;
+import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
 public class ProcessExtension implements ExpressionExtension {
@@ -20,12 +21,19 @@ public class ProcessExtension implements ExpressionExtension {
 	private int backwardWindowSize;
 	private int totalWindowSize;
 	private List<LoadedRow> data = new ArrayList<LoadedRow>();
+	private final CSVFormat format;
+	
+	ProcessExtension(CSVFormat theFormat) {
+		this.format = theFormat;
+	}
 	
 	@Override
 	public ExpressionTreeFunction factorFunction(ExpressionHolder theOwner,
 			String theName, List<ExpressionTreeElement> theArgs) {
 		if (theName.equals("field")) {
 			return new FunctionField(this, theOwner, theArgs);
+		} if (theName.equals("fieldmax")) {
+			return new FunctionFieldMax(this, theOwner, theArgs);
 		} else {
 			return null;
 		}
@@ -73,6 +81,10 @@ public class ProcessExtension implements ExpressionExtension {
 
 	public int getTotalWindowSize() {
 		return totalWindowSize;
+	}
+
+	public CSVFormat getFormat() {
+		return format;
 	}
 	
 	

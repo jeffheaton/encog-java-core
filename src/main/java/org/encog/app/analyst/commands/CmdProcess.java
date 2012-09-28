@@ -27,10 +27,8 @@ import java.io.File;
 
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.csv.transform.AnalystProcess;
-import org.encog.app.analyst.script.process.ProcessField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
-import org.encog.parse.expression.ExpressionHolder;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.logging.EncogLogging;
 
@@ -85,15 +83,15 @@ public class CmdProcess extends Cmd {
 		getScript().markGenerated(targetID);
 
 		// prepare to transform
-		final AnalystProcess norm = new AnalystProcess(getAnalyst(),backwardSize,forwardSize);
-		norm.setScript(getScript());
-		getAnalyst().setCurrentQuantTask(norm);
-		norm.setReport(new AnalystReportBridge(getAnalyst()));
+		final AnalystProcess process = new AnalystProcess(getAnalyst(),backwardSize,forwardSize);
+		process.setScript(getScript());
+		getAnalyst().setCurrentQuantTask(process);
+		process.setReport(new AnalystReportBridge(getAnalyst()));
 		final boolean headers = getScript().expectInputHeaders(sourceID);
-		norm.analyze(sourceFile, headers, format);
-		norm.process(targetFile);
+		process.analyze(sourceFile, headers, format);
+		process.process(targetFile);
 		getAnalyst().setCurrentQuantTask(null);
-		return norm.shouldStop();
+		return process.shouldStop();
 	}
 
 	/**
