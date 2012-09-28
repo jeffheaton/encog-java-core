@@ -124,4 +124,8 @@ public class ExpressionValue {
 		return(long)toFloatValue();
 	}
 
+	public boolean isFloat() {
+		return this.currentType==ValueType.floatingType;
+	}
+
 }

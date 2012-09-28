@@ -1,6 +1,7 @@
 package org.encog.parse.expression;
 
 import org.encog.Encog;
+import org.encog.parse.expression.expvalue.ExpressionValue;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -17,6 +18,21 @@ public class TestExpression extends TestCase {
 		Assert.assertEquals( 1500, ExpressionHolder.parseFloat("1.5e3"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( -0.0015, ExpressionHolder.parseFloat("-1.5e-3"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( 1.2345678, ExpressionHolder.parseFloat("1.2345678"),Encog.DEFAULT_DOUBLE_EQUAL);
+	}
+	
+	public void testTypes() {
+		ExpressionValue exp = ExpressionHolder.parseExpression("cint(1.2345678)");
+		Assert.assertTrue(exp.isInt());
+		Assert.assertEquals( 1, exp.toIntValue());
+	
+		exp = ExpressionHolder.parseExpression("cstr(1.2345678)");
+		Assert.assertTrue(exp.isString());
+		Assert.assertEquals( "1.2345678", exp.toStringValue());
+		
+		exp = ExpressionHolder.parseExpression("cfloat(\"1.2345678\")");
+		Assert.assertTrue(exp.isFloat());
+		Assert.assertEquals( "1.2345678", exp.toStringValue());
+		
 	}
 	
 	public void testAdd() {

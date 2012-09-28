@@ -94,6 +94,11 @@ public class ExpressionHolder {
 		this.format = format;
 	}
 
+	public static ExpressionValue parseExpression(String str) {
+		ExpressionHolder holder = new ExpressionHolder(str);
+		return holder.evaluate(0);
+	}
+
 	
 	
 }
