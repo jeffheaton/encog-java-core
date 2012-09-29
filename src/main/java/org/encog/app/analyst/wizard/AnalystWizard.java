@@ -26,7 +26,9 @@ package org.encog.app.analyst.wizard;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.encog.Encog;
 import org.encog.app.analyst.AnalystError;
@@ -35,8 +37,6 @@ import org.encog.app.analyst.AnalystGoal;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.missing.DiscardMissing;
 import org.encog.app.analyst.missing.HandleMissingValues;
-import org.encog.app.analyst.missing.MeanAndModeMissing;
-import org.encog.app.analyst.missing.NegateMissing;
 import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
@@ -1346,74 +1346,7 @@ public class AnalystWizard {
 	public void setTaskSegregate(final boolean theTaskSegregate) {
 		this.taskSegregate = theTaskSegregate;
 	}
-	
-	private void generateSourceData(List<SourceElement> sourceData) {
-		DataField[] fields = new DataField[sourceData.size()];
-		int index = 0;
-		
-		for(SourceElement element : sourceData) {
-			DataField df = new DataField(element.getName());
-			df.setSource(element.getSource());
-			df.setInteger(false);
-			df.setClass(false);
-			df.setMax(0);
-			df.setMean(0);
-			df.setMin(0);
-			df.setStandardDeviation(0);
-			fields[index++] = df;
-		}
-		
-		this.script.setFields(fields);
-	}
-	
-	public void wizardRealTime(List<SourceElement> sourceData, File csvFile) 
-	{
-		this.preprocess = true;
-		this.script.setBasePath(csvFile.getParent());
-		this.script.getProperties().setProperty(
-				ScriptProperties.HEADER_DATASOURCE_SOURCE_HEADERS, true);
-		this.script.getProperties().setProperty(
-				ScriptProperties.HEADER_DATASOURCE_RAW_FILE, csvFile);
-		this.script.getProperties().setProperty(
-				ScriptProperties.SETUP_CONFIG_INPUT_HEADERS, true);
-		
-		
-		this.script.getProperties().setProperty(ScriptProperties.PROCESS_CONFIG_BACKWARD_SIZE, 30);
-		this.script.getProperties().setProperty(ScriptProperties.PROCESS_CONFIG_FORWARD_SIZE, 30);
 
-		this.lagWindowSize = 10;
-		this.leadWindowSize = 1;
-		this.timeSeries = true;
-		this.format = AnalystFileFormat.DECPNT_COMMA;
-		this.methodType = WizardMethodType.FeedForward;
-		setMissing(new DiscardMissing());
-		
-		setGoal(AnalystGoal.Regression);
-		setRange(NormalizeRange.NegOne2One);
-		setTaskNormalize(true);
-		setTaskRandomize(false);
-		setTaskSegregate(true);
-		setTaskBalance(false);
-		setTaskCluster(false);
-		setMaxError(0.05);
-		setCodeTargetLanguage(TargetLanguage.NinjaScript);
-		setCodeEmbedData(false);
-
-		determineClassification();
-		generateFilenames(csvFile);
-		generateSettings();
-		generateSourceData(sourceData);
-		generateNormalizedFields();
-		generateSegregate();
-		generateGenerate();
-		generateProcess();
-
-		generateTasks();
-		if (this.timeSeries && (this.lagWindowSize > 0)
-				&& (this.leadWindowSize > 0)) {
-			expandTimeSlices();
-		}
-	}
 
 	/**
 	 * Analyze a file.
@@ -1573,30 +1506,5 @@ public class AnalystWizard {
 
 	public void setPreprocess(boolean preprocess) {
 		this.preprocess = preprocess;
-	}
-	
-	private void generateProcess() {
-		List<ProcessField> fields = this.script.getProcess().getFields();
-		fields.clear();
-		for(DataField df: this.script.getFields()) {
-			StringBuilder command = new StringBuilder();
-			
-			if( df.getName().equalsIgnoreCase("time") ) {
-				command.append("cint(field(\"");
-				command.append(df.getName());
-				command.append("\",0");
-				command.append("))");
-				fields.add(new ProcessField(df.getName(), command.toString()));
-			} else {
-				command.append("cfloat(field(\"");
-				command.append(df.getName());
-				command.append("\",0");
-				command.append("))");
-				fields.add(new ProcessField(df.getName(), command.toString()));
-			}
-		}
-		
-		fields.add(new ProcessField("max","fieldmax(\"close\",-5,-1)"));
-		
 	}
 }
