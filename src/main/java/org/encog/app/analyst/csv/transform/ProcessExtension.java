@@ -34,6 +34,8 @@ public class ProcessExtension implements ExpressionExtension {
 			return new FunctionField(this, theOwner, theArgs);
 		} if (theName.equals("fieldmax")) {
 			return new FunctionFieldMax(this, theOwner, theArgs);
+		} if (theName.equals("fieldmaxpip")) {
+			return new FunctionFieldMaxPIP(this, theOwner, theArgs);
 		} else {
 			return null;
 		}
