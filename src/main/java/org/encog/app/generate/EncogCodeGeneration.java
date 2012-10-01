@@ -47,12 +47,14 @@ public class EncogCodeGeneration {
 		return this.generator.getContents();
 	}
 	
-	private void generateForMethod(EncogProgramNode mainClass, MLMethod method) {
-		MLEncodable encodable = (MLEncodable)method;
-		double[] weights = new double[encodable.encodedArrayLength()];
-		encodable.encodeToArray(weights);
-		
-		mainClass.createArray("WEIGHTS",weights);
+	private void generateForMethod(EncogProgramNode mainClass, File method) {
+				
+		if( this.embedData ) {
+			MLEncodable encodable = (MLEncodable)EncogDirectoryPersistence.loadObject(method);
+			double[] weights = new double[encodable.encodedArrayLength()];
+			encodable.encodeToArray(weights);
+			mainClass.createArray("WEIGHTS",weights);
+		}
 		
 		EncogProgramNode createNetworkFunction = mainClass.createNetworkFunction("createNetwork", method);
 				
@@ -60,38 +62,37 @@ public class EncogCodeGeneration {
 		mainFunction.createFunctionCall(createNetworkFunction, "MLMethod", "method");
 	}
 	
-	public void generate(MLMethod method, MLDataSet data) {
+	public void generate(File method, File data) {
 		this.program.addComment("Hello World");
 		EncogProgramNode mainClass = this.program.createClass("EncogExample");
-		
-		if( method!=null ) {
-			generateForMethod(mainClass, method);
-		}
 		
 		if( data!=null ) {
 			mainClass.embedTraining(data);
 		}
 		
+		if( method!=null ) {
+			generateForMethod(mainClass, method);
+		}
 		
-		this.generator.generate(this.program);		
+
+		
+		
+		this.generator.generate(this.program, this.embedData);		
 	}
 
 
 	public void generate(EncogAnalyst analyst) {
 		
-		final String resourceID = analyst.getScript().getProperties().getPropertyString(
+		final String methodID = analyst.getScript().getProperties().getPropertyString(
 				ScriptProperties.ML_CONFIG_MACHINE_LEARNING_FILE);
 		
 		final String trainingID = analyst.getScript().getProperties().getPropertyString(
 				ScriptProperties.ML_CONFIG_TRAINING_FILE);
 
-		final File resourceFile = analyst.getScript().resolveFilename(resourceID);
+		final File methodFile = analyst.getScript().resolveFilename(methodID);
 		final File trainingFile = analyst.getScript().resolveFilename(trainingID);
-		
-		MLMethod method = (MLMethod)EncogDirectoryPersistence.loadObject(resourceFile);
-		MLDataSet data = EncogUtility.loadEGB2Memory(trainingFile);
-		
-		generate(method, data);
+				
+		generate(methodFile, trainingFile);
 	}
 
 	public boolean isEmbedData() {

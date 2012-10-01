@@ -1,5 +1,7 @@
 package org.encog.app.generate.generators.java;
 
+import java.io.File;
+
 import org.encog.Encog;
 import org.encog.EncogError;
 import org.encog.app.generate.generators.AbstractGenerator;
@@ -11,10 +13,14 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
+import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
+import org.encog.util.simple.EncogUtility;
 
 public class GenerateEncogJava extends AbstractGenerator {
+	
+	private boolean embed;
 	
 	private void generateComment(EncogProgramNode commentNode) {
 		this.addLine("// " + commentNode.getName());
@@ -62,10 +68,12 @@ public class GenerateEncogJava extends AbstractGenerator {
 		unIndentLine("}");
 	}
 	
-	private void generateCreateNetwork(EncogProgramNode node) {
+	private void embedNetwork(EncogProgramNode node) {
 		addBreak();
 		
-		MLMethod method = (MLMethod)node.getArgs().get(0).getValue();
+		File methodFile = (File)node.getArgs().get(0).getValue();
+		
+		MLMethod method = (MLMethod)EncogDirectoryPersistence.loadObject(methodFile);
 		
 		if( !(method instanceof MLFactory) ) {
 			throw new EncogError("Code generation not yet supported for: " + method.getClass().getName());
@@ -78,6 +86,8 @@ public class GenerateEncogJava extends AbstractGenerator {
 		
 		// header
 		addInclude("org.encog.ml.MLMethod");
+		addInclude("org.encog.persist.EncogDirectoryPersistence");
+		
 		StringBuilder line = new StringBuilder();
 		line.append("public static MLMethod ");
 		line.append(node.getName());
@@ -113,8 +123,39 @@ public class GenerateEncogJava extends AbstractGenerator {
 		// return
 		addLine("return result;");
 		
-		generateForChildren(node);
+		unIndentLine("}");		
+	}
+	
+	private void linkNetwork(EncogProgramNode node) {
+		addBreak();
+		
+		File methodFile = (File)node.getArgs().get(0).getValue();
+		
+		addInclude("org.encog.ml.MLMethod");
+		StringBuilder line = new StringBuilder();
+		line.append("public static MLMethod ");
+		line.append(node.getName());
+		line.append("() {");
+		indentLine(line.toString());
+				
+		line.setLength(0);
+		line.append("MLMethod result = (MLMethod)EncogDirectoryPersistence.loadObject(new File(\"");
+		line.append(methodFile.getAbsolutePath());
+		line.append("\"));");
+		addLine(line.toString());
+
+		// return
+		addLine("return result;");
+		
 		unIndentLine("}");
+	}
+	
+	private void generateCreateNetwork(EncogProgramNode node) {
+		if( this.embed ) {
+			embedNetwork(node);
+		} else {
+			linkNetwork(node);
+		}
 	}
 	
 	private void generateConst(EncogProgramNode node) {
@@ -198,9 +239,10 @@ public class GenerateEncogJava extends AbstractGenerator {
 		}
 	}
 	
-	private void generateEmbedTraining(EncogProgramNode node) {
+	private void embedTraining(EncogProgramNode node) {
 		
-		MLDataSet data = (MLDataSet)node.getArgs().get(0).getValue();
+		File dataFile = (File)node.getArgs().get(0).getValue();
+		MLDataSet data = EncogUtility.loadEGB2Memory(dataFile);
 		
 		// generate the input data
 		
@@ -232,8 +274,13 @@ public class GenerateEncogJava extends AbstractGenerator {
 			line.append(" },");
 			this.addLine(line.toString());
 		}
-		this.unIndentLine("};");
-		
+		this.unIndentLine("};");		
+	}
+	
+	private void generateEmbedTraining(EncogProgramNode node) {
+		if(this.embed) {
+			embedTraining(node);
+		}
 	}
 
 	private void generateForChildren(EncogTreeNode parent) {
@@ -242,7 +289,8 @@ public class GenerateEncogJava extends AbstractGenerator {
 		}
 	}
 	
-	public void generate(EncogProgram program) {
+	public void generate(EncogProgram program, boolean shouldEmbed) {
+		this.embed = shouldEmbed;
 		generateForChildren(program);		
 		generateImports(program);
 	}

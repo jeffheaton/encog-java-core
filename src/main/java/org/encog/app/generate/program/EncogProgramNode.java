@@ -1,10 +1,10 @@
 package org.encog.app.generate.program;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.ml.MLMethod;
-import org.encog.ml.data.MLDataSet;
 
 public class EncogProgramNode extends EncogTreeNode {	
 	private final List<EncogProgramArg> args = new ArrayList<EncogProgramArg>();	
@@ -83,7 +83,7 @@ public class EncogProgramNode extends EncogTreeNode {
 		
 	}
 
-	public EncogProgramNode createNetworkFunction(String name, MLMethod method) {
+	public EncogProgramNode createNetworkFunction(String name, File method) {
 		EncogProgramNode node = new EncogProgramNode(getProgram(), this,
 				NodeType.CreateNetwork, name);
 		node.addArg(method);
@@ -99,7 +99,7 @@ public class EncogProgramNode extends EncogTreeNode {
 		return node;
 	}
 
-	public EncogProgramNode embedTraining(MLDataSet data) {
+	public EncogProgramNode embedTraining(File data) {
 		EncogProgramNode node = new EncogProgramNode(getProgram(), this,
 				NodeType.EmbedTraining, "");
 		node.addArg(data);
