@@ -13,6 +13,7 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.persist.EncogDirectoryPersistence;
+import org.encog.util.simple.EncogUtility;
 
 public class EncogCodeGeneration {
 	
@@ -87,12 +88,17 @@ public class EncogCodeGeneration {
 		
 		final String resourceID = analyst.getScript().getProperties().getPropertyString(
 				ScriptProperties.ML_CONFIG_MACHINE_LEARNING_FILE);
+		
+		final String trainingID = analyst.getScript().getProperties().getPropertyString(
+				ScriptProperties.ML_CONFIG_TRAINING_FILE);
 
 		final File resourceFile = analyst.getScript().resolveFilename(resourceID);
+		final File trainingFile = analyst.getScript().resolveFilename(trainingID);
 		
 		MLMethod method = (MLMethod)EncogDirectoryPersistence.loadObject(resourceFile);
+		MLDataSet data = EncogUtility.loadEGB2Memory(trainingFile);
 		
-		generate(method, null);
+		generate(method, data);
 	}
 
 	public boolean isEmbedData() {
