@@ -105,5 +105,26 @@ public class EncogProgramNode extends EncogTreeNode {
 		node.addArg(data);
 		this.getChildren().add(node);
 		return node;		
+	}
+
+	public EncogProgramNode generateLoadTraining(File data) {
+		EncogProgramNode node = new EncogProgramNode(getProgram(), this,
+				NodeType.LoadTraining, "");
+		node.addArg(data);
+		this.getChildren().add(node);
+		return node;
+	}
+
+	public EncogProgramNode createFunctionCall(String name, String returnType,
+			String returnVariable) {
+		
+		EncogProgramNode node = new EncogProgramNode(getProgram(), this,
+				NodeType.FunctionCall, name);
+		node.addArg(returnType);
+		node.addArg(returnVariable);
+		this.getChildren().add(node);
+		return node;
+
+		
 	}	
 }

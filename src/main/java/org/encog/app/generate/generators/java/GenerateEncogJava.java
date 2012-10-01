@@ -13,6 +13,7 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
@@ -207,6 +208,36 @@ public class GenerateEncogJava extends AbstractGenerator {
 		unIndentLine("};");
 	}
 	
+	private void generateLoadTraining(EncogProgramNode node) {
+		addBreak();
+		
+		File methodFile = (File)node.getArgs().get(0).getValue();
+		
+		addInclude("org.encog.ml.data.MLDataSet");
+		StringBuilder line = new StringBuilder();
+		line.append("public static MLDataSet createTraining() {");
+		indentLine(line.toString());
+			
+		line.setLength(0);
+		
+		if( this.embed ) {
+			addInclude("org.encog.ml.data.basic.BasicMLDataSet");			
+			line.append("MLDataSet result = new BasicMLDataSet(INPUT_DATA,IDEAL_DATA);");
+		} else {
+			addInclude("org.encog.util.simple.EncogUtility");
+			line.append("MLDataSet result = EncogUtility.loadEGB2Memory(new File(\"");
+			line.append(methodFile.getAbsolutePath());
+			line.append("\"));");
+		}
+		
+		addLine(line.toString());
+
+		// return
+		addLine("return result;");
+		
+		unIndentLine("}");
+	}
+	
 	private void generateNode(EncogProgramNode node) {
 		switch(node.getType()) {
 			case Comment:
@@ -235,6 +266,9 @@ public class GenerateEncogJava extends AbstractGenerator {
 				break;
 			case EmbedTraining:
 				generateEmbedTraining(node);
+				break;
+			case LoadTraining:
+				generateLoadTraining(node);
 				break;
 		}
 	}

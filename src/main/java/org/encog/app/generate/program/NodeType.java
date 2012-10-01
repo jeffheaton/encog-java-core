@@ -12,5 +12,6 @@ public enum NodeType {
 	FunctionCall,
 	CreateNetwork,
 	InitArray, 
-	EmbedTraining
+	EmbedTraining,
+	LoadTraining
 }
