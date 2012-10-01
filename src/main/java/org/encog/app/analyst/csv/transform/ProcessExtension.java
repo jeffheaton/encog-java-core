@@ -45,6 +45,11 @@ public class ProcessExtension implements ExpressionExtension {
 		}
 		
 		int idx = map.get(fieldName);
+		
+		if( fieldIndex>=this.data.size() || fieldIndex<0) {
+			throw new AnalystError("The specified temporal index " + fieldIndex + " is out of bounds.  You should probably increase the forward window size.");
+		}
+		
 		return this.data.get(fieldIndex).getData()[idx];
 	}
 

@@ -1348,7 +1348,7 @@ public class AnalystWizard {
 	}
 	
 	private void generateSourceData(List<SourceElement> sourceData) {
-		DataField[] fields = new DataField[sourceData.size()];
+		DataField[] fields = new DataField[sourceData.size()+1];
 		int index = 0;
 		
 		for(SourceElement element : sourceData) {
@@ -1356,17 +1356,33 @@ public class AnalystWizard {
 			df.setSource(element.getSource());
 			df.setInteger(false);
 			df.setClass(false);
-			df.setMax(0);
+			df.setMax(100000);
 			df.setMean(0);
-			df.setMin(0);
+			df.setMin(-100000);
 			df.setStandardDeviation(0);
 			fields[index++] = df;
 		}
 		
+		// now add the prediction
+		DataField df = new DataField("prediction");
+		df.setSource("prediction");
+		df.setInteger(false);
+		df.setClass(false);
+		df.setMax(100000);
+		df.setMin(-100000);
+		df.setMean(0);
+		df.setStandardDeviation(0);
+		fields[index++] = df;
+		
 		this.script.setFields(fields);
 	}
 	
-	public void wizardRealTime(List<SourceElement> sourceData, File csvFile) 
+	public void wizardRealTime(List<SourceElement> sourceData, 
+			File csvFile, int 
+			backwardWindow, 
+			int forwardWindow, 
+			PredictionType prediction, 
+			String predictField) 
 	{
 		this.preprocess = true;
 		this.script.setBasePath(csvFile.getParent());
@@ -1377,15 +1393,13 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.SETUP_CONFIG_INPUT_HEADERS, true);
 		
-		
-		this.script.getProperties().setProperty(ScriptProperties.PROCESS_CONFIG_BACKWARD_SIZE, 30);
-		this.script.getProperties().setProperty(ScriptProperties.PROCESS_CONFIG_FORWARD_SIZE, 30);
-
-		this.lagWindowSize = 10;
+		this.lagWindowSize = backwardWindow;
 		this.leadWindowSize = 1;
 		this.timeSeries = true;
 		this.format = AnalystFileFormat.DECPNT_COMMA;
 		this.methodType = WizardMethodType.FeedForward;
+		this.includeTargetField = false;
+		this.targetFieldName = "prediction";
 		setMissing(new DiscardMissing());
 		
 		setGoal(AnalystGoal.Regression);
@@ -1404,9 +1418,21 @@ public class AnalystWizard {
 		generateSettings();
 		generateSourceData(sourceData);
 		generateNormalizedFields();
+		
+		// if there is a time field, then ignore it
+		AnalystField timeField = this.script.findAnalystField("time");
+		if( timeField!=null ) {
+			timeField.setAction(NormalizationAction.Ignore);
+		}
+		
 		generateSegregate();
 		generateGenerate();
-		generateProcess();
+		generateProcess(backwardWindow,forwardWindow,prediction,predictField);
+		
+		// override raw_file to be the processed file
+		this.script.getProperties().setProperty(
+				ScriptProperties.HEADER_DATASOURCE_RAW_FILE, AnalystWizard.FILE_PRE);
+		
 
 		generateTasks();
 		if (this.timeSeries && (this.lagWindowSize > 0)
@@ -1575,10 +1601,22 @@ public class AnalystWizard {
 		this.preprocess = preprocess;
 	}
 	
-	private void generateProcess() {
+	private void generateProcess(
+			int backwardWindow, 
+			int forwardWindow, 
+			PredictionType prediction, 
+			String predictField) {
+		
+		this.script.getProperties().setProperty(ScriptProperties.PROCESS_CONFIG_BACKWARD_SIZE, backwardWindow);
+		this.script.getProperties().setProperty(ScriptProperties.PROCESS_CONFIG_FORWARD_SIZE, forwardWindow);
+		
 		List<ProcessField> fields = this.script.getProcess().getFields();
 		fields.clear();
 		for(DataField df: this.script.getFields()) {
+			if( df.getName().equalsIgnoreCase("prediction") ) {
+				continue;
+			}
+			
 			StringBuilder command = new StringBuilder();
 			
 			if( df.getName().equalsIgnoreCase("time") ) {
@@ -1596,7 +1634,21 @@ public class AnalystWizard {
 			}
 		}
 		
-		fields.add(new ProcessField("max","fieldmax(\"close\",-5,-1)"));
+		StringBuilder command = new StringBuilder();
+		
+		switch(prediction) {
+			case MaxValue:
+				command.append("fieldmax(\"");
+				command.append(predictField);
+				command.append("\",");
+				command.append(-forwardWindow);
+				command.append(",");
+				command.append(-1);
+				command.append(")");
+				break;
+		}
+		
+		fields.add(new ProcessField("prediction",command.toString()));
 		
 	}
 }
