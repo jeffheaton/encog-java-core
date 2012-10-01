@@ -1,4 +1,4 @@
-package org.encog.app.analyst.csv.transform;
+package org.encog.app.analyst.csv.process;
 
 import java.util.List;
 
@@ -7,12 +7,12 @@ import org.encog.parse.expression.ExpressionTreeElement;
 import org.encog.parse.expression.ExpressionTreeFunction;
 import org.encog.parse.expression.expvalue.ExpressionValue;
 
-public class FunctionFieldMaxPIP extends ExpressionTreeFunction {
+public class FunctionFieldMax extends ExpressionTreeFunction {
 	
 	private ProcessExtension extension;
 
-	public FunctionFieldMaxPIP(ProcessExtension theExtension, ExpressionHolder theOwner, List<ExpressionTreeElement> theArgs) {
-		super(theOwner, "fieldmaxpip", theArgs);
+	public FunctionFieldMax(ProcessExtension theExtension, ExpressionHolder theOwner, List<ExpressionTreeElement> theArgs) {
+		super(theOwner, "fieldmax", theArgs);
 		this.extension = theExtension;
 	}
 
@@ -21,17 +21,12 @@ public class FunctionFieldMaxPIP extends ExpressionTreeFunction {
 		String fieldName = this.getArgs().get(0).evaluate().toStringValue();
 		int startIndex = (int)this.getArgs().get(1).evaluate().toIntValue();
 		int stopIndex = (int)this.getArgs().get(2).evaluate().toIntValue();
-		int value = Integer.MIN_VALUE;
-		
-		String str = this.extension.getField(fieldName,this.extension.getBackwardWindowSize());
-		double quoteNow = extension.getFormat().parse(str);
+		double value = Double.NEGATIVE_INFINITY;
 		
 		for(int i=startIndex;i<=stopIndex;i++) {
-			str = this.extension.getField(fieldName,this.extension.getBackwardWindowSize()+i);
-			double d = extension.getFormat().parse(str)-quoteNow;
-			d/=0.0001;
-			d=Math.round(d);
-			value = Math.max((int)d, value);
+			String str = this.extension.getField(fieldName,this.extension.getBackwardWindowSize()+i);
+			double d = extension.getFormat().parse(str);
+			value = Math.max(d, value);
 		}
 		
 		

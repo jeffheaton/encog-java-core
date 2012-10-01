@@ -1,4 +1,4 @@
-package org.encog.app.analyst.csv.transform;
+package org.encog.app.analyst.csv.process;
 
 import java.util.List;
 

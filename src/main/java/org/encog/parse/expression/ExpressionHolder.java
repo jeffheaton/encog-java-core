@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.encog.app.analyst.csv.transform.ProcessExtension;
+import org.encog.app.analyst.csv.process.ProcessExtension;
 import org.encog.parse.expression.expvalue.ExpressionValue;
 import org.encog.parse.expression.extension.ExpressionExtension;
 import org.encog.parse.expression.extension.StandardFunctionsExtension;

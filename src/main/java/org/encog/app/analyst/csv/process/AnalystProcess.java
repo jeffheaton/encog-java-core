@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.app.analyst.csv.transform;
+package org.encog.app.analyst.csv.process;
 
 import java.io.File;
 import java.io.FileWriter;
