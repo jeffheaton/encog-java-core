@@ -31,14 +31,7 @@ public class EncogCodeGeneration {
 				break;
 		}
 	}
-	
-	/*private void generateFileNames(EncogAnalyst analyst, EncogProgramNode mainClass) {
-		for(String str: analyst.getScript().getProperties().getFilenames() ) {
-			String value = analyst.getScript().getProperties().getFilename(str);
-			mainClass.defineConst(EncogArgType.String,str,value);
-		}
-	}*/
-		
+
 	/**
 	 * @return the targetLanguage
 	 */
