@@ -1637,7 +1637,7 @@ public class AnalystWizard {
 		StringBuilder command = new StringBuilder();
 		
 		switch(prediction) {
-			case MaxValue:
+			case fieldmax:
 				command.append("fieldmax(\"");
 				command.append(predictField);
 				command.append("\",");
@@ -1646,6 +1646,14 @@ public class AnalystWizard {
 				command.append(-1);
 				command.append(")");
 				break;
+			case fieldmaxpip:
+				command.append("fieldmaxpip(\"");
+				command.append(predictField);
+				command.append("\",");
+				command.append(-forwardWindow);
+				command.append(",");
+				command.append(-1);
+				command.append(")");
 		}
 		
 		fields.add(new ProcessField("prediction",command.toString()));
