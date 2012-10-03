@@ -99,6 +99,11 @@ public class ExpressionHolder {
 		return holder.evaluate(0);
 	}
 
+	public static boolean parseBoolean(String str) {
+		ExpressionHolder holder = new ExpressionHolder(str);
+		return holder.evaluate(0).toBooleanValue();
+	}
+
 	
 	
 }

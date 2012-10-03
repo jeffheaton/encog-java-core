@@ -87,14 +87,14 @@ public class ExpressionValue {
 		}
 	}
 	
-	public String toBooleanValue() {
+	public boolean toBooleanValue() {
 		switch(currentType) {
 			case intType:
 				throw(new ExpressionError("Type Mismatch: can't "+this.intValue+" to boolean."));
 			case floatingType:
 				throw(new ExpressionError("Type Mismatch: can't "+this.floatValue+" to boolean."));
 			case booleanType:
-				return ""+this.boolValue;
+				return this.boolValue;
 			case stringType:
 				throw(new ExpressionError("Type Mismatch: can't "+this.stringValue+" to boolean."));
 			default:

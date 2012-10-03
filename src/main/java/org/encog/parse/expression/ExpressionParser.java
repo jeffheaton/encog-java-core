@@ -5,10 +5,16 @@ import java.util.List;
 
 import org.encog.parse.expression.expvalue.ExpressionValue;
 import org.encog.parse.expression.extension.ExpressionExtension;
-import org.encog.parse.expression.extension.StandardFunctionsExtension;
 import org.encog.parse.expression.operators.ExpressionOperatorAdd;
+import org.encog.parse.expression.operators.ExpressionOperatorAnd;
 import org.encog.parse.expression.operators.ExpressionOperatorDiv;
+import org.encog.parse.expression.operators.ExpressionOperatorEqualTo;
+import org.encog.parse.expression.operators.ExpressionOperatorGreaterThan;
+import org.encog.parse.expression.operators.ExpressionOperatorGreaterThanEqual;
+import org.encog.parse.expression.operators.ExpressionOperatorLessThan;
+import org.encog.parse.expression.operators.ExpressionOperatorLessThanEqual;
 import org.encog.parse.expression.operators.ExpressionOperatorMul;
+import org.encog.parse.expression.operators.ExpressionOperatorOr;
 import org.encog.parse.expression.operators.ExpressionOperatorPow;
 import org.encog.parse.expression.operators.ExpressionOperatorSub;
 import org.encog.util.SimpleParser;
@@ -78,16 +84,34 @@ public class ExpressionParser {
 
 		char nextchar = this.parser.peek();
 
-		if (!(nextchar > 0 && ("/*<>=".indexOf(nextchar) != -1)))
+		if (!(nextchar > 0 && ("/*<>=&|".indexOf(nextchar) != -1)))
 			return target;
 
-		while (nextchar > 0 && ("/*<>=".indexOf(nextchar) != -1)) {
+		while (nextchar > 0 && ("/*<>=&|".indexOf(nextchar) != -1)) {
 			switch (this.parser.readChar()) {
 			case '*':
 				return new ExpressionOperatorMul(target, expr1p5());
 
 			case '/':
 				return new ExpressionOperatorDiv(target, expr1p5());
+			case '<':
+				if( this.parser.peek()=='=' ) {					
+					this.parser.advance();
+					return new ExpressionOperatorLessThanEqual(target, expr1p5());
+				} 
+				return new ExpressionOperatorLessThan(target, expr1p5());
+			case '>':
+				if( this.parser.peek()=='=' ) {					
+					this.parser.advance();
+					return new ExpressionOperatorGreaterThanEqual(target, expr1p5());
+				}
+				return new ExpressionOperatorGreaterThan(target, expr1p5());
+			case '=':
+				return new ExpressionOperatorEqualTo(target, expr1p5());
+			case '&':
+				return new ExpressionOperatorAnd(target, expr1p5());
+			case '|':
+				return new ExpressionOperatorOr(target, expr1p5());
 			}
 		}
 		return target;
@@ -157,7 +181,12 @@ public class ExpressionParser {
 			
 			this.parser.eatWhiteSpace();
 			
-			if( this.parser.peek()!='(' ) {			
+			if( varName.toString().equals("true")) {
+				return new ExpressionTreeConst(new ExpressionValue(true));
+			} else if( varName.toString().equals("false")) {
+				return new ExpressionTreeConst(new ExpressionValue(false));
+			}
+			else if( this.parser.peek()!='(' ) {			
 				return new ExpressionTreeVariable(this.holder,varName.toString());
 			} else {
 				return parseFunction(varName.toString());
