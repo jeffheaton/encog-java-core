@@ -35,8 +35,6 @@ import org.encog.app.analyst.AnalystGoal;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.missing.DiscardMissing;
 import org.encog.app.analyst.missing.HandleMissingValues;
-import org.encog.app.analyst.missing.MeanAndModeMissing;
-import org.encog.app.analyst.missing.NegateMissing;
 import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
@@ -1242,7 +1240,7 @@ public class AnalystWizard {
 		final File rawFilename = this.analyst.getScript()
 				.resolveFilename(rawID);
 
-		this.analyst.analyze(
+		this.analyst.reanalyze(
 				rawFilename,
 				this.script.getProperties().getPropertyBoolean(
 						ScriptProperties.SETUP_CONFIG_INPUT_HEADERS),

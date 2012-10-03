@@ -178,6 +178,21 @@ public class EncogAnalyst {
 		a.process(this);
 
 	}
+	
+	/**
+	 * Analyze the specified file. Used by the wizard.
+	 * @param file The file to analyze.
+	 * @param headers True if headers are present.
+	 * @param format The format of the file.
+	 */
+	public void reanalyze(final File file, final boolean headers,
+			final AnalystFileFormat format) {
+
+		final PerformAnalysis a = new PerformAnalysis(this.script,
+				file.toString(), headers, format);
+		a.process(this);
+
+	}
 
 	/**
 	 * Determine the input count.  This is the actual number of columns.
