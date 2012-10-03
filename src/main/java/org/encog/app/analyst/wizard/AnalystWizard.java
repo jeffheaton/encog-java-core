@@ -86,12 +86,11 @@ public class AnalystWizard {
 	 * The default training error.
 	 */
 	public static final double DEFAULT_TRAIN_ERROR = 0.05;
-	
+
 	/**
 	 * The processed data.
-	 */	
+	 */
 	public static final String FILE_PRE = "FILE_PROCESSED";
-	
 
 	/**
 	 * The raw file.
@@ -147,7 +146,7 @@ public class AnalystWizard {
 	 * The clustered file.
 	 */
 	public static final String FILE_CLUSTER = "FILE_CLUSTER";
-	
+
 	/**
 	 * The generated code file.
 	 */
@@ -207,12 +206,12 @@ public class AnalystWizard {
 	 * The processed filename.
 	 */
 	private String filenameProcess;
-	
+
 	/**
 	 * The cluster filename.
 	 */
 	private String filenameCluster;
-	
+
 	/**
 	 * The filename that code will be generated to.
 	 */
@@ -259,7 +258,7 @@ public class AnalystWizard {
 	private int leadWindowSize;
 
 	/**
-	 * Should the target field be included in the input, if we are doing 
+	 * Should the target field be included in the input, if we are doing
 	 * time-series.
 	 */
 	private boolean includeTargetField;
@@ -316,16 +315,18 @@ public class AnalystWizard {
 	private double maxError = DEFAULT_TRAIN_ERROR;
 
 	private String targetFieldName;
-	
+
 	private TargetLanguage codeTargetLanguage = TargetLanguage.NoGeneration;
-	
+
 	private boolean codeEmbedData;
-	
+
 	private boolean preprocess = false;
 
 	/**
 	 * Construct the analyst wizard.
-	 * @param theAnalyst The analyst to use.
+	 * 
+	 * @param theAnalyst
+	 *            The analyst to use.
 	 */
 	public AnalystWizard(final EncogAnalyst theAnalyst) {
 		this.analyst = theAnalyst;
@@ -340,8 +341,11 @@ public class AnalystWizard {
 
 	/**
 	 * Create a "set" command to add to a task.
-	 * @param setTarget The target.
-	 * @param setSource The source.
+	 * 
+	 * @param setTarget
+	 *            The target.
+	 * @param setSource
+	 *            The source.
 	 * @return The "set" command.
 	 */
 	private String createSet(final String setTarget, final String setSource) {
@@ -374,7 +378,7 @@ public class AnalystWizard {
 		final List<AnalystField> fields = this.script.getNormalize()
 				.getNormalizedFields();
 
-		if (this.targetFieldName == null || this.targetFieldName.length()==0 ) {
+		if (this.targetFieldName == null || this.targetFieldName.length() == 0) {
 			boolean success = false;
 
 			if (this.goal == AnalystGoal.Classification) {
@@ -391,8 +395,8 @@ public class AnalystWizard {
 
 				// otherwise, just return the last regression field
 				for (final AnalystField field : fields) {
-					final DataField df = this.script
-							.findDataField(field.getName());
+					final DataField df = this.script.findDataField(field
+							.getName());
 					if (!df.isClass() && (df.isReal() || df.isInteger())) {
 						this.targetField = field;
 						success = true;
@@ -407,8 +411,9 @@ public class AnalystWizard {
 								+ "specified the wrong file format.");
 			}
 		} else {
-			this.targetField = this.script.findAnalystField(this.targetFieldName); 
-			if ( this.targetField == null) {
+			this.targetField = this.script
+					.findAnalystField(this.targetFieldName);
+			if (this.targetField == null) {
 				throw new AnalystError("Invalid target field: "
 						+ this.targetField);
 			}
@@ -432,7 +437,8 @@ public class AnalystWizard {
 
 		// determine output field
 		if (this.methodType != WizardMethodType.BayesianNetwork) {
-			// now that the target field has been determined, set the analyst fields
+			// now that the target field has been determined, set the analyst
+			// fields
 			AnalystField af = null;
 			for (final AnalystField field : this.analyst.getScript()
 					.getNormalize().getNormalizedFields()) {
@@ -519,12 +525,15 @@ public class AnalystWizard {
 
 	/**
 	 * Generate a feed forward machine learning method.
-	 * @param inputColumns The input column count.
-	 * @param outputColumns The output column count.
+	 * 
+	 * @param inputColumns
+	 *            The input column count.
+	 * @param outputColumns
+	 *            The output column count.
 	 */
 	private void generateFeedForward(final int inputColumns,
 			final int outputColumns) {
-		final int hidden = (int) ((inputColumns*this.lagWindowSize) * 1.5);
+		final int hidden = (int) ((inputColumns * this.lagWindowSize) * 1.5);
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_TYPE,
 				MLMethodFactory.TYPE_FEEDFORWARD);
@@ -547,16 +556,20 @@ public class AnalystWizard {
 
 	/**
 	 * Generate a Bayesian network machine learning method.
-	 * @param inputColumns The input column count.
-	 * @param outputColumns The output column count.
+	 * 
+	 * @param inputColumns
+	 *            The input column count.
+	 * @param outputColumns
+	 *            The output column count.
 	 */
 	private void generateBayesian(final int inputColumns,
 			final int outputColumns) {
 
 		int segment = this.evidenceSegements;
-		
-		if( !this.targetField.isClassify() ) {
-			throw new AnalystError("Bayesian networks cannot be used for regression.");
+
+		if (!this.targetField.isClassify()) {
+			throw new AnalystError(
+					"Bayesian networks cannot be used for regression.");
 		}
 
 		StringBuilder a = new StringBuilder();
@@ -575,12 +588,12 @@ public class AnalystWizard {
 					a.append(item.getCode());
 					first = false;
 				}
-				
+
 				// append a "fake" member, if there is only one
-				if( field.getClassMembers().size()==1 ) {
+				if (field.getClassMembers().size() == 1) {
 					a.append(",Other0");
 				}
-				
+
 				a.append("]");
 			} else {
 				a.append("[");
@@ -662,16 +675,18 @@ public class AnalystWizard {
 
 	/**
 	 * Generate filenames.
-	 * @param rawFile The raw filename.
+	 * 
+	 * @param rawFile
+	 *            The raw filename.
 	 */
 	private void generateFilenames(final File rawFile) {
 		this.filenameRaw = rawFile.getName();
-		
-		if( this.preprocess ) {
-			this.filenameProcess = FileUtil.addFilenameBase(rawFile, "_process")
-					.getName();
+
+		if (this.preprocess) {
+			this.filenameProcess = FileUtil
+					.addFilenameBase(rawFile, "_process").getName();
 		}
-		
+
 		this.filenameNorm = FileUtil.addFilenameBase(rawFile, "_norm")
 				.getName();
 		this.filenameRandom = FileUtil.addFilenameBase(rawFile, "_random")
@@ -691,17 +706,18 @@ public class AnalystWizard {
 				.getName();
 		this.filenameCluster = FileUtil.addFilenameBase(rawFile, "_cluster")
 				.getName();
-		this.filenameCode = FileUtil.forceExtension( FileUtil.addFilenameBase(rawFile, "_code").getName(), 
+		this.filenameCode = FileUtil.forceExtension(
+				FileUtil.addFilenameBase(rawFile, "_code").getName(),
 				this.codeTargetLanguage.getExtension());
 
 		final ScriptProperties p = this.script.getProperties();
 
 		p.setFilename(AnalystWizard.FILE_RAW, this.filenameRaw);
-		
-		if( this.preprocess ) {
+
+		if (this.preprocess) {
 			p.setFilename(AnalystWizard.FILE_PRE, this.filenameProcess);
 		}
-		
+
 		if (this.taskNormalize) {
 			p.setFilename(AnalystWizard.FILE_NORMALIZE, this.filenameNorm);
 		}
@@ -723,8 +739,8 @@ public class AnalystWizard {
 		if (this.taskBalance) {
 			p.setFilename(AnalystWizard.FILE_BALANCE, this.filenameBalance);
 		}
-		
-		if (this.codeTargetLanguage != TargetLanguage.NoGeneration ) {
+
+		if (this.codeTargetLanguage != TargetLanguage.NoGeneration) {
 			p.setFilename(AnalystWizard.FILE_CODE, this.filenameCode);
 		}
 
@@ -836,8 +852,11 @@ public class AnalystWizard {
 
 	/**
 	 * Generate a RBF machine learning method.
-	 * @param inputColumns The number of input columns.
-	 * @param outputColumns The number of output columns.
+	 * 
+	 * @param inputColumns
+	 *            The number of input columns.
+	 * @param outputColumns
+	 *            The number of output columns.
 	 */
 	private void generateRBF(final int inputColumns, final int outputColumns) {
 		final int hidden = (int) ((inputColumns) * 1.5);
@@ -891,20 +910,18 @@ public class AnalystWizard {
 				ScriptProperties.HEADER_DATASOURCE_RAW_FILE, target);
 
 		// preprocess
-		if( this.preprocess ) {
+		if (this.preprocess) {
 			this.script.getProperties().setProperty(
-					ScriptProperties.PROCESS_CONFIG_SOURCE_FILE,
-					target);
+					ScriptProperties.PROCESS_CONFIG_SOURCE_FILE, target);
 			target = AnalystWizard.FILE_PRE;
 			this.script.getProperties().setProperty(
 					ScriptProperties.PROCESS_CONFIG_TARGET_FILE, target);
 		}
-		
+
 		// randomize
 		if (!this.timeSeries && this.taskRandomize) {
 			this.script.getProperties().setProperty(
-					ScriptProperties.RANDOMIZE_CONFIG_SOURCE_FILE,
-					target);
+					ScriptProperties.RANDOMIZE_CONFIG_SOURCE_FILE, target);
 			target = AnalystWizard.FILE_RANDOM;
 			this.script.getProperties().setProperty(
 					ScriptProperties.RANDOMIZE_CONFIG_TARGET_FILE, target);
@@ -982,18 +999,21 @@ public class AnalystWizard {
 
 	/**
 	 * Generate a SOM machine learning method.
-	 * @param inputColumns The number of input columns.
+	 * 
+	 * @param inputColumns
+	 *            The number of input columns.
 	 */
 	private void generateSOM(final int inputColumns) {
-		
-		if( !this.targetField.isClassify() ) {
+
+		if (!this.targetField.isClassify()) {
 			throw new AnalystError("SOM cannot be used for regression.");
 		}
-		
+
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_TYPE, MLMethodFactory.TYPE_SOM);
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_ARCHITECTURE, "?->" + this.targetField.getClasses().size());
+				ScriptProperties.ML_CONFIG_ARCHITECTURE,
+				"?->" + this.targetField.getClasses().size());
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				MLTrainFactory.TYPE_SOM_NEIGHBORHOOD);
@@ -1004,12 +1024,15 @@ public class AnalystWizard {
 		// ScriptProperties.ML_TRAIN_arguments
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
-	}	
+	}
 
 	/**
 	 * Generate a SVM machine learning method.
-	 * @param inputColumns The number of input columns.
-	 * @param outputColumns The number of ideal columns.
+	 * 
+	 * @param inputColumns
+	 *            The number of input columns.
+	 * @param outputColumns
+	 *            The number of ideal columns.
 	 */
 	private void generateSVM(final int inputColumns, final int outputColumns) {
 
@@ -1032,11 +1055,14 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
 	}
-	
+
 	/**
 	 * Generate a PNN machine learning method.
-	 * @param inputColumns The number of input columns.
-	 * @param outputColumns The number of ideal columns.
+	 * 
+	 * @param inputColumns
+	 *            The number of input columns.
+	 * @param outputColumns
+	 *            The number of ideal columns.
 	 */
 	private void generatePNN(final int inputColumns, final int outputColumns) {
 
@@ -1066,10 +1092,10 @@ public class AnalystWizard {
 	 */
 	private void generateTasks() {
 		final AnalystTask task1 = new AnalystTask(EncogAnalyst.TASK_FULL);
-		if( this.preprocess ) {
+		if (this.preprocess) {
 			task1.getLines().add("process");
 		}
-		
+
 		if (!this.timeSeries && this.taskRandomize) {
 			task1.getLines().add("randomize");
 		}
@@ -1090,8 +1116,8 @@ public class AnalystWizard {
 		task1.getLines().add("create");
 		task1.getLines().add("train");
 		task1.getLines().add("evaluate");
-		
-		if( this.codeTargetLanguage!=TargetLanguage.NoGeneration) {
+
+		if (this.codeTargetLanguage != TargetLanguage.NoGeneration) {
 			task1.getLines().add("code");
 		}
 
@@ -1132,9 +1158,15 @@ public class AnalystWizard {
 
 		final AnalystTask task7 = new AnalystTask("task-cluster");
 		task7.getLines().add("cluster");
-		
+
 		final AnalystTask task8 = new AnalystTask("task-code");
 		task7.getLines().add("code");
+
+		AnalystTask task9 = null;
+		if (this.preprocess) {
+			task9 = new AnalystTask("task-preprocess");
+			task9.getLines().add("process");
+		}
 
 		this.script.addTask(task1);
 		this.script.addTask(task2);
@@ -1144,6 +1176,9 @@ public class AnalystWizard {
 		this.script.addTask(task6);
 		this.script.addTask(task7);
 		this.script.addTask(task8);
+		if (task9 != null) {
+			this.script.addTask(task9);
+		}
 	}
 
 	/**
@@ -1251,7 +1286,9 @@ public class AnalystWizard {
 
 	/**
 	 * Set the goal.
-	 * @param theGoal The goal.
+	 * 
+	 * @param theGoal
+	 *            The goal.
 	 */
 	public void setGoal(final AnalystGoal theGoal) {
 		this.goal = theGoal;
@@ -1299,7 +1336,9 @@ public class AnalystWizard {
 
 	/**
 	 * Set the target field.
-	 * @param theTargetField The target field.
+	 * 
+	 * @param theTargetField
+	 *            The target field.
 	 */
 	public void setTargetField(final AnalystField theTargetField) {
 		this.targetField = theTargetField;
@@ -1344,12 +1383,12 @@ public class AnalystWizard {
 	public void setTaskSegregate(final boolean theTaskSegregate) {
 		this.taskSegregate = theTaskSegregate;
 	}
-	
+
 	private void generateSourceData(List<SourceElement> sourceData) {
-		DataField[] fields = new DataField[sourceData.size()+1];
+		DataField[] fields = new DataField[sourceData.size() + 1];
 		int index = 0;
-		
-		for(SourceElement element : sourceData) {
+
+		for (SourceElement element : sourceData) {
 			DataField df = new DataField(element.getName());
 			df.setSource(element.getSource());
 			df.setInteger(false);
@@ -1360,7 +1399,7 @@ public class AnalystWizard {
 			df.setStandardDeviation(0);
 			fields[index++] = df;
 		}
-		
+
 		// now add the prediction
 		DataField df = new DataField("prediction");
 		df.setSource("prediction");
@@ -1371,17 +1410,13 @@ public class AnalystWizard {
 		df.setMean(0);
 		df.setStandardDeviation(0);
 		fields[index++] = df;
-		
+
 		this.script.setFields(fields);
 	}
-	
-	public void wizardRealTime(List<SourceElement> sourceData, 
-			File csvFile, int 
-			backwardWindow, 
-			int forwardWindow, 
-			PredictionType prediction, 
-			String predictField) 
-	{
+
+	public void wizardRealTime(List<SourceElement> sourceData, File csvFile,
+			int backwardWindow, int forwardWindow, PredictionType prediction,
+			String predictField) {
 		this.preprocess = true;
 		this.script.setBasePath(csvFile.getParent());
 		this.script.getProperties().setProperty(
@@ -1390,7 +1425,7 @@ public class AnalystWizard {
 				ScriptProperties.HEADER_DATASOURCE_RAW_FILE, csvFile);
 		this.script.getProperties().setProperty(
 				ScriptProperties.SETUP_CONFIG_INPUT_HEADERS, true);
-		
+
 		this.lagWindowSize = backwardWindow;
 		this.leadWindowSize = 1;
 		this.timeSeries = true;
@@ -1399,7 +1434,7 @@ public class AnalystWizard {
 		this.includeTargetField = false;
 		this.targetFieldName = "prediction";
 		setMissing(new DiscardMissing());
-		
+
 		setGoal(AnalystGoal.Regression);
 		setRange(NormalizeRange.NegOne2One);
 		setTaskNormalize(true);
@@ -1416,21 +1451,21 @@ public class AnalystWizard {
 		generateSettings();
 		generateSourceData(sourceData);
 		generateNormalizedFields();
-		
+
 		// if there is a time field, then ignore it
 		AnalystField timeField = this.script.findAnalystField("time");
-		if( timeField!=null ) {
+		if (timeField != null) {
 			timeField.setAction(NormalizationAction.Ignore);
 		}
-		
+
 		generateSegregate();
 		generateGenerate();
-		generateProcess(backwardWindow,forwardWindow,prediction,predictField);
-		
+		generateProcess(backwardWindow, forwardWindow, prediction, predictField);
+
 		// override raw_file to be the processed file
 		this.script.getProperties().setProperty(
-				ScriptProperties.HEADER_DATASOURCE_RAW_FILE, AnalystWizard.FILE_PRE);
-		
+				ScriptProperties.HEADER_DATASOURCE_RAW_FILE,
+				AnalystWizard.FILE_PRE);
 
 		generateTasks();
 		if (this.timeSeries && (this.lagWindowSize > 0)
@@ -1441,9 +1476,13 @@ public class AnalystWizard {
 
 	/**
 	 * Analyze a file.
-	 * @param analyzeFile The file to analyze.
-	 * @param b True if there are headers.
-	 * @param format The file format.
+	 * 
+	 * @param analyzeFile
+	 *            The file to analyze.
+	 * @param b
+	 *            True if there are headers.
+	 * @param format
+	 *            The file format.
 	 */
 	public void wizard(final File analyzeFile, final boolean b,
 			final AnalystFileFormat format) {
@@ -1472,20 +1511,31 @@ public class AnalystWizard {
 			expandTimeSlices();
 		}
 	}
-	
+
 	private void generateCode() {
-		this.script.getProperties().setProperty(ScriptProperties.CODE_CONFIG_EMBED_DATA, this.codeEmbedData);
-		this.script.getProperties().setProperty(ScriptProperties.CODE_CONFIG_TARGET_LANGUAGE, this.codeTargetLanguage);
-		this.script.getProperties().setProperty(ScriptProperties.CODE_CONFIG_TARGET_FILE, AnalystWizard.FILE_CODE);
+		this.script.getProperties().setProperty(
+				ScriptProperties.CODE_CONFIG_EMBED_DATA, this.codeEmbedData);
+		this.script.getProperties().setProperty(
+				ScriptProperties.CODE_CONFIG_TARGET_LANGUAGE,
+				this.codeTargetLanguage);
+		this.script.getProperties().setProperty(
+				ScriptProperties.CODE_CONFIG_TARGET_FILE,
+				AnalystWizard.FILE_CODE);
 	}
 
 	/**
 	 * Analyze a file at the specified URL.
-	 * @param url The URL to analyze.
-	 * @param saveFile The save file.
-	 * @param analyzeFile The Encog analyst file.
-	 * @param b True if there are headers.
-	 * @param format The file format.
+	 * 
+	 * @param url
+	 *            The URL to analyze.
+	 * @param saveFile
+	 *            The save file.
+	 * @param analyzeFile
+	 *            The Encog analyst file.
+	 * @param b
+	 *            True if there are headers.
+	 * @param format
+	 *            The file format.
 	 */
 	public void wizard(final URL url, final File saveFile,
 			final File analyzeFile, final boolean b,
@@ -1502,7 +1552,7 @@ public class AnalystWizard {
 		this.format = format;
 
 		generateFilenames(analyzeFile);
-		generateSettings();		
+		generateSettings();
 		this.analyst.download();
 
 		wizard(analyzeFile, b, format);
@@ -1516,7 +1566,8 @@ public class AnalystWizard {
 	}
 
 	/**
-	 * @param missing the missing to set
+	 * @param missing
+	 *            the missing to set
 	 */
 	public void setMissing(HandleMissingValues missing) {
 		this.missing = missing;
@@ -1530,7 +1581,8 @@ public class AnalystWizard {
 	}
 
 	/**
-	 * @param naiveBayes the naiveBayes to set
+	 * @param naiveBayes
+	 *            the naiveBayes to set
 	 */
 	public void setNaiveBayes(boolean naiveBayes) {
 		this.naiveBayes = naiveBayes;
@@ -1544,7 +1596,8 @@ public class AnalystWizard {
 	}
 
 	/**
-	 * @param evidenceSegements the evidenceSegements to set
+	 * @param evidenceSegements
+	 *            the evidenceSegements to set
 	 */
 	public void setEvidenceSegements(int evidenceSegements) {
 		this.evidenceSegements = evidenceSegements;
@@ -1571,7 +1624,8 @@ public class AnalystWizard {
 	}
 
 	/**
-	 * @param codeTargetLanguage the codeTargetLanguage to set
+	 * @param codeTargetLanguage
+	 *            the codeTargetLanguage to set
 	 */
 	public void setCodeTargetLanguage(TargetLanguage codeTargetLanguage) {
 		this.codeTargetLanguage = codeTargetLanguage;
@@ -1585,7 +1639,8 @@ public class AnalystWizard {
 	}
 
 	/**
-	 * @param codeEmbedData the codeEmbedData to set
+	 * @param codeEmbedData
+	 *            the codeEmbedData to set
 	 */
 	public void setCodeEmbedData(boolean codeEmbedData) {
 		this.codeEmbedData = codeEmbedData;
@@ -1598,26 +1653,25 @@ public class AnalystWizard {
 	public void setPreprocess(boolean preprocess) {
 		this.preprocess = preprocess;
 	}
-	
-	private void generateProcess(
-			int backwardWindow, 
-			int forwardWindow, 
-			PredictionType prediction, 
-			String predictField) {
-		
-		this.script.getProperties().setProperty(ScriptProperties.PROCESS_CONFIG_BACKWARD_SIZE, backwardWindow);
-		this.script.getProperties().setProperty(ScriptProperties.PROCESS_CONFIG_FORWARD_SIZE, forwardWindow);
-		
+
+	private void generateProcess(int backwardWindow, int forwardWindow,
+			PredictionType prediction, String predictField) {
+
+		this.script.getProperties().setProperty(
+				ScriptProperties.PROCESS_CONFIG_BACKWARD_SIZE, backwardWindow);
+		this.script.getProperties().setProperty(
+				ScriptProperties.PROCESS_CONFIG_FORWARD_SIZE, forwardWindow);
+
 		List<ProcessField> fields = this.script.getProcess().getFields();
 		fields.clear();
-		for(DataField df: this.script.getFields()) {
-			if( df.getName().equalsIgnoreCase("prediction") ) {
+		for (DataField df : this.script.getFields()) {
+			if (df.getName().equalsIgnoreCase("prediction")) {
 				continue;
 			}
-			
+
 			StringBuilder command = new StringBuilder();
-			
-			if( df.getName().equalsIgnoreCase("time") ) {
+
+			if (df.getName().equalsIgnoreCase("time")) {
 				command.append("cint(field(\"");
 				command.append(df.getName());
 				command.append("\",0");
@@ -1631,30 +1685,30 @@ public class AnalystWizard {
 				fields.add(new ProcessField(df.getName(), command.toString()));
 			}
 		}
-		
+
 		StringBuilder command = new StringBuilder();
-		
-		switch(prediction) {
-			case fieldmax:
-				command.append("fieldmax(\"");
-				command.append(predictField);
-				command.append("\",");
-				command.append(-forwardWindow);
-				command.append(",");
-				command.append(-1);
-				command.append(")");
-				break;
-			case fieldmaxpip:
-				command.append("fieldmaxpip(\"");
-				command.append(predictField);
-				command.append("\",");
-				command.append(-forwardWindow);
-				command.append(",");
-				command.append(-1);
-				command.append(")");
+
+		switch (prediction) {
+		case fieldmax:
+			command.append("fieldmax(\"");
+			command.append(predictField);
+			command.append("\",");
+			command.append(-forwardWindow);
+			command.append(",");
+			command.append(-1);
+			command.append(")");
+			break;
+		case fieldmaxpip:
+			command.append("fieldmaxpip(\"");
+			command.append(predictField);
+			command.append("\",");
+			command.append(-forwardWindow);
+			command.append(",");
+			command.append(-1);
+			command.append(")");
 		}
-		
-		fields.add(new ProcessField("prediction",command.toString()));
-		
+
+		fields.add(new ProcessField("prediction", command.toString()));
+
 	}
 }
