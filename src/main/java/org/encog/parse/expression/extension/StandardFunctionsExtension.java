@@ -317,6 +317,39 @@ public class StandardFunctionsExtension implements ExpressionExtension {
 				}
 			};
 		}
+		else if (theName.equals("iff")) {
+			return new ExpressionTreeFunction(theOwner, theName, theArgs) {
+				@Override
+				public ExpressionValue evaluate() {
+					boolean a = this.getArgs().get(0).evaluate().toBooleanValue();
+					if( a ) {
+						return this.getArgs().get(1).evaluate();	
+					} else {
+						return this.getArgs().get(2).evaluate();
+					}
+					
+					
+
+				}
+			};			
+		}
+		else if (theName.equals("clamp")) {
+			return new ExpressionTreeFunction(theOwner, theName, theArgs) {
+				@Override
+				public ExpressionValue evaluate() {
+					double value = this.getArgs().get(0).evaluate().toFloatValue();
+					double min = this.getArgs().get(1).evaluate().toFloatValue();
+					double max = this.getArgs().get(2).evaluate().toFloatValue();
+					if( value<min ) {
+						return new ExpressionValue(min);
+					} else if( value>max ) {
+						return new ExpressionValue(max);
+					} else {
+						return new ExpressionValue(value);
+					}
+				}
+			};			
+		}
 		else {
 			return null;
 		}
