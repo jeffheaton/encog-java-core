@@ -220,6 +220,7 @@ public class AnalyzedField extends DataField {
 		result.setReal(isReal());
 		result.setClass(isClass());
 		result.setComplete(isComplete());
+		result.setSource(getSource());
 
 		result.getClassMembers().clear();
 

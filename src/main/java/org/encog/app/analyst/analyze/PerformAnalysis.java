@@ -218,6 +218,7 @@ public class PerformAnalysis {
 				// copy the old field name
 				this.fields[i].setName(target.getScript().getFields()[i]
 						.getName());
+				this.fields[i].setSource(target.getScript().getFields()[i].getSource());
 
 				if (this.fields[i].isClass()) {
 					final List<AnalystClassItem> t = this.fields[i]
