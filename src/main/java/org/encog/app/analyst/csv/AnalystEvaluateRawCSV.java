@@ -74,7 +74,7 @@ public class AnalystEvaluateRawCSV extends BasicFile {
 	 * @param headers True if headers are present.
 	 * @param format The format the file is in.
 	 */
-	public final void analyze(final EncogAnalyst theAnalyst, 
+	public void analyze(final EncogAnalyst theAnalyst, 
 			final File inputFile,
 			final boolean headers, final CSVFormat format) {
 		this.setInputFilename(inputFile);
@@ -160,7 +160,7 @@ public class AnalystEvaluateRawCSV extends BasicFile {
 	 * @param outputFile The output file.
 	 * @param method The method to use.
 	 */
-	public final void process(final File outputFile, 			
+	public void process(final File outputFile, 			
 			final MLRegression method) {
 
 		final ReadCSV csv = new ReadCSV(getInputFilename().toString(),

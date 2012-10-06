@@ -153,7 +153,7 @@ public class SQLCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void close() {
+	public void close() {
 		try {
 			if (this.closeConnection) {
 				this.connection.close();
@@ -168,7 +168,7 @@ public class SQLCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getIdealSize() {
+	public int getIdealSize() {
 		return this.idealSize;
 	}
 
@@ -176,7 +176,7 @@ public class SQLCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getInputSize() {
+	public int getInputSize() {
 		return this.inputSize;
 	}
 
@@ -184,7 +184,7 @@ public class SQLCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void prepareRead() {
+	public void prepareRead() {
 		try {
 			if (this.fetchSize != 0) {
 				this.statement.setFetchSize(this.fetchSize);
@@ -200,7 +200,7 @@ public class SQLCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void prepareWrite(final int recordCount, 
+	public void prepareWrite(final int recordCount, 
 			final int theInputSize,
 			final int theIdealSize) {
 		throw new MLDataError("Write not supported.");
@@ -210,7 +210,7 @@ public class SQLCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean read(final double[] input, 
+	public boolean read(final double[] input, 
 			final double[] ideal, double[] significance) {
 		try {
 			if (!this.results.next()) {
@@ -242,14 +242,14 @@ public class SQLCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void write(final double[] input, final double[] ideal, double significance) {
+	public void write(final double[] input, final double[] ideal, double significance) {
 		throw new MLDataError("Write not supported.");
 	}
 
 	/**
 	 * @return the fetchSize
 	 */
-	public final int getFetchSize() {
+	public int getFetchSize() {
 		return fetchSize;
 	}
 
@@ -257,7 +257,7 @@ public class SQLCODEC implements DataSetCODEC {
 	 * @param theFetchSize
 	 *            the fetchSize to set
 	 */
-	public final void setFetchSize(final int theFetchSize) {
+	public void setFetchSize(final int theFetchSize) {
 		this.fetchSize = theFetchSize;
 	}
 	

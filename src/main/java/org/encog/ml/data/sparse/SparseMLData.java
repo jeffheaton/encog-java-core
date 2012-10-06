@@ -111,7 +111,7 @@ public class SparseMLData implements MLData, Serializable, Cloneable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void add(final int index, final double value) {
+	public void add(final int index, final double value) {
 		int i = findIndex(index);
 		if( i==-1 ) {
 			throw new MLDataError("Can't find sparse index: " + index);
@@ -123,7 +123,7 @@ public class SparseMLData implements MLData, Serializable, Cloneable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void clear() {
+	public void clear() {
 		for (int i = 0; i < this.data.length; i++) {
 			this.data[i] = 0;
 		}
@@ -133,7 +133,7 @@ public class SparseMLData implements MLData, Serializable, Cloneable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final MLData clone() {
+	public MLData clone() {
 		return new SparseMLData(this);
 	}
 
@@ -141,7 +141,7 @@ public class SparseMLData implements MLData, Serializable, Cloneable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double[] getData() {
+	public double[] getData() {
 		throw new MLDataError("Can't directly access the data array of a SparseMLData object");
 	}
 
@@ -149,7 +149,7 @@ public class SparseMLData implements MLData, Serializable, Cloneable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double getData(final int index) {
+	public double getData(final int index) {
 		int i = findIndex(index);
 		if( i==-1 ) {
 			throw new MLDataError("Can't find sparse index: " + index);
@@ -161,7 +161,7 @@ public class SparseMLData implements MLData, Serializable, Cloneable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setData(final double[] theData) {
+	public void setData(final double[] theData) {
 		throw new MLDataError("Can't directly access the data array of a SparseMLData object");
 	}
 
@@ -169,7 +169,7 @@ public class SparseMLData implements MLData, Serializable, Cloneable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setData(final int index, final double d) {
+	public void setData(final int index, final double d) {
 		int i = findIndex(index);
 		if( i==-1 ) {
 			throw new MLDataError("Can't find sparse index: " + index);
@@ -181,7 +181,7 @@ public class SparseMLData implements MLData, Serializable, Cloneable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int size() {
+	public int size() {
 		return this.data.length;
 	}
 
@@ -189,7 +189,7 @@ public class SparseMLData implements MLData, Serializable, Cloneable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String toString() {
+	public String toString() {
 		final StringBuilder builder = new StringBuilder("[");
 		builder.append(this.getClass().getSimpleName());
 		builder.append(":");

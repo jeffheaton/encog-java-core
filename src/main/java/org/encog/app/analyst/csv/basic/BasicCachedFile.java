@@ -60,7 +60,7 @@ public class BasicCachedFile extends BasicFile {
 	 * @param column
 	 *            The column to add.
 	 */
-	public final void addColumn(final BaseCachedColumn column) {
+	public void addColumn(final BaseCachedColumn column) {
 		this.columns.add(column);
 		this.columnMapping.put(column.getName(), column);
 	}
@@ -75,7 +75,7 @@ public class BasicCachedFile extends BasicFile {
 	 * @param format
 	 *            The format of the CSV data.
 	 */
-	public final void analyze(final File input, final boolean headers,
+	public void analyze(final File input, final boolean headers,
 			final CSVFormat format) {
 		resetStatus();
 		setInputFilename(input);
@@ -191,7 +191,7 @@ public class BasicCachedFile extends BasicFile {
 	 *            The CSV file to read from.
 	 * @return The column data.
 	 */
-	public final String getColumnData(final String name, final ReadCSV csv) {
+	public String getColumnData(final String name, final ReadCSV csv) {
 		if (!this.columnMapping.containsKey(name)) {
 			return null;
 		}
@@ -209,14 +209,14 @@ public class BasicCachedFile extends BasicFile {
 	/**
 	 * @return The column mappings.
 	 */
-	public final Map<String, BaseCachedColumn> getColumnMapping() {
+	public Map<String, BaseCachedColumn> getColumnMapping() {
 		return this.columnMapping;
 	}
 
 	/**
 	 * @return The columns.
 	 */
-	public final List<BaseCachedColumn> getColumns() {
+	public List<BaseCachedColumn> getColumns() {
 		return this.columns;
 	}
 

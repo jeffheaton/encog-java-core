@@ -82,7 +82,7 @@ public abstract class ThermalNetwork extends BasicML implements MLMethod,
 	 * @param toNeuron The to neuron.
 	 * @param value The value to add.
 	 */
-	public final void addWeight(final int fromNeuron, final int toNeuron,
+	public void addWeight(final int fromNeuron, final int toNeuron,
 			final double value) {
 		final int index = (toNeuron * this.neuronCount) + fromNeuron;
 		if (index >= this.weights.length) {
@@ -96,7 +96,7 @@ public abstract class ThermalNetwork extends BasicML implements MLMethod,
 	 * @return Calculate the current energy for the network. The network will
 	 *         seek to lower this value.
 	 */
-	public final double calculateEnergy() {
+	public double calculateEnergy() {
 		double tempE = 0;
 		final int neuronCount = getNeuronCount();
 
@@ -115,21 +115,21 @@ public abstract class ThermalNetwork extends BasicML implements MLMethod,
 	/**
 	 * Clear any connection weights.
 	 */
-	public final void clear() {
+	public void clear() {
 		EngineArray.fill(this.weights, 0);
 	}
 
 	/**
 	 * @return The current state of the network.
 	 */
-	public final BiPolarNeuralData getCurrentState() {
+	public BiPolarNeuralData getCurrentState() {
 		return this.currentState;
 	}
 
 	/**
 	 * @return Get the neuron count for the network.
 	 */
-	public final int getNeuronCount() {
+	public int getNeuronCount() {
 		return this.neuronCount;
 	}
 
@@ -139,7 +139,7 @@ public abstract class ThermalNetwork extends BasicML implements MLMethod,
 	 * @param toNeuron The to neuron.
 	 * @return The weight.
 	 */
-	public final double getWeight(final int fromNeuron, final int toNeuron) {
+	public double getWeight(final int fromNeuron, final int toNeuron) {
 		final int index = (toNeuron * this.neuronCount) + fromNeuron;
 		return this.weights[index];
 	}
@@ -147,7 +147,7 @@ public abstract class ThermalNetwork extends BasicML implements MLMethod,
 	/**
 	 * @return The weights.
 	 */
-	public final double[] getWeights() {
+	public double[] getWeights() {
 		return this.weights;
 	}
 
@@ -157,7 +157,7 @@ public abstract class ThermalNetwork extends BasicML implements MLMethod,
 	 * @param weights The weights.
 	 * @param output The toutpu
 	 */
-	public final void init(final int neuronCount, final double[] weights,
+	public void init(final int neuronCount, final double[] weights,
 			final double[] output) {
 		if (neuronCount != output.length) {
 			throw new NeuralNetworkError("Neuron count(" + neuronCount
@@ -180,7 +180,7 @@ public abstract class ThermalNetwork extends BasicML implements MLMethod,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void reset() {
+	public void reset() {
 		reset(0);
 	}
 
@@ -188,7 +188,7 @@ public abstract class ThermalNetwork extends BasicML implements MLMethod,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void reset(final int seed) {
+	public void reset(final int seed) {
 		getCurrentState().clear();
 		EngineArray.fill(this.weights, 0.0);
 	}
@@ -197,7 +197,7 @@ public abstract class ThermalNetwork extends BasicML implements MLMethod,
 	 * @param state
 	 *            The current state for the network.
 	 */
-	public final void setCurrentState(final BiPolarNeuralData state) {
+	public void setCurrentState(final BiPolarNeuralData state) {
 		for (int i = 0; i < state.size(); i++) {
 			this.currentState.setData(i, state.getData(i));
 		}
@@ -207,7 +207,7 @@ public abstract class ThermalNetwork extends BasicML implements MLMethod,
 	 * Set the current state.
 	 * @param s The current state array.
 	 */
-	public final void setCurrentState(final double[] s) {
+	public void setCurrentState(final double[] s) {
 		this.currentState = new BiPolarNeuralData(s.length);
 		EngineArray.arrayCopy(s, this.currentState.getData());
 	}
@@ -216,7 +216,7 @@ public abstract class ThermalNetwork extends BasicML implements MLMethod,
 	 * Set the neuron count.
 	 * @param c The neuron count.
 	 */
-	public final void setNeuronCount(final int c) {
+	public void setNeuronCount(final int c) {
 		this.neuronCount = c;
 
 	}
@@ -227,7 +227,7 @@ public abstract class ThermalNetwork extends BasicML implements MLMethod,
 	 * @param toNeuron The to neuron.
 	 * @param value The value.
 	 */
-	public final void setWeight(final int fromNeuron, final int toNeuron,
+	public void setWeight(final int fromNeuron, final int toNeuron,
 			final double value) {
 		final int index = (toNeuron * this.neuronCount) + fromNeuron;
 		this.weights[index] = value;
@@ -237,7 +237,7 @@ public abstract class ThermalNetwork extends BasicML implements MLMethod,
 	 * Set the weight array.
 	 * @param w The weight array.
 	 */
-	public final void setWeights(final double[] w) {
+	public void setWeights(final double[] w) {
 		this.weights = w;
 	}
 

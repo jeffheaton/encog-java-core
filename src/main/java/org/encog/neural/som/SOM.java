@@ -81,7 +81,7 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double calculateError(final MLDataSet data) {
+	public double calculateError(final MLDataSet data) {
 
 		final BestMatchingUnit bmu = new BestMatchingUnit(this);
 
@@ -101,7 +101,7 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int classify(final MLData input) {
+	public int classify(final MLData input) {
 		if (input.size() > getInputCount()) {
 			throw new NeuralNetworkError(
 					"Can't classify SOM with input size of " + getInputCount()
@@ -128,7 +128,7 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getInputCount() {
+	public int getInputCount() {
 		return this.weights.getCols();
 	}
 
@@ -136,14 +136,14 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getOutputCount() {
+	public int getOutputCount() {
 		return this.weights.getRows();
 	}
 
 	/**
 	 * @return the weights
 	 */
-	public final Matrix getWeights() {
+	public Matrix getWeights() {
 		return this.weights;
 	}
 
@@ -151,7 +151,7 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void reset() {
+	public void reset() {
 		this.weights.randomize(-1, 1);
 
 	}
@@ -160,7 +160,7 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void reset(final int seed) {
+	public void reset(final int seed) {
 		reset();
 	}
 
@@ -168,7 +168,7 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 * @param weights
 	 *            the weights to set
 	 */
-	public final void setWeights(final Matrix weights) {
+	public void setWeights(final Matrix weights) {
 		this.weights = weights;
 	}
 
@@ -176,7 +176,7 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void updateProperties() {
+	public void updateProperties() {
 		// unneeded
 	}
 
@@ -188,7 +188,7 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 *            The input pattern.
 	 * @return The winning neuron.
 	 */
-	public final int winner(final MLData input) {
+	public int winner(final MLData input) {
 		return classify(input);
 	}
 

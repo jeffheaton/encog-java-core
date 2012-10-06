@@ -33,6 +33,7 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.encog.neural.freeform.FreeformNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.util.simple.EncogUtility;
@@ -132,5 +133,10 @@ public class XOR {
 				}
 			}
 			return result;
+		}
+
+		public static FreeformNetwork createTrainedFreeformXOR() {
+			BasicNetwork network = createTrainedXOR();
+			return new FreeformNetwork(network);
 		}
 }

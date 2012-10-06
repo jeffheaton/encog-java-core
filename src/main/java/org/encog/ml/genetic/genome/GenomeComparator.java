@@ -55,7 +55,7 @@ public class GenomeComparator implements Comparator<Genome> {
 	 *            The bonus.
 	 * @return The resulting value.
 	 */
-	public final double applyBonus(final double value, final double bonus) {
+	public double applyBonus(final double value, final double bonus) {
 		final double amount = value * bonus;
 		if (this.calculateScore.shouldMinimize()) {
 			return value - amount;
@@ -75,7 +75,7 @@ public class GenomeComparator implements Comparator<Genome> {
 	 *            The penalty.
 	 * @return The resulting value.
 	 */
-	public final double applyPenalty(final double value, final double bonus) {
+	public double applyPenalty(final double value, final double bonus) {
 		final double amount = value * bonus;
 		if (this.calculateScore.shouldMinimize()) {
 			return value - amount;
@@ -94,7 +94,7 @@ public class GenomeComparator implements Comparator<Genome> {
 	 *            The second score.
 	 * @return The best score.
 	 */
-	public final double bestScore(final double d1, final double d2) {
+	public double bestScore(final double d1, final double d2) {
 		if (this.calculateScore.shouldMinimize()) {
 			return Math.min(d1, d2);
 		} else {
@@ -113,14 +113,14 @@ public class GenomeComparator implements Comparator<Genome> {
 	 *         order.
 	 */
 	@Override
-	public final int compare(final Genome genome1, final Genome genome2) {
+	public int compare(final Genome genome1, final Genome genome2) {
 		return Double.compare(genome1.getScore(), genome2.getScore());
 	}
 
 	/**
 	 * @return The score calculation object.
 	 */
-	public final CalculateGenomeScore getCalculateScore() {
+	public CalculateGenomeScore getCalculateScore() {
 		return this.calculateScore;
 	}
 
@@ -133,7 +133,7 @@ public class GenomeComparator implements Comparator<Genome> {
 	 *            The second score to compare.
 	 * @return True if d1 is better than d2.
 	 */
-	public final boolean isBetterThan(final double d1, final double d2) {
+	public boolean isBetterThan(final double d1, final double d2) {
 		if (this.calculateScore.shouldMinimize()) {
 			return d1 < d2;
 		} else {

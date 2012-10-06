@@ -119,7 +119,7 @@ public class CrossValidationKFold extends CrossTraining {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean canContinue() {
+	public boolean canContinue() {
 		return false;
 	}
 
@@ -127,7 +127,7 @@ public class CrossValidationKFold extends CrossTraining {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final TrainingContinuation pause() {
+	public TrainingContinuation pause() {
 		return null;
 	}
 
@@ -135,7 +135,7 @@ public class CrossValidationKFold extends CrossTraining {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void resume(TrainingContinuation state) {
+	public void resume(TrainingContinuation state) {
 		
 	}
 

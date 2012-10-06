@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.script.normalize.AnalystField;
+import org.encog.app.analyst.script.process.ProcessField;
 import org.encog.app.analyst.script.prop.PropertyConstraints;
 import org.encog.app.analyst.script.prop.PropertyEntry;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
@@ -64,7 +65,7 @@ public class ScriptSave {
 	 * @param stream
 	 *            The output stream.
 	 */
-	public final void save(final OutputStream stream) {
+	public void save(final OutputStream stream) {
 		final EncogWriteHelper out = new EncogWriteHelper(stream);
 		saveSubSection(out, "HEADER", "DATASOURCE");
 		saveConfig(out);
@@ -74,9 +75,12 @@ public class ScriptSave {
 			saveNormalize(out);
 		}
 
+		saveProcess(out);
+		
 		saveSubSection(out, "RANDOMIZE", "CONFIG");
 		saveSubSection(out, "CLUSTER", "CONFIG");
 		saveSubSection(out, "BALANCE", "CONFIG");
+		saveSubSection(out, "CODE", "CONFIG");
 
 		if (this.script.getSegregate().getSegregateTargets() != null) {
 			saveSegregate(out);
@@ -84,6 +88,22 @@ public class ScriptSave {
 		saveSubSection(out, "GENERATE", "CONFIG");
 		saveMachineLearning(out);
 		saveTasks(out);
+		out.flush();
+	}
+
+	private void saveProcess(EncogWriteHelper out) {
+		saveSubSection(out, "PROCESS", "CONFIG");
+		
+		out.addSubSection("FIELDS");
+		out.addColumn("name");
+		out.addColumn("command");
+		out.writeLine();
+
+		for (final ProcessField field : this.script.getProcess().getFields()) {
+			out.addColumn(field.getName());
+			out.addColumn(field.getCommand());
+			out.writeLine();
+		}
 		out.flush();
 	}
 
@@ -130,6 +150,7 @@ public class ScriptSave {
 		out.addColumn("amin");
 		out.addColumn("mean");
 		out.addColumn("sdev");
+		out.addColumn("source");
 		out.writeLine();
 
 		for (final DataField field : this.script.getFields()) {
@@ -142,6 +163,7 @@ public class ScriptSave {
 			out.addColumn(field.getMin());
 			out.addColumn(field.getMean());
 			out.addColumn(field.getStandardDeviation());
+			out.addColumn(field.getSource());
 			out.writeLine();
 		}
 		out.flush();
@@ -267,16 +289,18 @@ public class ScriptSave {
 		out.addSubSection(subSection);
 		final List<PropertyEntry> list = PropertyConstraints.getInstance()
 				.getEntries(section, subSection);
-		Collections.sort(list);
-		for (final PropertyEntry entry : list) {
-			final String key = section + ":" + subSection + "_"
-					+ entry.getName();
-			final String value = this.script.getProperties().getPropertyString(
-					key);
-			if (value != null) {
-				out.writeProperty(entry.getName(), value);
-			} else {
-				out.writeProperty(entry.getName(), "");
+		if (list != null) {
+			Collections.sort(list);
+			for (final PropertyEntry entry : list) {
+				final String key = section + ":" + subSection + "_"
+						+ entry.getName();
+				final String value = this.script.getProperties()
+						.getPropertyString(key);
+				if (value != null) {
+					out.writeProperty(entry.getName(), value);
+				} else {
+					out.writeProperty(entry.getName(), "");
+				}
 			}
 		}
 	}

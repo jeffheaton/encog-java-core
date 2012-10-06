@@ -103,56 +103,56 @@ public class TimeSeriesUtil {
 	/**
 	 * @return the analyst
 	 */
-	public final EncogAnalyst getAnalyst() {
+	public EncogAnalyst getAnalyst() {
 		return this.analyst;
 	}
 
 	/**
 	 * @return the buffer
 	 */
-	public final List<double[]> getBuffer() {
+	public List<double[]> getBuffer() {
 		return this.buffer;
 	}
 
 	/**
 	 * @return the headingMap
 	 */
-	public final Map<String, Integer> getHeadingMap() {
+	public Map<String, Integer> getHeadingMap() {
 		return this.headingMap;
 	}
 
 	/**
 	 * @return the inputSize
 	 */
-	public final int getInputSize() {
+	public int getInputSize() {
 		return this.inputSize;
 	}
 
 	/**
 	 * @return the lagDepth
 	 */
-	public final int getLagDepth() {
+	public int getLagDepth() {
 		return this.lagDepth;
 	}
 
 	/**
 	 * @return the leadDepth
 	 */
-	public final int getLeadDepth() {
+	public int getLeadDepth() {
 		return this.leadDepth;
 	}
 
 	/**
 	 * @return the outputSize
 	 */
-	public final int getOutputSize() {
+	public int getOutputSize() {
 		return this.outputSize;
 	}
 
 	/**
 	 * @return the totalDepth
 	 */
-	public final int getTotalDepth() {
+	public int getTotalDepth() {
 		return this.totalDepth;
 	}
 
@@ -161,7 +161,7 @@ public class TimeSeriesUtil {
 	 * @param input The input.
 	 * @return The output.
 	 */
-	public final double[] process(final double[] input) {
+	public double[] process(final double[] input) {
 		if (input.length != this.inputSize) {
 			throw new AnalystError("Invalid input size: " + input.length
 					+ ", should be " + this.inputSize);

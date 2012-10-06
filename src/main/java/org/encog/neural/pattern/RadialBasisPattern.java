@@ -65,7 +65,7 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of neurons in the hidden layer.
 	 */
-	public final void addHiddenLayer(final int count) {
+	public void addHiddenLayer(final int count) {
 		if (this.hiddenNeurons != -1) {
 			throw new PatternError("A RBF network usually has a single "
 					+ "hidden layer.");
@@ -78,7 +78,7 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 	/**
 	 * Clear out any hidden neurons.
 	 */
-	public final void clear() {
+	public void clear() {
 		this.hiddenNeurons = -1;
 	}
 
@@ -87,7 +87,7 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return The neural network.
 	 */
-	public final MLMethod generate() {
+	public MLMethod generate() {
 
 		RBFNetwork result = new RBFNetwork(inputNeurons, this.hiddenNeurons ,outputNeurons,this.rbfType);
 		return result;
@@ -100,7 +100,7 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 	 * @param activation
 	 *            The new activation function.
 	 */
-	public final void setActivationFunction(final ActivationFunction activation) {
+	public void setActivationFunction(final ActivationFunction activation) {
 		throw new PatternError( "Can't set the activation function for "
 				+ "a radial basis function network.");
 	}
@@ -111,7 +111,7 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of input neurons.
 	 */
-	public final void setInputNeurons(final int count) {
+	public void setInputNeurons(final int count) {
 		this.inputNeurons = count;
 	}
 
@@ -121,11 +121,11 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of output neurons.
 	 */
-	public final void setOutputNeurons(final int count) {
+	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
 	}
 
-	public final void setRBF(RBFEnum type) {
+	public void setRBF(RBFEnum type) {
 		this.rbfType = type;
 		
 	}

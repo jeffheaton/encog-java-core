@@ -106,7 +106,7 @@ public class AnalystReport {
 	 * Produce the report.
 	 * @return The report.
 	 */
-	public final String produceReport() {
+	public String produceReport() {
 		final HTMLReport report = new HTMLReport();
 
 		analyzeFile();
@@ -245,7 +245,7 @@ public class AnalystReport {
 	 * Produce a report for a filename.
 	 * @param filename The filename.
 	 */
-	public final void produceReport(final File filename) {
+	public void produceReport(final File filename) {
 		try {
 			final String str = produceReport();
 			FileUtil.writeFileAsString(filename, str);

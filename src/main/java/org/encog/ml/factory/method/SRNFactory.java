@@ -50,7 +50,7 @@ public class SRNFactory {
 	 * @param output The output count.
 	 * @return The newly created SRN.
 	 */
-	public final MLMethod create(final String architecture, final int input,
+	public MLMethod create(final String architecture, final int input,
 			final int output) {
 
 		final List<String> layers = ArchitectureParse.parseLayers(architecture);

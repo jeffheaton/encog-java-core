@@ -63,21 +63,21 @@ public class SortedField {
 	/**
 	 * @return the index
 	 */
-	public final int getIndex() {
+	public int getIndex() {
 		return this.index;
 	}
 
 	/**
 	 * @return the sortType
 	 */
-	public final SortType getSortType() {
+	public SortType getSortType() {
 		return this.sortType;
 	}
 
 	/**
 	 * @return the ascending
 	 */
-	public final boolean isAscending() {
+	public boolean isAscending() {
 		return this.ascending;
 	}
 
@@ -85,7 +85,7 @@ public class SortedField {
 	 * @param theAscending
 	 *            the ascending to set
 	 */
-	public final void setAscending(final boolean theAscending) {
+	public void setAscending(final boolean theAscending) {
 		this.ascending = theAscending;
 	}
 
@@ -93,7 +93,7 @@ public class SortedField {
 	 * @param theIndex
 	 *            the index to set
 	 */
-	public final void setIndex(final int theIndex) {
+	public void setIndex(final int theIndex) {
 		this.index = theIndex;
 	}
 
@@ -101,13 +101,13 @@ public class SortedField {
 	 * @param theSortType
 	 *            the sortType to set
 	 */
-	public final void setSortType(final SortType theSortType) {
+	public void setSortType(final SortType theSortType) {
 		this.sortType = theSortType;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final String toString() {
+	public String toString() {
 		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" index=");

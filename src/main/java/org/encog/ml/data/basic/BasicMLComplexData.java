@@ -105,7 +105,7 @@ public class BasicMLComplexData implements MLComplexData {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void add(final int index, final double value) {
+	public void add(final int index, final double value) {
 		this.data[index].plus(new ComplexNumber(value, 0));
 	}
 
@@ -113,7 +113,7 @@ public class BasicMLComplexData implements MLComplexData {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void add(final int index, final ComplexNumber value) {
+	public void add(final int index, final ComplexNumber value) {
 		this.data[index] = this.data[index].plus(value);
 	}
 
@@ -121,7 +121,7 @@ public class BasicMLComplexData implements MLComplexData {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void clear() {
+	public void clear() {
 		for (int i = 0; i < this.data.length; i++) {
 			this.data[i] = new ComplexNumber(0, 0);
 		}
@@ -131,7 +131,7 @@ public class BasicMLComplexData implements MLComplexData {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final MLData clone() {
+	public MLData clone() {
 		return new BasicMLData(this);
 	}
 
@@ -139,7 +139,7 @@ public class BasicMLComplexData implements MLComplexData {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double[] getData() {
+	public double[] getData() {
 		double[] d = new double[this.data.length];
 		for (int i = 0; i < d.length; i++) {
 			d[i] = this.data[i].getReal();
@@ -151,7 +151,7 @@ public class BasicMLComplexData implements MLComplexData {
 	 * @return The complex numbers.
 	 */
 	@Override
-	public final ComplexNumber[] getComplexData() {
+	public ComplexNumber[] getComplexData() {
 		return this.data;
 	}
 
@@ -159,7 +159,7 @@ public class BasicMLComplexData implements MLComplexData {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double getData(final int index) {
+	public double getData(final int index) {
 		return this.data[index].getReal();
 	}
 
@@ -167,7 +167,7 @@ public class BasicMLComplexData implements MLComplexData {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final ComplexNumber getComplexData(final int index) {
+	public ComplexNumber getComplexData(final int index) {
 		return this.data[index];
 	}
 
@@ -175,7 +175,7 @@ public class BasicMLComplexData implements MLComplexData {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setData(final double[] theData) {
+	public void setData(final double[] theData) {
 		for (int i = 0; i < theData.length; i++) {
 			this.data[i] = new ComplexNumber(theData[i], 0);
 		}
@@ -185,7 +185,7 @@ public class BasicMLComplexData implements MLComplexData {
 	 * @param theData Set the complex data array.
 	 */
 	@Override
-	public final void setData(final ComplexNumber[] theData) {
+	public void setData(final ComplexNumber[] theData) {
 		this.data = theData;
 	}
 
@@ -196,7 +196,7 @@ public class BasicMLComplexData implements MLComplexData {
 	 * @param d The numeric value to set.
 	 */
 	@Override
-	public final void setData(final int index, final double d) {
+	public void setData(final int index, final double d) {
 		this.data[index] = new ComplexNumber(d, 0);
 	}
 
@@ -206,7 +206,7 @@ public class BasicMLComplexData implements MLComplexData {
 	 * @param d The complex number.
 	 */
 	@Override
-	public final void setData(final int index, final ComplexNumber d) {
+	public void setData(final int index, final ComplexNumber d) {
 		this.data[index] = d;
 	}
 
@@ -214,7 +214,7 @@ public class BasicMLComplexData implements MLComplexData {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int size() {
+	public int size() {
 		return this.data.length;
 	}
 
@@ -222,7 +222,7 @@ public class BasicMLComplexData implements MLComplexData {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String toString() {
+	public String toString() {
 		final StringBuilder builder = new StringBuilder("[");
 		builder.append(this.getClass().getSimpleName());
 		builder.append(":");

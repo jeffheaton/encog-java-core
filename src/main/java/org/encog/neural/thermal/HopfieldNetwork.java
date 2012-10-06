@@ -65,7 +65,7 @@ public class HopfieldNetwork extends ThermalNetwork {
 	 * @param pattern
 	 *            The pattern to train for.
 	 */
-	public final void addPattern(final MLData pattern) {
+	public void addPattern(final MLData pattern) {
 
 		if (pattern.size() != getNeuronCount()) {
 			throw new NeuralNetworkError("Network with " + getNeuronCount()
@@ -103,7 +103,7 @@ public class HopfieldNetwork extends ThermalNetwork {
 	 * @return The new current state.
 	 */
 	@Override
-	public final MLData compute(final MLData input) {
+	public MLData compute(final MLData input) {
 		final BiPolarNeuralData result = new BiPolarNeuralData(input.size());
 		EngineArray.arrayCopy(input.getData(), getCurrentState().getData());
 		run();
@@ -135,7 +135,7 @@ public class HopfieldNetwork extends ThermalNetwork {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getInputCount() {
+	public int getInputCount() {
 		return super.getNeuronCount();
 	}
 
@@ -143,14 +143,14 @@ public class HopfieldNetwork extends ThermalNetwork {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getOutputCount() {
+	public int getOutputCount() {
 		return super.getNeuronCount();
 	}
 
 	/**
 	 * Perform one Hopfield iteration.
 	 */
-	public final void run() {
+	public void run() {
 
 		for (int toNeuron = 0; toNeuron < getNeuronCount(); toNeuron++) {
 			double sum = 0;
@@ -170,7 +170,7 @@ public class HopfieldNetwork extends ThermalNetwork {
 	 *            The maximum number of cycles to run before giving up.
 	 * @return The number of cycles that were run.
 	 */
-	public final int runUntilStable(final int max) {
+	public int runUntilStable(final int max) {
 		boolean done = false;
 		String lastStateStr = getCurrentState().toString();
 		String currentStateStr = getCurrentState().toString();

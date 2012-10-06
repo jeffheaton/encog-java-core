@@ -77,6 +77,11 @@ public class DataField {
 	 * Is this field complete.
 	 */
 	private boolean isComplete;
+	
+	/**
+	 * The source for this field.  This is usually used by Ninjatrader ot MT.
+	 */
+	private String source = "";
 
 	/**
 	 * The class members.
@@ -106,28 +111,28 @@ public class DataField {
 	/**
 	 * @return the classMembers
 	 */
-	public final List<AnalystClassItem> getClassMembers() {
+	public List<AnalystClassItem> getClassMembers() {
 		return this.classMembers;
 	}
 
 	/**
 	 * @return the max
 	 */
-	public final double getMax() {
+	public double getMax() {
 		return this.max;
 	}
 
 	/**
 	 * @return the mean
 	 */
-	public final double getMean() {
+	public double getMean() {
 		return this.mean;
 	}
 
 	/**
 	 * @return the min
 	 */
-	public final double getMin() {
+	public double getMin() {
 		return this.min;
 	}
 
@@ -137,7 +142,7 @@ public class DataField {
 	 * 
 	 * @return The minimum class count.
 	 */
-	public final int getMinClassCount() {
+	public int getMinClassCount() {
 		int cmin = Integer.MAX_VALUE;
 		for (final AnalystClassItem cls : this.classMembers) {
 			cmin = Math.min(cmin, cls.getCount());
@@ -148,42 +153,42 @@ public class DataField {
 	/**
 	 * @return the name
 	 */
-	public final String getName() {
+	public String getName() {
 		return this.name;
 	}
 
 	/**
 	 * @return the standardDeviation
 	 */
-	public final double getStandardDeviation() {
+	public double getStandardDeviation() {
 		return this.standardDeviation;
 	}
 
 	/**
 	 * @return the isClass
 	 */
-	public final boolean isClass() {
+	public boolean isClass() {
 		return this.isClass;
 	}
 
 	/**
 	 * @return the isComplete
 	 */
-	public final boolean isComplete() {
+	public boolean isComplete() {
 		return this.isComplete;
 	}
 
 	/**
 	 * @return the isInteger
 	 */
-	public final boolean isInteger() {
+	public boolean isInteger() {
 		return this.isInteger;
 	}
 
 	/**
 	 * @return the isReal
 	 */
-	public final boolean isReal() {
+	public boolean isReal() {
 		return this.isReal;
 	}
 
@@ -191,7 +196,7 @@ public class DataField {
 	 * @param theClass
 	 *            the isClass to set
 	 */
-	public final void setClass(final boolean theClass) {
+	public void setClass(final boolean theClass) {
 		this.isClass = theClass;
 	}
 
@@ -199,7 +204,7 @@ public class DataField {
 	 * @param theComplete
 	 *            the isComplete to set
 	 */
-	public final void setComplete(final boolean theComplete) {
+	public void setComplete(final boolean theComplete) {
 		this.isComplete = theComplete;
 	}
 
@@ -207,7 +212,7 @@ public class DataField {
 	 * @param theInteger
 	 *            the isInteger to set
 	 */
-	public final void setInteger(final boolean theInteger) {
+	public void setInteger(final boolean theInteger) {
 		this.isInteger = theInteger;
 	}
 
@@ -215,7 +220,7 @@ public class DataField {
 	 * @param theMax
 	 *            the max to set
 	 */
-	public final void setMax(final double theMax) {
+	public void setMax(final double theMax) {
 		this.max = theMax;
 	}
 
@@ -223,7 +228,7 @@ public class DataField {
 	 * @param theMean
 	 *            the mean to set
 	 */
-	public final void setMean(final double theMean) {
+	public void setMean(final double theMean) {
 		this.mean = theMean;
 	}
 
@@ -231,7 +236,7 @@ public class DataField {
 	 * @param theMin
 	 *            the theMin to set
 	 */
-	public final void setMin(final double theMin) {
+	public void setMin(final double theMin) {
 		this.min = theMin;
 	}
 
@@ -239,7 +244,7 @@ public class DataField {
 	 * @param theName
 	 *            the name to set
 	 */
-	public final void setName(final String theName) {
+	public void setName(final String theName) {
 		this.name = theName;
 	}
 
@@ -247,7 +252,7 @@ public class DataField {
 	 * @param theReal
 	 *            the isReal to set
 	 */
-	public final void setReal(final boolean theReal) {
+	public void setReal(final boolean theReal) {
 		this.isReal = theReal;
 	}
 
@@ -255,8 +260,18 @@ public class DataField {
 	 * @param theStandardDeviation
 	 *            the standardDeviation to set
 	 */
-	public final void setStandardDeviation(final double theStandardDeviation) {
+	public void setStandardDeviation(final double theStandardDeviation) {
 		this.standardDeviation = theStandardDeviation;
 	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+	
+	
 
 }

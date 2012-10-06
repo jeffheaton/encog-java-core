@@ -121,7 +121,7 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 	 * @return The error percentage.
 	 */
 	@Override
-	public final double calculateError(final MLDataSet data) {
+	public double calculateError(final MLDataSet data) {
 		return EncogUtility.calculateRegressionError(this, data);
 	}
 
@@ -129,7 +129,7 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final MLData compute(final MLData input) {
+	public MLData compute(final MLData input) {
 		final MLData output = new BasicMLData(getOutputCount());
 		this.flat.compute(input.getData(), output.getData());
 		return output;
@@ -139,7 +139,7 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final FlatNetwork getFlat() {
+	public FlatNetwork getFlat() {
 		return this.flat;
 	}
 
@@ -147,7 +147,7 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getInputCount() {
+	public int getInputCount() {
 		return this.flat.getInputCount();
 	}
 
@@ -155,7 +155,7 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getOutputCount() {
+	public int getOutputCount() {
 		return this.flat.getOutputCount();
 	}
 
@@ -163,7 +163,7 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 	 * Get the RBF's.
 	 * @return The RBF's.
 	 */
-	public final RadialBasisFunction[] getRBF() {
+	public RadialBasisFunction[] getRBF() {
 		return this.flat.getRBF();
 	}
 
@@ -177,7 +177,7 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 	 * @param t
 	 *            The type of RBF to use.
 	 */
-	public final void randomizeRBFCentersAndWidths(final double min,
+	public void randomizeRBFCentersAndWidths(final double min,
 			final double max, final RBFEnum t) {
 		final int dimensions = getInputCount();
 		final double[] centers = new double[dimensions];
@@ -195,7 +195,7 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 	 * Set the RBF's.
 	 * @param rbf The RBF's.
 	 */
-	public final void setRBF(final RadialBasisFunction[] rbf) {
+	public void setRBF(final RadialBasisFunction[] rbf) {
 		this.flat.setRBF(rbf);
 	}
 
@@ -211,7 +211,7 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 	 * @param t
 	 *            The RBF Function to use for this layer.
 	 */
-	public final void setRBFCentersAndWidths(final double[][] centers,
+	public void setRBFCentersAndWidths(final double[][] centers,
 			final double[] widths, final RBFEnum t) {
 		for (int i = 0; i < this.flat.getRBF().length; i++) {
 			setRBFFunction(i, t, centers[i], widths[i]);
@@ -231,7 +231,7 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 	 * @param useWideEdgeRBFs
 	 *            Enables wider RBF's around the boundary of the neuron mesh.
 	 */
-	public final void setRBFCentersAndWidthsEqualSpacing(final double minPosition,
+	public void setRBFCentersAndWidthsEqualSpacing(final double minPosition,
 			final double maxPosition, final RBFEnum t,
 			final double volumeNeuronRBFWidth, final boolean useWideEdgeRBFs) {
 		final int totalNumHiddenNeurons = this.flat.getRBF().length;
@@ -311,7 +311,7 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 	 * @param width
 	 *            The width.
 	 */
-	public final void setRBFFunction(final int index, final RBFEnum t,
+	public void setRBFFunction(final int index, final RBFEnum t,
 			final double[] centers, final double width) {
 		if (t == RBFEnum.Gaussian) {
 			this.flat.getRBF()[index] = new GaussianFunction(0.5, centers,

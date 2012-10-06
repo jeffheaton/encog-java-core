@@ -80,7 +80,7 @@ public class ArrayDataCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getInputSize() {
+	public int getInputSize() {
 		return inputSize;
 	}
 
@@ -88,7 +88,7 @@ public class ArrayDataCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getIdealSize() {
+	public int getIdealSize() {
 		return idealSize;
 	}
 
@@ -96,7 +96,7 @@ public class ArrayDataCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean read(final double[] theInput, 
+	public boolean read(final double[] theInput, 
 			final double[] theIdeal, final double[] significance) {
 		if (index >= this.input.length) {
 			return false;
@@ -113,7 +113,7 @@ public class ArrayDataCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void write(final double[] theInput, 
+	public void write(final double[] theInput, 
 			final double[] theIdeal,final double significance) {
 		EngineArray.arrayCopy(theInput, this.input[index]);
 		EngineArray.arrayCopy(theIdeal, this.ideal[index]);
@@ -124,7 +124,7 @@ public class ArrayDataCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void prepareWrite(final int recordCount, 
+	public void prepareWrite(final int recordCount, 
 			final int theInputSize, final int theIdealSize) {
 		this.input = new double[recordCount][theInputSize];
 		this.ideal = new double[recordCount][theIdealSize];
@@ -136,14 +136,14 @@ public class ArrayDataCODEC implements DataSetCODEC {
 	/**
 	 * @return The input array.
 	 */
-	public final double[][] getInput() {
+	public double[][] getInput() {
 		return input;
 	}
 	
 	/**
 	 * @return The ideal array.
 	 */
-	public final double[][] getIdeal() {
+	public double[][] getIdeal() {
 		return ideal;
 	}
 

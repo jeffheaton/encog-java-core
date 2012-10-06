@@ -23,9 +23,17 @@
  */
 package org.encog.app.analyst.commands;
 
+import java.io.File;
+
+import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.prop.ScriptProperties;
+import org.encog.ml.MLMethod;
+import org.encog.ml.data.MLDataSet;
+import org.encog.ml.data.folded.FoldedDataSet;
+import org.encog.persist.EncogDirectoryPersistence;
+import org.encog.util.simple.EncogUtility;
 
 /**
  * Base class for Encog Analyst commands. This class defines the properties sent
@@ -33,6 +41,12 @@ import org.encog.app.analyst.script.prop.ScriptProperties;
  * 
  */
 public abstract class Cmd {
+	
+	/**
+	 * The number of folds, if kfold is used.
+	 */
+	private int kfold;
+	
 	/**
 	 * The analyst object that this command belongs to.
 	 */
@@ -68,7 +82,7 @@ public abstract class Cmd {
 	/**
 	 * @return The analyst used with this command.
 	 */
-	public final EncogAnalyst getAnalyst() {
+	public EncogAnalyst getAnalyst() {
 		return this.analyst;
 	}
 
@@ -80,20 +94,90 @@ public abstract class Cmd {
 	/**
 	 * @return The properties used with this command.
 	 */
-	public final ScriptProperties getProp() {
+	public ScriptProperties getProp() {
 		return this.properties;
 	}
 
 	/**
 	 * @return The script used with this command.
 	 */
-	public final AnalystScript getScript() {
+	public AnalystScript getScript() {
 		return this.script;
+	}
+	
+	/**
+	 * Obtain the number of folds for cross validation.
+	 * @return The number of folds.
+	 */
+	public int obtainCross() {
+		final String cross = getProp().getPropertyString(
+				ScriptProperties.ML_TRAIN_CROSS);
+		if ((cross == null) || (cross.length() == 0)) {
+			return 0;
+		} else if (cross.toLowerCase().startsWith("kfold:")) {
+			final String str = cross.substring(6);
+			try {
+				return Integer.parseInt(str);
+			} catch (final NumberFormatException ex) {
+				throw new AnalystError("Invalid kfold :" + str);
+			}
+		} else {
+			throw new AnalystError("Unknown cross validation: " + cross);
+		}
+	}
+
+	/**
+	 * Obtain the ML method.
+	 * @return The method.
+	 */
+	public MLMethod obtainMethod() {
+		final String resourceID = getProp().getPropertyString(
+				ScriptProperties.ML_CONFIG_MACHINE_LEARNING_FILE);
+		final File resourceFile = getScript().resolveFilename(resourceID);
+
+		final MLMethod method = (MLMethod) EncogDirectoryPersistence
+				.loadObject(resourceFile);
+
+		if (!(method instanceof MLMethod)) {
+			throw new AnalystError(
+					"The object to be trained must be an instance of MLMethod. "
+							+ method.getClass().getSimpleName());
+		}
+
+		return method;
+	}
+
+	/**
+	 * Obtain the training set.
+	 * @return The training set.
+	 */
+	public MLDataSet obtainTrainingSet() {
+		final String trainingID = getProp().getPropertyString(
+				ScriptProperties.ML_CONFIG_TRAINING_FILE);
+
+		final File trainingFile = getScript().resolveFilename(trainingID);
+
+		MLDataSet trainingSet = EncogUtility.loadEGB2Memory(trainingFile);
+
+		if (this.kfold > 0) {
+			trainingSet = new FoldedDataSet(trainingSet);
+		}
+
+		return trainingSet;
+	}
+	
+	
+	public int getKfold() {
+		return kfold;
+	}
+
+	public void setKfold(int kfold) {
+		this.kfold = kfold;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final String toString() {
+	public String toString() {
 		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" name=");

@@ -73,7 +73,7 @@ public class BPROPJob extends TrainingJob {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void createTrainer(final boolean singleThreaded) {
+	public void createTrainer(final boolean singleThreaded) {
 		final Propagation train = new Backpropagation(getNetwork(),
 				getTraining(), getLearningRate(), getMomentum());
 
@@ -93,14 +93,14 @@ public class BPROPJob extends TrainingJob {
 	/**
 	 * @return the learningRate
 	 */
-	public final double getLearningRate() {
+	public double getLearningRate() {
 		return this.learningRate;
 	}
 
 	/**
 	 * @return the momentum
 	 */
-	public final double getMomentum() {
+	public double getMomentum() {
 		return this.momentum;
 	}
 
@@ -108,7 +108,7 @@ public class BPROPJob extends TrainingJob {
 	 * @param learningRate
 	 *            the learningRate to set
 	 */
-	public final void setLearningRate(final double learningRate) {
+	public void setLearningRate(final double learningRate) {
 		this.learningRate = learningRate;
 	}
 
@@ -116,7 +116,7 @@ public class BPROPJob extends TrainingJob {
 	 * @param momentum
 	 *            the momentum to set
 	 */
-	public final void setMomentum(final double momentum) {
+	public void setMomentum(final double momentum) {
 		this.momentum = momentum;
 	}
 

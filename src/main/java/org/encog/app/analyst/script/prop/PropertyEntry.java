@@ -83,41 +83,41 @@ public class PropertyEntry implements Comparable<PropertyEntry> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int compareTo(final PropertyEntry o) {
+	public int compareTo(final PropertyEntry o) {
 		return this.name.compareTo(o.name);
 	}
 
 	/**
 	 * @return the entryType
 	 */
-	public final PropertyType getEntryType() {
+	public PropertyType getEntryType() {
 		return this.entryType;
 	}
 
 	/**
 	 * @return The key.
 	 */
-	public final String getKey() {
+	public String getKey() {
 		return this.section + "_" + this.name;
 	}
 
 	/**
 	 * @return the name
 	 */
-	public final String getName() {
+	public String getName() {
 		return this.name;
 	}
 
 	/**
 	 * @return the section
 	 */
-	public final String getSection() {
+	public String getSection() {
 		return this.section;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final String toString() {
+	public String toString() {
 		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" name=");
@@ -135,7 +135,7 @@ public class PropertyEntry implements Comparable<PropertyEntry> {
 	 * @param theName The name of the property.
 	 * @param value The value of the property.
 	 */
-	public final void validate(final String theSection, final String subSection,
+	public void validate(final String theSection, final String subSection,
 			final String theName, final String value) {
 		if ((value == null) || (value.length() == 0)) {
 			return;

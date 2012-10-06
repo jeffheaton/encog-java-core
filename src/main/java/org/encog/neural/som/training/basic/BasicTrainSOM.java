@@ -190,7 +190,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	/**
 	 * Should be called each iteration if autodecay is desired.
 	 */
-	public final void autoDecay() {
+	public void autoDecay() {
 		if (this.radius > this.endRadius) {
 			this.radius += this.autoDecayRadius;
 		}
@@ -205,7 +205,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean canContinue() {
+	public boolean canContinue() {
 		return false;
 	}
 
@@ -234,7 +234,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * @param d
 	 *            The percent to decay by.
 	 */
-	public final void decay(final double d) {
+	public void decay(final double d) {
 		this.radius *= (1.0 - d);
 		this.learningRate *= (1.0 - d);
 	}
@@ -247,7 +247,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * @param decayRadius
 	 *            The percent to decay the radius by.
 	 */
-	public final void decay(final double decayRate, final double decayRadius) {
+	public void decay(final double decayRate, final double decayRadius) {
 		this.radius *= (1.0 - decayRadius);
 		this.learningRate *= (1.0 - decayRate);
 		getNeighborhood().setRadius(this.radius);
@@ -325,7 +325,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	/**
 	 * @return The input neuron count.
 	 */
-	public final int getInputNeuronCount() {
+	public int getInputNeuronCount() {
 		return this.inputNeuronCount;
 	}
 
@@ -333,7 +333,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * @return The learning rate. This was set when the object was created.
 	 */
 	@Override
-	public final double getLearningRate() {
+	public double getLearningRate() {
 		return this.learningRate;
 	}
 
@@ -341,21 +341,21 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final MLMethod getMethod() {
+	public MLMethod getMethod() {
 		return this.network;
 	}
 
 	/**
 	 * @return The network neighborhood function.
 	 */
-	public final NeighborhoodFunction getNeighborhood() {
+	public NeighborhoodFunction getNeighborhood() {
 		return this.neighborhood;
 	}
 
 	/**
 	 * @return The output neuron count.
 	 */
-	public final int getOutputNeuronCount() {
+	public int getOutputNeuronCount() {
 		return this.outputNeuronCount;
 	}
 
@@ -363,7 +363,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * @return Is a winner to be forced of neurons that do not learn. See class
 	 *         description for more info.
 	 */
-	public final boolean isForceWinner() {
+	public boolean isForceWinner() {
 		return this.forceWinner;
 	}
 
@@ -371,7 +371,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * Perform one training iteration.
 	 */
 	@Override
-	public final void iteration() {
+	public void iteration() {
 
 		EncogLogging.log(EncogLogging.LEVEL_INFO,
 				"Performing SOM Training iteration.");
@@ -434,7 +434,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final TrainingContinuation pause() {
+	public TrainingContinuation pause() {
 		return null;
 	}
 
@@ -462,7 +462,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * @param endRadius
 	 *            The ending radius.
 	 */
-	public final void setAutoDecay(final int plannedIterations,
+	public void setAutoDecay(final int plannedIterations,
 			final double startRate, final double endRate,
 			final double startRadius, final double endRadius) {
 		this.startRate = startRate;
@@ -481,7 +481,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * @param forceWinner
 	 *            True if a winner is to be forced.
 	 */
-	public final void setForceWinner(final boolean forceWinner) {
+	public void setForceWinner(final boolean forceWinner) {
 		this.forceWinner = forceWinner;
 	}
 
@@ -492,7 +492,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 *            The learning rate.
 	 */
 	@Override
-	public final void setLearningRate(final double rate) {
+	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
 
@@ -504,7 +504,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * @param radius
 	 *            The new radius.
 	 */
-	public final void setParams(final double rate, final double radius) {
+	public void setParams(final double rate, final double radius) {
 		this.radius = radius;
 		this.learningRate = rate;
 		getNeighborhood().setRadius(radius);
@@ -514,7 +514,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String toString() {
+	public String toString() {
 		final StringBuilder result = new StringBuilder();
 		result.append("Rate=");
 		result.append(Format.formatPercent(this.learningRate));
@@ -574,7 +574,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * @param pattern
 	 *            The pattern to train.
 	 */
-	public final void trainPattern(final MLData pattern) {
+	public void trainPattern(final MLData pattern) {
 
 		final MLData input = pattern;
 		final int bmu = this.bmuUtil.calculateBMU(input);

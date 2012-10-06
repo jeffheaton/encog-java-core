@@ -39,9 +39,11 @@ import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.normalize.AnalystField;
+import org.encog.app.analyst.script.process.ProcessField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
+import org.encog.app.generate.TargetLanguage;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.util.arrayutil.NormalizationAction;
@@ -84,6 +86,12 @@ public class AnalystWizard {
 	 * The default training error.
 	 */
 	public static final double DEFAULT_TRAIN_ERROR = 0.05;
+	
+	/**
+	 * The processed data.
+	 */	
+	public static final String FILE_PRE = "FILE_PROCESSED";
+	
 
 	/**
 	 * The raw file.
@@ -139,6 +147,11 @@ public class AnalystWizard {
 	 * The clustered file.
 	 */
 	public static final String FILE_CLUSTER = "FILE_CLUSTER";
+	
+	/**
+	 * The generated code file.
+	 */
+	public static final String FILE_CODE = "FILE_CODE";
 
 	/**
 	 * The raw filename.
@@ -191,9 +204,19 @@ public class AnalystWizard {
 	private String filenameBalance;
 
 	/**
+	 * The processed filename.
+	 */
+	private String filenameProcess;
+	
+	/**
 	 * The cluster filename.
 	 */
 	private String filenameCluster;
+	
+	/**
+	 * The filename that code will be generated to.
+	 */
+	private String filenameCode;
 
 	/**
 	 * The analyst script.
@@ -293,6 +316,12 @@ public class AnalystWizard {
 	private double maxError = DEFAULT_TRAIN_ERROR;
 
 	private String targetFieldName;
+	
+	private TargetLanguage codeTargetLanguage = TargetLanguage.NoGeneration;
+	
+	private boolean codeEmbedData;
+	
+	private boolean preprocess = false;
 
 	/**
 	 * Construct the analyst wizard.
@@ -495,7 +524,7 @@ public class AnalystWizard {
 	 */
 	private void generateFeedForward(final int inputColumns,
 			final int outputColumns) {
-		final int hidden = (int) ((inputColumns) * 1.5);
+		final int hidden = (int) ((inputColumns*Math.max(this.lagWindowSize,1)) * 1.5);
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_TYPE,
 				MLMethodFactory.TYPE_FEEDFORWARD);
@@ -637,6 +666,12 @@ public class AnalystWizard {
 	 */
 	private void generateFilenames(final File rawFile) {
 		this.filenameRaw = rawFile.getName();
+		
+		if( this.preprocess ) {
+			this.filenameProcess = FileUtil.addFilenameBase(rawFile, "_process")
+					.getName();
+		}
+		
 		this.filenameNorm = FileUtil.addFilenameBase(rawFile, "_norm")
 				.getName();
 		this.filenameRandom = FileUtil.addFilenameBase(rawFile, "_random")
@@ -656,10 +691,17 @@ public class AnalystWizard {
 				.getName();
 		this.filenameCluster = FileUtil.addFilenameBase(rawFile, "_cluster")
 				.getName();
+		this.filenameCode = FileUtil.forceExtension( FileUtil.addFilenameBase(rawFile, "_code").getName(), 
+				this.codeTargetLanguage.getExtension());
 
 		final ScriptProperties p = this.script.getProperties();
 
 		p.setFilename(AnalystWizard.FILE_RAW, this.filenameRaw);
+		
+		if( this.preprocess ) {
+			p.setFilename(AnalystWizard.FILE_PRE, this.filenameProcess);
+		}
+		
 		if (this.taskNormalize) {
 			p.setFilename(AnalystWizard.FILE_NORMALIZE, this.filenameNorm);
 		}
@@ -680,6 +722,10 @@ public class AnalystWizard {
 
 		if (this.taskBalance) {
 			p.setFilename(AnalystWizard.FILE_BALANCE, this.filenameBalance);
+		}
+		
+		if (this.codeTargetLanguage != TargetLanguage.NoGeneration ) {
+			p.setFilename(AnalystWizard.FILE_CODE, this.filenameCode);
 		}
 
 		p.setFilename(AnalystWizard.FILE_TRAINSET, this.filenameTrainSet);
@@ -844,11 +890,21 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.HEADER_DATASOURCE_RAW_FILE, target);
 
+		// preprocess
+		if( this.preprocess ) {
+			this.script.getProperties().setProperty(
+					ScriptProperties.PROCESS_CONFIG_SOURCE_FILE,
+					target);
+			target = AnalystWizard.FILE_PRE;
+			this.script.getProperties().setProperty(
+					ScriptProperties.PROCESS_CONFIG_TARGET_FILE, target);
+		}
+		
 		// randomize
 		if (!this.timeSeries && this.taskRandomize) {
 			this.script.getProperties().setProperty(
 					ScriptProperties.RANDOMIZE_CONFIG_SOURCE_FILE,
-					AnalystWizard.FILE_RAW);
+					target);
 			target = AnalystWizard.FILE_RANDOM;
 			this.script.getProperties().setProperty(
 					ScriptProperties.RANDOMIZE_CONFIG_TARGET_FILE, target);
@@ -1010,6 +1066,10 @@ public class AnalystWizard {
 	 */
 	private void generateTasks() {
 		final AnalystTask task1 = new AnalystTask(EncogAnalyst.TASK_FULL);
+		if( this.preprocess ) {
+			task1.getLines().add("process");
+		}
+		
 		if (!this.timeSeries && this.taskRandomize) {
 			task1.getLines().add("randomize");
 		}
@@ -1030,6 +1090,10 @@ public class AnalystWizard {
 		task1.getLines().add("create");
 		task1.getLines().add("train");
 		task1.getLines().add("evaluate");
+		
+		if( this.codeTargetLanguage!=TargetLanguage.NoGeneration) {
+			task1.getLines().add("code");
+		}
 
 		final AnalystTask task2 = new AnalystTask("task-generate");
 		if (!this.timeSeries && this.taskRandomize) {
@@ -1068,6 +1132,9 @@ public class AnalystWizard {
 
 		final AnalystTask task7 = new AnalystTask("task-cluster");
 		task7.getLines().add("cluster");
+		
+		final AnalystTask task8 = new AnalystTask("task-code");
+		task7.getLines().add("code");
 
 		this.script.addTask(task1);
 		this.script.addTask(task2);
@@ -1076,103 +1143,104 @@ public class AnalystWizard {
 		this.script.addTask(task5);
 		this.script.addTask(task6);
 		this.script.addTask(task7);
+		this.script.addTask(task8);
 	}
 
 	/**
 	 * @return The analyst goal.
 	 */
-	public final AnalystGoal getGoal() {
+	public AnalystGoal getGoal() {
 		return this.goal;
 	}
 
 	/**
 	 * @return the lagWindowSize
 	 */
-	public final int getLagWindowSize() {
+	public int getLagWindowSize() {
 		return this.lagWindowSize;
 	}
 
 	/**
 	 * @return the leadWindowSize
 	 */
-	public final int getLeadWindowSize() {
+	public int getLeadWindowSize() {
 		return this.leadWindowSize;
 	}
 
 	/**
 	 * @return the methodType
 	 */
-	public final WizardMethodType getMethodType() {
+	public WizardMethodType getMethodType() {
 		return this.methodType;
 	}
 
 	/**
 	 * @return the range
 	 */
-	public final NormalizeRange getRange() {
+	public NormalizeRange getRange() {
 		return this.range;
 	}
 
 	/**
 	 * @return Get the target field.
 	 */
-	public final AnalystField getTargetField() {
+	public AnalystField getTargetField() {
 		return this.targetField;
 	}
 
 	/**
 	 * @return the includeTargetField
 	 */
-	public final boolean isIncludeTargetField() {
+	public boolean isIncludeTargetField() {
 		return this.includeTargetField;
 	}
 
 	/**
 	 * @return the taskBalance
 	 */
-	public final boolean isTaskBalance() {
+	public boolean isTaskBalance() {
 		return this.taskBalance;
 	}
 
 	/**
 	 * @return the taskCluster
 	 */
-	public final boolean isTaskCluster() {
+	public boolean isTaskCluster() {
 		return this.taskCluster;
 	}
 
 	/**
 	 * @return the taskNormalize
 	 */
-	public final boolean isTaskNormalize() {
+	public boolean isTaskNormalize() {
 		return this.taskNormalize;
 	}
 
 	/**
 	 * @return the taskRandomize
 	 */
-	public final boolean isTaskRandomize() {
+	public boolean isTaskRandomize() {
 		return this.taskRandomize;
 	}
 
 	/**
 	 * @return the taskSegregate
 	 */
-	public final boolean isTaskSegregate() {
+	public boolean isTaskSegregate() {
 		return this.taskSegregate;
 	}
 
 	/**
 	 * Reanalyze column ranges.
 	 */
-	public final void reanalyze() {
+	public void reanalyze() {
 		final String rawID = this.script.getProperties().getPropertyFile(
 				ScriptProperties.HEADER_DATASOURCE_RAW_FILE);
 
 		final File rawFilename = this.analyst.getScript()
 				.resolveFilename(rawID);
 
-		this.analyst.analyze(
+		this.analyst.reanalyze(
 				rawFilename,
 				this.script.getProperties().getPropertyBoolean(
 						ScriptProperties.SETUP_CONFIG_INPUT_HEADERS),
@@ -1185,7 +1253,7 @@ public class AnalystWizard {
 	 * Set the goal.
 	 * @param theGoal The goal.
 	 */
-	public final void setGoal(final AnalystGoal theGoal) {
+	public void setGoal(final AnalystGoal theGoal) {
 		this.goal = theGoal;
 	}
 
@@ -1193,7 +1261,7 @@ public class AnalystWizard {
 	 * @param theIncludeTargetField
 	 *            the includeTargetField to set
 	 */
-	public final void setIncludeTargetField(final boolean theIncludeTargetField) {
+	public void setIncludeTargetField(final boolean theIncludeTargetField) {
 		this.includeTargetField = theIncludeTargetField;
 	}
 
@@ -1201,7 +1269,7 @@ public class AnalystWizard {
 	 * @param theLagWindowSize
 	 *            the lagWindowSize to set
 	 */
-	public final void setLagWindowSize(final int theLagWindowSize) {
+	public void setLagWindowSize(final int theLagWindowSize) {
 		this.lagWindowSize = theLagWindowSize;
 	}
 
@@ -1209,7 +1277,7 @@ public class AnalystWizard {
 	 * @param theLeadWindowSize
 	 *            the leadWindowSize to set
 	 */
-	public final void setLeadWindowSize(final int theLeadWindowSize) {
+	public void setLeadWindowSize(final int theLeadWindowSize) {
 		this.leadWindowSize = theLeadWindowSize;
 	}
 
@@ -1217,7 +1285,7 @@ public class AnalystWizard {
 	 * @param theMethodType
 	 *            the methodType to set
 	 */
-	public final void setMethodType(final WizardMethodType theMethodType) {
+	public void setMethodType(final WizardMethodType theMethodType) {
 		this.methodType = theMethodType;
 	}
 
@@ -1225,7 +1293,7 @@ public class AnalystWizard {
 	 * @param theRange
 	 *            the range to set
 	 */
-	public final void setRange(final NormalizeRange theRange) {
+	public void setRange(final NormalizeRange theRange) {
 		this.range = theRange;
 	}
 
@@ -1233,7 +1301,7 @@ public class AnalystWizard {
 	 * Set the target field.
 	 * @param theTargetField The target field.
 	 */
-	public final void setTargetField(final AnalystField theTargetField) {
+	public void setTargetField(final AnalystField theTargetField) {
 		this.targetField = theTargetField;
 	}
 
@@ -1241,7 +1309,7 @@ public class AnalystWizard {
 	 * @param theTaskBalance
 	 *            the taskBalance to set
 	 */
-	public final void setTaskBalance(final boolean theTaskBalance) {
+	public void setTaskBalance(final boolean theTaskBalance) {
 		this.taskBalance = theTaskBalance;
 	}
 
@@ -1249,7 +1317,7 @@ public class AnalystWizard {
 	 * @param theTaskCluster
 	 *            the taskCluster to set
 	 */
-	public final void setTaskCluster(final boolean theTaskCluster) {
+	public void setTaskCluster(final boolean theTaskCluster) {
 		this.taskCluster = theTaskCluster;
 	}
 
@@ -1257,7 +1325,7 @@ public class AnalystWizard {
 	 * @param theTaskNormalize
 	 *            the taskNormalize to set
 	 */
-	public final void setTaskNormalize(final boolean theTaskNormalize) {
+	public void setTaskNormalize(final boolean theTaskNormalize) {
 		this.taskNormalize = theTaskNormalize;
 	}
 
@@ -1265,7 +1333,7 @@ public class AnalystWizard {
 	 * @param theTaskRandomize
 	 *            the taskRandomize to set
 	 */
-	public final void setTaskRandomize(final boolean theTaskRandomize) {
+	public void setTaskRandomize(final boolean theTaskRandomize) {
 		this.taskRandomize = theTaskRandomize;
 	}
 
@@ -1273,29 +1341,96 @@ public class AnalystWizard {
 	 * @param theTaskSegregate
 	 *            the taskSegregate to set
 	 */
-	public final void setTaskSegregate(final boolean theTaskSegregate) {
+	public void setTaskSegregate(final boolean theTaskSegregate) {
 		this.taskSegregate = theTaskSegregate;
 	}
 	
-	public final void wizardRealTime(List<String> sourceData, File csvFile) 
+	private void generateSourceData(List<SourceElement> sourceData) {
+		DataField[] fields = new DataField[sourceData.size()+1];
+		int index = 0;
+		
+		for(SourceElement element : sourceData) {
+			DataField df = new DataField(element.getName());
+			df.setSource(element.getSource());
+			df.setInteger(false);
+			df.setClass(false);
+			df.setMax(100000);
+			df.setMean(0);
+			df.setMin(-100000);
+			df.setStandardDeviation(0);
+			fields[index++] = df;
+		}
+		
+		// now add the prediction
+		DataField df = new DataField("prediction");
+		df.setSource("prediction");
+		df.setInteger(false);
+		df.setClass(false);
+		df.setMax(100000);
+		df.setMin(-100000);
+		df.setMean(0);
+		df.setStandardDeviation(0);
+		fields[index++] = df;
+		
+		this.script.setFields(fields);
+	}
+	
+	public void wizardRealTime(List<SourceElement> sourceData, 
+			File csvFile, int 
+			backwardWindow, 
+			int forwardWindow, 
+			PredictionType prediction, 
+			String predictField) 
 	{
+		this.preprocess = true;
 		this.script.setBasePath(csvFile.getParent());
 		this.script.getProperties().setProperty(
 				ScriptProperties.HEADER_DATASOURCE_SOURCE_HEADERS, true);
 		this.script.getProperties().setProperty(
 				ScriptProperties.HEADER_DATASOURCE_RAW_FILE, csvFile);
-
-		this.timeSeries = ((this.lagWindowSize > 0) || (this.leadWindowSize > 0));
+		this.script.getProperties().setProperty(
+				ScriptProperties.SETUP_CONFIG_INPUT_HEADERS, true);
+		
+		this.lagWindowSize = backwardWindow;
+		this.leadWindowSize = 1;
+		this.timeSeries = true;
 		this.format = AnalystFileFormat.DECPNT_COMMA;
+		this.methodType = WizardMethodType.FeedForward;
+		this.includeTargetField = false;
+		this.targetFieldName = "prediction";
+		setMissing(new DiscardMissing());
+		
+		setGoal(AnalystGoal.Regression);
+		setRange(NormalizeRange.NegOne2One);
+		setTaskNormalize(true);
+		setTaskRandomize(false);
+		setTaskSegregate(true);
+		setTaskBalance(false);
+		setTaskCluster(false);
+		setMaxError(0.05);
+		setCodeTargetLanguage(TargetLanguage.NinjaScript);
+		setCodeEmbedData(false);
 
 		determineClassification();
 		generateFilenames(csvFile);
 		generateSettings();
-		//this.analyst.analyze(csvFile, b, format);
+		generateSourceData(sourceData);
 		generateNormalizedFields();
+		
+		// if there is a time field, then ignore it
+		AnalystField timeField = this.script.findAnalystField("time");
+		if( timeField!=null ) {
+			timeField.setAction(NormalizationAction.Ignore);
+		}
+		
 		generateSegregate();
-
 		generateGenerate();
+		generateProcess(backwardWindow,forwardWindow,prediction,predictField);
+		
+		// override raw_file to be the processed file
+		this.script.getProperties().setProperty(
+				ScriptProperties.HEADER_DATASOURCE_RAW_FILE, AnalystWizard.FILE_PRE);
+		
 
 		generateTasks();
 		if (this.timeSeries && (this.lagWindowSize > 0)
@@ -1310,7 +1445,7 @@ public class AnalystWizard {
 	 * @param b True if there are headers.
 	 * @param format The file format.
 	 */
-	public final void wizard(final File analyzeFile, final boolean b,
+	public void wizard(final File analyzeFile, final boolean b,
 			final AnalystFileFormat format) {
 
 		this.script.setBasePath(analyzeFile.getParent());
@@ -1328,7 +1463,7 @@ public class AnalystWizard {
 		this.analyst.analyze(analyzeFile, b, format);
 		generateNormalizedFields();
 		generateSegregate();
-
+		generateCode();
 		generateGenerate();
 
 		generateTasks();
@@ -1336,6 +1471,12 @@ public class AnalystWizard {
 				&& (this.leadWindowSize > 0)) {
 			expandTimeSlices();
 		}
+	}
+	
+	private void generateCode() {
+		this.script.getProperties().setProperty(ScriptProperties.CODE_CONFIG_EMBED_DATA, this.codeEmbedData);
+		this.script.getProperties().setProperty(ScriptProperties.CODE_CONFIG_TARGET_LANGUAGE, this.codeTargetLanguage);
+		this.script.getProperties().setProperty(ScriptProperties.CODE_CONFIG_TARGET_FILE, AnalystWizard.FILE_CODE);
 	}
 
 	/**
@@ -1346,7 +1487,7 @@ public class AnalystWizard {
 	 * @param b True if there are headers.
 	 * @param format The file format.
 	 */
-	public final void wizard(final URL url, final File saveFile,
+	public void wizard(final URL url, final File saveFile,
 			final File analyzeFile, final boolean b,
 			final AnalystFileFormat format) {
 
@@ -1361,7 +1502,7 @@ public class AnalystWizard {
 		this.format = format;
 
 		generateFilenames(analyzeFile);
-		generateSettings();
+		generateSettings();		
 		this.analyst.download();
 
 		wizard(analyzeFile, b, format);
@@ -1422,4 +1563,98 @@ public class AnalystWizard {
 
 	}
 
+	/**
+	 * @return the codeTargetLanguage
+	 */
+	public TargetLanguage getCodeTargetLanguage() {
+		return codeTargetLanguage;
+	}
+
+	/**
+	 * @param codeTargetLanguage the codeTargetLanguage to set
+	 */
+	public void setCodeTargetLanguage(TargetLanguage codeTargetLanguage) {
+		this.codeTargetLanguage = codeTargetLanguage;
+	}
+
+	/**
+	 * @return the codeEmbedData
+	 */
+	public boolean isCodeEmbedData() {
+		return codeEmbedData;
+	}
+
+	/**
+	 * @param codeEmbedData the codeEmbedData to set
+	 */
+	public void setCodeEmbedData(boolean codeEmbedData) {
+		this.codeEmbedData = codeEmbedData;
+	}
+
+	public boolean isPreprocess() {
+		return preprocess;
+	}
+
+	public void setPreprocess(boolean preprocess) {
+		this.preprocess = preprocess;
+	}
+	
+	private void generateProcess(
+			int backwardWindow, 
+			int forwardWindow, 
+			PredictionType prediction, 
+			String predictField) {
+		
+		this.script.getProperties().setProperty(ScriptProperties.PROCESS_CONFIG_BACKWARD_SIZE, backwardWindow);
+		this.script.getProperties().setProperty(ScriptProperties.PROCESS_CONFIG_FORWARD_SIZE, forwardWindow);
+		
+		List<ProcessField> fields = this.script.getProcess().getFields();
+		fields.clear();
+		for(DataField df: this.script.getFields()) {
+			if( df.getName().equalsIgnoreCase("prediction") ) {
+				continue;
+			}
+			
+			StringBuilder command = new StringBuilder();
+			
+			if( df.getName().equalsIgnoreCase("time") ) {
+				command.append("cint(field(\"");
+				command.append(df.getName());
+				command.append("\",0");
+				command.append("))");
+				fields.add(new ProcessField(df.getName(), command.toString()));
+			} else {
+				command.append("cfloat(field(\"");
+				command.append(df.getName());
+				command.append("\",0");
+				command.append("))");
+				fields.add(new ProcessField(df.getName(), command.toString()));
+			}
+		}
+		
+		StringBuilder command = new StringBuilder();
+		
+		switch(prediction) {
+			case fieldmax:
+				command.append("fieldmax(\"");
+				command.append(predictField);
+				command.append("\",");
+				command.append(-forwardWindow);
+				command.append(",");
+				command.append(-1);
+				command.append(")");
+				break;
+			case fieldmaxpip:
+				command.append("fieldmaxpip(\"");
+				command.append(predictField);
+				command.append("\",");
+				command.append(-forwardWindow);
+				command.append(",");
+				command.append(-1);
+				command.append(")");
+		}
+		
+		fields.add(new ProcessField("prediction",command.toString()));
+		
+	}
 }

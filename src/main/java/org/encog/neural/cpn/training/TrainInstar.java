@@ -92,7 +92,7 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean canContinue() {
+	public boolean canContinue() {
 		return false;
 	}
 
@@ -100,7 +100,7 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double getLearningRate() {
+	public double getLearningRate() {
 		return this.learningRate;
 	}
 
@@ -108,7 +108,7 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final CPN getMethod() {
+	public CPN getMethod() {
 		return this.network;
 	}
 
@@ -139,7 +139,7 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void iteration() {
+	public void iteration() {
 
 		if (this.mustInit) {
 			initWeights();
@@ -184,7 +184,7 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final TrainingContinuation pause() {
+	public TrainingContinuation pause() {
 		return null;
 	}
 
@@ -200,7 +200,7 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setLearningRate(final double rate) {
+	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
 }

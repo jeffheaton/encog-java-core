@@ -156,7 +156,7 @@ public class ScaledConjugateGradient extends Propagation {
 	 * @return Always returns false.
 	 */
 	@Override
-	public final boolean canContinue() {
+	public boolean canContinue() {
 		return false;
 	}
 
@@ -165,7 +165,7 @@ public class ScaledConjugateGradient extends Propagation {
 	 * @return Always returns null.
 	 */
 	@Override
-	public final TrainingContinuation pause() {
+	public TrainingContinuation pause() {
 		return null;
 	}
 
@@ -174,7 +174,7 @@ public class ScaledConjugateGradient extends Propagation {
 	 * @param state Not used.
 	 */
 	@Override
-	public final void resume(final TrainingContinuation state) {
+	public void resume(final TrainingContinuation state) {
 		
 	}
 	

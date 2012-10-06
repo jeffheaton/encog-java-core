@@ -58,7 +58,7 @@ public class PersistCPN implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getFileVersion() {
+	public int getFileVersion() {
 		return 1;
 	}
 
@@ -66,7 +66,7 @@ public class PersistCPN implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String getPersistClassString() {
+	public String getPersistClassString() {
 		return "CPN";
 	}
 
@@ -74,7 +74,7 @@ public class PersistCPN implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final Object read(final InputStream is) {
+	public Object read(final InputStream is) {
 		Map<String, String> networkParams = null;
 		final EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;
@@ -121,7 +121,7 @@ public class PersistCPN implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void save(final OutputStream os, final Object obj) {
+	public void save(final OutputStream os, final Object obj) {
 		final EncogWriteHelper out = new EncogWriteHelper(os);
 		final CPN cpn = (CPN) obj;
 		out.addSection("CPN");

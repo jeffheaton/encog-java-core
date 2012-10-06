@@ -120,7 +120,7 @@ public class BufferedMLDataSet implements
 	/**
 	 * Open the binary file for reading.
 	 */
-	public final void open() {
+	public void open() {
 		this.egb.open();
 	}
 
@@ -128,7 +128,7 @@ public class BufferedMLDataSet implements
 	 * @return An iterator.
 	 */
 	@Override
-	public final Iterator<MLDataPair> iterator() {
+	public Iterator<MLDataPair> iterator() {
 		return new BufferedDataSetIterator(this);
 	}
 
@@ -136,7 +136,7 @@ public class BufferedMLDataSet implements
 	 * @return The record count.
 	 */
 	@Override
-	public final long getRecordCount() {
+	public long getRecordCount() {
 		if (this.egb == null) {
 			return 0;
 		} else {
@@ -154,7 +154,7 @@ public class BufferedMLDataSet implements
 	 *            THe data to read.
 	 */
 	@Override
-	public final void getRecord(final long index, final MLDataPair pair) {
+	public void getRecord(final long index, final MLDataPair pair) {
 		this.egb.setLocation((int) index);
 		double[] inputTarget = pair.getInputArray();
 		this.egb.read(inputTarget);
@@ -171,7 +171,7 @@ public class BufferedMLDataSet implements
 	 * @return An additional training set.
 	 */
 	@Override
-	public final BufferedMLDataSet openAdditional() {
+	public BufferedMLDataSet openAdditional() {
 
 		BufferedMLDataSet result = new BufferedMLDataSet(this.file);
 		result.setOwner(this);
@@ -185,7 +185,7 @@ public class BufferedMLDataSet implements
 	 * @param data1
 	 *            The data to be added.
 	 */
-	public final void add(final MLData data1) {
+	public void add(final MLData data1) {
 		if (!this.loading) {
 			throw new MLDataError(BufferedMLDataSet.ERROR_ADD);
 		}
@@ -202,7 +202,7 @@ public class BufferedMLDataSet implements
 	 * @param idealData
 	 *            The ideal data.
 	 */
-	public final void add(final MLData inputData, final MLData idealData) {
+	public void add(final MLData inputData, final MLData idealData) {
 
 		if (!this.loading) {
 			throw new MLDataError(BufferedMLDataSet.ERROR_ADD);
@@ -219,7 +219,7 @@ public class BufferedMLDataSet implements
 	 * @param pair
 	 *            The pair to add.
 	 */
-	public final void add(final MLDataPair pair) {
+	public void add(final MLDataPair pair) {
 		if (!this.loading) {
 			throw new MLDataError(BufferedMLDataSet.ERROR_ADD);
 		}
@@ -234,7 +234,7 @@ public class BufferedMLDataSet implements
 	 * Close the dataset.
 	 */
 	@Override
-	public final void close() {
+	public void close() {
 
 		Object[] obj = this.additional.toArray();
 
@@ -257,7 +257,7 @@ public class BufferedMLDataSet implements
 	 * @return The ideal data size.
 	 */
 	@Override
-	public final int getIdealSize() {
+	public int getIdealSize() {
 		if (this.egb == null) {
 			return 0;
 		} else {
@@ -269,7 +269,7 @@ public class BufferedMLDataSet implements
 	 * @return The input data size.
 	 */
 	@Override
-	public final int getInputSize() {
+	public int getInputSize() {
 		if (this.egb == null) {
 			return 0;
 		} else {
@@ -281,7 +281,7 @@ public class BufferedMLDataSet implements
 	 * @return True if this dataset is supervised.
 	 */
 	@Override
-	public final boolean isSupervised() {
+	public boolean isSupervised() {
 		if (this.egb == null) {
 			return false;
 		} else {
@@ -293,7 +293,7 @@ public class BufferedMLDataSet implements
 	 * @return If this dataset was created by openAdditional, the set that
 	 *         created this object is the owner. Return the owner.
 	 */
-	public final BufferedMLDataSet getOwner() {
+	public BufferedMLDataSet getOwner() {
 		return owner;
 	}
 
@@ -303,7 +303,7 @@ public class BufferedMLDataSet implements
 	 * @param theOwner
 	 *            The owner.
 	 */
-	public final void setOwner(final BufferedMLDataSet theOwner) {
+	public void setOwner(final BufferedMLDataSet theOwner) {
 		this.owner = theOwner;
 	}
 
@@ -313,7 +313,7 @@ public class BufferedMLDataSet implements
 	 * @param child
 	 *            The additional dataset to remove.
 	 */
-	public final void removeAdditional(final BufferedMLDataSet child) {
+	public void removeAdditional(final BufferedMLDataSet child) {
 		synchronized (this) {
 			this.additional.remove(child);
 		}
@@ -328,7 +328,7 @@ public class BufferedMLDataSet implements
 	 * @param idealSize
 	 *            The ideal size.
 	 */
-	public final void beginLoad(final int inputSize, final int idealSize) {
+	public void beginLoad(final int inputSize, final int idealSize) {
 		this.egb.create(inputSize, idealSize);
 		this.loading = true;
 	}
@@ -338,7 +338,7 @@ public class BufferedMLDataSet implements
 	 * underlying file will be closed. The binary fill will then be opened for
 	 * reading.
 	 */
-	public final void endLoad() {
+	public void endLoad() {
 		if (!this.loading) {
 			throw new BufferedDataError("Must call beginLoad, before endLoad.");
 		}
@@ -352,14 +352,14 @@ public class BufferedMLDataSet implements
 	/**
 	 * @return The binary file used.
 	 */
-	public final File getFile() {
+	public File getFile() {
 		return this.file;
 	}
 
 	/**
 	 * @return The EGB file to use.
 	 */
-	public final EncogEGBFile getEGB() {
+	public EncogEGBFile getEGB() {
 		return this.egb;
 	}
 
@@ -368,7 +368,7 @@ public class BufferedMLDataSet implements
 	 * 
 	 * @return A memory dataset.
 	 */
-	public final MLDataSet loadToMemory() {
+	public MLDataSet loadToMemory() {
 		BasicMLDataSet result = new BasicMLDataSet();
 
 		for (MLDataPair pair : this) {
@@ -384,7 +384,7 @@ public class BufferedMLDataSet implements
 	 * @param training
 	 *            The training set to load.
 	 */
-	public final void load(final MLDataSet training) {
+	public void load(final MLDataSet training) {
 		beginLoad(training.getInputSize(), training.getIdealSize());
 		for (final MLDataPair pair : training) {
 			add(pair);

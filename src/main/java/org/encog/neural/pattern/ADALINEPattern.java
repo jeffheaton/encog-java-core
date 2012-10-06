@@ -53,14 +53,14 @@ public class ADALINEPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The neuron count.
 	 */
-	public final void addHiddenLayer(final int count) {
+	public void addHiddenLayer(final int count) {
 		throw new PatternError("An ADALINE network has no hidden layers.");
 	}
 
 	/**
 	 * Clear out any parameters.
 	 */
-	public final void clear() {
+	public void clear() {
 		this.inputNeurons = 0; 
 		this.outputNeurons = 0;
 	}
@@ -70,7 +70,7 @@ public class ADALINEPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return The generated network.
 	 */
-	public final MLMethod generate() {
+	public MLMethod generate() {
 		final BasicNetwork network = new BasicNetwork();
 
 		final Layer inputLayer = new BasicLayer(new ActivationLinear(), true,
@@ -93,7 +93,7 @@ public class ADALINEPattern implements NeuralNetworkPattern {
 	 * @param activation
 	 *            Not used.
 	 */
-	public final void setActivationFunction(final ActivationFunction activation) {
+	public void setActivationFunction(final ActivationFunction activation) {
 		throw new PatternError( "A ADALINE network can't specify a custom activation function.");
 	}
 
@@ -103,7 +103,7 @@ public class ADALINEPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of neurons in the input layer.
 	 */
-	public final void setInputNeurons(final int count) {
+	public void setInputNeurons(final int count) {
 		this.inputNeurons = count;
 	}
 
@@ -113,7 +113,7 @@ public class ADALINEPattern implements NeuralNetworkPattern {
 	 * @param count
 	 *            The number of neurons in the output layer.
 	 */
-	public final void setOutputNeurons(final int count) {
+	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
 	}
 

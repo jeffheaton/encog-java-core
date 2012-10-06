@@ -53,14 +53,14 @@ public class TrainingContinuation implements Serializable {
 	 * @param name The name of the object.
 	 * @return The object requested.
 	 */
-	public final Object get(final String name) {
+	public Object get(final String name) {
 		return this.contents.get(name);
 	}
 
 	/**
 	 * @return The contents.
 	 */
-	public final Map<String, Object> getContents() {
+	public Map<String, Object> getContents() {
 		return this.contents;
 	}
 
@@ -69,7 +69,7 @@ public class TrainingContinuation implements Serializable {
 	 * @param key The key to save them under.
 	 * @param list The list of doubles.
 	 */
-	public final void put(final String key, final double[] list) {
+	public void put(final String key, final double[] list) {
 		this.contents.put(key, list);
 	}
 
@@ -78,21 +78,21 @@ public class TrainingContinuation implements Serializable {
 	 * @param name The value to set.
 	 * @param value The value.
 	 */
-	public final void set(final String name, final Object value) {
+	public void set(final String name, final Object value) {
 		this.contents.put(name, value);
 	}
 
 	/**
 	 * @return the trainingType
 	 */
-	public final String getTrainingType() {
+	public String getTrainingType() {
 		return trainingType;
 	}
 
 	/**
 	 * @param trainingType the trainingType to set
 	 */
-	public final void setTrainingType(String trainingType) {
+	public void setTrainingType(String trainingType) {
 		this.trainingType = trainingType;
 	}
 	

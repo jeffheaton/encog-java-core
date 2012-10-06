@@ -23,6 +23,7 @@
  */
 package org.encog.neural.networks.training.propagation.resilient;
 
+import org.encog.mathutil.EncogMath;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.TrainingError;
@@ -155,7 +156,7 @@ public class ResilientPropagation extends Propagation {
 	 * @return True, as RPROP can continue.
 	 */
 	@Override
-	public final boolean canContinue() {
+	public boolean canContinue() {
 		return true;
 	}
 
@@ -167,7 +168,7 @@ public class ResilientPropagation extends Propagation {
 	 * @return True if the specified continuation object is valid for this
 	 *         training method and network.
 	 */
-	public final boolean isValidResume(final TrainingContinuation state) {
+	public boolean isValidResume(final TrainingContinuation state) {
 		if (!state.getContents().containsKey(
 				ResilientPropagation.LAST_GRADIENTS)
 				|| !state.getContents().containsKey(
@@ -190,7 +191,7 @@ public class ResilientPropagation extends Propagation {
 	 * @return A training continuation object to continue with.
 	 */
 	@Override
-	public final TrainingContinuation pause() {
+	public TrainingContinuation pause() {
 		final TrainingContinuation result = new TrainingContinuation();
 
 		result.setTrainingType(this.getClass().getSimpleName());
@@ -208,7 +209,7 @@ public class ResilientPropagation extends Propagation {
 	 *            The training state to return to.
 	 */
 	@Override
-	public final void resume(final TrainingContinuation state) {
+	public void resume(final TrainingContinuation state) {
 		if (!isValidResume(state)) {
 			throw new TrainingError("Invalid training resume data length");
 		}
@@ -241,23 +242,6 @@ public class ResilientPropagation extends Propagation {
 	 */
 	public void initOthers() {
 		
-	}
-	
-	/**
-	 * Determine the sign of the value.
-	 * 
-	 * @param value
-	 *            The value to check.
-	 * @return -1 if less than zero, 1 if greater, or 0 if zero.
-	 */
-	private int sign(final double value) {
-		if (Math.abs(value) < this.zeroTolerance) {
-			return 0;
-		} else if (value > 0) {
-			return 1;
-		} else {
-			return -1;
-		}
 	}
 
 	/**
@@ -302,7 +286,7 @@ public class ResilientPropagation extends Propagation {
 			final double[] lastGradient, final int index) {
 		// multiply the current and previous gradient, and take the
 		// sign. We want to see if the gradient has changed its sign.
-		final int change = sign(gradients[index] * lastGradient[index]);
+		final int change = EncogMath.sign(gradients[index] * lastGradient[index]);
 		double weightChange = 0;
 
 		// if the gradient has retained its sign, then we increase the
@@ -311,7 +295,7 @@ public class ResilientPropagation extends Propagation {
 			double delta = this.updateValues[index]
 					* RPROPConst.POSITIVE_ETA;
 			delta = Math.min(delta, this.maxStep);
-			weightChange = sign(gradients[index]) * delta;
+			weightChange = EncogMath.sign(gradients[index]) * delta;
 			this.updateValues[index] = delta;
 			lastGradient[index] = gradients[index];
 		} else if (change < 0) {
@@ -328,7 +312,7 @@ public class ResilientPropagation extends Propagation {
 		} else if (change == 0) {
 			// if change==0 then there is no change to the delta
 			final double delta = this.updateValues[index];
-			weightChange = sign(gradients[index]) * delta;
+			weightChange = EncogMath.sign(gradients[index]) * delta;
 			lastGradient[index] = gradients[index];
 		}
 
@@ -340,7 +324,7 @@ public class ResilientPropagation extends Propagation {
 			final double[] lastGradient, final int index) {
 		// multiply the current and previous gradient, and take the
 		// sign. We want to see if the gradient has changed its sign.
-		final int change = sign(gradients[index] * lastGradient[index]);
+		final int change = EncogMath.sign(gradients[index] * lastGradient[index]);
 		double weightChange = 0;
 		double delta;
 
@@ -359,7 +343,7 @@ public class ResilientPropagation extends Propagation {
 		}
 
 		lastGradient[index] = gradients[index];
-		weightChange = sign(gradients[index]) * delta;
+		weightChange = EncogMath.sign(gradients[index]) * delta;
 		this.lastDelta[index] = delta;
 
 		// apply the weight change, if any
@@ -370,7 +354,7 @@ public class ResilientPropagation extends Propagation {
 			final double[] lastGradient, final int index) {
 		// multiply the current and previous gradient, and take the
 		// sign. We want to see if the gradient has changed its sign.
-		final int change = sign(gradients[index] * lastGradient[index]);
+		final int change = EncogMath.sign(gradients[index] * lastGradient[index]);
 		double weightChange = 0;
 
 		// if the gradient has retained its sign, then we increase the
@@ -379,7 +363,7 @@ public class ResilientPropagation extends Propagation {
 			double delta = this.updateValues[index]
 					* RPROPConst.POSITIVE_ETA;
 			delta = Math.min(delta, this.maxStep);
-			weightChange = sign(gradients[index]) * delta;
+			weightChange = EncogMath.sign(gradients[index]) * delta;
 			this.updateValues[index] = delta;
 			lastGradient[index] = gradients[index];
 		} else if (change < 0) {
@@ -400,7 +384,7 @@ public class ResilientPropagation extends Propagation {
 		} else if (change == 0) {
 			// if change==0 then there is no change to the delta
 			final double delta = this.updateValues[index];
-			weightChange = sign(gradients[index]) * delta;
+			weightChange = EncogMath.sign(gradients[index]) * delta;
 			lastGradient[index] = gradients[index];
 		}
 
@@ -412,7 +396,7 @@ public class ResilientPropagation extends Propagation {
 			final double[] lastGradient, final int index) {
 		// multiply the current and previous gradient, and take the
 		// sign. We want to see if the gradient has changed its sign.
-		final int change = sign(gradients[index] * lastGradient[index]);
+		final int change = EncogMath.sign(gradients[index] * lastGradient[index]);
 		double weightChange = 0;
 		double delta;
 
@@ -432,7 +416,7 @@ public class ResilientPropagation extends Propagation {
 		}
 
 		lastGradient[index] = gradients[index];
-		weightChange = sign(gradients[index]) * delta;
+		weightChange = EncogMath.sign(gradients[index]) * delta;
 		this.lastDelta[index] = delta;
 
 		// apply the weight change, if any

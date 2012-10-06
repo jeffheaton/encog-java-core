@@ -72,7 +72,7 @@ public class PruneSelective {
 	 * @param neuronCount
 	 *            The new neuron count for this layer.
 	 */
-	public final void changeNeuronCount(final int layer, final int neuronCount) {
+	public void changeNeuronCount(final int layer, final int neuronCount) {
 
 		if (neuronCount == 0) {
 			throw new NeuralNetworkError("Can't decrease to zero neurons.");
@@ -100,7 +100,7 @@ public class PruneSelective {
 	 * @param neuronCount
 	 *            The new neuron count.
 	 */
-	private final void decreaseNeuronCount(final int layer, final int neuronCount) {
+	private void decreaseNeuronCount(final int layer, final int neuronCount) {
 		// create an array to hold the least significant neurons, which will be
 		// removed
 
@@ -125,7 +125,7 @@ public class PruneSelective {
 	 *            The neuron to query.
 	 * @return How significant is this neuron.
 	 */
-	public final double determineNeuronSignificance(final int layer, final int neuron) {
+	public double determineNeuronSignificance(final int layer, final int neuron) {
 
 		this.network.validateNeuron(layer, neuron);
 
@@ -197,7 +197,7 @@ public class PruneSelective {
 	/**
 	 * @return The network that is being processed.
 	 */
-	public final BasicNetwork getNetwork() {
+	public BasicNetwork getNetwork() {
 		return this.network;
 	}
 
@@ -306,7 +306,7 @@ public class PruneSelective {
 	 * @param neuron
 	 *            The neuron to prune.
 	 */
-	public final void prune(final int targetLayer, final int neuron) {
+	public void prune(final int targetLayer, final int neuron) {
 		// check for errors
 		this.network.validateNeuron(targetLayer, neuron);
 
@@ -394,7 +394,7 @@ public class PruneSelective {
 	 * @param neuron
 	 *            The target neuron.
 	 */
-	public final void randomizeNeuron(final double low, final double high,
+	public void randomizeNeuron(final double low, final double high,
 			final int targetLayer, final int neuron) {
 
 		randomizeNeuron(targetLayer, neuron, true, low, high, false, 0.0);
@@ -409,7 +409,7 @@ public class PruneSelective {
 	 * @param neuron
 	 *            The target neuron.
 	 */
-	public final void randomizeNeuron(final int targetLayer, final int neuron) {
+	public void randomizeNeuron(final int targetLayer, final int neuron) {
 		final FlatNetwork flat = this.network.getStructure().getFlat();
 		final double low = EngineArray.min(flat.getWeights());
 		final double high = EngineArray.max(flat.getWeights());
@@ -531,7 +531,7 @@ public class PruneSelective {
 	 * @param neuron
 	 *            The neuron to randomize.
 	 */
-	public final void stimulateNeuron(final double percent, final int targetLayer,
+	public void stimulateNeuron(final double percent, final int targetLayer,
 			final int neuron) {
 
 		randomizeNeuron(targetLayer, neuron, false, 0, 0, true, percent);
@@ -548,7 +548,7 @@ public class PruneSelective {
 	 * @param percent
 	 *            The percent to stimulate by.
 	 */
-	public final void stimulateWeakNeurons(final int layer, final int count,
+	public void stimulateWeakNeurons(final int layer, final int count,
 			final double percent) {
 		final int[] weak = findWeakestNeurons(layer, count);
 		for (final int element : weak) {

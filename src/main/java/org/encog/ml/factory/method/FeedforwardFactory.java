@@ -59,7 +59,7 @@ public class FeedforwardFactory {
 	 * @param output The output count.
 	 * @return The feedforward network.
 	 */
-	public final MLMethod create(final String architecture, final int input,
+	public MLMethod create(final String architecture, final int input,
 			final int output) {
 		
 		if( input<=0 ) {

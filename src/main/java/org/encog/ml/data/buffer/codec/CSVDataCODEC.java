@@ -137,7 +137,7 @@ public class CSVDataCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void close() {
+	public void close() {
 		if (this.readCSV != null) {
 			this.readCSV.close();
 			this.readCSV = null;
@@ -154,7 +154,7 @@ public class CSVDataCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getIdealSize() {
+	public int getIdealSize() {
 		return this.idealCount;
 	}
 
@@ -162,7 +162,7 @@ public class CSVDataCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getInputSize() {
+	public int getInputSize() {
 		return this.inputCount;
 	}
 
@@ -170,7 +170,7 @@ public class CSVDataCODEC implements DataSetCODEC {
 	 * Prepare to read from the CSV file.
 	 */
 	@Override
-	public final void prepareRead() {
+	public void prepareRead() {
 		if (this.inputCount == 0) {
 			throw new BufferedDataError("To import CSV, you must use the "
 					+ "CSVDataCODEC constructor that specifies input and "
@@ -191,7 +191,7 @@ public class CSVDataCODEC implements DataSetCODEC {
 	 *            The ideal size.
 	 */
 	@Override
-	public final void prepareWrite(final int recordCount, final int inputSize,
+	public void prepareWrite(final int recordCount, final int inputSize,
 			final int idealSize) {
 		try {
 			this.inputCount = inputSize;
@@ -212,7 +212,7 @@ public class CSVDataCODEC implements DataSetCODEC {
 	 * @return True, if there is more data to be read.
 	 */
 	@Override
-	public final boolean read(final double[] input, final double[] ideal,
+	public boolean read(final double[] input, final double[] ideal,
 			double[] significance) {
 		if (this.readCSV.next()) {
 			int index = 0;
@@ -244,7 +244,7 @@ public class CSVDataCODEC implements DataSetCODEC {
 	 *            The ideal data array.
 	 */
 	@Override
-	public final void write(final double[] input, final double[] ideal,
+	public void write(final double[] input, final double[] ideal,
 			double significance) {
 		if (this.expectSignificance) {
 			final double[] record = new double[input.length + ideal.length + 1];

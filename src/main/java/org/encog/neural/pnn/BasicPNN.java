@@ -112,7 +112,7 @@ public class BasicPNN extends AbstractPNN implements MLRegression, MLError, MLCl
 	 * @return The output from the network.
 	 */
 	@Override
-	public final MLData compute(final MLData input) {
+	public MLData compute(final MLData input) {
 
 		final double[] out = new double[getOutputCount()];
 
@@ -194,28 +194,28 @@ public class BasicPNN extends AbstractPNN implements MLRegression, MLError, MLCl
 	/**
 	 * @return the countPer
 	 */
-	public final int[] getCountPer() {
+	public int[] getCountPer() {
 		return this.countPer;
 	}
 
 	/**
 	 * @return the priors
 	 */
-	public final double[] getPriors() {
+	public double[] getPriors() {
 		return this.priors;
 	}
 
 	/**
 	 * @return the samples
 	 */
-	public final BasicMLDataSet getSamples() {
+	public BasicMLDataSet getSamples() {
 		return this.samples;
 	}
 
 	/**
 	 * @return the sigma
 	 */
-	public final double[] getSigma() {
+	public double[] getSigma() {
 		return this.sigma;
 	}
 
@@ -223,7 +223,7 @@ public class BasicPNN extends AbstractPNN implements MLRegression, MLError, MLCl
 	 * @param samples
 	 *            the samples to set
 	 */
-	public final void setSamples(final BasicMLDataSet samples) {
+	public void setSamples(final BasicMLDataSet samples) {
 		this.samples = samples;
 
 		// update counts per

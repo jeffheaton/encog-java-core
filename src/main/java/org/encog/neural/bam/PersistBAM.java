@@ -42,7 +42,7 @@ public class PersistBAM implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getFileVersion() {
+	public int getFileVersion() {
 		return 1;
 	}
 
@@ -50,7 +50,7 @@ public class PersistBAM implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String getPersistClassString() {
+	public String getPersistClassString() {
 		return "BAM";
 	}
 
@@ -58,7 +58,7 @@ public class PersistBAM implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final Object read(final InputStream is) {
+	public Object read(final InputStream is) {
 		final BAM result = new BAM();
 		final EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;
@@ -92,7 +92,7 @@ public class PersistBAM implements EncogPersistor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void save(final OutputStream os, final Object obj) {
+	public void save(final OutputStream os, final Object obj) {
 		final EncogWriteHelper out = new EncogWriteHelper(os);
 		final BAM bam = (BAM) obj;
 		out.addSection("BAM");

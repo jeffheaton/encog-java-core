@@ -84,7 +84,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 	 * @param headers True if headers are present.
 	 * @param format The format.
 	 */
-	public final void analyze(final EncogAnalyst theAnalyst, 
+	public void analyze(final EncogAnalyst theAnalyst, 
 			final File inputFile,
 			final boolean headers, final CSVFormat format) {
 		this.setInputFilename(inputFile);
@@ -167,7 +167,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 	 * @param outputFile The output file.
 	 * @param method THe method to use.
 	 */
-	public final void process(final File outputFile, 
+	public void process(final File outputFile, 
 			final MLMethod method) {
 
 		final ReadCSV csv = new ReadCSV(getInputFilename().toString(),

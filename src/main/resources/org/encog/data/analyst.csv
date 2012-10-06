@@ -42,3 +42,10 @@ CLUSTER:CONFIG,sourceFile,string
 CLUSTER:CONFIG,targetFile,string
 CLUSTER:CONFIG,type,string
 CLUSTER:CONFIG,clusters,int
+CODE:CONFIG,targetLanguage,string
+CODE:CONFIG,embedData,boolean
+CODE:CONFIG,targetFile,string
+PROCESS:CONFIG,sourceFile,string
+PROCESS:CONFIG,targetFile,string
+PROCESS:CONFIG,backwardSize,int
+PROCESS:CONFIG,forwardSize,int

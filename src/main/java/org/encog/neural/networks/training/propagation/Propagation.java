@@ -153,21 +153,21 @@ public abstract class Propagation extends BasicTraining implements Train,
 	 * will not be called any further.
 	 */
 	@Override
-	public final void finishTraining() {
+	public void finishTraining() {
 		super.finishTraining();
 	}
 
 	/**
 	 * @return the currentFlatNetwork
 	 */
-	public final FlatNetwork getCurrentFlatNetwork() {
+	public FlatNetwork getCurrentFlatNetwork() {
 		return this.currentFlatNetwork;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final MLMethod getMethod() {
+	public MLMethod getMethod() {
 		return this.network;
 	}
 
@@ -194,7 +194,7 @@ public abstract class Propagation extends BasicTraining implements Train,
 	 *            The number of training iterations.
 	 */
 	@Override
-	public final void iteration(final int count) {
+	public void iteration(final int count) {
 
 		try {
 			for (int i = 0; i < count; i++) {
@@ -248,7 +248,7 @@ public abstract class Propagation extends BasicTraining implements Train,
 	 * @param numThreads
 	 *            The number of threads.
 	 */
-	public final void setThreadCount(final int numThreads) {
+	public void setThreadCount(final int numThreads) {
 		this.numThreads = numThreads;
 	}
 
@@ -379,7 +379,7 @@ public abstract class Propagation extends BasicTraining implements Train,
 	 * @param ex
 	 *            The exception.
 	 */
-	public final void report(final double[] gradients, final double error,
+	public void report(final double[] gradients, final double error,
 			final Throwable ex) {
 		synchronized (this) {
 			if (ex == null) {

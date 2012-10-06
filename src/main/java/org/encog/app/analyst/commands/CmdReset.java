@@ -53,7 +53,7 @@ public class CmdReset extends Cmd {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean executeCommand(final String args) {
+	public boolean executeCommand(final String args) {
 		final Map<String, String> revertedData = getAnalyst().getRevertData();
 		getScript().getProperties().performRevert(revertedData);
 		return false;
@@ -63,7 +63,7 @@ public class CmdReset extends Cmd {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String getName() {
+	public String getName() {
 		return CmdReset.COMMAND_NAME;
 	}
 

@@ -121,7 +121,7 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final MLData getIdeal() {
+	public MLData getIdeal() {
 		return this.ideal;
 	}
 
@@ -129,7 +129,7 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double[] getIdealArray() {
+	public double[] getIdealArray() {
 		if (this.ideal == null) {
 			return null;
 		}
@@ -140,7 +140,7 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final MLData getInput() {
+	public MLData getInput() {
 		return this.input;
 	}
 
@@ -148,7 +148,7 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double[] getInputArray() {
+	public double[] getInputArray() {
 		return this.input.getData();
 	}
 
@@ -156,7 +156,7 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean isSupervised() {
+	public boolean isSupervised() {
 		return this.ideal != null;
 	}
 
@@ -164,7 +164,7 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setIdealArray(final double[] data) {
+	public void setIdealArray(final double[] data) {
 		this.ideal.setData(data);
 
 	}
@@ -173,7 +173,7 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setInputArray(final double[] data) {
+	public void setInputArray(final double[] data) {
 		this.input.setData(data);
 	}
 
@@ -181,7 +181,7 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String toString() {
+	public String toString() {
 		final StringBuilder builder = new StringBuilder("[");
 		builder.append(this.getClass().getSimpleName());
 		builder.append(":");

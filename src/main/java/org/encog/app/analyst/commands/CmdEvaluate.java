@@ -61,7 +61,7 @@ public class CmdEvaluate extends Cmd {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean executeCommand(final String args) {
+	public boolean executeCommand(final String args) {
 		// get filenames
 		final String evalID = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_EVAL_FILE);
@@ -113,7 +113,7 @@ public class CmdEvaluate extends Cmd {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String getName() {
+	public String getName() {
 		return CmdEvaluate.COMMAND_NAME;
 	}
 

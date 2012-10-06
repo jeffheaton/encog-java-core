@@ -97,7 +97,7 @@ public class SVMTrain extends BasicTraining {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final boolean canContinue() {
+	public boolean canContinue() {
 		return false;
 	}
 
@@ -140,21 +140,21 @@ public class SVMTrain extends BasicTraining {
 	/**
 	 * @return The constant C.
 	 */
-	public final double getC() {
+	public double getC() {
 		return this.c;
 	}
 
 	/**
 	 * @return the fold
 	 */
-	public final int getFold() {
+	public int getFold() {
 		return this.fold;
 	}
 
 	/**
 	 * @return The gamma.
 	 */
-	public final double getGamma() {
+	public double getGamma() {
 		return this.gamma;
 	}
 
@@ -162,14 +162,14 @@ public class SVMTrain extends BasicTraining {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final MLMethod getMethod() {
+	public MLMethod getMethod() {
 		return this.network;
 	}
 
 	/**
 	 * @return The problem being trained.
 	 */
-	public final svm_problem getProblem() {
+	public svm_problem getProblem() {
 		return this.problem;
 	}
 
@@ -177,7 +177,7 @@ public class SVMTrain extends BasicTraining {
 	 * @return True if the training is done.
 	 */
 	@Override
-	public final boolean isTrainingDone() {
+	public boolean isTrainingDone() {
 		return this.trainingDone;
 	}
 
@@ -190,7 +190,7 @@ public class SVMTrain extends BasicTraining {
 	 * error rate.  Then use those values to train, producing the final model.
 	 */
 	@Override
-	public final void iteration() {
+	public void iteration() {
 
 		this.network.getParams().C = this.c;
 		this.network.getParams().gamma = this.gamma;
@@ -238,7 +238,7 @@ public class SVMTrain extends BasicTraining {
 	 * @param theC
 	 *            The constant C.
 	 */
-	public final void setC(final double theC) {
+	public void setC(final double theC) {
 		this.c = theC;
 		
 		if( this.c<=0 || this.c<Encog.DEFAULT_DOUBLE_EQUAL ) {
@@ -253,7 +253,7 @@ public class SVMTrain extends BasicTraining {
 	 * @param theFold
 	 *            the fold to set.
 	 */
-	public final void setFold(final int theFold) {
+	public void setFold(final int theFold) {
 		this.fold = theFold;
 	}
 
@@ -261,7 +261,7 @@ public class SVMTrain extends BasicTraining {
 	 * Set the gamma.
 	 * @param theGamma The new gamma.
 	 */
-	public final void setGamma(final double theGamma) {
+	public void setGamma(final double theGamma) {
 		this.gamma = theGamma;
 		
 		if( this.gamma<=0 || this.gamma<Encog.DEFAULT_DOUBLE_EQUAL ) {

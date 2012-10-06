@@ -64,7 +64,7 @@ public class AnalystNormalizeToEGB extends BasicFile {
 	 * @param inputFormat The format.
 	 * @param theAnalyst The analyst to use.
 	 */
-	public final void analyze(final File inputFilename,
+	public void analyze(final File inputFilename,
 			final boolean expectInputHeaders, final CSVFormat inputFormat,
 			final EncogAnalyst theAnalyst) {
 		this.setInputFilename(inputFilename);
@@ -91,7 +91,7 @@ public class AnalystNormalizeToEGB extends BasicFile {
 	 * @param file
 	 *            The file to write to.
 	 */
-	public final void normalize(final File file) {
+	public void normalize(final File file) {
 		if (this.analyst == null) {
 			throw new EncogError(
 					"Can't normalize yet, file has not been analyzed.");
@@ -171,7 +171,7 @@ public class AnalystNormalizeToEGB extends BasicFile {
 	 * @param format
 	 *            The format of the CSV file.
 	 */
-	public final void setSourceFile(final File file, final boolean headers,
+	public void setSourceFile(final File file, final boolean headers,
 			final CSVFormat format) {
 		setInputFilename(file);
 		setExpectInputHeaders(headers);

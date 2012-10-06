@@ -25,6 +25,8 @@ package org.encog.engine.network.activation;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationLinear;
+import org.encog.ml.factory.MLActivationFactory;
+import org.encog.util.obj.ActivationUtil;
 
 /**
  * Linear activation function that bounds the output to [-1,+1].  This
@@ -95,6 +97,14 @@ public class ActivationClippedLinear implements ActivationFunction {
 	@Override
 	public final ActivationFunction clone() {
 		return new ActivationClippedLinear();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getFactoryCode() {
+		return null;
 	}
 
 }

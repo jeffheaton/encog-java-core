@@ -93,42 +93,42 @@ public abstract class TrainingJob {
 	/**
 	 * @return the error
 	 */
-	public final Throwable getError() {
+	public Throwable getError() {
 		return this.error;
 	}
 
 	/**
 	 * @return the network
 	 */
-	public final BasicNetwork getNetwork() {
+	public BasicNetwork getNetwork() {
 		return this.network;
 	}
 
 	/**
 	 * @return the strategies
 	 */
-	public final List<Strategy> getStrategies() {
+	public List<Strategy> getStrategies() {
 		return this.strategies;
 	}
 
 	/**
 	 * @return the train
 	 */
-	public final MLTrain getTrain() {
+	public MLTrain getTrain() {
 		return this.train;
 	}
 
 	/**
 	 * @return the training
 	 */
-	public final MLDataSet getTraining() {
+	public MLDataSet getTraining() {
 		return this.training;
 	}
 
 	/**
 	 * @return the loadToMemory
 	 */
-	public final boolean isLoadToMemory() {
+	public boolean isLoadToMemory() {
 		return this.loadToMemory;
 	}
 
@@ -136,7 +136,7 @@ public abstract class TrainingJob {
 	 * @param error
 	 *            the error to set
 	 */
-	public final void setError(final Throwable error) {
+	public void setError(final Throwable error) {
 		this.error = error;
 	}
 
@@ -144,7 +144,7 @@ public abstract class TrainingJob {
 	 * @param loadToMemory
 	 *            the loadToMemory to set
 	 */
-	public final void setLoadToMemory(final boolean loadToMemory) {
+	public void setLoadToMemory(final boolean loadToMemory) {
 		this.loadToMemory = loadToMemory;
 	}
 
@@ -152,7 +152,7 @@ public abstract class TrainingJob {
 	 * @param network
 	 *            the network to set
 	 */
-	public final void setNetwork(final BasicNetwork network) {
+	public void setNetwork(final BasicNetwork network) {
 		this.network = network;
 	}
 
@@ -160,7 +160,7 @@ public abstract class TrainingJob {
 	 * @param train
 	 *            the train to set
 	 */
-	public final void setTrain(final MLTrain train) {
+	public void setTrain(final MLTrain train) {
 		this.train = train;
 	}
 
@@ -168,14 +168,14 @@ public abstract class TrainingJob {
 	 * @param training
 	 *            the training to set
 	 */
-	public final void setTraining(final MLDataSet training) {
+	public void setTraining(final MLDataSet training) {
 		this.training = training;
 	}
 
 	/**
 	 * @return True, if training should continue.
 	 */
-	public final boolean shouldContinue() {
+	public boolean shouldContinue() {
 		for (final Strategy strategy : this.train.getStrategies()) {
 			if (strategy instanceof EndTrainingStrategy) {
 				final EndTrainingStrategy end = (EndTrainingStrategy) strategy;

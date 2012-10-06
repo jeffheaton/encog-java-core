@@ -72,7 +72,7 @@ public class NeuralGenome extends BasicGenome {
 	/**
 	 * Decode the genomes into a neural network.
 	 */
-	public final void decode() {
+	public void decode() {
 		final double[] net = new double[this.networkChromosome.getGenes()
 				.size()];
 		for (int i = 0; i < net.length; i++) {
@@ -88,7 +88,7 @@ public class NeuralGenome extends BasicGenome {
 	/**
 	 * Encode the neural network into genes.
 	 */
-	public final void encode() {
+	public void encode() {
 		final double[] net = NetworkCODEC
 				.networkToArray((BasicNetwork) getOrganism());
 

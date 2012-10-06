@@ -139,7 +139,7 @@ public class PerformAnalysis {
 	 * Perform the analysis.
 	 * @param target The Encog analyst object to analyze.
 	 */
-	public final void process(final EncogAnalyst target) {
+	public void process(final EncogAnalyst target) {
 		int count = 0;
 		final CSVFormat csvFormat = ConvertStringConst
 				.convertToCSVFormat(this.format);
@@ -218,6 +218,7 @@ public class PerformAnalysis {
 				// copy the old field name
 				this.fields[i].setName(target.getScript().getFields()[i]
 						.getName());
+				this.fields[i].setSource(target.getScript().getFields()[i].getSource());
 
 				if (this.fields[i].isClass()) {
 					final List<AnalystClassItem> t = this.fields[i]
@@ -249,7 +250,7 @@ public class PerformAnalysis {
 
 	/** {@inheritDoc} */
 	@Override
-	public final String toString() {
+	public String toString() {
 		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" filename=");

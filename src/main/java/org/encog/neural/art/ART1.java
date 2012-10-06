@@ -172,7 +172,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	/**
 	 * Adjust the weights for the pattern just presented.
 	 */
-	public final void adjustWeights() {
+	public void adjustWeights() {
 		double magnitudeInput;
 
 		for (int i = 0; i < this.f1Count; i++) {
@@ -196,7 +196,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 * @return The class that the data belongs to.
 	 */
 	@Override
-	public final int classify(final MLData input) {
+	public int classify(final MLData input) {
 		final BiPolarNeuralData input2 = new BiPolarNeuralData(this.f1Count);
 		final BiPolarNeuralData output = new BiPolarNeuralData(this.f2Count);
 
@@ -227,7 +227,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 * @param output
 	 *            The output from the network.
 	 */
-	public final void compute(final BiPolarNeuralData input,
+	public void compute(final BiPolarNeuralData input,
 			final BiPolarNeuralData output) {
 		int i;
 		boolean resonance, exhausted;
@@ -267,7 +267,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 *            The input to the network.
 	 * @return The output from the network.
 	 */
-	public final MLData compute(final MLData input) {
+	public MLData compute(final MLData input) {
 		if (!(input instanceof BiPolarNeuralData)) {
 			throw new NeuralNetworkError(
 					"Input to ART1 logic network must be BiPolarNeuralData.");
@@ -328,54 +328,54 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	/**
 	 * @return The A1 parameter.
 	 */
-	public final double getA1() {
+	public double getA1() {
 		return this.a1;
 	}
 
 	/**
 	 * @return The B1 parameter.
 	 */
-	public final double getB1() {
+	public double getB1() {
 		return this.b1;
 	}
 
 	/**
 	 * @return The C1 parameter.
 	 */
-	public final double getC1() {
+	public double getC1() {
 		return this.c1;
 	}
 
 	/**
 	 * @return The D1 parameter.
 	 */
-	public final double getD1() {
+	public double getD1() {
 		return this.d1;
 	}
 
 	/**
 	 * @return the f1Count
 	 */
-	public final int getF1Count() {
+	public int getF1Count() {
 		return this.f1Count;
 	}
 
 	/**
 	 * @return the f2Count
 	 */
-	public final int getF2Count() {
+	public int getF2Count() {
 		return this.f2Count;
 	}
 
 	@Override
-	public final int getInputCount() {
+	public int getInputCount() {
 		return this.f1Count;
 	}
 
 	/**
 	 * @return The L parameter.
 	 */
-	public final double getL() {
+	public double getL() {
 		return this.l;
 	}
 
@@ -386,7 +386,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 * represent what class was found, in this case the no winner property
 	 * would be set to 3.
 	 */
-	public final int getNoWinner() {
+	public int getNoWinner() {
 		return this.noWinner;
 	}
 
@@ -407,42 +407,42 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 *         count.
 	 */
 	@Override
-	public final int getOutputCount() {
+	public int getOutputCount() {
 		return this.f2Count;
 	}
 
 	/**
 	 * @return The vigilance parameter.
 	 */
-	public final double getVigilance() {
+	public double getVigilance() {
 		return this.vigilance;
 	}
 
 	/**
 	 * @return the weightsF1toF2
 	 */
-	public final Matrix getWeightsF1toF2() {
+	public Matrix getWeightsF1toF2() {
 		return this.weightsF1toF2;
 	}
 
 	/**
 	 * @return the weightsF2toF1
 	 */
-	public final Matrix getWeightsF2toF1() {
+	public Matrix getWeightsF2toF1() {
 		return this.weightsF2toF1;
 	}
 
 	/**
 	 * @return The winning neuron.
 	 */
-	public final int getWinner() {
+	public int getWinner() {
 		return this.winner;
 	}
 
 	/**
 	 * @return Does this network have a "winner"?
 	 */
-	public final boolean hasWinner() {
+	public boolean hasWinner() {
 		return this.winner != this.noWinner;
 	}
 
@@ -453,7 +453,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 *            The input to calculate the magnitude for.
 	 * @return The magnitude of the specified pattern.
 	 */
-	public final double magnitude(final BiPolarNeuralData input) {
+	public double magnitude(final BiPolarNeuralData input) {
 		double result;
 
 		result = 0;
@@ -467,7 +467,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 * Reset the weight matrix back to starting values.
 	 */
 	@Override
-	public final void reset() {
+	public void reset() {
 		reset(0);
 	}
 
@@ -476,7 +476,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 * @param seed The seed to reset with.
 	 */
 	@Override
-	public final void reset(final int seed) {
+	public void reset(final int seed) {
 		for (int i = 0; i < this.f1Count; i++) {
 			for (int j = 0; j < this.f2Count; j++) {
 				this.weightsF1toF2.set(i, j, (this.b1 - 1) / this.d1 + 0.2);
@@ -492,7 +492,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 * @param theA1
 	 *            The new value.
 	 */
-	public final void setA1(final double theA1) {
+	public void setA1(final double theA1) {
 		this.a1 = theA1;
 	}
 
@@ -502,7 +502,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 * @param theB1
 	 *            The new value.
 	 */
-	public final void setB1(final double theB1) {
+	public void setB1(final double theB1) {
 		this.b1 = theB1;
 	}
 
@@ -512,7 +512,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 * @param theC1
 	 *            The new value.
 	 */
-	public final void setC1(final double theC1) {
+	public void setC1(final double theC1) {
 		this.c1 = theC1;
 	}
 
@@ -522,7 +522,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 * @param theD1
 	 *            The new value.
 	 */
-	public final void setD1(final double theD1) {
+	public void setD1(final double theD1) {
 		this.d1 = theD1;
 	}
 
@@ -530,7 +530,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 * Set the F1 count.  The F1 layer is the input layer.
 	 * @param i The count.
 	 */
-	public final void setF1Count(final int i) {
+	public void setF1Count(final int i) {
 		this.f1Count = i;
 		this.outputF1 = new BiPolarNeuralData(this.f1Count);
 
@@ -540,7 +540,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 * Set the F2 count.  The F2 layer is the output layer.
 	 * @param i The count.
 	 */
-	public final void setF2Count(final int i) {
+	public void setF2Count(final int i) {
 		this.f2Count = i;
 		this.inhibitF2 = new boolean[this.f2Count];
 		this.outputF2 = new BiPolarNeuralData(this.f2Count);
@@ -568,7 +568,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 * @param theL
 	 *            The new value.
 	 */
-	public final void setL(final double theL) {
+	public void setL(final double theL) {
 		this.l = theL;
 	}
 
@@ -578,7 +578,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 * @param i
 	 *            The new value.
 	 */
-	public final void setNoWinner(final int i) {
+	public void setNoWinner(final int i) {
 		this.noWinner = i;
 
 	}
@@ -589,7 +589,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 * @param theVigilance
 	 *            The new value.
 	 */
-	public final void setVigilance(final double theVigilance) {
+	public void setVigilance(final double theVigilance) {
 		this.vigilance = theVigilance;
 	}
 
@@ -597,7 +597,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 * Set the f1 to f2 matrix.
 	 * @param matrix The new matrix.
 	 */
-	public final void setWeightsF1toF2(final Matrix matrix) {
+	public void setWeightsF1toF2(final Matrix matrix) {
 		this.weightsF1toF2 = matrix;
 	}
 
@@ -605,7 +605,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 * Set the f2 to f1 matrix.
 	 * @param matrix The new matrix.
 	 */
-	public final void setWeightsF2toF1(final Matrix matrix) {
+	public void setWeightsF2toF1(final Matrix matrix) {
 		this.weightsF2toF1 = matrix;
 	}
 }

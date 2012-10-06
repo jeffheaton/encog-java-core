@@ -114,14 +114,14 @@ public class CSVNeuralDataSet extends BasicMLDataSet {
 	/**
 	 * @return the filename
 	 */
-	public final String getFilename() {
+	public String getFilename() {
 		return this.filename;
 	}
 
 	/**
 	 * @return the delimiter
 	 */
-	public final CSVFormat getFormat() {
+	public CSVFormat getFormat() {
 		return this.format;
 	}
 

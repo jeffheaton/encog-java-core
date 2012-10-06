@@ -160,7 +160,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void add(final Genome genome) {
+	public void add(final Genome genome) {
 		this.genomes.add(genome);
 		genome.setPopulation(this);
 	}
@@ -169,7 +169,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void addAll(final List<? extends Genome> newPop) {
+	public void addAll(final List<? extends Genome> newPop) {
 		this.genomes.addAll(newPop);
 	}
 
@@ -177,7 +177,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final long assignGeneID() {
+	public long assignGeneID() {
 		return this.geneIDGenerate.generate();
 	}
 
@@ -185,7 +185,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final long assignGenomeID() {
+	public long assignGenomeID() {
 		return this.genomeIDGenerate.generate();
 	}
 
@@ -193,7 +193,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final long assignInnovationID() {
+	public long assignInnovationID() {
 		return this.innovationIDGenerate.generate();
 	}
 
@@ -201,7 +201,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final long assignSpeciesID() {
+	public long assignSpeciesID() {
 		return this.speciesIDGenerate.generate();
 	}
 
@@ -209,7 +209,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void claim(final GeneticAlgorithm ga) {
+	public void claim(final GeneticAlgorithm ga) {
 		for (final Genome genome : this.genomes) {
 			genome.setGeneticAlgorithm(ga);
 		}
@@ -220,7 +220,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void clear() {
+	public void clear() {
 		this.genomes.clear();
 
 	}
@@ -229,7 +229,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final Genome get(final int i) {
+	public Genome get(final int i) {
 		return this.genomes.get(i);
 	}
 
@@ -237,7 +237,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final Genome getBest() {
+	public Genome getBest() {
 		if (this.genomes.size() == 0) {
 			return null;
 		} else {
@@ -248,14 +248,14 @@ public class BasicPopulation implements Population {
 	/**
 	 * @return the geneIDGenerate
 	 */
-	public final GenerateID getGeneIDGenerate() {
+	public GenerateID getGeneIDGenerate() {
 		return this.geneIDGenerate;
 	}
 
 	/**
 	 * @return the genomeIDGenerate
 	 */
-	public final GenerateID getGenomeIDGenerate() {
+	public GenerateID getGenomeIDGenerate() {
 		return this.genomeIDGenerate;
 	}
 
@@ -263,14 +263,14 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final List<Genome> getGenomes() {
+	public List<Genome> getGenomes() {
 		return this.genomes;
 	}
 
 	/**
 	 * @return the innovationIDGenerate
 	 */
-	public final GenerateID getInnovationIDGenerate() {
+	public GenerateID getInnovationIDGenerate() {
 		return this.innovationIDGenerate;
 	}
 
@@ -278,14 +278,14 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final InnovationList getInnovations() {
+	public InnovationList getInnovations() {
 		return this.innovations;
 	}
 
 	/**
 	 * @return The name.
 	 */
-	public final String getName() {
+	public String getName() {
 		return this.name;
 	}
 
@@ -293,7 +293,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double getOldAgePenalty() {
+	public double getOldAgePenalty() {
 		return this.oldAgePenalty;
 	}
 
@@ -301,7 +301,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getOldAgeThreshold() {
+	public int getOldAgeThreshold() {
 		return this.oldAgeThreshold;
 	}
 
@@ -309,7 +309,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getPopulationSize() {
+	public int getPopulationSize() {
 		return this.populationSize;
 	}
 
@@ -317,14 +317,14 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final List<Species> getSpecies() {
+	public List<Species> getSpecies() {
 		return this.species;
 	}
 
 	/**
 	 * @return the speciesIDGenerate
 	 */
-	public final GenerateID getSpeciesIDGenerate() {
+	public GenerateID getSpeciesIDGenerate() {
 		return this.speciesIDGenerate;
 	}
 
@@ -332,7 +332,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double getSurvivalRate() {
+	public double getSurvivalRate() {
 		return this.survivalRate;
 	}
 
@@ -340,7 +340,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int getYoungBonusAgeThreshold() {
+	public int getYoungBonusAgeThreshold() {
 		return this.youngBonusAgeThreshold;
 	}
 
@@ -348,7 +348,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final double getYoungScoreBonus() {
+	public double getYoungScoreBonus() {
 		return this.youngScoreBonus;
 	}
 
@@ -356,7 +356,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setInnovations(final InnovationList theInnovations) {
+	public void setInnovations(final InnovationList theInnovations) {
 		this.innovations = theInnovations;
 	}
 
@@ -366,7 +366,7 @@ public class BasicPopulation implements Population {
 	 * @param theName
 	 *            The new name.
 	 */
-	public final void setName(final String theName) {
+	public void setName(final String theName) {
 		this.name = theName;
 
 	}
@@ -375,7 +375,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setOldAgePenalty(final double theOldAgePenalty) {
+	public void setOldAgePenalty(final double theOldAgePenalty) {
 		this.oldAgePenalty = theOldAgePenalty;
 	}
 
@@ -383,7 +383,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setOldAgeThreshold(final int theOldAgeThreshold) {
+	public void setOldAgeThreshold(final int theOldAgeThreshold) {
 		this.oldAgeThreshold = theOldAgeThreshold;
 	}
 
@@ -391,7 +391,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setPopulationSize(final int thePopulationSize) {
+	public void setPopulationSize(final int thePopulationSize) {
 		this.populationSize = thePopulationSize;
 	}
 
@@ -399,7 +399,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setSurvivalRate(final double theSurvivalRate) {
+	public void setSurvivalRate(final double theSurvivalRate) {
 		this.survivalRate = theSurvivalRate;
 	}
 
@@ -407,7 +407,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setYoungBonusAgeThreshhold(
+	public void setYoungBonusAgeThreshhold(
 			final int theYoungBonusAgeThreshold) {
 		this.youngBonusAgeThreshold = theYoungBonusAgeThreshold;
 	}
@@ -416,7 +416,7 @@ public class BasicPopulation implements Population {
 	 * @param theYoungBonusAgeThreshold
 	 *            the youngBonusAgeThreshold to set
 	 */
-	public final void setYoungBonusAgeThreshold(
+	public void setYoungBonusAgeThreshold(
 			final int theYoungBonusAgeThreshold) {
 		this.youngBonusAgeThreshold = theYoungBonusAgeThreshold;
 	}
@@ -425,7 +425,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setYoungScoreBonus(final double theYoungScoreBonus) {
+	public void setYoungScoreBonus(final double theYoungScoreBonus) {
 		this.youngScoreBonus = theYoungScoreBonus;
 	}
 
@@ -433,7 +433,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final int size() {
+	public int size() {
 		return this.genomes.size();
 	}
 
@@ -441,7 +441,7 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void sort() {
+	public void sort() {
 		Collections.sort(this.genomes);
 	}
 }

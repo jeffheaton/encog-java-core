@@ -48,13 +48,13 @@ public class Chromosome implements Serializable {
 	/**
 	 * The individual elements of this chromosome.
 	 */
-	private final List<Gene> genes = new ArrayList<Gene>();
+	private List<Gene> genes = new ArrayList<Gene>();
 
 	/**
 	 * Add a gene.
 	 * @param gene The gene to add.
 	 */
-	public final void add(final Gene gene) {
+	public void add(final Gene gene) {
 		genes.add(gene);
 
 	}
@@ -64,7 +64,7 @@ public class Chromosome implements Serializable {
 	 * @param i The index of the gene.
 	 * @return The gene.
 	 */
-	public final Gene get(final int i) {
+	public Gene get(final int i) {
 		return genes.get(i);
 	}
 
@@ -75,7 +75,7 @@ public class Chromosome implements Serializable {
 	 *            The specified gene.
 	 * @return The gene specified.
 	 */
-	public final Gene getGene(final int gene) {
+	public Gene getGene(final int gene) {
 		return genes.get(gene);
 	}
 
@@ -84,14 +84,14 @@ public class Chromosome implements Serializable {
 	 * 
 	 * @return the genes
 	 */
-	public final List<Gene> getGenes() {
+	public List<Gene> getGenes() {
 		return genes;
 	}
 
 	/**
 	 * @return The number of genes in this chromosome.
 	 */
-	public final int size() {
+	public int size() {
 		return genes.size();
 	}
 

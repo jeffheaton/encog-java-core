@@ -49,6 +49,16 @@ public final class Encog {
 	 * The current engog version, this should be read from the properties.
 	 */
 	public static final String VERSION = "3.2.0";
+	
+	/**
+	 * The current engog version, this should be read from the properties.
+	 */
+	public static final String COPYRIGHT = "Copyright 2012 by Heaton Research, Inc.";
+	
+	/**
+	 * The current engog version, this should be read from the properties.
+	 */
+	public static final String LICENSE = "Open Source under the Apache License";
 
 	/**
 	 * The current engog file version, this should be read from the properties.

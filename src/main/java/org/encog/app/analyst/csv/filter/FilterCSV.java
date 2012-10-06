@@ -61,7 +61,7 @@ public class FilterCSV extends BasicFile {
 	 * @param format
 	 *            The format.
 	 */
-	public final void analyze(final File inputFile, final boolean headers,
+	public void analyze(final File inputFile, final boolean headers,
 			final CSVFormat format) {
 		setInputFilename(inputFile);
 		setExpectInputHeaders(headers);
@@ -80,14 +80,14 @@ public class FilterCSV extends BasicFile {
 	 * @param fieldValue
 	 *            The field value.
 	 */
-	public final void exclude(final int fieldNumber, final String fieldValue) {
+	public void exclude(final int fieldNumber, final String fieldValue) {
 		this.excludedFields.add(new ExcludedField(fieldNumber, fieldValue));
 	}
 
 	/**
 	 * @return A list of the fields and their values, that should be excluded.
 	 */
-	public final List<ExcludedField> getExcluded() {
+	public List<ExcludedField> getExcluded() {
 		return this.excludedFields;
 	}
 
@@ -95,7 +95,7 @@ public class FilterCSV extends BasicFile {
 	 * @return A count of the filtered rows. This is the resulting line count
 	 *         for the output CSV.
 	 */
-	public final int getFilteredRowCount() {
+	public int getFilteredRowCount() {
 		return this.filteredCount;
 	}
 
@@ -105,7 +105,7 @@ public class FilterCSV extends BasicFile {
 	 * @param outputFile
 	 *            The output file to write to.
 	 */
-	public final void process(final File outputFile) {
+	public void process(final File outputFile) {
 		final ReadCSV csv = new ReadCSV(getInputFilename().toString(),
 				isExpectInputHeaders(), getFormat());
 

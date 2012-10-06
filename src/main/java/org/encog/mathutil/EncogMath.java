@@ -125,23 +125,23 @@ public final class EncogMath {
 	public static double rad2deg(final double rad) {
 		return rad * (MathConst.DEG_SEMICIRCLE / Math.PI);
 	}
-	
+
 	/**
 	 * Calculate x!.
-	 * @param x The number to calculate for.
+	 * 
+	 * @param x
+	 *            The number to calculate for.
 	 * @return The factorial of x.
 	 */
-	public static double factorial(int x)
-    {
-        double result = 1.0;
+	public static double factorial(int x) {
+		double result = 1.0;
 
-        for (int i = 1; i <= x; i++)
-        {
-            result *= (double)i;
-        }
+		for (int i = 1; i <= x; i++) {
+			result *= (double) i;
+		}
 
-        return result;
-    }
+		return result;
+	}
 
 	/**
 	 * Private constructor.
@@ -151,6 +151,39 @@ public final class EncogMath {
 	}
 
 	public static double square(double d) {
-		return d*d;
+		return d * d;
+	}
+
+	/**
+	 * Determine the sign of the value.
+	 * 
+	 * @param value
+	 *            The value to check.
+	 * @return -1 if less than zero, 1 if greater, or 0 if zero.
+	 */
+	public static int sign(final double value) {
+		if (Math.abs(value) < Encog.DEFAULT_DOUBLE_EQUAL) {
+			return 0;
+		} else if (value > 0) {
+			return 1;
+		} else {
+			return -1;
+		}
+	}
+
+	/**
+	 * Transform a number in the range (-1,1) to a tri-state value indicated by
+	 * -1, 0 or 1.
+	 * 
+	 * @param value The value to consider.
+	 * @return -1 if the value is below 1/3, 1 if above 1/3, zero otherwise.
+	 */
+	public static int thirds(final double value) {
+		if( value < -(1.0/3.0) )
+			return -1;
+		else if( value >(1.0/3.0) )
+			return 1;
+		else
+			return 0;
 	}
 }

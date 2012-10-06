@@ -193,7 +193,7 @@ public abstract class AbstractPNN  extends BasicML {
 	 * @param error
 	 *            the error to set
 	 */
-	public final void setError(final double error) {
+	public void setError(final double error) {
 		this.error = error;
 	}
 
@@ -201,7 +201,7 @@ public abstract class AbstractPNN  extends BasicML {
 	 * @param exclude
 	 *            the exclude to set
 	 */
-	public final void setExclude(final int exclude) {
+	public void setExclude(final int exclude) {
 		this.exclude = exclude;
 	}
 
@@ -209,7 +209,7 @@ public abstract class AbstractPNN  extends BasicML {
 	 * @param trained
 	 *            the trained to set
 	 */
-	public final void setTrained(final boolean trained) {
+	public void setTrained(final boolean trained) {
 		this.trained = trained;
 	}
 
@@ -217,14 +217,14 @@ public abstract class AbstractPNN  extends BasicML {
 	/**
 	 * @return the separateClass
 	 */
-	public final boolean isSeparateClass() {
+	public boolean isSeparateClass() {
 		return separateClass;
 	}
 
 	/**
 	 * @param separateClass the separateClass to set
 	 */
-	public final void setSeparateClass(boolean separateClass) {
+	public void setSeparateClass(boolean separateClass) {
 		this.separateClass = separateClass;
 	}
 	

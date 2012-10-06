@@ -23,6 +23,9 @@
  */
 package org.encog.engine.network.activation;
 
+import org.encog.ml.factory.MLActivationFactory;
+import org.encog.util.obj.ActivationUtil;
+
 /**
  * The step activation function is a very simple activation function. It is the
  * activation function that was used by the original perceptron. Using the
@@ -203,5 +206,13 @@ public class ActivationStep implements ActivationFunction {
 	@Override
 	public final void setParam(final int index, final double value) {
 		this.params[index] = value;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getFactoryCode() {
+		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_STEP, this);
 	}
 }

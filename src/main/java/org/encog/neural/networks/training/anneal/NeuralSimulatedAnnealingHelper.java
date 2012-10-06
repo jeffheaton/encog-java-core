@@ -23,6 +23,7 @@
  */
 package org.encog.neural.networks.training.anneal;
 
+import org.encog.ml.MLRegression;
 import org.encog.ml.anneal.SimulatedAnnealing;
 import org.encog.util.EngineArray;
 
@@ -62,9 +63,9 @@ public class NeuralSimulatedAnnealingHelper extends SimulatedAnnealing<Double> {
 	 * @return The error returned by the owner.
 	 */
 	@Override
-	public final double calculateScore() {
+	public double calculateScore() {
 		return owner.getCalculateScore().calculateScore(
-				this.owner.getMethod());
+				(MLRegression)this.owner.getMethod());
 	}
 
 	/**
@@ -73,7 +74,7 @@ public class NeuralSimulatedAnnealingHelper extends SimulatedAnnealing<Double> {
 	 * @return The array returned by the owner.
 	 */
 	@Override
-	public final Double[] getArray() {
+	public Double[] getArray() {
 		return EngineArray.doubleToObject(owner.getArray());
 	}
 
@@ -83,7 +84,7 @@ public class NeuralSimulatedAnnealingHelper extends SimulatedAnnealing<Double> {
 	 * @return The array copy created by the owner.
 	 */
 	@Override
-	public final Double[] getArrayCopy() {
+	public Double[] getArrayCopy() {
 		return EngineArray.doubleToObject(owner.getArrayCopy());
 	}
 
@@ -92,7 +93,7 @@ public class NeuralSimulatedAnnealingHelper extends SimulatedAnnealing<Double> {
 	 * @param array The array.
 	 */
 	@Override
-	public final void putArray(final Double[] array) {
+	public void putArray(final Double[] array) {
 		owner.putArray(EngineArray.objectToDouble(array));
 	}
 
@@ -100,7 +101,7 @@ public class NeuralSimulatedAnnealingHelper extends SimulatedAnnealing<Double> {
 	 * Call the owner's randomize method.
 	 */
 	@Override
-	public final void randomize() {
+	public void randomize() {
 		owner.randomize();
 	}
 
