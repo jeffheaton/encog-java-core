@@ -533,7 +533,8 @@ public class AnalystWizard {
 	 */
 	private void generateFeedForward(final int inputColumns,
 			final int outputColumns) {
-		final int hidden = (int) ((inputColumns * this.lagWindowSize) * 1.5);
+		final int hidden = (int) ((inputColumns*Math.max(this.lagWindowSize,1)) * 1.5);
+
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_TYPE,
 				MLMethodFactory.TYPE_FEEDFORWARD);
