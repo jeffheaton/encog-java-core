@@ -1461,6 +1461,7 @@ public class AnalystWizard {
 		generateSegregate();
 		generateGenerate();
 		generateProcess(backwardWindow, forwardWindow, prediction, predictField);
+		generateCode();
 
 		// override raw_file to be the processed file
 		this.script.getProperties().setProperty(

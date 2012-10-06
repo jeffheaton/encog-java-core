@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 import java.util.Set;
 import java.util.TreeSet;
 
-public abstract class AbstractGenerator implements LanguageSpecificGenerator {
+public abstract class AbstractGenerator implements ProgramGenerator {
 	public static final int INDENT_SPACES = 4;
 	
 	private final StringBuilder contents = new StringBuilder();

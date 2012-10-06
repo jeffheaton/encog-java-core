@@ -24,6 +24,7 @@
 package org.encog.app.analyst;
 
 import org.encog.EncogError;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * An error has occured with the Encog Analyst.
@@ -54,6 +55,18 @@ public class AnalystError extends EncogError {
 	 */
 	public AnalystError(final Throwable t) {
 		super(t);
+	}
+	
+	/**
+	 * Construct an exception that holds another exception.
+	 * 
+	 * @param msg
+	 *            A message.
+	 * @param t
+	 *            The other exception.
+	 */
+	public AnalystError(final String msg, final Throwable t) {
+		super(msg, t);
 	}
 	
 }
