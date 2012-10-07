@@ -7,13 +7,15 @@ import java.io.PrintWriter;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.encog.app.analyst.EncogAnalyst;
+
 public abstract class AbstractGenerator implements ProgramGenerator {
 	public static final int INDENT_SPACES = 4;
 	
 	private final StringBuilder contents = new StringBuilder();
 	private int currentIndent = 0;
 	private final Set<String> includes = new TreeSet<String>();
-	
+
 	public void addLine(String line) {
 		for(int i=0;i<currentIndent;i++) {
 			this.contents.append(' ');

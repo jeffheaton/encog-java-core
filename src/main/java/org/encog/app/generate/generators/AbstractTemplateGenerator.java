@@ -16,8 +16,10 @@ import org.encog.util.logging.EncogLogging;
 public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 
 	private StringBuilder contents = new StringBuilder();
+	private EncogAnalyst analyst;
 	
 	public abstract String getTemplatePath();
+	public abstract void processToken(String command);
 	
 	public void writeContents(File targetFile) {
 		try {
@@ -36,9 +38,11 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 	}
 
 	@Override
-	public void generate(EncogAnalyst analyst) {
+	public void generate(EncogAnalyst theAnalyst) {
 		InputStream is = null;
 		BufferedReader br = null;
+		
+		this.analyst = theAnalyst;
 		
 		try {
 			is = ResourceInputStream.openResourceInputStream(getTemplatePath());
@@ -46,8 +50,12 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 		
 			String line;
 			while( (line=br.readLine())!=null ) {
-				this.contents.append(line);
-				this.contents.append("\n");
+				if( line.startsWith("~~") ) {
+					processToken(line.substring(2).trim());
+				} else {
+					this.contents.append(line);
+					this.contents.append("\n");
+				}
 			}
 		br.close();
 		} catch(IOException ex) {
@@ -71,5 +79,15 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 		}
 		
 	}
+	public EncogAnalyst getAnalyst() {
+		return analyst;
+	}
+	
+	public void addLine(String line) {
+		this.contents.append(line);
+		this.contents.append("\n");
+	}
+	
+	
 
 }

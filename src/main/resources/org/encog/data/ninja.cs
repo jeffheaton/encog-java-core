@@ -27,25 +27,7 @@ namespace NinjaTrader.Indicator
         // User defined variables (add any user defined variables below)
         #endregion
 
-		#region Encog Data
-		public const string EXPORT_FILENAME = "c:\\test\\ninja.csv";
-		public readonly string[] ENCOG_COLS = { "close" };
-		private readonly int[] _contextTargetOffset = {0};
-        private readonly int[] _contextTargetSize = {0};
-        private const bool _hasContext = false;
-        private const int _inputCount = 0;
-        private readonly int[] _layerContextCount  = {0};
-        private readonly int[] _layerCounts  = {0};
-        private readonly int[] _layerFeedCounts  = {0};
-        private readonly int[] _layerIndex  = {0};
-        private readonly double[] _layerOutput  = {0};
-        private readonly double[] _layerSums = {0};
-        private const int _outputCount = 0;
-        private readonly int[] _weightIndex  = {0};
-        private readonly double[] _weights = {0};
-		private readonly int[] _activation = {0};
-		private readonly double[] _p = {0};
-		#endregion
+~~MAIN-BLOCK
 		private StreamWriter sw;
 		
 		
