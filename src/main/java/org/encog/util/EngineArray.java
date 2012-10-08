@@ -401,4 +401,8 @@ public final class EngineArray {
 		}
 		return result/(double)data.length;
 	}
+
+	public static void fill(int[] a, int value) {
+		Arrays.fill(a, value);
+	}
 }

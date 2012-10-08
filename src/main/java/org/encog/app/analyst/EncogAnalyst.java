@@ -832,6 +832,14 @@ public class EncogAnalyst {
 		}
 		return result;
 	}
+
+	public int determineMaxTimeSlice() {
+		int result = 0;
+		for(AnalystField field: this.getScript().getNormalize().getNormalizedFields()) {
+			result = Math.max(result, field.getTimeSlice());
+		}
+		return result;
+	}
 	
 	
 

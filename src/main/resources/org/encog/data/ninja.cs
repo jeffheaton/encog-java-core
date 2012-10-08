@@ -41,9 +41,7 @@ namespace NinjaTrader.Indicator
         }
 		
 		protected double[] ObtainData() {
-			double[] result = new double[ENCOG_COLS.Length];
-			result[0] = Close[0];
-			return result;
+~~OBTAIN
 		}
 		
 		protected void OpenFile()
@@ -186,12 +184,26 @@ namespace NinjaTrader.Indicator
 
 			Array.Copy(_layerOutput, 0, output, 0, _outputCount);
         }
+        
+        protected double Norm(double x,double normalizedHigh, double normalizedLow, double dataHigh, double dataLow)
+		{
+			return ((x - dataLow) 
+				/ (dataHigh - dataLow))
+				* (normalizedHigh - normalizedLow) + normalizedLow;
+		}
+		
+		protected double DeNorm(double x,double normalizedHigh, double normalizedLow, double dataHigh, double dataLow) {
+			return ((dataLow - dataHigh) * x - normalizedHigh
+				* dataLow + dataHigh * normalizedLow)
+				/ (normalizedLow - normalizedHigh);
+		}
 		
         /// <summary>
         /// Called on each bar update event (incoming tick)
         /// </summary>
         protected override void OnBarUpdate()
         {
+~~CALC        
 			if( export )
 			{
 				try

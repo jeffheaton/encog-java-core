@@ -17,6 +17,7 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 
 	private StringBuilder contents = new StringBuilder();
 	private EncogAnalyst analyst;
+	private int indentLevel = 0;
 	
 	public abstract String getTemplatePath();
 	public abstract void processToken(String command);
@@ -84,10 +85,25 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 	}
 	
 	public void addLine(String line) {
+		for(int i=0;i<this.indentLevel;i++) {
+			this.contents.append("\t");
+		}
 		this.contents.append(line);
 		this.contents.append("\n");
 	}
+	public int getIndentLevel() {
+		return indentLevel;
+	}
+	public void setIndentLevel(int indentLevel) {
+		this.indentLevel = indentLevel;
+	}
 	
+	public void indentIn() {
+		this.indentLevel++;
+	}
 	
+	public void indentOut() {
+		this.indentLevel--;
+	}
 
 }

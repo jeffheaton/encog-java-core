@@ -24,7 +24,6 @@
 package org.encog.app.generate;
 
 import org.encog.app.analyst.AnalystError;
-import org.encog.util.logging.EncogLogging;
 
 /**
  * Analyst code generation error.
