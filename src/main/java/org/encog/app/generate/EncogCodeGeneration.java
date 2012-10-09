@@ -8,6 +8,7 @@ import org.encog.app.generate.generators.LanguageSpecificGenerator;
 import org.encog.app.generate.generators.ProgramGenerator;
 import org.encog.app.generate.generators.TemplateGenerator;
 import org.encog.app.generate.generators.java.GenerateEncogJava;
+import org.encog.app.generate.generators.mql4.GenerateMQL4;
 import org.encog.app.generate.generators.ninja.GenerateNinjaScript;
 import org.encog.app.generate.program.EncogProgram;
 import org.encog.app.generate.program.EncogProgramNode;
@@ -29,6 +30,9 @@ public class EncogCodeGeneration {
 		switch (theTargetLanguage) {
 		case Java:
 			this.generator = new GenerateEncogJava();
+			break;
+		case MQL4:
+			this.generator = new GenerateMQL4();
 			break;
 		case NinjaScript:
 			this.generator = new GenerateNinjaScript();
