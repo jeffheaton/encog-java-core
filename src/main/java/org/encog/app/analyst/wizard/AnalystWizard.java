@@ -1444,7 +1444,6 @@ public class AnalystWizard {
 		setTaskBalance(false);
 		setTaskCluster(false);
 		setMaxError(0.05);
-		setCodeTargetLanguage(TargetLanguage.NinjaScript);
 		setCodeEmbedData(false);
 
 		determineClassification();
