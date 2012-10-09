@@ -44,13 +44,13 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 
 	private void addNameValue(String name, int[] data) {
 		StringBuilder value = new StringBuilder();
-		NumberList.toListInt(CSVFormat.EG_FORMAT, value, data);
+		NumberList.toBrokenList(CSVFormat.EG_FORMAT, value, data);
 		addNameValue(name, "{" + value.toString() + "}");
 	}
 
 	private void addNameValue(String name, double[] data) {
 		StringBuilder value = new StringBuilder();
-		NumberList.toList(CSVFormat.EG_FORMAT, value, data);
+		NumberList.toBrokenList(CSVFormat.EG_FORMAT, value, data);
 		addNameValue(name, "{" + value.toString() + "}");
 	}
 
