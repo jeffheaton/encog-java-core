@@ -7,45 +7,57 @@
 #property link      "http://www.heatonresearch.com/encog"
 
 #property indicator_chart_window
+#property  indicator_buffers 1
+#property  indicator_color1  Silver
+
+
 //--- input parameters
 extern bool      Export=false;
 
+//--- buffers
+double ExtMapBuffer1[];
+
 int iHandle = -1;
 int iErrorCode;
-string EXPORT_FILENAME = "mql4.csv";
 
-         int _neuronCount = 10;
-         int _layerCount;
-         
-			int _contextTargetOffset[] = {0,0,0};
-			int _contextTargetSize[] = {0,0,0};
-			bool _hasContext = false;
-			int _inputCount = 30;
-			int _layerContextCount[] = {0,0,0};
-			int _layerCounts[] = {1,46,31};
-			int _layerFeedCounts[] = {1,45,30};
-			int _layerIndex[] = {0,1,47};
-			double _layerOutput[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-0.0,1.0};
-			double _layerSums[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-0.0,0.0};
-			int _outputCount = 1;
-			int _weightIndex[] = {0,46,1441};
-			double _weights[] = { 0 };
-			int _activation[] = {1,1,0};
-			double _p[] = {1.0,1.0,1.0};
+// begin Encog main config
+~~MAIN-BLOCK
+// end Encog main config
+
+
+//+------------------------------------------------------------------+
+//| Custom indicator initialization function                         |
+//+------------------------------------------------------------------+
+int init()
+  {
+  IndicatorBuffers(1);
+  SetIndexStyle(0,DRAW_LINE);
+   SetIndexBuffer(0,ExtMapBuffer1);
+   
+   IndicatorShortName("Encog Generated Indicator" );
+   SetIndexLabel(0,"Line1");
+   
+      if( Export )
+      {
+         iHandle = FileOpen(EXPORT_FILENAME,FILE_CSV|FILE_WRITE,';');
+         if(iHandle < 1)
+         {
+            iErrorCode = GetLastError();
+            Print("Error updating file: ",iErrorCode);
+            return(false);
+         }
+      
+         FileWrite(iHandle, "time", "close");
+      }
+      else
+      {
+         iHandle = -1;
+      }
+      
+  //FileWrite(iHandle,iInteger,sString,DoubleToStr(dDouble,iDecimalPlaces));
+  //FileClose(iHandle);
+   return(0);
+  }
 
 void ActivationTANH(double& x[], int start, int size)
 {
@@ -143,8 +155,7 @@ void Compute(double input[], double& output[])
    int sourceIndex = _neuronCount
       - _layerCounts[_layerCount - 1];
 
-   //Array.Copy(input,0,_layerOutput,sourceIndex,_inputCount);
-   ArrayCopy(_layerOutput,input,0,sourceIndex,_inputCount);
+   ArrayCopy(_layerOutput,input,sourceIndex,0,_inputCount);
 			
    for(i = _layerCount - 1; i > 0; i--)
 	{
@@ -159,36 +170,10 @@ void Compute(double input[], double& output[])
 	  _layerOutput[offset + x] = _layerOutput[x];
    }
 
-   //Array.Copy(_layerOutput, 0, output, 0, _outputCount);
    ArrayCopy(output,_layerOutput,0,0,_outputCount);
 }
 
-//+------------------------------------------------------------------+
-//| Custom indicator initialization function                         |
-//+------------------------------------------------------------------+
-int init()
-  {
-      if( Export )
-      {
-         iHandle = FileOpen(EXPORT_FILENAME,FILE_CSV|FILE_WRITE,';');
-         if(iHandle < 1)
-         {
-            iErrorCode = GetLastError();
-            Print("Error updating file: ",iErrorCode);
-            return(false);
-         }
-      
-         FileWrite(iHandle, "ti\"me", "close");
-      }
-      else
-      {
-         iHandle = -1;
-      }
-      
-  //FileWrite(iHandle,iInteger,sString,DoubleToStr(dDouble,iDecimalPlaces));
-  //FileClose(iHandle);
-   return(0);
-  }
+
 //+------------------------------------------------------------------+
 //| Custom indicator deinitialization function                       |
 //+------------------------------------------------------------------+
@@ -224,7 +209,20 @@ void WriteExportLine(int pos)
       PadInt(TimeHour(dt),2) + 
       PadInt(TimeMinute(dt),2) + 
       PadInt(TimeSeconds(dt),2);
-   FileWrite(iHandle, when, Close[pos]);
+~~OBTAIN
+}
+
+double Norm(double x,double normalizedHigh, double normalizedLow, double dataHigh, double dataLow)
+{
+	return (((x - dataLow) 
+		/ (dataHigh - dataLow))
+		* (normalizedHigh - normalizedLow) + normalizedLow);
+}
+		
+double DeNorm(double x,double normalizedHigh, double normalizedLow, double dataHigh, double dataLow) {
+	return (((dataLow - dataHigh) * x - normalizedHigh
+		* dataLow + dataHigh * normalizedLow)
+		/ (normalizedLow - normalizedHigh));
 }
   
   
@@ -249,6 +247,7 @@ int start()
       Close_Time = Time[0];
       while(pos>1)
       {
+~~CALC      
          if( Export )
          {
             WriteExportLine(pos);

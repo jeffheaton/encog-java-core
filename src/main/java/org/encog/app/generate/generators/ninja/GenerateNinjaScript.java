@@ -29,30 +29,7 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 		return "org/encog/data/ninja.cs";
 	}
 
-	private void addNameValue(String name, int value) {
-		addNameValue(name, "" + value);
-	}
 
-	private void addNameValue(String name, String value) {
-		StringBuilder line = new StringBuilder();
-		line.append(name);
-		line.append(" = ");
-		line.append(value);
-		line.append(";");
-		addLine(line.toString());
-	}
-
-	private void addNameValue(String name, int[] data) {
-		StringBuilder value = new StringBuilder();
-		NumberList.toBrokenList(CSVFormat.EG_FORMAT, value, data);
-		addNameValue(name, "{" + value.toString() + "}");
-	}
-
-	private void addNameValue(String name, double[] data) {
-		StringBuilder value = new StringBuilder();
-		NumberList.toBrokenList(CSVFormat.EG_FORMAT, value, data);
-		addNameValue(name, "{" + value.toString() + "}");
-	}
 
 	private void addCols() {
 		StringBuilder line = new StringBuilder();
@@ -164,36 +141,6 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 		indentOut();
 		addLine("#endregion");
 		setIndentLevel(0);
-	}
-
-	private double[] createParams(FlatNetwork flat) {
-		double[] result = new double[flat.getActivationFunctions().length];
-		EngineArray.fill(result, 1);
-		return result;
-	}
-
-	private int[] createActivations(FlatNetwork flat) {
-		int[] result = new int[flat.getActivationFunctions().length];
-		for (int i = 0; i < flat.getActivationFunctions().length; i++) {
-			ActivationFunction af = flat.getActivationFunctions()[i];
-
-			if (af instanceof ActivationLinear) {
-				result[i] = 0;
-			} else if (af instanceof ActivationTANH) {
-				result[i] = 1;
-			}
-			if (af instanceof ActivationSigmoid) {
-				result[i] = 2;
-			}
-			if (af instanceof ActivationElliottSymmetric) {
-				result[i] = 3;
-			}
-			if (af instanceof ActivationElliott) {
-				result[i] = 4;
-			}
-		}
-
-		return result;
 	}
 
 	private void processCalc() {

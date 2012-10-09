@@ -143,41 +143,4 @@ public final class NumberList {
 			result.append(""+data[i]);
 		}
 	}
-
-	public static void toBrokenList(CSVFormat format, StringBuilder result,
-			int[] data) {
-		int lineCount = 0;
-		result.setLength(0);
-		for (int i = 0; i < data.length; i++) {
-			if (i != 0) {
-				result.append(format.getSeparator());
-			}
-			
-			lineCount++;
-			if( lineCount>10 ) {
-				result.append("\n");
-				lineCount = 0;
-			}
-			result.append(format.format(data[i], Encog.DEFAULT_PRECISION));
-		}
-	}
-
-	public static void toBrokenList(CSVFormat format, StringBuilder result,
-			double[] data) {
-		int lineCount = 0;
-		result.setLength(0);
-		for (int i = 0; i < data.length; i++) {
-			if (i != 0) {
-				result.append(format.getSeparator());
-			}
-			
-			lineCount++;
-			if( lineCount>10 ) {
-				result.append("\n");
-				lineCount = 0;
-			}
-			result.append(""+data[i]);
-		}
-		
-	}
 }
