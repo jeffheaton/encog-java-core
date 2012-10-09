@@ -7,6 +7,7 @@ import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.generate.generators.LanguageSpecificGenerator;
 import org.encog.app.generate.generators.ProgramGenerator;
 import org.encog.app.generate.generators.TemplateGenerator;
+import org.encog.app.generate.generators.cs.GenerateCS;
 import org.encog.app.generate.generators.java.GenerateEncogJava;
 import org.encog.app.generate.generators.mql4.GenerateMQL4;
 import org.encog.app.generate.generators.ninja.GenerateNinjaScript;
@@ -30,6 +31,9 @@ public class EncogCodeGeneration {
 		switch (theTargetLanguage) {
 		case Java:
 			this.generator = new GenerateEncogJava();
+			break;
+		case CSharp:
+			this.generator = new GenerateCS();
 			break;
 		case MQL4:
 			this.generator = new GenerateMQL4();
