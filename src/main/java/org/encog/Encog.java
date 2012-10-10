@@ -207,5 +207,13 @@ public final class Encog {
 		return this.plugins;
 	}
 	
+	/**
+	 * @return True, if running on OSX.
+	 */
+	public static boolean isOSX() {
+	    String osName = System.getProperty("os.name");
+	    return osName.contains("OS X");
+	}
+	
 	
 }
