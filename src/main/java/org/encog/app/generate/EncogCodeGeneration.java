@@ -9,6 +9,7 @@ import org.encog.app.generate.generators.ProgramGenerator;
 import org.encog.app.generate.generators.TemplateGenerator;
 import org.encog.app.generate.generators.cs.GenerateCS;
 import org.encog.app.generate.generators.java.GenerateEncogJava;
+import org.encog.app.generate.generators.js.GenerateEncogJavaScript;
 import org.encog.app.generate.generators.mql4.GenerateMQL4;
 import org.encog.app.generate.generators.ninja.GenerateNinjaScript;
 import org.encog.app.generate.program.EncogProgram;
@@ -29,6 +30,8 @@ public class EncogCodeGeneration {
 		this.targetLanguage = theTargetLanguage;
 
 		switch (theTargetLanguage) {
+		case NoGeneration:
+			throw new AnalystCodeGenerationError("No target language has been specified for code generation.");
 		case Java:
 			this.generator = new GenerateEncogJava();
 			break;
@@ -41,6 +44,10 @@ public class EncogCodeGeneration {
 		case NinjaScript:
 			this.generator = new GenerateNinjaScript();
 			break;
+		case JavaScript:
+			this.generator = new GenerateEncogJavaScript();
+			break;
+		
 		}
 	}
 
