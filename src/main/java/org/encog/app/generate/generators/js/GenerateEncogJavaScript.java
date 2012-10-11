@@ -66,8 +66,7 @@ public class GenerateEncogJavaScript extends AbstractGenerator {
 		addBreak();
 		StringBuilder line = new StringBuilder();
 		if( node.getArgs().get(0).getValue().toString().length()>0 ) {
-			line.append(node.getArgs().get(0).getValue().toString());
-			line.append(" ");
+			line.append("var ");
 			line.append(node.getArgs().get(1).getValue().toString());
 			line.append(" = ");			
 		}

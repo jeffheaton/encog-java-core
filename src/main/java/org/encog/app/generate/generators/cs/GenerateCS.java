@@ -224,7 +224,6 @@ public class GenerateCS extends AbstractGenerator {
 		
 		File methodFile = (File)node.getArgs().get(0).getValue();
 		
-		addInclude("org.encog.ml.data.MLDataSet");
 		StringBuilder line = new StringBuilder();
 		line.append("public static MLDataSet createTraining() {");
 		indentLine(line.toString());

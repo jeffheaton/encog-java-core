@@ -89,13 +89,16 @@ public class EncogCodeGeneration {
 		this.program.addComment("Generated code may be used freely");
 		this.program.addComment("http://www.heatonresearch.com/encog");
 		EncogProgramNode mainClass = this.program.createClass("EncogExample");
+		
+		if( this.targetLanguage==TargetLanguage.MQL4 || this.targetLanguage==TargetLanguage.NinjaScript) {
+			throw new AnalystCodeGenerationError("MQL4 and Ninjascript can only be generated from Encog Analyst");
+		}
 
 		if (data != null) {
 			mainClass.embedTraining(data);
 			if( !(this.generator instanceof GenerateEncogJavaScript) ) {
 				mainClass.generateLoadTraining(data);	
 			}
-			mainClass.generateLoadTraining(data);
 		}
 
 		if (method != null) {
@@ -123,6 +126,12 @@ public class EncogCodeGeneration {
 	}
 
 	public void generate(EncogAnalyst analyst) {
+		
+		if( this.targetLanguage==TargetLanguage.MQL4 || this.targetLanguage==TargetLanguage.NinjaScript) {
+			if( !this.embedData ) {
+				throw new AnalystCodeGenerationError("MQL4 and Ninjascript must be embedded.");
+			}
+		}
 
 		if (this.generator instanceof ProgramGenerator) {
 			final String methodID = analyst
