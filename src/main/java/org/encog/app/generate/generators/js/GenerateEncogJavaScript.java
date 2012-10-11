@@ -4,15 +4,23 @@ import java.io.File;
 
 import org.encog.Encog;
 import org.encog.EncogError;
+import org.encog.app.generate.AnalystCodeGenerationError;
 import org.encog.app.generate.generators.AbstractGenerator;
 import org.encog.app.generate.program.EncogProgram;
 import org.encog.app.generate.program.EncogProgramNode;
 import org.encog.app.generate.program.EncogTreeNode;
+import org.encog.engine.network.activation.ActivationElliott;
+import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationLinear;
+import org.encog.engine.network.activation.ActivationSigmoid;
+import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.ml.MLFactory;
 import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
+import org.encog.neural.flat.FlatNetwork;
+import org.encog.neural.networks.ContainsFlat;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
@@ -28,16 +36,30 @@ public class GenerateEncogJavaScript extends AbstractGenerator {
 	
 	private void generateClass(EncogProgramNode node) {
 		addBreak();
-		indentLine("public class " + node.getName() + " {");
+		
+		addLine("<!DOCTYPE html>");
+		addLine("<html>");
+		addLine("<head>");
+		addLine("<title>Encog Generated Javascript</title>");
+		addLine("</head>");
+		addLine("<body>");
+		addLine("<script src=\"../encog.js\"></script>");
+		addLine("<script src=\"../encog-widget.js\"></script>");
+		addLine("<pre>");
+		addLine("<script type=\"text/javascript\">");
+		
 		generateForChildren(node);
-		unIndentLine("}");
+		
+		addLine("</script>");
+		addLine("<noscript>Your browser does not support JavaScript! Note: if you are trying to view this in Encog Workbench, right-click file and choose \"Open as Text\".</noscript>");
+		addLine("</pre>");
+		addLine("</body>");
+		addLine("</html>");
 	}
 	
 	private void generateMainFunction(EncogProgramNode node) {
 		addBreak();
-		indentLine("public static void main(String[] args) {");
 		generateForChildren(node);
-		unIndentLine("}");
 	}
 	
 	private void generateFunctionCall(EncogProgramNode node) {
@@ -59,7 +81,7 @@ public class GenerateEncogJavaScript extends AbstractGenerator {
 		addBreak();
 		
 		StringBuilder line = new StringBuilder();
-		line.append("public static void ");
+		line.append("function ");
 		line.append(node.getName());
 		line.append("() {");
 		indentLine(line.toString());
@@ -79,15 +101,9 @@ public class GenerateEncogJavaScript extends AbstractGenerator {
 			throw new EncogError("Code generation not yet supported for: " + method.getClass().getName());
 		}
 		
-		MLFactory factoryMethod = (MLFactory)method;
+		FlatNetwork flat = ((ContainsFlat)method).getFlat();
 		
-		String methodName = factoryMethod.getFactoryType();
-		String methodArchitecture = factoryMethod.getFactoryArchitecture();
-		
-		// header
-		addInclude("org.encog.ml.MLMethod");
-		addInclude("org.encog.persist.EncogDirectoryPersistence");
-		
+		// header		
 		StringBuilder line = new StringBuilder();
 		line.append("public static MLMethod ");
 		line.append(node.getName());
@@ -96,73 +112,62 @@ public class GenerateEncogJavaScript extends AbstractGenerator {
 		
 		// create factory
 		line.setLength(0);
-		addInclude("org.encog.ml.factory.MLMethodFactory");
-		line.append("MLMethodFactory methodFactory = new MLMethodFactory();");
-		addLine(line.toString());
 		
-		// factory create
-		line.setLength(0);
-		line.append("MLMethod result = ");
-		
-		line.append("methodFactory.create(");
-		line.append("\"");
-		line.append(methodName);
-		line.append("\"");
-		line.append(",");
-		line.append("\"");
-		line.append(methodArchitecture);
-		line.append("\"");
-		line.append(", 0, 0);");		
-		addLine(line.toString());
-		
-		line.setLength(0);
-		addInclude("org.encog.ml.MLEncodable");
-		line.append("((MLEncodable)result).decodeFromArray(WEIGHTS);");
-		addLine(line.toString());
+		addLine("var network = ENCOG.BasicNetwork.create( null );");
+        addLine("network.inputCount = " + flat.getInputCount()+";");
+        addLine("network.outputCount = " + flat.getOutputCount()+";");
+        addLine("network.layerCounts = "+toSingleLineArray(flat.getLayerCounts())+";");
+        addLine("network.layerContextCount = "+toSingleLineArray(flat.getLayerContextCount())+";");
+        addLine("network.weightIndex = "+toSingleLineArray(flat.getWeightIndex())+";");
+        addLine("network.layerIndex = "+toSingleLineArray(flat.getLayerIndex())+";");
+        addLine("network.activationFunctions = " + toSingleLineArray(flat.getActivationFunctions()) +";");
+        addLine("network.layerFeedCounts = "+toSingleLineArray(flat.getLayerFeedCounts())+";");
+        addLine("network.contextTargetOffset = "+toSingleLineArray(flat.getContextTargetOffset())+";");
+        addLine("network.contextTargetSize = "+toSingleLineArray(flat.getContextTargetSize())+";");
+        addLine("network.biasActivation = "+toSingleLineArray(flat.getBiasActivation())+";");
+        addLine("network.beginTraining = "+flat.getBeginTraining()+";");
+        addLine("network.endTraining="+flat.getEndTraining()+";");
+        addLine("network.weights = WEIGHTS;");
+        addLine("network.layerOutput = "+toSingleLineArray(flat.getLayerOutput())+";");
+        addLine("network.layerSums = "+toSingleLineArray(flat.getLayerSums())+";");
 		
 		// return
-		addLine("return result;");
+		addLine("return network;");
 		
 		unIndentLine("}");		
 	}
 	
-	private void linkNetwork(EncogProgramNode node) {
-		addBreak();
-		
-		File methodFile = (File)node.getArgs().get(0).getValue();
-		
-		addInclude("org.encog.ml.MLMethod");
-		StringBuilder line = new StringBuilder();
-		line.append("public static MLMethod ");
-		line.append(node.getName());
-		line.append("() {");
-		indentLine(line.toString());
-				
-		line.setLength(0);
-		line.append("MLMethod result = (MLMethod)EncogDirectoryPersistence.loadObject(new File(\"");
-		line.append(methodFile.getAbsolutePath());
-		line.append("\"));");
-		addLine(line.toString());
-
-		// return
-		addLine("return result;");
-		
-		unIndentLine("}");
-	}
-	
-	private void generateCreateNetwork(EncogProgramNode node) {
-		if( this.embed ) {
-			embedNetwork(node);
-		} else {
-			linkNetwork(node);
+	private String toSingleLineArray(ActivationFunction[] activationFunctions) {
+		StringBuilder result = new StringBuilder();
+		result.append('[');
+		for(int i=0;i<activationFunctions.length;i++) {
+			if( i>0 ) {
+				result.append(',');
+			}
+			
+			ActivationFunction af = activationFunctions[i];
+			if( af instanceof ActivationSigmoid ) {
+				result.append("ENCOG.ActivationSigmoid.create()");
+			} else if( af instanceof ActivationTANH ) {
+				result.append("ENCOG.ActivationTANH.create()");
+			} else if( af instanceof ActivationLinear ) {
+				result.append("ENCOG.ActivationLinear.create()");
+			} else if( af instanceof ActivationElliott ) {
+				result.append("ENCOG.ActivationElliott.create()");
+			} else if( af instanceof ActivationElliott ) {
+				result.append("ENCOG.ActivationElliott.create()");
+			} else {
+				throw new AnalystCodeGenerationError("Unsupported activatoin function for code generation: " + af.getClass().getSimpleName());
+			}
+			
 		}
+		result.append(']');
+		return result.toString();
 	}
 	
 	private void generateConst(EncogProgramNode node) {
 		StringBuilder line = new StringBuilder();
-		line.append("public static final ");
-		line.append(node.getArgs().get(1).getValue());
-		line.append(" ");
+		line.append("var ");
 		line.append(node.getName());
 		line.append(" = \"");
 		line.append(node.getArgs().get(0).getValue());
@@ -171,11 +176,37 @@ public class GenerateEncogJavaScript extends AbstractGenerator {
 		addLine(line.toString());		
 	}
 	
+	private String toSingleLineArray(double[] d) {
+		StringBuilder line = new StringBuilder();
+		line.append("[");
+		for(int i=0;i<d.length;i++) {
+			line.append(CSVFormat.EG_FORMAT.format(d[i],Encog.DEFAULT_PRECISION) );
+			if( i<(d.length-1) ) {
+				line.append(",");
+			}	
+		}
+		line.append("]");
+		return line.toString();
+	}
+	
+	private String toSingleLineArray(int[] d) {
+		StringBuilder line = new StringBuilder();
+		line.append("[");
+		for(int i=0;i<d.length;i++) {
+			line.append(d[i] );
+			if( i<(d.length-1) ) {
+				line.append(",");
+			}	
+		}
+		line.append("]");
+		return line.toString();
+	}
+	
 	private void generateArrayInit(EncogProgramNode node) {
 		StringBuilder line = new StringBuilder();
-		line.append("public static final double[] ");
+		line.append("var ");
 		line.append(node.getName());
-		line.append(" = {");
+		line.append(" = [");
 		indentLine(line.toString());
 		
 		double[] a = (double[])node.getArgs().get(0).getValue();
@@ -204,38 +235,9 @@ public class GenerateEncogJavaScript extends AbstractGenerator {
 		
 		
 		
-		unIndentLine("};");
+		unIndentLine("];");
 	}
-	
-	private void generateLoadTraining(EncogProgramNode node) {
-		addBreak();
-		
-		File methodFile = (File)node.getArgs().get(0).getValue();
-		
-		addInclude("org.encog.ml.data.MLDataSet");
-		StringBuilder line = new StringBuilder();
-		line.append("public static MLDataSet createTraining() {");
-		indentLine(line.toString());
-			
-		line.setLength(0);
-		
-		if( this.embed ) {
-			addInclude("org.encog.ml.data.basic.BasicMLDataSet");			
-			line.append("MLDataSet result = new BasicMLDataSet(INPUT_DATA,IDEAL_DATA);");
-		} else {
-			addInclude("org.encog.util.simple.EncogUtility");
-			line.append("MLDataSet result = EncogUtility.loadEGB2Memory(new File(\"");
-			line.append(methodFile.getAbsolutePath());
-			line.append("\"));");
-		}
-		
-		addLine(line.toString());
 
-		// return
-		addLine("return result;");
-		
-		unIndentLine("}");
-	}
 	
 	private void generateNode(EncogProgramNode node) {
 		switch(node.getType()) {
@@ -258,16 +260,13 @@ public class GenerateEncogJavaScript extends AbstractGenerator {
 				generateFunctionCall(node);
 				break;
 			case CreateNetwork:
-				generateCreateNetwork(node);
+				embedNetwork(node);
 				break;
 			case InitArray:
 				generateArrayInit(node);
 				break;
 			case EmbedTraining:
-				generateEmbedTraining(node);
-				break;
-			case LoadTraining:
-				generateLoadTraining(node);
+				embedTraining(node);
 				break;
 		}
 	}
@@ -279,41 +278,35 @@ public class GenerateEncogJavaScript extends AbstractGenerator {
 		
 		// generate the input data
 		
-		this.indentLine("public static final double[][] INPUT_DATA = {");
+		this.indentLine("var INPUT_DATA = [");
 		for(MLDataPair pair: data) {
 			MLData item = pair.getInput();
 						
 			StringBuilder line = new StringBuilder();
 			
 			NumberList.toList(CSVFormat.EG_FORMAT, line, item.getData());
-			line.insert(0, "{ ");
-			line.append(" },");
+			line.insert(0, "[ ");
+			line.append(" ],");
 			this.addLine(line.toString());
 		}
-		this.unIndentLine("};");
+		this.unIndentLine("];");
 		
 		this.addBreak();
 		
 		// generate the ideal data
 		
-		this.indentLine("public static final double[][] IDEAL_DATA = {");
+		this.indentLine("var IDEAL_DATA = [");
 		for(MLDataPair pair: data) {
 			MLData item = pair.getIdeal();
 						
 			StringBuilder line = new StringBuilder();
 			
 			NumberList.toList(CSVFormat.EG_FORMAT, line, item.getData());
-			line.insert(0, "{ ");
-			line.append(" },");
+			line.insert(0, "[ ");
+			line.append(" ],");
 			this.addLine(line.toString());
 		}
-		this.unIndentLine("};");		
-	}
-	
-	private void generateEmbedTraining(EncogProgramNode node) {
-		if(this.embed) {
-			embedTraining(node);
-		}
+		this.unIndentLine("];");		
 	}
 
 	private void generateForChildren(EncogTreeNode parent) {
@@ -323,22 +316,10 @@ public class GenerateEncogJavaScript extends AbstractGenerator {
 	}
 	
 	public void generate(EncogProgram program, boolean shouldEmbed) {
+		if( !shouldEmbed ) {
+			throw new AnalystCodeGenerationError("Must embed when generating Javascript");
+		}
 		this.embed = shouldEmbed;
 		generateForChildren(program);		
-		generateImports(program);
-	}
-
-	private void generateImports(EncogProgram program) {
-		StringBuilder imports = new StringBuilder();
-		for(String str: this.getIncludes()) {
-			imports.append("import ");
-			imports.append(str);
-			imports.append(";\n");
-		}
-		
-		imports.append("\n");
-		
-		addToBeginning(imports.toString());
-		
 	}
 }
