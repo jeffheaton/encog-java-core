@@ -196,4 +196,19 @@ public class FileUtil {
 		}
 	}
 
+	public static String toStringLiteral(File processFile) {
+		String str = processFile.toString();
+		StringBuilder result = new StringBuilder();
+		
+		for(char ch : str.toCharArray()) {
+			if( ch=='\\' ) {
+				result.append("\\\\");
+			} else {
+				result.append(ch);
+			}
+		}
+		
+		return result.toString();
+	}
+
 }

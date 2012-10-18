@@ -8,19 +8,11 @@ import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.generate.AnalystCodeGenerationError;
 import org.encog.app.generate.generators.AbstractTemplateGenerator;
-import org.encog.engine.network.activation.ActivationElliott;
-import org.encog.engine.network.activation.ActivationElliottSymmetric;
-import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.engine.network.activation.ActivationLinear;
-import org.encog.engine.network.activation.ActivationSigmoid;
-import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.ml.MLMethod;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.persist.EncogDirectoryPersistence;
-import org.encog.util.EngineArray;
-import org.encog.util.csv.CSVFormat;
-import org.encog.util.csv.NumberList;
+import org.encog.util.file.FileUtil;
 
 public class GenerateNinjaScript extends AbstractTemplateGenerator {
 
@@ -59,7 +51,7 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 		EncogAnalyst analyst = getAnalyst();
 
 		final String processID = analyst.getScript().getProperties()
-				.getPropertyString(ScriptProperties.PROCESS_CONFIG_TARGET_FILE);
+				.getPropertyString(ScriptProperties.PROCESS_CONFIG_SOURCE_FILE);
 
 		final String methodID = analyst
 				.getScript()
@@ -115,7 +107,7 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 		addLine("#region Encog Data");
 		indentIn();
 		addNameValue("public const string EXPORT_FILENAME", "\""
-				+ processFile.toString() + "\"");
+				+ FileUtil.toStringLiteral(processFile) + "\"");
 		addCols();
 
 		addNameValue("private readonly int[] _contextTargetOffset",

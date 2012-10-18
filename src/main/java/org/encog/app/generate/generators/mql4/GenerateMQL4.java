@@ -132,7 +132,7 @@ public class GenerateMQL4 extends AbstractTemplateGenerator {
 		EncogAnalyst analyst = getAnalyst();
 
 		final String processID = analyst.getScript().getProperties()
-				.getPropertyString(ScriptProperties.PROCESS_CONFIG_TARGET_FILE);
+				.getPropertyString(ScriptProperties.PROCESS_CONFIG_SOURCE_FILE);
 
 		final String methodID = analyst
 				.getScript()
