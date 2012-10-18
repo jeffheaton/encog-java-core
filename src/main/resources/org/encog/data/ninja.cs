@@ -222,10 +222,6 @@ namespace NinjaTrader.Indicator
 					Log("Encog Indicator Error: " + e.Message, NinjaTrader.Cbi.LogLevel.Error);				
 				}
 			}
-			
-            // Use this method for calculating your indicator values. Assign a value to each
-            // plot below by replacing 'Close[0]' with your own formula.
-            Output.Set(Close[0]);
         }
 		
 		

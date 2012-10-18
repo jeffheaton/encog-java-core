@@ -137,7 +137,7 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 
 	private void processCalc() {
 		AnalystField firstOutputField = null;
-		int barsNeeded = this.getAnalyst().determineMaxTimeSlice();
+		int barsNeeded = Math.abs(this.getAnalyst().determineMinTimeSlice());
 
 		setIndentLevel(2);
 		addLine("if( _inputCount>0 && CurrentBar>=" + barsNeeded + " )");
