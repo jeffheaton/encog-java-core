@@ -1161,7 +1161,7 @@ public class AnalystWizard {
 		task7.getLines().add("cluster");
 
 		final AnalystTask task8 = new AnalystTask("task-code");
-		task7.getLines().add("code");
+		task8.getLines().add("code");
 
 		AnalystTask task9 = null;
 		if (this.preprocess) {
@@ -1444,7 +1444,7 @@ public class AnalystWizard {
 		setTaskBalance(false);
 		setTaskCluster(false);
 		setMaxError(0.05);
-		setCodeEmbedData(false);
+		setCodeEmbedData(true);
 
 		determineClassification();
 		generateFilenames(csvFile);

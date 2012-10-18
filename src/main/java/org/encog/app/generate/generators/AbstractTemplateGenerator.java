@@ -124,21 +124,39 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 		StringBuilder line = new StringBuilder();
 		line.append(name);
 		line.append(" = ");
-		line.append(value);
+		
+		if( value==null ) {
+			line.append("null");
+		} else {
+			line.append(value);
+		}
+		
 		line.append(";");
 		addLine(line.toString());
 	}
 
 	public void addNameValue(String name, int[] data) {
 		StringBuilder value = new StringBuilder();
-		toBrokenList(value, data);
-		addNameValue(name, "{" + value.toString() + "}");
+		if( data==null ) {
+			value.append(name);
+			value.append(" = null;");
+			addLine(value.toString());
+		} else {			
+			toBrokenList(value, data);
+			addNameValue(name, "{" + value.toString() + "}");
+		}
 	}
 
 	public void addNameValue(String name, double[] data) {
 		StringBuilder value = new StringBuilder();
-		toBrokenList(value, data);
-		addNameValue(name, "{" + value.toString() + "}");
+		if( data==null ) {
+			value.append(name);
+			value.append(" = null;");
+			addLine(value.toString());
+		} else {	
+			toBrokenList(value, data);
+			addNameValue(name, "{" + value.toString() + "}");
+		}
 	}
 	
 	public double[] createParams(FlatNetwork flat) {

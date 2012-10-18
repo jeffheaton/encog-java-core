@@ -148,7 +148,7 @@ public class ExpressionParser {
 		}
 		
 		if( this.parser.peek()!=')' ) {
-			throw new ExpressionError("Invalid function call");
+			throw new ExpressionError("Invalid function call: " + this.parser.getLine());
 		}
 		this.parser.advance();
 		
