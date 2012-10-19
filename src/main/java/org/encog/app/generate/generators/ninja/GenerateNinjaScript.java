@@ -226,4 +226,11 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 
 	}
 
+
+
+	@Override
+	public String getNullArray() {
+		return "null";
+	}
+
 }

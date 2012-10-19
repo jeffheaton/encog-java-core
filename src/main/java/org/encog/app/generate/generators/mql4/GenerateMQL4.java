@@ -12,6 +12,7 @@ import org.encog.ml.MLMethod;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.persist.EncogDirectoryPersistence;
+import org.encog.util.EngineArray;
 
 public class GenerateMQL4 extends AbstractTemplateGenerator {
 
@@ -29,8 +30,28 @@ public class GenerateMQL4 extends AbstractTemplateGenerator {
 			processCalc();
 		} else if (command.equals("OBTAIN")) {
 			processObtain();
+		} else if( command.equals("HEADERS")) {
+			processHeaders();
 		}
 		setIndentLevel(0);
+	}
+	
+	private void processHeaders() {
+		DataField[] fields = this.getAnalyst().getScript().getFields();
+
+		StringBuilder line = new StringBuilder();
+		line.append("FileWrite(iHandle");
+		
+		for(int idx=0;idx<fields.length;idx++) {
+			DataField df = fields[idx];
+			line.append(",");
+			line.append("\"");
+			line.append(df.getName());
+			line.append("\"");
+		}
+		
+		line.append(");");
+		addLine(line.toString());
 	}
 
 	private void processObtain() {
@@ -43,7 +64,7 @@ public class GenerateMQL4 extends AbstractTemplateGenerator {
 		for(int idx=0;idx<fields.length;idx++) {
 			DataField df = fields[idx];
 			if (!df.getName().equalsIgnoreCase("time") && !df.getName().equalsIgnoreCase("prediction")) {
-				String str = df.getSource() + "[pos]";
+				String str = EngineArray.replace(df.getSource(),"##","pos");
 				if( lastLine!=null) {
 					addLine(lastLine+",");
 				}
@@ -60,7 +81,7 @@ public class GenerateMQL4 extends AbstractTemplateGenerator {
 
 	private void processCalc() {
 		AnalystField firstOutputField = null;
-		int barsNeeded = this.getAnalyst().determineMaxTimeSlice();
+		int barsNeeded = Math.abs(this.getAnalyst().determineMinTimeSlice());
 
 		int inputCount = this.getAnalyst().determineInputCount();
 		int outputCount = this.getAnalyst().determineOutputCount();
@@ -79,16 +100,18 @@ public class GenerateMQL4 extends AbstractTemplateGenerator {
 
 				DataField df = this.getAnalyst().getScript()
 						.findDataField(field.getName());
-
+				String str;
+				
 				switch (field.getAction()) {
 				case PassThrough:
-					addLine("input[" + idx + "]=" + df.getSource() + "[pos+"
-							+ (-field.getTimeSlice()) + "];");
+					str = EngineArray.replace(df.getSource(),"##","pos+"+ (-field.getTimeSlice()));
+					addLine("input[" + idx + "]=" + str+ ";");
 					idx++;
 					break;
 				case Normalize:
-					addLine("input[" + idx + "]=Norm(" + df.getSource() + "[pos+"
-							+ (-field.getTimeSlice()) + "],"
+					str = EngineArray.replace(df.getSource(),"##","pos+"+ (-field.getTimeSlice()));
+					addLine("input[" + idx + "]=Norm(" 
+							+ str + ","
 							+ field.getNormalizedHigh() + ","
 							+ field.getNormalizedLow() + ","
 							+ field.getActualHigh() + ","
@@ -217,6 +240,10 @@ public class GenerateMQL4 extends AbstractTemplateGenerator {
 		
 		indentOut();
 		setIndentLevel(0);
+	}
+	
+	public String getNullArray() {
+		return "{-1}";
 	}
 
 }

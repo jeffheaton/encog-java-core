@@ -126,7 +126,7 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 		line.append(" = ");
 		
 		if( value==null ) {
-			line.append("null");
+			line.append(getNullArray());
 		} else {
 			line.append(value);
 		}
@@ -139,7 +139,7 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 		StringBuilder value = new StringBuilder();
 		if( data==null ) {
 			value.append(name);
-			value.append(" = null;");
+			value.append(" = "+getNullArray()+";");
 			addLine(value.toString());
 		} else {			
 			toBrokenList(value, data);
@@ -151,7 +151,7 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 		StringBuilder value = new StringBuilder();
 		if( data==null ) {
 			value.append(name);
-			value.append(" = null;");
+			value.append(" = "+getNullArray()+";");
 			addLine(value.toString());
 		} else {	
 			toBrokenList(value, data);
@@ -224,5 +224,7 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 		}
 		
 	}
+	
+	public abstract String getNullArray();
 
 }

@@ -92,7 +92,9 @@ public final class EngineArray {
 
 	/**
 	 * Copy a 2D double array.
-	 * @param source The source.
+	 * 
+	 * @param source
+	 *            The source.
 	 * @return The copied array.
 	 */
 	public static double[][] arrayCopy(final double[][] source) {
@@ -265,45 +267,45 @@ public final class EngineArray {
 
 	public static int indexOfLargest(double[] data) {
 		int result = -1;
-		
-		for(int i=0;i<data.length;i++) {
-			if( result==-1 || data[i]>data[result] )
+
+		for (int i = 0; i < data.length; i++) {
+			if (result == -1 || data[i] > data[result])
 				result = i;
 		}
-		
+
 		return result;
 	}
 
 	public static double min(double[] weights) {
 		double result = Double.MAX_VALUE;
-		for(int i=0;i<weights.length;i++) {
+		for (int i = 0; i < weights.length; i++) {
 			result = Math.min(result, weights[i]);
 		}
 		return result;
 	}
-	
+
 	public static double max(double[] weights) {
 		double result = Double.MIN_VALUE;
-		for(int i=0;i<weights.length;i++) {
+		for (int i = 0; i < weights.length; i++) {
 			result = Math.max(result, weights[i]);
 		}
 		return result;
 	}
 
 	public static boolean contains(int[] array, int target) {
-		for(int i=0;i<array.length;i++) {
-			if( array[i]==target) {
+		for (int i = 0; i < array.length; i++) {
+			if (array[i] == target) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
 	public static int maxIndex(double[] data) {
 		int result = -1;
-		for(int i=0;i<data.length;i++) {
-			if( result==-1 || data[i]>data[result] ) {
+		for (int i = 0; i < data.length; i++) {
+			if (result == -1 || data[i] > data[result]) {
 				result = i;
 			}
 		}
@@ -312,8 +314,8 @@ public final class EngineArray {
 
 	public static int maxIndex(int[] data) {
 		int result = -1;
-		for(int i=0;i<data.length;i++) {
-			if( result==-1 || data[i]>data[result] ) {
+		for (int i = 0; i < data.length; i++) {
+			if (result == -1 || data[i] > data[result]) {
 				result = i;
 			}
 		}
@@ -322,15 +324,15 @@ public final class EngineArray {
 
 	public static int max(int[] data) {
 		int result = Integer.MIN_VALUE;
-		for(int i=0;i<data.length;i++) {
+		for (int i = 0; i < data.length; i++) {
 			result = Math.max(result, data[i]);
 		}
 		return result;
 	}
-	
+
 	public static int min(int[] data) {
 		int result = Integer.MAX_VALUE;
-		for(int i=0;i<data.length;i++) {
+		for (int i = 0; i < data.length; i++) {
 			result = Math.min(result, data[i]);
 		}
 		return result;
@@ -338,10 +340,10 @@ public final class EngineArray {
 
 	public static double mean(int[] data) {
 		double result = 0;
-		for(int i=0;i<data.length;i++) {
-			result+=(double)data[i];
+		for (int i = 0; i < data.length; i++) {
+			result += (double) data[i];
 		}
-		return result/(double)data.length;
+		return result / (double) data.length;
 	}
 
 	public static double sdev(int[] data) {
@@ -351,36 +353,36 @@ public final class EngineArray {
 			double diff = data[i] - avg;
 			result += diff * diff;
 		}
-		return Math.sqrt(result/(double)data.length);
+		return Math.sqrt(result / (double) data.length);
 	}
 
 	public static double euclideanDistance(double[] p1, double[] p2) {
 		double sum = 0;
-		for(int i=0;i<p1.length;i++) {
+		for (int i = 0; i < p1.length; i++) {
 			double d = p1[i] - p2[i];
-			sum+=d*d;
+			sum += d * d;
 		}
 		return Math.sqrt(sum);
 	}
 
 	public static void fill(double[][] sigma, int value) {
-		for(int i=0;i<sigma.length;i++) {
-			for(int j=0;j<sigma[i].length;j++) {
+		for (int i = 0; i < sigma.length; i++) {
+			for (int j = 0; j < sigma[i].length; j++) {
 				sigma[i][j] = value;
 			}
 		}
-		
+
 	}
 
 	public static void fill(boolean[] a, boolean b) {
-		for(int i=0;i<a.length;i++) {
+		for (int i = 0; i < a.length; i++) {
 			a[i] = b;
 		}
 	}
 
 	public static double[] add(double[] d, double[] m) {
 		double[] result = new double[d.length];
-		for(int i=0;i<d.length;i++) {
+		for (int i = 0; i < d.length; i++) {
 			result[i] = d[i] + m[i];
 		}
 		return result;
@@ -388,7 +390,7 @@ public final class EngineArray {
 
 	public static double[] subtract(double[] a, double[] b) {
 		double[] result = new double[a.length];
-		for(int i=0;i<a.length;i++) {
+		for (int i = 0; i < a.length; i++) {
 			result[i] = a[i] - b[i];
 		}
 		return result;
@@ -396,13 +398,33 @@ public final class EngineArray {
 
 	public static double mean(double[] data) {
 		double result = 0;
-		for(int i=0;i<data.length;i++) {
-			result+=(double)data[i];
+		for (int i = 0; i < data.length; i++) {
+			result += (double) data[i];
 		}
-		return result/(double)data.length;
+		return result / (double) data.length;
 	}
 
 	public static void fill(int[] a, int value) {
 		Arrays.fill(a, value);
+	}
+
+	public static String replace(String str, String searchFor, String replace) {
+		StringBuilder result = new StringBuilder();
+
+		for (int i = 0; i < str.length(); i++) {
+			boolean append = true;
+
+			if (i + searchFor.length() < str.length()) {
+				String cmp = str.substring(i, i + searchFor.length());
+				if (cmp.equals(searchFor)) {
+					i += searchFor.length()-1;
+					result.append(replace);
+					append = false;
+				}
+			}
+			if (append)
+				result.append(str.charAt(i));
+		}
+		return result.toString();
 	}
 }

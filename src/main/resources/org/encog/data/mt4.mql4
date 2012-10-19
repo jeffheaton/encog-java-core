@@ -39,7 +39,7 @@ int init()
    
       if( Export )
       {
-         iHandle = FileOpen(EXPORT_FILENAME,FILE_CSV|FILE_WRITE,';');
+         iHandle = FileOpen(EXPORT_FILENAME,FILE_CSV|FILE_WRITE,',');
          if(iHandle < 1)
          {
             iErrorCode = GetLastError();
@@ -47,15 +47,13 @@ int init()
             return(false);
          }
       
-         FileWrite(iHandle, "time", "close");
+~~HEADERS
       }
       else
       {
          iHandle = -1;
       }
-      
-  //FileWrite(iHandle,iInteger,sString,DoubleToStr(dDouble,iDecimalPlaces));
-  //FileClose(iHandle);
+
    return(0);
   }
 
