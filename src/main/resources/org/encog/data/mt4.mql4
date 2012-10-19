@@ -6,7 +6,7 @@
 #property copyright "Heaton Research"
 #property link      "http://www.heatonresearch.com/encog"
 
-#property indicator_chart_window
+#property indicator_separate_window
 #property  indicator_buffers 1
 #property  indicator_color1  Silver
 
