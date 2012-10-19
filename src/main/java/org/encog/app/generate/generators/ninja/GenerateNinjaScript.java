@@ -184,18 +184,16 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 			}
 		}
 
-		if (firstOutputField == null) {
-			throw new AnalystCodeGenerationError(
-					"Could not find an output field.");
+		if (firstOutputField != null) {
+			addLine("Compute(input,output);");
+			addLine("Output.Set(DeNorm(output[0]" + ","
+					+ firstOutputField.getNormalizedHigh() + ","
+					+ firstOutputField.getNormalizedLow() + ","
+					+ firstOutputField.getActualHigh() + ","
+					+ firstOutputField.getActualLow() + "));");
+			indentOut();
 		}
 
-		addLine("Compute(input,output);");
-		addLine("Output.Set(DeNorm(output[0]" + ","
-				+ firstOutputField.getNormalizedHigh() + ","
-				+ firstOutputField.getNormalizedLow() + ","
-				+ firstOutputField.getActualHigh() + ","
-				+ firstOutputField.getActualLow() + "));");
-		indentOut();
 		addLine("}");
 		setIndentLevel(2);
 	}
