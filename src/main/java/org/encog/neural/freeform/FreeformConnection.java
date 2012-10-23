@@ -24,23 +24,23 @@
 package org.encog.neural.freeform;
 
 public interface FreeformConnection extends TempTrainingData {
-	
-	double getWeight();
-	
-	void setWeight(double weight);
+
+	void addWeight(double delta);
 
 	FreeformNeuron getSource();
 
-	void setSource(FreeformNeuron source);
-
 	FreeformNeuron getTarget();
 
-	void setTarget(FreeformNeuron target);
+	double getWeight();
 
 	boolean isRecurrent();
 
 	void setRecurrent(boolean recurrent);
 
-	void addWeight(double delta);
+	void setSource(FreeformNeuron source);
+
+	void setTarget(FreeformNeuron target);
+
+	void setWeight(double weight);
 
 }

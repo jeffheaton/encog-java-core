@@ -31,9 +31,9 @@ public class FreeformContextNeuron extends BasicFreeformNeuron {
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	private FreeformNeuron contextSource; 
-	
-	public FreeformContextNeuron(FreeformNeuron theContextSource) {
+	private FreeformNeuron contextSource;
+
+	public FreeformContextNeuron(final FreeformNeuron theContextSource) {
 		super(null);
 	}
 
@@ -41,19 +41,20 @@ public class FreeformContextNeuron extends BasicFreeformNeuron {
 	 * @return the contextSource
 	 */
 	public FreeformNeuron getContextSource() {
-		return contextSource;
+		return this.contextSource;
 	}
 
 	/**
-	 * @param contextSource the contextSource to set
+	 * @param contextSource
+	 *            the contextSource to set
 	 */
-	public void setContextSource(FreeformNeuron contextSource) {
+	public void setContextSource(final FreeformNeuron contextSource) {
 		this.contextSource = contextSource;
 	}
-	
+
 	@Override
 	public void updateContext() {
-		this.setActivation(contextSource.getActivation());
+		setActivation(this.contextSource.getActivation());
 	}
 
 }

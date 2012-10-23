@@ -30,21 +30,22 @@ import org.encog.neural.freeform.FreeformNeuron;
 import org.encog.neural.freeform.InputSummation;
 import org.encog.neural.freeform.factory.FreeformNeuronFactory;
 
-public class BasicFreeformNeuronFactory implements FreeformNeuronFactory, Serializable {
+public class BasicFreeformNeuronFactory implements FreeformNeuronFactory,
+		Serializable {
 
 	/**
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	@Override
-	public FreeformNeuron factorRegular(InputSummation object) {
-		return new BasicFreeformNeuron(object);
+	public FreeformNeuron factorContext(final FreeformNeuron neuron) {
+		final FreeformNeuron result = new FreeformContextNeuron(neuron);
+		return result;
 	}
 
 	@Override
-	public FreeformNeuron factorContext(FreeformNeuron neuron) {
-		FreeformNeuron result = new FreeformContextNeuron(neuron);
-		return result;
+	public FreeformNeuron factorRegular(final InputSummation object) {
+		return new BasicFreeformNeuron(object);
 	}
 }

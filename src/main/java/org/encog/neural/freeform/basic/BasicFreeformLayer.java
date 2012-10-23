@@ -31,17 +31,37 @@ import org.encog.neural.freeform.FreeformLayer;
 import org.encog.neural.freeform.FreeformNeuron;
 
 public class BasicFreeformLayer implements FreeformLayer, Serializable {
-	
+
 	/**
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	private List<FreeformNeuron> neurons = new ArrayList<FreeformNeuron>();
+
+	private final List<FreeformNeuron> neurons = new ArrayList<FreeformNeuron>();
+
+	@Override
+	public void add(final FreeformNeuron basicFreeformNeuron) {
+		this.neurons.add(basicFreeformNeuron);
+	}
 
 	@Override
 	public List<FreeformNeuron> getNeurons() {
 		return this.neurons;
+	}
+
+	@Override
+	public boolean hasBias() {
+		for (final FreeformNeuron neuron : this.neurons) {
+			if (neuron.isBias()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public void setActivation(final int i, final double activation) {
+		this.neurons.get(i).setActivation(activation);
 	}
 
 	@Override
@@ -50,34 +70,14 @@ public class BasicFreeformLayer implements FreeformLayer, Serializable {
 	}
 
 	@Override
-	public void add(FreeformNeuron basicFreeformNeuron) {
-		this.neurons.add(basicFreeformNeuron);		
-	}
-
-	@Override
-	public void setActivation(int i, double activation) {
-		this.neurons.get(i).setActivation(activation);
-	}
-
-	@Override
 	public int sizeNonBias() {
 		int result = 0;
-		for(FreeformNeuron neuron: this.neurons) {
-			if( !neuron.isBias() ) {
+		for (final FreeformNeuron neuron : this.neurons) {
+			if (!neuron.isBias()) {
 				result++;
 			}
 		}
 		return result;
 	}
 
-	@Override
-	public boolean hasBias() {
-		for(FreeformNeuron neuron: this.neurons) {
-			if( neuron.isBias() ) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
 }

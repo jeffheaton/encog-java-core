@@ -27,6 +27,7 @@ import org.encog.neural.freeform.FreeformNeuron;
 import org.encog.neural.freeform.InputSummation;
 
 public interface FreeformNeuronFactory {
-	FreeformNeuron factorRegular(InputSummation object);
 	FreeformNeuron factorContext(FreeformNeuron neuron);
+
+	FreeformNeuron factorRegular(InputSummation object);
 }

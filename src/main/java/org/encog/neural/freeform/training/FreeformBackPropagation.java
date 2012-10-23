@@ -30,28 +30,31 @@ import org.encog.neural.freeform.FreeformConnection;
 import org.encog.neural.freeform.FreeformNetwork;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
-public class FreeformBackPropagation extends FreeformPropagationTraining implements Serializable {
+public class FreeformBackPropagation extends FreeformPropagationTraining
+		implements Serializable {
 
 	/**
 	 * The serial ID.
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	private double learningRate;
-	private double momentum;
-	
-	public FreeformBackPropagation(FreeformNetwork theNetwork,
-			MLDataSet theTraining, double theLearningRate, double theMomentum) {
+
+	private final double learningRate;
+	private final double momentum;
+
+	public FreeformBackPropagation(final FreeformNetwork theNetwork,
+			final MLDataSet theTraining, final double theLearningRate,
+			final double theMomentum) {
 		super(theNetwork, theTraining);
-		theNetwork.tempTrainingAllocate(1,2);
+		theNetwork.tempTrainingAllocate(1, 2);
 		this.learningRate = theLearningRate;
 		this.momentum = theMomentum;
 	}
-	
+
 	@Override
-	protected void learnConnection(FreeformConnection connection) {
-		double gradient = connection.getTempTraining(0);
-		double delta = (gradient * this.learningRate) + (connection.getTempTraining(1) * this.momentum);
+	protected void learnConnection(final FreeformConnection connection) {
+		final double gradient = connection.getTempTraining(0);
+		final double delta = (gradient * this.learningRate)
+				+ (connection.getTempTraining(1) * this.momentum);
 		connection.setTempTraining(1, delta);
 		connection.addWeight(delta);
 	}
@@ -63,9 +66,9 @@ public class FreeformBackPropagation extends FreeformPropagationTraining impleme
 	}
 
 	@Override
-	public void resume(TrainingContinuation state) {
+	public void resume(final TrainingContinuation state) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

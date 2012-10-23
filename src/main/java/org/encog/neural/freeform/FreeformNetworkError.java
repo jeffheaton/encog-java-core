@@ -31,6 +31,11 @@ import org.encog.util.logging.EncogLogging;
 public class FreeformNetworkError extends RuntimeException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Construct a message exception.
 	 * 
 	 * @param msg
@@ -44,17 +49,6 @@ public class FreeformNetworkError extends RuntimeException {
 	/**
 	 * Construct an exception that holds another exception.
 	 * 
-	 * @param t
-	 *            The other exception.
-	 */
-	public FreeformNetworkError(final Throwable t) {
-		super(t);
-		EncogLogging.log(EncogLogging.LEVEL_ERROR, t);
-	}
-
-	/**
-	 * Construct an exception that holds another exception.
-	 * 
 	 * @param msg
 	 *            A message.
 	 * @param t
@@ -63,6 +57,17 @@ public class FreeformNetworkError extends RuntimeException {
 	public FreeformNetworkError(final String msg, final Throwable t) {
 		super(msg, t);
 		EncogLogging.log(EncogLogging.LEVEL_ERROR, msg);
+		EncogLogging.log(EncogLogging.LEVEL_ERROR, t);
+	}
+
+	/**
+	 * Construct an exception that holds another exception.
+	 * 
+	 * @param t
+	 *            The other exception.
+	 */
+	public FreeformNetworkError(final Throwable t) {
+		super(t);
 		EncogLogging.log(EncogLogging.LEVEL_ERROR, t);
 	}
 }

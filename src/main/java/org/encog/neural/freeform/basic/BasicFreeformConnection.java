@@ -28,20 +28,22 @@ import java.io.Serializable;
 import org.encog.neural.freeform.FreeformConnection;
 import org.encog.neural.freeform.FreeformNeuron;
 
-public class BasicFreeformConnection implements FreeformConnection, Serializable {
-	
+public class BasicFreeformConnection implements FreeformConnection,
+		Serializable {
+
 	/**
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private double weight;
 	private FreeformNeuron source;
 	private FreeformNeuron target;
 	private boolean recurrent;
 	private double[] tempTraining;
-	
-	public BasicFreeformConnection(FreeformNeuron theSource, FreeformNeuron theTarget) {
+
+	public BasicFreeformConnection(final FreeformNeuron theSource,
+			final FreeformNeuron theTarget) {
 		this.recurrent = false;
 		this.weight = 0.0;
 		this.source = theSource;
@@ -49,76 +51,76 @@ public class BasicFreeformConnection implements FreeformConnection, Serializable
 	}
 
 	@Override
-	public double getWeight() {
-		return weight;
+	public void addTempTraining(final int i, final double value) {
+		this.tempTraining[i] += value;
+
 	}
 
 	@Override
-	public void setWeight(double weight) {
-		this.weight = weight;
+	public void addWeight(final double delta) {
+		this.weight += delta;
 	}
 
 	@Override
-	public FreeformNeuron getSource() {
-		return source;
-	}
+	public void allocateTempTraining(final int l) {
+		this.tempTraining = new double[l];
 
-	@Override
-	public void setSource(FreeformNeuron source) {
-		this.source = source;
-	}
-
-	@Override
-	public FreeformNeuron getTarget() {
-		return target;
-	}
-
-	@Override
-	public void setTarget(FreeformNeuron target) {
-		this.target = target;
-	}
-	
-	@Override
-	public boolean isRecurrent() {
-		return recurrent;
-	}
-
-	@Override
-	public void setRecurrent(boolean recurrent) {
-		this.recurrent = recurrent;
 	}
 
 	@Override
 	public void clearTempTraining() {
 		this.tempTraining = null;
-		
+
 	}
 
 	@Override
-	public void allocateTempTraining(int l) {
-		this.tempTraining = new double[l];
-		
+	public FreeformNeuron getSource() {
+		return this.source;
 	}
 
 	@Override
-	public void setTempTraining(int index, double value) {
-		this.tempTraining[index] = value;
-		
+	public FreeformNeuron getTarget() {
+		return this.target;
 	}
 
 	@Override
-	public double getTempTraining(int index) {
+	public double getTempTraining(final int index) {
 		return this.tempTraining[index];
 	}
 
 	@Override
-	public void addTempTraining(int i, double value) {
-		this.tempTraining[i]+=value;
-		
+	public double getWeight() {
+		return this.weight;
 	}
 
 	@Override
-	public void addWeight(double delta) {
-		this.weight+=delta;
-	}	
+	public boolean isRecurrent() {
+		return this.recurrent;
+	}
+
+	@Override
+	public void setRecurrent(final boolean recurrent) {
+		this.recurrent = recurrent;
+	}
+
+	@Override
+	public void setSource(final FreeformNeuron source) {
+		this.source = source;
+	}
+
+	@Override
+	public void setTarget(final FreeformNeuron target) {
+		this.target = target;
+	}
+
+	@Override
+	public void setTempTraining(final int index, final double value) {
+		this.tempTraining[index] = value;
+
+	}
+
+	@Override
+	public void setWeight(final double weight) {
+		this.weight = weight;
+	}
 }

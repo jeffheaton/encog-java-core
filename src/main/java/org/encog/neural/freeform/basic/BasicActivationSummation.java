@@ -40,50 +40,55 @@ public class BasicActivationSummation implements InputSummation, Serializable {
 	private ActivationFunction activationFunction;
 	private final List<FreeformConnection> inputs = new ArrayList<FreeformConnection>();
 	private double sum;
-	
-	public BasicActivationSummation(ActivationFunction theActivationFunction) {
+
+	public BasicActivationSummation(
+			final ActivationFunction theActivationFunction) {
 		this.activationFunction = theActivationFunction;
 	}
-	
+
+	@Override
+	public void add(final FreeformConnection connection) {
+		this.inputs.add(connection);
+	}
+
+	@Override
+	public double calculate() {
+		final double[] sumArray = new double[1];
+		this.sum = 0;
+
+		// sum the input connections
+		for (final FreeformConnection connection : this.inputs) {
+			connection.getSource().performCalculation();
+			this.sum += connection.getWeight()
+					* connection.getSource().getActivation();
+		}
+
+		// perform the activation function
+		sumArray[0] = this.sum;
+		this.activationFunction
+				.activationFunction(sumArray, 0, sumArray.length);
+
+		return sumArray[0];
+	}
+
+	@Override
+	public ActivationFunction getActivationFunction() {
+		return this.activationFunction;
+	}
+
+	@Override
+	public double getSum() {
+		return this.sum;
+	}
+
 	@Override
 	public List<FreeformConnection> list() {
 		return this.inputs;
 	}
-	
-	@Override
-	public double calculate() {		
-		double[] sumArray = new double[1];
-		this.sum = 0;
-		
-		// sum the input connections
-		for(FreeformConnection connection: inputs) {
-			connection.getSource().performCalculation();
-			this.sum+=connection.getWeight() * connection.getSource().getActivation();			
-		}
-		
-		// perform the activation function
-		sumArray[0] = this.sum;
-		this.activationFunction.activationFunction(sumArray, 0, sumArray.length);
-		
-		return sumArray[0]; 
-	}
 
-	public ActivationFunction getActivationFunction() {
-		return activationFunction;
-	}
-
-	public void setActivationFunction(ActivationFunction activationFunction) {
+	public void setActivationFunction(
+			final ActivationFunction activationFunction) {
 		this.activationFunction = activationFunction;
-	}
-
-	@Override
-	public void add(FreeformConnection connection) {
-		this.inputs.add(connection);		
-	}
-	
-	@Override
-	public double getSum() {
-		return this.sum;
 	}
 
 }
