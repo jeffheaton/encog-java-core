@@ -23,35 +23,35 @@
  */
 package org.encog.parse.expression;
 
-
 public abstract class ExpressionTreeOperator extends ExpressionTreeElement {
 	private final String name;
 	private final ExpressionTreeElement argA;
 	private final ExpressionTreeElement argB;
-	
-	public ExpressionTreeOperator(String name, ExpressionTreeElement argA,
-			ExpressionTreeElement argB) {
+
+	public ExpressionTreeOperator(final String name,
+			final ExpressionTreeElement argA, final ExpressionTreeElement argB) {
 		super();
 		this.name = name;
 		this.argA = argA;
 		this.argB = argB;
 	}
 
-	public String getName() {
-		return name;
-	}
-
 	public ExpressionTreeElement getArgA() {
-		return argA;
+		return this.argA;
 	}
 
 	public ExpressionTreeElement getArgB() {
-		return argB;
+		return this.argB;
 	}
-	
+
+	public String getName() {
+		return this.name;
+	}
+
+	@Override
 	public String toString() {
-		return "[Opp: " + this.name + ", a:" + this.argA.toString() + ", b:" + this.argB.toString() + "]";
+		return "[Opp: " + this.name + ", a:" + this.argA.toString() + ", b:"
+				+ this.argB.toString() + "]";
 	}
-	
 
 }

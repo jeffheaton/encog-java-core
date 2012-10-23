@@ -28,33 +28,36 @@ import org.encog.parse.expression.expvalue.ExpressionValue;
 public class ExpressionTreeUnaryOperator extends ExpressionTreeElement {
 	private final String name;
 	private final ExpressionTreeElement argA;
-	
-	public ExpressionTreeUnaryOperator(String name, ExpressionTreeElement argA) {
+
+	public ExpressionTreeUnaryOperator(final String name,
+			final ExpressionTreeElement argA) {
 		super();
 		this.name = name;
 		this.argA = argA;
 	}
 
-	public String getName() {
-		return name;
+	@Override
+	public ExpressionValue evaluate() {
+		if (this.name.equals("-")) {
+			return new ExpressionValue(-this.argA.evaluate().toFloatValue());
+		} else {
+			throw new ExpressionError("Unknown operator: " + this.name);
+		}
+
 	}
 
 	public ExpressionTreeElement getArgA() {
-		return argA;
+		return this.argA;
+	}
+
+	public String getName() {
+		return this.name;
 	}
 
 	@Override
-	public ExpressionValue evaluate() {
-		if( name.equals("-") ) {
-			return new ExpressionValue(-this.argA.evaluate().toFloatValue());
-		} else {
-			throw new ExpressionError("Unknown operator: " + name);
-		}
-		
-	}
-	
 	public String toString() {
-		return "[Opp: " + this.name + ", a:" + this.argA.toString() + ", b:" + "]";
+		return "[Opp: " + this.name + ", a:" + this.argA.toString() + ", b:"
+				+ "]";
 	}
-	
+
 }

@@ -26,10 +26,10 @@ package org.encog.parse.expression;
 import org.encog.parse.expression.expvalue.ExpressionValue;
 
 public class ExpressionTreeConst extends ExpressionTreeElement {
-	
+
 	private final ExpressionValue value;
 
-	public ExpressionTreeConst(ExpressionValue value) {
+	public ExpressionTreeConst(final ExpressionValue value) {
 		super();
 		this.value = value;
 	}
@@ -38,10 +38,10 @@ public class ExpressionTreeConst extends ExpressionTreeElement {
 	public ExpressionValue evaluate() {
 		return this.value;
 	}
-	
+
+	@Override
 	public String toString() {
-		return "[Const: " + this.toString() + "]";
+		return "[Const: " + toString() + "]";
 	}
-	
-	
+
 }

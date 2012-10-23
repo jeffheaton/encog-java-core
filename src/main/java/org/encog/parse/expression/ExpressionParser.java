@@ -43,74 +43,63 @@ import org.encog.parse.expression.operators.ExpressionOperatorSub;
 import org.encog.util.SimpleParser;
 
 public class ExpressionParser {
-	
+
 	private final ExpressionHolder holder;
 	private SimpleParser parser;
 	private int parenCount;
-	
-	public ExpressionParser(ExpressionHolder theHolder) {
+
+	public ExpressionParser(final ExpressionHolder theHolder) {
 		this.holder = theHolder;
 	}
 
-	public ExpressionTreeElement parse(String expression) {
-		this.parenCount = 0;
-		this.parser = new SimpleParser(expression);
-		ExpressionTreeElement result = expr();
-		if( parenCount!=0 ) {
-			throw new ExpressionError("Unbalanced parentheses");
-		}
-		return result;
-	}
-	
 	private ExpressionTreeElement expr() {
 		char sign;
 		ExpressionTreeElement target;
 
-		parser.eatWhiteSpace();
+		this.parser.eatWhiteSpace();
 
-		if ((parser.peek() == '+') || (parser.peek() == '-'))
-			sign = parser.readChar();
-		else
+		if ((this.parser.peek() == '+') || (this.parser.peek() == '-')) {
+			sign = this.parser.readChar();
+		} else {
 			sign = '+';
+		}
 
 		target = expr1();
-		parser.eatWhiteSpace();
+		this.parser.eatWhiteSpace();
 
 		if (sign == '-') {
 			target = new ExpressionTreeUnaryOperator("-", target);
 		}
 
-		while ((parser.peek() == '+') || (parser.peek() == '-')) {
-			char ch = parser.readChar();
-			
-			if (ch=='-') {
-				ExpressionTreeElement t = expr1();
+		while ((this.parser.peek() == '+') || (this.parser.peek() == '-')) {
+			final char ch = this.parser.readChar();
+
+			if (ch == '-') {
+				final ExpressionTreeElement t = expr1();
 				target = new ExpressionOperatorSub(target, t);
 			} else if (ch == '+') {
-				ExpressionTreeElement t = expr1();
+				final ExpressionTreeElement t = expr1();
 				target = new ExpressionOperatorAdd(target, t);
 			}
 		}
-		
+
 		return target;
 	}
 
 	private ExpressionTreeElement expr1() {
 		ExpressionTreeElement target;
-		ExpressionTreeElement t;
-		ExpressionTreeElement v;
-
 		this.parser.eatWhiteSpace();
 
 		target = expr1p5();
 		this.parser.eatWhiteSpace();
 
-		char nextchar = this.parser.peek();
+		final char nextchar = this.parser.peek();
 
-		if (!(nextchar > 0 && ("/*<>=&|".indexOf(nextchar) != -1)))
+		if (!((nextchar > 0) && ("/*<>=&|".indexOf(nextchar) != -1))) {
 			return target;
+		}
 
-		while (nextchar > 0 && ("/*<>=&|".indexOf(nextchar) != -1)) {
+		while ((nextchar > 0) && ("/*<>=&|".indexOf(nextchar) != -1)) {
 			switch (this.parser.readChar()) {
 			case '*':
 				return new ExpressionOperatorMul(target, expr1p5());
@@ -118,15 +107,17 @@ public class ExpressionParser {
 			case '/':
 				return new ExpressionOperatorDiv(target, expr1p5());
 			case '<':
-				if( this.parser.peek()=='=' ) {					
+				if (this.parser.peek() == '=') {
 					this.parser.advance();
-					return new ExpressionOperatorLessThanEqual(target, expr1p5());
-				} 
+					return new ExpressionOperatorLessThanEqual(target,
+							expr1p5());
+				}
 				return new ExpressionOperatorLessThan(target, expr1p5());
 			case '>':
-				if( this.parser.peek()=='=' ) {					
+				if (this.parser.peek() == '=') {
 					this.parser.advance();
-					return new ExpressionOperatorGreaterThanEqual(target, expr1p5());
+					return new ExpressionOperatorGreaterThanEqual(target,
+							expr1p5());
 				}
 				return new ExpressionOperatorGreaterThan(target, expr1p5());
 			case '=':
@@ -140,85 +131,37 @@ public class ExpressionParser {
 		return target;
 
 	}
-	
-	private ExpressionTreeFunction parseFunction(String name) {
-		ExpressionParser expParser = new ExpressionParser(this.holder);
-		StringBuilder currentExpression = new StringBuilder();
-		List<ExpressionTreeElement> args = new ArrayList<ExpressionTreeElement>();
-		int pcnt = 0;
-		
-		this.parser.advance();
-		this.parser.eatWhiteSpace();
-		
-		while( !parser.eol() && !(pcnt==0 && this.parser.peek()==')') ) {
-			if( (parser.peek()==',' || parser.isWhiteSpace()) && (pcnt==0) ) {
-				args.add(expParser.parse(currentExpression.toString().trim()));
-				currentExpression.setLength(0);
-				this.parser.advance();
-			} else {
-				char ch = parser.readChar();
-				currentExpression.append(ch);
-				if( ch=='(' ) {
-					pcnt++;
-				} else if( ch==')' ) {
-					pcnt--;
-				}
-			}
-		}
-		
-		if( currentExpression.length()>0 ) {
-			args.add(expParser.parse(currentExpression.toString().trim()));
-		}
-		
-		if( this.parser.peek()!=')' ) {
-			throw new ExpressionError("Invalid function call: " + this.parser.getLine());
-		}
-		this.parser.advance();
-		
-		ExpressionTreeFunction fn = null;
-		
-		for(ExpressionExtension extension: this.holder.getExtensions()) {
-			fn = extension.factorFunction(this.holder, name, args);
-			if( fn!=null ) {
-				break;
-			}
-		}
-		
-		if( fn!=null ) {
-			return fn;
-		} else {
-			throw new ExpressionError("Undefined function: " + name);
-		}
-	}
 
 	private ExpressionTreeElement expr1p5() {
-		ExpressionTreeElement target = null;		
+		ExpressionTreeElement target = null;
 
 		this.parser.eatWhiteSpace();
 
-		if (( Character.toUpperCase(this.parser.peek()) >= 'A') && (Character.toUpperCase(this.parser.peek()) <= 'Z')) {
-			StringBuilder varName = new StringBuilder();
-			while(( Character.toUpperCase(this.parser.peek()) >= 'A') && (Character.toUpperCase(this.parser.peek()) <= 'Z')) {
+		if ((Character.toUpperCase(this.parser.peek()) >= 'A')
+				&& (Character.toUpperCase(this.parser.peek()) <= 'Z')) {
+			final StringBuilder varName = new StringBuilder();
+			while ((Character.toUpperCase(this.parser.peek()) >= 'A')
+					&& (Character.toUpperCase(this.parser.peek()) <= 'Z')) {
 				varName.append(this.parser.readChar());
 			}
-			
+
 			this.parser.eatWhiteSpace();
-			
-			if( varName.toString().equals("true")) {
+
+			if (varName.toString().equals("true")) {
 				return new ExpressionTreeConst(new ExpressionValue(true));
-			} else if( varName.toString().equals("false")) {
+			} else if (varName.toString().equals("false")) {
 				return new ExpressionTreeConst(new ExpressionValue(false));
-			}
-			else if( this.parser.peek()!='(' ) {			
-				return new ExpressionTreeVariable(this.holder,varName.toString());
+			} else if (this.parser.peek() != '(') {
+				return new ExpressionTreeVariable(this.holder,
+						varName.toString());
 			} else {
 				return parseFunction(varName.toString());
 			}
 		} else if ((this.parser.peek() == '+') || (this.parser.peek() == '-')
 				|| Character.isDigit(this.parser.peek())
-				|| (this.parser.peek() == '.') )
+				|| (this.parser.peek() == '.')) {
 			target = parseConstant();
-		else if (this.parser.peek() == '(') {
+		} else if (this.parser.peek() == '(') {
 			this.parenCount++;
 			this.parser.advance();
 			target = expr();
@@ -226,11 +169,11 @@ public class ExpressionParser {
 				this.parenCount--;
 				this.parser.advance();
 			}
-		} 
-		else if( this.parser.peek() == '\"' ) {
-			target = this.parseString();
-		} else
+		} else if (this.parser.peek() == '\"') {
+			target = parseString();
+		} else {
 			throw (new ExpressionError("Syntax error"));
+		}
 
 		while (this.parser.peek() == '^') {
 			this.parser.advance();
@@ -239,35 +182,23 @@ public class ExpressionParser {
 		return target;
 	}
 
-	private ExpressionTreeConst parseString() {
-		StringBuilder str = new StringBuilder();
+	public ExpressionHolder getHolder() {
+		return this.holder;
+	}
 
-		char ch;
-
-		if (this.parser.peek() == '\"')
-			this.parser.advance();
-		do {
-			ch = this.parser.readChar();
-			if (ch == 34) {
-				// handle double quote
-				if (this.parser.peek() == 34) {
-					this.parser.advance();
-					str.append(ch);
-					ch = this.parser.readChar();
-				}
-			} else
-				str.append(ch);
-		} while ((ch != 34) && ch > 0);
-
-		if (ch != 34)
-			throw (new ExpressionError("Unterminated string"));
-		return new ExpressionTreeConst(new ExpressionValue(str.toString()));
+	public ExpressionTreeElement parse(final String expression) {
+		this.parenCount = 0;
+		this.parser = new SimpleParser(expression);
+		final ExpressionTreeElement result = expr();
+		if (this.parenCount != 0) {
+			throw new ExpressionError("Unbalanced parentheses");
+		}
+		return result;
 	}
 
 	private ExpressionTreeElement parseConstant() {
 		double value, exponent;
 		boolean neg = false;
-		String str = "";
 		char sign = '+';
 		boolean isFloat = false;
 
@@ -287,8 +218,9 @@ public class ExpressionParser {
 
 		// whole number part
 
-		while (Character.isDigit(this.parser.peek()))
+		while (Character.isDigit(this.parser.peek())) {
 			value = (10.0 * value) + (this.parser.readChar() - '0');
+		}
 
 		// Optional fractional
 		if (this.parser.peek() == '.') {
@@ -298,8 +230,8 @@ public class ExpressionParser {
 			int i = 1;
 			while (Character.isDigit(this.parser.peek())) {
 				double f = (this.parser.readChar() - '0');
-				f/=Math.pow(10.0, i);
-				value+=f;
+				f /= Math.pow(10.0, i);
+				value += f;
 				i++;
 			}
 		}
@@ -309,14 +241,15 @@ public class ExpressionParser {
 		if (Character.toUpperCase(this.parser.peek()) == 'E') {
 			this.parser.advance();
 
-			if ((this.parser.peek() == '+') || (this.parser.peek() == '-')) {				
+			if ((this.parser.peek() == '+') || (this.parser.peek() == '-')) {
 				sign = this.parser.readChar();
 			}
 
-			while (Character.isDigit(parser.peek())) {
-				exponent = (int) (10.0 * exponent) + (parser.readChar() - '0');
+			while (Character.isDigit(this.parser.peek())) {
+				exponent = (int) (10.0 * exponent)
+						+ (this.parser.readChar() - '0');
 			}
-			
+
 			if (sign == '-') {
 				isFloat = true;
 				exponent = -exponent;
@@ -325,19 +258,96 @@ public class ExpressionParser {
 			value = value * Math.pow(10, exponent);
 		}
 
-		if (neg)
+		if (neg) {
 			value = -value;
-		
-		if( isFloat )
-			return new ExpressionTreeConst(new ExpressionValue((double)value));
-		else
-			return new ExpressionTreeConst(new ExpressionValue((int)value));
+		}
+
+		if (isFloat) {
+			return new ExpressionTreeConst(new ExpressionValue(value));
+		} else {
+			return new ExpressionTreeConst(new ExpressionValue((int) value));
+		}
 	}
 
-	public ExpressionHolder getHolder() {
-		return holder;
+	private ExpressionTreeFunction parseFunction(final String name) {
+		final ExpressionParser expParser = new ExpressionParser(this.holder);
+		final StringBuilder currentExpression = new StringBuilder();
+		final List<ExpressionTreeElement> args = new ArrayList<ExpressionTreeElement>();
+		int pcnt = 0;
+
+		this.parser.advance();
+		this.parser.eatWhiteSpace();
+
+		while (!this.parser.eol()
+				&& !((pcnt == 0) && (this.parser.peek() == ')'))) {
+			if (((this.parser.peek() == ',') || this.parser.isWhiteSpace())
+					&& (pcnt == 0)) {
+				args.add(expParser.parse(currentExpression.toString().trim()));
+				currentExpression.setLength(0);
+				this.parser.advance();
+			} else {
+				final char ch = this.parser.readChar();
+				currentExpression.append(ch);
+				if (ch == '(') {
+					pcnt++;
+				} else if (ch == ')') {
+					pcnt--;
+				}
+			}
+		}
+
+		if (currentExpression.length() > 0) {
+			args.add(expParser.parse(currentExpression.toString().trim()));
+		}
+
+		if (this.parser.peek() != ')') {
+			throw new ExpressionError("Invalid function call: "
+					+ this.parser.getLine());
+		}
+		this.parser.advance();
+
+		ExpressionTreeFunction fn = null;
+
+		for (final ExpressionExtension extension : this.holder.getExtensions()) {
+			fn = extension.factorFunction(this.holder, name, args);
+			if (fn != null) {
+				break;
+			}
+		}
+
+		if (fn != null) {
+			return fn;
+		} else {
+			throw new ExpressionError("Undefined function: " + name);
+		}
 	}
-	
-	
+
+	private ExpressionTreeConst parseString() {
+		final StringBuilder str = new StringBuilder();
+
+		char ch;
+
+		if (this.parser.peek() == '\"') {
+			this.parser.advance();
+		}
+		do {
+			ch = this.parser.readChar();
+			if (ch == 34) {
+				// handle double quote
+				if (this.parser.peek() == 34) {
+					this.parser.advance();
+					str.append(ch);
+					ch = this.parser.readChar();
+				}
+			} else {
+				str.append(ch);
+			}
+		} while ((ch != 34) && (ch > 0));
+
+		if (ch != 34) {
+			throw (new ExpressionError("Unterminated string"));
+		}
+		return new ExpressionTreeConst(new ExpressionValue(str.toString()));
+	}
 
 }

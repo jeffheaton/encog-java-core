@@ -36,97 +36,98 @@ import org.encog.util.csv.CSVFormat;
 
 public class ExpressionHolder {
 
-	private final List<ExpressionTreeElement> expressions = new ArrayList<ExpressionTreeElement>();
-	private final Map<String,ExpressionValue> memory = new HashMap<String,ExpressionValue>();
-	private final List<ExpressionExtension> extensions = new ArrayList<ExpressionExtension>();
-	private CSVFormat format = CSVFormat.EG_FORMAT;
-
-	public ExpressionHolder(String expression) {
-		this();
-		compileExpression(expression);
+	public static ExpressionValue parse(final String str) {
+		final ExpressionHolder holder = new ExpressionHolder(str);
+		return holder.evaluate(0);
 	}
+
+	public static boolean parseBoolean(final String str) {
+		final ExpressionHolder holder = new ExpressionHolder(str);
+		return holder.evaluate(0).toBooleanValue();
+	}
+
+	public static ExpressionValue parseExpression(final String str) {
+		final ExpressionHolder holder = new ExpressionHolder(str);
+		return holder.evaluate(0);
+	}
+
+	public static double parseFloat(final String str) {
+		final ExpressionHolder holder = new ExpressionHolder(str);
+		return holder.evaluate(0).toFloatValue();
+	}
+
+	public static String parseString(final String str) {
+		final ExpressionHolder holder = new ExpressionHolder(str);
+		return holder.evaluate(0).toStringValue();
+	}
+
+	private final List<ExpressionTreeElement> expressions = new ArrayList<ExpressionTreeElement>();
+
+	private final Map<String, ExpressionValue> memory = new HashMap<String, ExpressionValue>();
+
+	private final List<ExpressionExtension> extensions = new ArrayList<ExpressionExtension>();
+
+	private CSVFormat format = CSVFormat.EG_FORMAT;
 
 	public ExpressionHolder() {
 		this.extensions.add(new StandardFunctionsExtension());
 	}
 
-	public static ExpressionValue parse(String str) {
-		ExpressionHolder holder = new ExpressionHolder(str);
-		return holder.evaluate(0);
+	public ExpressionHolder(final String expression) {
+		this();
+		compileExpression(expression);
 	}
-	
-	public ExpressionTreeElement compileExpression(String expression) {
-		ExpressionParser parser = new ExpressionParser(this);
-		ExpressionTreeElement e = parser.parse(expression);
+
+	public void addExtension(final ProcessExtension extension) {
+		this.extensions.add(extension);
+	}
+
+	public ExpressionTreeElement compileExpression(final String expression) {
+		final ExpressionParser parser = new ExpressionParser(this);
+		final ExpressionTreeElement e = parser.parse(expression);
 		this.expressions.add(e);
 		return e;
 	}
 
-	public ExpressionValue evaluate(int i) {
+	public ExpressionValue evaluate(final int i) {
 		return this.expressions.get(0).evaluate();
 	}
 
-	public void set(String name, ExpressionValue value) {
-		this.memory.put(name, value);		
-	}
-
-	public boolean variableExists(String name) {
-		return this.memory.containsKey(name);
-	}
-
-	public ExpressionValue get(String name) {
+	public ExpressionValue get(final String name) {
 		return this.memory.get(name);
 	}
 
-	public static double parseFloat(String str) {
-		ExpressionHolder holder = new ExpressionHolder(str);
-		return holder.evaluate(0).toFloatValue();
-	}
-
-	public void set(String name, double d) {
-		set(name,new ExpressionValue(d));
-		
-	}
-
-	public static String parseString(String str) {
-		ExpressionHolder holder = new ExpressionHolder(str);
-		return holder.evaluate(0).toStringValue();
-	}
-
 	public List<ExpressionTreeElement> getExpressions() {
-		return expressions;
+		return this.expressions;
 	}
 
-	public void addExtension(ProcessExtension extension) {
-		this.extensions.add(extension);
-	}
-	
-	public void removeExtension(ProcessExtension extension) {
-		this.extensions.remove(extension);
-	}
-	
 	public List<ExpressionExtension> getExtensions() {
 		return this.extensions;
 	}
 
 	public CSVFormat getFormat() {
-		return format;
+		return this.format;
 	}
 
-	public void setFormat(CSVFormat format) {
+	public void removeExtension(final ProcessExtension extension) {
+		this.extensions.remove(extension);
+	}
+
+	public void set(final String name, final double d) {
+		set(name, new ExpressionValue(d));
+
+	}
+
+	public void set(final String name, final ExpressionValue value) {
+		this.memory.put(name, value);
+	}
+
+	public void setFormat(final CSVFormat format) {
 		this.format = format;
 	}
 
-	public static ExpressionValue parseExpression(String str) {
-		ExpressionHolder holder = new ExpressionHolder(str);
-		return holder.evaluate(0);
+	public boolean variableExists(final String name) {
+		return this.memory.containsKey(name);
 	}
 
-	public static boolean parseBoolean(String str) {
-		ExpressionHolder holder = new ExpressionHolder(str);
-		return holder.evaluate(0).toBooleanValue();
-	}
-
-	
-	
 }
