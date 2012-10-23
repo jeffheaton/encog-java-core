@@ -26,34 +26,34 @@ package org.encog.app.generate.program;
 public class EncogProgramArg {
 	final EncogArgType type;
 	final Object value;
-	
-	public EncogProgramArg(EncogArgType type, Object value) {
+
+	public EncogProgramArg(final double value) {
+		this(EncogArgType.Float, "" + value);
+	}
+
+	public EncogProgramArg(final EncogArgType type, final Object value) {
 		super();
 		this.type = type;
 		this.value = value;
 	}
-	
-	public EncogProgramArg(String value) {
-		this(EncogArgType.String,value);
-	}
-	
-	public EncogProgramArg(int value) {
-		this(EncogArgType.Float,""+value);
-	}
-	
-	public EncogProgramArg(double value) {
-		this(EncogArgType.Float,""+value);
+
+	public EncogProgramArg(final int value) {
+		this(EncogArgType.Float, "" + value);
 	}
 
-	public EncogProgramArg(Object argValue) {
+	public EncogProgramArg(final Object argValue) {
 		this(EncogArgType.ObjectType, argValue);
 	}
 
+	public EncogProgramArg(final String value) {
+		this(EncogArgType.String, value);
+	}
+
 	public EncogArgType getType() {
-		return type;
+		return this.type;
 	}
 
 	public Object getValue() {
-		return value;
-	}	
+		return this.value;
+	}
 }

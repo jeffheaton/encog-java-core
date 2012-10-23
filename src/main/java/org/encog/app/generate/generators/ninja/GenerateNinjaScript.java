@@ -39,22 +39,16 @@ import org.encog.util.file.FileUtil;
 
 public class GenerateNinjaScript extends AbstractTemplateGenerator {
 
-	@Override
-	public String getTemplatePath() {
-		return "org/encog/data/ninja.cs";
-	}
-
-
-
 	private void addCols() {
-		StringBuilder line = new StringBuilder();
+		final StringBuilder line = new StringBuilder();
 		line.append("public readonly string[] ENCOG_COLS = {");
 
 		boolean first = true;
 
-		for (DataField df : this.getAnalyst().getScript().getFields()) {
+		for (final DataField df : getAnalyst().getScript().getFields()) {
 
-			if (!df.getName().equalsIgnoreCase("time") && !df.getName().equalsIgnoreCase("prediction")) {
+			if (!df.getName().equalsIgnoreCase("time")
+					&& !df.getName().equalsIgnoreCase("prediction")) {
 				if (!first) {
 					line.append(",");
 				}
@@ -70,97 +64,19 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 		addLine(line.toString());
 	}
 
-	private void processMainBlock() {
-		EncogAnalyst analyst = getAnalyst();
+	@Override
+	public String getNullArray() {
+		return "null";
+	}
 
-		final String processID = analyst.getScript().getProperties()
-				.getPropertyString(ScriptProperties.PROCESS_CONFIG_SOURCE_FILE);
-
-		final String methodID = analyst
-				.getScript()
-				.getProperties()
-				.getPropertyString(
-						ScriptProperties.ML_CONFIG_MACHINE_LEARNING_FILE);
-
-		final File methodFile = analyst.getScript().resolveFilename(methodID);
-
-		final File processFile = analyst.getScript().resolveFilename(processID);
-
-		MLMethod method = null;
-		int[] contextTargetOffset = null;
-		int[] contextTargetSize = null;
-		boolean hasContext = false;
-		int inputCount = 0;
-		int[] layerContextCount = null;
-		int[] layerCounts = null;
-		int[] layerFeedCounts = null;
-		int[] layerIndex = null;
-		double[] layerOutput = null;
-		double[] layerSums = null;
-		int outputCount = 0;
-		int[] weightIndex = null;
-		double[] weights = null;
-		;
-		int[] activation = null;
-		double[] p = null;
-
-		if (methodFile.exists()) {
-			method = (MLMethod) EncogDirectoryPersistence
-					.loadObject(methodFile);
-			FlatNetwork flat = ((BasicNetwork) method).getFlat();
-
-			contextTargetOffset = flat.getContextTargetOffset();
-			contextTargetSize = flat.getContextTargetSize();
-			hasContext = flat.getHasContext();
-			inputCount = flat.getInputCount();
-			layerContextCount = flat.getLayerContextCount();
-			layerCounts = flat.getLayerCounts();
-			layerFeedCounts = flat.getLayerFeedCounts();
-			layerIndex = flat.getLayerIndex();
-			layerOutput = flat.getLayerOutput();
-			layerSums = flat.getLayerSums();
-			outputCount = flat.getOutputCount();
-			weightIndex = flat.getWeightIndex();
-			weights = flat.getWeights();
-			activation = createActivations(flat);
-			p = createParams(flat);
-		}
-
-		setIndentLevel(2);
-		addLine("#region Encog Data");
-		indentIn();
-		addNameValue("public const string EXPORT_FILENAME", "\""
-				+ FileUtil.toStringLiteral(processFile) + "\"");
-		addCols();
-
-		addNameValue("private readonly int[] _contextTargetOffset",
-				contextTargetOffset);
-		addNameValue("private readonly int[] _contextTargetSize",
-				contextTargetSize);
-		addNameValue("private const bool _hasContext", hasContext ? "true"
-				: "false");
-		addNameValue("private const int _inputCount", inputCount);
-		addNameValue("private readonly int[] _layerContextCount",
-				layerContextCount);
-		addNameValue("private readonly int[] _layerCounts", layerCounts);
-		addNameValue("private readonly int[] _layerFeedCounts",
-				layerFeedCounts);
-		addNameValue("private readonly int[] _layerIndex", layerIndex);
-		addNameValue("private readonly double[] _layerOutput", layerOutput);
-		addNameValue("private readonly double[] _layerSums", layerSums);
-		addNameValue("private const int _outputCount", outputCount);
-		addNameValue("private readonly int[] _weightIndex", weightIndex);
-		addNameValue("private readonly double[] _weights", weights);
-		addNameValue("private readonly int[] _activation", activation);
-		addNameValue("private readonly double[] _p", p);
-		indentOut();
-		addLine("#endregion");
-		setIndentLevel(0);
+	@Override
+	public String getTemplatePath() {
+		return "org/encog/data/ninja.cs";
 	}
 
 	private void processCalc() {
 		AnalystField firstOutputField = null;
-		int barsNeeded = Math.abs(this.getAnalyst().determineMinTimeSlice());
+		final int barsNeeded = Math.abs(getAnalyst().determineMinTimeSlice());
 
 		setIndentLevel(2);
 		addLine("if( _inputCount>0 && CurrentBar>=" + barsNeeded + " )");
@@ -170,12 +86,12 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 		addLine("double[] output = new double[_outputCount];");
 
 		int idx = 0;
-		for (AnalystField field : this.getAnalyst().getScript().getNormalize()
+		for (final AnalystField field : getAnalyst().getScript().getNormalize()
 				.getNormalizedFields()) {
 			if (field.isInput()) {
 
-				DataField df = this.getAnalyst().getScript()
-						.findDataField(field.getName());
+				final DataField df = getAnalyst().getScript().findDataField(
+						field.getName());
 
 				switch (field.getAction()) {
 				case PassThrough:
@@ -221,13 +137,101 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 		setIndentLevel(2);
 	}
 
+	private void processMainBlock() {
+		final EncogAnalyst analyst = getAnalyst();
+
+		final String processID = analyst.getScript().getProperties()
+				.getPropertyString(ScriptProperties.PROCESS_CONFIG_SOURCE_FILE);
+
+		final String methodID = analyst
+				.getScript()
+				.getProperties()
+				.getPropertyString(
+						ScriptProperties.ML_CONFIG_MACHINE_LEARNING_FILE);
+
+		final File methodFile = analyst.getScript().resolveFilename(methodID);
+
+		final File processFile = analyst.getScript().resolveFilename(processID);
+
+		MLMethod method = null;
+		int[] contextTargetOffset = null;
+		int[] contextTargetSize = null;
+		boolean hasContext = false;
+		int inputCount = 0;
+		int[] layerContextCount = null;
+		int[] layerCounts = null;
+		int[] layerFeedCounts = null;
+		int[] layerIndex = null;
+		double[] layerOutput = null;
+		double[] layerSums = null;
+		int outputCount = 0;
+		int[] weightIndex = null;
+		double[] weights = null;
+		;
+		int[] activation = null;
+		double[] p = null;
+
+		if (methodFile.exists()) {
+			method = (MLMethod) EncogDirectoryPersistence
+					.loadObject(methodFile);
+			final FlatNetwork flat = ((BasicNetwork) method).getFlat();
+
+			contextTargetOffset = flat.getContextTargetOffset();
+			contextTargetSize = flat.getContextTargetSize();
+			hasContext = flat.getHasContext();
+			inputCount = flat.getInputCount();
+			layerContextCount = flat.getLayerContextCount();
+			layerCounts = flat.getLayerCounts();
+			layerFeedCounts = flat.getLayerFeedCounts();
+			layerIndex = flat.getLayerIndex();
+			layerOutput = flat.getLayerOutput();
+			layerSums = flat.getLayerSums();
+			outputCount = flat.getOutputCount();
+			weightIndex = flat.getWeightIndex();
+			weights = flat.getWeights();
+			activation = createActivations(flat);
+			p = createParams(flat);
+		}
+
+		setIndentLevel(2);
+		addLine("#region Encog Data");
+		indentIn();
+		addNameValue("public const string EXPORT_FILENAME",
+				"\"" + FileUtil.toStringLiteral(processFile) + "\"");
+		addCols();
+
+		addNameValue("private readonly int[] _contextTargetOffset",
+				contextTargetOffset);
+		addNameValue("private readonly int[] _contextTargetSize",
+				contextTargetSize);
+		addNameValue("private const bool _hasContext", hasContext ? "true"
+				: "false");
+		addNameValue("private const int _inputCount", inputCount);
+		addNameValue("private readonly int[] _layerContextCount",
+				layerContextCount);
+		addNameValue("private readonly int[] _layerCounts", layerCounts);
+		addNameValue("private readonly int[] _layerFeedCounts", layerFeedCounts);
+		addNameValue("private readonly int[] _layerIndex", layerIndex);
+		addNameValue("private readonly double[] _layerOutput", layerOutput);
+		addNameValue("private readonly double[] _layerSums", layerSums);
+		addNameValue("private const int _outputCount", outputCount);
+		addNameValue("private readonly int[] _weightIndex", weightIndex);
+		addNameValue("private readonly double[] _weights", weights);
+		addNameValue("private readonly int[] _activation", activation);
+		addNameValue("private readonly double[] _p", p);
+		indentOut();
+		addLine("#endregion");
+		setIndentLevel(0);
+	}
+
 	private void processObtain() {
 		setIndentLevel(3);
 		addLine("double[] result = new double[ENCOG_COLS.Length];");
 
 		int idx = 0;
-		for (DataField df : this.getAnalyst().getScript().getFields()) {
-			if (!df.getName().equalsIgnoreCase("time") && !df.getName().equalsIgnoreCase("prediction")) {
+		for (final DataField df : getAnalyst().getScript().getFields()) {
+			if (!df.getName().equalsIgnoreCase("time")
+					&& !df.getName().equalsIgnoreCase("prediction")) {
 				addLine("result[" + idx + "]=" + df.getSource() + "[0];");
 				idx++;
 			}
@@ -237,7 +241,7 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 	}
 
 	@Override
-	public void processToken(String command) {
+	public void processToken(final String command) {
 		if (command.equalsIgnoreCase("MAIN-BLOCK")) {
 			processMainBlock();
 		} else if (command.equals("CALC")) {
@@ -247,13 +251,6 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 		}
 		setIndentLevel(0);
 
-	}
-
-
-
-	@Override
-	public String getNullArray() {
-		return "null";
 	}
 
 }

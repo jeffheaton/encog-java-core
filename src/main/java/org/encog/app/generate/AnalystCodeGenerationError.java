@@ -33,7 +33,7 @@ public class AnalystCodeGenerationError extends AnalystError {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5909341149180956178L;
+	private static final long serialVersionUID = 0L;
 
 	/**
 	 * Construct a message exception.

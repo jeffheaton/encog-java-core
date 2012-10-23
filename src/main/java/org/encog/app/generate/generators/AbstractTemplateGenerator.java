@@ -48,150 +48,65 @@ import org.encog.util.logging.EncogLogging;
 
 public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 
-	private StringBuilder contents = new StringBuilder();
+	private final StringBuilder contents = new StringBuilder();
 	private EncogAnalyst analyst;
 	private int indentLevel = 0;
-	
-	public abstract String getTemplatePath();
-	public abstract void processToken(String command);
-	
-	public void writeContents(File targetFile) {
-		try {
-			FileWriter outFile = new FileWriter(targetFile);
-			PrintWriter out = new PrintWriter(outFile);
-			out.print(this.contents.toString());
-			out.close();
-		} catch (IOException e){
-			e.printStackTrace();
-		}
-	}
 
-	@Override
-	public String getContents() {
-		return this.contents.toString();
-	}
-
-	@Override
-	public void generate(EncogAnalyst theAnalyst) {
-		InputStream is = null;
-		BufferedReader br = null;
-		
-		this.analyst = theAnalyst;
-		
-		try {
-			is = ResourceInputStream.openResourceInputStream(getTemplatePath());
-			br = new BufferedReader(new InputStreamReader(is));
-		
-			String line;
-			while( (line=br.readLine())!=null ) {
-				if( line.startsWith("~~") ) {
-					processToken(line.substring(2).trim());
-				} else {
-					this.contents.append(line);
-					this.contents.append("\n");
-				}
-			}
-		br.close();
-		} catch(IOException ex) {
-			throw new AnalystCodeGenerationError(ex);
-		} finally {
-			if( is!=null ) {
-				try {
-					is.close();
-				} catch(IOException ex) {
-					EncogLogging.log(EncogLogging.LEVEL_ERROR, ex);
-				}
-			}
-			
-			if( br!=null ) {
-				try {
-					br.close();
-				} catch(IOException ex) {
-					EncogLogging.log(EncogLogging.LEVEL_ERROR, ex);
-				}
-			}
-		}
-		
-	}
-	public EncogAnalyst getAnalyst() {
-		return analyst;
-	}
-	
-	public void addLine(String line) {
-		for(int i=0;i<this.indentLevel;i++) {
+	public void addLine(final String line) {
+		for (int i = 0; i < this.indentLevel; i++) {
 			this.contents.append("\t");
 		}
 		this.contents.append(line);
 		this.contents.append("\n");
 	}
-	public int getIndentLevel() {
-		return indentLevel;
+
+	public void addNameValue(final String name, final double[] data) {
+		final StringBuilder value = new StringBuilder();
+		if (data == null) {
+			value.append(name);
+			value.append(" = " + getNullArray() + ";");
+			addLine(value.toString());
+		} else {
+			toBrokenList(value, data);
+			addNameValue(name, "{" + value.toString() + "}");
+		}
 	}
-	public void setIndentLevel(int indentLevel) {
-		this.indentLevel = indentLevel;
-	}
-	
-	public void indentIn() {
-		this.indentLevel++;
-	}
-	
-	public void indentOut() {
-		this.indentLevel--;
-	}
-	
-	public void addNameValue(String name, int value) {
+
+	public void addNameValue(final String name, final int value) {
 		addNameValue(name, "" + value);
 	}
 
-	public void addNameValue(String name, String value) {
-		StringBuilder line = new StringBuilder();
+	public void addNameValue(final String name, final int[] data) {
+		final StringBuilder value = new StringBuilder();
+		if (data == null) {
+			value.append(name);
+			value.append(" = " + getNullArray() + ";");
+			addLine(value.toString());
+		} else {
+			toBrokenList(value, data);
+			addNameValue(name, "{" + value.toString() + "}");
+		}
+	}
+
+	public void addNameValue(final String name, final String value) {
+		final StringBuilder line = new StringBuilder();
 		line.append(name);
 		line.append(" = ");
-		
-		if( value==null ) {
+
+		if (value == null) {
 			line.append(getNullArray());
 		} else {
 			line.append(value);
 		}
-		
+
 		line.append(";");
 		addLine(line.toString());
 	}
 
-	public void addNameValue(String name, int[] data) {
-		StringBuilder value = new StringBuilder();
-		if( data==null ) {
-			value.append(name);
-			value.append(" = "+getNullArray()+";");
-			addLine(value.toString());
-		} else {			
-			toBrokenList(value, data);
-			addNameValue(name, "{" + value.toString() + "}");
-		}
-	}
-
-	public void addNameValue(String name, double[] data) {
-		StringBuilder value = new StringBuilder();
-		if( data==null ) {
-			value.append(name);
-			value.append(" = "+getNullArray()+";");
-			addLine(value.toString());
-		} else {	
-			toBrokenList(value, data);
-			addNameValue(name, "{" + value.toString() + "}");
-		}
-	}
-	
-	public double[] createParams(FlatNetwork flat) {
-		double[] result = new double[flat.getActivationFunctions().length];
-		EngineArray.fill(result, 1);
-		return result;
-	}
-
-	public int[] createActivations(FlatNetwork flat) {
-		int[] result = new int[flat.getActivationFunctions().length];
+	public int[] createActivations(final FlatNetwork flat) {
+		final int[] result = new int[flat.getActivationFunctions().length];
 		for (int i = 0; i < flat.getActivationFunctions().length; i++) {
-			ActivationFunction af = flat.getActivationFunctions()[i];
+			final ActivationFunction af = flat.getActivationFunctions()[i];
 
 			if (af instanceof ActivationLinear) {
 				result[i] = 0;
@@ -211,43 +126,133 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 
 		return result;
 	}
-	
-	public void toBrokenList(StringBuilder result,
-			int[] data) {
-		int lineCount = 0;
-		
-		for (int i = 0; i < data.length; i++) {
-			if (i != 0) {
-				result.append(',');
-			}
-			
-			lineCount++;
-			if( lineCount>10 ) {
-				result.append("\n");
-				lineCount = 0;
-			}
-			result.append(""+data[i]);
-		}
+
+	public double[] createParams(final FlatNetwork flat) {
+		final double[] result = new double[flat.getActivationFunctions().length];
+		EngineArray.fill(result, 1);
+		return result;
 	}
 
-	public void toBrokenList(StringBuilder result, double[] data) {
+	@Override
+	public void generate(final EncogAnalyst theAnalyst) {
+		InputStream is = null;
+		BufferedReader br = null;
+
+		this.analyst = theAnalyst;
+
+		try {
+			is = ResourceInputStream.openResourceInputStream(getTemplatePath());
+			br = new BufferedReader(new InputStreamReader(is));
+
+			String line;
+			while ((line = br.readLine()) != null) {
+				if (line.startsWith("~~")) {
+					processToken(line.substring(2).trim());
+				} else {
+					this.contents.append(line);
+					this.contents.append("\n");
+				}
+			}
+			br.close();
+		} catch (final IOException ex) {
+			throw new AnalystCodeGenerationError(ex);
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (final IOException ex) {
+					EncogLogging.log(EncogLogging.LEVEL_ERROR, ex);
+				}
+			}
+
+			if (br != null) {
+				try {
+					br.close();
+				} catch (final IOException ex) {
+					EncogLogging.log(EncogLogging.LEVEL_ERROR, ex);
+				}
+			}
+		}
+
+	}
+
+	public EncogAnalyst getAnalyst() {
+		return this.analyst;
+	}
+
+	@Override
+	public String getContents() {
+		return this.contents.toString();
+	}
+
+	public int getIndentLevel() {
+		return this.indentLevel;
+	}
+
+	public abstract String getNullArray();
+
+	public abstract String getTemplatePath();
+
+	public void indentIn() {
+		this.indentLevel++;
+	}
+
+	public void indentOut() {
+		this.indentLevel--;
+	}
+
+	public abstract void processToken(String command);
+
+	public void setIndentLevel(final int indentLevel) {
+		this.indentLevel = indentLevel;
+	}
+
+	public void toBrokenList(final StringBuilder result, final double[] data) {
 		int lineCount = 0;
 		result.setLength(0);
 		for (int i = 0; i < data.length; i++) {
 			if (i != 0) {
 				result.append(',');
 			}
-			
+
 			lineCount++;
-			if( lineCount>10 ) {
+			if (lineCount > 10) {
 				result.append("\n");
 				lineCount = 0;
 			}
-			result.append(CSVFormat.EG_FORMAT.format(data[i], Encog.DEFAULT_PRECISION));			
+			result.append(CSVFormat.EG_FORMAT.format(data[i],
+					Encog.DEFAULT_PRECISION));
 		}
-		
+
 	}
-	
-	public abstract String getNullArray();
+
+	public void toBrokenList(final StringBuilder result, final int[] data) {
+		int lineCount = 0;
+
+		for (int i = 0; i < data.length; i++) {
+			if (i != 0) {
+				result.append(',');
+			}
+
+			lineCount++;
+			if (lineCount > 10) {
+				result.append("\n");
+				lineCount = 0;
+			}
+			result.append("" + data[i]);
+		}
+	}
+
+	@Override
+	public void writeContents(final File targetFile) {
+		try {
+			final FileWriter outFile = new FileWriter(targetFile);
+			final PrintWriter out = new PrintWriter(outFile);
+			out.print(this.contents.toString());
+			out.close();
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 }

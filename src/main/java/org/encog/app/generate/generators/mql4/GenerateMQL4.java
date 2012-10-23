@@ -40,101 +40,49 @@ import org.encog.util.EngineArray;
 public class GenerateMQL4 extends AbstractTemplateGenerator {
 
 	@Override
-	public String getTemplatePath() {
-		// TODO Auto-generated method stub
-		return "org/encog/data/mt4.mql4";
+	public String getNullArray() {
+		return "{-1}";
 	}
 
 	@Override
-	public void processToken(String command) {
-		if (command.equalsIgnoreCase("MAIN-BLOCK")) {
-			processMainBlock();
-		} else if (command.equals("CALC")) {
-			processCalc();
-		} else if (command.equals("OBTAIN")) {
-			processObtain();
-		} else if( command.equals("HEADERS")) {
-			processHeaders();
-		}
-		setIndentLevel(0);
-	}
-	
-	private void processHeaders() {
-		DataField[] fields = this.getAnalyst().getScript().getFields();
-
-		StringBuilder line = new StringBuilder();
-		line.append("FileWrite(iHandle");
-		
-		for(int idx=0;idx<fields.length;idx++) {
-			DataField df = fields[idx];
-			line.append(",");
-			line.append("\"");
-			line.append(df.getName());
-			line.append("\"");
-		}
-		
-		line.append(");");
-		addLine(line.toString());
-	}
-
-	private void processObtain() {
-		setIndentLevel(3);
-
-		addLine("FileWrite(iHandle, when,");
-
-		DataField[] fields = this.getAnalyst().getScript().getFields();
-		String lastLine = null;
-		for(int idx=0;idx<fields.length;idx++) {
-			DataField df = fields[idx];
-			if (!df.getName().equalsIgnoreCase("time") && !df.getName().equalsIgnoreCase("prediction")) {
-				String str = EngineArray.replace(df.getSource(),"##","pos");
-				if( lastLine!=null) {
-					addLine(lastLine+",");
-				}
-				lastLine = str;
-			}
-		}
-		
-		if( lastLine!=null) {
-			addLine(lastLine);
-		}
-		addLine(");");
-		setIndentLevel(0);
+	public String getTemplatePath() {
+		return "org/encog/data/mt4.mql4";
 	}
 
 	private void processCalc() {
 		AnalystField firstOutputField = null;
-		int barsNeeded = Math.abs(this.getAnalyst().determineMinTimeSlice());
+		final int barsNeeded = Math.abs(getAnalyst().determineMinTimeSlice());
 
-		int inputCount = this.getAnalyst().determineInputCount();
-		int outputCount = this.getAnalyst().determineOutputCount();
-		
+		final int inputCount = getAnalyst().determineInputCount();
+		final int outputCount = getAnalyst().determineOutputCount();
+
 		setIndentLevel(2);
 		addLine("if( _inputCount>0 && Bars>=" + barsNeeded + " )");
 		addLine("{");
 		indentIn();
-		addLine("double input["+inputCount+"];");
-		addLine("double output["+outputCount+"];");
+		addLine("double input[" + inputCount + "];");
+		addLine("double output[" + outputCount + "];");
 
 		int idx = 0;
-		for (AnalystField field : this.getAnalyst().getScript().getNormalize()
+		for (final AnalystField field : getAnalyst().getScript().getNormalize()
 				.getNormalizedFields()) {
 			if (field.isInput()) {
 
-				DataField df = this.getAnalyst().getScript()
-						.findDataField(field.getName());
+				final DataField df = getAnalyst().getScript().findDataField(
+						field.getName());
 				String str;
-				
+
 				switch (field.getAction()) {
 				case PassThrough:
-					str = EngineArray.replace(df.getSource(),"##","pos+"+ (-field.getTimeSlice()));
-					addLine("input[" + idx + "]=" + str+ ";");
+					str = EngineArray.replace(df.getSource(), "##", "pos+"
+							+ (-field.getTimeSlice()));
+					addLine("input[" + idx + "]=" + str + ";");
 					idx++;
 					break;
 				case Normalize:
-					str = EngineArray.replace(df.getSource(),"##","pos+"+ (-field.getTimeSlice()));
-					addLine("input[" + idx + "]=Norm(" 
-							+ str + ","
+					str = EngineArray.replace(df.getSource(), "##", "pos+"
+							+ (-field.getTimeSlice()));
+					addLine("input[" + idx + "]=Norm(" + str + ","
 							+ field.getNormalizedHigh() + ","
 							+ field.getNormalizedLow() + ","
 							+ field.getActualHigh() + ","
@@ -162,7 +110,7 @@ public class GenerateMQL4 extends AbstractTemplateGenerator {
 		}
 
 		addLine("Compute(input,output);");
-		
+
 		addLine("ExtMapBuffer1[pos] = DeNorm(output[0]" + ","
 				+ firstOutputField.getNormalizedHigh() + ","
 				+ firstOutputField.getNormalizedLow() + ","
@@ -171,11 +119,28 @@ public class GenerateMQL4 extends AbstractTemplateGenerator {
 		indentOut();
 		addLine("}");
 		setIndentLevel(2);
-		
+
+	}
+
+	private void processHeaders() {
+		final DataField[] fields = getAnalyst().getScript().getFields();
+
+		final StringBuilder line = new StringBuilder();
+		line.append("FileWrite(iHandle");
+
+		for (final DataField df : fields) {
+			line.append(",");
+			line.append("\"");
+			line.append(df.getName());
+			line.append("\"");
+		}
+
+		line.append(");");
+		addLine(line.toString());
 	}
 
 	private void processMainBlock() {
-		EncogAnalyst analyst = getAnalyst();
+		final EncogAnalyst analyst = getAnalyst();
 
 		final String processID = analyst.getScript().getProperties()
 				.getPropertyString(ScriptProperties.PROCESS_CONFIG_SOURCE_FILE);
@@ -212,7 +177,7 @@ public class GenerateMQL4 extends AbstractTemplateGenerator {
 		if (methodFile.exists()) {
 			method = (MLMethod) EncogDirectoryPersistence
 					.loadObject(methodFile);
-			FlatNetwork flat = ((BasicNetwork) method).getFlat();
+			final FlatNetwork flat = ((BasicNetwork) method).getFlat();
 
 			contextTargetOffset = flat.getContextTargetOffset();
 			contextTargetSize = flat.getContextTargetSize();
@@ -235,23 +200,18 @@ public class GenerateMQL4 extends AbstractTemplateGenerator {
 
 		setIndentLevel(2);
 		indentIn();
-		addNameValue("string EXPORT_FILENAME", "\""
-				+ processFile.getName() + "\"");
+		addNameValue("string EXPORT_FILENAME", "\"" + processFile.getName()
+				+ "\"");
 
-		addNameValue("int _neuronCount",neuronCount);
-		addNameValue("int _layerCount",layerCount);
-		addNameValue("int _contextTargetOffset[]",
-				contextTargetOffset);
-		addNameValue("int _contextTargetSize[]",
-				contextTargetSize);
-		addNameValue("bool _hasContext", hasContext ? "true"
-				: "false");
+		addNameValue("int _neuronCount", neuronCount);
+		addNameValue("int _layerCount", layerCount);
+		addNameValue("int _contextTargetOffset[]", contextTargetOffset);
+		addNameValue("int _contextTargetSize[]", contextTargetSize);
+		addNameValue("bool _hasContext", hasContext ? "true" : "false");
 		addNameValue("int _inputCount", inputCount);
-		addNameValue("int _layerContextCount[]",
-				layerContextCount);
+		addNameValue("int _layerContextCount[]", layerContextCount);
 		addNameValue("int _layerCounts[]", layerCounts);
-		addNameValue("int _layerFeedCounts[]",
-				layerFeedCounts);
+		addNameValue("int _layerFeedCounts[]", layerFeedCounts);
 		addNameValue("int _layerIndex[]", layerIndex);
 		addNameValue("double _layerOutput[]", layerOutput);
 		addNameValue("double _layerSums[]", layerSums);
@@ -260,13 +220,50 @@ public class GenerateMQL4 extends AbstractTemplateGenerator {
 		addNameValue("double _weights[]", weights);
 		addNameValue("int _activation[]", activation);
 		addNameValue("double _p[]", p);
-		
+
 		indentOut();
 		setIndentLevel(0);
 	}
-	
-	public String getNullArray() {
-		return "{-1}";
+
+	private void processObtain() {
+		setIndentLevel(3);
+
+		addLine("FileWrite(iHandle, when,");
+
+		final DataField[] fields = getAnalyst().getScript().getFields();
+		String lastLine = null;
+		for (final DataField field : fields) {
+			final DataField df = field;
+			if (!df.getName().equalsIgnoreCase("time")
+					&& !df.getName().equalsIgnoreCase("prediction")) {
+				final String str = EngineArray.replace(df.getSource(), "##",
+						"pos");
+				if (lastLine != null) {
+					addLine(lastLine + ",");
+				}
+				lastLine = str;
+			}
+		}
+
+		if (lastLine != null) {
+			addLine(lastLine);
+		}
+		addLine(");");
+		setIndentLevel(0);
+	}
+
+	@Override
+	public void processToken(final String command) {
+		if (command.equalsIgnoreCase("MAIN-BLOCK")) {
+			processMainBlock();
+		} else if (command.equals("CALC")) {
+			processCalc();
+		} else if (command.equals("OBTAIN")) {
+			processObtain();
+		} else if (command.equals("HEADERS")) {
+			processHeaders();
+		}
+		setIndentLevel(0);
 	}
 
 }

@@ -30,63 +30,62 @@ import java.io.PrintWriter;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.encog.app.analyst.EncogAnalyst;
-
 public abstract class AbstractGenerator implements ProgramGenerator {
 	public static final int INDENT_SPACES = 4;
-	
+
 	private final StringBuilder contents = new StringBuilder();
 	private int currentIndent = 0;
 	private final Set<String> includes = new TreeSet<String>();
 
-	public void addLine(String line) {
-		for(int i=0;i<currentIndent;i++) {
+	public void addBreak() {
+		this.contents.append("\n");
+	}
+
+	public void addInclude(final String str) {
+		this.includes.add(str);
+	}
+
+	public void addLine(final String line) {
+		for (int i = 0; i < this.currentIndent; i++) {
 			this.contents.append(' ');
 		}
 		this.contents.append(line);
 		this.contents.append("\n");
 	}
-	
-	public void indentLine(String line) {		
-		addLine(line);
-		this.currentIndent+=INDENT_SPACES;
-	}
-	
-	public void unIndentLine(String line) {
-		this.currentIndent-=INDENT_SPACES;
-		addLine(line);
-	}
-	
-	public void addBreak() {
-		this.contents.append("\n");
+
+	public void addToBeginning(final String str) {
+		this.contents.insert(0, str);
 	}
 
+	@Override
 	public String getContents() {
-		return contents.toString();
-	}
-	
-	public void addInclude(String str) {
-		this.includes.add(str);
-	}
-	
-	public Set<String> getIncludes() {
-		return includes;
+		return this.contents.toString();
 	}
 
-	public void writeContents(File targetFile) {
+	public Set<String> getIncludes() {
+		return this.includes;
+	}
+
+	public void indentLine(final String line) {
+		addLine(line);
+		this.currentIndent += AbstractGenerator.INDENT_SPACES;
+	}
+
+	public void unIndentLine(final String line) {
+		this.currentIndent -= AbstractGenerator.INDENT_SPACES;
+		addLine(line);
+	}
+
+	@Override
+	public void writeContents(final File targetFile) {
 		try {
-			FileWriter outFile = new FileWriter(targetFile);
-			PrintWriter out = new PrintWriter(outFile);
+			final FileWriter outFile = new FileWriter(targetFile);
+			final PrintWriter out = new PrintWriter(outFile);
 			out.print(this.contents.toString());
 			out.close();
-		} catch (IOException e){
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public void addToBeginning(String str) {
-		this.contents.insert(0, str);
-	}
-	
-	
+
 }

@@ -30,32 +30,33 @@ public class EncogTreeNode {
 	private final List<EncogProgramNode> children = new ArrayList<EncogProgramNode>();
 	private final EncogTreeNode parent;
 	private EncogProgram program;
-	
-	public EncogTreeNode(EncogProgram theProgram, EncogTreeNode theParent) {
+
+	public EncogTreeNode(final EncogProgram theProgram,
+			final EncogTreeNode theParent) {
 		this.program = theProgram;
 		this.parent = theParent;
 	}
-	
-	public List<EncogProgramNode> getChildren() {
-		return children;
-	}
 
-	public EncogTreeNode getParent() {
-		return parent;
-	}
-
-	public EncogProgram getProgram() {
-		return program;
-	}
-		
-	public void setProgram(EncogProgram program) {
-		this.program = program;
-	}
-
-	public void addComment(String str) {
-		EncogProgramNode node = new EncogProgramNode(this.program, this, NodeType.Comment, str);
+	public void addComment(final String str) {
+		final EncogProgramNode node = new EncogProgramNode(this.program, this,
+				NodeType.Comment, str);
 		this.children.add(node);
 	}
 
-	
+	public List<EncogProgramNode> getChildren() {
+		return this.children;
+	}
+
+	public EncogTreeNode getParent() {
+		return this.parent;
+	}
+
+	public EncogProgram getProgram() {
+		return this.program;
+	}
+
+	public void setProgram(final EncogProgram program) {
+		this.program = program;
+	}
+
 }

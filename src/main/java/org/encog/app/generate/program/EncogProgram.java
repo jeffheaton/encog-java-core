@@ -23,7 +23,6 @@
  */
 package org.encog.app.generate.program;
 
-
 public class EncogProgram extends EncogTreeNode {
 
 	public EncogProgram() {
@@ -31,12 +30,11 @@ public class EncogProgram extends EncogTreeNode {
 		setProgram(this);
 	}
 
-
-	public EncogProgramNode createClass(String className) {
-		EncogProgramNode node = new EncogProgramNode(this, this, NodeType.Class, className);
-		this.getChildren().add(node);
+	public EncogProgramNode createClass(final String className) {
+		final EncogProgramNode node = new EncogProgramNode(this, this,
+				NodeType.Class, className);
+		getChildren().add(node);
 		return node;
 	}
-	
-	
+
 }
