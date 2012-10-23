@@ -46,12 +46,32 @@ import org.encog.util.csv.CSVFormat;
 import org.encog.util.file.ResourceInputStream;
 import org.encog.util.logging.EncogLogging;
 
+/**
+ * Provides a basic implementation of a template generator.
+ * @author jheaton
+ *
+ */
 public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 
+	/**
+	 * The contents of the generated file.
+	 */
 	private final StringBuilder contents = new StringBuilder();
+	
+	/**
+	 * The Encog analyst that is being used.
+	 */
 	private EncogAnalyst analyst;
+	
+	/**
+	 * The current indention level.
+	 */
 	private int indentLevel = 0;
 
+	/**
+	 * Add a line, with proper indention.
+	 * @param line The line to add.
+	 */
 	public void addLine(final String line) {
 		for (int i = 0; i < this.indentLevel; i++) {
 			this.contents.append("\t");
@@ -60,6 +80,11 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 		this.contents.append("\n");
 	}
 
+	/**
+	 * Add a name value definition, as a double array.
+	 * @param name The name.
+	 * @param data THe data.
+	 */
 	public void addNameValue(final String name, final double[] data) {
 		final StringBuilder value = new StringBuilder();
 		if (data == null) {
@@ -72,6 +97,11 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 		}
 	}
 
+	/**
+	 * Add a name-value as an int.
+	 * @param name The name.
+	 * @param value THe value.
+	 */
 	public void addNameValue(final String name, final int value) {
 		addNameValue(name, "" + value);
 	}
