@@ -26,35 +26,73 @@ package org.encog.app.generate.program;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A tree node that represents code to be generated.
+ *
+ */
 public class EncogTreeNode {
+	
+	/**
+	 * The child nodes.
+	 */
 	private final List<EncogProgramNode> children = new ArrayList<EncogProgramNode>();
+	
+	/**
+	 * The parent node.
+	 */
 	private final EncogTreeNode parent;
+	
+	/**
+	 * The program that this node belogs to.
+	 */
 	private EncogProgram program;
 
+	/**
+	 * Construct a tree node.
+	 * @param theProgram The program.
+	 * @param theParent The parent.
+	 */
 	public EncogTreeNode(final EncogProgram theProgram,
 			final EncogTreeNode theParent) {
 		this.program = theProgram;
 		this.parent = theParent;
 	}
 
+	/**
+	 * Add a comment.
+	 * @param str The comment.
+	 */
 	public void addComment(final String str) {
 		final EncogProgramNode node = new EncogProgramNode(this.program, this,
 				NodeType.Comment, str);
 		this.children.add(node);
 	}
 
+	/**
+	 * @return The children.
+	 */
 	public List<EncogProgramNode> getChildren() {
 		return this.children;
 	}
 
+	/**
+	 * @return The parent.
+	 */
 	public EncogTreeNode getParent() {
 		return this.parent;
 	}
 
+	/**
+	 * @return The program.
+	 */
 	public EncogProgram getProgram() {
 		return this.program;
 	}
 
+	/**
+	 * Set the program.
+	 * @param program The program.
+	 */
 	public void setProgram(final EncogProgram program) {
 		this.program = program;
 	}

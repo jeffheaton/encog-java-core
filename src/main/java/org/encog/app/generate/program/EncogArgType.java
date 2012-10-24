@@ -23,6 +23,24 @@
  */
 package org.encog.app.generate.program;
 
+/**
+ * The type of arguemnt.
+ */
 public enum EncogArgType {
-	String, Float, Int, ObjectType
+	/**
+	 * A string type.
+	 */
+	String, 
+	/**
+	 * A floating point type.
+	 */
+	Float, 
+	/**
+	 * An int type.
+	 */
+	Int,
+	/**
+	 * An object type.
+	 */
+	ObjectType
 }

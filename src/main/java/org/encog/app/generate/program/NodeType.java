@@ -23,6 +23,60 @@
  */
 package org.encog.app.generate.program;
 
+/**
+ * The type of node.
+ */
 public enum NodeType {
-	Comment, MainFunction, Function, Class, ForLoop, WhileLoop, Const, StaticFunction, FunctionCall, CreateNetwork, InitArray, EmbedTraining, LoadTraining
+	/**
+	 * A comment.
+	 */
+	Comment, 
+	/**
+	 * The main function.
+	 */
+	MainFunction, 	
+	/**
+	 * A function declaration.
+	 */
+	Function, 
+	/**
+	 * A class declaration.
+	 */
+	Class, 
+	/**
+	 * A for loop.
+	 */
+	ForLoop, 
+	/**
+	 * A while loop.
+	 */
+	WhileLoop, 
+	/**
+	 * A const value.
+	 */
+	Const, 
+	/**
+	 * A static function.
+	 */
+	StaticFunction, 
+	/**
+	 * A function call.
+	 */
+	FunctionCall, 
+	/**
+	 * A network creation.
+	 */
+	CreateNetwork, 
+	/**
+	 * Init an array.
+	 */
+	InitArray, 
+	/**
+	 * Embedded training.
+	 */
+	EmbedTraining, 
+	/**
+	 * Load training.
+	 */
+	LoadTraining
 }

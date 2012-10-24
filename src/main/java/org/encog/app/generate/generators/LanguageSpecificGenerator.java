@@ -25,8 +25,20 @@ package org.encog.app.generate.generators;
 
 import java.io.File;
 
+/**
+ * This interface defines a language specific generator.  Implementors of this 
+ * interface generate code for languages such as Java or C#.
+ */
 public interface LanguageSpecificGenerator {
+	
+	/**
+	 * @return The generated code.
+	 */
 	String getContents();
 
+	/**
+	 * Write the generated code to a file.
+	 * @param targetFile
+	 */
 	void writeContents(File targetFile);
 }

@@ -23,36 +23,75 @@
  */
 package org.encog.app.generate.program;
 
+/**
+ * A function arguemnt for Encog created code.
+ *
+ */
 public class EncogProgramArg {
+	
+	/**
+	 * The type of this argument.
+	 */
 	final EncogArgType type;
+	
+	/**
+	 * The value of this argument.
+	 */
 	final Object value;
 
+	/**
+	 * Construct the argument. Default to float type.
+	 * @param value The argument value.
+	 */
 	public EncogProgramArg(final double value) {
 		this(EncogArgType.Float, "" + value);
 	}
 
+	/**
+	 * Construct the argument.
+	 * @param type The type of argument.
+	 * @param value The value of the argument.
+	 */
 	public EncogProgramArg(final EncogArgType type, final Object value) {
 		super();
 		this.type = type;
 		this.value = value;
 	}
 
+	/**
+	 * Construct a floating point arguement from an integer.
+	 * @param value
+	 */
 	public EncogProgramArg(final int value) {
 		this(EncogArgType.Float, "" + value);
 	}
 
+	/**
+	 * Construct using an object.
+	 * @param argValue The argument value.
+	 */
 	public EncogProgramArg(final Object argValue) {
 		this(EncogArgType.ObjectType, argValue);
 	}
 
+	/**
+	 * Construct a string argument.
+	 * @param value The string value.
+	 */
 	public EncogProgramArg(final String value) {
 		this(EncogArgType.String, value);
 	}
 
+	/**
+	 * @return The type of argument.
+	 */
 	public EncogArgType getType() {
 		return this.type;
 	}
 
+	/**
+	 * @return The value.
+	 */
 	public Object getValue() {
 		return this.value;
 	}

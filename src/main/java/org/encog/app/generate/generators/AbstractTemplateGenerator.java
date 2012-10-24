@@ -106,6 +106,11 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 		addNameValue(name, "" + value);
 	}
 
+	/**
+	 * Add a name-value array where the value is an int array.
+	 * @param name The name.
+	 * @param data THe value.
+	 */
 	public void addNameValue(final String name, final int[] data) {
 		final StringBuilder value = new StringBuilder();
 		if (data == null) {
@@ -118,6 +123,11 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 		}
 	}
 
+	/**
+	 * Add a name-value where a string is the value.
+	 * @param name The name.
+	 * @param value The value.
+	 */
 	public void addNameValue(final String name, final String value) {
 		final StringBuilder line = new StringBuilder();
 		line.append(name);
@@ -133,6 +143,11 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 		addLine(line.toString());
 	}
 
+	/**
+	 * Create an array of activations based on a flat network.
+	 * @param flat The flat network.
+	 * @return The array of flat activations.
+	 */
 	public int[] createActivations(final FlatNetwork flat) {
 		final int[] result = new int[flat.getActivationFunctions().length];
 		for (int i = 0; i < flat.getActivationFunctions().length; i++) {
@@ -157,12 +172,21 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 		return result;
 	}
 
+	/**
+	 * 
+	 * @param flat
+	 * @return
+	 */
 	public double[] createParams(final FlatNetwork flat) {
 		final double[] result = new double[flat.getActivationFunctions().length];
 		EngineArray.fill(result, 1);
 		return result;
 	}
 
+	/**
+	 * Generate based on the provided Encog Analyst.
+	 * @param theAnalyst The Encog analyst to base this on.
+	 */
 	@Override
 	public void generate(final EncogAnalyst theAnalyst) {
 		InputStream is = null;
@@ -206,37 +230,68 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 
 	}
 
+	/**
+	 * @return The Encog analyst that we are using.
+	 */
 	public EncogAnalyst getAnalyst() {
 		return this.analyst;
 	}
 
+	/**
+	 * @return The generated contents.
+	 */
 	@Override
 	public String getContents() {
 		return this.contents.toString();
 	}
 
+	/**
+	 * @return The current indent level.
+	 */
 	public int getIndentLevel() {
 		return this.indentLevel;
 	}
 
+	/**
+	 * @return A platform specific array set to null.
+	 */
 	public abstract String getNullArray();
 
+	/**
+	 * @return Get a resource path to the template that we are using.
+	 */
 	public abstract String getTemplatePath();
 
+	/**
+	 * Indent to the right one.
+	 */
 	public void indentIn() {
 		this.indentLevel++;
 	}
 
+	/**
+	 * Indent to the left one.
+	 */
 	public void indentOut() {
 		this.indentLevel--;
 	}
 
+	/**
+	 * Process the specified token.
+	 * @param command The token to process.
+	 */
 	public abstract void processToken(String command);
 
 	public void setIndentLevel(final int indentLevel) {
 		this.indentLevel = indentLevel;
 	}
 
+	/**
+	 * Create an array list broken into 10 columns.  This prevents a very large array
+	 * from creating a very long single line.
+	 * @param result The string builder to add to.
+	 * @param data The data to convert.
+	 */
 	public void toBrokenList(final StringBuilder result, final double[] data) {
 		int lineCount = 0;
 		result.setLength(0);
@@ -256,6 +311,12 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 
 	}
 
+	/**
+	 * Create an array list broken into 10 columns.  This prevents a very large array
+	 * from creating a very long single line.
+	 * @param result The string builder to add to.
+	 * @param data The data to convert.
+	 */
 	public void toBrokenList(final StringBuilder result, final int[] data) {
 		int lineCount = 0;
 
@@ -273,6 +334,9 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void writeContents(final File targetFile) {
 		try {

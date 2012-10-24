@@ -23,13 +23,25 @@
  */
 package org.encog.app.generate.program;
 
+/**
+ * Holds a generated Encog program. A language specific generator will take this
+ * and generate actual source code from it.
+ */
 public class EncogProgram extends EncogTreeNode {
 
+	/**
+	 * Construct the program.
+	 */
 	public EncogProgram() {
 		super(null, null);
 		setProgram(this);
 	}
 
+	/**
+	 * Create a new class.
+	 * @param className The class name.
+	 * @return The newly created class.
+	 */
 	public EncogProgramNode createClass(final String className) {
 		final EncogProgramNode node = new EncogProgramNode(this, this,
 				NodeType.Class, className);

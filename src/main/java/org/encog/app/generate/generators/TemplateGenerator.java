@@ -25,8 +25,17 @@ package org.encog.app.generate.generators;
 
 import org.encog.app.analyst.EncogAnalyst;
 
+/**
+ * This interface defines a generator that works by template.  A template is a file that 
+ * allows parts if it to be replaced by tokens.  Encog uses this sort of generator for
+ * NinjaScript and MQL4.
+ */
 public interface TemplateGenerator extends LanguageSpecificGenerator {
 
+	/**
+	 * Generate the template based on Encog Analyst script.
+	 * @param analyst
+	 */
 	void generate(EncogAnalyst analyst);
 
 }
