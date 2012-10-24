@@ -34,7 +34,7 @@ import org.encog.neural.networks.BasicNetwork;
  * default weight initialization used by Encog, as it generally provides the
  * most train-able neural network.
  */
-public class NguyenWidrowRandomizer implements Randomizer {
+public class NguyenWidrowRandomizer extends BasicRandomizer {
 
 	public static String MSG = "This type of randomization is not supported by Nguyen-Widrow";
 	
@@ -71,11 +71,11 @@ public class NguyenWidrowRandomizer implements Randomizer {
 
 		for(int toNeuron=0; toNeuron<toCount;toNeuron++) {
 			if( fromCount!=fromCountTotalCount ) {
-				double w = RangeRandomizer.randomize(-b, b);
+				double w = nextDouble(-b, b);
 				network.setWeight(fromLayer, fromCount, toNeuron, w);
 			}
 			for(int fromNeuron=0; fromNeuron<fromCount;fromNeuron++) {
-				double w = RangeRandomizer.randomize(0, b);
+				double w = nextDouble(0, b);
 				network.setWeight(fromLayer, fromNeuron, toNeuron, w);	
 			}
 		}

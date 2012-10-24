@@ -23,6 +23,8 @@
  */
 package org.encog.mathutil.randomize;
 
+import java.util.Random;
+
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.MLMethod;
 
@@ -91,5 +93,22 @@ public interface Randomizer {
 	 * @param size The size of the array.
 	 */
 	void randomize(final double[] d, int begin, int size);
+	
+	/**
+	 * Explicitly set the Random source
+	 * @param theRandom
+	 */
+	void setRandom(Random theRandom);
+	/**
+	 * Retrieve the Random source
+	 * @return
+	 */
+	Random getRandom();
 
+	/**
+	 * Explicitly set the seed used for randomization
+	 * @param seed
+	 */
+	void setSeed(long seed);
+	
 }
