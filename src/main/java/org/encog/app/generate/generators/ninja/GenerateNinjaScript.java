@@ -35,20 +35,27 @@ import org.encog.ml.MLMethod;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.persist.EncogDirectoryPersistence;
+import org.encog.util.EngineArray;
 import org.encog.util.file.FileUtil;
 
 public class GenerateNinjaScript extends AbstractTemplateGenerator {
 
+	@Override
+	public String getTemplatePath() {
+		return "org/encog/data/ninja.cs";
+	}
+
+
+
 	private void addCols() {
-		final StringBuilder line = new StringBuilder();
+		StringBuilder line = new StringBuilder();
 		line.append("public readonly string[] ENCOG_COLS = {");
 
 		boolean first = true;
 
-		for (final DataField df : getAnalyst().getScript().getFields()) {
+		for (DataField df : this.getAnalyst().getScript().getFields()) {
 
-			if (!df.getName().equalsIgnoreCase("time")
-					&& !df.getName().equalsIgnoreCase("prediction")) {
+			if (!df.getName().equalsIgnoreCase("time") && !df.getName().equalsIgnoreCase("prediction")) {
 				if (!first) {
 					line.append(",");
 				}
@@ -64,81 +71,8 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 		addLine(line.toString());
 	}
 
-	@Override
-	public String getNullArray() {
-		return "null";
-	}
-
-	@Override
-	public String getTemplatePath() {
-		return "org/encog/data/ninja.cs";
-	}
-
-	private void processCalc() {
-		AnalystField firstOutputField = null;
-		final int barsNeeded = Math.abs(getAnalyst().determineMinTimeSlice());
-
-		setIndentLevel(2);
-		addLine("if( _inputCount>0 && CurrentBar>=" + barsNeeded + " )");
-		addLine("{");
-		indentIn();
-		addLine("double[] input = new double[_inputCount];");
-		addLine("double[] output = new double[_outputCount];");
-
-		int idx = 0;
-		for (final AnalystField field : getAnalyst().getScript().getNormalize()
-				.getNormalizedFields()) {
-			if (field.isInput()) {
-
-				final DataField df = getAnalyst().getScript().findDataField(
-						field.getName());
-
-				switch (field.getAction()) {
-				case PassThrough:
-					addLine("input[" + idx + "]=" + df.getSource() + "["
-							+ (-field.getTimeSlice()) + "];");
-					idx++;
-					break;
-				case Normalize:
-					addLine("input[" + idx + "]=Norm(" + df.getSource() + "["
-							+ (-field.getTimeSlice()) + "],"
-							+ field.getNormalizedHigh() + ","
-							+ field.getNormalizedLow() + ","
-							+ field.getActualHigh() + ","
-							+ field.getActualLow() + ");");
-					idx++;
-					break;
-				case Ignore:
-					break;
-				default:
-					throw new AnalystCodeGenerationError(
-							"Can't generate Ninjascript code, unsupported normalizatoin action: "
-									+ field.getAction().toString());
-				}
-			}
-			if (field.isOutput()) {
-				if (firstOutputField == null) {
-					firstOutputField = field;
-				}
-			}
-		}
-
-		if (firstOutputField != null) {
-			addLine("Compute(input,output);");
-			addLine("Output.Set(DeNorm(output[0]" + ","
-					+ firstOutputField.getNormalizedHigh() + ","
-					+ firstOutputField.getNormalizedLow() + ","
-					+ firstOutputField.getActualHigh() + ","
-					+ firstOutputField.getActualLow() + "));");
-			indentOut();
-		}
-
-		addLine("}");
-		setIndentLevel(2);
-	}
-
 	private void processMainBlock() {
-		final EncogAnalyst analyst = getAnalyst();
+		EncogAnalyst analyst = getAnalyst();
 
 		final String processID = analyst.getScript().getProperties()
 				.getPropertyString(ScriptProperties.PROCESS_CONFIG_SOURCE_FILE);
@@ -174,7 +108,7 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 		if (methodFile.exists()) {
 			method = (MLMethod) EncogDirectoryPersistence
 					.loadObject(methodFile);
-			final FlatNetwork flat = ((BasicNetwork) method).getFlat();
+			FlatNetwork flat = ((BasicNetwork) method).getFlat();
 
 			contextTargetOffset = flat.getContextTargetOffset();
 			contextTargetSize = flat.getContextTargetSize();
@@ -196,8 +130,8 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 		setIndentLevel(2);
 		addLine("#region Encog Data");
 		indentIn();
-		addNameValue("public const string EXPORT_FILENAME",
-				"\"" + FileUtil.toStringLiteral(processFile) + "\"");
+		addNameValue("public const string EXPORT_FILENAME", "\""
+				+ FileUtil.toStringLiteral(processFile) + "\"");
 		addCols();
 
 		addNameValue("private readonly int[] _contextTargetOffset",
@@ -210,7 +144,8 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 		addNameValue("private readonly int[] _layerContextCount",
 				layerContextCount);
 		addNameValue("private readonly int[] _layerCounts", layerCounts);
-		addNameValue("private readonly int[] _layerFeedCounts", layerFeedCounts);
+		addNameValue("private readonly int[] _layerFeedCounts",
+				layerFeedCounts);
 		addNameValue("private readonly int[] _layerIndex", layerIndex);
 		addNameValue("private readonly double[] _layerOutput", layerOutput);
 		addNameValue("private readonly double[] _layerSums", layerSums);
@@ -224,15 +159,78 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 		setIndentLevel(0);
 	}
 
+	private void processCalc() {
+		AnalystField firstOutputField = null;
+		int barsNeeded = Math.abs(this.getAnalyst().determineMinTimeSlice());
+
+		setIndentLevel(2);
+		addLine("if( _inputCount>0 && CurrentBar>=" + barsNeeded + " )");
+		addLine("{");
+		indentIn();
+		addLine("double[] input = new double[_inputCount];");
+		addLine("double[] output = new double[_outputCount];");
+
+		int idx = 0;
+		for (AnalystField field : this.getAnalyst().getScript().getNormalize()
+				.getNormalizedFields()) {
+			if (field.isInput()) {
+				String str;
+				DataField df = this.getAnalyst().getScript()
+						.findDataField(field.getName());
+
+				switch (field.getAction()) {
+				case PassThrough:
+					str = EngineArray.replace(df.getSource(),"##","pos+"+ (-field.getTimeSlice()));
+					addLine("input[" + idx + "]=" + str + ";");
+					idx++;
+					break;
+				case Normalize:
+					str = EngineArray.replace(df.getSource(),"##","pos+"+ (-field.getTimeSlice()));
+					addLine("input[" + idx + "]=Norm(" + str + ","
+							+ field.getNormalizedHigh() + ","
+							+ field.getNormalizedLow() + ","
+							+ field.getActualHigh() + ","
+							+ field.getActualLow() + ");");
+					idx++;
+					break;
+				case Ignore:
+					break;
+				default:
+					throw new AnalystCodeGenerationError(
+							"Can't generate Ninjascript code, unsupported normalizatoin action: "
+									+ field.getAction().toString());
+				}
+			}
+			if (field.isOutput()) {
+				if (firstOutputField == null) {
+					firstOutputField = field;
+				}
+			}
+		}
+
+		if (firstOutputField != null) {
+			addLine("Compute(input,output);");
+			addLine("Output.Set(DeNorm(output[0]" + ","
+					+ firstOutputField.getNormalizedHigh() + ","
+					+ firstOutputField.getNormalizedLow() + ","
+					+ firstOutputField.getActualHigh() + ","
+					+ firstOutputField.getActualLow() + "));");
+			indentOut();
+		}
+
+		addLine("}");
+		setIndentLevel(2);
+	}
+
 	private void processObtain() {
 		setIndentLevel(3);
 		addLine("double[] result = new double[ENCOG_COLS.Length];");
 
 		int idx = 0;
-		for (final DataField df : getAnalyst().getScript().getFields()) {
-			if (!df.getName().equalsIgnoreCase("time")
-					&& !df.getName().equalsIgnoreCase("prediction")) {
-				addLine("result[" + idx + "]=" + df.getSource() + "[0];");
+		for (DataField df : this.getAnalyst().getScript().getFields()) {
+			if (!df.getName().equalsIgnoreCase("time") && !df.getName().equalsIgnoreCase("prediction")) {
+				String str = EngineArray.replace(df.getSource(),"##","0");
+				addLine("result[" + idx + "]=" + str + ";");
 				idx++;
 			}
 		}
@@ -241,7 +239,7 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 	}
 
 	@Override
-	public void processToken(final String command) {
+	public void processToken(String command) {
 		if (command.equalsIgnoreCase("MAIN-BLOCK")) {
 			processMainBlock();
 		} else if (command.equals("CALC")) {
@@ -251,6 +249,13 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 		}
 		setIndentLevel(0);
 
+	}
+
+
+
+	@Override
+	public String getNullArray() {
+		return "null";
 	}
 
 }
