@@ -180,12 +180,12 @@ public class GenerateNinjaScript extends AbstractTemplateGenerator {
 
 				switch (field.getAction()) {
 				case PassThrough:
-					str = EngineArray.replace(df.getSource(),"##","pos+"+ (-field.getTimeSlice()));
+					str = EngineArray.replace(df.getSource(),"##", ""+ (-field.getTimeSlice()));
 					addLine("input[" + idx + "]=" + str + ";");
 					idx++;
 					break;
 				case Normalize:
-					str = EngineArray.replace(df.getSource(),"##","pos+"+ (-field.getTimeSlice()));
+					str = EngineArray.replace(df.getSource(),"##",""+ (-field.getTimeSlice()));
 					addLine("input[" + idx + "]=Norm(" + str + ","
 							+ field.getNormalizedHigh() + ","
 							+ field.getNormalizedLow() + ","
