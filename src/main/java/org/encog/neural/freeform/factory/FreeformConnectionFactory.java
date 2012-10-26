@@ -26,7 +26,17 @@ package org.encog.neural.freeform.factory;
 import org.encog.neural.freeform.FreeformConnection;
 import org.encog.neural.freeform.FreeformNeuron;
 
+/**
+ * A factory that creates connections.
+ *
+ */
 public interface FreeformConnectionFactory {
+	/**
+	 * Create a connection.
+	 * @param sourceNeuron The source neuron.
+	 * @param targetNeuron The target neuron.
+	 * @return The newly created connection.
+	 */
 	FreeformConnection factor(FreeformNeuron sourceNeuron,
 			FreeformNeuron targetNeuron);
 }

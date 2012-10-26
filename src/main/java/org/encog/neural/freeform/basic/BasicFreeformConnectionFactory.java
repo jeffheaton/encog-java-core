@@ -29,6 +29,9 @@ import org.encog.neural.freeform.FreeformConnection;
 import org.encog.neural.freeform.FreeformNeuron;
 import org.encog.neural.freeform.factory.FreeformConnectionFactory;
 
+/*
+ * A factory that creates basic freeform connection objects.
+ */
 public class BasicFreeformConnectionFactory implements
 		FreeformConnectionFactory, Serializable {
 
@@ -37,6 +40,9 @@ public class BasicFreeformConnectionFactory implements
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public FreeformConnection factor(final FreeformNeuron theSourceNeuron,
 			final FreeformNeuron theTargetNeuron) {

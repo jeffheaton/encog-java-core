@@ -27,14 +27,35 @@ import java.util.List;
 
 import org.encog.engine.network.activation.ActivationFunction;
 
+/**
+ * Specifies how the inputs to a neuron are to be summed.
+ */
 public interface InputSummation {
+	
+	/**
+	 * Add an input connection.
+	 * @param connection The connection to add.
+	 */
 	void add(FreeformConnection connection);
 
+	/**
+	 * Perform the summation, and apply the activation function.
+	 * @return The sum.
+	 */
 	double calculate();
 
+	/**
+	 * @return The activation function
+	 */
 	ActivationFunction getActivationFunction();
 
+	/**
+	 * @return The preactivation sum.
+	 */
 	double getSum();
 
+	/**
+	 * @return The input connections.
+	 */
 	List<FreeformConnection> list();
 }

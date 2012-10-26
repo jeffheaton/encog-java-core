@@ -31,26 +31,52 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.freeform.FreeformConnection;
 import org.encog.neural.freeform.InputSummation;
 
+/**
+ * Provides a basic implementation of an input summation. The inputs are summed
+ * and applied to the activation function.
+ */
 public class BasicActivationSummation implements InputSummation, Serializable {
 
 	/**
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * The activation function to use.
+	 */
 	private ActivationFunction activationFunction;
+	
+	/**
+	 * The inputs.
+	 */
 	private final List<FreeformConnection> inputs = new ArrayList<FreeformConnection>();
+	
+	/**
+	 * THe pre-activation summation.
+	 */
 	private double sum;
 
+	/**
+	 * Construct the activation summation.
+	 * @param theActivationFunction The activation function.
+	 */
 	public BasicActivationSummation(
 			final ActivationFunction theActivationFunction) {
 		this.activationFunction = theActivationFunction;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void add(final FreeformConnection connection) {
 		this.inputs.add(connection);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public double calculate() {
 		final double[] sumArray = new double[1];
@@ -71,21 +97,34 @@ public class BasicActivationSummation implements InputSummation, Serializable {
 		return sumArray[0];
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ActivationFunction getActivationFunction() {
 		return this.activationFunction;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public double getSum() {
 		return this.sum;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<FreeformConnection> list() {
 		return this.inputs;
 	}
 
+	/**
+	 * Set the activation function.
+	 * @param activationFunction The activation function.
+	 */
 	public void setActivationFunction(
 			final ActivationFunction activationFunction) {
 		this.activationFunction = activationFunction;

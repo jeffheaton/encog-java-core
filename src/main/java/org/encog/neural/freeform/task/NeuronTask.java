@@ -25,6 +25,13 @@ package org.encog.neural.freeform.task;
 
 import org.encog.neural.freeform.FreeformNeuron;
 
+/**
+ * Defines a task that is carried out for every neuron.
+ */
 public interface NeuronTask {
+	/**
+	 * The task.
+	 * @param neuron The neuron.
+	 */
 	void task(FreeformNeuron neuron);
 }

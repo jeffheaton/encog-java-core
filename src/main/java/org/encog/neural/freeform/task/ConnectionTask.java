@@ -25,6 +25,13 @@ package org.encog.neural.freeform.task;
 
 import org.encog.neural.freeform.FreeformConnection;
 
+/**
+ * Implements a task that will be performed for every connection.
+ */
 public interface ConnectionTask {
-	void task(FreeformConnection neuron);
+	/**
+	 * The task.
+	 * @param connection The connection.
+	 */
+	void task(FreeformConnection connection);
 }

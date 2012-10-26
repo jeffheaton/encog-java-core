@@ -31,6 +31,9 @@ import org.encog.neural.freeform.FreeformConnection;
 import org.encog.neural.freeform.FreeformNeuron;
 import org.encog.neural.freeform.InputSummation;
 
+/**
+ * This class provides a basic implementation of a freeform neuron.
+ */
 public class BasicFreeformNeuron implements FreeformNeuron, Serializable {
 
 	/**
@@ -38,59 +41,105 @@ public class BasicFreeformNeuron implements FreeformNeuron, Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * The input summation.
+	 */
 	private InputSummation inputSummation;
+	
+	/**
+	 * THe output connections.
+	 */
 	private final List<FreeformConnection> outputConnections = new ArrayList<FreeformConnection>();
+	
+	/**
+	 * The activation.
+	 */
 	private double activation;
+	
+	/**
+	 * True if this neuron is a bias neuron.
+	 */
 	private boolean bias;
+	
+	/**
+	 * Temp training values.
+	 */
 	private double[] tempTraining;
 
 	public BasicFreeformNeuron(final InputSummation theInputSummation) {
 		this.inputSummation = theInputSummation;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addInput(final FreeformConnection connection) {
 		this.inputSummation.add(connection);
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addOutput(final FreeformConnection connection) {
 		this.outputConnections.add(connection);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addTempTraining(final int i, final double value) {
 		this.tempTraining[i] += value;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void allocateTempTraining(final int l) {
 		this.tempTraining = new double[l];
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void clearTempTraining() {
 		this.tempTraining = null;
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public double getActivation() {
 		return this.activation;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public InputSummation getInputSummation() {
 		return this.inputSummation;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<FreeformConnection> getOutputs() {
 		return this.outputConnections;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public double getSum() {
 		if (this.inputSummation == null) {
@@ -100,16 +149,25 @@ public class BasicFreeformNeuron implements FreeformNeuron, Serializable {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public double getTempTraining(final int index) {
 		return this.tempTraining[index];
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isBias() {
 		return this.bias;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void performCalculation() {
 		// no inputs? Just keep activation as is, probably a bias neuron.
@@ -120,27 +178,42 @@ public class BasicFreeformNeuron implements FreeformNeuron, Serializable {
 		this.activation = this.inputSummation.calculate();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setActivation(final double theActivation) {
 		this.activation = theActivation;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setBias(final boolean bias) {
 		this.bias = bias;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setInputSummation(final InputSummation theInputSummation) {
 		this.inputSummation = theInputSummation;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setTempTraining(final int index, final double value) {
 		this.tempTraining[index] = value;
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void updateContext() {
 		// nothing to do for a non-context neuron

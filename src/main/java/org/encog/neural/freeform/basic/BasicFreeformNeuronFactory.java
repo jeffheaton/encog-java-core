@@ -30,6 +30,10 @@ import org.encog.neural.freeform.FreeformNeuron;
 import org.encog.neural.freeform.InputSummation;
 import org.encog.neural.freeform.factory.FreeformNeuronFactory;
 
+/**
+ * A factory to create BasicFreeformNeuron objects.
+ *
+ */
 public class BasicFreeformNeuronFactory implements FreeformNeuronFactory,
 		Serializable {
 
@@ -38,12 +42,18 @@ public class BasicFreeformNeuronFactory implements FreeformNeuronFactory,
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public FreeformNeuron factorContext(final FreeformNeuron neuron) {
 		final FreeformNeuron result = new FreeformContextNeuron(neuron);
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public FreeformNeuron factorRegular(final InputSummation object) {
 		return new BasicFreeformNeuron(object);

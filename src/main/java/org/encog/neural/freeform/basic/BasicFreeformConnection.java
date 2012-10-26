@@ -28,6 +28,10 @@ import java.io.Serializable;
 import org.encog.neural.freeform.FreeformConnection;
 import org.encog.neural.freeform.FreeformNeuron;
 
+/**
+ * A basic freeform connection.
+ *
+ */
 public class BasicFreeformConnection implements FreeformConnection,
 		Serializable {
 
@@ -36,12 +40,36 @@ public class BasicFreeformConnection implements FreeformConnection,
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * The connection weight.
+	 */
 	private double weight;
+	
+	/**
+	 * The source neuron.
+	 */
 	private FreeformNeuron source;
+	
+	/**
+	 * The target neuron.
+	 */
 	private FreeformNeuron target;
+	
+	/**
+	 * Is this a recurrent link?
+	 */
 	private boolean recurrent;
+	
+	/**
+	 * Temp training data.
+	 */
 	private double[] tempTraining;
 
+	/**
+	 * Construct a basic freeform connection.
+	 * @param theSource The source neuron.
+	 * @param theTarget The target neuron.
+	 */
 	public BasicFreeformConnection(final FreeformNeuron theSource,
 			final FreeformNeuron theTarget) {
 		this.recurrent = false;
@@ -50,75 +78,117 @@ public class BasicFreeformConnection implements FreeformConnection,
 		this.target = theTarget;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addTempTraining(final int i, final double value) {
 		this.tempTraining[i] += value;
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addWeight(final double delta) {
 		this.weight += delta;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void allocateTempTraining(final int l) {
 		this.tempTraining = new double[l];
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void clearTempTraining() {
 		this.tempTraining = null;
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public FreeformNeuron getSource() {
 		return this.source;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public FreeformNeuron getTarget() {
 		return this.target;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public double getTempTraining(final int index) {
 		return this.tempTraining[index];
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public double getWeight() {
 		return this.weight;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isRecurrent() {
 		return this.recurrent;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setRecurrent(final boolean recurrent) {
 		this.recurrent = recurrent;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setSource(final FreeformNeuron source) {
 		this.source = source;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setTarget(final FreeformNeuron target) {
 		this.target = target;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setTempTraining(final int index, final double value) {
 		this.tempTraining[index] = value;
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setWeight(final double weight) {
 		this.weight = weight;

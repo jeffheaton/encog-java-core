@@ -23,24 +23,60 @@
  */
 package org.encog.neural.freeform;
 
+/**
+ * Defines a freeform connection between neurons.
+ *
+ */
 public interface FreeformConnection extends TempTrainingData {
 
+	/**
+	 * Add to the connection weight.
+	 * @param delta THe value to add.
+	 */
 	void addWeight(double delta);
 
+	/**
+	 * @return The source neuron.
+	 */
 	FreeformNeuron getSource();
 
+	/**
+	 * @return The target neuron.
+	 */
 	FreeformNeuron getTarget();
 
+	/**
+	 * @return The weight.
+	 */
 	double getWeight();
 
+	/**
+	 * @return Is this a recurrent connection?
+	 */
 	boolean isRecurrent();
 
+	/**
+	 * Determine if this is a recurrent connecton.
+	 * @param recurrent True, if this is a recurrent connection.
+	 */
 	void setRecurrent(boolean recurrent);
 
+	/**
+	 * Set the source neuron.
+	 * @param source The source neuron.
+	 */
 	void setSource(FreeformNeuron source);
 
+	/**
+	 * Set the target neuron.
+	 * @param target The target neuron.
+	 */
 	void setTarget(FreeformNeuron target);
 
+	/**
+	 * Set the weight.
+	 * @param weight The weight.
+	 */
 	void setWeight(double weight);
 
 }

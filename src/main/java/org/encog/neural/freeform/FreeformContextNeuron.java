@@ -25,14 +25,26 @@ package org.encog.neural.freeform;
 
 import org.encog.neural.freeform.basic.BasicFreeformNeuron;
 
+/**
+ * Defines a freeform contexst neuron.
+ *
+ */
 public class FreeformContextNeuron extends BasicFreeformNeuron {
 
 	/**
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * The context source.
+	 */
 	private FreeformNeuron contextSource;
 
+	/**
+	 * Construct the context neuron.
+	 * @param theContextSource The context source.
+	 */
 	public FreeformContextNeuron(final FreeformNeuron theContextSource) {
 		super(null);
 	}

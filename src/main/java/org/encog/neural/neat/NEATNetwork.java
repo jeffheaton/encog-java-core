@@ -38,14 +38,6 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.util.simple.EncogUtility;
 
 /**
- * Implements a NEAT network as a synapse between two layers. In Encog, a NEAT
- * network is created by using a NEATSynapse between an input and output layer.
- * 
- * NEAT networks only have an input and an output layer. There are no actual
- * hidden layers. Rather this synapse will evolve many hidden neurons that have
- * connections that are not easily defined by layers. Connections can be
- * feedforward, recurrent, or self-connected.
- * 
  * NEAT networks relieve the programmer of the need to define the hidden layer
  * structure of the neural network.
  * 

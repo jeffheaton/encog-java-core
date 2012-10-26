@@ -30,6 +30,10 @@ import java.util.List;
 import org.encog.neural.freeform.FreeformLayer;
 import org.encog.neural.freeform.FreeformNeuron;
 
+/**
+ * Implements a basic freeform layer.
+ *
+ */
 public class BasicFreeformLayer implements FreeformLayer, Serializable {
 
 	/**
@@ -37,18 +41,30 @@ public class BasicFreeformLayer implements FreeformLayer, Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * The neurons in this layer.
+	 */
 	private final List<FreeformNeuron> neurons = new ArrayList<FreeformNeuron>();
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void add(final FreeformNeuron basicFreeformNeuron) {
 		this.neurons.add(basicFreeformNeuron);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<FreeformNeuron> getNeurons() {
 		return this.neurons;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean hasBias() {
 		for (final FreeformNeuron neuron : this.neurons) {
@@ -59,16 +75,25 @@ public class BasicFreeformLayer implements FreeformLayer, Serializable {
 		return false;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setActivation(final int i, final double activation) {
 		this.neurons.get(i).setActivation(activation);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int size() {
 		return this.neurons.size();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int sizeNonBias() {
 		int result = 0;

@@ -25,6 +25,14 @@ package org.encog.neural.freeform.factory;
 
 import org.encog.neural.freeform.FreeformLayer;
 
+/**
+ * A factory that creates layers.
+ *
+ */
 public interface FreeformLayerFactory {
+	/**
+	 * Create a layer.
+	 * @return The newly created layer.
+	 */
 	FreeformLayer factor();
 }

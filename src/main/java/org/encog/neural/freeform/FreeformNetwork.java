@@ -57,14 +57,37 @@ import org.encog.util.EngineArray;
 import org.encog.util.obj.ObjectCloner;
 import org.encog.util.simple.EncogUtility;
 
+/**
+ * Implements a freefrom neural network. A freeform neural network can represent
+ * much more advanced structures than the flat networks that the Encog
+ * BasicNetwork implements. However, while freeform networks are more advanced
+ * than the BasicNetwork, they are also much slower.
+ * 
+ * Freeform networks allow just about any neuron to be connected to another
+ * neuron. You can have neuron layers if you want, but they are not required.
+ * 
+ */
 public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 
 	/**
-	 * 
+	 * The serial ID.
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Construct an Elmann recurrent neural network.
+	 * 
+	 * @param input
+	 *            The input count.
+	 * @param hidden1
+	 *            The hidden count.
+	 * @param output
+	 *            The output count.
+	 * @param af
+	 *            The activation function.
+	 * @return The newly created network.
+	 */
 	public static FreeformNetwork createElman(final int input,
 			final int hidden1, final int output, final ActivationFunction af) {
 
@@ -81,6 +104,21 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		return network;
 	}
 
+	/**
+	 * Create a feedforward freeform neural network.
+	 * 
+	 * @param input
+	 *            The input count.
+	 * @param hidden1
+	 *            The first hidden layer count, zero if none.
+	 * @param hidden2
+	 *            The second hidden layer count, zero if none.
+	 * @param output
+	 *            The output count.
+	 * @param af
+	 *            The activation function.
+	 * @return The newly crated network.
+	 */
 	public static FreeformNetwork createFeedforward(final int input,
 			final int hidden1, final int hidden2, final int output,
 			final ActivationFunction af) {
@@ -108,18 +146,48 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		return network;
 	}
 
+	/**
+	 * The input layer.
+	 */
 	private FreeformLayer inputLayer;
+
+	/**
+	 * The output layer.
+	 */
 	private FreeformLayer outputLayer;
+
+	/**
+	 * The connection factory.
+	 */
 	private final FreeformConnectionFactory connectionFactory = new BasicFreeformConnectionFactory();
+
+	/**
+	 * The layer factory.
+	 */
 	private final FreeformLayerFactory layerFactory = new BasicFreeformLayerFactory();
 
+	/**
+	 * The neuron factory.
+	 */
 	private final FreeformNeuronFactory neuronFactory = new BasicFreeformNeuronFactory();
 
+	/**
+	 * The input summation factory.
+	 */
 	private final InputSummationFactory summationFactory = new BasicActivationSummationFactory();
 
+	/**
+	 * Default constructor. Typically should not be directly used.
+	 */
 	public FreeformNetwork() {
 	}
 
+	/**
+	 * Craete a freeform network from a basic network.
+	 * 
+	 * @param network
+	 *            The basic network to use.
+	 */
 	public FreeformNetwork(final BasicNetwork network) {
 
 		if (network.getLayerCount() < 2) {
@@ -182,17 +250,26 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		this.outputLayer = previousLayer;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public double calculateError(final MLDataSet data) {
 		return EncogUtility.calculateRegressionError(this, data);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int classify(final MLData input) {
 		final MLData output = compute(input);
 		return EngineArray.maxIndex(output.getData());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void clearContext() {
 		performNeuronTask(new NeuronTask() {
@@ -217,6 +294,9 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public MLData compute(final MLData input) {
 
@@ -241,11 +321,35 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		return result;
 	}
 
+	/**
+	 * Connect two layers. These layers will be connected with a TANH activation
+	 * function in a non-recurrent way. A bias activation of 1.0 will be used,
+	 * if needed.
+	 * 
+	 * @param source
+	 *            The source layer.
+	 * @param target
+	 *            The target layer.
+	 */
 	public void connectLayers(final FreeformLayer source,
 			final FreeformLayer target) {
 		connectLayers(source, target, new ActivationTANH(), 1.0, false);
 	}
 
+	/**
+	 * Connect two layers.
+	 * 
+	 * @param source
+	 *            The source layer.
+	 * @param target
+	 *            The target layer.
+	 * @param theActivationFunction
+	 *            The activation function to use.
+	 * @param biasActivation
+	 *            The bias activation to use.
+	 * @param isRecurrent
+	 *            True, if this is a recurrent connection.
+	 */
 	public void connectLayers(final FreeformLayer source,
 			final FreeformLayer target,
 			final ActivationFunction theActivationFunction,
@@ -286,12 +390,41 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		}
 	}
 
+	/**
+	 * Connect two layers, assume bias activation of 1.0 and non-recurrent
+	 * connection.
+	 * 
+	 * @param source
+	 *            The source layer.
+	 * @param target
+	 *            The target layer.
+	 * @param theActivationFunction
+	 *            The activation function.
+	 */
 	public void ConnectLayers(final FreeformLayer source,
 			final FreeformLayer target,
 			final ActivationFunction theActivationFunction) {
 		connectLayers(source, target, theActivationFunction, 1.0, false);
 	}
 
+	/**
+	 * Connect layers from a BasicNetwork. Used internally only.
+	 * 
+	 * @param network
+	 *            The BasicNetwork.
+	 * @param fromLayerIdx
+	 *            The from layer index.
+	 * @param source
+	 *            The from layer.
+	 * @param sourceIdx
+	 *            The source index.
+	 * @param target
+	 *            The target.
+	 * @param targetIdx
+	 *            The target index.
+	 * @param isRecurrent
+	 *            True, if this is recurrent.
+	 */
 	private void connectLayersFromBasic(final BasicNetwork network,
 			final int fromLayerIdx, final FreeformLayer source,
 			final int sourceIdx, final FreeformLayer target,
@@ -320,6 +453,15 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		}
 	}
 
+	/**
+	 * Create a context connection, such as those used by Jordan/Elmann.
+	 * 
+	 * @param source
+	 *            The source layer.
+	 * @param target
+	 *            The target layer.
+	 * @return The newly created context layer.
+	 */
 	public FreeformLayer createContext(final FreeformLayer source,
 			final FreeformLayer target) {
 		final double biasActivation = 0.0;
@@ -358,6 +500,13 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		return result;
 	}
 
+	/**
+	 * Create the input layer.
+	 * 
+	 * @param neuronCount
+	 *            The input neuron count.
+	 * @return The newly created layer.
+	 */
 	public FreeformLayer createInputLayer(final int neuronCount) {
 		if (neuronCount < 1) {
 			throw new FreeformNetworkError(
@@ -367,6 +516,13 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		return this.inputLayer;
 	}
 
+	/**
+	 * Create a hidden layer.
+	 * 
+	 * @param neuronCount
+	 *            The neuron count.
+	 * @return The newly created layer.
+	 */
 	public FreeformLayer createLayer(final int neuronCount) {
 		if (neuronCount < 1) {
 			throw new FreeformNetworkError(
@@ -383,6 +539,13 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		return result;
 	}
 
+	/**
+	 * Create the output layer.
+	 * 
+	 * @param neuronCount
+	 *            The neuron count.
+	 * @return The newly created output layer.
+	 */
 	public FreeformLayer createOutputLayer(final int neuronCount) {
 		if (neuronCount < 1) {
 			throw new FreeformNetworkError(
@@ -392,6 +555,9 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		return this.outputLayer;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void decodeFromArray(final double[] encoded) {
 		int index = 0;
@@ -423,6 +589,9 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int encodedArrayLength() {
 		int result = 0;
@@ -456,6 +625,9 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void encodeToArray(final double[] encoded) {
 		int index = 0;
@@ -488,20 +660,36 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getInputCount() {
 		return this.inputLayer.sizeNonBias();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getOutputCount() {
 		return this.outputLayer.sizeNonBias();
 	}
 
+	/**
+	 * @return The output layer.
+	 */
 	public FreeformLayer getOutputLayer() {
 		return this.outputLayer;
 	}
 
+	/**
+	 * Perform the specified connection task. This task will be performed over
+	 * all connections.
+	 * 
+	 * @param task
+	 *            The connection task.
+	 */
 	public void performConnectionTask(final ConnectionTask task) {
 		final Set<FreeformNeuron> visited = new HashSet<FreeformNeuron>();
 
@@ -510,6 +698,16 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		}
 	}
 
+	/**
+	 * Perform the specified connection task.
+	 * 
+	 * @param visited
+	 *            The list of visited neurons.
+	 * @param parentNeuron
+	 *            The parent neuron.
+	 * @param task
+	 *            The task.
+	 */
 	private void performConnectionTask(final Set<FreeformNeuron> visited,
 			final FreeformNeuron parentNeuron, final ConnectionTask task) {
 		visited.add(parentNeuron);
@@ -529,6 +727,12 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		}
 	}
 
+	/**
+	 * Perform the specified neuron task. This task will be executed over all
+	 * neurons.
+	 * 
+	 * @param task
+	 */
 	public void performNeuronTask(final NeuronTask task) {
 		final Set<FreeformNeuron> visited = new HashSet<FreeformNeuron>();
 
@@ -537,6 +741,12 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		}
 	}
 
+	/**
+	 * Perform the specified neuron task.
+	 * @param visited The visited list.
+	 * @param parentNeuron The neuron to start with.
+	 * @param task The task to perform.
+	 */
 	private void performNeuronTask(final Set<FreeformNeuron> visited,
 			final FreeformNeuron parentNeuron, final NeuronTask task) {
 		visited.add(parentNeuron);
@@ -556,16 +766,25 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void reset() {
 		reset((int) (System.currentTimeMillis() % Integer.MAX_VALUE));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void reset(final int seed) {
 		final ConsistentRandomizer randomizer = new ConsistentRandomizer(-1, 1,
 				seed);
 
+		/**
+		 * {@inheritDoc}
+		 */
 		performConnectionTask(new ConnectionTask() {
 			@Override
 			public void task(final FreeformConnection connection) {
@@ -574,6 +793,11 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		});
 	}
 
+	/**
+	 * Allocate temp training space.
+	 * @param neuronSize The number of elements to allocate on each neuron.
+	 * @param connectionSize The number of elements to allocate on each connection.
+	 */
 	public void tempTrainingAllocate(final int neuronSize,
 			final int connectionSize) {
 		performNeuronTask(new NeuronTask() {
@@ -590,6 +814,9 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		});
 	}
 
+	/**
+	 * Clear the temp training data.
+	 */
 	public void tempTrainingClear() {
 		performNeuronTask(new NeuronTask() {
 			@Override
@@ -605,6 +832,9 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		});
 	}
 
+	/**
+	 * Update context.
+	 */
 	public void updateContext() {
 		performNeuronTask(new NeuronTask() {
 			@Override
@@ -614,6 +844,9 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void updateProperties() {
 		// not needed

@@ -26,8 +26,22 @@ package org.encog.neural.freeform.factory;
 import org.encog.neural.freeform.FreeformNeuron;
 import org.encog.neural.freeform.InputSummation;
 
+/**
+ * A factory that creates neurons.
+ */
 public interface FreeformNeuronFactory {
+	
+	/**
+	 * Create a context neuron.
+	 * @param neuron The source neuron.
+	 * @return The newly created neuron.
+	 */
 	FreeformNeuron factorContext(FreeformNeuron neuron);
 
+	/**
+	 * Create a regular neuron.
+	 * @param object The summation function.
+	 * @return The newly created neuron.
+	 */
 	FreeformNeuron factorRegular(InputSummation object);
 }

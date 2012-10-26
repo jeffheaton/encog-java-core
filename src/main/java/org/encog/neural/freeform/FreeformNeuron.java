@@ -25,28 +25,80 @@ package org.encog.neural.freeform;
 
 import java.util.List;
 
+/**
+ * This interface defines a freeform neuron. By freeform that this neuron is not
+ * necessarily part of a layer.
+ */
 public interface FreeformNeuron extends TempTrainingData {
-	void addInput(FreeformConnection targetNeuron);
 
-	void addOutput(FreeformConnection sourceNeuron);
+	/**
+	 * Add an input connection to this neuron.
+	 * 
+	 * @param inputConnection
+	 *            The input connection.
+	 */
+	void addInput(FreeformConnection inputConnection);
 
+	/**
+	 * Add an output connection to this neuron.
+	 * 
+	 * @param outputConnection
+	 *            The output connection.
+	 */
+	void addOutput(FreeformConnection outputConnection);
+
+	/**
+	 * @return The activation for this neuron. This is the final output after
+	 *         the activation function has been applied.
+	 */
 	double getActivation();
 
+	/**
+	 * @return The input summation method.
+	 */
 	InputSummation getInputSummation();
 
+	/**
+	 * @return The outputs from this neuron.
+	 */
 	List<FreeformConnection> getOutputs();
 
+	/**
+	 * @return The output sum for this neuron. This is the output prior to the
+	 *         activation function being applied.
+	 */
 	double getSum();
 
+	/**
+	 * @return True, if this is a bias neuron.
+	 */
 	boolean isBias();
 
+	/**
+	 * Perform the internal calculation for this neuron.
+	 */
 	void performCalculation();
 
+	/**
+	 * Set the activation, or final output for this neuron.
+	 * @param activation THe activation.
+	 */
 	void setActivation(double activation);
 
+	/**
+	 * Determine if this neuron is a bias neuron.
+	 * @param b True, if this neuron is considered a bias neuron.
+	 */
 	void setBias(boolean b);
 
+	/**
+	 * Set the input summation method.
+	 * @param theInputSummation The input summation method.
+	 */
 	void setInputSummation(InputSummation theInputSummation);
 
+	/**
+	 * Update the context value for this neuron.
+	 */
 	void updateContext();
 }

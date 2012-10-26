@@ -26,6 +26,14 @@ package org.encog.neural.freeform.factory;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.freeform.InputSummation;
 
+/**
+ * Factory that creates input summations.
+ */
 public interface InputSummationFactory {
+	/**
+	 * Create a new input summation.
+	 * @param activationFunction The activation function to use.
+	 * @return The input summation.
+	 */
 	InputSummation factor(ActivationFunction activationFunction);
 }

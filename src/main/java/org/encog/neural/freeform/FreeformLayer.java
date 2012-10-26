@@ -25,16 +25,42 @@ package org.encog.neural.freeform;
 
 import java.util.List;
 
+/**
+ * Defines a freeform layer. A layer is a group of similar neurons.
+ *
+ */
 public interface FreeformLayer {
+	
+	/**
+	 * Add a neuron to this layer.
+	 * @param basicFreeformNeuron The neuron to add.
+	 */
 	void add(FreeformNeuron basicFreeformNeuron);
-
+	
+	/**
+	 * @return The neurons in this layer.
+	 */
 	List<FreeformNeuron> getNeurons();
 
+	/**
+	 * @return True if this layer has bias.
+	 */
 	boolean hasBias();
 
+	/**
+	 * Set the activation for the specified index.
+	 * @param i The index.
+	 * @param data The data for that index.
+	 */
 	void setActivation(int i, double data);
 
+	/**
+	 * @return The size of this layer, including bias.
+	 */
 	int size();
 
+	/**
+	 * @return The size of this layer, no bias counted.
+	 */
 	int sizeNonBias();
 }

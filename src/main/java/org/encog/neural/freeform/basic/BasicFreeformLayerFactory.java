@@ -28,6 +28,9 @@ import java.io.Serializable;
 import org.encog.neural.freeform.FreeformLayer;
 import org.encog.neural.freeform.factory.FreeformLayerFactory;
 
+/**
+ * A factory that creates BasicFreeformLayer objects.
+ */
 public class BasicFreeformLayerFactory implements FreeformLayerFactory,
 		Serializable {
 
@@ -36,6 +39,9 @@ public class BasicFreeformLayerFactory implements FreeformLayerFactory,
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public FreeformLayer factor() {
 		return new BasicFreeformLayer();

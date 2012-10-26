@@ -29,6 +29,9 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.freeform.InputSummation;
 import org.encog.neural.freeform.factory.InputSummationFactory;
 
+/**
+ * A factory to create BasicFactivationSUmmation objects.
+ */
 public class BasicActivationSummationFactory implements InputSummationFactory,
 		Serializable {
 
@@ -37,6 +40,9 @@ public class BasicActivationSummationFactory implements InputSummationFactory,
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public InputSummation factor(final ActivationFunction theActivationFunction) {
 		return new BasicActivationSummation(theActivationFunction);
