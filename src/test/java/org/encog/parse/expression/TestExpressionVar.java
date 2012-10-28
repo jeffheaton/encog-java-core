@@ -24,19 +24,20 @@
 package org.encog.parse.expression;
 
 import org.encog.Encog;
+import org.encog.ml.prg.EncogProgram;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class TestExpressionVar extends TestCase {
 	public void testAssignment() {
-		ExpressionHolder expression = new ExpressionHolder("a");
+		EncogProgram expression = new EncogProgram("a");
 		expression.set("a",5);
 		Assert.assertEquals(5,expression.evaluate(0).toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 	
 	public void testAssignment2() {
-		ExpressionHolder expression = new ExpressionHolder("cccc*(aa+bbb)");
+		EncogProgram expression = new EncogProgram("cccc*(aa+bbb)");
 		expression.set("aa",1);
 		expression.set("bbb",2);
 		expression.set("cccc",3);
@@ -45,7 +46,7 @@ public class TestExpressionVar extends TestCase {
 	
 	public void testError() {
 		try {
-			ExpressionHolder expression = new ExpressionHolder("b");
+			EncogProgram expression = new EncogProgram("b");
 			expression.set("a", 5);
 			expression.evaluate(0);
 			Assert.assertTrue(false);

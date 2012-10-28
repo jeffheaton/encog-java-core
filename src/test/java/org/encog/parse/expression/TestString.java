@@ -23,19 +23,21 @@
  */
 package org.encog.parse.expression;
 
+import org.encog.ml.prg.EncogProgram;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class TestString extends TestCase {
 	public void testSimple() {
-		Assert.assertEquals( "test", ExpressionHolder.parseString("\"test\""));
-		Assert.assertEquals( "", ExpressionHolder.parseString("\"\""));
+		Assert.assertEquals( "test", EncogProgram.parseString("\"test\""));
+		Assert.assertEquals( "", EncogProgram.parseString("\"\""));
 	}
 	
 	public void testConcat() {
-		Assert.assertEquals( "helloworld", ExpressionHolder.parseString("\"hello\"+\"world\""));
-		Assert.assertEquals( "test:123.0", ExpressionHolder.parseString("\"test:\"+123.0"));
-		Assert.assertEquals( 4, (int)ExpressionHolder.parseFloat("length(\"test\")"));
-		Assert.assertEquals( "5.22", ExpressionHolder.parseString("format(5.2222,2)"));
+		Assert.assertEquals( "helloworld", EncogProgram.parseString("\"hello\"+\"world\""));
+		Assert.assertEquals( "test:123.0", EncogProgram.parseString("\"test:\"+123.0"));
+		Assert.assertEquals( 4, (int)EncogProgram.parseFloat("length(\"test\")"));
+		Assert.assertEquals( "5.22", EncogProgram.parseString("format(5.2222,2)"));
 	}
 }

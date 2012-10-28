@@ -21,27 +21,34 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.parse.expression;
+package org.encog.ml.prg;
 
-import org.encog.parse.expression.expvalue.ExpressionValue;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ExpressionTreeVariable extends ExpressionTreeElement {
-	final private ExpressionHolder owner;
-	final private String name;
 
-	public ExpressionTreeVariable(final ExpressionHolder theOwner,
-			final String theName) {
+public abstract class NodeFunction extends ProgramNode {
+
+	private final String name;
+	private final List<ProgramNode> args = new ArrayList<ProgramNode>();
+	private final EncogProgram owner;
+
+	public NodeFunction(final EncogProgram theOwner,
+			final String theName, final List<ProgramNode> theArgs) {
 		this.owner = theOwner;
 		this.name = theName;
+		this.args.addAll(theArgs);
 	}
 
-	@Override
-	public ExpressionValue evaluate() {
-		if (!this.owner.variableExists(this.name)) {
-			throw new ExpressionError("Undefined variable: " + this.name);
-		}
-
-		return this.owner.get(this.name);
+	public List<ProgramNode> getArgs() {
+		return this.args;
 	}
 
+	public String getName() {
+		return this.name;
+	}
+
+	public EncogProgram getOwner() {
+		return this.owner;
+	}
 }

@@ -25,10 +25,10 @@ package org.encog.parse.expression.extension;
 
 import java.util.List;
 
-import org.encog.parse.expression.ExpressionHolder;
-import org.encog.parse.expression.ExpressionTreeElement;
-import org.encog.parse.expression.ExpressionTreeFunction;
+import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.NodeFunction;
 
 public interface ExpressionExtension {
-	ExpressionTreeFunction factorFunction(ExpressionHolder theOwner, String theName, List<ExpressionTreeElement> theArgs);
+	NodeFunction factorFunction(EncogProgram theOwner, String theName, List<ProgramNode> theArgs);
 }

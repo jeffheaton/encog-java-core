@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.parse.expression;
+package org.encog.ml.prg;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,39 +29,40 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.app.analyst.csv.process.ProcessExtension;
+import org.encog.parse.expression.ExpressionParser;
 import org.encog.parse.expression.expvalue.ExpressionValue;
 import org.encog.parse.expression.extension.ExpressionExtension;
 import org.encog.parse.expression.extension.StandardFunctionsExtension;
 import org.encog.util.csv.CSVFormat;
 
-public class ExpressionHolder {
+public class EncogProgram {
 
 	public static ExpressionValue parse(final String str) {
-		final ExpressionHolder holder = new ExpressionHolder(str);
+		final EncogProgram holder = new EncogProgram(str);
 		return holder.evaluate(0);
 	}
 
 	public static boolean parseBoolean(final String str) {
-		final ExpressionHolder holder = new ExpressionHolder(str);
+		final EncogProgram holder = new EncogProgram(str);
 		return holder.evaluate(0).toBooleanValue();
 	}
 
 	public static ExpressionValue parseExpression(final String str) {
-		final ExpressionHolder holder = new ExpressionHolder(str);
+		final EncogProgram holder = new EncogProgram(str);
 		return holder.evaluate(0);
 	}
 
 	public static double parseFloat(final String str) {
-		final ExpressionHolder holder = new ExpressionHolder(str);
+		final EncogProgram holder = new EncogProgram(str);
 		return holder.evaluate(0).toFloatValue();
 	}
 
 	public static String parseString(final String str) {
-		final ExpressionHolder holder = new ExpressionHolder(str);
+		final EncogProgram holder = new EncogProgram(str);
 		return holder.evaluate(0).toStringValue();
 	}
 
-	private final List<ExpressionTreeElement> expressions = new ArrayList<ExpressionTreeElement>();
+	private final List<ProgramNode> expressions = new ArrayList<ProgramNode>();
 
 	private final Map<String, ExpressionValue> memory = new HashMap<String, ExpressionValue>();
 
@@ -69,11 +70,11 @@ public class ExpressionHolder {
 
 	private CSVFormat format = CSVFormat.EG_FORMAT;
 
-	public ExpressionHolder() {
+	public EncogProgram() {
 		this.extensions.add(new StandardFunctionsExtension());
 	}
 
-	public ExpressionHolder(final String expression) {
+	public EncogProgram(final String expression) {
 		this();
 		compileExpression(expression);
 	}
@@ -82,9 +83,9 @@ public class ExpressionHolder {
 		this.extensions.add(extension);
 	}
 
-	public ExpressionTreeElement compileExpression(final String expression) {
+	public ProgramNode compileExpression(final String expression) {
 		final ExpressionParser parser = new ExpressionParser(this);
-		final ExpressionTreeElement e = parser.parse(expression);
+		final ProgramNode e = parser.parse(expression);
 		this.expressions.add(e);
 		return e;
 	}
@@ -97,7 +98,7 @@ public class ExpressionHolder {
 		return this.memory.get(name);
 	}
 
-	public List<ExpressionTreeElement> getExpressions() {
+	public List<ProgramNode> getExpressions() {
 		return this.expressions;
 	}
 

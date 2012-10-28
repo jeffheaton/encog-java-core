@@ -27,10 +27,11 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.Encog;
+import org.encog.ml.prg.EncogProgram;
 
 public class TestFunctions extends TestCase {
 	public void testBasicFunctions() {
-		Assert.assertEquals( 3, ExpressionHolder.parseFloat("sqrt(9)"),Encog.DEFAULT_DOUBLE_EQUAL);
-		Assert.assertEquals( 100, ExpressionHolder.parseFloat("pow(10,2)"),Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals( 3, EncogProgram.parseFloat("sqrt(9)"),Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals( 100, EncogProgram.parseFloat("pow(10,2)"),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 }

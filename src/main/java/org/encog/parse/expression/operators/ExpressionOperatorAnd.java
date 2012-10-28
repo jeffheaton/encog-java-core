@@ -23,14 +23,14 @@
  */
 package org.encog.parse.expression.operators;
 
-import org.encog.parse.expression.ExpressionTreeElement;
-import org.encog.parse.expression.ExpressionTreeOperator;
+import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.NodeOperator;
 import org.encog.parse.expression.expvalue.ExpressionValue;
 
-public class ExpressionOperatorAnd extends ExpressionTreeOperator {
+public class ExpressionOperatorAnd extends NodeOperator {
 
-	public ExpressionOperatorAnd(ExpressionTreeElement argA,
-			ExpressionTreeElement argB) {
+	public ExpressionOperatorAnd(ProgramNode argA,
+			ProgramNode argB) {
 		super("&", argA, argB);
 	}
 	

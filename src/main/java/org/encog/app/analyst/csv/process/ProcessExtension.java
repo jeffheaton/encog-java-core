@@ -30,9 +30,9 @@ import java.util.Map;
 
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.csv.basic.LoadedRow;
-import org.encog.parse.expression.ExpressionHolder;
-import org.encog.parse.expression.ExpressionTreeElement;
-import org.encog.parse.expression.ExpressionTreeFunction;
+import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.NodeFunction;
 import org.encog.parse.expression.extension.ExpressionExtension;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
@@ -51,8 +51,8 @@ public class ProcessExtension implements ExpressionExtension {
 	}
 	
 	@Override
-	public ExpressionTreeFunction factorFunction(ExpressionHolder theOwner,
-			String theName, List<ExpressionTreeElement> theArgs) {
+	public NodeFunction factorFunction(EncogProgram theOwner,
+			String theName, List<ProgramNode> theArgs) {
 		if (theName.equals("field")) {
 			return new FunctionField(this, theOwner, theArgs);
 		} if (theName.equals("fieldmax")) {

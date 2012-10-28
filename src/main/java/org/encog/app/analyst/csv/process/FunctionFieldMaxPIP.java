@@ -25,16 +25,16 @@ package org.encog.app.analyst.csv.process;
 
 import java.util.List;
 
-import org.encog.parse.expression.ExpressionHolder;
-import org.encog.parse.expression.ExpressionTreeElement;
-import org.encog.parse.expression.ExpressionTreeFunction;
+import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.NodeFunction;
 import org.encog.parse.expression.expvalue.ExpressionValue;
 
-public class FunctionFieldMaxPIP extends ExpressionTreeFunction {
+public class FunctionFieldMaxPIP extends NodeFunction {
 	
 	private ProcessExtension extension;
 
-	public FunctionFieldMaxPIP(ProcessExtension theExtension, ExpressionHolder theOwner, List<ExpressionTreeElement> theArgs) {
+	public FunctionFieldMaxPIP(ProcessExtension theExtension, EncogProgram theOwner, List<ProgramNode> theArgs) {
 		super(theOwner, "fieldmaxpip", theArgs);
 		this.extension = theExtension;
 	}

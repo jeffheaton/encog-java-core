@@ -26,6 +26,12 @@ package org.encog.parse.expression;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.prg.NodeConst;
+import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.NodeFunction;
+import org.encog.ml.prg.NodeUnary;
+import org.encog.ml.prg.NodeVar;
 import org.encog.parse.expression.expvalue.ExpressionValue;
 import org.encog.parse.expression.extension.ExpressionExtension;
 import org.encog.parse.expression.operators.ExpressionOperatorAdd;
@@ -44,17 +50,17 @@ import org.encog.util.SimpleParser;
 
 public class ExpressionParser {
 
-	private final ExpressionHolder holder;
+	private final EncogProgram holder;
 	private SimpleParser parser;
 	private int parenCount;
 
-	public ExpressionParser(final ExpressionHolder theHolder) {
+	public ExpressionParser(final EncogProgram theHolder) {
 		this.holder = theHolder;
 	}
 
-	private ExpressionTreeElement expr() {
+	private ProgramNode expr() {
 		char sign;
-		ExpressionTreeElement target;
+		ProgramNode target;
 
 		this.parser.eatWhiteSpace();
 
@@ -68,17 +74,17 @@ public class ExpressionParser {
 		this.parser.eatWhiteSpace();
 
 		if (sign == '-') {
-			target = new ExpressionTreeUnaryOperator("-", target);
+			target = new NodeUnary("-", target);
 		}
 
 		while ((this.parser.peek() == '+') || (this.parser.peek() == '-')) {
 			final char ch = this.parser.readChar();
 
 			if (ch == '-') {
-				final ExpressionTreeElement t = expr1();
+				final ProgramNode t = expr1();
 				target = new ExpressionOperatorSub(target, t);
 			} else if (ch == '+') {
-				final ExpressionTreeElement t = expr1();
+				final ProgramNode t = expr1();
 				target = new ExpressionOperatorAdd(target, t);
 			}
 		}
@@ -86,8 +92,8 @@ public class ExpressionParser {
 		return target;
 	}
 
-	private ExpressionTreeElement expr1() {
-		ExpressionTreeElement target;
+	private ProgramNode expr1() {
+		ProgramNode target;
 		this.parser.eatWhiteSpace();
 
 		target = expr1p5();
@@ -132,8 +138,8 @@ public class ExpressionParser {
 
 	}
 
-	private ExpressionTreeElement expr1p5() {
-		ExpressionTreeElement target = null;
+	private ProgramNode expr1p5() {
+		ProgramNode target = null;
 
 		this.parser.eatWhiteSpace();
 
@@ -148,11 +154,11 @@ public class ExpressionParser {
 			this.parser.eatWhiteSpace();
 
 			if (varName.toString().equals("true")) {
-				return new ExpressionTreeConst(new ExpressionValue(true));
+				return new NodeConst(new ExpressionValue(true));
 			} else if (varName.toString().equals("false")) {
-				return new ExpressionTreeConst(new ExpressionValue(false));
+				return new NodeConst(new ExpressionValue(false));
 			} else if (this.parser.peek() != '(') {
-				return new ExpressionTreeVariable(this.holder,
+				return new NodeVar(this.holder,
 						varName.toString());
 			} else {
 				return parseFunction(varName.toString());
@@ -182,21 +188,21 @@ public class ExpressionParser {
 		return target;
 	}
 
-	public ExpressionHolder getHolder() {
+	public EncogProgram getHolder() {
 		return this.holder;
 	}
 
-	public ExpressionTreeElement parse(final String expression) {
+	public ProgramNode parse(final String expression) {
 		this.parenCount = 0;
 		this.parser = new SimpleParser(expression);
-		final ExpressionTreeElement result = expr();
+		final ProgramNode result = expr();
 		if (this.parenCount != 0) {
 			throw new ExpressionError("Unbalanced parentheses");
 		}
 		return result;
 	}
 
-	private ExpressionTreeElement parseConstant() {
+	private ProgramNode parseConstant() {
 		double value, exponent;
 		boolean neg = false;
 		char sign = '+';
@@ -263,16 +269,16 @@ public class ExpressionParser {
 		}
 
 		if (isFloat) {
-			return new ExpressionTreeConst(new ExpressionValue(value));
+			return new NodeConst(new ExpressionValue(value));
 		} else {
-			return new ExpressionTreeConst(new ExpressionValue((int) value));
+			return new NodeConst(new ExpressionValue((int) value));
 		}
 	}
 
-	private ExpressionTreeFunction parseFunction(final String name) {
+	private NodeFunction parseFunction(final String name) {
 		final ExpressionParser expParser = new ExpressionParser(this.holder);
 		final StringBuilder currentExpression = new StringBuilder();
-		final List<ExpressionTreeElement> args = new ArrayList<ExpressionTreeElement>();
+		final List<ProgramNode> args = new ArrayList<ProgramNode>();
 		int pcnt = 0;
 
 		this.parser.advance();
@@ -306,7 +312,7 @@ public class ExpressionParser {
 		}
 		this.parser.advance();
 
-		ExpressionTreeFunction fn = null;
+		NodeFunction fn = null;
 
 		for (final ExpressionExtension extension : this.holder.getExtensions()) {
 			fn = extension.factorFunction(this.holder, name, args);
@@ -322,7 +328,7 @@ public class ExpressionParser {
 		}
 	}
 
-	private ExpressionTreeConst parseString() {
+	private NodeConst parseString() {
 		final StringBuilder str = new StringBuilder();
 
 		char ch;
@@ -347,7 +353,7 @@ public class ExpressionParser {
 		if (ch != 34) {
 			throw (new ExpressionError("Unterminated string"));
 		}
-		return new ExpressionTreeConst(new ExpressionValue(str.toString()));
+		return new NodeConst(new ExpressionValue(str.toString()));
 	}
 
 }

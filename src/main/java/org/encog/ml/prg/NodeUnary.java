@@ -21,33 +21,44 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.parse.expression;
+package org.encog.ml.prg;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.encog.parse.expression.ExpressionError;
+import org.encog.parse.expression.expvalue.ExpressionValue;
 
-public abstract class ExpressionTreeFunction extends ExpressionTreeElement {
-
+public class NodeUnary extends ProgramNode {
 	private final String name;
-	private final List<ExpressionTreeElement> args = new ArrayList<ExpressionTreeElement>();
-	private final ExpressionHolder owner;
+	private final ProgramNode argA;
 
-	public ExpressionTreeFunction(final ExpressionHolder theOwner,
-			final String theName, final List<ExpressionTreeElement> theArgs) {
-		this.owner = theOwner;
-		this.name = theName;
-		this.args.addAll(theArgs);
+	public NodeUnary(final String name,
+			final ProgramNode argA) {
+		super();
+		this.name = name;
+		this.argA = argA;
 	}
 
-	public List<ExpressionTreeElement> getArgs() {
-		return this.args;
+	@Override
+	public ExpressionValue evaluate() {
+		if (this.name.equals("-")) {
+			return new ExpressionValue(-this.argA.evaluate().toFloatValue());
+		} else {
+			throw new ExpressionError("Unknown operator: " + this.name);
+		}
+
+	}
+
+	public ProgramNode getArgA() {
+		return this.argA;
 	}
 
 	public String getName() {
 		return this.name;
 	}
 
-	public ExpressionHolder getOwner() {
-		return this.owner;
+	@Override
+	public String toString() {
+		return "[Opp: " + this.name + ", a:" + this.argA.toString() + ", b:"
+				+ "]";
 	}
+
 }

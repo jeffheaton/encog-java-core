@@ -21,43 +21,10 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.parse.expression;
+package org.encog.ml.prg;
 
 import org.encog.parse.expression.expvalue.ExpressionValue;
 
-public class ExpressionTreeUnaryOperator extends ExpressionTreeElement {
-	private final String name;
-	private final ExpressionTreeElement argA;
-
-	public ExpressionTreeUnaryOperator(final String name,
-			final ExpressionTreeElement argA) {
-		super();
-		this.name = name;
-		this.argA = argA;
-	}
-
-	@Override
-	public ExpressionValue evaluate() {
-		if (this.name.equals("-")) {
-			return new ExpressionValue(-this.argA.evaluate().toFloatValue());
-		} else {
-			throw new ExpressionError("Unknown operator: " + this.name);
-		}
-
-	}
-
-	public ExpressionTreeElement getArgA() {
-		return this.argA;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	@Override
-	public String toString() {
-		return "[Opp: " + this.name + ", a:" + this.argA.toString() + ", b:"
-				+ "]";
-	}
-
+public abstract class ProgramNode {
+	public abstract ExpressionValue evaluate();
 }

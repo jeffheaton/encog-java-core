@@ -33,8 +33,8 @@ import org.encog.app.analyst.csv.basic.BasicFile;
 import org.encog.app.analyst.csv.basic.LoadedRow;
 import org.encog.app.analyst.script.process.ProcessField;
 import org.encog.app.quant.QuantError;
-import org.encog.parse.expression.ExpressionHolder;
-import org.encog.parse.expression.ExpressionTreeElement;
+import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.prg.ProgramNode;
 import org.encog.parse.expression.expvalue.ExpressionValue;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
@@ -44,7 +44,7 @@ import org.encog.util.csv.ReadCSV;
  */
 public class AnalystProcess extends BasicFile {
 
-	private ExpressionHolder expressionFields;
+	private EncogProgram expressionFields;
 	private ProcessExtension extension;
 	private final EncogAnalyst analyst;
 	private final int forwardWindowSize;
@@ -81,7 +81,7 @@ public class AnalystProcess extends BasicFile {
 
 		performBasicCounts();
 		
-		this.expressionFields = new ExpressionHolder();
+		this.expressionFields = new EncogProgram();
 		extension = new ProcessExtension(this.getFormat());
 		this.expressionFields.addExtension(this.extension);
 		
@@ -144,7 +144,7 @@ public class AnalystProcess extends BasicFile {
 	private void processRow(PrintWriter tw) {
 		StringBuilder line = new StringBuilder();
 		
-		for(ExpressionTreeElement expr: this.expressionFields.getExpressions()) {
+		for(ProgramNode expr: this.expressionFields.getExpressions()) {
 			ExpressionValue result = expr.evaluate();
 			
 			BasicFile.appendSeparator(line, this.getFormat());

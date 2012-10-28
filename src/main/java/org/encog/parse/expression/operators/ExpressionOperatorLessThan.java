@@ -23,14 +23,14 @@
  */
 package org.encog.parse.expression.operators;
 
-import org.encog.parse.expression.ExpressionTreeElement;
-import org.encog.parse.expression.ExpressionTreeOperator;
+import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.NodeOperator;
 import org.encog.parse.expression.expvalue.ExpressionValue;
 
-public class ExpressionOperatorLessThan extends ExpressionTreeOperator {
+public class ExpressionOperatorLessThan extends NodeOperator {
 
-	public ExpressionOperatorLessThan(ExpressionTreeElement argA,
-			ExpressionTreeElement argB) {
+	public ExpressionOperatorLessThan(ProgramNode argA,
+			ProgramNode argB) {
 		super("<", argA, argB);
 	}
 	

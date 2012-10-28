@@ -21,37 +21,27 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.parse.expression;
+package org.encog.ml.prg;
 
-public abstract class ExpressionTreeOperator extends ExpressionTreeElement {
-	private final String name;
-	private final ExpressionTreeElement argA;
-	private final ExpressionTreeElement argB;
+import org.encog.parse.expression.expvalue.ExpressionValue;
 
-	public ExpressionTreeOperator(final String name,
-			final ExpressionTreeElement argA, final ExpressionTreeElement argB) {
+public class NodeConst extends ProgramNode {
+
+	private final ExpressionValue value;
+
+	public NodeConst(final ExpressionValue value) {
 		super();
-		this.name = name;
-		this.argA = argA;
-		this.argB = argB;
+		this.value = value;
 	}
 
-	public ExpressionTreeElement getArgA() {
-		return this.argA;
-	}
-
-	public ExpressionTreeElement getArgB() {
-		return this.argB;
-	}
-
-	public String getName() {
-		return this.name;
+	@Override
+	public ExpressionValue evaluate() {
+		return this.value;
 	}
 
 	@Override
 	public String toString() {
-		return "[Opp: " + this.name + ", a:" + this.argA.toString() + ", b:"
-				+ this.argB.toString() + "]";
+		return "[Const: " + toString() + "]";
 	}
 
 }

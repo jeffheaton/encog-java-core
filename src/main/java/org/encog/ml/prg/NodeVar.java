@@ -21,10 +21,28 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.parse.expression;
+package org.encog.ml.prg;
 
+import org.encog.parse.expression.ExpressionError;
 import org.encog.parse.expression.expvalue.ExpressionValue;
 
-public abstract class ExpressionTreeElement {
-	public abstract ExpressionValue evaluate();
+public class NodeVar extends ProgramNode {
+	final private EncogProgram owner;
+	final private String name;
+
+	public NodeVar(final EncogProgram theOwner,
+			final String theName) {
+		this.owner = theOwner;
+		this.name = theName;
+	}
+
+	@Override
+	public ExpressionValue evaluate() {
+		if (!this.owner.variableExists(this.name)) {
+			throw new ExpressionError("Undefined variable: " + this.name);
+		}
+
+		return this.owner.get(this.name);
+	}
+
 }
