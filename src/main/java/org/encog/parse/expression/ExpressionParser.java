@@ -33,18 +33,6 @@ import org.encog.ml.prg.NodeVar;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.extension.ProgramExtension;
 import org.encog.parse.expression.expvalue.ExpressionValue;
-import org.encog.parse.expression.operators.ExpressionOperatorAdd;
-import org.encog.parse.expression.operators.ExpressionOperatorAnd;
-import org.encog.parse.expression.operators.ExpressionOperatorDiv;
-import org.encog.parse.expression.operators.ExpressionOperatorEqualTo;
-import org.encog.parse.expression.operators.ExpressionOperatorGreaterThan;
-import org.encog.parse.expression.operators.ExpressionOperatorGreaterThanEqual;
-import org.encog.parse.expression.operators.ExpressionOperatorLessThan;
-import org.encog.parse.expression.operators.ExpressionOperatorLessThanEqual;
-import org.encog.parse.expression.operators.ExpressionOperatorMul;
-import org.encog.parse.expression.operators.ExpressionOperatorOr;
-import org.encog.parse.expression.operators.ExpressionOperatorPow;
-import org.encog.parse.expression.operators.ExpressionOperatorSub;
 import org.encog.util.SimpleParser;
 
 public class ExpressionParser {
@@ -81,10 +69,10 @@ public class ExpressionParser {
 
 			if (ch == '-') {
 				final ProgramNode t = expr1();
-				target = new ExpressionOperatorSub(this.holder,target, t);
+				target = this.factorFunction("-", new ProgramNode[] { target, t} );
 			} else if (ch == '+') {
 				final ProgramNode t = expr1();
-				target = new ExpressionOperatorAdd(this.holder,target, t);
+				target = this.factorFunction("+", new ProgramNode[] { target, t} );
 			}
 		}
 
@@ -107,30 +95,27 @@ public class ExpressionParser {
 		while ((nextchar > 0) && ("/*<>=&|".indexOf(nextchar) != -1)) {
 			switch (this.parser.readChar()) {
 			case '*':
-				return new ExpressionOperatorMul(this.holder,target, expr1p5());
-
+				return this.factorFunction("*", new ProgramNode[] { target, expr1p5()} );
 			case '/':
-				return new ExpressionOperatorDiv(this.holder,target, expr1p5());
+				return this.factorFunction("/", new ProgramNode[] { target, expr1p5()} );
 			case '<':
 				if (this.parser.peek() == '=') {
 					this.parser.advance();
-					return new ExpressionOperatorLessThanEqual(this.holder,target,
-							expr1p5());
+					return this.factorFunction("<=", new ProgramNode[] { target, expr1p5()} );
 				}
-				return new ExpressionOperatorLessThan(this.holder,target, expr1p5());
+				return this.factorFunction("<", new ProgramNode[] { target, expr1p5()} );
 			case '>':
 				if (this.parser.peek() == '=') {
 					this.parser.advance();
-					return new ExpressionOperatorGreaterThanEqual(this.holder,target,
-							expr1p5());
+					return this.factorFunction(">=", new ProgramNode[] { target, expr1p5()} );
 				}
-				return new ExpressionOperatorGreaterThan(this.holder,target, expr1p5());
+				return this.factorFunction(">", new ProgramNode[] { target, expr1p5()} );
 			case '=':
-				return new ExpressionOperatorEqualTo(this.holder,target, expr1p5());
+				return this.factorFunction("=", new ProgramNode[] { target, expr1p5()} );
 			case '&':
-				return new ExpressionOperatorAnd(this.holder,target, expr1p5());
+				return this.factorFunction("&", new ProgramNode[] { target, expr1p5()} );
 			case '|':
-				return new ExpressionOperatorOr(this.holder,target, expr1p5());
+				return this.factorFunction("|", new ProgramNode[] { target, expr1p5()} );
 			}
 		}
 		return target;
@@ -182,7 +167,7 @@ public class ExpressionParser {
 
 		while (this.parser.peek() == '^') {
 			this.parser.advance();
-			return new ExpressionOperatorPow(this.holder,target, expr1p5());
+			return this.factorFunction("^", new ProgramNode[] { target, expr1p5()} );
 		}
 		return target;
 	}

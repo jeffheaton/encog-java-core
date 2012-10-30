@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.encog.app.analyst.csv.process.ProcessExtension;
 import org.encog.ml.prg.extension.ProgramExtension;
+import org.encog.ml.prg.extension.StandardBooleanOperators;
 import org.encog.ml.prg.extension.StandardFunctionsExtension;
 import org.encog.ml.prg.extension.StandardNumericOperators;
 import org.encog.parse.expression.ExpressionParser;
@@ -74,6 +75,7 @@ public class EncogProgram {
 	public EncogProgram() {
 		this.extensions.add(new StandardFunctionsExtension());
 		this.extensions.add(new StandardNumericOperators());
+		this.extensions.add(new StandardBooleanOperators());
 	}
 
 	public EncogProgram(final String expression) {
