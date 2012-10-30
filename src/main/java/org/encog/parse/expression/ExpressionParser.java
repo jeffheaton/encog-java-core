@@ -74,7 +74,7 @@ public class ExpressionParser {
 		this.parser.eatWhiteSpace();
 
 		if (sign == '-') {
-			target = new NodeUnary("-", target);
+			target = new NodeUnary(this.holder,"-", target);
 		}
 
 		while ((this.parser.peek() == '+') || (this.parser.peek() == '-')) {
@@ -82,10 +82,10 @@ public class ExpressionParser {
 
 			if (ch == '-') {
 				final ProgramNode t = expr1();
-				target = new ExpressionOperatorSub(target, t);
+				target = new ExpressionOperatorSub(this.holder,target, t);
 			} else if (ch == '+') {
 				final ProgramNode t = expr1();
-				target = new ExpressionOperatorAdd(target, t);
+				target = new ExpressionOperatorAdd(this.holder,target, t);
 			}
 		}
 
@@ -108,30 +108,30 @@ public class ExpressionParser {
 		while ((nextchar > 0) && ("/*<>=&|".indexOf(nextchar) != -1)) {
 			switch (this.parser.readChar()) {
 			case '*':
-				return new ExpressionOperatorMul(target, expr1p5());
+				return new ExpressionOperatorMul(this.holder,target, expr1p5());
 
 			case '/':
-				return new ExpressionOperatorDiv(target, expr1p5());
+				return new ExpressionOperatorDiv(this.holder,target, expr1p5());
 			case '<':
 				if (this.parser.peek() == '=') {
 					this.parser.advance();
-					return new ExpressionOperatorLessThanEqual(target,
+					return new ExpressionOperatorLessThanEqual(this.holder,target,
 							expr1p5());
 				}
-				return new ExpressionOperatorLessThan(target, expr1p5());
+				return new ExpressionOperatorLessThan(this.holder,target, expr1p5());
 			case '>':
 				if (this.parser.peek() == '=') {
 					this.parser.advance();
-					return new ExpressionOperatorGreaterThanEqual(target,
+					return new ExpressionOperatorGreaterThanEqual(this.holder,target,
 							expr1p5());
 				}
-				return new ExpressionOperatorGreaterThan(target, expr1p5());
+				return new ExpressionOperatorGreaterThan(this.holder,target, expr1p5());
 			case '=':
-				return new ExpressionOperatorEqualTo(target, expr1p5());
+				return new ExpressionOperatorEqualTo(this.holder,target, expr1p5());
 			case '&':
-				return new ExpressionOperatorAnd(target, expr1p5());
+				return new ExpressionOperatorAnd(this.holder,target, expr1p5());
 			case '|':
-				return new ExpressionOperatorOr(target, expr1p5());
+				return new ExpressionOperatorOr(this.holder,target, expr1p5());
 			}
 		}
 		return target;
@@ -154,9 +154,9 @@ public class ExpressionParser {
 			this.parser.eatWhiteSpace();
 
 			if (varName.toString().equals("true")) {
-				return new NodeConst(new ExpressionValue(true));
+				return new NodeConst(this.holder,new ExpressionValue(true));
 			} else if (varName.toString().equals("false")) {
-				return new NodeConst(new ExpressionValue(false));
+				return new NodeConst(this.holder,new ExpressionValue(false));
 			} else if (this.parser.peek() != '(') {
 				return new NodeVar(this.holder,
 						varName.toString());
@@ -183,7 +183,7 @@ public class ExpressionParser {
 
 		while (this.parser.peek() == '^') {
 			this.parser.advance();
-			return new ExpressionOperatorPow(target, expr1p5());
+			return new ExpressionOperatorPow(this.holder,target, expr1p5());
 		}
 		return target;
 	}
@@ -269,9 +269,9 @@ public class ExpressionParser {
 		}
 
 		if (isFloat) {
-			return new NodeConst(new ExpressionValue(value));
+			return new NodeConst(this.holder,new ExpressionValue(value));
 		} else {
-			return new NodeConst(new ExpressionValue((int) value));
+			return new NodeConst(this.holder,new ExpressionValue((int) value));
 		}
 	}
 
@@ -314,8 +314,8 @@ public class ExpressionParser {
 
 		NodeFunction fn = null;
 
-		for (final ExpressionExtension extension : this.holder.getExtensions()) {
-			fn = extension.factorFunction(this.holder, name, args);
+		for (final ExpressionExtension extension : this.holder.getExtensions()) {			
+			fn = extension.factorFunction(this.holder, name, toArgArray(args));
 			if (fn != null) {
 				break;
 			}
@@ -326,6 +326,14 @@ public class ExpressionParser {
 		} else {
 			throw new ExpressionError("Undefined function: " + name);
 		}
+	}
+	
+	private ProgramNode[] toArgArray(List<ProgramNode> nodes) {
+		ProgramNode[] result = new ProgramNode[nodes.size()];
+		for(int i=0;i<nodes.size();i++) {
+			result[i] = nodes.get(i);
+		}
+		return result;
 	}
 
 	private NodeConst parseString() {
@@ -353,7 +361,7 @@ public class ExpressionParser {
 		if (ch != 34) {
 			throw (new ExpressionError("Unterminated string"));
 		}
-		return new NodeConst(new ExpressionValue(str.toString()));
+		return new NodeConst(this.holder,new ExpressionValue(str.toString()));
 	}
 
 }

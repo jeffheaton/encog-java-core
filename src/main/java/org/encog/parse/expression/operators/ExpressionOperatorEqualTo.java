@@ -24,20 +24,21 @@
 package org.encog.parse.expression.operators;
 
 import org.encog.Encog;
+import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.NodeOperator;
 import org.encog.parse.expression.expvalue.ExpressionValue;
 
 public class ExpressionOperatorEqualTo extends NodeOperator {
 
-	public ExpressionOperatorEqualTo(ProgramNode argA,
+	public ExpressionOperatorEqualTo(final EncogProgram theOwner,ProgramNode argA,
 			ProgramNode argB) {
-		super("=", argA, argB);
+		super(theOwner,"=", argA, argB);
 	}
 	
 	@Override
 	public ExpressionValue evaluate() {
-		double diff = Math.abs(getArgA().evaluate().toFloatValue() - this.getArgB().evaluate().toFloatValue());
+		double diff = Math.abs(getArgs().get(0).evaluate().toFloatValue() - getArgs().get(1).evaluate().toFloatValue());
 		return new ExpressionValue( diff<Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 }

@@ -23,6 +23,7 @@
  */
 package org.encog.parse.expression.operators;
 
+import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.NodeOperator;
 import org.encog.parse.expression.expvalue.EvaluateExpr;
@@ -30,13 +31,13 @@ import org.encog.parse.expression.expvalue.ExpressionValue;
 
 public class ExpressionOperatorDiv extends NodeOperator {
 
-	public ExpressionOperatorDiv(ProgramNode argA,
+	public ExpressionOperatorDiv(final EncogProgram theOwner,ProgramNode argA,
 			ProgramNode argB) {
-		super("/", argA, argB);
+		super(theOwner,"/", argA, argB);
 	}
 	
 	@Override
 	public ExpressionValue evaluate() {
-		return EvaluateExpr.div(getArgA().evaluate(), this.getArgB().evaluate());
+		return EvaluateExpr.div(getArgs().get(0).evaluate(), getArgs().get(1).evaluate());
 	}
 }

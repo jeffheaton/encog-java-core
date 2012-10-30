@@ -28,27 +28,22 @@ import org.encog.parse.expression.expvalue.ExpressionValue;
 
 public class NodeUnary extends ProgramNode {
 	private final String name;
-	private final ProgramNode argA;
 
-	public NodeUnary(final String name,
+	public NodeUnary(final EncogProgram theOwner, final String name,
 			final ProgramNode argA) {
-		super();
+		super(theOwner);
 		this.name = name;
-		this.argA = argA;
+		this.getArgs().add(argA);
 	}
 
 	@Override
 	public ExpressionValue evaluate() {
 		if (this.name.equals("-")) {
-			return new ExpressionValue(-this.argA.evaluate().toFloatValue());
+			return new ExpressionValue(-this.getArgs().get(0).evaluate().toFloatValue());
 		} else {
 			throw new ExpressionError("Unknown operator: " + this.name);
 		}
 
-	}
-
-	public ProgramNode getArgA() {
-		return this.argA;
 	}
 
 	public String getName() {
@@ -57,8 +52,7 @@ public class NodeUnary extends ProgramNode {
 
 	@Override
 	public String toString() {
-		return "[Opp: " + this.name + ", a:" + this.argA.toString() + ", b:"
-				+ "]";
+		return "[Opp: " + this.name + ", a:" + this.getArgs().get(0).evaluate().toString() + "]";
 	}
 
 }

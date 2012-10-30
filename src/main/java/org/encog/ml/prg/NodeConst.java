@@ -29,8 +29,8 @@ public class NodeConst extends ProgramNode {
 
 	private final ExpressionValue value;
 
-	public NodeConst(final ExpressionValue value) {
-		super();
+	public NodeConst(final EncogProgram theProgram, final ExpressionValue value) {
+		super(null);
 		this.value = value;
 	}
 

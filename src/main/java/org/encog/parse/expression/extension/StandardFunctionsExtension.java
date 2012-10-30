@@ -38,7 +38,7 @@ public class StandardFunctionsExtension implements ExpressionExtension {
 	
 	@Override
 	public NodeFunction factorFunction(EncogProgram theOwner,
-			String theName, List<ProgramNode> theArgs) {
+			String theName, ProgramNode[] theArgs) {
 		
 		if (theName.equals("abs")) {
 			return new NodeFunction(theOwner, theName, theArgs) {

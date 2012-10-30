@@ -23,19 +23,20 @@
  */
 package org.encog.parse.expression.operators;
 
+import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.NodeOperator;
 import org.encog.parse.expression.expvalue.ExpressionValue;
 
 public class ExpressionOperatorOr extends NodeOperator {
 
-	public ExpressionOperatorOr(ProgramNode argA,
+	public ExpressionOperatorOr(final EncogProgram theOwner,ProgramNode argA,
 			ProgramNode argB) {
-		super("|", argA, argB);
+		super(theOwner,"|", argA, argB);
 	}
 	
 	@Override
 	public ExpressionValue evaluate() {
-		return new ExpressionValue(getArgA().evaluate().toBooleanValue() || this.getArgB().evaluate().toBooleanValue());
+		return new ExpressionValue(getArgs().get(0).evaluate().toBooleanValue() || getArgs().get(1).evaluate().toBooleanValue());
 	}
 }

@@ -23,19 +23,20 @@
  */
 package org.encog.parse.expression.operators;
 
+import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.NodeOperator;
 import org.encog.parse.expression.expvalue.ExpressionValue;
 
 public class ExpressionOperatorLessThan extends NodeOperator {
 
-	public ExpressionOperatorLessThan(ProgramNode argA,
+	public ExpressionOperatorLessThan(final EncogProgram theOwner,ProgramNode argA,
 			ProgramNode argB) {
-		super("<", argA, argB);
+		super(theOwner,"<", argA, argB);
 	}
 	
 	@Override
 	public ExpressionValue evaluate() {
-		return new ExpressionValue(getArgA().evaluate().toFloatValue() < this.getArgB().evaluate().toFloatValue());
+		return new ExpressionValue(getArgs().get(0).evaluate().toFloatValue() < getArgs().get(1).evaluate().toFloatValue());
 	}
 }

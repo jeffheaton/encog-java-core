@@ -30,5 +30,5 @@ import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.NodeFunction;
 
 public interface ExpressionExtension {
-	NodeFunction factorFunction(EncogProgram theOwner, String theName, List<ProgramNode> theArgs);
+	NodeFunction factorFunction(EncogProgram theOwner, String theName, ProgramNode[] theArgs);
 }

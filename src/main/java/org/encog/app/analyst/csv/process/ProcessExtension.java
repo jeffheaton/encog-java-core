@@ -52,7 +52,7 @@ public class ProcessExtension implements ExpressionExtension {
 	
 	@Override
 	public NodeFunction factorFunction(EncogProgram theOwner,
-			String theName, List<ProgramNode> theArgs) {
+			String theName, ProgramNode[] theArgs) {
 		if (theName.equals("field")) {
 			return new FunctionField(this, theOwner, theArgs);
 		} if (theName.equals("fieldmax")) {

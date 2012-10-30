@@ -34,7 +34,7 @@ public class FunctionFieldMaxPIP extends NodeFunction {
 	
 	private ProcessExtension extension;
 
-	public FunctionFieldMaxPIP(ProcessExtension theExtension, EncogProgram theOwner, List<ProgramNode> theArgs) {
+	public FunctionFieldMaxPIP(ProcessExtension theExtension, EncogProgram theOwner, ProgramNode[] theArgs) {
 		super(theOwner, "fieldmaxpip", theArgs);
 		this.extension = theExtension;
 	}

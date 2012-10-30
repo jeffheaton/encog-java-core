@@ -34,7 +34,7 @@ public class FunctionField extends NodeFunction {
 	
 	private ProcessExtension extension;
 
-	public FunctionField(ProcessExtension theExtension, EncogProgram theOwner, List<ProgramNode> theArgs) {
+	public FunctionField(ProcessExtension theExtension, EncogProgram theOwner, ProgramNode[] theArgs) {
 		super(theOwner, "field", theArgs);
 		this.extension = theExtension;
 	}

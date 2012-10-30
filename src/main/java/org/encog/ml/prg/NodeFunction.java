@@ -30,25 +30,15 @@ import java.util.List;
 public abstract class NodeFunction extends ProgramNode {
 
 	private final String name;
-	private final List<ProgramNode> args = new ArrayList<ProgramNode>();
-	private final EncogProgram owner;
 
 	public NodeFunction(final EncogProgram theOwner,
-			final String theName, final List<ProgramNode> theArgs) {
-		this.owner = theOwner;
+			final String theName, ProgramNode[] theArgs) {
+		super(theOwner);
 		this.name = theName;
-		this.args.addAll(theArgs);
-	}
-
-	public List<ProgramNode> getArgs() {
-		return this.args;
+		addArgs(theArgs);
 	}
 
 	public String getName() {
 		return this.name;
-	}
-
-	public EncogProgram getOwner() {
-		return this.owner;
 	}
 }

@@ -23,8 +23,32 @@
  */
 package org.encog.ml.prg;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.encog.parse.expression.expvalue.ExpressionValue;
 
 public abstract class ProgramNode {
 	public abstract ExpressionValue evaluate();
+	
+	private final List<ProgramNode> args = new ArrayList<ProgramNode>();
+	private final EncogProgram owner;
+	
+	
+	public ProgramNode(EncogProgram theOwner) {
+		this.owner = theOwner;
+	}
+	
+	public List<ProgramNode> getArgs() {
+		return args;
+	}
+	public EncogProgram getOwner() {
+		return owner;
+	}
+	
+	public void addArgs(ProgramNode[] args) {
+		for( ProgramNode pn: args) {
+			this.args.add(pn);
+		}
+	}
 }

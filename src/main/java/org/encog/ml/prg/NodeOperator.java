@@ -25,23 +25,13 @@ package org.encog.ml.prg;
 
 public abstract class NodeOperator extends ProgramNode {
 	private final String name;
-	private final ProgramNode argA;
-	private final ProgramNode argB;
 
-	public NodeOperator(final String name,
+	public NodeOperator(final EncogProgram theOwner,final String name,
 			final ProgramNode argA, final ProgramNode argB) {
-		super();
+		super(theOwner);
 		this.name = name;
-		this.argA = argA;
-		this.argB = argB;
-	}
-
-	public ProgramNode getArgA() {
-		return this.argA;
-	}
-
-	public ProgramNode getArgB() {
-		return this.argB;
+		this.getArgs().add(argA);
+		this.getArgs().add(argB);
 	}
 
 	public String getName() {
@@ -50,8 +40,9 @@ public abstract class NodeOperator extends ProgramNode {
 
 	@Override
 	public String toString() {
-		return "[Opp: " + this.name + ", a:" + this.argA.toString() + ", b:"
-				+ this.argB.toString() + "]";
+		return "[Opp: " + this.name + ", a:" 
+				+ this.getArgs().get(0).evaluate().toString() + ", b:"
+				+ this.getArgs().get(1).evaluate().toString() + "]";
 	}
 
 }
