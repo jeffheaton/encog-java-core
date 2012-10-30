@@ -21,18 +21,14 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.parse.expression.extension;
-
-import java.util.List;
+package org.encog.ml.prg.extension;
 
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.NodeFunction;
-import org.encog.parse.expression.ExpressionError;
-import org.encog.parse.expression.expvalue.EvaluateExpr;
+import org.encog.ml.prg.ProgramNode;
 import org.encog.parse.expression.expvalue.ExpressionValue;
 
-public class StandardFunctionsExtension implements ExpressionExtension {
+public class StandardFunctionsExtension implements ProgramExtension {
 
 	private EncogProgram owner;
 	

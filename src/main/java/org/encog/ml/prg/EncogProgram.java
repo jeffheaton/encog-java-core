@@ -29,10 +29,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.app.analyst.csv.process.ProcessExtension;
+import org.encog.ml.prg.extension.ProgramExtension;
+import org.encog.ml.prg.extension.StandardFunctionsExtension;
+import org.encog.ml.prg.extension.StandardNumericOperators;
 import org.encog.parse.expression.ExpressionParser;
 import org.encog.parse.expression.expvalue.ExpressionValue;
-import org.encog.parse.expression.extension.ExpressionExtension;
-import org.encog.parse.expression.extension.StandardFunctionsExtension;
 import org.encog.util.csv.CSVFormat;
 
 public class EncogProgram {
@@ -66,12 +67,13 @@ public class EncogProgram {
 
 	private final Map<String, ExpressionValue> memory = new HashMap<String, ExpressionValue>();
 
-	private final List<ExpressionExtension> extensions = new ArrayList<ExpressionExtension>();
+	private final List<ProgramExtension> extensions = new ArrayList<ProgramExtension>();
 
 	private CSVFormat format = CSVFormat.EG_FORMAT;
 
 	public EncogProgram() {
 		this.extensions.add(new StandardFunctionsExtension());
+		this.extensions.add(new StandardNumericOperators());
 	}
 
 	public EncogProgram(final String expression) {
@@ -102,7 +104,7 @@ public class EncogProgram {
 		return this.expressions;
 	}
 
-	public List<ExpressionExtension> getExtensions() {
+	public List<ProgramExtension> getExtensions() {
 		return this.extensions;
 	}
 

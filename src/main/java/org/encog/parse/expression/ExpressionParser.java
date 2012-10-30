@@ -32,8 +32,8 @@ import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.NodeFunction;
 import org.encog.ml.prg.NodeUnary;
 import org.encog.ml.prg.NodeVar;
+import org.encog.ml.prg.extension.ProgramExtension;
 import org.encog.parse.expression.expvalue.ExpressionValue;
-import org.encog.parse.expression.extension.ExpressionExtension;
 import org.encog.parse.expression.operators.ExpressionOperatorAdd;
 import org.encog.parse.expression.operators.ExpressionOperatorAnd;
 import org.encog.parse.expression.operators.ExpressionOperatorDiv;
@@ -274,6 +274,23 @@ public class ExpressionParser {
 			return new NodeConst(this.holder,new ExpressionValue((int) value));
 		}
 	}
+	
+	private NodeFunction factorFunction(String name, ProgramNode[] args) {
+		NodeFunction fn = null;
+
+		for (final ProgramExtension extension : this.holder.getExtensions()) {			
+			fn = extension.factorFunction(this.holder, name, args);
+			if (fn != null) {
+				break;
+			}
+		}
+
+		if (fn != null) {
+			return fn;
+		} else {
+			throw new ExpressionError("Undefined function/operator: " + name);
+		}		
+	}
 
 	private NodeFunction parseFunction(final String name) {
 		final ExpressionParser expParser = new ExpressionParser(this.holder);
@@ -311,21 +328,7 @@ public class ExpressionParser {
 					+ this.parser.getLine());
 		}
 		this.parser.advance();
-
-		NodeFunction fn = null;
-
-		for (final ExpressionExtension extension : this.holder.getExtensions()) {			
-			fn = extension.factorFunction(this.holder, name, toArgArray(args));
-			if (fn != null) {
-				break;
-			}
-		}
-
-		if (fn != null) {
-			return fn;
-		} else {
-			throw new ExpressionError("Undefined function: " + name);
-		}
+		return factorFunction(name,toArgArray(args));
 	}
 	
 	private ProgramNode[] toArgArray(List<ProgramNode> nodes) {

@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.parse.expression.extension;
+package org.encog.ml.prg.extension;
 
 import java.util.List;
 
@@ -29,6 +29,6 @@ import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.NodeFunction;
 
-public interface ExpressionExtension {
+public interface ProgramExtension {
 	NodeFunction factorFunction(EncogProgram theOwner, String theName, ProgramNode[] theArgs);
 }

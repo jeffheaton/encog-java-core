@@ -33,11 +33,11 @@ import org.encog.app.analyst.csv.basic.LoadedRow;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.NodeFunction;
-import org.encog.parse.expression.extension.ExpressionExtension;
+import org.encog.ml.prg.extension.ProgramExtension;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
-public class ProcessExtension implements ExpressionExtension {
+public class ProcessExtension implements ProgramExtension {
 
 	private Map<String,Integer> map = new HashMap<String,Integer>();
 	private int forwardWindowSize;
