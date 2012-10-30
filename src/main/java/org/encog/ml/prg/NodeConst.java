@@ -23,7 +23,7 @@
  */
 package org.encog.ml.prg;
 
-import org.encog.parse.expression.expvalue.ExpressionValue;
+import org.encog.ml.prg.expvalue.ExpressionValue;
 
 public class NodeConst extends ProgramNode {
 

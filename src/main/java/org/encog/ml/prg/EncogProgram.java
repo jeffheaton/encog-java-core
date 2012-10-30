@@ -29,12 +29,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.app.analyst.csv.process.ProcessExtension;
+import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.ProgramExtension;
 import org.encog.ml.prg.extension.StandardBooleanOperators;
 import org.encog.ml.prg.extension.StandardFunctionsExtension;
 import org.encog.ml.prg.extension.StandardNumericOperators;
 import org.encog.parse.expression.ExpressionParser;
-import org.encog.parse.expression.expvalue.ExpressionValue;
 import org.encog.util.csv.CSVFormat;
 
 public class EncogProgram {

@@ -21,28 +21,11 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.ml.prg;
+package org.encog.ml.prg.expvalue;
 
-public abstract class NodeOperator extends ProgramNode {
-	private final String name;
-
-	public NodeOperator(final EncogProgram theOwner,final String name,
-			final ProgramNode argA, final ProgramNode argB) {
-		super(theOwner);
-		this.name = name;
-		this.getArgs().add(argA);
-		this.getArgs().add(argB);
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	@Override
-	public String toString() {
-		return "[Opp: " + this.name + ", a:" 
-				+ this.getArgs().get(0).evaluate().toString() + ", b:"
-				+ this.getArgs().get(1).evaluate().toString() + "]";
-	}
-
+public enum ValueType {
+	floatingType,
+	stringType,
+	booleanType,
+	intType
 }

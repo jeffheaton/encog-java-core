@@ -35,7 +35,7 @@ import org.encog.app.analyst.script.process.ProcessField;
 import org.encog.app.quant.QuantError;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
-import org.encog.parse.expression.expvalue.ExpressionValue;
+import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 

@@ -26,7 +26,7 @@ package org.encog.ml.prg;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.parse.expression.expvalue.ExpressionValue;
+import org.encog.ml.prg.expvalue.ExpressionValue;
 
 public abstract class ProgramNode {
 	public abstract ExpressionValue evaluate();

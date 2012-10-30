@@ -25,7 +25,7 @@ package org.encog.parse.expression;
 
 import org.encog.Encog;
 import org.encog.ml.prg.EncogProgram;
-import org.encog.parse.expression.expvalue.ExpressionValue;
+import org.encog.ml.prg.expvalue.ExpressionValue;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;

@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.parse.expression.expvalue;
+package org.encog.ml.prg.expvalue;
 
 import org.encog.parse.expression.ExpressionError;
 

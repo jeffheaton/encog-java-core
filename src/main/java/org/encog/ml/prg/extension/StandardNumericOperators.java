@@ -3,8 +3,8 @@ package org.encog.ml.prg.extension;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.NodeFunction;
 import org.encog.ml.prg.ProgramNode;
-import org.encog.parse.expression.expvalue.EvaluateExpr;
-import org.encog.parse.expression.expvalue.ExpressionValue;
+import org.encog.ml.prg.expvalue.EvaluateExpr;
+import org.encog.ml.prg.expvalue.ExpressionValue;
 
 public class StandardNumericOperators implements ProgramExtension {
 

@@ -23,8 +23,8 @@
  */
 package org.encog.ml.prg;
 
+import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.parse.expression.ExpressionError;
-import org.encog.parse.expression.expvalue.ExpressionValue;
 
 public class NodeVar extends ProgramNode {
 	final private EncogProgram owner;

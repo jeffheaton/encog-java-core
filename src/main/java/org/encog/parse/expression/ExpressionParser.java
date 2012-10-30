@@ -31,8 +31,8 @@ import org.encog.ml.prg.NodeConst;
 import org.encog.ml.prg.NodeFunction;
 import org.encog.ml.prg.NodeVar;
 import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.ProgramExtension;
-import org.encog.parse.expression.expvalue.ExpressionValue;
 import org.encog.util.SimpleParser;
 
 public class ExpressionParser {
