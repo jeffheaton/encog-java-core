@@ -28,10 +28,9 @@ import java.util.List;
 
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.NodeConst;
-import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.NodeFunction;
-import org.encog.ml.prg.NodeUnary;
 import org.encog.ml.prg.NodeVar;
+import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.extension.ProgramExtension;
 import org.encog.parse.expression.expvalue.ExpressionValue;
 import org.encog.parse.expression.operators.ExpressionOperatorAdd;
@@ -74,7 +73,7 @@ public class ExpressionParser {
 		this.parser.eatWhiteSpace();
 
 		if (sign == '-') {
-			target = new NodeUnary(this.holder,"-", target);
+			target = this.factorFunction("-", new ProgramNode[] { target } );
 		}
 
 		while ((this.parser.peek() == '+') || (this.parser.peek() == '-')) {
