@@ -32,7 +32,7 @@ import org.encog.ml.prg.NodeFunction;
 import org.encog.ml.prg.NodeVar;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
-import org.encog.ml.prg.extension.ProgramExtension;
+import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.util.SimpleParser;
 
 public class ExpressionParser {
@@ -61,7 +61,7 @@ public class ExpressionParser {
 		this.parser.eatWhiteSpace();
 
 		if (sign == '-') {
-			target = this.factorFunction("-", new ProgramNode[] { target } );
+			target = this.holder.getFunctions().factorFunction("-", new ProgramNode[] { target } );
 		}
 
 		while ((this.parser.peek() == '+') || (this.parser.peek() == '-')) {
@@ -69,10 +69,10 @@ public class ExpressionParser {
 
 			if (ch == '-') {
 				final ProgramNode t = expr1();
-				target = this.factorFunction("-", new ProgramNode[] { target, t} );
+				target = this.holder.getFunctions().factorFunction("-", new ProgramNode[] { target, t} );
 			} else if (ch == '+') {
 				final ProgramNode t = expr1();
-				target = this.factorFunction("+", new ProgramNode[] { target, t} );
+				target = this.holder.getFunctions().factorFunction("+", new ProgramNode[] { target, t} );
 			}
 		}
 
@@ -95,27 +95,27 @@ public class ExpressionParser {
 		while ((nextchar > 0) && ("/*<>=&|".indexOf(nextchar) != -1)) {
 			switch (this.parser.readChar()) {
 			case '*':
-				return this.factorFunction("*", new ProgramNode[] { target, expr1p5()} );
+				return this.holder.getFunctions().factorFunction("*", new ProgramNode[] { target, expr1p5()} );
 			case '/':
-				return this.factorFunction("/", new ProgramNode[] { target, expr1p5()} );
+				return this.holder.getFunctions().factorFunction("/", new ProgramNode[] { target, expr1p5()} );
 			case '<':
 				if (this.parser.peek() == '=') {
 					this.parser.advance();
-					return this.factorFunction("<=", new ProgramNode[] { target, expr1p5()} );
+					return this.holder.getFunctions().factorFunction("<=", new ProgramNode[] { target, expr1p5()} );
 				}
-				return this.factorFunction("<", new ProgramNode[] { target, expr1p5()} );
+				return this.holder.getFunctions().factorFunction("<", new ProgramNode[] { target, expr1p5()} );
 			case '>':
 				if (this.parser.peek() == '=') {
 					this.parser.advance();
-					return this.factorFunction(">=", new ProgramNode[] { target, expr1p5()} );
+					return this.holder.getFunctions().factorFunction(">=", new ProgramNode[] { target, expr1p5()} );
 				}
-				return this.factorFunction(">", new ProgramNode[] { target, expr1p5()} );
+				return this.holder.getFunctions().factorFunction(">", new ProgramNode[] { target, expr1p5()} );
 			case '=':
-				return this.factorFunction("=", new ProgramNode[] { target, expr1p5()} );
+				return this.holder.getFunctions().factorFunction("=", new ProgramNode[] { target, expr1p5()} );
 			case '&':
-				return this.factorFunction("&", new ProgramNode[] { target, expr1p5()} );
+				return this.holder.getFunctions().factorFunction("&", new ProgramNode[] { target, expr1p5()} );
 			case '|':
-				return this.factorFunction("|", new ProgramNode[] { target, expr1p5()} );
+				return this.holder.getFunctions().factorFunction("|", new ProgramNode[] { target, expr1p5()} );
 			}
 		}
 		return target;
@@ -167,7 +167,7 @@ public class ExpressionParser {
 
 		while (this.parser.peek() == '^') {
 			this.parser.advance();
-			return this.factorFunction("^", new ProgramNode[] { target, expr1p5()} );
+			return this.holder.getFunctions().factorFunction("^", new ProgramNode[] { target, expr1p5()} );
 		}
 		return target;
 	}
@@ -258,23 +258,6 @@ public class ExpressionParser {
 			return new NodeConst(this.holder,new ExpressionValue((int) value));
 		}
 	}
-	
-	private NodeFunction factorFunction(String name, ProgramNode[] args) {
-		NodeFunction fn = null;
-
-		for (final ProgramExtension extension : this.holder.getExtensions()) {			
-			fn = extension.factorFunction(this.holder, name, args);
-			if (fn != null) {
-				break;
-			}
-		}
-
-		if (fn != null) {
-			return fn;
-		} else {
-			throw new ExpressionError("Undefined function/operator: " + name);
-		}		
-	}
 
 	private NodeFunction parseFunction(final String name) {
 		final ExpressionParser expParser = new ExpressionParser(this.holder);
@@ -312,7 +295,7 @@ public class ExpressionParser {
 					+ this.parser.getLine());
 		}
 		this.parser.advance();
-		return factorFunction(name,toArgArray(args));
+		return this.holder.getFunctions().factorFunction(name,toArgArray(args));
 	}
 	
 	private ProgramNode[] toArgArray(List<ProgramNode> nodes) {

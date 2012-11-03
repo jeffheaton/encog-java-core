@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.encog.app.analyst.csv.process.ProcessExtension;
 import org.encog.ml.prg.expvalue.ExpressionValue;
+import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.ml.prg.extension.ProgramExtension;
 import org.encog.ml.prg.extension.StandardBooleanOperators;
 import org.encog.ml.prg.extension.StandardFunctionsExtension;
@@ -38,6 +39,8 @@ import org.encog.parse.expression.ExpressionParser;
 import org.encog.util.csv.CSVFormat;
 
 public class EncogProgram {
+	
+	private FunctionFactory functions = new FunctionFactory(this);
 
 	public static ExpressionValue parse(final String str) {
 		final EncogProgram holder = new EncogProgram(str);
@@ -68,23 +71,17 @@ public class EncogProgram {
 
 	private final Map<String, ExpressionValue> memory = new HashMap<String, ExpressionValue>();
 
-	private final List<ProgramExtension> extensions = new ArrayList<ProgramExtension>();
-
 	private CSVFormat format = CSVFormat.EG_FORMAT;
 
 	public EncogProgram() {
-		this.extensions.add(new StandardFunctionsExtension());
-		this.extensions.add(new StandardNumericOperators());
-		this.extensions.add(new StandardBooleanOperators());
+		this.functions.addExtension(new StandardFunctionsExtension());
+		this.functions.addExtension(new StandardNumericOperators());
+		this.functions.addExtension(new StandardBooleanOperators());
 	}
 
 	public EncogProgram(final String expression) {
 		this();
 		compileExpression(expression);
-	}
-
-	public void addExtension(final ProcessExtension extension) {
-		this.extensions.add(extension);
 	}
 
 	public ProgramNode compileExpression(final String expression) {
@@ -106,16 +103,8 @@ public class EncogProgram {
 		return this.expressions;
 	}
 
-	public List<ProgramExtension> getExtensions() {
-		return this.extensions;
-	}
-
 	public CSVFormat getFormat() {
 		return this.format;
-	}
-
-	public void removeExtension(final ProcessExtension extension) {
-		this.extensions.remove(extension);
 	}
 
 	public void set(final String name, final double d) {
@@ -133,6 +122,10 @@ public class EncogProgram {
 
 	public boolean variableExists(final String name) {
 		return this.memory.containsKey(name);
+	}
+	
+	public FunctionFactory getFunctions() {
+		return this.functions;
 	}
 
 }
