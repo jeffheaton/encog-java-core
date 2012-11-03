@@ -37,7 +37,7 @@ import org.encog.app.generate.generators.java.GenerateEncogJava;
 import org.encog.app.generate.generators.js.GenerateEncogJavaScript;
 import org.encog.app.generate.generators.mql4.GenerateMQL4;
 import org.encog.app.generate.generators.ninja.GenerateNinjaScript;
-import org.encog.app.generate.program.EncogProgram;
+import org.encog.app.generate.program.EncogGenProgram;
 import org.encog.app.generate.program.EncogProgramNode;
 import org.encog.ml.MLEncodable;
 import org.encog.ml.MLMethod;
@@ -82,7 +82,7 @@ public class EncogCodeGeneration {
 	/**
 	 * The program that we are generating.
 	 */
-	private final EncogProgram program = new EncogProgram();
+	private final EncogGenProgram program = new EncogGenProgram();
 
 	/**
 	 * Construct the generation object.

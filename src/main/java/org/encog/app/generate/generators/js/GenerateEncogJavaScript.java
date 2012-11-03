@@ -29,7 +29,7 @@ import org.encog.Encog;
 import org.encog.EncogError;
 import org.encog.app.generate.AnalystCodeGenerationError;
 import org.encog.app.generate.generators.AbstractGenerator;
-import org.encog.app.generate.program.EncogProgram;
+import org.encog.app.generate.program.EncogGenProgram;
 import org.encog.app.generate.program.EncogProgramNode;
 import org.encog.app.generate.program.EncogTreeNode;
 import org.encog.engine.network.activation.ActivationElliott;
@@ -152,7 +152,7 @@ public class GenerateEncogJavaScript extends AbstractGenerator {
 	}
 
 	@Override
-	public void generate(final EncogProgram program, final boolean shouldEmbed) {
+	public void generate(final EncogGenProgram program, final boolean shouldEmbed) {
 		if (!shouldEmbed) {
 			throw new AnalystCodeGenerationError(
 					"Must embed when generating Javascript");

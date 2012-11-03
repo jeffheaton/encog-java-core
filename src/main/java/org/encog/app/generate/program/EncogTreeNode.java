@@ -45,14 +45,14 @@ public class EncogTreeNode {
 	/**
 	 * The program that this node belogs to.
 	 */
-	private EncogProgram program;
+	private EncogGenProgram program;
 
 	/**
 	 * Construct a tree node.
 	 * @param theProgram The program.
 	 * @param theParent The parent.
 	 */
-	public EncogTreeNode(final EncogProgram theProgram,
+	public EncogTreeNode(final EncogGenProgram theProgram,
 			final EncogTreeNode theParent) {
 		this.program = theProgram;
 		this.parent = theParent;
@@ -85,7 +85,7 @@ public class EncogTreeNode {
 	/**
 	 * @return The program.
 	 */
-	public EncogProgram getProgram() {
+	public EncogGenProgram getProgram() {
 		return this.program;
 	}
 
@@ -93,7 +93,7 @@ public class EncogTreeNode {
 	 * Set the program.
 	 * @param program The program.
 	 */
-	public void setProgram(final EncogProgram program) {
+	public void setProgram(final EncogGenProgram program) {
 		this.program = program;
 	}
 

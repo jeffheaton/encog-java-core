@@ -27,12 +27,12 @@ package org.encog.app.generate.program;
  * Holds a generated Encog program. A language specific generator will take this
  * and generate actual source code from it.
  */
-public class EncogProgram extends EncogTreeNode {
+public class EncogGenProgram extends EncogTreeNode {
 
 	/**
 	 * Construct the program.
 	 */
-	public EncogProgram() {
+	public EncogGenProgram() {
 		super(null, null);
 		setProgram(this);
 	}

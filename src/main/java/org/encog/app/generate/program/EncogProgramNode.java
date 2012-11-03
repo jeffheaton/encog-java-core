@@ -54,7 +54,7 @@ public class EncogProgramNode extends EncogTreeNode {
 	 * @param theNodeType The node type.
 	 * @param theName The name of the node.
 	 */
-	public EncogProgramNode(final EncogProgram theProgram,
+	public EncogProgramNode(final EncogGenProgram theProgram,
 			final EncogTreeNode theParent, final NodeType theNodeType,
 			final String theName) {
 		super(theProgram, theParent);

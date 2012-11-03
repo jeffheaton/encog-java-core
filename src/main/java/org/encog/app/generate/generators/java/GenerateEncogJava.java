@@ -28,7 +28,7 @@ import java.io.File;
 import org.encog.Encog;
 import org.encog.EncogError;
 import org.encog.app.generate.generators.AbstractGenerator;
-import org.encog.app.generate.program.EncogProgram;
+import org.encog.app.generate.program.EncogGenProgram;
 import org.encog.app.generate.program.EncogProgramNode;
 import org.encog.app.generate.program.EncogTreeNode;
 import org.encog.ml.MLFactory;
@@ -145,7 +145,7 @@ public class GenerateEncogJava extends AbstractGenerator {
 	}
 
 	@Override
-	public void generate(final EncogProgram program, final boolean shouldEmbed) {
+	public void generate(final EncogGenProgram program, final boolean shouldEmbed) {
 		this.embed = shouldEmbed;
 		generateForChildren(program);
 		generateImports(program);
@@ -258,7 +258,7 @@ public class GenerateEncogJava extends AbstractGenerator {
 		addLine(line.toString());
 	}
 
-	private void generateImports(final EncogProgram program) {
+	private void generateImports(final EncogGenProgram program) {
 		final StringBuilder imports = new StringBuilder();
 		for (final String str : getIncludes()) {
 			imports.append("import ");
