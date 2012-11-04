@@ -70,7 +70,7 @@ public class EncogProgram {
 	private CSVFormat format = CSVFormat.EG_FORMAT;
 
 	public EncogProgram() {
-		StandardExtensions.createStandardNumericExtensions(this.functions);
+		StandardExtensions.createAll(this.functions);
 	}
 
 	public EncogProgram(final String expression) {

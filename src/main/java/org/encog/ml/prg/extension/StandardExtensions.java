@@ -1723,17 +1723,16 @@ public class StandardExtensions {
 	};
 	
 	
-	
-
-
-
-	public static void createStandardNumericExtensions(FunctionFactory factory) {
+	public static void createNumericOperators(FunctionFactory factory) {
 		factory.addExtension(EXTENSION_NEG);
 		factory.addExtension(EXTENSION_ADD);
 		factory.addExtension(EXTENSION_SUB);
 		factory.addExtension(EXTENSION_MUL);
 		factory.addExtension(EXTENSION_DIV);
 		factory.addExtension(EXTENSION_POWER);
+	}
+	
+	public static void createBooleanOperators(FunctionFactory factory) {
 		factory.addExtension(EXTENSION_AND);
 		factory.addExtension(EXTENSION_OR);
 		factory.addExtension(EXTENSION_EQUAL);
@@ -1741,14 +1740,25 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_GREATER);
 		factory.addExtension(EXTENSION_LESS_EQUAL);
 		factory.addExtension(EXTENSION_GREATER_EQUAL);
-		factory.addExtension(EXTENSION_ABS);
+		factory.addExtension(EXTENSION_IFF);
+	}
+	
+	public static void createTrigFunctions(FunctionFactory factory) {
 		factory.addExtension(EXTENSION_ACOS);
 		factory.addExtension(EXTENSION_ASIN);
 		factory.addExtension(EXTENSION_ATAN);
 		factory.addExtension(EXTENSION_ATAN2);
-		factory.addExtension(EXTENSION_CEIL);
 		factory.addExtension(EXTENSION_COS);
 		factory.addExtension(EXTENSION_COSH);
+		factory.addExtension(EXTENSION_SIN);
+		factory.addExtension(EXTENSION_SINH);
+		factory.addExtension(EXTENSION_TAN);
+		factory.addExtension(EXTENSION_TANH);
+	}
+	
+	public static void createBasicFunctions(FunctionFactory factory) {
+		factory.addExtension(EXTENSION_ABS);
+		factory.addExtension(EXTENSION_CEIL);
 		factory.addExtension(EXTENSION_EXP);
 		factory.addExtension(EXTENSION_FLOOR);
 		factory.addExtension(EXTENSION_LOG);
@@ -1758,24 +1768,33 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_POW);
 		factory.addExtension(EXTENSION_RANDOM);
 		factory.addExtension(EXTENSION_ROUND);
-		factory.addExtension(EXTENSION_SIN);
-		factory.addExtension(EXTENSION_SINH);
 		factory.addExtension(EXTENSION_SQRT);
-		factory.addExtension(EXTENSION_TAN);
-		factory.addExtension(EXTENSION_TANH);
-		factory.addExtension(EXTENSION_TODEG);
-		factory.addExtension(EXTENSION_TORAD);
-		factory.addExtension(EXTENSION_LENGTH);
-		factory.addExtension(EXTENSION_FORMAT);
-		factory.addExtension(EXTENSION_LEFT);
-		factory.addExtension(EXTENSION_RIGHT);
+		factory.addExtension(EXTENSION_CLAMP);
+	}
+	
+	public static void createConversionFunctions(FunctionFactory factory) {
 		factory.addExtension(EXTENSION_CINT);
 		factory.addExtension(EXTENSION_CFLOAT);
 		factory.addExtension(EXTENSION_CSTR);
 		factory.addExtension(EXTENSION_CBOOL);
-		factory.addExtension(EXTENSION_IFF);
-		factory.addExtension(EXTENSION_CLAMP);
-
-
+	}
+	
+	public static void createStringFunctions(FunctionFactory factory) {
+		factory.addExtension(EXTENSION_LENGTH);
+		factory.addExtension(EXTENSION_FORMAT);
+		factory.addExtension(EXTENSION_LEFT);
+		factory.addExtension(EXTENSION_RIGHT);
+	}
+	
+	public static void createAll(FunctionFactory factory) {
+		createNumericOperators(factory);
+		createBooleanOperators(factory);
+		createTrigFunctions(factory);
+		createBasicFunctions(factory);
+		createConversionFunctions(factory);
+		createStringFunctions(factory);
+		
+		factory.addExtension(EXTENSION_TODEG);
+		factory.addExtension(EXTENSION_TORAD);
 	}
 }
