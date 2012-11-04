@@ -28,13 +28,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.encog.app.analyst.csv.process.ProcessExtension;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.FunctionFactory;
-import org.encog.ml.prg.extension.ProgramExtension;
-import org.encog.ml.prg.extension.StandardBooleanOperators;
-import org.encog.ml.prg.extension.StandardFunctionsExtension;
-import org.encog.ml.prg.extension.StandardNumericOperators;
+import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.parse.expression.ExpressionParser;
 import org.encog.util.csv.CSVFormat;
 
@@ -74,9 +70,7 @@ public class EncogProgram {
 	private CSVFormat format = CSVFormat.EG_FORMAT;
 
 	public EncogProgram() {
-		this.functions.addExtension(new StandardFunctionsExtension());
-		this.functions.addExtension(new StandardNumericOperators());
-		this.functions.addExtension(new StandardBooleanOperators());
+		StandardExtensions.createStandardNumericExtensions(this.functions);
 	}
 
 	public EncogProgram(final String expression) {
