@@ -23,8 +23,8 @@
  */
 package org.encog.bot.browse;
 
-import org.encog.bot.browse.LoadWebPage;
-import org.encog.bot.browse.WebPage;
+import junit.framework.TestCase;
+
 import org.encog.bot.browse.range.DocumentRange;
 import org.encog.bot.browse.range.Link;
 import org.encog.bot.dataunit.TagDataUnit;
@@ -32,8 +32,6 @@ import org.encog.bot.dataunit.TextDataUnit;
 import org.encog.parse.tags.Tag;
 import org.junit.Assert;
 import org.junit.Test;
-
-import junit.framework.TestCase;
 
 public class TestWebPageData extends TestCase {
 

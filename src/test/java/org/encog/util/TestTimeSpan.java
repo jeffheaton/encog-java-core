@@ -25,11 +25,11 @@ package org.encog.util;
 
 import java.util.Date;
 
+import junit.framework.TestCase;
+
 import org.encog.util.time.DateUtil;
 import org.encog.util.time.TimeSpan;
 import org.encog.util.time.TimeUnit;
-
-import junit.framework.TestCase;
 
 public class TestTimeSpan extends TestCase {
 	public void testDiffMonths()

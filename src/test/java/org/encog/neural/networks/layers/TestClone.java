@@ -23,10 +23,10 @@
  */
 package org.encog.neural.networks.layers;
 
+import junit.framework.TestCase;
+
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.XOR;
-
-import junit.framework.TestCase;
 
 public class TestClone extends TestCase {
 

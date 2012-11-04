@@ -30,11 +30,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.encog.app.quant.ninja.NinjaFileConvert;
-import org.encog.util.csv.CSVFormat;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.encog.app.quant.ninja.NinjaFileConvert;
+import org.encog.util.csv.CSVFormat;
 
 public class TestNinjaFileConvert extends TestCase {
 	

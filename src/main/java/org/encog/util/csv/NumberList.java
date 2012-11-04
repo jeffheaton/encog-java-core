@@ -25,8 +25,6 @@ package org.encog.util.csv;
 
 import java.util.StringTokenizer;
 
-import org.encog.Encog;
-
 /**
  * Class used to handle lists of numbers.
  */

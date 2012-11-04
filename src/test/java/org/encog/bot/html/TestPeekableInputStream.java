@@ -25,9 +25,9 @@ package org.encog.bot.html;
 
 import java.io.ByteArrayInputStream;
 
-import org.encog.parse.PeekableInputStream;
-
 import junit.framework.TestCase;
+
+import org.encog.parse.PeekableInputStream;
 
 public class TestPeekableInputStream extends TestCase {
 	public void testSimple() throws Throwable

@@ -23,8 +23,6 @@
  */
 package org.encog.engine.network.activation;
 
-import org.encog.ml.factory.MLActivationFactory;
-import org.encog.util.obj.ActivationUtil;
 
 /**
  * The Steepened Sigmoid is an activation function typically used with NEAT.

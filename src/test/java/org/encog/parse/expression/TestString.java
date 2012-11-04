@@ -23,10 +23,10 @@
  */
 package org.encog.parse.expression;
 
-import org.encog.ml.prg.EncogProgram;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.encog.ml.prg.EncogProgram;
 
 public class TestString extends TestCase {
 	public void testSimple() {

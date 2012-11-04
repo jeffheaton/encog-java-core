@@ -29,8 +29,8 @@ import java.util.Map;
 
 import org.encog.parse.PeekableInputStream;
 import org.encog.parse.tags.Tag;
-import org.encog.parse.tags.TagConst;
 import org.encog.parse.tags.Tag.Type;
+import org.encog.parse.tags.TagConst;
 
 /**
  * Base class used to read tags. This base class is used by both the XML and

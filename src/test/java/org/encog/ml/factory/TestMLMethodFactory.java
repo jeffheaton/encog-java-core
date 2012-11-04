@@ -23,15 +23,15 @@
  */
 package org.encog.ml.factory;
 
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
 import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.ml.svm.SVM;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.rbf.RBFNetwork;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class TestMLMethodFactory extends TestCase {
 

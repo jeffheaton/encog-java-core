@@ -23,11 +23,9 @@
  */
 package org.encog.app.analyst.csv.process;
 
-import java.util.List;
-
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.NodeFunction;
+import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 
 public class FunctionFieldMaxPIP extends NodeFunction {

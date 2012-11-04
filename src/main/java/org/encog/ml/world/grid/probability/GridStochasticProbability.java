@@ -23,7 +23,6 @@
  */
 package org.encog.ml.world.grid.probability;
 
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 

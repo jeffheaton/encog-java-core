@@ -34,7 +34,6 @@ import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
-import org.encog.util.csv.CSVError;
 
 /**
  * This class represents a field that the Encog Analyst is in the process of

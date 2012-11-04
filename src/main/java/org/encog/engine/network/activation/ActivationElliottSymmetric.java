@@ -23,8 +23,6 @@
  */
 package org.encog.engine.network.activation;
 
-import org.encog.ml.factory.MLActivationFactory;
-import org.encog.util.obj.ActivationUtil;
 
 /**
  * Computationally efficient alternative to ActivationTANH.

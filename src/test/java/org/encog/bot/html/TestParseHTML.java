@@ -25,10 +25,10 @@ package org.encog.bot.html;
 
 import java.io.ByteArrayInputStream;
 
+import junit.framework.TestCase;
+
 import org.encog.parse.tags.Tag;
 import org.encog.parse.tags.read.ReadHTML;
-
-import junit.framework.TestCase;
 
 public class TestParseHTML extends TestCase {
 	public void testAttributeLess() throws Throwable

@@ -23,10 +23,10 @@
  */
 package org.encog.matrix;
 
+import junit.framework.TestCase;
+
 import org.encog.mathutil.matrices.BiPolarUtil;
 import org.encog.mathutil.matrices.Matrix;
-
-import junit.framework.TestCase;
 
 public class TestBiPolarUtil extends TestCase {
 

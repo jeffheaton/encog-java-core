@@ -25,9 +25,9 @@ package org.encog.bot.browse;
 
 import java.net.URL;
 
-import org.junit.Assert;
-
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 public class TestAddress extends TestCase {
 	public void testAddressFunctions() throws Throwable

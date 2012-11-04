@@ -24,7 +24,6 @@
 package org.encog.app.analyst;
 
 import org.encog.EncogError;
-import org.encog.util.logging.EncogLogging;
 
 /**
  * An error has occured with the Encog Analyst.

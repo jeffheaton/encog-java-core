@@ -24,9 +24,6 @@
 package org.encog.neural.data.buffer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 
 import junit.framework.TestCase;
 

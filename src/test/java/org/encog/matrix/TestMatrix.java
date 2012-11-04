@@ -23,11 +23,11 @@
  */
 package org.encog.matrix;
 
+import junit.framework.TestCase;
+
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.MatrixError;
 import org.encog.mathutil.matrices.MatrixMath;
-
-import junit.framework.TestCase;
 
 public class TestMatrix extends TestCase {
 	

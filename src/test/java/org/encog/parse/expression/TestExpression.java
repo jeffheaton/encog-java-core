@@ -23,12 +23,12 @@
  */
 package org.encog.parse.expression;
 
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
 import org.encog.Encog;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.expvalue.ExpressionValue;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class TestExpression extends TestCase {
 	public void testConst() {

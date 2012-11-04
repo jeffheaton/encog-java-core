@@ -28,8 +28,6 @@ import org.encog.ml.genetic.genes.DoubleGene;
 import org.encog.ml.genetic.genes.Gene;
 import org.encog.ml.genetic.genome.BasicGenome;
 import org.encog.ml.genetic.genome.Chromosome;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.structure.NetworkCODEC;
 
 /**
  * Implements a genome that allows a feedforward neural network to be trained

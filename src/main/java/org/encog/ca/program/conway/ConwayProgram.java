@@ -23,7 +23,6 @@
  */
 package org.encog.ca.program.conway;
 
-import org.encog.ca.program.CAProgram;
 import org.encog.ca.program.basic.BasicProgram;
 import org.encog.ca.program.basic.Movement;
 import org.encog.ca.universe.Universe;

@@ -30,7 +30,6 @@ import org.encog.ca.universe.DiscreteCell;
 import org.encog.ca.universe.UniverseCell;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.util.EngineArray;
-import org.encog.util.Format;
 
 public class BasicDiscreteCell implements DiscreteCell, Serializable {
 	

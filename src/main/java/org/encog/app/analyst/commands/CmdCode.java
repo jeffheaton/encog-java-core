@@ -29,7 +29,6 @@ import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.generate.EncogCodeGeneration;
 import org.encog.app.generate.TargetLanguage;
-import org.encog.ml.MLMethod;
 import org.encog.util.logging.EncogLogging;
 
 /**

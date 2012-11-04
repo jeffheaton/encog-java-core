@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.app.analyst.script.AnalystScript;
-import org.encog.app.analyst.script.normalize.AnalystField;
 
 public class AnalystPreprocess {
 	

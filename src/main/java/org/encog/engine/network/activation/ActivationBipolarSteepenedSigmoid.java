@@ -23,10 +23,6 @@
  */
 package org.encog.engine.network.activation;
 
-import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.engine.network.activation.ActivationLinear;
-import org.encog.ml.factory.MLActivationFactory;
-import org.encog.util.obj.ActivationUtil;
 
 /**
  * The bipolar sigmoid activation function is like the regular sigmoid activation function,

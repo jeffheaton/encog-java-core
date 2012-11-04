@@ -23,14 +23,14 @@
  */
 package org.encog.matrix;
 
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.decomposition.CholeskyDecomposition;
 import org.encog.mathutil.matrices.decomposition.EigenvalueDecomposition;
 import org.encog.mathutil.matrices.decomposition.QRDecomposition;
 import org.encog.mathutil.matrices.decomposition.SingularValueDecomposition;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class TestDecomp extends TestCase {
 	public void testSVD()

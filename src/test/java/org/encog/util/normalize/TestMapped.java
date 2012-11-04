@@ -23,8 +23,6 @@
  */
 package org.encog.util.normalize;
 
-import java.io.IOException;
-
 import junit.framework.TestCase;
 
 import org.encog.NullStatusReportable;

@@ -23,10 +23,10 @@
  */
 package org.encog.neural.data.bipolar;
 
+import junit.framework.TestCase;
+
 import org.encog.ml.data.specific.BiPolarNeuralData;
 import org.junit.Assert;
-
-import junit.framework.TestCase;
 
 public class TestBiPolarNeuralData extends TestCase {
 	public void testConstruct()
