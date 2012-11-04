@@ -12,7 +12,7 @@ public class StandardExtensions {
 	/**
 	 * Standard unary minus operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_NEG = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_NEG = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -48,7 +48,7 @@ public class StandardExtensions {
 	/**
 	 * Standard binary add operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_ADD = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_ADD = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -84,7 +84,7 @@ public class StandardExtensions {
 	/**
 	 * Standard binary sub operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_SUB = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_SUB = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -120,7 +120,7 @@ public class StandardExtensions {
 	/**
 	 * Standard binary multiply operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_MUL = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_MUL = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -156,7 +156,7 @@ public class StandardExtensions {
 	/**
 	 * Standard binary multiply operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_DIV = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_DIV = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -192,7 +192,7 @@ public class StandardExtensions {
 	/**
 	 * Standard binary power operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_POWER = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_POWER = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -227,7 +227,7 @@ public class StandardExtensions {
 	/**
 	 * Standard boolean binary and operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_AND = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_AND = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -262,7 +262,7 @@ public class StandardExtensions {
 	/**
 	 * Standard boolean binary or operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_OR = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_OR = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -296,7 +296,7 @@ public class StandardExtensions {
 	/**
 	 * Standard boolean binary equal operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_EQUAL = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_EQUAL = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -331,7 +331,7 @@ public class StandardExtensions {
 	/**
 	 * Standard boolean binary greater than operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_GREATER = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_GREATER = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -365,7 +365,7 @@ public class StandardExtensions {
 	/**
 	 * Standard boolean binary less than operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_LESS = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_LESS = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -400,7 +400,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric absolute value function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_ABS = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_ABS = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -436,7 +436,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric acos function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_ACOS = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_ACOS = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -472,7 +472,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric asin function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_ASIN = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_ASIN = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -508,7 +508,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric atan function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_ATAN = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_ATAN = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -544,7 +544,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric atan2 function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_ATAN2 = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_ATAN2 = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -581,7 +581,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric ceil function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_CEIL = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_CEIL = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -617,7 +617,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric cos function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_COS = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_COS = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -654,7 +654,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric cosh function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_COSH = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_COSH = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -690,7 +690,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric exp function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_EXP = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_EXP = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -726,7 +726,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric floor function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_FLOOR = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_FLOOR = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -762,7 +762,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric log function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_LOG = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_LOG = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -798,7 +798,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric log10 function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_LOG10 = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_LOG10 = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -834,7 +834,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric max function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_MAX = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_MAX = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -871,7 +871,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric max function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_MIN = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_MIN = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -908,7 +908,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric pow function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_POW = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_POW = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -945,7 +945,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric random function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_RANDOM = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_RANDOM = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -980,7 +980,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric log10 function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_ROUND = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_ROUND = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1016,7 +1016,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric sin function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_SIN = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_SIN = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1052,7 +1052,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric sinh function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_SINH = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_SINH = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1088,7 +1088,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric sqrt function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_SQRT = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_SQRT = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1124,7 +1124,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric tan function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_TAN = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_TAN = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1161,7 +1161,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric tanh function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_TANH = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_TANH = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1197,7 +1197,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric toDegrees function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_TODEG = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_TODEG = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1233,7 +1233,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric toRadians function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_TORAD = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_TORAD = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1270,7 +1270,7 @@ public class StandardExtensions {
 	/**
 	 * Standard string length function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_LENGTH = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_LENGTH = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1305,7 +1305,7 @@ public class StandardExtensions {
 	/**
 	 * Numeric formatting function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_FORMAT = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_FORMAT = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1343,7 +1343,7 @@ public class StandardExtensions {
 	/**
 	 * String left function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_LEFT = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_LEFT = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1383,7 +1383,7 @@ public class StandardExtensions {
 	/**
 	 * String right function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_RIGHT = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_RIGHT = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1423,7 +1423,7 @@ public class StandardExtensions {
 	/**
 	 * Standard string cint function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_CINT = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_CINT = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1460,7 +1460,7 @@ public class StandardExtensions {
 	/**
 	 * Standard string cfloat function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_CFLOAT = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_CFLOAT = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1497,7 +1497,7 @@ public class StandardExtensions {
 	/**
 	 * Standard string cstr function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_CSTR = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_CSTR = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1534,7 +1534,7 @@ public class StandardExtensions {
 	/**
 	 * Standard string cbool function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_CBOOL = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_CBOOL = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1571,7 +1571,7 @@ public class StandardExtensions {
 	/**
 	 * Standard string iff function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_IFF = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_IFF = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1611,7 +1611,7 @@ public class StandardExtensions {
 	/**
 	 * Standard string iff function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_CLAMP = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_CLAMP = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1656,7 +1656,7 @@ public class StandardExtensions {
 	/**
 	 * Standard boolean binary greater than operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_GREATER_EQUAL = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_GREATER_EQUAL = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1690,7 +1690,7 @@ public class StandardExtensions {
 	/**
 	 * Standard boolean binary less than operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_LESS_EQUAL = new ProgramExtensionTemplate() {
+	public static ProgramExtensionTemplate EXTENSION_LESS_EQUAL = new BasicTemplate() {
 		/**
 		 * {@inheritDoc}
 		 */
