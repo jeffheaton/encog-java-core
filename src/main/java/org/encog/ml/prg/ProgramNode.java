@@ -31,7 +31,7 @@ import org.encog.ml.prg.expvalue.ExpressionValue;
 public abstract class ProgramNode {
 	public abstract ExpressionValue evaluate();
 	
-	private final List<ProgramNode> args = new ArrayList<ProgramNode>();
+	private final List<ProgramNode> childNodes = new ArrayList<ProgramNode>();
 	private final EncogProgram owner;
 	
 	
@@ -39,16 +39,16 @@ public abstract class ProgramNode {
 		this.owner = theOwner;
 	}
 	
-	public List<ProgramNode> getArgs() {
-		return args;
+	public List<ProgramNode> getChildNodes() {
+		return this.childNodes;
 	}
 	public EncogProgram getOwner() {
 		return owner;
 	}
 	
-	public void addArgs(ProgramNode[] args) {
+	public void addChildNodes(ProgramNode[] args) {
 		for( ProgramNode pn: args) {
-			this.args.add(pn);
+			this.childNodes.add(pn);
 		}
 	}
 }

@@ -39,8 +39,8 @@ public class FunctionField extends NodeFunction {
 
 	@Override
 	public ExpressionValue evaluate() {
-		String fieldName = this.getArgs().get(0).evaluate().toStringValue();
-		int fieldIndex = (int)this.getArgs().get(1).evaluate().toFloatValue()+this.extension.getBackwardWindowSize();
+		String fieldName = this.getChildNodes().get(0).evaluate().toStringValue();
+		int fieldIndex = (int)this.getChildNodes().get(1).evaluate().toFloatValue()+this.extension.getBackwardWindowSize();
 		String value = this.extension.getField(fieldName,fieldIndex);
 		return new ExpressionValue(value);
 	}

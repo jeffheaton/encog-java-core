@@ -23,8 +23,6 @@
  */
 package org.encog.ml.prg;
 
-import java.util.ArrayList;
-import java.util.List;
 
 
 public abstract class NodeFunction extends ProgramNode {
@@ -35,7 +33,7 @@ public abstract class NodeFunction extends ProgramNode {
 			final String theName, ProgramNode[] theArgs) {
 		super(theOwner);
 		this.name = theName;
-		addArgs(theArgs);
+		this.addChildNodes(theArgs);
 	}
 
 	public String getName() {
