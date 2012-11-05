@@ -32,7 +32,7 @@ public class NodeVar extends ProgramNode {
 
 	public NodeVar(final EncogProgram theOwner,
 			final String theName) {
-		super(theOwner);
+		super(theOwner,0,0);
 		this.owner = theOwner;
 		this.name = theName;
 	}

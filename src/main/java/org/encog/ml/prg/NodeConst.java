@@ -30,7 +30,7 @@ public class NodeConst extends ProgramNode {
 	private final ExpressionValue value;
 
 	public NodeConst(final EncogProgram theProgram, final ExpressionValue value) {
-		super(null);
+		super(null,0,0);
 		this.value = value;
 	}
 

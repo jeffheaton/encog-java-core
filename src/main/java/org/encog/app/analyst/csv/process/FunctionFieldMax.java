@@ -33,7 +33,7 @@ public class FunctionFieldMax extends NodeFunction {
 	private ProcessExtension extension;
 
 	public FunctionFieldMax(ProcessExtension theExtension, EncogProgram theOwner, ProgramNode[] theArgs) {
-		super(theOwner, "fieldmax", theArgs);
+		super(theOwner, "fieldmax", theArgs,0,0);
 		this.extension = theExtension;
 	}
 
