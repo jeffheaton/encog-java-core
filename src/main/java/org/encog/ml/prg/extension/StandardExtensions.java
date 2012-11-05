@@ -6,8 +6,50 @@ import org.encog.ml.prg.NodeFunction;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.EvaluateExpr;
 import org.encog.ml.prg.expvalue.ExpressionValue;
+import org.encog.parse.expression.ExpressionError;
 
 public class StandardExtensions {
+	
+	/**
+	 * Standard unary minus operator.
+	 */
+	public static ProgramExtensionTemplate EXTENSION_VAR_SUPPORT = new BasicTemplate() {
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String getName() {
+			return "#var";
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getChildNodeCount() {
+			return 0;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public NodeFunction factorFunction(EncogProgram theOwner,
+				String theName, ProgramNode[] theArgs) {
+			final EncogProgram owner = theOwner;
+			return new NodeFunction(theOwner, theName, theArgs,1,0) {
+				@Override
+				public ExpressionValue evaluate() {
+					int idx = this.getIntData()[0];
+					ExpressionValue result = owner.getVariable(idx);
+					if( result==null ) {
+						throw new ExpressionError("Variable has no value: " + owner.getVariableName(idx));
+					}
+					return result;
+				}
+			};
+		}
+	};
 
 	/**
 	 * Standard unary minus operator.
@@ -1730,6 +1772,7 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_MUL);
 		factory.addExtension(EXTENSION_DIV);
 		factory.addExtension(EXTENSION_POWER);
+		factory.addExtension(EXTENSION_VAR_SUPPORT);
 	}
 	
 	public static void createBooleanOperators(FunctionFactory factory) {

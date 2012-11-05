@@ -32,22 +32,22 @@ import org.encog.ml.prg.EncogProgram;
 public class TestExpressionVar extends TestCase {
 	public void testAssignment() {
 		EncogProgram expression = new EncogProgram("a");
-		expression.set("a",5);
+		expression.setVariable("a",5);
 		Assert.assertEquals(5,expression.evaluate(0).toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 	
 	public void testAssignment2() {
 		EncogProgram expression = new EncogProgram("cccc*(aa+bbb)");
-		expression.set("aa",1);
-		expression.set("bbb",2);
-		expression.set("cccc",3);
+		expression.setVariable("aa",1);
+		expression.setVariable("bbb",2);
+		expression.setVariable("cccc",3);
 		Assert.assertEquals(9,expression.evaluate(0).toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 	
 	public void testError() {
 		try {
 			EncogProgram expression = new EncogProgram("b");
-			expression.set("a", 5);
+			expression.setVariable("a", 5);
 			expression.evaluate(0);
 			Assert.assertTrue(false);
 		} catch (ExpressionError ex) {

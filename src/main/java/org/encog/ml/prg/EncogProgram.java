@@ -27,10 +27,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.ml.prg.extension.StandardExtensions;
+import org.encog.parse.expression.ExpressionError;
 import org.encog.parse.expression.ExpressionParser;
 import org.encog.util.csv.CSVFormat;
 
@@ -65,7 +67,9 @@ public class EncogProgram {
 
 	private final List<ProgramNode> expressions = new ArrayList<ProgramNode>();
 
-	private final Map<String, ExpressionValue> memory = new HashMap<String, ExpressionValue>();
+	private final Map<String, Integer> varMap = new HashMap<String, Integer>();
+	
+	private final List<ExpressionValue> variables = new ArrayList<ExpressionValue>();
 
 	private CSVFormat format = CSVFormat.EG_FORMAT;
 
@@ -89,8 +93,13 @@ public class EncogProgram {
 		return this.expressions.get(0).evaluate();
 	}
 
-	public ExpressionValue get(final String name) {
-		return this.memory.get(name);
+	public ExpressionValue getVariable(final String name) {
+		if( this.varMap.containsKey(name)) {
+			int index = this.varMap.get(name);
+			return this.variables.get(index);
+		} else {
+			return null;
+		}
 	}
 
 	public List<ProgramNode> getExpressions() {
@@ -101,13 +110,19 @@ public class EncogProgram {
 		return this.format;
 	}
 
-	public void set(final String name, final double d) {
-		set(name, new ExpressionValue(d));
+	public void setVariable(final String name, final double d) {
+		setVariable(name, new ExpressionValue(d));
 
 	}
 
-	public void set(final String name, final ExpressionValue value) {
-		this.memory.put(name, value);
+	public synchronized void setVariable(final String name, final ExpressionValue value) {
+		if( this.varMap.containsKey(name)) {
+			int index = this.varMap.get(name);
+			this.variables.set(index, value);
+		} else {
+			this.varMap.put(name, this.variables.size());
+			this.variables.add(value);
+		}
 	}
 
 	public void setFormat(final CSVFormat format) {
@@ -115,11 +130,33 @@ public class EncogProgram {
 	}
 
 	public boolean variableExists(final String name) {
-		return this.memory.containsKey(name);
+		return this.varMap.containsKey(name);
 	}
 	
 	public FunctionFactory getFunctions() {
 		return this.functions;
+	}
+
+	public ExpressionValue getVariable(int i) {
+		return this.variables.get(i);
+	}
+
+	public int getVariableIndex(String varName) {
+		if( !variableExists(varName) ) {
+			throw new ExpressionError("Undefined variable: " + varName);
+		}
+		
+		return this.varMap.get(varName);
+	}
+
+	public String getVariableName(int idx) {
+		for( Entry<String, Integer> entry: this.varMap.entrySet()) {
+			if( entry.getValue()==idx) {
+				return entry.getKey();
+			}
+		}
+		
+		return null;
 	}
 
 }

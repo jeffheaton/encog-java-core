@@ -29,7 +29,6 @@ import java.util.List;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.NodeConst;
 import org.encog.ml.prg.NodeFunction;
-import org.encog.ml.prg.NodeVar;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.util.SimpleParser;
@@ -141,8 +140,10 @@ public class ExpressionParser {
 			} else if (varName.toString().equals("false")) {
 				return new NodeConst(this.holder,new ExpressionValue(false));
 			} else if (this.parser.peek() != '(') {
-				return new NodeVar(this.holder,
-						varName.toString());
+				this.holder.setVariable(varName.toString(), null);
+				NodeFunction v = this.holder.getFunctions().factorFunction("#var", new ProgramNode[] {} );
+				v.getIntData()[0] = this.holder.getVariableIndex(varName.toString());
+				return v;
 			} else {
 				return parseFunction(varName.toString());
 			}
