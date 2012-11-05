@@ -50,6 +50,41 @@ public class StandardExtensions {
 			};
 		}
 	};
+	
+	/**
+	 * Standard unary minus operator.
+	 */
+	public static ProgramExtensionTemplate EXTENSION_CONST_SUPPORT = new BasicTemplate() {
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String getName() {
+			return "#const";
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getChildNodeCount() {
+			return 0;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public NodeFunction factorFunction(EncogProgram theOwner,
+				String theName, ProgramNode[] theArgs) {
+			return new NodeFunction(theOwner, theName, theArgs,0,1) {
+				@Override
+				public ExpressionValue evaluate() {
+					return this.getExpressionData()[0];
+				}
+			};
+		}
+	};
 
 	/**
 	 * Standard unary minus operator.
@@ -1766,13 +1801,14 @@ public class StandardExtensions {
 	
 	
 	public static void createNumericOperators(FunctionFactory factory) {
+		factory.addExtension(EXTENSION_VAR_SUPPORT);
+		factory.addExtension(EXTENSION_CONST_SUPPORT);
 		factory.addExtension(EXTENSION_NEG);
 		factory.addExtension(EXTENSION_ADD);
 		factory.addExtension(EXTENSION_SUB);
 		factory.addExtension(EXTENSION_MUL);
 		factory.addExtension(EXTENSION_DIV);
 		factory.addExtension(EXTENSION_POWER);
-		factory.addExtension(EXTENSION_VAR_SUPPORT);
 	}
 	
 	public static void createBooleanOperators(FunctionFactory factory) {

@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.NodeConst;
 import org.encog.ml.prg.NodeFunction;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
@@ -136,9 +135,13 @@ public class ExpressionParser {
 			this.parser.eatWhiteSpace();
 
 			if (varName.toString().equals("true")) {
-				return new NodeConst(this.holder,new ExpressionValue(true));
+				ProgramNode v = this.holder.getFunctions().factorFunction("#const", new ProgramNode[] {} );
+				v.getExpressionData()[0] = new ExpressionValue(true);
+				return v;
 			} else if (varName.toString().equals("false")) {
-				return new NodeConst(this.holder,new ExpressionValue(false));
+				ProgramNode v = this.holder.getFunctions().factorFunction("#const", new ProgramNode[] {} );
+				v.getExpressionData()[0] = new ExpressionValue(false);
+				return v;
 			} else if (this.parser.peek() != '(') {
 				this.holder.setVariable(varName.toString(), null);
 				NodeFunction v = this.holder.getFunctions().factorFunction("#var", new ProgramNode[] {} );
@@ -252,11 +255,15 @@ public class ExpressionParser {
 			value = -value;
 		}
 
+		ProgramNode v = this.holder.getFunctions().factorFunction("#const", new ProgramNode[] {} );
+		
 		if (isFloat) {
-			return new NodeConst(this.holder,new ExpressionValue(value));
+			v.getExpressionData()[0] = new ExpressionValue(value);
 		} else {
-			return new NodeConst(this.holder,new ExpressionValue((int) value));
+			v.getExpressionData()[0] = new ExpressionValue((int) value);
 		}
+		
+		return v;
 	}
 
 	private NodeFunction parseFunction(final String name) {
@@ -306,7 +313,7 @@ public class ExpressionParser {
 		return result;
 	}
 
-	private NodeConst parseString() {
+	private ProgramNode parseString() {
 		final StringBuilder str = new StringBuilder();
 
 		char ch;
@@ -331,7 +338,10 @@ public class ExpressionParser {
 		if (ch != 34) {
 			throw (new ExpressionError("Unterminated string"));
 		}
-		return new NodeConst(this.holder,new ExpressionValue(str.toString()));
+		
+		ProgramNode v = this.holder.getFunctions().factorFunction("#const", new ProgramNode[] {} );
+		v.getExpressionData()[0] = new ExpressionValue(str.toString());
+		return v;
 	}
 
 }

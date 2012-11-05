@@ -30,8 +30,8 @@ public abstract class NodeFunction extends ProgramNode {
 	private final String name;
 
 	public NodeFunction(final EncogProgram theOwner,
-			final String theName, ProgramNode[] theArgs,int intDataSize, int doubleDataSize) {
-		super(theOwner, intDataSize, doubleDataSize);
+			final String theName, ProgramNode[] theArgs,int intDataSize, int expressionDataSize) {
+		super(theOwner, intDataSize, expressionDataSize);
 		this.name = theName;
 		this.addChildNodes(theArgs);
 	}

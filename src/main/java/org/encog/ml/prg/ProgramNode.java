@@ -34,12 +34,12 @@ public abstract class ProgramNode {
 	private final List<ProgramNode> childNodes = new ArrayList<ProgramNode>();
 	private final EncogProgram owner;
 	private final int[] intData;
-	private final double[] doubleData;
+	private final ExpressionValue[] doubleData;
 	
-	public ProgramNode(EncogProgram theOwner,int intDataSize, int doubleDataSize) {
+	public ProgramNode(EncogProgram theOwner,int intDataSize, int expressionDataSize) {
 		this.owner = theOwner;
 		this.intData = new int[intDataSize];
-		this.doubleData = new double[doubleDataSize];
+		this.doubleData = new ExpressionValue[expressionDataSize];
 	}
 	
 	public List<ProgramNode> getChildNodes() {
@@ -59,7 +59,7 @@ public abstract class ProgramNode {
 		return intData;
 	}
 
-	public double[] getDoubleData() {
+	public ExpressionValue[] getExpressionData() {
 		return doubleData;
 	}
 	
