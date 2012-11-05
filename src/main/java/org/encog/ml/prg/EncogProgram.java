@@ -75,6 +75,7 @@ public class EncogProgram {
 
 	public EncogProgram() {
 		StandardExtensions.createAll(this.functions);
+		KnownConstTemplate.createAllConst(this.functions);
 	}
 
 	public EncogProgram(final String expression) {

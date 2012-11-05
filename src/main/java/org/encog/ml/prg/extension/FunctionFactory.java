@@ -43,5 +43,10 @@ public class FunctionFactory {
 		this.templateMap.put(key, ext);
 		this.opcodes.add(ext);
 	}
+
+	public boolean isDefined(String name, int l) {
+		String key = FunctionFactory.createKey(name, l);
+		return this.templateMap.containsKey(key);
+	}
 	
 }

@@ -142,9 +142,15 @@ public class ExpressionParser {
 				v.getExpressionData()[0] = new ExpressionValue(false);
 				return v;
 			} else if (this.parser.peek() != '(') {
-				this.holder.setVariable(varName.toString(), null);
-				ProgramNode v = this.holder.getFunctions().factorFunction("#var", new ProgramNode[] {} );
-				v.getIntData()[0] = this.holder.getVariableIndex(varName.toString());
+				ProgramNode v;
+				// either a variable or a const, see which
+				if( this.holder.getFunctions().isDefined(varName.toString(),0) ) {
+					v = this.holder.getFunctions().factorFunction(varName.toString(), new ProgramNode[] {} );
+				} else {
+					this.holder.setVariable(varName.toString(), null);
+					v = this.holder.getFunctions().factorFunction("#var", new ProgramNode[] {} );
+					v.getIntData()[0] = this.holder.getVariableIndex(varName.toString());
+				}
 				return v;
 			} else {
 				return parseFunction(varName.toString());
