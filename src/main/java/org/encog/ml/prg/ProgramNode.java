@@ -28,19 +28,30 @@ import java.util.List;
 
 import org.encog.ml.prg.expvalue.ExpressionValue;
 
+
+
 public abstract class ProgramNode {
-	public abstract ExpressionValue evaluate();
-	
+
+	private final String name;
 	private final List<ProgramNode> childNodes = new ArrayList<ProgramNode>();
 	private final EncogProgram owner;
 	private final int[] intData;
 	private final ExpressionValue[] doubleData;
-	
-	public ProgramNode(EncogProgram theOwner,int intDataSize, int expressionDataSize) {
+
+	public ProgramNode(final EncogProgram theOwner,
+			final String theName, ProgramNode[] theArgs,int intDataSize, int expressionDataSize) {
 		this.owner = theOwner;
 		this.intData = new int[intDataSize];
 		this.doubleData = new ExpressionValue[expressionDataSize];
+		this.name = theName;
+		this.addChildNodes(theArgs);
 	}
+
+	public String getName() {
+		return this.name;
+	}
+	
+	public abstract ExpressionValue evaluate();
 	
 	public List<ProgramNode> getChildNodes() {
 		return this.childNodes;
@@ -62,6 +73,8 @@ public abstract class ProgramNode {
 	public ExpressionValue[] getExpressionData() {
 		return doubleData;
 	}
+	
+	
 	
 	
 }

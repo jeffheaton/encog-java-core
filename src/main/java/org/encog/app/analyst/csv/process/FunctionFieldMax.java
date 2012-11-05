@@ -24,11 +24,10 @@
 package org.encog.app.analyst.csv.process;
 
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.NodeFunction;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 
-public class FunctionFieldMax extends NodeFunction {
+public class FunctionFieldMax extends ProgramNode {
 	
 	private ProcessExtension extension;
 

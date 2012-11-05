@@ -31,7 +31,6 @@ import java.util.Map;
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.csv.basic.LoadedRow;
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.NodeFunction;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
@@ -131,7 +130,7 @@ public class ProcessExtension {
 			 * {@inheritDoc}
 			 */
 			@Override
-			public NodeFunction factorFunction(EncogProgram theOwner,
+			public ProgramNode factorFunction(EncogProgram theOwner,
 					String theName, ProgramNode[] theArgs) {
 				return new FunctionField(pe, theOwner, theArgs);
 			}
@@ -159,7 +158,7 @@ public class ProcessExtension {
 					 * {@inheritDoc}
 					 */
 					@Override
-					public NodeFunction factorFunction(EncogProgram theOwner,
+					public ProgramNode factorFunction(EncogProgram theOwner,
 							String theName, ProgramNode[] theArgs) {
 						return new FunctionFieldMax(pe, theOwner, theArgs);
 					}
@@ -187,7 +186,7 @@ public class ProcessExtension {
 					 * {@inheritDoc}
 					 */
 					@Override
-					public NodeFunction factorFunction(EncogProgram theOwner,
+					public ProgramNode factorFunction(EncogProgram theOwner,
 							String theName, ProgramNode[] theArgs) {
 						return new FunctionFieldMaxPIP(pe, theOwner, theArgs);
 					}

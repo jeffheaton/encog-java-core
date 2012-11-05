@@ -2,7 +2,6 @@ package org.encog.ml.prg.extension;
 
 import org.encog.Encog;
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.NodeFunction;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.EvaluateExpr;
 import org.encog.ml.prg.expvalue.ExpressionValue;
@@ -34,10 +33,10 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
 			final EncogProgram owner = theOwner;
-			return new NodeFunction(theOwner, theName, theArgs,1,0) {
+			return new ProgramNode(theOwner, theName, theArgs,1,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					int idx = this.getIntData()[0];
@@ -75,9 +74,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,1) {
+			return new ProgramNode(theOwner, theName, theArgs,0,1) {
 				@Override
 				public ExpressionValue evaluate() {
 					return this.getExpressionData()[0];
@@ -110,9 +109,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(-this.getChildNodes().get(0)
@@ -146,9 +145,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return EvaluateExpr.add(getChildNodes().get(0).evaluate(),
@@ -182,9 +181,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return EvaluateExpr.sub(getChildNodes().get(0).evaluate(),
@@ -218,9 +217,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return EvaluateExpr.mul(getChildNodes().get(0).evaluate(),
@@ -254,9 +253,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return EvaluateExpr.div(getChildNodes().get(0).evaluate(),
@@ -290,9 +289,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return EvaluateExpr.pow(getChildNodes().get(0).evaluate(), getChildNodes().get(1).evaluate());
@@ -325,9 +324,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(getChildNodes().get(0).evaluate().toBooleanValue() && getChildNodes().get(1).evaluate().toBooleanValue());
@@ -360,9 +359,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(getChildNodes().get(0).evaluate().toBooleanValue() || getChildNodes().get(1).evaluate().toBooleanValue());
@@ -394,9 +393,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					double diff = Math.abs(getChildNodes().get(0).evaluate().toFloatValue() - getChildNodes().get(1).evaluate().toFloatValue());
@@ -429,9 +428,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(getChildNodes().get(0).evaluate().toFloatValue() > getChildNodes().get(1).evaluate().toFloatValue());
@@ -463,9 +462,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(getChildNodes().get(0).evaluate().toFloatValue() < getChildNodes().get(1).evaluate().toFloatValue());
@@ -498,9 +497,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.abs(this.getChildNodes().get(0)
@@ -534,9 +533,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.acos(this.getChildNodes().get(0)
@@ -570,9 +569,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.asin(this.getChildNodes().get(0)
@@ -606,9 +605,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.atan(this.getChildNodes().get(0)
@@ -642,9 +641,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.atan2(
@@ -679,9 +678,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.ceil(this.getChildNodes().get(0)
@@ -715,9 +714,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.cos(this.getChildNodes().get(0)
@@ -752,9 +751,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.cosh(this.getChildNodes().get(0)
@@ -788,9 +787,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.exp(this.getChildNodes().get(0)
@@ -824,9 +823,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.floor(this.getChildNodes().get(0)
@@ -860,9 +859,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.log(this.getChildNodes().get(0)
@@ -896,9 +895,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.log10(this.getChildNodes().get(0)
@@ -932,9 +931,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.max(
@@ -969,9 +968,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.min(
@@ -1006,9 +1005,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.pow(
@@ -1043,9 +1042,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.random());
@@ -1078,9 +1077,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.round(this.getChildNodes().get(0)
@@ -1114,9 +1113,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.sin(this.getChildNodes().get(0)
@@ -1150,9 +1149,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.sinh(this.getChildNodes().get(0)
@@ -1186,9 +1185,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.sqrt(this.getChildNodes().get(0)
@@ -1222,9 +1221,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.tanh(this.getChildNodes().get(0)
@@ -1259,9 +1258,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.tanh(this.getChildNodes().get(0)
@@ -1295,9 +1294,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.toDegrees(this.getChildNodes().get(0)
@@ -1331,9 +1330,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.toRadians(this.getChildNodes().get(0)
@@ -1368,9 +1367,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(this.getChildNodes().get(0).evaluate().toStringValue().length());
@@ -1403,9 +1402,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue( this.getOwner().getFormat().format(
@@ -1441,9 +1440,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					String str = this.getChildNodes().get(0).evaluate().toStringValue();
@@ -1481,9 +1480,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					String str = this.getChildNodes().get(0).evaluate().toStringValue();
@@ -1521,9 +1520,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					;
@@ -1558,9 +1557,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					;
@@ -1595,9 +1594,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					;
@@ -1632,9 +1631,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					;
@@ -1669,9 +1668,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					boolean a = this.getChildNodes().get(0).evaluate().toBooleanValue();
@@ -1709,9 +1708,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					double value = this.getChildNodes().get(0).evaluate().toFloatValue();
@@ -1754,9 +1753,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(getChildNodes().get(0).evaluate().toFloatValue() >= getChildNodes().get(1).evaluate().toFloatValue());
@@ -1788,9 +1787,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public NodeFunction factorFunction(EncogProgram theOwner,
+		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
-			return new NodeFunction(theOwner, theName, theArgs,0,0) {
+			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(getChildNodes().get(0).evaluate().toFloatValue() <= getChildNodes().get(1).evaluate().toFloatValue());

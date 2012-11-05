@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.NodeFunction;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.parse.expression.ExpressionError;
 
@@ -24,8 +23,8 @@ public class FunctionFactory {
 		this.program = theProgram;
 	}
 	
-	public NodeFunction factorFunction(String name, ProgramNode[] args) {
-		NodeFunction fn = null;
+	public ProgramNode factorFunction(String name, ProgramNode[] args) {
+		ProgramNode fn = null;
 		
 		String key = FunctionFactory.createKey(name, args.length);
 		

@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.NodeFunction;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.util.SimpleParser;
@@ -144,7 +143,7 @@ public class ExpressionParser {
 				return v;
 			} else if (this.parser.peek() != '(') {
 				this.holder.setVariable(varName.toString(), null);
-				NodeFunction v = this.holder.getFunctions().factorFunction("#var", new ProgramNode[] {} );
+				ProgramNode v = this.holder.getFunctions().factorFunction("#var", new ProgramNode[] {} );
 				v.getIntData()[0] = this.holder.getVariableIndex(varName.toString());
 				return v;
 			} else {
@@ -266,7 +265,7 @@ public class ExpressionParser {
 		return v;
 	}
 
-	private NodeFunction parseFunction(final String name) {
+	private ProgramNode parseFunction(final String name) {
 		final ExpressionParser expParser = new ExpressionParser(this.holder);
 		final StringBuilder currentExpression = new StringBuilder();
 		final List<ProgramNode> args = new ArrayList<ProgramNode>();
