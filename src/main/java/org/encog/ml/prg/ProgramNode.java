@@ -74,6 +74,15 @@ public abstract class ProgramNode {
 		return doubleData;
 	}
 	
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[ProgramNode: name=");
+		result.append(this.getName());
+		result.append(", childCount=");
+		result.append(this.getChildNodes().size());
+		result.append("]");
+		return  result.toString();
+	}
 	
 	
 	
