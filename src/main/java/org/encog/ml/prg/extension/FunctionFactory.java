@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
-import org.encog.parse.expression.ExpressionError;
 
 public class FunctionFactory {
 	

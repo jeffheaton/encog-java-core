@@ -32,8 +32,7 @@ import java.util.Map.Entry;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.ml.prg.extension.StandardExtensions;
-import org.encog.parse.expression.ExpressionError;
-import org.encog.parse.expression.ExpressionParser;
+import org.encog.parse.expression.common.ParseCommonExpression;
 import org.encog.util.csv.CSVFormat;
 
 public class EncogProgram {
@@ -84,7 +83,7 @@ public class EncogProgram {
 	}
 
 	public ProgramNode compileExpression(final String expression) {
-		final ExpressionParser parser = new ExpressionParser(this);
+		final ParseCommonExpression parser = new ParseCommonExpression(this);
 		final ProgramNode e = parser.parse(expression);
 		this.expressions.add(e);
 		return e;

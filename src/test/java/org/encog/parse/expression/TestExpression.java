@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 
 import org.encog.Encog;
 import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 
 public class TestExpression extends TestCase {

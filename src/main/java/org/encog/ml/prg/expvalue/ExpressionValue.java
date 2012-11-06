@@ -23,7 +23,7 @@
  */
 package org.encog.ml.prg.expvalue;
 
-import org.encog.parse.expression.ExpressionError;
+import org.encog.ml.prg.ExpressionError;
 
 public class ExpressionValue {
 	

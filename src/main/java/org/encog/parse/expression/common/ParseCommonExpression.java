@@ -21,23 +21,24 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.parse.expression;
+package org.encog.parse.expression.common;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.util.SimpleParser;
 
-public class ExpressionParser {
+public class ParseCommonExpression {
 
 	private final EncogProgram holder;
 	private SimpleParser parser;
 	private int parenCount;
 
-	public ExpressionParser(final EncogProgram theHolder) {
+	public ParseCommonExpression(final EncogProgram theHolder) {
 		this.holder = theHolder;
 	}
 
@@ -272,7 +273,7 @@ public class ExpressionParser {
 	}
 
 	private ProgramNode parseFunction(final String name) {
-		final ExpressionParser expParser = new ExpressionParser(this.holder);
+		final ParseCommonExpression expParser = new ParseCommonExpression(this.holder);
 		final StringBuilder currentExpression = new StringBuilder();
 		final List<ProgramNode> args = new ArrayList<ProgramNode>();
 		int pcnt = 0;

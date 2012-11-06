@@ -2,10 +2,10 @@ package org.encog.ml.prg.extension;
 
 import org.encog.Encog;
 import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.EvaluateExpr;
 import org.encog.ml.prg.expvalue.ExpressionValue;
-import org.encog.parse.expression.ExpressionError;
 
 public class StandardExtensions {
 	
