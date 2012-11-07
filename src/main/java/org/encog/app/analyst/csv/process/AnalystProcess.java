@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.csv.basic.BasicFile;
@@ -34,8 +36,12 @@ import org.encog.app.analyst.csv.basic.LoadedRow;
 import org.encog.app.analyst.script.process.ProcessField;
 import org.encog.app.quant.QuantError;
 import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.prg.EncogProgramContext;
+import org.encog.ml.prg.EncogProgramVariables;
+import org.encog.ml.prg.KnownConstTemplate;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
+import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
@@ -44,7 +50,9 @@ import org.encog.util.csv.ReadCSV;
  */
 public class AnalystProcess extends BasicFile {
 
-	private EncogProgram expressionFields;
+	private final EncogProgramContext programContext = new EncogProgramContext();
+	private final EncogProgramVariables programVariables = new EncogProgramVariables();
+	private final List<EncogProgram> expressionFields = new ArrayList<EncogProgram>();
 	private ProcessExtension extension;
 	private final EncogAnalyst analyst;
 	private final int forwardWindowSize;
@@ -59,6 +67,9 @@ public class AnalystProcess extends BasicFile {
 		
 		this.backwardWindowSize = theBackwardWindowSize;
 		this.forwardWindowSize = theForwardWindowSize;
+		StandardExtensions.createAll(this.programContext.getFunctions());
+		KnownConstTemplate.createAllConst(this.programContext.getFunctions());
+		this.extension.register(this.programContext.getFunctions());
 	}
 
 	/**
@@ -81,12 +92,13 @@ public class AnalystProcess extends BasicFile {
 
 		performBasicCounts();
 		
-		this.expressionFields = new EncogProgram();
+		this.expressionFields.clear();
 		extension = new ProcessExtension(this.getFormat());
-		this.extension.register(this.expressionFields.getFunctions());
 		
 		for(ProcessField field : this.analyst.getScript().getProcess().getFields() ) {
-			this.expressionFields.compileExpression(field.getCommand());
+			EncogProgram prg = new EncogProgram(this.programContext,this.programVariables);
+			prg.compileExpression(field.getCommand());
+			this.expressionFields.add(prg);
 		}
 	}
 
@@ -144,8 +156,8 @@ public class AnalystProcess extends BasicFile {
 	private void processRow(PrintWriter tw) {
 		StringBuilder line = new StringBuilder();
 		
-		for(ProgramNode expr: this.expressionFields.getExpressions()) {
-			ExpressionValue result = expr.evaluate();
+		for(EncogProgram prg: this.expressionFields) {
+			ExpressionValue result = prg.evaluate();
 			
 			BasicFile.appendSeparator(line, this.getFormat());
 			

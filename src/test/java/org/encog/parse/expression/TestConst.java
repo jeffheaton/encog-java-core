@@ -32,11 +32,11 @@ import org.encog.ml.prg.EncogProgram;
 public class TestConst extends TestCase {
 	public void testPI() {
 		EncogProgram expression = new EncogProgram("PI");
-		Assert.assertEquals(Math.PI,expression.evaluate(0).toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(Math.PI,expression.evaluate().toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 	
 	public void testE() {
 		EncogProgram expression = new EncogProgram("E");
-		Assert.assertEquals(Math.E,expression.evaluate(0).toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(Math.E,expression.evaluate().toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 }

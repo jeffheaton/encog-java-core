@@ -23,12 +23,6 @@
  */
 package org.encog.ml.prg;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLData;
@@ -36,48 +30,48 @@ import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.parse.expression.common.ParseCommonExpression;
-import org.encog.util.csv.CSVFormat;
 
 public class EncogProgram implements MLRegression {
-	
-	private FunctionFactory functions = new FunctionFactory(this);
+		
+	private EncogProgramVariables variables = new EncogProgramVariables();
+	private EncogProgramContext context = new EncogProgramContext();
 
 	public static ExpressionValue parse(final String str) {
 		final EncogProgram holder = new EncogProgram(str);
-		return holder.evaluate(0);
+		return holder.evaluate();
 	}
 
 	public static boolean parseBoolean(final String str) {
 		final EncogProgram holder = new EncogProgram(str);
-		return holder.evaluate(0).toBooleanValue();
+		return holder.evaluate().toBooleanValue();
 	}
 
 	public static ExpressionValue parseExpression(final String str) {
 		final EncogProgram holder = new EncogProgram(str);
-		return holder.evaluate(0);
+		return holder.evaluate();
 	}
 
 	public static double parseFloat(final String str) {
 		final EncogProgram holder = new EncogProgram(str);
-		return holder.evaluate(0).toFloatValue();
+		return holder.evaluate().toFloatValue();
 	}
 
 	public static String parseString(final String str) {
 		final EncogProgram holder = new EncogProgram(str);
-		return holder.evaluate(0).toStringValue();
+		return holder.evaluate().toStringValue();
 	}
 
-	private final List<ProgramNode> expressions = new ArrayList<ProgramNode>();
-
-	private final Map<String, Integer> varMap = new HashMap<String, Integer>();
-	
-	private final List<ExpressionValue> variables = new ArrayList<ExpressionValue>();
-
-	private CSVFormat format = CSVFormat.EG_FORMAT;
+	private ProgramNode rootNode;	
 
 	public EncogProgram() {
-		StandardExtensions.createAll(this.functions);
-		KnownConstTemplate.createAllConst(this.functions);
+		this(new EncogProgramContext(), new EncogProgramVariables());
+		StandardExtensions.createAll(this.context.getFunctions());
+		KnownConstTemplate.createAllConst(this.context.getFunctions());
+	}
+	
+	public EncogProgram(EncogProgramContext theContext, EncogProgramVariables theVariables) {
+		this.context = theContext;
+		this.variables = theVariables;
 	}
 
 	public EncogProgram(final String expression) {
@@ -87,79 +81,16 @@ public class EncogProgram implements MLRegression {
 
 	public ProgramNode compileExpression(final String expression) {
 		final ParseCommonExpression parser = new ParseCommonExpression(this);
-		final ProgramNode e = parser.parse(expression);
-		this.expressions.add(e);
-		return e;
+		this.rootNode = parser.parse(expression);
+		return this.rootNode;
 	}
 
-	public ExpressionValue evaluate(final int i) {
-		return this.expressions.get(0).evaluate();
+	public ExpressionValue evaluate() {
+		return this.rootNode.evaluate();
 	}
-
-	public ExpressionValue getVariable(final String name) {
-		if( this.varMap.containsKey(name)) {
-			int index = this.varMap.get(name);
-			return this.variables.get(index);
-		} else {
-			return null;
-		}
-	}
-
-	public List<ProgramNode> getExpressions() {
-		return this.expressions;
-	}
-
-	public CSVFormat getFormat() {
-		return this.format;
-	}
-
-	public void setVariable(final String name, final double d) {
-		setVariable(name, new ExpressionValue(d));
-
-	}
-
-	public synchronized void setVariable(final String name, final ExpressionValue value) {
-		if( this.varMap.containsKey(name)) {
-			int index = this.varMap.get(name);
-			this.variables.set(index, value);
-		} else {
-			this.varMap.put(name, this.variables.size());
-			this.variables.add(value);
-		}
-	}
-
-	public void setFormat(final CSVFormat format) {
-		this.format = format;
-	}
-
-	public boolean variableExists(final String name) {
-		return this.varMap.containsKey(name);
-	}
-	
+		
 	public FunctionFactory getFunctions() {
-		return this.functions;
-	}
-
-	public ExpressionValue getVariable(int i) {
-		return this.variables.get(i);
-	}
-
-	public int getVariableIndex(String varName) {
-		if( !variableExists(varName) ) {
-			throw new ExpressionError("Undefined variable: " + varName);
-		}
-		
-		return this.varMap.get(varName);
-	}
-
-	public String getVariableName(int idx) {
-		for( Entry<String, Integer> entry: this.varMap.entrySet()) {
-			if( entry.getValue()==idx) {
-				return entry.getKey();
-			}
-		}
-		
-		return null;
+		return this.context.getFunctions();
 	}
 
 	/**
@@ -177,6 +108,20 @@ public class EncogProgram implements MLRegression {
 	public int getOutputCount() {
 		return 1;
 	}
+	
+	public ProgramNode getRootNode() {
+		return rootNode;
+	}
+	
+	public EncogProgramVariables getVariables() {
+		return variables;
+	}
+	
+	
+
+	public EncogProgramContext getContext() {
+		return context;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -188,10 +133,10 @@ public class EncogProgram implements MLRegression {
 		}
 		
 		for(int i=0;i<input.size();i++) {
-			this.variables.get(i).setValue(input.getData(i));
+			this.variables.getVariable(i).setValue(input.getData(i));
 		}
 		
-		double d = this.evaluate(0).toFloatValue();
+		double d = this.rootNode.evaluate().toFloatValue();
 		
 		MLData result = new BasicMLData(1);
 		result.setData(0, d);

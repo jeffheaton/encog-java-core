@@ -13,17 +13,12 @@ public class FunctionFactory {
 	
 	private final Map<String,ProgramExtensionTemplate> templateMap = new HashMap<String,ProgramExtensionTemplate>();
 	private final List<ProgramExtensionTemplate> opcodes = new ArrayList<ProgramExtensionTemplate>();
-	private final EncogProgram program;
 	
 	public static String createKey(String functionName, int argCount) {
 		return functionName + '`' + argCount;
 	}
 	
-	public FunctionFactory(EncogProgram theProgram) {
-		this.program = theProgram;
-	}
-	
-	public ProgramNode factorFunction(String name, ProgramNode[] args) {
+	public ProgramNode factorFunction(String name, EncogProgram program, ProgramNode[] args) {
 		ProgramNode fn = null;
 		
 		String key = FunctionFactory.createKey(name, args.length);
@@ -33,7 +28,7 @@ public class FunctionFactory {
 		}
 		
 		ProgramExtensionTemplate temp = this.templateMap.get(key);
-		fn = temp.factorFunction(this.program, name, args);
+		fn = temp.factorFunction(program, name, args);
 		
 		return fn;
 	}

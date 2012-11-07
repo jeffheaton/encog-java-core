@@ -40,9 +40,9 @@ public class StandardExtensions {
 				@Override
 				public ExpressionValue evaluate() {
 					int idx = this.getIntData()[0];
-					ExpressionValue result = owner.getVariable(idx);
+					ExpressionValue result = owner.getVariables().getVariable(idx);
 					if( result==null ) {
-						throw new ExpressionError("Variable has no value: " + owner.getVariableName(idx));
+						throw new ExpressionError("Variable has no value: " + owner.getVariables().getVariableName(idx));
 					}
 					return result;
 				}
@@ -1407,7 +1407,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue( this.getOwner().getFormat().format(
+					return new ExpressionValue( this.getOwner().getContext().getFormat().format(
 							this.getChildNodes().get(0).evaluate().toFloatValue(),
 							(int)this.getChildNodes().get(1).evaluate().toFloatValue()) );
 

@@ -33,23 +33,23 @@ import org.encog.ml.prg.ExpressionError;
 public class TestExpressionVar extends TestCase {
 	public void testAssignment() {
 		EncogProgram expression = new EncogProgram("a");
-		expression.setVariable("a",5);
-		Assert.assertEquals(5,expression.evaluate(0).toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
+		expression.getVariables().setVariable("a",5);
+		Assert.assertEquals(5,expression.evaluate().toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 	
 	public void testAssignment2() {
 		EncogProgram expression = new EncogProgram("cccc*(aa+bbb)");
-		expression.setVariable("aa",1);
-		expression.setVariable("bbb",2);
-		expression.setVariable("cccc",3);
-		Assert.assertEquals(9,expression.evaluate(0).toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
+		expression.getVariables().setVariable("aa",1);
+		expression.getVariables().setVariable("bbb",2);
+		expression.getVariables().setVariable("cccc",3);
+		Assert.assertEquals(9,expression.evaluate().toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 	
 	public void testError() {
 		try {
 			EncogProgram expression = new EncogProgram("b");
-			expression.setVariable("a", 5);
-			expression.evaluate(0);
+			expression.getVariables().setVariable("a", 5);
+			expression.evaluate();
 			Assert.assertTrue(false);
 		} catch (ExpressionError ex) {
 			// we want to get here

@@ -13,7 +13,7 @@ public class RenderCommonExpression {
 
 	public String render(final EncogProgram theHolder) {
 		this.holder = theHolder;
-		ProgramNode node = theHolder.getExpressions().get(0);
+		ProgramNode node = theHolder.getRootNode();
 		return renderNode(node);
 	}
 
@@ -27,7 +27,7 @@ public class RenderCommonExpression {
 
 	private String renderVar(ProgramNode node) {
 		int varIndex = node.getIntData()[0];
-		return this.holder.getVariableName(varIndex);
+		return this.holder.getVariables().getVariableName(varIndex);
 	}
 	
 	private String renderFunction(ProgramNode node) {
