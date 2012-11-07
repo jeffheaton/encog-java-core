@@ -128,7 +128,9 @@ public class ExpressionValue {
 	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder();
-		result.append("[String: ");
+		result.append("[ExpressionValue: ");
+		result.append("type: ");
+		result.append(this.getCurrentType().toString());
 		result.append("String Value: ");
 		result.append(toStringValue());
 		result.append("]");

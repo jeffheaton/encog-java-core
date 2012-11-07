@@ -20,6 +20,10 @@ public class RenderCommonExpression {
 	private String renderConst(ProgramNode node) {
 		return node.getExpressionData()[0].toStringValue();
 	}
+	
+	private String renderConstKnown(KnownConstNode node) {
+		return node.getName();
+	}
 
 	private String renderVar(ProgramNode node) {
 		int varIndex = node.getIntData()[0];
@@ -51,7 +55,7 @@ public class RenderCommonExpression {
 	public ExpressionNodeType determineNodeType(ProgramNode node) {
 		
 		if( node instanceof KnownConstNode) {
-			return ExpressionNodeType.Variable;
+			return ExpressionNodeType.ConstKnown;
 		}
 		
 		if (node.getName().equals("#const")) {
@@ -81,6 +85,9 @@ public class RenderCommonExpression {
 		switch (determineNodeType(node)) {
 		case ConstVal:
 			result.append(renderConst(node));
+			break;
+		case ConstKnown:
+			result.append(renderConstKnown((KnownConstNode)node));
 			break;
 		case Operator:
 			result.append(renderOperator(node));

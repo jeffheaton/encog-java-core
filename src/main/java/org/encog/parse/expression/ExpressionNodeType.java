@@ -4,5 +4,6 @@ public enum ExpressionNodeType {
 	ConstVal,
 	Operator,
 	Variable,
-	Function
+	Function, 
+	ConstKnown
 }
