@@ -89,32 +89,40 @@ public class ParseCommonExpression {
 			return target;
 		}
 
-		while ((nextchar > 0) && ("/*<>=&|".indexOf(nextchar) != -1)) {
-			switch (this.parser.readChar()) {
-			case '*':
-				return this.holder.getFunctions().factorFunction("*", new ProgramNode[] { target, expr1p5()} );
-			case '/':
-				return this.holder.getFunctions().factorFunction("/", new ProgramNode[] { target, expr1p5()} );
-			case '<':
-				if (this.parser.peek() == '=') {
-					this.parser.advance();
-					return this.holder.getFunctions().factorFunction("<=", new ProgramNode[] { target, expr1p5()} );
-				}
-				return this.holder.getFunctions().factorFunction("<", new ProgramNode[] { target, expr1p5()} );
-			case '>':
-				if (this.parser.peek() == '=') {
-					this.parser.advance();
-					return this.holder.getFunctions().factorFunction(">=", new ProgramNode[] { target, expr1p5()} );
-				}
-				return this.holder.getFunctions().factorFunction(">", new ProgramNode[] { target, expr1p5()} );
-			case '=':
-				return this.holder.getFunctions().factorFunction("=", new ProgramNode[] { target, expr1p5()} );
-			case '&':
-				return this.holder.getFunctions().factorFunction("&", new ProgramNode[] { target, expr1p5()} );
-			case '|':
-				return this.holder.getFunctions().factorFunction("|", new ProgramNode[] { target, expr1p5()} );
+		switch (this.parser.readChar()) {
+		case '*':
+			return this.holder.getFunctions().factorFunction("*",
+					new ProgramNode[] { target, expr1() });
+		case '/':
+			return this.holder.getFunctions().factorFunction("/",
+					new ProgramNode[] { target, expr1() });
+		case '<':
+			if (this.parser.peek() == '=') {
+				this.parser.advance();
+				return this.holder.getFunctions().factorFunction("<=",
+						new ProgramNode[] { target, expr1() });
 			}
+			return this.holder.getFunctions().factorFunction("<",
+					new ProgramNode[] { target, expr1() });
+		case '>':
+			if (this.parser.peek() == '=') {
+				this.parser.advance();
+				return this.holder.getFunctions().factorFunction(">=",
+						new ProgramNode[] { target, expr1() });
+			}
+			return this.holder.getFunctions().factorFunction(">",
+					new ProgramNode[] { target, expr1() });
+		case '=':
+			return this.holder.getFunctions().factorFunction("=",
+					new ProgramNode[] { target, expr1() });
+		case '&':
+			return this.holder.getFunctions().factorFunction("&",
+					new ProgramNode[] { target, expr1() });
+		case '|':
+			return this.holder.getFunctions().factorFunction("|",
+					new ProgramNode[] { target, expr1() });
 		}
+
 		return target;
 
 	}
