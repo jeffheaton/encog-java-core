@@ -63,6 +63,8 @@ public class TestExpression extends TestCase {
 	public void testAdd() {
 		Assert.assertEquals( 5, EncogProgram.parseFloat("2+3"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( 3, EncogProgram.parseFloat("5+-2"),Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals( 6, EncogProgram.parseFloat("1+2+3"),Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals( 10, EncogProgram.parseFloat("1+2+3+4"),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 	
 	public void testSub() {
@@ -74,6 +76,8 @@ public class TestExpression extends TestCase {
 		Assert.assertEquals( 6, EncogProgram.parseFloat("2*3"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( -6, EncogProgram.parseFloat("-2*3"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( 6, EncogProgram.parseFloat("-2*-3"),Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals( 24, EncogProgram.parseFloat("2*3*4"),Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals( 120, EncogProgram.parseFloat("2*3*4*5"),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 	
 	public void testPower() {
