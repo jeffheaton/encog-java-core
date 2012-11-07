@@ -83,44 +83,54 @@ public class ParseCommonExpression {
 		target = expr1p5();
 		this.parser.eatWhiteSpace();
 
-		final char nextchar = this.parser.peek();
+		char nextchar = this.parser.peek();
 
-		if (!((nextchar > 0) && ("/*<>=&|".indexOf(nextchar) != -1))) {
-			return target;
-		}
-
-		switch (this.parser.readChar()) {
-		case '*':
-			return this.holder.getFunctions().factorFunction("*",
-					new ProgramNode[] { target, expr1() });
-		case '/':
-			return this.holder.getFunctions().factorFunction("/",
-					new ProgramNode[] { target, expr1() });
-		case '<':
-			if (this.parser.peek() == '=') {
-				this.parser.advance();
-				return this.holder.getFunctions().factorFunction("<=",
-						new ProgramNode[] { target, expr1() });
+		while ((nextchar > 0) && ("/*<>=&|".indexOf(nextchar) != -1)) {
+			
+			switch (this.parser.readChar()) {
+			case '*':
+				target = this.holder.getFunctions().factorFunction("*",
+						new ProgramNode[] { target, expr1p5() });
+				break;
+			case '/':
+				target = this.holder.getFunctions().factorFunction("/",
+						new ProgramNode[] { target, expr1p5() });
+				break;
+			case '<':
+				if (this.parser.peek() == '=') {
+					this.parser.advance();
+					return this.holder.getFunctions().factorFunction("<=",
+							new ProgramNode[] { target, expr1p5() });
+				} else {
+					target = this.holder.getFunctions().factorFunction("<",
+						new ProgramNode[] { target, expr1p5() });
+				}
+				break;
+			case '>':
+				if (this.parser.peek() == '=') {
+					this.parser.advance();
+					target = this.holder.getFunctions().factorFunction(">=",
+							new ProgramNode[] { target, expr1p5() });
+				} else {
+					target = this.holder.getFunctions().factorFunction(">",
+						new ProgramNode[] { target, expr1p5() });
+				}
+				break;
+			case '=':
+				target = this.holder.getFunctions().factorFunction("=",
+						new ProgramNode[] { target, expr1p5() });
+				break;
+			case '&':
+				target = this.holder.getFunctions().factorFunction("&",
+						new ProgramNode[] { target, expr1p5() });
+				break;
+			case '|':
+				target = this.holder.getFunctions().factorFunction("|",
+						new ProgramNode[] { target, expr1p5() });
+				break;
 			}
-			return this.holder.getFunctions().factorFunction("<",
-					new ProgramNode[] { target, expr1() });
-		case '>':
-			if (this.parser.peek() == '=') {
-				this.parser.advance();
-				return this.holder.getFunctions().factorFunction(">=",
-						new ProgramNode[] { target, expr1() });
-			}
-			return this.holder.getFunctions().factorFunction(">",
-					new ProgramNode[] { target, expr1() });
-		case '=':
-			return this.holder.getFunctions().factorFunction("=",
-					new ProgramNode[] { target, expr1() });
-		case '&':
-			return this.holder.getFunctions().factorFunction("&",
-					new ProgramNode[] { target, expr1() });
-		case '|':
-			return this.holder.getFunctions().factorFunction("|",
-					new ProgramNode[] { target, expr1() });
+			
+			nextchar = this.parser.peek();
 		}
 
 		return target;

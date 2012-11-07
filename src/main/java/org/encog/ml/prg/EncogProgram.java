@@ -29,13 +29,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.encog.ml.MLRegression;
+import org.encog.ml.data.MLData;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.parse.expression.common.ParseCommonExpression;
 import org.encog.util.csv.CSVFormat;
 
-public class EncogProgram {
+public class EncogProgram implements MLRegression {
 	
 	private FunctionFactory functions = new FunctionFactory(this);
 
@@ -156,6 +158,29 @@ public class EncogProgram {
 			}
 		}
 		
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getInputCount() {
+		return this.variables.size();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getOutputCount() {
+		return 1;
+	}
+
+	
+	@Override
+	public MLData compute(MLData input) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

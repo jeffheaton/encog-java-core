@@ -60,6 +60,10 @@ public class TestExpression extends TestCase {
 		
 	}
 	
+	public void testPrecedence() {
+		Assert.assertEquals( -2.5, EncogProgram.parseFloat("1.0+2.0*3.0/4.0-5.0"),Encog.DEFAULT_DOUBLE_EQUAL);		
+	}
+	
 	public void testAdd() {
 		Assert.assertEquals( 5, EncogProgram.parseFloat("2+3"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( 3, EncogProgram.parseFloat("5+-2"),Encog.DEFAULT_DOUBLE_EQUAL);

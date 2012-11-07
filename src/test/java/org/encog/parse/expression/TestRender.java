@@ -25,6 +25,6 @@ public class TestRender extends TestCase {
 		EncogProgram expression = new EncogProgram("x*2*PI");
 		RenderCommonExpression render = new RenderCommonExpression();
 		String result = render.render(expression);		
-		Assert.assertEquals("(x*(2*PI))", result);		
+		Assert.assertEquals("((x*2)*PI)", result);		
 	}
 }
