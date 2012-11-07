@@ -68,7 +68,7 @@ public class RenderCommonExpression {
 		
 		String name = node.getName();
 		
-		if( !Character.isAlphabetic(name.charAt(0)) ) {
+		if( !Character.isLetterOrDigit(name.charAt(0)) ) {
 			return ExpressionNodeType.Operator;			
 		}
 		
