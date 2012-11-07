@@ -31,6 +31,7 @@ import java.util.Map.Entry;
 
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.ml.prg.extension.StandardExtensions;
@@ -177,11 +178,25 @@ public class EncogProgram implements MLRegression {
 		return 1;
 	}
 
-	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public MLData compute(MLData input) {
-		// TODO Auto-generated method stub
-		return null;
+		if( input.size()!=getInputCount() ) {
+			throw new ExpressionError("Invalid input count.");
+		}
+		
+		for(int i=0;i<input.size();i++) {
+			this.variables.get(i).setValue(input.getData(i));
+		}
+		
+		double d = this.evaluate(0).toFloatValue();
+		
+		MLData result = new BasicMLData(1);
+		result.setData(0, d);
+		
+		return result;
 	}
 
 }
