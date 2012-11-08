@@ -45,6 +45,14 @@ public abstract class ProgramNode {
 		this.doubleData = new ExpressionValue[expressionDataSize];
 		this.name = theName;
 		this.addChildNodes(theArgs);
+		
+		for(int i=0;i<this.intData.length;i++) {
+			this.intData[i] = 0;
+		}
+		
+		for(int i=0;i<this.doubleData.length;i++) {
+			this.doubleData[i] = new ExpressionValue(0);
+		}
 	}
 
 	public String getName() {
@@ -72,6 +80,9 @@ public abstract class ProgramNode {
 
 	public ExpressionValue[] getExpressionData() {
 		return doubleData;
+	}
+	
+	public void randomize(double degree) {
 	}
 	
 	public String toString() {

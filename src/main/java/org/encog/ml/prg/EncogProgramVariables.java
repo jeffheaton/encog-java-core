@@ -55,7 +55,7 @@ public class EncogProgramVariables {
 			}
 		}
 		
-		return null;
+		throw new ExpressionError("No variable defined for index " + idx);
 	}
 	
 	public void setVariable(final String name, final double d) {
@@ -65,5 +65,14 @@ public class EncogProgramVariables {
 	
 	public int size() {
 		return this.varMap.size();
+	}
+
+	public void defineVariable(String name) {
+		if( this.varMap.containsKey(name)) {
+			throw new ExpressionError("Variable " + name + " already defined, simply set its value, do not redefine.");
+		} else {
+			this.varMap.put(name, this.variables.size());
+			this.variables.add(null);
+		}
 	}
 }

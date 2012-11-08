@@ -35,6 +35,9 @@ public class RenderCommonExpression {
 		result.append(node.getName());
 		result.append('(');
 		for(int i=0;i<node.getChildNodes().size();i++) {
+			if( i>0 ) {
+				result.append(',');
+			}
 			ProgramNode childNode = node.getChildNodes().get(i);
 			result.append(renderNode(childNode));
 		}

@@ -69,9 +69,18 @@ public class EncogProgram implements MLRegression {
 		KnownConstTemplate.createAllConst(this.context.getFunctions());
 	}
 	
+	public EncogProgram(EncogProgramContext theContext) {
+		this(theContext,new EncogProgramVariables());
+	}
+	
 	public EncogProgram(EncogProgramContext theContext, EncogProgramVariables theVariables) {
 		this.context = theContext;
 		this.variables = theVariables;
+		
+		// define variables
+		for(String v:this.context.getDefinedVariables()) {
+			this.variables.defineVariable(v);
+		}
 	}
 
 	public EncogProgram(final String expression) {
@@ -142,6 +151,10 @@ public class EncogProgram implements MLRegression {
 		result.setData(0, d);
 		
 		return result;
+	}
+
+	public void setRootNode(ProgramNode theRootNode) {
+		this.rootNode = theRootNode;
 	}
 
 }

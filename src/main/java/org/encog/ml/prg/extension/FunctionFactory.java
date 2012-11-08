@@ -43,5 +43,16 @@ public class FunctionFactory {
 		String key = FunctionFactory.createKey(name, l);
 		return this.templateMap.containsKey(key);
 	}
+
+	public int size() {
+		return this.opcodes.size();
+	}
 	
+	public ProgramExtensionTemplate getOpCode(int theOpCode) {
+		return this.opcodes.get(theOpCode);
+	}
+
+	public List<ProgramExtensionTemplate> getOpCodes() {
+		return this.opcodes;
+	}
 }
