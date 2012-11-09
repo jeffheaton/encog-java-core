@@ -94,6 +94,40 @@ public abstract class ProgramNode {
 		result.append("]");
 		return  result.toString();
 	}
+
+	public boolean isVariable() {
+		return false;
+	}
+
+	public boolean allLeafChildren() {
+		boolean result = true;
+		
+		for(ProgramNode node: this.childNodes) {
+			if( node.isLeaf() ) {
+				result = false;
+				break;
+			}
+		}
+		
+		return result;
+	}
+
+	private boolean isLeaf() {
+		return this.childNodes.size()==0;
+	}
+
+	public boolean allConstChildren() {
+		boolean result = true;
+		
+		for(ProgramNode node: this.childNodes) {
+			if( node.isVariable() ) {
+				result = false;
+				break;
+			}
+		}
+		
+		return result;
+	}
 	
 	
 	
