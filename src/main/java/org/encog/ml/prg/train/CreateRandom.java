@@ -56,6 +56,8 @@ public class CreateRandom {
 			children[i] = createNode(program, depth+1);
 		}
 		
-		return temp.factorFunction(program, temp.getName(), children);
+		ProgramNode result = temp.factorFunction(program, temp.getName(), children);
+		result.randomize(program, 1.0);
+		return result;
 	}
 }

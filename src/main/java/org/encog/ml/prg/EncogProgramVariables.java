@@ -72,7 +72,7 @@ public class EncogProgramVariables {
 			throw new ExpressionError("Variable " + name + " already defined, simply set its value, do not redefine.");
 		} else {
 			this.varMap.put(name, this.variables.size());
-			this.variables.add(null);
+			this.variables.add(new ExpressionValue(0));
 		}
 	}
 }
