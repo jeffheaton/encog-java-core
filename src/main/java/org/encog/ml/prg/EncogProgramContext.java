@@ -1,16 +1,21 @@
 package org.encog.ml.prg;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.util.csv.CSVFormat;
 
 public class EncogProgramContext {
-	
+
 	private final CSVFormat format;
 	private final FunctionFactory functions;
 	private final List<String> definedVariables = new ArrayList<String>();
+	private final Map<String,Double> config = new HashMap<String,Double>();
+	private double constMin = -10;
+	private double constMax = 10;
 	
 	public EncogProgramContext(CSVFormat theFormat, FunctionFactory theFunctions) {
 		this.format = theFormat;
@@ -43,5 +48,29 @@ public class EncogProgramContext {
 
 	public List<String> getDefinedVariables() {
 		return this.definedVariables;
-	}	
+	}
+
+	public Map<String, Double> getConfig() {
+		return config;
+	}
+
+	public double getConstMin() {
+		return constMin;
+	}
+
+	public void setConstMin(double constMin) {
+		this.constMin = constMin;
+	}
+
+	public double getConstMax() {
+		return constMax;
+	}
+
+	public void setConstMax(double constMax) {
+		this.constMax = constMax;
+	}
+	
+	
+	
+	
 }

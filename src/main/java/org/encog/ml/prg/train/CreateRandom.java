@@ -35,7 +35,9 @@ public class CreateRandom {
 	private ProgramNode createLeafNode(EncogProgram program) {
 		int opCode = RangeRandomizer.randomInt(0, this.leaves.size()-1);
 		ProgramExtensionTemplate temp = this.leaves.get(opCode);
-		return temp.factorFunction(program, temp.getName(), new ProgramNode[] {});
+		ProgramNode result = temp.factorFunction(program, temp.getName(), new ProgramNode[] {});
+		result.randomize(program, 1.0);
+		return result;
 	}
 	
 	private ProgramNode createNode(EncogProgram program, int depth) {

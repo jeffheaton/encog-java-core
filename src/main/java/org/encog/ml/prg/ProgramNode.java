@@ -82,7 +82,7 @@ public abstract class ProgramNode {
 		return doubleData;
 	}
 	
-	public void randomize(double degree) {
+	public void randomize(EncogProgram program, double degree) {
 	}
 	
 	public String toString() {

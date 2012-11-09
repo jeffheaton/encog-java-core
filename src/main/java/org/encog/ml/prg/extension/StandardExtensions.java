@@ -1,6 +1,7 @@
 package org.encog.ml.prg.extension;
 
 import org.encog.Encog;
+import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
@@ -77,6 +78,13 @@ public class StandardExtensions {
 		public ProgramNode factorFunction(EncogProgram theOwner,
 				String theName, ProgramNode[] theArgs) {
 			return new ProgramNode(theOwner, theName, theArgs,0,1) {
+				
+				@Override
+				public void randomize(EncogProgram program, double degree) {
+					this.getExpressionData()[0] = new ExpressionValue(
+							RangeRandomizer.randomize(program.getContext().getConstMin(), program.getContext().getConstMax()));
+				}
+				
 				@Override
 				public ExpressionValue evaluate() {
 					return this.getExpressionData()[0];
