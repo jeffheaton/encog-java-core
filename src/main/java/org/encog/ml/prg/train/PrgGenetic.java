@@ -35,18 +35,7 @@ public class PrgGenetic implements MLTrain {
 		return scoreFunction;
 	}
 
-	public void scorePopulation() {
-		double totalScore = 0;
-		int count = 0;
-		for(EncogProgram prg: this.population.getMembers() ) {
-			double score = this.scoreFunction.calculateScore(prg);
-			count++;
-			if( !Double.isNaN(score) && !Double.isInfinite(score) ) {
-				totalScore+=score;
-			}
-		}
-		this.error = totalScore / count;
-	}
+
 
 	@Override
 	public TrainingImplementationType getImplementationType() {

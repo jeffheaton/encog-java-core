@@ -27,7 +27,7 @@ import org.encog.ml.MLRegression;
 
 /**
  * Used by simulated annealing and genetic algorithms to calculate the score
- * for a neural network.  This allows networks to be ranked.  We may be seeking
+ * for a machine learnign method.  This allows networks to be ranked.  We may be seeking
  * a high or a low score, depending on the value the shouldMinimize
  * method returns.
  */
@@ -38,7 +38,7 @@ public interface CalculateScore {
 	 * @param network The network.
 	 * @return The score.
 	 */
-	double calculateScore(MLRegression network);
+	double calculateScore(MLRegression method);
 	
 	/**
 	 * @return True if the goal is to minimize the score.

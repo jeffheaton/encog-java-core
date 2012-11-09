@@ -31,10 +31,11 @@ import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.parse.expression.common.ParseCommonExpression;
 
-public class EncogProgram implements MLRegression {
+public class EncogProgram implements MLRegression, Comparable<EncogProgram> {
 		
 	private EncogProgramVariables variables = new EncogProgramVariables();
 	private EncogProgramContext context = new EncogProgramContext();
+	private double score;
 
 	public static ExpressionValue parse(final String str) {
 		final EncogProgram holder = new EncogProgram(str);
@@ -155,6 +156,21 @@ public class EncogProgram implements MLRegression {
 
 	public void setRootNode(ProgramNode theRootNode) {
 		this.rootNode = theRootNode;
+	}
+	
+	
+
+	public double getScore() {
+		return score;
+	}
+
+	public void setScore(double score) {
+		this.score = score;
+	}
+
+	@Override
+	public int compareTo(EncogProgram other) {
+		return Double.compare(this.score, other.score);
 	}
 
 }
