@@ -27,13 +27,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.ml.prg.expvalue.ExpressionValue;
+import org.encog.ml.tree.basic.BasicTreeNode;
 
 
 
-public abstract class ProgramNode {
+public abstract class ProgramNode extends BasicTreeNode<ProgramNode> {
 
 	private final String name;
-	private final List<ProgramNode> childNodes = new ArrayList<ProgramNode>();
 	private final EncogProgram owner;
 	private final int[] intData;
 	private final ExpressionValue[] expressionData;
@@ -61,17 +61,8 @@ public abstract class ProgramNode {
 	
 	public abstract ExpressionValue evaluate();
 	
-	public List<ProgramNode> getChildNodes() {
-		return this.childNodes;
-	}
 	public EncogProgram getOwner() {
 		return owner;
-	}
-	
-	public void addChildNodes(ProgramNode[] args) {
-		for( ProgramNode pn: args) {
-			this.childNodes.add(pn);
-		}
 	}
 
 	public int[] getIntData() {
@@ -92,7 +83,7 @@ public abstract class ProgramNode {
 		result.append(", childCount=");
 		result.append(this.getChildNodes().size());
 		result.append(", childNodes=");
-		for(ProgramNode node: this.childNodes) {
+		for(ProgramNode node: this.getChildNodes()) {
 			result.append(" ");
 			result.append(node.getName());
 		}
@@ -104,27 +95,10 @@ public abstract class ProgramNode {
 		return false;
 	}
 
-	public boolean allLeafChildren() {
-		boolean result = true;
-		
-		for(ProgramNode node: this.childNodes) {
-			if( !node.isLeaf() ) {
-				result = false;
-				break;
-			}
-		}
-		
-		return result;
-	}
-
-	public boolean isLeaf() {
-		return this.childNodes.size()==0;
-	}
-
 	public boolean allConstChildren() {
 		boolean result = true;
 		
-		for(ProgramNode node: this.childNodes) {
+		for(ProgramNode node: this.getChildNodes()) {
 			if( node.isVariable() ) {
 				result = false;
 				break;
@@ -143,7 +117,7 @@ public abstract class ProgramNode {
 			return true;
 		}
 		
-		for(ProgramNode childNode : this.childNodes) {
+		for(ProgramNode childNode : this.getChildNodes()) {
 			if( !childNode.allConstDescendants() ) {
 				return false;
 			}

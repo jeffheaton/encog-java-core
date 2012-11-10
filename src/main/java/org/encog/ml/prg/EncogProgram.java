@@ -173,4 +173,5 @@ public class EncogProgram implements MLRegression, Comparable<EncogProgram> {
 		return Double.compare(this.score, other.score);
 	}
 
+
 }
