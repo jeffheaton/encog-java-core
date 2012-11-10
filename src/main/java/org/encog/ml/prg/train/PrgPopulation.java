@@ -1,10 +1,13 @@
 package org.encog.ml.prg.train;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
+import org.encog.ml.prg.train.rewrite.RewriteRule;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.TrainingSetScore;
 import org.encog.parse.expression.common.RenderCommonExpression;
@@ -14,6 +17,7 @@ public class PrgPopulation {
 	private CalculateScore scoreFunction;
 	private final EncogProgramContext context;
 	private EncogProgram[] members;
+	private List<RewriteRule> rewriteRules = new ArrayList<RewriteRule>();
 	private int maxDepth = 5;
 	private int maxPopulation = 1000;
 	
@@ -44,6 +48,7 @@ public class PrgPopulation {
 				}
 			} while(!done);
 			
+			rewrite(prg);
 			this.members[i] = prg;
 		}
 	}
@@ -86,6 +91,16 @@ public class PrgPopulation {
 
 	public void sort() {
 		Arrays.sort(this.members);
+	}
+	
+	public void addRewriteRule(RewriteRule rule) {
+		this.rewriteRules.add(rule);
+	}
+	
+	public void rewrite(EncogProgram prg) {
+		for(RewriteRule rule: this.rewriteRules) {
+			rule.rewrite(prg);
+		}
 	}
 
 }

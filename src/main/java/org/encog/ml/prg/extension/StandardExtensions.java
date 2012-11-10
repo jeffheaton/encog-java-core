@@ -47,6 +47,10 @@ public class StandardExtensions {
 					}
 					return result;
 				}
+				@Override
+				public boolean isVariable() {
+					return true;
+				}
 			};
 		}
 	};

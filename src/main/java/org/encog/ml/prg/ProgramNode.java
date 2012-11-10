@@ -36,13 +36,13 @@ public abstract class ProgramNode {
 	private final List<ProgramNode> childNodes = new ArrayList<ProgramNode>();
 	private final EncogProgram owner;
 	private final int[] intData;
-	private final ExpressionValue[] doubleData;
+	private final ExpressionValue[] expressionData;
 
 	public ProgramNode(final EncogProgram theOwner,
 			final String theName, ProgramNode[] theArgs,int intDataSize, int expressionDataSize) {
 		this.owner = theOwner;
 		this.intData = new int[intDataSize];
-		this.doubleData = new ExpressionValue[expressionDataSize];
+		this.expressionData = new ExpressionValue[expressionDataSize];
 		this.name = theName;
 		this.addChildNodes(theArgs);
 		
@@ -50,8 +50,8 @@ public abstract class ProgramNode {
 			this.intData[i] = 0;
 		}
 		
-		for(int i=0;i<this.doubleData.length;i++) {
-			this.doubleData[i] = new ExpressionValue(0);
+		for(int i=0;i<this.expressionData.length;i++) {
+			this.expressionData[i] = new ExpressionValue(0);
 		}
 	}
 
@@ -79,7 +79,7 @@ public abstract class ProgramNode {
 	}
 
 	public ExpressionValue[] getExpressionData() {
-		return doubleData;
+		return expressionData;
 	}
 	
 	public void randomize(EncogProgram program, double degree) {
@@ -91,6 +91,11 @@ public abstract class ProgramNode {
 		result.append(this.getName());
 		result.append(", childCount=");
 		result.append(this.getChildNodes().size());
+		result.append(", childNodes=");
+		for(ProgramNode node: this.childNodes) {
+			result.append(" ");
+			result.append(node.getName());
+		}
 		result.append("]");
 		return  result.toString();
 	}
@@ -103,7 +108,7 @@ public abstract class ProgramNode {
 		boolean result = true;
 		
 		for(ProgramNode node: this.childNodes) {
-			if( node.isLeaf() ) {
+			if( !node.isLeaf() ) {
 				result = false;
 				break;
 			}
@@ -112,7 +117,7 @@ public abstract class ProgramNode {
 		return result;
 	}
 
-	private boolean isLeaf() {
+	public boolean isLeaf() {
 		return this.childNodes.size()==0;
 	}
 
@@ -127,6 +132,24 @@ public abstract class ProgramNode {
 		}
 		
 		return result;
+	}
+
+	public boolean allConstDescendants() {
+		if( this.isVariable() ) {
+			return false;
+		}
+		
+		if( this.isLeaf() ) {
+			return true;
+		}
+		
+		for(ProgramNode childNode : this.childNodes) {
+			if( !childNode.allConstDescendants() ) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	
