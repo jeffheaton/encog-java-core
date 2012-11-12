@@ -8,5 +8,6 @@ public interface TreeNode<T> {
 	public void addChildNodes(T[] args);
 	public boolean allLeafChildren();
 	public boolean isLeaf();
+	public int size();
 	
 }

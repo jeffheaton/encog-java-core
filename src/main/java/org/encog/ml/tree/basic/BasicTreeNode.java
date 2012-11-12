@@ -3,7 +3,6 @@ package org.encog.ml.tree.basic;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.tree.TreeNode;
 
 public class BasicTreeNode<T extends TreeNode<T>> implements TreeNode<T> {
@@ -34,6 +33,15 @@ public class BasicTreeNode<T extends TreeNode<T>> implements TreeNode<T> {
 
 	public boolean isLeaf() {
 		return this.childNodes.size()==0;
+	}
+
+	@Override
+	public int size() {
+		int result = 1;
+		for(TreeNode<T> node: this.childNodes) {
+			result+=node.size();
+		}
+		return result;
 	}
 	
 }
