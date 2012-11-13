@@ -70,7 +70,4 @@ public class EncogProgramContext {
 		this.constMax = constMax;
 	}
 	
-	
-	
-	
 }

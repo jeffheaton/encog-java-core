@@ -32,6 +32,12 @@ package org.encog.mathutil.randomize;
  */
 public class RangeRandomizer extends BasicRandomizer {
 
+	/**
+	 * Returns a random number in the range between min and max.
+	 * @param min The minimum desired random number.
+	 * @param max The maximum desired random number.
+	 * @return The random number.
+	 */
 	public static int randomInt(final int min, final int max) {
 		return (int) RangeRandomizer.randomize(min, max + 1);
 	}
