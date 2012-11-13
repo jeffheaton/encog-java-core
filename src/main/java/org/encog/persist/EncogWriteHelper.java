@@ -218,14 +218,8 @@ public class EncogWriteHelper {
 		this.out.println(this.line.toString());
 		this.line.setLength(0);
 	}
-
-	/**
-	 * Write a property as an activation function.
-	 * @param name The name of the property.
-	 * @param act The activation function.
-	 */
-	public final void writeProperty(final String name, 
-			final ActivationFunction act) {
+	
+	private String makeActivationFunctionString(ActivationFunction act) {
 		final StringBuilder result = new StringBuilder();
 		result.append(act.getClass().getSimpleName());
 
@@ -234,7 +228,17 @@ public class EncogWriteHelper {
 			result.append(CSVFormat.EG_FORMAT.format(act.getParams()[i],
 					Encog.DEFAULT_PRECISION));
 		}
-		writeProperty(name, result.toString());
+		return result.toString();
+	}
+
+	/**
+	 * Write a property as an activation function.
+	 * @param name The name of the property.
+	 * @param act The activation function.
+	 */
+	public final void writeProperty(final String name, 
+			final ActivationFunction act) {
+		writeProperty(name, makeActivationFunctionString(act));
 	}
 
 	/**
@@ -375,5 +379,10 @@ public class EncogWriteHelper {
 	public final void writeProperty(final String name, final String value) {
 		this.out.println(name + "=" + value);
 
+	}
+
+	public void addColumn(ActivationFunction act) {
+		addColumn(makeActivationFunctionString(act));
+		
 	}
 }

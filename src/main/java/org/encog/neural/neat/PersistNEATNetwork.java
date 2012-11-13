@@ -25,10 +25,12 @@ package org.encog.neural.neat;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
@@ -38,6 +40,34 @@ import org.encog.util.csv.CSVFormat;
 
 public class PersistNEATNetwork implements EncogPersistor {
 
+	public class TempNeuron {		
+		private final ActivationFunction activationFunction;
+		private final double preActivation;
+		private final double postActivation;
+		
+		public TempNeuron(ActivationFunction activationFunction,
+				double preActivation, double postActivation) {
+			super();
+			this.activationFunction = activationFunction;
+			this.preActivation = preActivation;
+			this.postActivation = postActivation;
+		}
+
+		public ActivationFunction getActivationFunction() {
+			return activationFunction;
+		}
+
+		public double getPreActivation() {
+			return preActivation;
+		}
+
+		public double getPostActivation() {
+			return postActivation;
+		}
+		
+		
+	}
+	
 	@Override
 	public int getFileVersion() {
 		return 1;
@@ -50,53 +80,75 @@ public class PersistNEATNetwork implements EncogPersistor {
 
 	@Override
 	public Object read(InputStream is) {
-		NEATNetwork result = new NEATNetwork();	
+		Map<String, String> properties = new HashMap<String, String>();
+		List<TempNeuron> neuronList = new ArrayList<TempNeuron>();
+		List<NEATLink> linkList = new ArrayList<NEATLink>();
 		EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;
-		Map<Integer,NEATNeuron> neuronMap = new HashMap<Integer,NEATNeuron>();
+		int inputCount = 0;
+		int outputCount = 0;
+		int activationCycles;
 		
+		// parse the lines
 		while( (section = in.readNextSection()) != null ) {
 			if( section.getSectionName().equals("NEAT") && section.getSubSectionName().equals("PARAMS") ) {
 				Map<String,String> params = section.parseParams();
-				result.getProperties().putAll(params);
+				properties.putAll(params);
 			} if( section.getSectionName().equals("NEAT") && section.getSubSectionName().equals("NETWORK") ) {
 				Map<String,String> params = section.parseParams();
 				
-				result.setInputCount( EncogFileSection.parseInt(params,PersistConst.INPUT_COUNT));
-				result.setOutputCount( EncogFileSection.parseInt(params,PersistConst.OUTPUT_COUNT));
-				result.setActivationFunction( EncogFileSection.parseActivationFunction(params,PersistConst.ACTIVATION_FUNCTION));
-				result.setNetworkDepth( EncogFileSection.parseInt(params,PersistConst.DEPTH));
-				result.setActivationCycles( EncogFileSection.parseInt(params, PersistConst.ACTIVATION_CYCLES));
+				inputCount = EncogFileSection.parseInt(params,PersistConst.INPUT_COUNT);
+				outputCount = EncogFileSection.parseInt(params,PersistConst.OUTPUT_COUNT);
+				activationCycles = EncogFileSection.parseInt(params, PersistConst.ACTIVATION_CYCLES);
 			} else if( section.getSectionName().equals("NEAT") && section.getSubSectionName().equals("NEURONS") ) {
 				for (String line : section.getLines()) {
 					List<String> cols = EncogFileSection.splitColumns(line);
 
-					final long neuronID = Integer.parseInt(cols.get(0));
-					final NEATNeuronType neuronType = PersistNEATPopulation.stringToNeuronType(cols.get(1)); 
-					final double splitY = CSVFormat.EG_FORMAT.parse(cols.get(2));
-					final double splitX = CSVFormat.EG_FORMAT.parse(cols.get(3));
-					
-					NEATNeuron neatNeuron = new NEATNeuron(neuronType, neuronID,
-						splitY,splitX);
-					result.getNeurons().add(neatNeuron);
-					neuronMap.put((int)neuronID, neatNeuron);
+					final double preActivation = CSVFormat.EG_FORMAT.parse(cols.get(0));
+					final double postActivation = CSVFormat.EG_FORMAT.parse(cols.get(1));
+					final ActivationFunction activation = EncogFileSection.parseActivationFunction(cols.get(2));
+					neuronList.add(new TempNeuron(activation,preActivation,postActivation));
 				}				
 			} else if( section.getSectionName().equals("NEAT") && section.getSubSectionName().equals("LINKS") ) {
 				for (String line : section.getLines()) {
 					List<String> cols = EncogFileSection.splitColumns(line);
-					int fromID = Integer.parseInt(cols.get(0));
-					int toID = Integer.parseInt(cols.get(1));
-					boolean recurrent = Integer.parseInt(cols.get(2))>0;
-					double weight = CSVFormat.EG_FORMAT.parse(cols.get(3));
-					NEATNeuron fromNeuron = neuronMap.get(fromID);
-					NEATNeuron toNeuron = neuronMap.get(toID);
-					NEATLink neatLink = new NEATLink(weight,fromNeuron,toNeuron,recurrent);
-					fromNeuron.getOutputboundLinks().add(neatLink);
-					toNeuron.getInboundLinks().add(neatLink);
-				}
+					final int fromNeuron = Integer.parseInt(cols.get(0));
+					final int toNeuron = Integer.parseInt(cols.get(1));
+					final double weight = CSVFormat.EG_FORMAT.parse(cols.get(2));
+					linkList.add(new NEATLink(fromNeuron,toNeuron,weight));
+				}	
 			}
 		}
+		
+		// create activation and links arrays
+		ActivationFunction[] af = new ActivationFunction[neuronList.size()];
+		NEATLink[]  links = new NEATLink[linkList.size()];
+		
+		// populate arrays
+		for(int i=0;i<af.length;i++) {
+			af[i] = neuronList.get(i).getActivationFunction();
+		}
+		
+		for(int i=0;i<links.length;i++) {
+			links[i] = linkList.get(i);
+		}
+		
+		// create the network
+		
+		NEATNetwork result = new NEATNetwork(inputCount,
+	            outputCount,
+	            links,
+	            af);
+		
+		// set the pre and post values
+		
+		for(int i=0;i<af.length;i++) {
+			result.getPreActivation()[i] = neuronList.get(i).getPreActivation();
+			result.getPreActivation()[i] = neuronList.get(i).getPostActivation();
+		}
 		 
+		
+		// return result
 		return result;
 	}
 
@@ -111,36 +163,27 @@ public class PersistNEATNetwork implements EncogPersistor {
 		
 		out.writeProperty(PersistConst.INPUT_COUNT, neat.getInputCount());
 		out.writeProperty(PersistConst.OUTPUT_COUNT, neat.getOutputCount());
-		out.writeProperty(PersistConst.ACTIVATION_FUNCTION, neat.getActivationFunction());
-		out.writeProperty(PersistConst.DEPTH, neat.getNetworkDepth());
 		out.writeProperty(PersistConst.ACTIVATION_CYCLES, neat.getActivationCycles());
 		
 		out.addSubSection("NEURONS");
-		for (NEATNeuron neatNeuron : neat.getNeurons() ) {
-			out.addColumn(neatNeuron.getNeuronID());
-			out.addColumn(PersistNEATPopulation.neuronTypeToString(neatNeuron.getNeuronType()));
-			out.addColumn(neatNeuron.getSplitX());
-			out.addColumn(neatNeuron.getSplitY());
+		int neuronCount = neat.getPreActivation().length;
+				
+		for(int i=0;i<neuronCount;i++) {
+			out.addColumn(neat.getPreActivation()[i]);
+			out.addColumn(neat.getPostActivation()[i]);
+			out.addColumn(neat.getActivationFunctions()[i]);
 			out.writeLine();
 		}
-		
+				
 		out.addSubSection("LINKS");
-		for (NEATNeuron neatNeuron : neat.getNeurons() ) {
-						
-			for(NEATLink link: neatNeuron.getOutputboundLinks() ) {
-				writeLink(out,link);
-			}			
+		for (NEATLink neatLink : neat.getLinks() ) {
+			out.addColumn(neatLink.getFromNeuron());
+			out.addColumn(neatLink.getToNeuron());
+			out.addColumn(neatLink.getWeight());
+			out.writeLine();	
 		}
 		
 		out.flush();
-	}
-	
-	private void writeLink(EncogWriteHelper out, NEATLink link) {
-		out.addColumn(link.getFromNeuron().getNeuronID());
-		out.addColumn(link.getToNeuron().getNeuronID());
-		out.addColumn(link.isRecurrent());
-		out.addColumn(link.getWeight());
-		out.writeLine();		
 	}
 
 }

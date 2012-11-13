@@ -23,18 +23,14 @@
  */
 package org.encog.neural.neat;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.BasicML;
 import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
-import org.encog.neural.NeuralNetworkError;
+import org.encog.util.EngineArray;
 import org.encog.util.simple.EncogUtility;
 
 /**
@@ -64,74 +60,37 @@ public class NEATNetwork extends BasicML implements MLRegression, MLError {
 	public static final String PROPERTY_LINKS = "links";
 	public static final String PROPERTY_SNAPSHOT = "snapshot";
 	
-	/**
-	 * The activation function.
-	 */
-	private ActivationFunction activationFunction;
-
-	/**
-	 * The depth of the network.
-	 */
-	private int networkDepth;
-
-	/**
-	 * The neurons that make up this network.
-	 */
-	private final List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
-	
+    private final NEATLink[] links;
+	private final ActivationFunction[] activationFunctions;
+    private final double[] preActivation;
+    private final double[] postActivation;
+    private final int outputIndex;
 	private int inputCount;
-	private int outputCount;
-	
+	private int outputCount;	
 	private int activationCycles = 1;
+    private boolean hasRelaxed = false;
+    private double relaxationThreshold;
 
+    public NEATNetwork(
+    		int inputNeuronCount,
+            int outputNeuronCount,
+            NEATLink[] connectionArray,
+            ActivationFunction[] theActivationFunctions)
+    {
+        links = connectionArray;
+        activationFunctions = theActivationFunctions;
+        int neuronCount = this.activationFunctions.length;
 
-	/**
-	 * Default constructor.
-	 */
-	public NEATNetwork() {
+        preActivation = new double[neuronCount];
+        postActivation = new double[neuronCount];
 
-	}
+        this.inputCount = inputNeuronCount;
+        outputIndex = inputNeuronCount+1;
+        this.outputCount = outputNeuronCount;
 
-	/**
-	 * Construct a NEAT synapse.
-	 * 
-	 * @param inputCount
-	 *            The number of input neurons.
-	 * @param outputCount
-	 *            The number of output neurons.
-	 * @param neurons
-	 *            The neurons in this synapse.
-	 * @param activationFunction
-	 *            The activation function to use.
-	 * @param networkDepth
-	 *            The depth of the network.
-	 */
-	public NEATNetwork(final int inputCount, 
-			final int outputCount,
-			final List<NEATNeuron> neurons,
-			final ActivationFunction activationFunction,
-			final int networkDepth) {
-		this.inputCount = inputCount;
-		this.outputCount = outputCount;
-		this.neurons.addAll(neurons);
-		this.networkDepth = networkDepth;
-		this.activationFunction = activationFunction;
-	}
-
-	/**
-	 * Construct a NEAT network.
-	 * 
-	 * @param inputCount
-	 *            The input count.
-	 * @param outputCount
-	 *            The output count.
-	 */
-	public NEATNetwork(final int inputCount, final int outputCount) {
-		this.inputCount = inputCount;
-		this.outputCount = outputCount;
-		this.networkDepth = 0;
-		this.activationFunction = new ActivationSigmoid();
-	}
+        // bias
+        postActivation[0] = 1.0;
+    }
 
 	/**
 	 * Compute the output from this synapse.
@@ -142,91 +101,36 @@ public class NEATNetwork extends BasicML implements MLRegression, MLError {
 	 */
 	public MLData compute(final MLData input) {
 		final MLData result = new BasicMLData(this.outputCount);
+		
+		// copy input
+		EngineArray.arrayCopy(input.getData(), 0, this.preActivation, 1, this.inputCount);
+				
 
-		if (this.neurons.size() == 0) {
-			throw new NeuralNetworkError("This network has not been evolved yet.");
+		// iterate through the network activationCycles times
+		for (int i = 0; i < activationCycles; ++i) {
+			internalCompute();
 		}
 		
-		// clear from previous run
-		for (final NEATNeuron neuron : this.neurons) {
-			neuron.setOutput(0);
-		}
-
-		// iterate through the network FlushCount times
-		for (int i = 0; i < activationCycles; ++i) {
-			int outputIndex = 0;
-			int index = 0;
-
-			result.clear();
-
-			// populate the input neurons
-			while (this.neurons.get(index).getNeuronType() 
-					== NEATNeuronType.Input) {
-				this.neurons.get(index).setOutput(input.getData(index));
-
-				index++;
-			}
-
-			// set the bias neuron
-			this.neurons.get(index++).setOutput(1);
-
-			while (index < this.neurons.size()) {
-
-				final NEATNeuron currentNeuron = this.neurons.get(index);
-
-				double sum = 0;
-
-				for (final NEATLink link : currentNeuron.getInboundLinks()) {
-					final double weight = link.getWeight();
-					final double neuronOutput = link.getFromNeuron()
-							.getOutput();
-					sum += weight * neuronOutput;
-				}
-
-				final double[] d = { sum };
-				this.activationFunction.activationFunction(d,0,d.length);
-
-				currentNeuron.setOutput(d[0]);
-
-				if (currentNeuron.getNeuronType() == NEATNeuronType.Output) {
-					result.setData(outputIndex++, currentNeuron.getOutput());
-				}
-				index++;
-			}
-		}
+		// copy output
+		EngineArray.arrayCopy(this.postActivation, this.outputIndex, result.getData(), 0, this.outputCount);
 
 		return result;
 	}
+	
+    private void internalCompute()
+    {
+            for(int j=0; j<links.length; j++) {
+                preActivation[links[j].getToNeuron()] += postActivation[links[j].getFromNeuron()] 
+                		* links[j].getWeight();
+            }
 
-	/**
-	 * @return The activation function.
-	 */
-	public ActivationFunction getActivationFunction() {
-		return this.activationFunction;
-	}
-
-	/**
-	 * @return The network depth.
-	 */
-	public int getNetworkDepth() {
-		return this.networkDepth;
-	}
-
-	/**
-	 * @return The NEAT neurons.
-	 */
-	public List<NEATNeuron> getNeurons() {
-		return this.neurons;
-	}
-
-	/**
-	 * Set the activation function.
-	 * @param activationFunction The activation function.
-	 */
-	public void setActivationFunction(
-			final ActivationFunction activationFunction) {
-		this.activationFunction = activationFunction;
-	}
+            for(int j=outputIndex; j<preActivation.length; j++)
+            {
+            	postActivation[j] = preActivation[j];
+            	activationFunctions[j].activationFunction(postActivation, j, 1);            	
+                preActivation[j] = 0.0F;
+            }
+    }
 
 	@Override
 	public int getInputCount() {
@@ -251,11 +155,6 @@ public class NEATNetwork extends BasicML implements MLRegression, MLError {
 		this.outputCount = i;		
 	}
 
-	public void setNetworkDepth(int i) {
-		this.networkDepth = i;
-		
-	}
-
 	/**
 	 * Calculate the error for this neural network. 
 	 * 
@@ -273,6 +172,42 @@ public class NEATNetwork extends BasicML implements MLRegression, MLError {
 
 	public void setActivationCycles(int activationCycles) {
 		this.activationCycles = activationCycles;
+	}
+
+	public boolean isHasRelaxed() {
+		return hasRelaxed;
+	}
+
+	public void setHasRelaxed(boolean hasRelaxed) {
+		this.hasRelaxed = hasRelaxed;
+	}
+
+	public double getRelaxationThreshold() {
+		return relaxationThreshold;
+	}
+
+	public void setRelaxationThreshold(double relaxationThreshold) {
+		this.relaxationThreshold = relaxationThreshold;
+	}
+
+	public NEATLink[] getLinks() {
+		return links;
+	}
+
+	public double[] getPreActivation() {
+		return preActivation;
+	}
+
+	public double[] getPostActivation() {
+		return postActivation;
+	}
+
+	public int getOutputIndex() {
+		return outputIndex;
+	}	
+	
+    public ActivationFunction[] getActivationFunctions() {
+		return activationFunctions;
 	}	
 	
 	

@@ -35,7 +35,7 @@ import java.io.Serializable;
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATLink implements Serializable {
+public class NEATLink implements Serializable, Comparable<NEATLink> {
 
 	/**
 	 * The serial id.
@@ -43,92 +43,70 @@ public class NEATLink implements Serializable {
 	private static final long serialVersionUID = -4117045705080951946L;
 
 
-	/**
-	 * The source neuron.
-	 */
-	private NEATNeuron fromNeuron;
-
-	/**
-	 * Is this link recurrent.
-	 */
-	private boolean recurrent;
-
-	/**
-	 * The target neuron.
-	 */
-	private NEATNeuron toNeuron;
-
-	/**
-	 * The weight between the two neurons.
-	 */
+	private int fromNeuron;
+	private int toNeuron;
 	private double weight;
+		
 
-	/**
-	 * Default constructor, used mainly for persistance.
-	 */
-	public NEATLink() {
 
+	public NEATLink(int theFromNeuron, int theToNeuron, double theWeight) {
+		this.fromNeuron = theFromNeuron;
+		this.toNeuron = theToNeuron;
+		this.weight = theWeight;
 	}
 
-	/**
-	 * Construct a NEAT link.
-	 * 
-	 * @param weight
-	 *            The weight between the two neurons.
-	 * @param fromNeuron
-	 *            The source neuron.
-	 * @param toNeuron
-	 *            The target neuron.
-	 * @param recurrent
-	 *            Is this a recurrent link.
-	 */
-	public NEATLink(final double weight, final NEATNeuron fromNeuron,
-			final NEATNeuron toNeuron, final boolean recurrent) {
-		this.weight = weight;
+
+
+	public int getFromNeuron() {
+		return fromNeuron;
+	}
+
+
+
+	public void setFromNeuron(int fromNeuron) {
 		this.fromNeuron = fromNeuron;
+	}
+
+
+
+	public int getToNeuron() {
+		return toNeuron;
+	}
+
+
+
+	public void setToNeuron(int toNeuron) {
 		this.toNeuron = toNeuron;
-		this.recurrent = recurrent;
 	}
 
-	/**
-	 * @return The source neuron.
-	 */
-	public NEATNeuron getFromNeuron() {
-		return this.fromNeuron;
-	}
 
-	/**
-	 * @return The target neuron.
-	 */
-	public NEATNeuron getToNeuron() {
-		return this.toNeuron;
-	}
 
-	/**
-	 * @return The weight of the link.
-	 */
 	public double getWeight() {
-		return this.weight;
+		return weight;
 	}
 
-	/**
-	 * @return True if this is a recurrent link.
-	 */
-	public boolean isRecurrent() {
-		return this.recurrent;
+
+
+	public void setWeight(double weight) {
+		this.weight = weight;
 	}
 
-	public boolean supportsMapPersistence() {
-		return true;
-	}
-	
+
+
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append("[NEATLink: fromNeuron=");
-		result.append(this.getFromNeuron().getNeuronID());
+		result.append(this.fromNeuron);
 		result.append(", toNeuron=");
-		result.append(this.getToNeuron().getNeuronID());
+		result.append(this.toNeuron);
 		result.append("]");
 		return result.toString();
+	}
+
+
+
+	@Override
+	public int compareTo(NEATLink other) {
+		return Integer.compare(this.fromNeuron, other.toNeuron);
 	}
 }
