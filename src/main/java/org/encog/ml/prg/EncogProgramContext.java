@@ -70,4 +70,20 @@ public class EncogProgramContext {
 		this.constMax = constMax;
 	}
 	
+	public EncogProgram cloneProgram(EncogProgram sourceProgram) {
+		ProgramNode rootNode = sourceProgram.getRootNode();
+		EncogProgram result = new EncogProgram(this);
+		result.setRootNode(cloneBranch(result,rootNode));
+		return result;
+	}
+	
+	public ProgramNode cloneBranch(EncogProgram targetProgram, ProgramNode sourceBranch) {
+		String name = sourceBranch.getName();
+		ProgramNode[] args = new ProgramNode[sourceBranch.getChildNodes().size()];
+		ProgramNode result = targetProgram.getContext().getFunctions().factorFunction(name, targetProgram, args);
+		return result;
+	}
+	
+	
+	
 }
