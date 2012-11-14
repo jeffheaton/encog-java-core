@@ -39,7 +39,6 @@ import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.EncogProgramVariables;
 import org.encog.ml.prg.KnownConstTemplate;
-import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.util.csv.CSVFormat;
@@ -69,7 +68,6 @@ public class AnalystProcess extends BasicFile {
 		this.forwardWindowSize = theForwardWindowSize;
 		StandardExtensions.createAll(this.programContext.getFunctions());
 		KnownConstTemplate.createAllConst(this.programContext.getFunctions());
-		this.extension.register(this.programContext.getFunctions());
 	}
 
 	/**
@@ -94,6 +92,7 @@ public class AnalystProcess extends BasicFile {
 		
 		this.expressionFields.clear();
 		extension = new ProcessExtension(this.getFormat());
+		this.extension.register(this.programContext.getFunctions());
 		
 		for(ProcessField field : this.analyst.getScript().getProcess().getFields() ) {
 			EncogProgram prg = new EncogProgram(this.programContext,this.programVariables);
