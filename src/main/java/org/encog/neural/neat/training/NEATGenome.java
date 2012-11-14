@@ -206,14 +206,20 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 
 		getChromosomes().add(this.neuronsChromosome);
 		getChromosomes().add(this.linksChromosome);
+		
+		// first bias
+		
+		this.neuronsChromosome.add(new NEATNeuronGene(NEATNeuronType.Bias,
+				inputCount, 0, 0.9));
+
+		// then inputs
 
 		for (int i = 0; i < inputCount; i++) {
 			this.neuronsChromosome.add(new NEATNeuronGene(NEATNeuronType.Input,
 					i, 0, 0.1 + i * inputRowSlice));
 		}
 
-		this.neuronsChromosome.add(new NEATNeuronGene(NEATNeuronType.Bias,
-				inputCount, 0, 0.9));
+		// then the other stuff
 
 		final double outputRowSlice = 1 / (double) (outputCount + 1);
 
@@ -538,6 +544,10 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	public void decode() {
 		validate();
 		NEATPopulation pop = (NEATPopulation)this.getPopulation();
+		
+		if( ((NEATNeuronGene)this.neuronsChromosome.get(0)).getNeuronType() != NEATNeuronType.Bias ) {
+			throw new NeuralNetworkError("The first neuron must be the bias neuron, this genome is invalid.");
+		}
 		
 		NEATLink[] links = new NEATLink[this.linksChromosome.getGenes().size()];
 		ActivationFunction[] afs = new ActivationFunction[this.neuronsChromosome.size()];
@@ -880,20 +890,20 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	
 	public void validate() {
 		
+		// make sure that the bias neuron is where it should be
+		NEATNeuronGene g = (NEATNeuronGene)this.neuronsChromosome.getGene(0);
+		if( g.getNeuronType()!=NEATNeuronType.Bias ) {
+			throw new EncogError("NEAT Neuron Gene " + this.inputCount + " should be a bias gene.");
+		}
+		
 		// make sure all input neurons are at the beginning
-		for(int i=0;i<this.inputCount;i++) {
+		for(int i=1;i<=this.inputCount;i++) {
 			NEATNeuronGene gene = (NEATNeuronGene)this.neuronsChromosome.getGene(i);
 			if( gene.getNeuronType()!=NEATNeuronType.Input ) {
 				throw new EncogError("NEAT Neuron Gene " + i + " should be an input gene.");
 			}
 		}
-		
-		// make sure that the bias neuron is where it should be
-		NEATNeuronGene g = (NEATNeuronGene)this.neuronsChromosome.getGene(this.inputCount);
-		if( g.getNeuronType()!=NEATNeuronType.Bias ) {
-			throw new EncogError("NEAT Neuron Gene " + this.inputCount + " should be a bias gene.");
-		}
-		
+				
 		// make sure that all input neurons are connected
 		for(int i=0;i<this.inputCount;i++) {
 			NEATNeuronGene gene = (NEATNeuronGene)this.neuronsChromosome.getGene(i);
