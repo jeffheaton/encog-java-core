@@ -33,6 +33,26 @@ public class ExpressionValue {
 	private ValueType currentType;
 	private long intValue;
 	
+	public ExpressionValue(ExpressionValue other) {
+		switch(this.currentType = other.currentType) {
+		case booleanType:
+			this.boolValue = other.boolValue;
+			break;
+		case floatingType:
+			this.floatValue = other.floatValue;
+			break;
+		case intType:
+			this.intValue = other.intValue;
+			break;
+		case stringType:
+			this.stringValue = other.stringValue;
+			break;
+		default:
+			throw new ExpressionError("Unsupported type.");
+		
+		}
+	}
+	
 	public ExpressionValue(String theValue) {
 		setValue( theValue );
 	}

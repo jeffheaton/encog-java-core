@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.FunctionFactory;
+import org.encog.ml.prg.extension.StandardExtensions;
+import org.encog.util.EngineArray;
 import org.encog.util.csv.CSVFormat;
 
 public class EncogProgramContext {
@@ -79,9 +82,35 @@ public class EncogProgramContext {
 	
 	public ProgramNode cloneBranch(EncogProgram targetProgram, ProgramNode sourceBranch) {
 		String name = sourceBranch.getName();
+	
+		// create any subnodes
 		ProgramNode[] args = new ProgramNode[sourceBranch.getChildNodes().size()];
+		for(int i=0;i<args.length;i++) {
+			args[i] = cloneBranch(targetProgram,sourceBranch.getChildNodes().get(i));
+		}
+		
 		ProgramNode result = targetProgram.getContext().getFunctions().factorFunction(name, targetProgram, args);
+		
+		// now copy the int and expression data for the node
+		EngineArray.arrayCopy(sourceBranch.getIntData(),result.getIntData());
+		
+		for(int i=0;i<sourceBranch.getExpressionData().length;i++) {
+			result.getExpressionData()[i] = new ExpressionValue(sourceBranch.getExpressionData()[i]);
+		}
+		
+		// return the new node
 		return result;
+	}
+
+	public EncogProgram createProgram(String expression) {
+		EncogProgram result = new EncogProgram(this);
+		result.compileExpression(expression);
+		return result;
+	}
+
+	public void loadAllFunctions() {
+		StandardExtensions.createAll(getFunctions());
+		KnownConstTemplate.createAllConst(getFunctions());
 	}
 	
 	
