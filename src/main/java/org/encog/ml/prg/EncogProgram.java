@@ -173,5 +173,19 @@ public class EncogProgram implements MLRegression, Comparable<EncogProgram> {
 		return Double.compare(this.score, other.score);
 	}
 
+	public ProgramNode findNode(int motherIndex) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	private ProgramNode internalFindNode(int depth) {
+		return null;
+	}
+
+	public void replaceNode(ProgramNode resultNode, ProgramNode newInsert) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }
