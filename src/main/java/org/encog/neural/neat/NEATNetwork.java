@@ -103,12 +103,12 @@ public class NEATNetwork extends BasicML implements MLRegression, MLError {
 		final MLData result = new BasicMLData(this.outputCount);
 		
 		// clear from previous
-    	//EngineArray.fill(this.preActivation, 0.0);
-    	//EngineArray.fill(this.postActivation, 0.0);
-    	//postActivation[0] = 1.0;
+    	EngineArray.fill(this.preActivation, 0.0);
+    	EngineArray.fill(this.postActivation, 0.0);
+    	postActivation[0] = 1.0;
 		
 		// copy input
-		EngineArray.arrayCopy(input.getData(), 0, this.preActivation, 1, this.inputCount);
+		EngineArray.arrayCopy(input.getData(), 0, this.postActivation, 1, this.inputCount);
 				
 
 		// iterate through the network activationCycles times
