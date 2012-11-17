@@ -17,7 +17,7 @@ public class TaskGetNodeIndex implements TreeTraversalTask {
 	@Override
 	public boolean task(TreeNode node) {
 		if( this.nodeCount>=targetIndex) {
-			if( result!=null ) {
+			if( result==null ) {
 				result = node;
 			}
 			return false;

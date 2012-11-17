@@ -6,7 +6,8 @@ public class DepthFirstTraversal implements TreeTraversal {
 
 	@Override
 	public void traverse(TreeNode treeNode, TreeTraversalTask task) {
-		task.task(treeNode);
+		if( !task.task(treeNode) )
+			return;
 		
 		for(TreeNode childNode : treeNode.getChildNodes()) {
 			traverse(childNode,task);

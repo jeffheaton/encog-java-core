@@ -180,7 +180,11 @@ public class EncogProgram implements MLRegression, Comparable<EncogProgram> {
 	}
 
 	public void replaceNode(ProgramNode replaceThisNode, ProgramNode replaceWith) {
-		TaskReplaceNode.process(this.rootNode, replaceThisNode, replaceWith);
+		if( replaceThisNode==this.rootNode ) {
+			this.rootNode = replaceWith;
+		} else {
+			TaskReplaceNode.process(this.rootNode, replaceThisNode, replaceWith);
+		}
 	}
 
 
