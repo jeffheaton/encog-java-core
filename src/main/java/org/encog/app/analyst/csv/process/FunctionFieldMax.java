@@ -38,9 +38,9 @@ public class FunctionFieldMax extends ProgramNode {
 
 	@Override
 	public ExpressionValue evaluate() {
-		String fieldName = this.getChildNodes().get(0).evaluate().toStringValue();
-		int startIndex = (int)this.getChildNodes().get(1).evaluate().toIntValue();
-		int stopIndex = (int)this.getChildNodes().get(2).evaluate().toIntValue();
+		String fieldName = getChildNode(0).evaluate().toStringValue();
+		int startIndex = (int)getChildNode(1).evaluate().toIntValue();
+		int stopIndex = (int)getChildNode(2).evaluate().toIntValue();
 		double value = Double.NEGATIVE_INFINITY;
 		
 		for(int i=startIndex;i<=stopIndex;i++) {

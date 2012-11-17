@@ -86,7 +86,7 @@ public class EncogProgramContext {
 		// create any subnodes
 		ProgramNode[] args = new ProgramNode[sourceBranch.getChildNodes().size()];
 		for(int i=0;i<args.length;i++) {
-			args[i] = cloneBranch(targetProgram,sourceBranch.getChildNodes().get(i));
+			args[i] = cloneBranch(targetProgram,(ProgramNode)sourceBranch.getChildNodes().get(i));
 		}
 		
 		ProgramNode result = targetProgram.getContext().getFunctions().factorFunction(name, targetProgram, args);

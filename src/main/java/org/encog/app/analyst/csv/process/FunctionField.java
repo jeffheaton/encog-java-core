@@ -38,8 +38,8 @@ public class FunctionField extends ProgramNode {
 
 	@Override
 	public ExpressionValue evaluate() {
-		String fieldName = this.getChildNodes().get(0).evaluate().toStringValue();
-		int fieldIndex = (int)this.getChildNodes().get(1).evaluate().toFloatValue()+this.extension.getBackwardWindowSize();
+		String fieldName = getChildNode(0).evaluate().toStringValue();
+		int fieldIndex = (int)getChildNode(1).evaluate().toFloatValue()+this.extension.getBackwardWindowSize();
 		String value = this.extension.getField(fieldName,fieldIndex);
 		return new ExpressionValue(value);
 	}

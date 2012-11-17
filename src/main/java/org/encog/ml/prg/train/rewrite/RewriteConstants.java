@@ -24,7 +24,7 @@ public class RewriteConstants implements RewriteRule {
 		// if we could not rewrite the entire node, rewrite as many children as
 		// we can
 		for (int i = 0; i < node.getChildNodes().size(); i++) {
-			ProgramNode childNode = node.getChildNodes().get(i);
+			ProgramNode childNode = (ProgramNode)node.getChildNodes().get(i);
 			rewrite = rewriteNode(childNode);
 			if (rewrite != null) {
 				node.getChildNodes().remove(i);

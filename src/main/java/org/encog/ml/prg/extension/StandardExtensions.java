@@ -126,7 +126,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(-this.getChildNodes().get(0)
+					return new ExpressionValue(-getChildNode(0)
 							.evaluate().toFloatValue());
 				}
 			};
@@ -162,8 +162,8 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return EvaluateExpr.add(getChildNodes().get(0).evaluate(),
-							getChildNodes().get(1).evaluate());
+					return EvaluateExpr.add(getChildNode(0).evaluate(),
+							getChildNode(1).evaluate());
 				}
 			};
 		}
@@ -198,8 +198,8 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return EvaluateExpr.sub(getChildNodes().get(0).evaluate(),
-							getChildNodes().get(1).evaluate());
+					return EvaluateExpr.sub(getChildNode(0).evaluate(),
+							getChildNode(1).evaluate());
 				}
 			};
 		}
@@ -234,8 +234,8 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return EvaluateExpr.mul(getChildNodes().get(0).evaluate(),
-							getChildNodes().get(1).evaluate());
+					return EvaluateExpr.mul(getChildNode(0).evaluate(),
+							getChildNode(1).evaluate());
 				}
 			};
 		}
@@ -270,8 +270,8 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return EvaluateExpr.div(getChildNodes().get(0).evaluate(),
-							getChildNodes().get(1).evaluate());
+					return EvaluateExpr.div(getChildNode(0).evaluate(),
+							getChildNode(1).evaluate());
 				}
 			};
 		}
@@ -306,7 +306,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return EvaluateExpr.pow(getChildNodes().get(0).evaluate(), getChildNodes().get(1).evaluate());
+					return EvaluateExpr.pow(getChildNode(0).evaluate(), getChildNode(1).evaluate());
 				}
 			};
 		}
@@ -341,7 +341,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(getChildNodes().get(0).evaluate().toBooleanValue() && getChildNodes().get(1).evaluate().toBooleanValue());
+					return new ExpressionValue(getChildNode(0).evaluate().toBooleanValue() && getChildNode(1).evaluate().toBooleanValue());
 				}
 			};
 		}
@@ -376,7 +376,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(getChildNodes().get(0).evaluate().toBooleanValue() || getChildNodes().get(1).evaluate().toBooleanValue());
+					return new ExpressionValue(getChildNode(0).evaluate().toBooleanValue() || getChildNode(1).evaluate().toBooleanValue());
 				}
 			};
 		}
@@ -410,7 +410,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					double diff = Math.abs(getChildNodes().get(0).evaluate().toFloatValue() - getChildNodes().get(1).evaluate().toFloatValue());
+					double diff = Math.abs(getChildNode(0).evaluate().toFloatValue() - getChildNode(1).evaluate().toFloatValue());
 					return new ExpressionValue( diff<Encog.DEFAULT_DOUBLE_EQUAL);
 				}
 			};
@@ -445,7 +445,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(getChildNodes().get(0).evaluate().toFloatValue() > getChildNodes().get(1).evaluate().toFloatValue());
+					return new ExpressionValue(getChildNode(0).evaluate().toFloatValue() > getChildNode(1).evaluate().toFloatValue());
 				}
 			};
 		}
@@ -479,7 +479,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(getChildNodes().get(0).evaluate().toFloatValue() < getChildNodes().get(1).evaluate().toFloatValue());
+					return new ExpressionValue(getChildNode(0).evaluate().toFloatValue() < getChildNode(1).evaluate().toFloatValue());
 				}
 			};
 		}
@@ -514,7 +514,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.abs(this.getChildNodes().get(0)
+					return new ExpressionValue(Math.abs(this.getChildNode(0)
 							.evaluate().toFloatValue()));
 				}
 			};
@@ -550,7 +550,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.acos(this.getChildNodes().get(0)
+					return new ExpressionValue(Math.acos(this.getChildNode(0)
 							.evaluate().toFloatValue()));
 				}
 			};
@@ -586,7 +586,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.asin(this.getChildNodes().get(0)
+					return new ExpressionValue(Math.asin(this.getChildNode(0)
 							.evaluate().toFloatValue()));
 				}
 			};
@@ -622,7 +622,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.atan(this.getChildNodes().get(0)
+					return new ExpressionValue(Math.atan(this.getChildNode(0)
 							.evaluate().toFloatValue()));
 				}
 			};
@@ -659,8 +659,8 @@ public class StandardExtensions {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.atan2(
-							this.getChildNodes().get(0).evaluate().toFloatValue(),
-							this.getChildNodes().get(1).evaluate().toFloatValue()));
+							this.getChildNode(0).evaluate().toFloatValue(),
+							this.getChildNode(1).evaluate().toFloatValue()));
 				}
 			};
 		}
@@ -695,7 +695,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.ceil(this.getChildNodes().get(0)
+					return new ExpressionValue(Math.ceil(this.getChildNode(0)
 							.evaluate().toFloatValue()));
 				}
 			};
@@ -731,7 +731,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.cos(this.getChildNodes().get(0)
+					return new ExpressionValue(Math.cos(this.getChildNode(0)
 							.evaluate().toFloatValue()));
 				}
 			};
@@ -768,7 +768,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.cosh(this.getChildNodes().get(0)
+					return new ExpressionValue(Math.cosh(this.getChildNode(0)
 							.evaluate().toFloatValue()));
 				}
 			};
@@ -804,7 +804,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.exp(this.getChildNodes().get(0)
+					return new ExpressionValue(Math.exp(this.getChildNode(0)
 							.evaluate().toFloatValue()));
 				}
 			};
@@ -840,7 +840,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.floor(this.getChildNodes().get(0)
+					return new ExpressionValue(Math.floor(this.getChildNode(0)
 							.evaluate().toFloatValue()));
 				}
 			};
@@ -876,7 +876,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.log(this.getChildNodes().get(0)
+					return new ExpressionValue(Math.log(this.getChildNode(0)
 							.evaluate().toFloatValue()));
 				}
 			};
@@ -912,7 +912,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.log10(this.getChildNodes().get(0)
+					return new ExpressionValue(Math.log10(this.getChildNode(0)
 							.evaluate().toFloatValue()));
 				}
 			};
@@ -949,8 +949,8 @@ public class StandardExtensions {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.max(
-							this.getChildNodes().get(0).evaluate().toFloatValue(),
-							this.getChildNodes().get(1).evaluate().toFloatValue()));
+							this.getChildNode(0).evaluate().toFloatValue(),
+							this.getChildNode(1).evaluate().toFloatValue()));
 				}
 			};
 		}
@@ -986,8 +986,8 @@ public class StandardExtensions {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.min(
-							this.getChildNodes().get(0).evaluate().toFloatValue(),
-							this.getChildNodes().get(1).evaluate().toFloatValue()));
+							this.getChildNode(0).evaluate().toFloatValue(),
+							this.getChildNode(1).evaluate().toFloatValue()));
 				}
 			};
 		}
@@ -1023,8 +1023,8 @@ public class StandardExtensions {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue(Math.pow(
-							this.getChildNodes().get(0).evaluate().toFloatValue(),
-							this.getChildNodes().get(1).evaluate().toFloatValue()));
+							this.getChildNode(0).evaluate().toFloatValue(),
+							this.getChildNode(1).evaluate().toFloatValue()));
 				}
 			};
 		}
@@ -1094,7 +1094,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.round(this.getChildNodes().get(0)
+					return new ExpressionValue(Math.round(this.getChildNode(0)
 							.evaluate().toFloatValue()));
 				}
 			};
@@ -1130,7 +1130,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.sin(this.getChildNodes().get(0)
+					return new ExpressionValue(Math.sin(this.getChildNode(0)
 							.evaluate().toFloatValue()));
 				}
 			};
@@ -1166,7 +1166,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.sinh(this.getChildNodes().get(0)
+					return new ExpressionValue(Math.sinh(this.getChildNode(0)
 							.evaluate().toFloatValue()));
 				}
 			};
@@ -1202,7 +1202,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.sqrt(this.getChildNodes().get(0)
+					return new ExpressionValue(Math.sqrt(this.getChildNode(0)
 							.evaluate().toFloatValue()));
 				}
 			};
@@ -1238,7 +1238,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.tanh(this.getChildNodes().get(0)
+					return new ExpressionValue(Math.tanh(this.getChildNode(0)
 							.evaluate().toFloatValue()));
 				}
 			};
@@ -1275,7 +1275,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.tanh(this.getChildNodes().get(0)
+					return new ExpressionValue(Math.tanh(this.getChildNode(0)
 							.evaluate().toFloatValue()));
 				}
 			};
@@ -1311,7 +1311,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.toDegrees(this.getChildNodes().get(0)
+					return new ExpressionValue(Math.toDegrees(this.getChildNode(0)
 							.evaluate().toFloatValue()));
 				}
 			};
@@ -1347,7 +1347,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.toRadians(this.getChildNodes().get(0)
+					return new ExpressionValue(Math.toRadians(this.getChildNode(0)
 							.evaluate().toFloatValue()));
 				}
 			};
@@ -1384,7 +1384,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(this.getChildNodes().get(0).evaluate().toStringValue().length());
+					return new ExpressionValue(this.getChildNode(0).evaluate().toStringValue().length());
 				}
 			};
 		}
@@ -1420,8 +1420,8 @@ public class StandardExtensions {
 				@Override
 				public ExpressionValue evaluate() {
 					return new ExpressionValue( this.getOwner().getContext().getFormat().format(
-							this.getChildNodes().get(0).evaluate().toFloatValue(),
-							(int)this.getChildNodes().get(1).evaluate().toFloatValue()) );
+							this.getChildNode(0).evaluate().toFloatValue(),
+							(int)this.getChildNode(1).evaluate().toFloatValue()) );
 
 				}
 			};
@@ -1457,8 +1457,8 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					String str = this.getChildNodes().get(0).evaluate().toStringValue();
-					int idx = (int)this.getChildNodes().get(1).evaluate().toFloatValue();					
+					String str = this.getChildNode(0).evaluate().toStringValue();
+					int idx = (int)this.getChildNode(1).evaluate().toFloatValue();					
 					String result = str.substring(0,idx);
 					
 					return new ExpressionValue( result );
@@ -1497,8 +1497,8 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					String str = this.getChildNodes().get(0).evaluate().toStringValue();
-					int idx = (int)this.getChildNodes().get(1).evaluate().toFloatValue();					
+					String str = this.getChildNode(0).evaluate().toStringValue();
+					int idx = (int)this.getChildNode(1).evaluate().toFloatValue();					
 					String result = str.substring(0,idx);
 					
 					return new ExpressionValue( result );
@@ -1538,7 +1538,7 @@ public class StandardExtensions {
 				@Override
 				public ExpressionValue evaluate() {
 					;
-					return new ExpressionValue( this.getChildNodes().get(0).evaluate().toIntValue() );
+					return new ExpressionValue( this.getChildNode(0).evaluate().toIntValue() );
 
 				}
 			};
@@ -1575,7 +1575,7 @@ public class StandardExtensions {
 				@Override
 				public ExpressionValue evaluate() {
 					;
-					return new ExpressionValue( this.getChildNodes().get(0).evaluate().toFloatValue() );
+					return new ExpressionValue( this.getChildNode(0).evaluate().toFloatValue() );
 
 				}
 			};
@@ -1612,7 +1612,7 @@ public class StandardExtensions {
 				@Override
 				public ExpressionValue evaluate() {
 					;
-					return new ExpressionValue( this.getChildNodes().get(0).evaluate().toStringValue() );
+					return new ExpressionValue( this.getChildNode(0).evaluate().toStringValue() );
 
 				}
 			};
@@ -1649,7 +1649,7 @@ public class StandardExtensions {
 				@Override
 				public ExpressionValue evaluate() {
 					;
-					return new ExpressionValue( this.getChildNodes().get(0).evaluate().toBooleanValue() );
+					return new ExpressionValue( this.getChildNode(0).evaluate().toBooleanValue() );
 
 				}
 			};
@@ -1685,11 +1685,11 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					boolean a = this.getChildNodes().get(0).evaluate().toBooleanValue();
+					boolean a = this.getChildNode(0).evaluate().toBooleanValue();
 					if( a ) {
-						return this.getChildNodes().get(1).evaluate();	
+						return this.getChildNode(1).evaluate();	
 					} else {
-						return this.getChildNodes().get(2).evaluate();
+						return this.getChildNode(2).evaluate();
 					}
 				}
 			};	
@@ -1725,9 +1725,9 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					double value = this.getChildNodes().get(0).evaluate().toFloatValue();
-					double min = this.getChildNodes().get(1).evaluate().toFloatValue();
-					double max = this.getChildNodes().get(2).evaluate().toFloatValue();
+					double value = this.getChildNode(0).evaluate().toFloatValue();
+					double min = this.getChildNode(1).evaluate().toFloatValue();
+					double max = this.getChildNode(2).evaluate().toFloatValue();
 					if( value<min ) {
 						return new ExpressionValue(min);
 					} else if( value>max ) {
@@ -1770,7 +1770,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(getChildNodes().get(0).evaluate().toFloatValue() >= getChildNodes().get(1).evaluate().toFloatValue());
+					return new ExpressionValue(getChildNode(0).evaluate().toFloatValue() >= getChildNode(1).evaluate().toFloatValue());
 				}
 			};
 		}
@@ -1804,7 +1804,7 @@ public class StandardExtensions {
 			return new ProgramNode(theOwner, theName, theArgs,0,0) {
 				@Override
 				public ExpressionValue evaluate() {
-					return new ExpressionValue(getChildNodes().get(0).evaluate().toFloatValue() <= getChildNodes().get(1).evaluate().toFloatValue());
+					return new ExpressionValue(getChildNode(0).evaluate().toFloatValue() <= getChildNode(1).evaluate().toFloatValue());
 				}
 			};
 		}

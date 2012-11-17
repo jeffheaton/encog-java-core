@@ -38,9 +38,9 @@ public class FunctionFieldMaxPIP extends ProgramNode {
 
 	@Override
 	public ExpressionValue evaluate() {
-		String fieldName = this.getChildNodes().get(0).evaluate().toStringValue();
-		int startIndex = (int)this.getChildNodes().get(1).evaluate().toIntValue();
-		int stopIndex = (int)this.getChildNodes().get(2).evaluate().toIntValue();
+		String fieldName = getChildNode(0).evaluate().toStringValue();
+		int startIndex = (int)getChildNode(1).evaluate().toIntValue();
+		int stopIndex = (int)getChildNode(2).evaluate().toIntValue();
 		int value = Integer.MIN_VALUE;
 		
 		String str = this.extension.getField(fieldName,this.extension.getBackwardWindowSize());

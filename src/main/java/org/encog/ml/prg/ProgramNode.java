@@ -23,15 +23,13 @@
  */
 package org.encog.ml.prg;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.encog.ml.prg.expvalue.ExpressionValue;
+import org.encog.ml.tree.TreeNode;
 import org.encog.ml.tree.basic.BasicTreeNode;
 
 
 
-public abstract class ProgramNode extends BasicTreeNode<ProgramNode> {
+public abstract class ProgramNode extends BasicTreeNode {
 
 	private final String name;
 	private final EncogProgram owner;
@@ -83,7 +81,8 @@ public abstract class ProgramNode extends BasicTreeNode<ProgramNode> {
 		result.append(", childCount=");
 		result.append(this.getChildNodes().size());
 		result.append(", childNodes=");
-		for(ProgramNode node: this.getChildNodes()) {
+		for(TreeNode tn: this.getChildNodes()) {
+			ProgramNode node = (ProgramNode)tn;
 			result.append(" ");
 			result.append(node.getName());
 		}
@@ -98,7 +97,8 @@ public abstract class ProgramNode extends BasicTreeNode<ProgramNode> {
 	public boolean allConstChildren() {
 		boolean result = true;
 		
-		for(ProgramNode node: this.getChildNodes()) {
+		for(TreeNode tn: this.getChildNodes()) {
+			ProgramNode node = (ProgramNode)tn;
 			if( node.isVariable() ) {
 				result = false;
 				break;
@@ -117,13 +117,18 @@ public abstract class ProgramNode extends BasicTreeNode<ProgramNode> {
 			return true;
 		}
 		
-		for(ProgramNode childNode : this.getChildNodes()) {
+		for(TreeNode tn : this.getChildNodes()) {
+			ProgramNode childNode = (ProgramNode)tn;
 			if( !childNode.allConstDescendants() ) {
 				return false;
 			}
 		}
 		
 		return true;
+	}
+	
+	public ProgramNode getChildNode(int index) {
+		return (ProgramNode)this.getChildNodes().get(index);
 	}
 	
 	

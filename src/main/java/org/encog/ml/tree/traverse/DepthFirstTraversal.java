@@ -2,13 +2,13 @@ package org.encog.ml.tree.traverse;
 
 import org.encog.ml.tree.TreeNode;
 
-public class DepthFirstTraversal<T extends TreeNode<T>> implements TreeTraversal<T> {
+public class DepthFirstTraversal implements TreeTraversal {
 
 	@Override
-	public void traverse(T treeNode, TreeTraversalTask<T> task) {
+	public void traverse(TreeNode treeNode, TreeTraversalTask task) {
 		task.task(treeNode);
 		
-		for(T childNode : treeNode.getChildNodes()) {
+		for(TreeNode childNode : treeNode.getChildNodes()) {
 			traverse(childNode,task);
 		}
 	}

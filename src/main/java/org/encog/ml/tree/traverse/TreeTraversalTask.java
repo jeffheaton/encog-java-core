@@ -2,6 +2,6 @@ package org.encog.ml.tree.traverse;
 
 import org.encog.ml.tree.TreeNode;
 
-public interface TreeTraversalTask<T extends TreeNode<T>> {
-	boolean task(T node);
+public interface TreeTraversalTask {
+	boolean task(TreeNode node);
 }

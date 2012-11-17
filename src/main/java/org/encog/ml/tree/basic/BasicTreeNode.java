@@ -5,15 +5,15 @@ import java.util.List;
 
 import org.encog.ml.tree.TreeNode;
 
-public class BasicTreeNode<T extends TreeNode<T>> implements TreeNode<T> {
-	private final List<T> childNodes = new ArrayList<T>();
+public class BasicTreeNode implements TreeNode {
+	private final List<TreeNode> childNodes = new ArrayList<TreeNode>();
 	
-	public List<T> getChildNodes() {
+	public List<TreeNode> getChildNodes() {
 		return this.childNodes;
 	}
 	
-	public void addChildNodes(T[] args) {
-		for( T pn: args) {
+	public void addChildNodes(TreeNode[] args) {
+		for( TreeNode pn: args) {
 			this.childNodes.add(pn);
 		}
 	}
@@ -21,7 +21,7 @@ public class BasicTreeNode<T extends TreeNode<T>> implements TreeNode<T> {
 	public boolean allLeafChildren() {
 		boolean result = true;
 		
-		for(T node: this.childNodes) {
+		for(TreeNode node: this.childNodes) {
 			if( !node.isLeaf() ) {
 				result = false;
 				break;
@@ -38,7 +38,7 @@ public class BasicTreeNode<T extends TreeNode<T>> implements TreeNode<T> {
 	@Override
 	public int size() {
 		int result = 1;
-		for(TreeNode<T> node: this.childNodes) {
+		for(TreeNode node: this.childNodes) {
 			result+=node.size();
 		}
 		return result;

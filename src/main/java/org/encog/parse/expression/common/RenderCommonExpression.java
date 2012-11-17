@@ -38,7 +38,7 @@ public class RenderCommonExpression {
 			if( i>0 ) {
 				result.append(',');
 			}
-			ProgramNode childNode = node.getChildNodes().get(i);
+			ProgramNode childNode = node.getChildNode(i);
 			result.append(renderNode(childNode));
 		}
 		result.append(')');		
@@ -48,9 +48,9 @@ public class RenderCommonExpression {
 	private String renderOperator(ProgramNode node) {
 		StringBuilder result = new StringBuilder();
 		result.append("(");
-		result.append(renderNode(node.getChildNodes().get(0)));
+		result.append(renderNode(node.getChildNode(0)));
 		result.append(node.getName());
-		result.append(renderNode(node.getChildNodes().get(1)));
+		result.append(renderNode(node.getChildNode(1)));
 		result.append(")");
 		return result.toString();
 	}
