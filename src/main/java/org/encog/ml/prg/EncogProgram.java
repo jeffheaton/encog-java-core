@@ -29,6 +29,8 @@ import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.ml.prg.extension.StandardExtensions;
+import org.encog.ml.tree.traverse.tasks.TaskGetNodeIndex;
+import org.encog.ml.tree.traverse.tasks.TaskReplaceNode;
 import org.encog.parse.expression.common.ParseCommonExpression;
 
 public class EncogProgram implements MLRegression, Comparable<EncogProgram> {
@@ -174,12 +176,11 @@ public class EncogProgram implements MLRegression, Comparable<EncogProgram> {
 	}
 
 	public ProgramNode findNode(int index) {
-		return null;
+		return (ProgramNode)TaskGetNodeIndex.process(index, this.rootNode);
 	}
 
-	public void replaceNode(ProgramNode resultNode, ProgramNode newInsert) {
-		// TODO Auto-generated method stub
-		
+	public void replaceNode(ProgramNode replaceThisNode, ProgramNode replaceWith) {
+		TaskReplaceNode.process(this.rootNode, replaceThisNode, replaceWith);
 	}
 
 

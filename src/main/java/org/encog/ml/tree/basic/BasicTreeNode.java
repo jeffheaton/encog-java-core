@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.ml.tree.TreeNode;
+import org.encog.ml.tree.traverse.tasks.TaskCountNodes;
 
 public class BasicTreeNode implements TreeNode {
 	private final List<TreeNode> childNodes = new ArrayList<TreeNode>();
@@ -37,11 +38,7 @@ public class BasicTreeNode implements TreeNode {
 
 	@Override
 	public int size() {
-		int result = 1;
-		for(TreeNode node: this.childNodes) {
-			result+=node.size();
-		}
-		return result;
+		return TaskCountNodes.process(this);
 	}
 	
 }

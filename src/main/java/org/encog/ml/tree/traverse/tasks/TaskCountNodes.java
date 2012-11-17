@@ -1,6 +1,7 @@
 package org.encog.ml.tree.traverse.tasks;
 
 import org.encog.ml.tree.TreeNode;
+import org.encog.ml.tree.traverse.DepthFirstTraversal;
 import org.encog.ml.tree.traverse.TreeTraversalTask;
 
 public class TaskCountNodes implements TreeTraversalTask {
@@ -25,7 +26,10 @@ public class TaskCountNodes implements TreeTraversalTask {
 	}
 	
 	public static int process(TreeNode node) {
-		return 0;
+		TaskCountNodes task = new TaskCountNodes();
+		DepthFirstTraversal trav = new DepthFirstTraversal();
+		trav.traverse(node, task);
+		return task.getNodeCount();
 	}
 
 }
