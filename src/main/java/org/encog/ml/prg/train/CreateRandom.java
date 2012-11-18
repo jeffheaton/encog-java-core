@@ -32,6 +32,10 @@ public class CreateRandom {
 		return program;
 	}
 	
+	public ProgramNode generate(EncogProgram program) {
+		return createNode(program,0);
+	}
+	
 	private ProgramNode createLeafNode(EncogProgram program) {
 		int opCode = RangeRandomizer.randomInt(0, this.leaves.size()-1);
 		ProgramExtensionTemplate temp = this.leaves.get(opCode);
