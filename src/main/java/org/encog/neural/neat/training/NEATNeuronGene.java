@@ -51,11 +51,6 @@ public class NEATNeuronGene extends BasicGene implements Serializable {
 	public static final String PROPERTY_SPLIT_Y = "splitY";
 	
 	/**
-	 * The activation response, the slope of the activation function.
-	 */
-	private double activationResponse;
-
-	/**
 	 * The neuron type.
 	 */
 	private NEATNeuronType neuronType;
@@ -78,7 +73,7 @@ public class NEATNeuronGene extends BasicGene implements Serializable {
 	}
 
 	/**
-	 * Construct a gene.
+	 * Construct a neuron gene.
 	 * 
 	 * @param type
 	 *            The type of neuron.
@@ -91,31 +86,10 @@ public class NEATNeuronGene extends BasicGene implements Serializable {
 	 */
 	public NEATNeuronGene(final NEATNeuronType type, final long id,
 			final double splitY, final double splitX) {
-		this(type, id, splitY, splitX, 1.0);
-	}
-
-	/**
-	 * Construct a neuron gene.
-	 * 
-	 * @param type
-	 *            The type of neuron.
-	 * @param id
-	 *            The id of this gene.
-	 * @param splitY
-	 *            The split y.
-	 * @param splitX
-	 *            The split x.
-	 * @param act
-	 *            The activation response.
-	 */
-	public NEATNeuronGene(final NEATNeuronType type, final long id,
-			final double splitY, final double splitX, 
-			final double act) {
 		this.neuronType = type;
 		setId(id);
 		this.splitX = splitX;
 		this.splitY = splitY;
-		this.activationResponse = act;
 	}
 
 	/**
@@ -126,21 +100,13 @@ public class NEATNeuronGene extends BasicGene implements Serializable {
 	 */
 	public void copy(final Gene gene) {
 		final NEATNeuronGene other = (NEATNeuronGene) gene;
-		this.activationResponse = other.activationResponse;
 		setId(other.getId());
 		this.neuronType = other.neuronType;
 		this.splitX = other.splitX;
 		this.splitY = other.splitY;
 
 	}
-
-	/**
-	 * @return The activation response.
-	 */
-	public double getActivationResponse() {
-		return this.activationResponse;
-	}
-
+	
 	/**
 	 * @return The type for this neuron.
 	 */
@@ -160,16 +126,6 @@ public class NEATNeuronGene extends BasicGene implements Serializable {
 	 */
 	public double getSplitY() {
 		return this.splitY;
-	}
-
-	/**
-	 * Set the activation response.
-	 * 
-	 * @param activationResponse
-	 *            The activation response.
-	 */
-	public void setActivationResponse(final double activationResponse) {
-		this.activationResponse = activationResponse;
 	}
 
 	/**

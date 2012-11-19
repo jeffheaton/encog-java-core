@@ -26,7 +26,9 @@ package org.encog.neural.neat.training;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
+import org.encog.mathutil.randomize.RandomChoice;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
@@ -118,6 +120,10 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 	 * The parameters of NEAT.
 	 */
 	private final NEATParams params = new NEATParams();
+	
+	private RandomChoice mutateChoices;
+	
+	private RandomChoice mutateAddChoices;
 
 	/**
 	 * Construct a neat trainer with a new population. The new population is
@@ -143,6 +149,9 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 		setComparator(new GenomeComparator(getCalculateScore()));
 		setPopulation(new NEATPopulation(inputCount, outputCount,
 				populationSize));
+		
+		this.mutateChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0, 0.001 } , new Random());
+		this.mutateAddChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0 } , new Random());
 
 		init();
 	}
@@ -591,28 +600,7 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 						}
 
 						if (baby != null) {
-							baby.setGenomeID(getPopulation().assignGenomeID());
-
-							if (baby.getNeurons().size() < this.params.maxPermittedNeurons) {
-								baby.addNeuron(this.params.chanceAddNode,
-										this.params.numTrysToFindOldLink);
-							}
-
-							// now there's the chance a link may be added
-							baby.addLink(this.params.chanceAddLink,
-									this.params.chanceAddRecurrentLink,
-									this.params.numTrysToFindLoopedLink,
-									this.params.numAddLinkAttempts);
-
-							// mutate the weights
-							baby.mutateWeights(this.params.mutationRate,
-									this.params.probabilityWeightReplaced,
-									this.params.maxWeightPerturbation);
-
-							baby.mutateActivationResponse(
-									this.params.activationMutationRate,
-									this.params.maxActivationPerturbation);
-
+							mutate(baby);
 						}
 					}
 
@@ -646,6 +634,26 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 		resetAndKill();
 		sortAndRecord();
 		speciateAndCalculateSpawnLevels();
+	}
+	
+	public void mutate(NEATGenome genome) {
+		genome.setGenomeID(getPopulation().assignGenomeID());
+
+		if (genome.getNeurons().size() < this.params.maxPermittedNeurons) {
+			genome.addNeuron(this.params.chanceAddNode,
+					this.params.numTrysToFindOldLink);
+		}
+
+		// now there's the chance a link may be added
+		genome.addLink(this.params.chanceAddLink,
+				this.params.chanceAddRecurrentLink,
+				this.params.numTrysToFindLoopedLink,
+				this.params.numAddLinkAttempts);
+
+		// mutate the weights
+		genome.mutateWeights(this.params.mutationRate,
+				this.params.probabilityWeightReplaced,
+				this.params.maxWeightPerturbation);
 	}
 
 	/**

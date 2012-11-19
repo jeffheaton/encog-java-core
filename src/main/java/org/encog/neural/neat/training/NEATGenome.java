@@ -137,8 +137,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			final NEATNeuronGene oldGene = (NEATNeuronGene) gene;
 			final NEATNeuronGene newGene = new NEATNeuronGene(oldGene
 					.getNeuronType(), oldGene.getId(), oldGene.getSplitY(),
-					oldGene.getSplitX(), oldGene
-							.getActivationResponse());
+					oldGene.getSplitX());
 			getNeurons().add(newGene);
 		}
 
@@ -772,26 +771,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		}
 
 		return false;
-	}
-
-	/**
-	 * Mutate the activation response.
-	 *
-	 * @param mutateRate
-	 *            The mutation rate.
-	 * @param maxPertubation
-	 *            The maximum to perturb it by.
-	 */
-	public void mutateActivationResponse(final double mutateRate,
-			final double maxPertubation) {
-		for (final Gene gene : this.neuronsChromosome.getGenes()) {
-			if (Math.random() < mutateRate) {
-				final NEATNeuronGene neuronGene = (NEATNeuronGene) gene;
-				neuronGene.setActivationResponse(neuronGene
-						.getActivationResponse()
-						+ RangeRandomizer.randomize(-1, 1) * maxPertubation);
-			}
-		}
 	}
 
 	/**
