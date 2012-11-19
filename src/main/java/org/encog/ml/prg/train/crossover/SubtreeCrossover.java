@@ -8,14 +8,14 @@ import org.encog.ml.prg.ProgramNode;
 public class SubtreeCrossover implements PrgCrossover {
 
 	@Override
-	public EncogProgram crossover(EncogProgram mother, EncogProgram father) {
-		EncogProgramContext context = mother.getContext();
-		EncogProgram result = context.cloneProgram(mother);
-		int motherIndex = RangeRandomizer.randomInt(0, mother.getRootNode().size());
-		int fatherIndex = RangeRandomizer.randomInt(0, father.getRootNode().size());
-		ProgramNode resultNode = mother.findNode(motherIndex);
-		ProgramNode fatherNode = mother.findNode(fatherIndex);
-		ProgramNode newInsert = context.cloneBranch(result, fatherNode);
+	public EncogProgram crossover(EncogProgram parent1, EncogProgram parent2) {
+		EncogProgramContext context = parent1.getContext();
+		EncogProgram result = context.cloneProgram(parent1);
+		int p1Index = RangeRandomizer.randomInt(0, parent1.getRootNode().size()-1);
+		int p2Index = RangeRandomizer.randomInt(0, parent2.getRootNode().size()-1);
+		ProgramNode resultNode = parent1.findNode(p1Index);
+		ProgramNode p2Node = parent2.findNode(p2Index);
+		ProgramNode newInsert = context.cloneBranch(result, p2Node);
 		result.replaceNode(resultNode,newInsert);
 		return result;
 	}

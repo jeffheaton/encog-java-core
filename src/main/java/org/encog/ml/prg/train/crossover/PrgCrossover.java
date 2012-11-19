@@ -4,5 +4,5 @@ import org.encog.ml.prg.EncogProgram;
 
 public interface PrgCrossover {
 	
-	EncogProgram crossover(EncogProgram mother, EncogProgram father);
+	EncogProgram crossover(EncogProgram parent1, EncogProgram parent2);
 }

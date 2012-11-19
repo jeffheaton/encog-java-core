@@ -33,7 +33,7 @@ import org.encog.ml.tree.traverse.tasks.TaskGetNodeIndex;
 import org.encog.ml.tree.traverse.tasks.TaskReplaceNode;
 import org.encog.parse.expression.common.ParseCommonExpression;
 
-public class EncogProgram implements MLRegression, Comparable<EncogProgram> {
+public class EncogProgram implements MLRegression {
 		
 	private EncogProgramVariables variables = new EncogProgramVariables();
 	private EncogProgramContext context = new EncogProgramContext();
@@ -170,11 +170,6 @@ public class EncogProgram implements MLRegression, Comparable<EncogProgram> {
 		this.score = score;
 	}
 
-	@Override
-	public int compareTo(EncogProgram other) {
-		return Double.compare(this.score, other.score);
-	}
-
 	public ProgramNode findNode(int index) {
 		return (ProgramNode)TaskGetNodeIndex.process(index, this.rootNode);
 	}
@@ -185,6 +180,20 @@ public class EncogProgram implements MLRegression, Comparable<EncogProgram> {
 		} else {
 			TaskReplaceNode.process(this.rootNode, replaceThisNode, replaceWith);
 		}
+	}
+	
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[EncogProgram: size=");
+		result.append(size());
+		result.append(", score=");
+		result.append(this.score);
+		result.append("]");
+		return result.toString();
+	}
+
+	private Object size() {
+		return this.rootNode.size();
 	}
 
 

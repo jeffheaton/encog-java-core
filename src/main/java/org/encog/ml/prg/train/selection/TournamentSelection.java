@@ -2,26 +2,32 @@ package org.encog.ml.prg.train.selection;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.prg.train.PrgGenetic;
 import org.encog.ml.prg.train.PrgPopulation;
 
 public class TournamentSelection implements PrgSelection {
-	private PrgPopulation population;
+	private PrgGenetic trainer;
 	private int rounds;
 	
-	public TournamentSelection(PrgPopulation thePopulation, int rounds) {
-		this.population = thePopulation;
+	public TournamentSelection(PrgGenetic theTrainer, int theRounds) {
+		this.trainer = theTrainer;
+		this.rounds = theRounds;
 	}
+
 	
-	
-	public PrgPopulation getPopulation() {
-		return population;
+
+
+	public PrgGenetic getTrainer() {
+		return trainer;
 	}
 
 
 
-	public void setPopulation(PrgPopulation population) {
-		this.population = population;
+
+	public void setTrainer(PrgGenetic trainer) {
+		this.trainer = trainer;
 	}
+
 
 
 
@@ -39,13 +45,14 @@ public class TournamentSelection implements PrgSelection {
 
 	@Override
 	public int performSelection() {
-		int bestIndex = RangeRandomizer.randomInt(0, this.population.size());
-	    EncogProgram best = this.population.getMembers()[bestIndex];
+		PrgPopulation population = trainer.getPopulation();
+		int bestIndex = RangeRandomizer.randomInt(0, population.size()-1);
+	    EncogProgram best = population.getMembers()[bestIndex];
 	    
 	    for ( int i = 0; i < this.rounds; i ++ ) {
-	    	int competitorIndex = RangeRandomizer.randomInt(0, this.population.size());
-	      EncogProgram competitor = this.population.getMembers()[competitorIndex];
-	      if ( competitor.getScore() > best.getScore() ) {
+	    	int competitorIndex = RangeRandomizer.randomInt(0, population.size()-1);
+	      EncogProgram competitor = population.getMembers()[competitorIndex];
+	      if ( this.trainer.isGenomeBetter(best, competitor) ) {
 	        best = competitor;
 	        bestIndex = competitorIndex;
 	      }
@@ -56,13 +63,14 @@ public class TournamentSelection implements PrgSelection {
 
 	@Override
 	public int performAntiSelection() {
-		int worstIndex = RangeRandomizer.randomInt(0, this.population.size());
-	    EncogProgram worst = this.population.getMembers()[worstIndex];
+		PrgPopulation population = trainer.getPopulation();
+		int worstIndex = RangeRandomizer.randomInt(0, population.size()-1);
+	    EncogProgram worst = population.getMembers()[worstIndex];
 	    
 	    for ( int i = 0; i < this.rounds; i ++ ) {
-	    	int competitorIndex = RangeRandomizer.randomInt(0, this.population.size());
-	      EncogProgram competitor = this.population.getMembers()[competitorIndex];
-	      if ( competitor.getScore() > worst.getScore() ) {
+	    	int competitorIndex = RangeRandomizer.randomInt(0, population.size()-1);
+	      EncogProgram competitor = population.getMembers()[competitorIndex];
+	      if ( !this.trainer.isGenomeBetter(worst, competitor) ) {
 	        worst = competitor;
 	        worstIndex = competitorIndex;
 	      }

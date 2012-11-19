@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.EncogError;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.ml.prg.extension.StandardExtensions;
@@ -81,6 +82,11 @@ public class EncogProgramContext {
 	}
 	
 	public ProgramNode cloneBranch(EncogProgram targetProgram, ProgramNode sourceBranch) {
+		if( sourceBranch==null ) {
+			throw new EncogError("Can't clone null branch.");
+		}
+		
+		
 		String name = sourceBranch.getName();
 	
 		// create any subnodes

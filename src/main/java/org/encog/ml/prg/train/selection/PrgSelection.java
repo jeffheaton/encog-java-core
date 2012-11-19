@@ -1,10 +1,9 @@
 package org.encog.ml.prg.train.selection;
 
-import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.train.PrgPopulation;
+import org.encog.ml.prg.train.PrgGenetic;
 
 public interface PrgSelection {
 	int performSelection();
 	int performAntiSelection();
-	PrgPopulation getPopulation();
+	PrgGenetic getTrainer();
 }
