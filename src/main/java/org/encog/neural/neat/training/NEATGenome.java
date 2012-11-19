@@ -257,14 +257,8 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * @param numTrysToAddLink
 	 *            The number of tries to add a link.
 	 */
-	void addLink(final double mutationRate, final double chanceOfLooped,
+	void addLink(
 			final int numTrysToFindLoop, final int numTrysToAddLink) {
-
-		// should we even add the link
-		if (Math.random() > mutationRate) {
-			return;
-		}
-
 		int countTrysToAddLink = numTrysToFindLoop;
 
 		// the link will be between these two neurons
@@ -340,11 +334,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 *            The number of tries to find a link to split.
 	 */
 	void addNeuron(final double mutationRate, final int numTrysToFindOldLink) {
-
-		// should we add a neuron?
-		if (Math.random() > mutationRate) {
-			return;
-		}
 
 		int countTrysToFindOldLink = numTrysToFindOldLink;
 

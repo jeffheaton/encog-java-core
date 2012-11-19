@@ -149,9 +149,6 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 		setComparator(new GenomeComparator(getCalculateScore()));
 		setPopulation(new NEATPopulation(inputCount, outputCount,
 				populationSize));
-		
-		this.mutateChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0, 0.001 } , new Random());
-		this.mutateAddChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0 } , new Random());
 
 		init();
 	}
@@ -498,6 +495,9 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 	 */
 	private void init() {
 
+		this.mutateChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0, 0.001 } , new Random());
+		this.mutateAddChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0 } , new Random());
+		
 		if (getCalculateScore().shouldMinimize()) {
 			this.bestEverScore = Double.MAX_VALUE;
 		} else {
@@ -600,6 +600,7 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 						}
 
 						if (baby != null) {
+							baby.setGenomeID(getPopulation().assignGenomeID());
 							mutate(baby);
 						}
 					}
@@ -637,23 +638,39 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 	}
 	
 	public void mutate(NEATGenome genome) {
-		genome.setGenomeID(getPopulation().assignGenomeID());
-
-		if (genome.getNeurons().size() < this.params.maxPermittedNeurons) {
-			genome.addNeuron(this.params.chanceAddNode,
-					this.params.numTrysToFindOldLink);
+		int option = this.mutateChoices.generate();
+		
+		switch(option) {
+			case 0: // mutate weight
+				genome.mutateWeights(this.params.mutationRate,
+						this.params.probabilityWeightReplaced,
+						this.params.maxWeightPerturbation);
+				break;
+			case 1: // add node
+				if (genome.getNeurons().size() < this.params.maxPermittedNeurons) {
+					genome.addNeuron(this.params.chanceAddNode,
+							this.params.numTrysToFindOldLink);
+				}
+				break;
+			case 2: // add connection
+				// now there's the chance a link may be added
+				genome.addLink(	this.params.numTrysToFindLoopedLink,
+						this.params.numAddLinkAttempts);
+				break;
+			case 3: // adjust curve
+				break;
+			case 4: // remove connection
+				break;
 		}
+		
+		
 
-		// now there's the chance a link may be added
-		genome.addLink(this.params.chanceAddLink,
-				this.params.chanceAddRecurrentLink,
-				this.params.numTrysToFindLoopedLink,
-				this.params.numAddLinkAttempts);
+		
+
+		
 
 		// mutate the weights
-		genome.mutateWeights(this.params.mutationRate,
-				this.params.probabilityWeightReplaced,
-				this.params.maxWeightPerturbation);
+
 	}
 
 	/**
