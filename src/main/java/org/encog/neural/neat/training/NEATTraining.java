@@ -662,15 +662,6 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 			case 4: // remove connection
 				break;
 		}
-		
-		
-
-		
-
-		
-
-		// mutate the weights
-
 	}
 
 	/**
