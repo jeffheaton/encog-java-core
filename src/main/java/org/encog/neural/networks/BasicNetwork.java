@@ -187,7 +187,10 @@ public class BasicNetwork extends BasicML implements ContainsFlat, MLContext,
 	}
 
 	/**
-	 * Calculate the error for this neural network.
+	 * Calculate the error for this neural network.  We always calculate the error
+	 * using the "regression" calculator.  Neural networks don't directly support
+	 * classification, rather they use one-of-encoding or similar.  So just using
+	 * the regression calculator gives a good approximation.
 	 * 
 	 * @param data
 	 *            The training set.

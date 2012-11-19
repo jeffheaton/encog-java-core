@@ -23,8 +23,10 @@
  */
 package org.encog.ml.prg;
 
+import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.FunctionFactory;
@@ -32,8 +34,9 @@ import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.ml.tree.traverse.tasks.TaskGetNodeIndex;
 import org.encog.ml.tree.traverse.tasks.TaskReplaceNode;
 import org.encog.parse.expression.common.ParseCommonExpression;
+import org.encog.util.simple.EncogUtility;
 
-public class EncogProgram implements MLRegression {
+public class EncogProgram implements MLRegression, MLError {
 		
 	private EncogProgramVariables variables = new EncogProgramVariables();
 	private EncogProgramContext context = new EncogProgramContext();
@@ -194,6 +197,11 @@ public class EncogProgram implements MLRegression {
 
 	private Object size() {
 		return this.rootNode.size();
+	}
+
+	@Override
+	public double calculateError(MLDataSet data) {
+		return EncogUtility.calculateRegressionError(this, data);
 	}
 
 

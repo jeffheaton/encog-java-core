@@ -1,5 +1,6 @@
 package org.encog.ml.prg.train;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -234,11 +235,16 @@ public class PrgGenetic implements MLTrain {
 	}
 	
 	public boolean isGenomeBetter(EncogProgram genome, EncogProgram betterThan) {
-		return this.compareScore.compare(genome, betterThan)>0;
+		return this.compareScore.compare(genome, betterThan)<0;
 	}
 
 	public EncogProgram getBestGenome() {
 		return this.bestGenome;
+	}
+
+	public void sort() {
+		Arrays.sort(this.getPopulation().getMembers(),this.compareScore);
+		
 	}
 	
 	
