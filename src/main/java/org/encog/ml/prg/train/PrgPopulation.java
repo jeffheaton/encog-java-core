@@ -103,4 +103,8 @@ public class PrgPopulation {
 		}
 	}
 
+	public int size() {
+		return this.members.length;
+	}
+
 }
