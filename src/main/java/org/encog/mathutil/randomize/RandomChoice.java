@@ -23,13 +23,22 @@
  */
 package org.encog.mathutil.randomize;
 
+import java.util.Random;
+
 import org.encog.EncogError;
 import org.encog.util.EngineArray;
 
 /**
  * Generate random choices unevenly.  This class is used to select random 
  * choices from a list, with a probability weight places on each item 
- * in the list.
+ * in the list.  
+ * 
+ * This is often called a Roulette Wheel in Machine Learning texts.  How it differs from
+ * a Roulette Wheel that you might find in Las Vegas or Monte Carlo is that the
+ * areas that can be selected are not of uniform size.  However, you can be sure
+ * that one will be picked. 
+ * 
+ * http://en.wikipedia.org/wiki/Fitness_proportionate_selection
  */
 public class RandomChoice {
 
@@ -37,12 +46,18 @@ public class RandomChoice {
 	 * The probabilities of each item in the list.
 	 */
 	final private double[] probabilities;
+	
+	/**
+	 * Random number generator.
+	 */
+	final private Random generator;
 
 	/**
 	 * Construct a list of probabilities.
 	 * @param theProbabilities The probability of each item in the list.
 	 */
-	public RandomChoice(double[] theProbabilities) {
+	public RandomChoice(double[] theProbabilities, Random theGenerator) {
+		this.generator = theGenerator;
 		this.probabilities = EngineArray.arrayCopy(theProbabilities);
 
 		double total = 0;
@@ -72,12 +87,13 @@ public class RandomChoice {
 		}
 	}
 
-	public static boolean generate(double p) {
-		return Math.random() < p;
-	}
-
+	
+	/**
+	 * Generate a random choice, based on the probabilities provided to the constructor.
+	 * @return The random choice.
+	 */
 	public int generate() {
-		double r = Math.random();
+		double r = this.generator.nextDouble();
 		double sum = 0.0;
 
 		for (int i = 0; i < probabilities.length; i++) {
@@ -96,10 +112,15 @@ public class RandomChoice {
 		throw new EncogError("Invalid probabilities.");
 	}
 
+	/**
+	 * Generate a random choice, but skip one of the choices.
+	 * @param skip The choice to skip.
+	 * @return The random choice.
+	 */
 	public int generate(int skip) {
 		double totalProb = 1.0 - probabilities[skip];
 
-		double throwValue = Math.random() * totalProb;
+		double throwValue = this.generator.nextDouble() * totalProb;
 		double accumulator = 0.0;
 
 		for (int i = 0; i < skip; i++) {
