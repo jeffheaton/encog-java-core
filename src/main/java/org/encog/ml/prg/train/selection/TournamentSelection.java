@@ -52,7 +52,7 @@ public class TournamentSelection implements PrgSelection {
 	    for ( int i = 0; i < this.rounds; i ++ ) {
 	    	int competitorIndex = RangeRandomizer.randomInt(0, population.size()-1);
 	      EncogProgram competitor = population.getMembers()[competitorIndex];
-	      if ( this.trainer.isGenomeBetter(best, competitor) ) {
+	      if ( this.trainer.isGenomeBetter(competitor, best) ) {
 	        best = competitor;
 	        bestIndex = competitorIndex;
 	      }
@@ -70,7 +70,7 @@ public class TournamentSelection implements PrgSelection {
 	    for ( int i = 0; i < this.rounds; i ++ ) {
 	    	int competitorIndex = RangeRandomizer.randomInt(0, population.size()-1);
 	      EncogProgram competitor = population.getMembers()[competitorIndex];
-	      if ( !this.trainer.isGenomeBetter(worst, competitor) ) {
+	      if ( !this.trainer.isGenomeBetter(competitor, worst) ) {
 	        worst = competitor;
 	        worstIndex = competitorIndex;
 	      }
