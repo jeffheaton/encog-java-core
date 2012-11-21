@@ -195,7 +195,7 @@ public class EncogProgram implements MLRegression, MLError {
 		return result.toString();
 	}
 
-	private Object size() {
+	public int size() {
 		return this.rootNode.size();
 	}
 

@@ -58,11 +58,45 @@ public class RewriteAlgebraic implements RewriteRule {
 		return parent;
 	}
 	
+	private ProgramNode tryPlusNeg(ProgramNode parent) {
+		if( parent.getName().equals("+") && parent.getChildNodes().size()==2 ) {
+			ProgramNode child1 = parent.getChildNode(0);
+			ProgramNode child2 = parent.getChildNode(1);
+			
+			if( child2.getName().equals("-") && child2.getChildNodes().size()==1 ) {
+				parent = parent.getOwner().getContext().getFunctions().factorFunction("-", parent.getOwner(), new ProgramNode[] 
+						{child1,child2.getChildNode(0)} );
+			} else if( child2.getName().equals("#const") ) {
+				ExpressionValue v = child2.getExpressionData()[0];
+				if( v.isFloat() ) {
+					double v2 = v.toFloatValue();
+					if( v2<0 ) {
+						child2.getExpressionData()[0].setValue(-v2);
+						parent = parent.getOwner().getContext().getFunctions().factorFunction("-", parent.getOwner(), new ProgramNode[] 
+								{child1,child2} );
+					}
+				}
+				else if( v.isInt() ) {
+					long v2 = v.toIntValue();
+					if( v2<0 ) {
+						child2.getExpressionData()[0].setValue(-v2);
+						parent = parent.getOwner().getContext().getFunctions().factorFunction("-", parent.getOwner(), new ProgramNode[] 
+								{child1,child2} );
+					}
+				}
+			}
+		}
+		return parent;
+	}
+	
+	
+	
 	private ProgramNode internalRewrite(ProgramNode parent) {
 		ProgramNode rewritten = parent;
 		
 		rewritten = tryDoubleNegative(rewritten);
 		rewritten = tryMinusMinus(rewritten);
+		rewritten = tryPlusNeg(rewritten);
 		
 		// try children
 		for (int i = 0; i < parent.getChildNodes().size(); i++) {
