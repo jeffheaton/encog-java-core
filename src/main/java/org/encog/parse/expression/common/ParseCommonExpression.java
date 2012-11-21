@@ -26,6 +26,7 @@ package org.encog.parse.expression.common;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.EncogError;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
@@ -43,21 +44,19 @@ public class ParseCommonExpression {
 	}
 
 	private ProgramNode expr() {
-		char sign;
+		boolean neg = false;
 		ProgramNode target;
 
 		this.parser.eatWhiteSpace();
 
 		if ((this.parser.peek() == '+') || (this.parser.peek() == '-')) {
-			sign = this.parser.readChar();
-		} else {
-			sign = '+';
+			neg = this.parser.readChar()=='-';
 		}
-
+		
 		target = expr1();
 		this.parser.eatWhiteSpace();
 
-		if (sign == '-') {
+		if (neg ) {
 			target = this.holder.getFunctions().factorFunction("-", holder, new ProgramNode[] { target } );
 		}
 
@@ -139,9 +138,14 @@ public class ParseCommonExpression {
 
 	private ProgramNode expr1p5() {
 		ProgramNode target = null;
+		boolean neg = false;
 
 		this.parser.eatWhiteSpace();
 
+		if ((this.parser.peek() == '+') || (this.parser.peek() == '-')) {
+			neg = this.parser.readChar()=='-';
+		}
+		
 		if ((Character.toUpperCase(this.parser.peek()) >= 'A')
 				&& (Character.toUpperCase(this.parser.peek()) <= 'Z')) {
 			final StringBuilder varName = new StringBuilder();
@@ -152,10 +156,16 @@ public class ParseCommonExpression {
 			this.parser.eatWhiteSpace();
 
 			if (varName.toString().equals("true")) {
+				if( neg ) {
+					throw new EncogError("Invalid negative sign.");
+				}
 				ProgramNode v = this.holder.getFunctions().factorFunction("#const", holder, new ProgramNode[] {} );
 				v.getExpressionData()[0] = new ExpressionValue(true);
 				return v;
 			} else if (varName.toString().equals("false")) {
+				if( neg ) {
+					throw new EncogError("Invalid negative sign.");
+				}
 				ProgramNode v = this.holder.getFunctions().factorFunction("#const", holder, new ProgramNode[] {} );
 				v.getExpressionData()[0] = new ExpressionValue(false);
 				return v;
@@ -169,6 +179,11 @@ public class ParseCommonExpression {
 					v = this.holder.getFunctions().factorFunction("#var", holder, new ProgramNode[] {} );
 					v.getIntData()[0] = this.holder.getVariables().getVariableIndex(varName.toString());
 				}
+				
+				if (neg ) {
+					v = this.holder.getFunctions().factorFunction("-", holder, new ProgramNode[] { v } );
+				}
+				
 				return v;
 			} else {
 				return parseFunction(varName.toString());
@@ -176,7 +191,7 @@ public class ParseCommonExpression {
 		} else if ((this.parser.peek() == '+') || (this.parser.peek() == '-')
 				|| Character.isDigit(this.parser.peek())
 				|| (this.parser.peek() == '.')) {
-			target = parseConstant();
+			target = parseConstant(neg);
 		} else if (this.parser.peek() == '(') {
 			this.parenCount++;
 			this.parser.advance();
@@ -212,22 +227,10 @@ public class ParseCommonExpression {
 		return result;
 	}
 
-	private ProgramNode parseConstant() {
+	private ProgramNode parseConstant(boolean neg) {
 		double value, exponent;
-		boolean neg = false;
 		char sign = '+';
 		boolean isFloat = false;
-
-		switch (this.parser.peek()) {
-		case '-':
-			this.parser.advance();
-			neg = true;
-			break;
-
-		case '+':
-			this.parser.advance();
-			break;
-		}
 
 		value = 0.0;
 		exponent = 0;

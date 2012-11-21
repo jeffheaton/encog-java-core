@@ -14,6 +14,6 @@ public class TestSubtreeCrossover extends TestCase {
 		EncogProgram prg2 = new EncogProgram("4+5");
 		ProgramNode node = prg.findNode(2);
 		prg.replaceNode(node, prg2.getRootNode());
-		Assert.assertEquals((1+(4+5)),render.render(prg));
+		Assert.assertEquals("(1+(4+5))",render.render(prg));
 	}
 }

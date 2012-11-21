@@ -37,6 +37,18 @@ public class TestExpressionVar extends TestCase {
 		Assert.assertEquals(5,expression.evaluate().toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 	
+	public void testNegAssignment() {
+		EncogProgram expression = new EncogProgram("-a");
+		expression.getVariables().setVariable("a",5);
+		Assert.assertEquals(-5,expression.evaluate().toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
+	}
+	
+	public void test2NegAssignment() {
+		EncogProgram expression = new EncogProgram("--a");
+		expression.getVariables().setVariable("a",5);
+		Assert.assertEquals(5,expression.evaluate().toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
+	}
+	
 	public void testAssignment2() {
 		EncogProgram expression = new EncogProgram("cccc*(aa+bbb)");
 		expression.getVariables().setVariable("aa",1);

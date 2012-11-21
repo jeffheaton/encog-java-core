@@ -4,13 +4,17 @@ import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
 
 public class RewriteConstants implements RewriteRule {
+	
+	private boolean rewritten;
 
-	public void rewrite(EncogProgram program) {
+	public boolean rewrite(EncogProgram program) {
+		this.rewritten = false;
 		ProgramNode rootNode = program.getRootNode();
 		ProgramNode rewrite = rewriteNode(rootNode);
 		if (rewrite != null) {
 			program.setRootNode(rewrite);
 		}
+		return this.rewritten;
 	}
 
 	private ProgramNode rewriteNode(ProgramNode node) {
@@ -29,6 +33,7 @@ public class RewriteConstants implements RewriteRule {
 			if (rewrite != null) {
 				node.getChildNodes().remove(i);
 				node.getChildNodes().add(i, rewrite);
+				this.rewritten = true;
 			}
 		}
 
