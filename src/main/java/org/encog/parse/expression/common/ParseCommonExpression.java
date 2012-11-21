@@ -145,8 +145,7 @@ public class ParseCommonExpression {
 		if ((Character.toUpperCase(this.parser.peek()) >= 'A')
 				&& (Character.toUpperCase(this.parser.peek()) <= 'Z')) {
 			final StringBuilder varName = new StringBuilder();
-			while ((Character.toUpperCase(this.parser.peek()) >= 'A')
-					&& (Character.toUpperCase(this.parser.peek()) <= 'Z')) {
+			while (Character.isLetterOrDigit(this.parser.peek()) ) {
 				varName.append(this.parser.readChar());
 			}
 
