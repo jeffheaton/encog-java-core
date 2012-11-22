@@ -45,6 +45,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	private int subIterationCounter;
 	private final Lock iterationLock = new ReentrantLock();
 	private RandomFactory randomNumberFactory = Encog.getInstance().getRandomFactory().factorFactory();
+	private Throwable currentError;
 	
 	/**
 	 * Condition used to check if we are done.
@@ -145,6 +146,9 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		this.iterationLock.lock();
 		try {
 			this.iterationCondition.await();
+			if( this.currentError!=null ) {
+				throw new EncogError(this.currentError);
+			}
 		} catch (InterruptedException e) {
 
 		}
@@ -324,6 +328,13 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	 */
 	public void setRandomNumberFactory(RandomFactory randomNumberFactory) {
 		this.randomNumberFactory = randomNumberFactory;
+	}
+
+	public void reportError(Throwable t) {
+		synchronized(this) {
+			this.currentError = t;
+		}
+		
 	}
 	
 	

@@ -21,6 +21,7 @@ public class GeneticTrainWorker extends Thread {
 	
 	public void run() {
 		
+		try {
 		PrgPopulation population = this.owner.getPopulation();
 		EncogProgram[] members = this.owner.getPopulation().getMembers();
 		PrgSelection selection = this.owner.getSelection();
@@ -51,6 +52,8 @@ public class GeneticTrainWorker extends Thread {
 					break;
 				}
 			}
+		}} catch(Throwable t) {
+			this.owner.reportError(t);
 		}
 	}
 	

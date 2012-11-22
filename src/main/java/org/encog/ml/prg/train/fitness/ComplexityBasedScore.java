@@ -1,4 +1,4 @@
-package org.encog.ml.prg.train;
+package org.encog.ml.prg.train.fitness;
 
 import org.encog.ml.MLRegression;
 import org.encog.ml.prg.EncogProgram;
