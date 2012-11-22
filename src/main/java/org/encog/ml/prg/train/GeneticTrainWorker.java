@@ -42,7 +42,7 @@ public class GeneticTrainWorker extends Thread {
 			if( !Double.isInfinite(score) && !Double.isNaN(score) ) {
 				population.rewrite(newPrg);
 				newPrg.setScore(score);
-				//this.owner.addGenome(newPrg);
+				this.owner.addGenome(newPrg);
 				
 				if( this.done.get() ) {
 					break;
