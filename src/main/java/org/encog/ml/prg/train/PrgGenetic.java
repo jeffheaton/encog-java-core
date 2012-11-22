@@ -3,7 +3,11 @@ package org.encog.ml.prg.train;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
+import org.encog.EncogError;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
@@ -22,8 +26,9 @@ import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.TrainingSetScore;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
+import org.encog.util.concurrency.MultiThreadable;
 
-public class PrgGenetic implements MLTrain {
+public class PrgGenetic implements MLTrain, MultiThreadable {
 	private final EncogProgramContext context;
 	private final PrgPopulation population;
 	private final CalculateScore scoreFunction;
@@ -32,7 +37,17 @@ public class PrgGenetic implements MLTrain {
 	private PrgCrossover crossover;
 	private EncogProgram bestGenome = null;
 	private Comparator<EncogProgram> compareScore;
-	
+	private int threadCount;
+	private GeneticTrainWorker[] workers;
+	private int iterationNumber;
+	private int subIterationCounter;
+	private final Lock iterationLock = new ReentrantLock();
+	/**
+	 * Condition used to check if we are done.
+	 */
+	private final Condition iterationCondition = 
+		this.iterationLock.newCondition();
+
 	public PrgGenetic(PrgPopulation thePopulation, CalculateScore theScoreFunction) {
 		this.population = thePopulation;
 		this.context = population.getContext();
@@ -46,11 +61,11 @@ public class PrgGenetic implements MLTrain {
 			this.compareScore = new MaximizeScoreComp();
 		}
 	}
-	
+
 	public PrgGenetic(PrgPopulation thePopulation, MLDataSet theTrainingSet) {
-		this(thePopulation,new TrainingSetScore(theTrainingSet));
+		this(thePopulation, new TrainingSetScore(theTrainingSet));
 	}
-	
+
 	public PrgPopulation getPopulation() {
 		return population;
 	}
@@ -58,7 +73,7 @@ public class PrgGenetic implements MLTrain {
 	public CalculateScore getScoreFunction() {
 		return scoreFunction;
 	}
-	
+
 	public PrgSelection getSelection() {
 		return selection;
 	}
@@ -86,7 +101,7 @@ public class PrgGenetic implements MLTrain {
 	@Override
 	public TrainingImplementationType getImplementationType() {
 		// TODO Auto-generated method stub
-		return null;
+		return TrainingImplementationType.Background;
 	}
 
 	@Override
@@ -100,31 +115,38 @@ public class PrgGenetic implements MLTrain {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	private void startup() {
+		int actualThreadCount = Runtime.getRuntime().availableProcessors();
+		
+		if( this.threadCount!=0 ) {
+			actualThreadCount = this.threadCount;
+		}
+		
+		this.workers = new GeneticTrainWorker[actualThreadCount];
+		
+		for(int i=0;i<this.workers.length;i++) {
+			this.workers[i] = new GeneticTrainWorker(this);
+			this.workers[i].start();
+		}
+		
+	}
 
 	@Override
 	public void iteration() {
-		for(int i=0;i<this.population.size();i++) {
-			EncogProgram newPrg = null;
-			EncogProgram parent1 = this.population.getMembers()[this.selection.performSelection()];
-			
-			if( Math.random()<0.9 ) {
-				
-				EncogProgram parent2 = this.population.getMembers()[this.selection.performSelection()];
-				newPrg = this.crossover.crossover(parent1, parent2);
-			} else {
-				newPrg = this.mutation.mutate(parent1);
-			}
-			
-			double score = this.scoreFunction.calculateScore(newPrg);
-			if( !Double.isInfinite(score) && !Double.isNaN(score) ) {
-				this.population.rewrite(newPrg);
-				newPrg.setScore(score);
-				int replaceIndex = this.selection.performAntiSelection();
-				this.population.getMembers()[replaceIndex] = newPrg;
-				evaluateBestGenome(newPrg);
-			}
+		if( this.workers==null ) {
+			startup();
 		}
 		
+		this.iterationLock.lock();
+		try {
+			this.iterationCondition.await();
+		} catch (InterruptedException e) {
+
+		}
+		finally {
+			this.iterationLock.unlock();
+		}
 	}
 
 	@Override
@@ -134,20 +156,31 @@ public class PrgGenetic implements MLTrain {
 
 	@Override
 	public void finishTraining() {
-		// TODO Auto-generated method stub
+		for(int i=0;i<this.workers.length;i++) {
+			this.workers[i].requestTerminate();
+		}
 		
+		for(int i=0;i<this.workers.length;i++) {
+			try {
+				this.workers[i].join();
+			} catch (InterruptedException e) {
+				throw new EncogError("Can't shut down training threads.");
+			}
+		}
+		
+		this.workers = null;
+
 	}
 
 	@Override
 	public void iteration(int count) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public int getIteration() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.iterationNumber;
 	}
 
 	@Override
@@ -165,13 +198,13 @@ public class PrgGenetic implements MLTrain {
 	@Override
 	public void resume(TrainingContinuation state) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void addStrategy(Strategy strategy) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -189,13 +222,13 @@ public class PrgGenetic implements MLTrain {
 	@Override
 	public void setError(double error) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setIteration(int iteration) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public Comparator<EncogProgram> getCompareScore() {
@@ -205,37 +238,37 @@ public class PrgGenetic implements MLTrain {
 	public void setCompareScore(Comparator<EncogProgram> compareScore) {
 		this.compareScore = compareScore;
 	}
-	
+
 	public void createRandomPopulation(int maxDepth) {
-		CreateRandom rnd = new CreateRandom(this.context,maxDepth);
-		
-		for(int i=0;i<this.population.getMaxPopulation();i++) {
-			
+		CreateRandom rnd = new CreateRandom(this.context, maxDepth);
+
+		for (int i = 0; i < this.population.getMaxPopulation(); i++) {
+
 			boolean done = false;
 			EncogProgram prg = null;
 			do {
 				prg = rnd.generate();
 				double score = this.scoreFunction.calculateScore(prg);
-				if( !Double.isInfinite(score) && !Double.isNaN(score) ) {
+				if (!Double.isInfinite(score) && !Double.isNaN(score)) {
 					prg.setScore(score);
 					done = true;
 				}
-			} while(!done);
-			
+			} while (!done);
+
 			evaluateBestGenome(prg);
 			this.population.rewrite(prg);
 			this.population.getMembers()[i] = prg;
 		}
 	}
-	
+
 	private void evaluateBestGenome(EncogProgram prg) {
-		if( this.bestGenome==null || isGenomeBetter(prg,this.bestGenome) ) {
+		if (this.bestGenome == null || isGenomeBetter(prg, this.bestGenome)) {
 			this.bestGenome = prg;
 		}
 	}
-	
+
 	public boolean isGenomeBetter(EncogProgram genome, EncogProgram betterThan) {
-		return this.compareScore.compare(genome, betterThan)<0;
+		return this.compareScore.compare(genome, betterThan) < 0;
 	}
 
 	public EncogProgram getBestGenome() {
@@ -243,9 +276,36 @@ public class PrgGenetic implements MLTrain {
 	}
 
 	public void sort() {
-		Arrays.sort(this.getPopulation().getMembers(),this.compareScore);
-		
+		Arrays.sort(this.getPopulation().getMembers(), this.compareScore);
+
 	}
-	
-	
+
+	public void addGenome(EncogProgram newPrg) {
+		this.iterationLock.lock();
+		try {
+			int replaceIndex = selection.performAntiSelection();
+			this.population.getMembers()[replaceIndex] = newPrg;
+			evaluateBestGenome(newPrg);
+			
+			this.subIterationCounter++;
+			if( this.subIterationCounter>this.population.size() ) {
+				this.subIterationCounter=0;
+				this.iterationNumber++;
+				this.iterationCondition.signal();
+			}
+		} finally {
+			this.iterationLock.unlock();
+		}
+	}
+
+	@Override
+	public int getThreadCount() {
+		return this.threadCount;
+	}
+
+	@Override
+	public void setThreadCount(int numThreads) {
+		this.threadCount = numThreads;
+	}
+
 }
