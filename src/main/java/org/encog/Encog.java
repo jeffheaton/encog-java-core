@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.mathutil.randomize.factory.BasicRandomFactory;
+import org.encog.mathutil.randomize.factory.RandomFactory;
 import org.encog.plugin.EncogPluginBase;
 import org.encog.plugin.EncogPluginLogging1;
 import org.encog.plugin.system.SystemActivationPlugin;
@@ -87,6 +89,11 @@ public final class Encog {
 	 * time the format of the encog data file changes.
 	 */
 	public static final String ENCOG_FILE_VERSION = "encog.file.version";
+	
+	/**
+	 * Used to create random number generators, by default, use Java's Random class.
+	 */
+	private RandomFactory randomFactory = new BasicRandomFactory();
 
 	/**
 	 * The instance.
@@ -214,6 +221,22 @@ public final class Encog {
 	    String osName = System.getProperty("os.name");
 	    return osName.contains("OS X");
 	}
+
+	/**
+	 * @return the randomFactory
+	 */
+	public RandomFactory getRandomFactory() {
+		return randomFactory;
+	}
+
+	/**
+	 * @param randomFactory the randomFactory to set
+	 */
+	public void setRandomFactory(RandomFactory randomFactory) {
+		this.randomFactory = randomFactory;
+	}
+	
+	
 	
 	
 }

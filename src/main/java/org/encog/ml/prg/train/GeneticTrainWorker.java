@@ -1,5 +1,6 @@
 package org.encog.ml.prg.train;
 
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.encog.ml.prg.EncogProgram;
@@ -11,9 +12,11 @@ import org.encog.neural.networks.training.CalculateScore;
 public class GeneticTrainWorker extends Thread {
 	private final PrgGenetic owner;
 	private AtomicBoolean done = new AtomicBoolean();
+	private Random rnd;
 	
 	public GeneticTrainWorker(PrgGenetic theOwner) {
 		this.owner = theOwner;
+		this.rnd = this.owner.getRandomNumberFactory().factor();
 	}
 	
 	public void run() {
@@ -30,12 +33,12 @@ public class GeneticTrainWorker extends Thread {
 			EncogProgram newPrg = null;
 			EncogProgram parent1 = members[selection.performSelection()];
 			
-			if( Math.random()<0.9 ) {
+			if( this.rnd.nextDouble()<0.9 ) {
 				
 				EncogProgram parent2 = members[selection.performSelection()];
-				newPrg = crossover.crossover(parent1, parent2);
+				newPrg = crossover.crossover(this.rnd, parent1, parent2);
 			} else {
-				newPrg = mutation.mutate(parent1);
+				newPrg = mutation.mutate(this.rnd, parent1);
 			}
 			
 			double score = scoreFunction.calculateScore(newPrg);

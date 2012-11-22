@@ -7,7 +7,9 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.encog.Encog;
 import org.encog.EncogError;
+import org.encog.mathutil.randomize.factory.RandomFactory;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
@@ -42,6 +44,8 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	private int iterationNumber;
 	private int subIterationCounter;
 	private final Lock iterationLock = new ReentrantLock();
+	private RandomFactory randomNumberFactory = Encog.getInstance().getRandomFactory().factorFactory();
+	
 	/**
 	 * Condition used to check if we are done.
 	 */
@@ -307,5 +311,21 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	public void setThreadCount(int numThreads) {
 		this.threadCount = numThreads;
 	}
+
+	/**
+	 * @return the randomNumberFactory
+	 */
+	public RandomFactory getRandomNumberFactory() {
+		return randomNumberFactory;
+	}
+
+	/**
+	 * @param randomNumberFactory the randomNumberFactory to set
+	 */
+	public void setRandomNumberFactory(RandomFactory randomNumberFactory) {
+		this.randomNumberFactory = randomNumberFactory;
+	}
+	
+	
 
 }
