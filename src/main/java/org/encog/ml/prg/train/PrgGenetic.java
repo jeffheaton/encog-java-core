@@ -21,8 +21,8 @@ import org.encog.ml.prg.train.mutate.PrgMutate;
 import org.encog.ml.prg.train.mutate.SubtreeMutation;
 import org.encog.ml.prg.train.selection.PrgSelection;
 import org.encog.ml.prg.train.selection.TournamentSelection;
-import org.encog.ml.prg.train.sort.MaximizeScoreComp;
-import org.encog.ml.prg.train.sort.MinimizeScoreComp;
+import org.encog.ml.prg.train.sort.MaximizeEffectiveScoreComp;
+import org.encog.ml.prg.train.sort.MinimizeEffectiveScoreComp;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.networks.training.CalculateScore;
@@ -46,6 +46,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	private final Lock iterationLock = new ReentrantLock();
 	private RandomFactory randomNumberFactory = Encog.getInstance().getRandomFactory().factorFactory();
 	private Throwable currentError;
+	private final GeneticTrainingParams params = new GeneticTrainingParams();
 	
 	/**
 	 * Condition used to check if we are done.
@@ -61,9 +62,9 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		this.crossover = new SubtreeCrossover();
 		this.mutation = new SubtreeMutation(thePopulation.getContext(),4);
 		if( theScoreFunction.shouldMinimize()) {
-			this.compareScore = new MinimizeScoreComp();
+			this.compareScore = new MinimizeEffectiveScoreComp();
 		} else {
-			this.compareScore = new MaximizeScoreComp();
+			this.compareScore = new MaximizeEffectiveScoreComp();
 		}
 	}
 
@@ -270,6 +271,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	}
 
 	private void evaluateBestGenome(EncogProgram prg) {
+		calculateEffectiveScore(prg);
 		if (this.bestGenome == null || isGenomeBetter(prg, this.bestGenome)) {
 			this.bestGenome = prg;
 		}
@@ -336,7 +338,24 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		}
 		
 	}
+
+	/**
+	 * @return the params
+	 */
+	public GeneticTrainingParams getParams() {
+		return params;
+	}
 	
+	public void calculateEffectiveScore(EncogProgram prg) {
+		double result = prg.getScore();
+		if( prg.size()>this.params.getComplexityPenaltyThreshold()) {
+			int over = prg.size() - this.params.getComplexityPenaltyThreshold();
+			int range = this.params.getComplexityPentaltyFullThreshold() - this.params.getComplexityPenaltyThreshold();
+			double complexityPenalty = ((params.getComplexityFullPenalty() - this.params.getComplexityPenalty()) / range)*over;
+			result+=(result*complexityPenalty);
+		}
+		prg.setEffectiveScore(result);
+	}
 	
 
 }

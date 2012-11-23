@@ -48,10 +48,12 @@ public class TournamentSelection implements PrgSelection {
 		PrgPopulation population = trainer.getPopulation();
 		int bestIndex = RangeRandomizer.randomInt(0, population.size()-1);
 	    EncogProgram best = population.getMembers()[bestIndex];
+	    this.trainer.calculateEffectiveScore(best);
 	    
 	    for ( int i = 0; i < this.rounds; i ++ ) {
 	    	int competitorIndex = RangeRandomizer.randomInt(0, population.size()-1);
 	      EncogProgram competitor = population.getMembers()[competitorIndex];
+	      this.trainer.calculateEffectiveScore(competitor);
 	      if ( this.trainer.isGenomeBetter(competitor, best) ) {
 	        best = competitor;
 	        bestIndex = competitorIndex;
@@ -66,10 +68,12 @@ public class TournamentSelection implements PrgSelection {
 		PrgPopulation population = trainer.getPopulation();
 		int worstIndex = RangeRandomizer.randomInt(0, population.size()-1);
 	    EncogProgram worst = population.getMembers()[worstIndex];
+	    this.trainer.calculateEffectiveScore(worst);
 	    
 	    for ( int i = 0; i < this.rounds; i ++ ) {
 	    	int competitorIndex = RangeRandomizer.randomInt(0, population.size()-1);
 	      EncogProgram competitor = population.getMembers()[competitorIndex];
+	      this.trainer.calculateEffectiveScore(competitor);
 	      if ( !this.trainer.isGenomeBetter(competitor, worst) ) {
 	        worst = competitor;
 	        worstIndex = competitorIndex;

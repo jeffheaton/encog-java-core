@@ -41,6 +41,7 @@ public class EncogProgram implements MLRegression, MLError {
 	private EncogProgramVariables variables = new EncogProgramVariables();
 	private EncogProgramContext context = new EncogProgramContext();
 	private double score;
+	private double effectiveScore;
 
 	public static ExpressionValue parse(final String str) {
 		final EncogProgram holder = new EncogProgram(str);
@@ -203,6 +204,22 @@ public class EncogProgram implements MLRegression, MLError {
 	public double calculateError(MLDataSet data) {
 		return EncogUtility.calculateRegressionError(this, data);
 	}
+
+	/**
+	 * @return the effectiveScore
+	 */
+	public double getEffectiveScore() {
+		return effectiveScore;
+	}
+
+	/**
+	 * @param effectiveScore the effectiveScore to set
+	 */
+	public void setEffectiveScore(double effectiveScore) {
+		this.effectiveScore = effectiveScore;
+	}
+	
+	
 
 
 }
