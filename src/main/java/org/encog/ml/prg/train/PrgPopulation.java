@@ -63,8 +63,17 @@ public class PrgPopulation {
 	}
 	
 	public void rewrite(EncogProgram prg) {
-		for(RewriteRule rule: this.rewriteRules) {
-			rule.rewrite(prg);
+		
+		boolean done = false;
+		
+		while(!done) {
+			done = true;
+			
+			for(RewriteRule rule: this.rewriteRules) {
+				if( rule.rewrite(prg) ) {
+					done = false;
+				}
+			}
 		}
 	}
 

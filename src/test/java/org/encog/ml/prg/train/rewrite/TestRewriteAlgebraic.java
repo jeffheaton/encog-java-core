@@ -31,5 +31,12 @@ public class TestRewriteAlgebraic extends TestCase {
 		eval("x+-y","(x-y)");
 		eval("x+-1","(x-1)");
 	}
+	
+	public void testVarOpVar() {
+		eval("x-x","0.0");
+		eval("x+x","(2.0*x)");
+		eval("x*x","(x^2.0)");
+		eval("x/x","1.0");
+	}
 
 }
