@@ -330,6 +330,13 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 		int curMom = 0; // current gene index from mom
 		int curDad = 0; // current gene index from dad
 		NEATLinkGene selectedGene = null;
+		
+		// add in the input and bias, they should always be here
+		int alwaysCount = this.inputCount + this.outputCount + 1;
+		for(int i=0;i<alwaysCount;i++) {
+			addNeuronID(i, vecNeurons);
+		}
+		
 
 		while ((curMom < mom.getNumGenes()) || (curDad < dad.getNumGenes())) {
 			NEATLinkGene momGene = null; // the mom gene object
@@ -379,19 +386,21 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 				curDad++;
 			}
 
-			if (babyGenes.size() == 0) {
-				babyGenes.add(selectedGene);
-			} else {
-				if (((NEATLinkGene) babyGenes.get(babyGenes.size() - 1))
-						.getInnovationId() != selectedGene.getInnovationId()) {
+			if( selectedGene!=null ) {
+				if (babyGenes.size() == 0) {
 					babyGenes.add(selectedGene);
+				} else {
+					if (((NEATLinkGene) babyGenes.get(babyGenes.size() - 1))
+							.getInnovationId() != selectedGene.getInnovationId()) {
+						babyGenes.add(selectedGene);
+					}
 				}
+	
+				// Check if we already have the nodes referred to in SelectedGene.
+				// If not, they need to be added.
+				addNeuronID(selectedGene.getFromNeuronID(), vecNeurons);
+				addNeuronID(selectedGene.getToNeuronID(), vecNeurons);
 			}
-
-			// Check if we already have the nodes referred to in SelectedGene.
-			// If not, they need to be added.
-			addNeuronID(selectedGene.getFromNeuronID(), vecNeurons);
-			addNeuronID(selectedGene.getToNeuronID(), vecNeurons);
 
 		}// end while
 
@@ -410,7 +419,11 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 		babyGenome.setGeneticAlgorithm(this);
 		babyGenome.setPopulation(getPopulation());
 		
-		babyGenome.validate();
+		try { 
+			babyGenome.validate();
+		} catch(Throwable t) {
+			crossover(mom, dad);
+		}
 
 		return babyGenome;
 	}
@@ -660,6 +673,7 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 			case 3: // adjust curve
 				break;
 			case 4: // remove connection
+				genome.removeLink();
 				break;
 		}
 	}

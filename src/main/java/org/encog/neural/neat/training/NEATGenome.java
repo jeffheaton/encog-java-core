@@ -861,7 +861,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		// make sure that the bias neuron is where it should be
 		NEATNeuronGene g = (NEATNeuronGene)this.neuronsChromosome.getGene(0);
 		if( g.getNeuronType()!=NEATNeuronType.Bias ) {
-			throw new EncogError("NEAT Neuron Gene " + this.inputCount + " should be a bias gene.");
+			throw new EncogError("NEAT Neuron Gene 0 should be a bias gene.");
 		}
 		
 		// make sure all input neurons are at the beginning
@@ -873,7 +873,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		}
 				
 		// make sure that all input neurons are connected
-		for(int i=0;i<this.inputCount;i++) {
+		/*for(int i=0;i<this.inputCount;i++) {
 			NEATNeuronGene gene = (NEATNeuronGene)this.neuronsChromosome.getGene(i);
 			
 			boolean found = false;
@@ -888,7 +888,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			if( !found ) {
 				throw new EncogError("Input neuron " + i + " is unconnected.");
 			}			
-		}
+		}*/
 		
 		// make sure that there are no double links
 		Map<String,NEATLinkGene> map = new HashMap<String,NEATLinkGene>();
@@ -899,6 +899,63 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 				throw new EncogError("Double link found: " + key);
 			} 
 			map.put(key, nlg);
+		}
+	}
+	
+	private boolean isNeuronNeeded(long neuronID) {
+		
+		// do not remove bias or input neurons or output
+		for(Gene gene: this.getNeurons().getGenes()) {			
+			if( gene.getId()==neuronID ) {
+				NEATNeuronGene neuron = (NEATNeuronGene)gene;
+				if( neuron.getNeuronType()==NEATNeuronType.Input 
+						|| neuron.getNeuronType()==NEATNeuronType.Bias 
+						|| neuron.getNeuronType()==NEATNeuronType.Output ) {
+					return true;
+				}
+			}
+		}
+		
+		for(Gene gene : this.getLinks().getGenes() ) {
+			NEATLinkGene linkGene = (NEATLinkGene)gene;
+			if( linkGene.getFromNeuronID()==neuronID ) {
+				return true;
+			}
+			if( linkGene.getToNeuronID()==neuronID ) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private void removeNeuron(long neuronID) {
+		for(Gene gene: this.getNeurons().getGenes()) {
+			if( gene.getId()==neuronID ) {
+				this.getNeurons().getGenes().remove(gene);
+				return;
+			}
+		}
+	}
+
+	public void removeLink() {
+		if( this.getLinks().size()<5 ) {
+			// don't remove from small genomes
+			return;
+		}
+		
+		// determine the target and remove
+		int target = RangeRandomizer.randomInt(0, this.getLinks().size()-1);
+		NEATLinkGene targetGene = (NEATLinkGene)this.getLinks().get(target);
+		this.getLinks().getGenes().remove(target);
+		
+		// if this orphaned any nodes, then kill them too!
+		if( !isNeuronNeeded(targetGene.getFromNeuronID()) ) {
+			removeNeuron(targetGene.getFromNeuronID());
+		}
+		
+		if( !isNeuronNeeded(targetGene.getToNeuronID()) ) {
+			removeNeuron(targetGene.getToNeuronID());
 		}
 	}
 }
