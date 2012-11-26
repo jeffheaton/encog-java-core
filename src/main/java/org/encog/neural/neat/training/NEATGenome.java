@@ -288,7 +288,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		
 		// check to see if this innovation has already been tried
 		final NEATInnovation innovation = ((NEATTraining) getGeneticAlgorithm())
-				.getInnovations().checkInnovation(neuron1ID, neuron1ID,
+				.getInnovations().checkInnovation(neuron1ID, neuron2ID,
 						NEATInnovationType.NewLink);
 
 		// see if this is a recurrent(backwards) link
