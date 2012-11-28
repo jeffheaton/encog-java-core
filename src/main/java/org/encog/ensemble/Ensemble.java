@@ -94,9 +94,10 @@ public abstract class Ensemble {
 		} while (current.getError(selectionSet) > selectionError);
 	}
 
-	public void trainMember(EnsembleML current, double selectionError, EnsembleDataSet selectionSet, boolean verbose) {
+	public void trainMember(EnsembleML current, double targetError, double selectionError, EnsembleDataSet selectionSet, boolean verbose) {
 		do {
-			mlFactory.reInit(current);
+			mlFactory.reInit(current.getMl());
+			current.train(targetError, verbose);
 			if (verbose) {System.out.println("test MSE: " + current.getError(selectionSet));};
 		} while (current.getError(selectionSet) > selectionError);
 	}
@@ -112,7 +113,7 @@ public abstract class Ensemble {
 		
 		for (EnsembleML current : members)
 		{
-			trainMember(current, selectionError, selectionSet, verbose);
+			trainMember(current, targetError, selectionError, selectionSet, verbose);
 		}
 		if(aggregator.needsTraining()) {
 			EnsembleDataSet aggTrainingSet = new EnsembleDataSet(members.size() * aggregatorDataSet.getIdealSize(),aggregatorDataSet.getIdealSize());
