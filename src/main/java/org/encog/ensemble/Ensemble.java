@@ -86,10 +86,11 @@ public abstract class Ensemble {
 		initMembers();
 	}
 
-	public void trainMember(int index, double selectionError, EnsembleDataSet selectionSet, boolean verbose) {
+	public void trainMember(int index, double targetError, double selectionError, EnsembleDataSet selectionSet, boolean verbose) {
 		EnsembleML current = members.get(index);
 		do {
-			mlFactory.reInit(current);
+			mlFactory.reInit(current.getMl());
+			current.train(targetError, verbose);
 			if (verbose) {System.out.println("test MSE: " + current.getError(selectionSet));};
 		} while (current.getError(selectionSet) > selectionError);
 	}
