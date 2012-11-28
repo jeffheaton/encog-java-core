@@ -1,8 +1,0 @@
-#UCI Haberman survival
-label=haberman
-outputs=2
-inputs=3
-read_inputs=1
-inputs_reversed=true
-mapper_type=int
-data_file=data/haberman.data
