@@ -33,6 +33,17 @@ public abstract class Ensemble {
 	 */
 	abstract public void initMembers();
 	
+	public EnsembleML generateNewMember() {
+		GenericEnsembleML newML = new GenericEnsembleML(mlFactory.createML(this.dataSetFactory.getInputCount(), this.dataSetFactory.getOutputCount()),mlFactory.getLabel());
+		newML.setTrainingSet(dataSetFactory.getNewDataSet());
+		newML.setTraining(trainFactory.getTraining(newML.getMl(), newML.getTrainingSet()));
+		return newML;
+	}
+	
+	public void addNewMember() {
+		members.add(generateNewMember());		
+	}
+	
 	public void initMembersBySplits(int splits)
 	{
 		if ((this.dataSetFactory != null) && 
@@ -41,10 +52,7 @@ public abstract class Ensemble {
 		{
 			for (int i = 0; i < splits; i++)
 			{
-				GenericEnsembleML newML = new GenericEnsembleML(mlFactory.createML(this.dataSetFactory.getInputCount(), this.dataSetFactory.getOutputCount()),mlFactory.getLabel());
-				newML.setTrainingSet(dataSetFactory.getNewDataSet());
-				newML.setTraining(trainFactory.getTraining(newML.getMl(), newML.getTrainingSet()));
-				members.add(newML);
+				addNewMember();
 			}
 			if(aggregator.needsTraining()) 
 				aggregatorDataSet = dataSetFactory.getNewDataSet();
@@ -77,23 +85,34 @@ public abstract class Ensemble {
 		this.dataSetFactory = dataSetFactory;
 		initMembers();
 	}
+
+	public void trainMember(int index, double selectionError, EnsembleDataSet selectionSet, boolean verbose) {
+		EnsembleML current = members.get(index);
+		do {
+			mlFactory.reInit(current);
+			if (verbose) {System.out.println("test MSE: " + current.getError(selectionSet));};
+		} while (current.getError(selectionSet) > selectionError);
+	}
+
+	public void trainMember(EnsembleML current, double selectionError, EnsembleDataSet selectionSet, boolean verbose) {
+		do {
+			mlFactory.reInit(current);
+			if (verbose) {System.out.println("test MSE: " + current.getError(selectionSet));};
+		} while (current.getError(selectionSet) > selectionError);
+	}
 	
 	/**
 	 * Train the ensemble to a target accuracy
 	 * @param targetAccuracy
 	 * @param verbose
-	 * @param testset 
+	 * @param selectionSet 
 	 * @return
 	 */
-	public void train(double targetError, double selectionError, EnsembleDataSet testset, boolean verbose) {
+	public void train(double targetError, double selectionError, EnsembleDataSet selectionSet, boolean verbose) {
 		
 		for (EnsembleML current : members)
 		{
-			do {
-				mlFactory.reInit(current.getMl());
-				current.train(targetError, verbose);
-				if (verbose) {System.out.println("test MSE: " + current.getError(testset));};
-			} while (current.getError(testset) > selectionError);
+			trainMember(current, selectionError, selectionSet, verbose);
 		}
 		if(aggregator.needsTraining()) {
 			EnsembleDataSet aggTrainingSet = new EnsembleDataSet(members.size() * aggregatorDataSet.getIdealSize(),aggregatorDataSet.getIdealSize());
