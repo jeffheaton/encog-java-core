@@ -82,8 +82,8 @@ public class TestExpression extends TestCase {
 	}
 	
 	public void testMul() {
-		Assert.assertEquals( 6, EncogProgram.parseFloat("2*3"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( -6, EncogProgram.parseFloat("-2*3"),Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals( 6, EncogProgram.parseFloat("2*3"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( 6, EncogProgram.parseFloat("-2*-3"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( 24, EncogProgram.parseFloat("2*3*4"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( 120, EncogProgram.parseFloat("2*3*4*5"),Encog.DEFAULT_DOUBLE_EQUAL);

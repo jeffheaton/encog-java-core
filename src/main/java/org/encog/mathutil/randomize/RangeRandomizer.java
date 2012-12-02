@@ -23,6 +23,8 @@
  */
 package org.encog.mathutil.randomize;
 
+import java.util.Random;
+
 /**
  * A randomizer that will create random weight and bias values that are between
  * a specified range.
@@ -54,6 +56,11 @@ public class RangeRandomizer extends BasicRandomizer {
 	public static double randomize(final double min, final double max) {
 		final double range = max - min;
 		return (range * Math.random()) + min;
+	}
+	
+	public static double randomize(final Random r, final double min, final double max) {
+		final double range = max - min;
+		return (range * r.nextDouble()) + min;
 	}
 
 	/**

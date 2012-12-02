@@ -1,63 +1,62 @@
 package org.encog.ml.prg.train.rewrite;
 
+import java.util.List;
+
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.expvalue.ExpressionValue;
+import org.encog.ml.prg.extension.ProgramExtensionTemplate;
+import org.encog.ml.prg.util.TraverseProgram;
 
 public class RewriteConstants implements RewriteRule {
-	
-	private boolean rewritten;
+	private EncogProgram program;
 
-	public boolean rewrite(EncogProgram program) {
-		this.rewritten = false;
-		ProgramNode rootNode = program.getRootNode();
-		ProgramNode rewrite = rewriteNode(rootNode);
-		if (rewrite != null) {
-			program.setRootNode(rewrite);
-		}
-		return this.rewritten;
-	}
+	@Override
+	public boolean rewrite(EncogProgram theProgram) {
+		this.program = theProgram;
+		
+		int rewriteStart = 0;
+		int potentialRewrite = -1;
+		boolean allConst = true;
 
-	private ProgramNode rewriteNode(ProgramNode node) {
-
-		// first try to rewrite the child node
-		ProgramNode rewrite = tryNodeRewrite(node);
-		if (rewrite != null) {
-			return rewrite;
-		}
-
-		// if we could not rewrite the entire node, rewrite as many children as
-		// we can
-		for (int i = 0; i < node.getChildNodes().size(); i++) {
-			ProgramNode childNode = (ProgramNode)node.getChildNodes().get(i);
-			rewrite = rewriteNode(childNode);
-			if (rewrite != null) {
-				node.getChildNodes().remove(i);
-				node.getChildNodes().add(i, rewrite);
-				this.rewritten = true;
+		TraverseProgram trav = new TraverseProgram(this.program);
+		trav.begin(0);
+		do {
+			// have we hit something variable
+			if( trav.getTemplate().isVariableValue() ) {
+				allConst = false;
 			}
-		}
+			
+			// have we hit a node
+			if( trav.getTemplate().getChildNodeCount()>0 ) {
+				if( allConst ) {
+					potentialRewrite = trav.getNextIndex();
+				} else {
+					if( potentialRewrite!=-1 ) {
+						rewrite(rewriteStart,potentialRewrite);
+						return true;
+					} else {
+						rewriteStart = trav.getCurrentIndex();
+						allConst = true;
+					}
+				}
+			}
+		} while (trav.next());
 
-		// we may have rewritten some children, but the parent was not
-		// rewritten, so return null.
-		return null;
+		if( potentialRewrite!=-1 ) {
+			rewrite(rewriteStart,potentialRewrite);
+			return true;
+		}
+		
+		return false;		
 	}
 
-	private ProgramNode tryNodeRewrite(ProgramNode parentNode) {
-		ProgramNode result = null;
-
-		if (parentNode.isLeaf()) {
-			return null;
-		}
-
-		if (parentNode.allConstDescendants()) {
-			result = parentNode
-					.getOwner()
-					.getContext()
-					.getFunctions()
-					.factorFunction("#const", parentNode.getOwner(),
-							new ProgramNode[] {});
-			result.getExpressionData()[0] = parentNode.evaluate();
-		}
-		return result;
+	private void rewrite(int rewriteStart, int rewriteStop) {
+		ExpressionValue c = program.evaluate(rewriteStart);
+		program.deleteSubtree(rewriteStart, (rewriteStop-rewriteStart));
+		ProgramExtensionTemplate temp = this.program.getConstTemplate(c);
+		int sz = temp.getInstructionSize(this.program.getHeader());
+		program.insert(rewriteStart, sz);
+		program.setProgramCounter(rewriteStart);
+		program.writeConstNode(c);
 	}
 }

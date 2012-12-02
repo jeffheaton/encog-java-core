@@ -48,6 +48,11 @@ import org.encog.util.concurrency.EngineConcurrency;
 public final class Encog {
 
 	/**
+	 * The default encoding used by Encog.
+	 */
+	public static final String DEFAULT_ENCODING = "UTF-8";
+	
+	/**
 	 * The current engog version, this should be read from the properties.
 	 */
 	public static final String VERSION = "3.2.0";

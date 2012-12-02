@@ -35,8 +35,8 @@ public class TestString extends TestCase {
 	}
 	
 	public void testConcat() {
-		Assert.assertEquals( "helloworld", EncogProgram.parseString("\"hello\"+\"world\""));
 		Assert.assertEquals( "test:123.0", EncogProgram.parseString("\"test:\"+123.0"));
+		Assert.assertEquals( "helloworld", EncogProgram.parseString("\"hello\"+\"world\""));		
 		Assert.assertEquals( 4, (int)EncogProgram.parseFloat("length(\"test\")"));
 		Assert.assertEquals( "5.22", EncogProgram.parseString("format(5.2222,2)"));
 	}

@@ -2,66 +2,67 @@ package org.encog.ml.prg.train;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
-import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 
 public class CreateRandom {
 	
 	private EncogProgramContext context;
 	private int maxDepth;
-	private List<ProgramExtensionTemplate> leaves = new ArrayList<ProgramExtensionTemplate>();
+	private List<ProgramExtensionTemplate> leafNodes = new ArrayList<ProgramExtensionTemplate>();
+	private List<ProgramExtensionTemplate> branchNodes = new ArrayList<ProgramExtensionTemplate>();
+	private List<ProgramExtensionTemplate> allNodes = new ArrayList<ProgramExtensionTemplate>();
 	
 	public CreateRandom(EncogProgramContext theContext, int theMaxDepth) {
 		this.context = theContext;
 		this.maxDepth = theMaxDepth;
 		
 		for(ProgramExtensionTemplate temp : this.context.getFunctions().getOpCodes() ) {
+			this.allNodes.add(temp);
 			if( temp.getChildNodeCount()==0 ) {
-				this.leaves.add(temp);
+				this.leafNodes.add(temp);
+			} else {
+				this.branchNodes.add(temp);
 			}
 		}
 	}
 	
-	public EncogProgram generate() {
+	public EncogProgram generate(Random random) {
 		EncogProgram program = new EncogProgram(context);
-		program.setRootNode(createNode(program,0));
+		createNode(random, program,0);
 		return program;
 	}
 	
-	public ProgramNode generate(EncogProgram program) {
-		return createNode(program,0);
+	public void generate(Random random, EncogProgram program) {
+		createNode(random, program,0);
 	}
 	
-	private ProgramNode createLeafNode(EncogProgram program) {
-		int opCode = RangeRandomizer.randomInt(0, this.leaves.size()-1);
-		ProgramExtensionTemplate temp = this.leaves.get(opCode);
-		ProgramNode result = temp.factorFunction(program, temp.getName(), new ProgramNode[] {});
-		result.randomize(program, 1.0);
-		return result;
+	private void createLeafNode(Random random, EncogProgram program) {
+		int opCode = random.nextInt(this.leafNodes.size());
+		ProgramExtensionTemplate temp = this.leafNodes.get(opCode);
+		temp.randomize(random, program, 1.0);
 	}
 	
-	private ProgramNode createNode(EncogProgram program, int depth) {
-		int maxOpCode = context.getFunctions().size();
-		
+	private void createNode(Random random, EncogProgram program, int depth) {		
 		if( depth>=this.maxDepth ) {
-			return createLeafNode(program);
+			createLeafNode(random, program);
+			return;
 		}
 		
-		int opCode = RangeRandomizer.randomInt(0, maxOpCode-1);
-		ProgramExtensionTemplate temp = context.getFunctions().getOpCode(opCode);
+		int opCode = random.nextInt(this.allNodes.size());
+		ProgramExtensionTemplate temp = this.allNodes.get(opCode);
+		
+		
 		int childNodeCount = temp.getChildNodeCount();
-		
-		ProgramNode[] children = new ProgramNode[childNodeCount];
-		for(int i=0;i<children.length;i++) {
-			children[i] = createNode(program, depth+1);
+
+		for(int i=0;i<childNodeCount;i++) {
+			createNode(random, program, depth+1);	
 		}
 		
-		ProgramNode result = temp.factorFunction(program, temp.getName(), children);
-		result.randomize(program, 1.0);
-		return result;
+		// write the noe with random params
+		temp.randomize(random, program, 1.0);
 	}
 }

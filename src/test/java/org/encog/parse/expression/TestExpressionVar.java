@@ -64,15 +64,4 @@ public class TestExpressionVar extends TestCase {
 		expression.getVariables().setVariable("v3",3);
 		Assert.assertEquals(6,expression.evaluate().toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
-	
-	public void testError() {
-		try {
-			EncogProgram expression = new EncogProgram("b");
-			expression.getVariables().setVariable("a", 5);
-			expression.evaluate();
-			Assert.assertTrue(false);
-		} catch (ExpressionError ex) {
-			// we want to get here
-		}
-	}
 }

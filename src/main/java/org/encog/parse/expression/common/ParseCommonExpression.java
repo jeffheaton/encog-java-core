@@ -23,63 +23,54 @@
  */
 package org.encog.parse.expression.common;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.encog.EncogError;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ExpressionError;
-import org.encog.ml.prg.ProgramNode;
-import org.encog.ml.prg.expvalue.ExpressionValue;
+import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.util.SimpleParser;
 
 public class ParseCommonExpression {
 
-	private final EncogProgram holder;
+	private final EncogProgram program;
 	private SimpleParser parser;
 	private int parenCount;
 
-	public ParseCommonExpression(final EncogProgram theHolder) {
-		this.holder = theHolder;
+	public ParseCommonExpression(final EncogProgram theProgram) {
+		this.program = theProgram;
 	}
 
-	private ProgramNode expr() {
+	private void expr() {
 		boolean neg = false;
-		ProgramNode target;
-
 		this.parser.eatWhiteSpace();
 
 		if ((this.parser.peek() == '+') || (this.parser.peek() == '-')) {
 			neg = this.parser.readChar()=='-';
 		}
 		
-		target = expr1();
+		expr1();
 		this.parser.eatWhiteSpace();
 
 		if (neg ) {
-			target = this.holder.getFunctions().factorFunction("-", holder, new ProgramNode[] { target } );
+			this.program.writeNode(StandardExtensions.OPCODE_NEG);
 		}
 
 		while ((this.parser.peek() == '+') || (this.parser.peek() == '-')) {
 			final char ch = this.parser.readChar();
 
 			if (ch == '-') {
-				final ProgramNode t = expr1();
-				target = this.holder.getFunctions().factorFunction("-", holder, new ProgramNode[] { target, t} );
+				expr1();
+				this.program.writeNode(StandardExtensions.OPCODE_SUB );
 			} else if (ch == '+') {
-				final ProgramNode t = expr1();
-				target = this.holder.getFunctions().factorFunction("+", holder, new ProgramNode[] { target, t} );
+				expr1();
+				this.program.writeNode(StandardExtensions.OPCODE_ADD );
 			}
 		}
-
-		return target;
 	}
 
-	private ProgramNode expr1() {
-		ProgramNode target;
+	private void expr1() {
 		this.parser.eatWhiteSpace();
 
-		target = expr1p5();
+		expr1p5();
 		this.parser.eatWhiteSpace();
 
 		char nextchar = this.parser.peek();
@@ -88,56 +79,52 @@ public class ParseCommonExpression {
 			
 			switch (this.parser.readChar()) {
 			case '*':
-				target = this.holder.getFunctions().factorFunction("*",
-						holder, new ProgramNode[] { target, expr1p5() });
+				expr1p5();
+				this.program.writeNode(StandardExtensions.OPCODE_MUL);
 				break;
 			case '/':
-				target = this.holder.getFunctions().factorFunction("/",
-						holder, new ProgramNode[] { target, expr1p5() });
+				expr1p5();
+				this.program.writeNode(StandardExtensions.OPCODE_DIV);
 				break;
 			case '<':
 				if (this.parser.peek() == '=') {
 					this.parser.advance();
-					return this.holder.getFunctions().factorFunction("<=",
-							holder, new ProgramNode[] { target, expr1p5() });
+					expr1p5();
+					this.program.writeNode(StandardExtensions.OPCODE_LTE);
 				} else {
-					target = this.holder.getFunctions().factorFunction("<",
-						holder, new ProgramNode[] { target, expr1p5() });
+					expr1p5();
+					this.program.writeNode(StandardExtensions.OPCODE_LT);
 				}
 				break;
 			case '>':
 				if (this.parser.peek() == '=') {
 					this.parser.advance();
-					target = this.holder.getFunctions().factorFunction(">=",
-							holder, new ProgramNode[] { target, expr1p5() });
+					expr1p5();
+					this.program.writeNode(StandardExtensions.OPCODE_GTE);
 				} else {
-					target = this.holder.getFunctions().factorFunction(">",
-						holder, new ProgramNode[] { target, expr1p5() });
+					expr1p5();
+					this.program.writeNode(StandardExtensions.OPCODE_GT);
 				}
 				break;
 			case '=':
-				target = this.holder.getFunctions().factorFunction("=",
-						holder, new ProgramNode[] { target, expr1p5() });
+				expr1p5();
+				this.program.writeNode(StandardExtensions.OPCODE_EQUAL);
 				break;
 			case '&':
-				target = this.holder.getFunctions().factorFunction("&",
-						holder, new ProgramNode[] { target, expr1p5() });
+				expr1p5();
+				this.program.writeNode(StandardExtensions.OPCODE_AND);
 				break;
 			case '|':
-				target = this.holder.getFunctions().factorFunction("|",
-						holder, new ProgramNode[] { target, expr1p5() });
+				expr1p5();
+				this.program.writeNode(StandardExtensions.OPCODE_OR);
 				break;
 			}
 			
 			nextchar = this.parser.peek();
 		}
-
-		return target;
-
 	}
 
-	private ProgramNode expr1p5() {
-		ProgramNode target = null;
+	private void expr1p5() {
 		boolean neg = false;
 
 		this.parser.eatWhiteSpace();
@@ -148,86 +135,88 @@ public class ParseCommonExpression {
 		
 		if ((Character.toUpperCase(this.parser.peek()) >= 'A')
 				&& (Character.toUpperCase(this.parser.peek()) <= 'Z')) {
-			final StringBuilder varName = new StringBuilder();
+			final StringBuilder buffer = new StringBuilder();
 			while (Character.isLetterOrDigit(this.parser.peek()) ) {
-				varName.append(this.parser.readChar());
+				buffer.append(this.parser.readChar());
 			}
 
 			this.parser.eatWhiteSpace();
+			String name = buffer.toString();
 
-			if (varName.toString().equals("true")) {
+			if (name.equals("true")) {
 				if( neg ) {
 					throw new EncogError("Invalid negative sign.");
 				}
-				ProgramNode v = this.holder.getFunctions().factorFunction("#const", holder, new ProgramNode[] {} );
-				v.getExpressionData()[0] = new ExpressionValue(true);
-				return v;
-			} else if (varName.toString().equals("false")) {
+				this.program.writeConstNode(true);
+				return;
+			} else if (name.equals("false")) {
 				if( neg ) {
 					throw new EncogError("Invalid negative sign.");
 				}
-				ProgramNode v = this.holder.getFunctions().factorFunction("#const", holder, new ProgramNode[] {} );
-				v.getExpressionData()[0] = new ExpressionValue(false);
-				return v;
+				this.program.writeConstNode(false);
+				return;
 			} else if (this.parser.peek() != '(') {
-				ProgramNode v;
 				// either a variable or a const, see which
-				if( this.holder.getFunctions().isDefined(varName.toString(),0) ) {
-					v = this.holder.getFunctions().factorFunction(varName.toString(), holder, new ProgramNode[] {} );
+				
+				if( this.program.getFunctions().getKnownConsts().containsKey(name)) {
+					// known const
+					this.program.writeNode(this.program.getFunctions().getKnownConsts().get(name));
 				} else {
-					this.holder.getVariables().setVariable(varName.toString(), null);
-					v = this.holder.getFunctions().factorFunction("#var", holder, new ProgramNode[] {} );
-					v.getIntData()[0] = this.holder.getVariables().getVariableIndex(varName.toString());
-				}
+					// var
+					this.program.getVariables().defineVariable(name);
+					this.program.writeNodeVar(name);
+				} 
 				
 				if (neg ) {
-					v = this.holder.getFunctions().factorFunction("-", holder, new ProgramNode[] { v } );
+					this.program.writeNode(StandardExtensions.OPCODE_NEG);
 				}
 				
-				return v;
+				return;
 			} else {
-				return parseFunction(varName.toString());
+				parseFunction(name);
 			}
 		} else if ((this.parser.peek() == '+') || (this.parser.peek() == '-')
 				|| Character.isDigit(this.parser.peek())
 				|| (this.parser.peek() == '.')) {
-			target = parseConstant(neg);
+			parseConstant(neg);
 		} else if (this.parser.peek() == '(') {
 			this.parenCount++;
 			this.parser.advance();
-			target = expr();
+			expr();
 			if (this.parser.peek() == ')') {
 				this.parenCount--;
 				this.parser.advance();
 			}
 		} else if (this.parser.peek() == '\"') {
-			target = parseString();
+			parseString();
 		} else {
-			throw (new ExpressionError("Syntax error"));
+			throw (new ExpressionError("Syntax error: " + this.parser.peek() ));
 		}
 
 		while (this.parser.peek() == '^') {
 			this.parser.advance();
-			return this.holder.getFunctions().factorFunction("^", holder, new ProgramNode[] { target, expr1p5()} );
+			expr1p5();
+			this.program.writeNode(StandardExtensions.OPCODE_POW );
+			return;
 		}
-		return target;
 	}
 
 	public EncogProgram getHolder() {
-		return this.holder;
+		return this.program;
 	}
 
-	public ProgramNode parse(final String expression) {
+	public void parse(final String expression) {
+		this.program.setProgramCounter(0);
 		this.parenCount = 0;
 		this.parser = new SimpleParser(expression);
-		final ProgramNode result = expr();
+		expr();
 		if (this.parenCount != 0) {
 			throw new ExpressionError("Unbalanced parentheses");
 		}
-		return result;
+		
 	}
 
-	private ProgramNode parseConstant(boolean neg) {
+	private void parseConstant(boolean neg) {
 		double value, exponent;
 		char sign = '+';
 		boolean isFloat = false;
@@ -281,46 +270,32 @@ public class ParseCommonExpression {
 			value = -value;
 		}
 
-		ProgramNode v = this.holder.getFunctions().factorFunction("#const", holder, new ProgramNode[] {} );
-		
 		if (isFloat) {
-			v.getExpressionData()[0] = new ExpressionValue(value);
+			this.program.writeConstNode(value);
 		} else {
-			v.getExpressionData()[0] = new ExpressionValue((int) value);
+			this.program.writeConstNode((int)value);
 		}
-		
-		return v;
 	}
 
-	private ProgramNode parseFunction(final String name) {
-		final ParseCommonExpression expParser = new ParseCommonExpression(this.holder);
-		final StringBuilder currentExpression = new StringBuilder();
-		final List<ProgramNode> args = new ArrayList<ProgramNode>();
-		int pcnt = 0;
+	private void parseFunction(final String name) {
+		int acnt = 0;
 
 		this.parser.advance();
-		this.parser.eatWhiteSpace();
+		boolean first = true;
 
 		while (!this.parser.eol()
-				&& !((pcnt == 0) && (this.parser.peek() == ')'))) {
-			if (((this.parser.peek() == ',') || this.parser.isWhiteSpace())
-					&& (pcnt == 0)) {
-				args.add(expParser.parse(currentExpression.toString().trim()));
-				currentExpression.setLength(0);
-				this.parser.advance();
-			} else {
-				final char ch = this.parser.readChar();
-				currentExpression.append(ch);
-				if (ch == '(') {
-					pcnt++;
-				} else if (ch == ')') {
-					pcnt--;
+				&& (this.parser.peek() != ')')) {
+			this.parser.eatWhiteSpace();
+			if( !first ) {
+				if( this.parser.peek()!=',' ) {
+					throw new EncogError("Expected , in function call.");
 				}
+				this.parser.advance();
 			}
-		}
-
-		if (currentExpression.length() > 0) {
-			args.add(expParser.parse(currentExpression.toString().trim()));
+			first = false;
+			expr();
+			
+			acnt++;
 		}
 
 		if (this.parser.peek() != ')') {
@@ -328,18 +303,10 @@ public class ParseCommonExpression {
 					+ this.parser.getLine());
 		}
 		this.parser.advance();
-		return this.holder.getFunctions().factorFunction(name,holder, toArgArray(args));
-	}
-	
-	private ProgramNode[] toArgArray(List<ProgramNode> nodes) {
-		ProgramNode[] result = new ProgramNode[nodes.size()];
-		for(int i=0;i<nodes.size();i++) {
-			result[i] = nodes.get(i);
-		}
-		return result;
+		this.program.writeNode(this.program.getFunctions().getOpCode(name,acnt));
 	}
 
-	private ProgramNode parseString() {
+	private void parseString() {
 		final StringBuilder str = new StringBuilder();
 
 		char ch;
@@ -365,9 +332,7 @@ public class ParseCommonExpression {
 			throw (new ExpressionError("Unterminated string"));
 		}
 		
-		ProgramNode v = this.holder.getFunctions().factorFunction("#const", holder, new ProgramNode[] {} );
-		v.getExpressionData()[0] = new ExpressionValue(str.toString());
-		return v;
+		this.program.writeNodeString(str.toString());
 	}
 
 }

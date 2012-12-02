@@ -34,23 +34,7 @@ public class ExpressionValue {
 	private long intValue;
 	
 	public ExpressionValue(ExpressionValue other) {
-		switch(this.currentType = other.currentType) {
-		case booleanType:
-			this.boolValue = other.boolValue;
-			break;
-		case floatingType:
-			this.floatValue = other.floatValue;
-			break;
-		case intType:
-			this.intValue = other.intValue;
-			break;
-		case stringType:
-			this.stringValue = other.stringValue;
-			break;
-		default:
-			throw new ExpressionError("Unsupported type.");
-		
-		}
+		setValue(other);
 	}
 	
 	public ExpressionValue(String theValue) {
@@ -79,6 +63,26 @@ public class ExpressionValue {
 	public void setValue(String stringValue) {
 		this.stringValue = stringValue;
 		this.currentType = ValueType.stringType;
+	}
+	
+	public void setValue(ExpressionValue expValue) {
+		switch(this.currentType = expValue.currentType) {
+		case booleanType:
+			this.boolValue = expValue.boolValue;
+			break;
+		case floatingType:
+			this.floatValue = expValue.floatValue;
+			break;
+		case intType:
+			this.intValue = expValue.intValue;
+			break;
+		case stringType:
+			this.stringValue = expValue.stringValue;
+			break;
+		default:
+			throw new ExpressionError("Unsupported type.");
+		
+		}
 	}
 	
 	public void setValue(double floatValue) {
@@ -151,7 +155,7 @@ public class ExpressionValue {
 		result.append("[ExpressionValue: ");
 		result.append("type: ");
 		result.append(this.getCurrentType().toString());
-		result.append("String Value: ");
+		result.append(", String Value: ");
 		result.append(toStringValue());
 		result.append("]");
 		return result.toString();

@@ -1,15 +1,12 @@
 package org.encog.ml.prg;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.encog.EncogError;
-import org.encog.ml.prg.expvalue.ExpressionValue;
+import org.encog.ml.prg.epl.EPLHolderFactory;
+import org.encog.ml.prg.epl.bytearray.ByteArrayHolderFactory;
 import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.ml.prg.extension.StandardExtensions;
-import org.encog.util.EngineArray;
 import org.encog.util.csv.CSVFormat;
 
 public class EncogProgramContext {
@@ -17,9 +14,9 @@ public class EncogProgramContext {
 	private final CSVFormat format;
 	private final FunctionFactory functions;
 	private final List<String> definedVariables = new ArrayList<String>();
-	private final Map<String,Double> config = new HashMap<String,Double>();
-	private double constMin = -10;
-	private double constMax = 10;
+	private final ProgramContextParams params = new ProgramContextParams();
+	private EPLHolderFactory holderFactory = new ByteArrayHolderFactory();
+	//private EPLHolderFactory holderFactory = new BufferedHolderFactory();
 	
 	public EncogProgramContext(CSVFormat theFormat, FunctionFactory theFunctions) {
 		this.format = theFormat;
@@ -54,69 +51,39 @@ public class EncogProgramContext {
 		return this.definedVariables;
 	}
 
-	public Map<String, Double> getConfig() {
-		return config;
-	}
-
-	public double getConstMin() {
-		return constMin;
-	}
-
-	public void setConstMin(double constMin) {
-		this.constMin = constMin;
-	}
-
-	public double getConstMax() {
-		return constMax;
-	}
-
-	public void setConstMax(double constMax) {
-		this.constMax = constMax;
-	}
-	
-	public EncogProgram cloneProgram(EncogProgram sourceProgram) {
-		ProgramNode rootNode = sourceProgram.getRootNode();
-		EncogProgram result = new EncogProgram(this);
-		result.setRootNode(cloneBranch(result,rootNode));
-		return result;
-	}
-	
-	public ProgramNode cloneBranch(EncogProgram targetProgram, ProgramNode sourceBranch) {
-		if( sourceBranch==null ) {
-			throw new EncogError("Can't clone null branch.");
-		}
-		
-		
-		String name = sourceBranch.getName();
-	
-		// create any subnodes
-		ProgramNode[] args = new ProgramNode[sourceBranch.getChildNodes().size()];
-		for(int i=0;i<args.length;i++) {
-			args[i] = cloneBranch(targetProgram,(ProgramNode)sourceBranch.getChildNodes().get(i));
-		}
-		
-		ProgramNode result = targetProgram.getContext().getFunctions().factorFunction(name, targetProgram, args);
-		
-		// now copy the int and expression data for the node
-		EngineArray.arrayCopy(sourceBranch.getIntData(),result.getIntData());
-		
-		for(int i=0;i<sourceBranch.getExpressionData().length;i++) {
-			result.getExpressionData()[i] = new ExpressionValue(sourceBranch.getExpressionData()[i]);
-		}
-		
-		// return the new node
-		return result;
-	}
-
-	public EncogProgram createProgram(String expression) {
-		EncogProgram result = new EncogProgram(this);
-		result.compileExpression(expression);
-		return result;
+	/**
+	 * @return the params
+	 */
+	public ProgramContextParams getParams() {
+		return params;
 	}
 
 	public void loadAllFunctions() {
 		StandardExtensions.createAll(getFunctions());
-		KnownConstTemplate.createAllConst(getFunctions());
+	}
+
+	public EncogProgram createProgram(String str) {
+		EncogProgram result = new EncogProgram(this);
+		result.compileExpression(str);
+		return result;
+	}
+
+	public EncogProgram cloneProgram(EncogProgram prg) {
+		return new EncogProgram(prg);
+	}
+
+	/**
+	 * @return the holderFactory
+	 */
+	public EPLHolderFactory getHolderFactory() {
+		return holderFactory;
+	}
+
+	/**
+	 * @param holderFactory the holderFactory to set
+	 */
+	public void setHolderFactory(EPLHolderFactory holderFactory) {
+		this.holderFactory = holderFactory;
 	}
 	
 	

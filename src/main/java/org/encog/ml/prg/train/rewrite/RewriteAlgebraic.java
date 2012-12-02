@@ -1,12 +1,17 @@
 package org.encog.ml.prg.train.rewrite;
 
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 
 public class RewriteAlgebraic implements RewriteRule {
 
-	private boolean rewritten;
+	@Override
+	public boolean rewrite(EncogProgram program) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+/*	private boolean rewritten;
 	
 	@Override
 	public boolean rewrite(EncogProgram program) {
@@ -97,7 +102,7 @@ public class RewriteAlgebraic implements RewriteRule {
 	}
 	
 	private ProgramNode tryVarOpVar(ProgramNode parent) {
-		if( parent.getChildNodes().size()==2 && parent.getName().length()==1 && "+-*/".indexOf(parent.getName().charAt(0))!=-1 ) {
+		if( parent.getChildNodes().size()==2 && parent.getName().length()==1 && "/+-*".indexOf(parent.getName().charAt(0))!=-1 ) {
 			ProgramNode child1 = parent.getChildNode(0);
 			ProgramNode child2 = parent.getChildNode(1);
 			
@@ -153,6 +158,6 @@ public class RewriteAlgebraic implements RewriteRule {
 		}
 		
 		return rewritten;
-	}
+	}*/
 
 }

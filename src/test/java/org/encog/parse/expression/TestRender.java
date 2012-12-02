@@ -7,7 +7,15 @@ import org.encog.ml.prg.EncogProgram;
 import org.encog.parse.expression.common.RenderCommonExpression;
 
 public class TestRender extends TestCase {
+	
 	public void testRenderBasic() {
+		EncogProgram expression = new EncogProgram("(2+6)");
+		RenderCommonExpression render = new RenderCommonExpression();
+		String result = render.render(expression);
+		Assert.assertEquals("(2+6)", result);
+	}
+	
+	public void testRenderComplex() {
 		EncogProgram expression = new EncogProgram("((a+25)^3/25)-((a*3)^4/250)");
 		RenderCommonExpression render = new RenderCommonExpression();
 		String result = render.render(expression);

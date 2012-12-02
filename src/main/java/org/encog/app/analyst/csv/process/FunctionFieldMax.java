@@ -24,23 +24,33 @@
 package org.encog.app.analyst.csv.process;
 
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.ProgramNode;
-import org.encog.ml.prg.expvalue.ExpressionValue;
+import org.encog.ml.prg.epl.OpCodeHeader;
+import org.encog.ml.prg.extension.BasicTemplate;
+import org.encog.ml.prg.extension.FunctionFactory;
 
-public class FunctionFieldMax extends ProgramNode {
+public class FunctionFieldMax extends BasicTemplate {
 	
 	private ProcessExtension extension;
-
-	public FunctionFieldMax(ProcessExtension theExtension, EncogProgram theOwner, ProgramNode[] theArgs) {
-		super(theOwner, "fieldmax", theArgs,0,0);
+	
+	public FunctionFieldMax(ProcessExtension theExtension) {
+		super("fieldmax",3,true);
+		this.setOpcode((short)(FunctionFactory.ENCOG_EXTRA_OPCODES+1));
 		this.extension = theExtension;
+	}
+	
+	
+	@Override
+	public int getInstructionSize(OpCodeHeader header) {
+		return 1;
 	}
 
 	@Override
-	public ExpressionValue evaluate() {
-		String fieldName = getChildNode(0).evaluate().toStringValue();
-		int startIndex = (int)getChildNode(1).evaluate().toIntValue();
-		int stopIndex = (int)getChildNode(2).evaluate().toIntValue();
+	public void evaluate(EncogProgram prg) {
+		
+		int stopIndex = (int)prg.getStack().pop().toIntValue();//0
+		int startIndex = (int)prg.getStack().pop().toIntValue();//1
+		String fieldName = prg.getStack().pop().toStringValue();//2
+		
 		double value = Double.NEGATIVE_INFINITY;
 		
 		for(int i=startIndex;i<=stopIndex;i++) {
@@ -48,9 +58,7 @@ public class FunctionFieldMax extends ProgramNode {
 			double d = extension.getFormat().parse(str);
 			value = Math.max(d, value);
 		}
-		
-		
-		return new ExpressionValue(value);
-	}
 
+		prg.getStack().push(value);
+	}
 }

@@ -38,7 +38,6 @@ import org.encog.app.quant.QuantError;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.EncogProgramVariables;
-import org.encog.ml.prg.KnownConstTemplate;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.util.csv.CSVFormat;
@@ -67,7 +66,6 @@ public class AnalystProcess extends BasicFile {
 		this.backwardWindowSize = theBackwardWindowSize;
 		this.forwardWindowSize = theForwardWindowSize;
 		StandardExtensions.createAll(this.programContext.getFunctions());
-		KnownConstTemplate.createAllConst(this.programContext.getFunctions());
 	}
 
 	/**
@@ -95,7 +93,7 @@ public class AnalystProcess extends BasicFile {
 		this.extension.register(this.programContext.getFunctions());
 		
 		for(ProcessField field : this.analyst.getScript().getProcess().getFields() ) {
-			EncogProgram prg = new EncogProgram(this.programContext,this.programVariables);
+			EncogProgram prg = new EncogProgram(this.programContext,this.programVariables, null, 0);
 			prg.compileExpression(field.getCommand());
 			this.expressionFields.add(prg);
 		}

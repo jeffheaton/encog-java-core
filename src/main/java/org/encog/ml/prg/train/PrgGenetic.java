@@ -3,6 +3,7 @@ package org.encog.ml.prg.train;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -250,13 +251,14 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 
 	public void createRandomPopulation(int maxDepth) {
 		CreateRandom rnd = new CreateRandom(this.context, maxDepth);
-
+		Random random = this.randomNumberFactory.factor();
+		
 		for (int i = 0; i < this.population.getMaxPopulation(); i++) {
 
 			boolean done = false;
 			EncogProgram prg = null;
 			do {
-				prg = rnd.generate();
+				prg = rnd.generate(random);
 				double score = this.scoreFunction.calculateScore(prg);
 				if (!Double.isInfinite(score) && !Double.isNaN(score)) {
 					prg.setScore(score);

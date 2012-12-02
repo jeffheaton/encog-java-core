@@ -43,6 +43,24 @@ public final class EngineArray {
 		EngineArray.arrayCopy(input, result);
 		return result;
 	}
+	
+	/**
+	 * Copy a byte array.
+	 * 
+	 * @param input
+	 *            The array to copy.
+	 * @return The result of the copy.
+	 */
+	public static byte[] arrayCopy(final byte[] input) {
+		final byte[] result = new byte[input.length];
+		EngineArray.arrayCopy(input, result);
+		return result;
+	}
+
+	private static void arrayCopy(byte[] src, byte[] dst) {
+		System.arraycopy(src, 0, dst, 0, src.length);
+		
+	}
 
 	/**
 	 * Completely copy one array into another.
@@ -426,5 +444,11 @@ public final class EngineArray {
 				result.append(str.charAt(i));
 		}
 		return result.toString();
+	}
+
+	public static void arrayCopy(final byte[] source, final int sourcePos,
+			final byte[] target, final int targetPos, final int length) {
+		System.arraycopy(source, sourcePos, target, targetPos, length);
+
 	}
 }

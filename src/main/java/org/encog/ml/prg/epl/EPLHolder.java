@@ -1,0 +1,25 @@
+package org.encog.ml.prg.epl;
+
+
+public interface EPLHolder {
+	public static final int FRAME_SIZE = 8;
+	
+	void writeNode(int individual, int index, short opcode, int param1, short param2 );
+	
+	void writeDouble(int individual, int index, double value);
+	
+	void readNodeHeader(int individual, int index, OpCodeHeader header);
+
+	double readDouble(int individual, int index);
+
+	String readString(int individual, int index, int encodedLength);
+
+
+	void writeByte(int individual, int index, byte[] b);
+
+	void deleteSubtree(int individual, int index, int size);
+
+	void insert(int individual, int index, int size);
+
+	void copySubTree(EPLHolder targetProgram, int sourceIndex, int targetIndex, int size);
+}

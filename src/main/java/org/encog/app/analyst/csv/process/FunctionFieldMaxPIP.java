@@ -24,23 +24,26 @@
 package org.encog.app.analyst.csv.process;
 
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.ProgramNode;
-import org.encog.ml.prg.expvalue.ExpressionValue;
+import org.encog.ml.prg.epl.OpCodeHeader;
+import org.encog.ml.prg.extension.BasicTemplate;
+import org.encog.ml.prg.extension.FunctionFactory;
 
-public class FunctionFieldMaxPIP extends ProgramNode {
+public class FunctionFieldMaxPIP extends BasicTemplate {
 	
 	private ProcessExtension extension;
-
-	public FunctionFieldMaxPIP(ProcessExtension theExtension, EncogProgram theOwner, ProgramNode[] theArgs) {
-		super(theOwner, "fieldmaxpip", theArgs,0,0);
+	
+	public FunctionFieldMaxPIP(ProcessExtension theExtension) {
+		super("fieldmaxpip",3,true);
+		this.setOpcode((short)(FunctionFactory.ENCOG_EXTRA_OPCODES+2));
 		this.extension = theExtension;
 	}
-
+	
 	@Override
-	public ExpressionValue evaluate() {
-		String fieldName = getChildNode(0).evaluate().toStringValue();
-		int startIndex = (int)getChildNode(1).evaluate().toIntValue();
-		int stopIndex = (int)getChildNode(2).evaluate().toIntValue();
+	public void evaluate(EncogProgram prg) {
+		int stopIndex = (int)prg.getStack().pop().toIntValue();//0
+		int startIndex = (int)prg.getStack().pop().toIntValue();//1
+		String fieldName = prg.getStack().pop().toStringValue();//2
+		
 		int value = Integer.MIN_VALUE;
 		
 		String str = this.extension.getField(fieldName,this.extension.getBackwardWindowSize());
@@ -55,7 +58,13 @@ public class FunctionFieldMaxPIP extends ProgramNode {
 		}
 		
 		
-		return new ExpressionValue(value);
+		prg.getStack().push(value);
 	}
+
+	@Override
+	public int getInstructionSize(OpCodeHeader header) {
+		return 1;
+	}
+
 
 }

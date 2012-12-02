@@ -68,9 +68,7 @@ public class EncogProgramVariables {
 	}
 
 	public void defineVariable(String name) {
-		if( this.varMap.containsKey(name)) {
-			throw new ExpressionError("Variable " + name + " already defined, simply set its value, do not redefine.");
-		} else {
+		if( !this.varMap.containsKey(name)) {
 			this.varMap.put(name, this.variables.size());
 			this.variables.add(new ExpressionValue(0));
 		}
