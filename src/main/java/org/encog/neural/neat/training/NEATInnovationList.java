@@ -170,16 +170,18 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	 * @param type
 	 *            The type.
 	 */
-	public void createNewInnovation(final long in, final long out,
+	public long createNewInnovation(final long in, final long out,
 			final NEATInnovationType type) {
+		final long result = this.population.assignInnovationID();
 		final NEATInnovation newInnovation = new NEATInnovation(in, out, type,
-				this.population.assignInnovationID());
+				result);
 
 		if (type == NEATInnovationType.NewNeuron) {
 			newInnovation.setNeuronID(assignNeuronID());
 		}
 
 		add(newInnovation);
+		return result;
 	}
 
 	/**
@@ -202,17 +204,19 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	public long createNewInnovation(final long from, final long to,
 			final NEATInnovationType innovationType,
 			final NEATNeuronType neuronType, final double x, final double y) {
+		
+		long neuronID = assignNeuronID();
+		
 		final NEATInnovation newInnovation = new NEATInnovation(from, to,
-				innovationType, this.population.assignInnovationID(),
-				neuronType, x, y);
+				innovationType, neuronID, neuronType, x, y);
 
 		if (innovationType == NEATInnovationType.NewNeuron) {
-			newInnovation.setNeuronID(assignNeuronID());
+			newInnovation.setNeuronID(neuronID);
 		}
 
 		add(newInnovation);
 
-		return (this.nextNeuronID - 1); 
+		return neuronID; 
 	}
 
 	public void setPopulation(NEATPopulation population) {
