@@ -25,6 +25,7 @@ package org.encog.neural.neat.training;
 
 import java.io.Serializable;
 
+import org.encog.EncogError;
 import org.encog.ml.genetic.genes.Gene;
 import org.encog.ml.genetic.genome.Chromosome;
 import org.encog.ml.genetic.innovation.BasicInnovationList;
@@ -96,6 +97,9 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 					.getFromNeuronID(), linkGene.getToNeuronID(),
 					NEATInnovationType.NewLink, this.population
 							.assignInnovationID());
+			if( linkGene.getInnovationId()!=innovation.getInnovationID() ) {
+				throw new EncogError("Invalid innovation number creating initial innovations. Gene: " + linkGene.getInnovationId() + ", Innov: " + innovation.getInnovationID());
+			}
 			add(innovation);
 
 		}
