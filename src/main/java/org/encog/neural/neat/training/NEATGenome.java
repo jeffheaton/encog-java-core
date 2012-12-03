@@ -292,7 +292,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		boolean recurrent = false;
 
 		// check to see if this innovation has already been tried
-		final NEATInnovation innovation = ((NEATTraining) getGeneticAlgorithm())
+		NEATInnovation innovation = ((NEATTraining) getGeneticAlgorithm())
 				.getInnovations().checkInnovation(neuron1ID, neuron2ID,
 						NEATInnovationType.NewLink);
 
@@ -307,12 +307,12 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		// is this a new innovation?
 		if (innovation == null) {
 			// new innovation
-			long id = ((NEATTraining) getGeneticAlgorithm()).getInnovations()
+			innovation = ((NEATTraining) getGeneticAlgorithm()).getInnovations()
 					.createNewInnovation(neuron1ID, neuron2ID,
 							NEATInnovationType.NewLink);
 
 			final NEATLinkGene linkGene = new NEATLinkGene(neuron1ID,
-					neuron2ID, true, id, RangeRandomizer.randomize(-1, 1),
+					neuron2ID, true, innovation.getInnovationID(), RangeRandomizer.randomize(-1, 1),
 					recurrent);
 			this.linksChromosome.add(linkGene);
 		} else {
@@ -407,19 +407,19 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		if (innovation == null) {
 			
 			// this innovation has not been tried, create it
-			final long newNeuronID = ((NEATTraining) getGeneticAlgorithm())
+			innovation = ((NEATTraining) getGeneticAlgorithm())
 					.getInnovations().createNewInnovation(from, to,
 							NEATInnovationType.NewNeuron,
 							NEATNeuronType.Hidden, newWidth, newDepth);
 
 			this.neuronsChromosome.add(new NEATNeuronGene(
-					NEATNeuronType.Hidden, newNeuronID, newDepth, newWidth));
+					NEATNeuronType.Hidden, innovation.getNeuronID(), newDepth, newWidth));
 
 			// add the first link
-			this.createLink(from, newNeuronID);
+			this.createLink(from, innovation.getNeuronID());
 			
 			// add the second link
-			this.createLink(newNeuronID, to);
+			this.createLink(innovation.getNeuronID(), to);
 		}
 
 		else {

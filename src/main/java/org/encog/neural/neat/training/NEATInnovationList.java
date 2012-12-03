@@ -69,7 +69,7 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	}
 
 	/**
-	 * Construct an innovation list.
+	 * Construct an innovation list, that includes the initial innovations.
 	 * 
 	 * @param population
 	 *            The population.
@@ -161,27 +161,25 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	}
 
 	/**
-	 * Create a new innovation.
-	 * 
-	 * @param in
-	 *            The input neuron.
-	 * @param out
-	 *            The output neuron.
-	 * @param type
-	 *            The type.
+	 * Create a new NEAT innovation, without the need of x & y.
+	 * @param from The starting point of a link. 
+	 * @param to The ending point of a link.
+	 * @param type The type of innovation.
+	 * @return The innovation id of the new innovation.
 	 */
-	public long createNewInnovation(final long in, final long out,
+	public NEATInnovation createNewInnovation(final long from, final long to,
 			final NEATInnovationType type) {
-		final long result = this.population.assignInnovationID();
-		final NEATInnovation newInnovation = new NEATInnovation(in, out, type,
-				result);
+		final long innovationID = this.population.assignInnovationID();
+		
+		final NEATInnovation newInnovation = new NEATInnovation(from, to, type,
+				innovationID);
 
 		if (type == NEATInnovationType.NewNeuron) {
 			newInnovation.setNeuronID(assignNeuronID());
 		}
 
 		add(newInnovation);
-		return result;
+		return newInnovation;
 	}
 
 	/**
@@ -201,22 +199,23 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	 *            The y-coordinate.
 	 * @return The new neuron, if one was created.
 	 */
-	public long createNewInnovation(final long from, final long to,
+	public NEATInnovation createNewInnovation(final long from, final long to,
 			final NEATInnovationType innovationType,
 			final NEATNeuronType neuronType, final double x, final double y) {
 		
-		long neuronID = assignNeuronID();
+		final long innovationID = this.population.assignInnovationID();
 		
 		final NEATInnovation newInnovation = new NEATInnovation(from, to,
-				innovationType, neuronID, neuronType, x, y);
+				innovationType, innovationID, neuronType, x, y);
 
 		if (innovationType == NEATInnovationType.NewNeuron) {
+			long neuronID = assignNeuronID();
 			newInnovation.setNeuronID(neuronID);
 		}
 
 		add(newInnovation);
 
-		return neuronID; 
+		return newInnovation; 
 	}
 
 	public void setPopulation(NEATPopulation population) {

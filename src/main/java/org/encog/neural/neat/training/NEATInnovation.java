@@ -243,10 +243,14 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 			result.append("neuron");
 			break;
 		}
+		result.append(",id=");
+		result.append(this.getInnovationID());
 		result.append(",from=");
 		result.append(this.fromNeuronID);
 		result.append(",to=");
 		result.append(this.toNeuronID);
+		result.append(",neuron=");
+		result.append(this.neuronID);
 		result.append(",splitX=");
 		result.append(this.splitX);
 		result.append(",splitY=");
