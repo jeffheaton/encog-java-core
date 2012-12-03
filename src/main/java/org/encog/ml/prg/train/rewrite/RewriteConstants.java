@@ -9,6 +9,10 @@ import org.encog.ml.prg.util.TraverseProgram;
 
 public class RewriteConstants implements RewriteRule {
 	private EncogProgram program;
+	
+	public RewriteConstants() {
+		
+	}
 
 	@Override
 	public boolean rewrite(EncogProgram theProgram) {
@@ -41,11 +45,6 @@ public class RewriteConstants implements RewriteRule {
 				}
 			}
 		} while (trav.next());
-
-		if( potentialRewrite!=-1 ) {
-			rewrite(rewriteStart,potentialRewrite);
-			return true;
-		}
 		
 		return false;		
 	}

@@ -27,23 +27,34 @@ public class ExpressionStack {
 	}
 	
 	public void push(boolean value) {
+		checkOverflow();
 		this.stack[this.position++].setValue(value);
 	}
 	
 	public void push(double value) {
+		checkOverflow();
 		this.stack[this.position++].setValue(value);
 	}
 	
 	public void push(long value) {
+		checkOverflow();
 		this.stack[this.position++].setValue(value);
 	}
 	
 	public void push(ExpressionValue value) {
+		checkOverflow();
 		this.stack[this.position++].setValue(value);
 	}
 	
 	public void push(String value) {
+		checkOverflow();
 		this.stack[this.position++].setValue(value);
+	}
+	
+	private void checkOverflow() {
+		if( (this.position+1)>=this.stack.length ) {
+			throw new EncogError("Stack overflow.");
+		}
 	}
 	
 	public void operationAdd() {

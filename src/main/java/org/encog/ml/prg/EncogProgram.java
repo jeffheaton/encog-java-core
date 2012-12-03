@@ -42,6 +42,7 @@ import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.ml.prg.util.TraverseProgram;
 import org.encog.parse.expression.common.ParseCommonExpression;
+import org.encog.parse.expression.common.RenderCommonExpression;
 import org.encog.util.simple.EncogUtility;
 import org.encog.util.stack.StackInt;
 
@@ -426,15 +427,19 @@ public class EncogProgram implements MLRegression, MLError {
 	}
 
 	public ExpressionValue evaluate(int index) {
-		this.programCounter = index;
-		while (!eof()) {
-			readNodeHeader(this.header);
-			int opcode = this.header.getOpcode();
-			ProgramExtensionTemplate temp = this.context.getFunctions()
-					.getOpCode(opcode);
-			temp.evaluate(this);
+		try {
+			this.programCounter = index;
+			while (!eof()) {
+				readNodeHeader(this.header);
+				int opcode = this.header.getOpcode();
+				ProgramExtensionTemplate temp = this.context.getFunctions()
+						.getOpCode(opcode);
+				temp.evaluate(this);
+			}
+			return stack.pop();
+		} catch (ArithmeticException ex) {
+			return new ExpressionValue(Double.NaN);
 		}
-		return stack.pop();
 	}
 
 	public void deleteSubtree(int index) {
@@ -535,6 +540,11 @@ public class EncogProgram implements MLRegression, MLError {
 	 */
 	public String getSource() {
 		return source;
+	}
+	
+	public String dumpAsCommonExpression() {
+		RenderCommonExpression render = new RenderCommonExpression();
+		return render.render(this);
 	}
 	
 	
