@@ -205,8 +205,7 @@ public class EncogProgram implements MLRegression, MLError {
 		
 		
 		TraverseProgram trav = new TraverseProgram(this);
-		trav.begin(0);
-		do {
+		while(trav.next()) {
 			result.append("{");
 			result.append("OpCode:");
 			result.append(trav.getTemplate().getName());
@@ -215,7 +214,7 @@ public class EncogProgram implements MLRegression, MLError {
 			result.append(",p1=");
 			result.append(trav.getHeader().getParam2());
 			result.append("}");
-		} while(trav.next());
+		} 
 
 		result.append("]");
 		return result.toString();
@@ -419,10 +418,10 @@ public class EncogProgram implements MLRegression, MLError {
 	public boolean areAllConstDescendants(final int index) {
 		TraverseProgram trav = new TraverseProgram(this);
 		trav.begin(0);
-		do {
+		while (trav.next()) {
 			if (trav.getTemplate().isVariableValue())
 				return false;
-		} while (trav.next());
+		} 
 		return true;
 	}
 
@@ -512,7 +511,7 @@ public class EncogProgram implements MLRegression, MLError {
 		
 		TraverseProgram trav = new TraverseProgram(this);
 		trav.begin(0);
-		do {
+		while (trav.next()) {
 			if( trav.isLeaf()) {
 				stack.push(trav.getCurrentIndex());
 			} else {
@@ -522,7 +521,7 @@ public class EncogProgram implements MLRegression, MLError {
 			if( trav.getCurrentIndex()==index) {
 				return stack.pop();
 			}
-		} while (trav.next());
+		} 
 		return -1;
 		
 	}

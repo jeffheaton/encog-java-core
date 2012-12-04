@@ -12,6 +12,7 @@ public class TraverseProgram {
 	private ProgramExtensionTemplate template;
 	private int currentIndex;
 	private int stackSize;
+	private boolean started = false;
 	
 	public TraverseProgram(EncogProgram theProgram) {
 		this.program = theProgram;
@@ -20,13 +21,16 @@ public class TraverseProgram {
 	
 	public void begin(int idx) {
 		this.currentIndex = idx;
-		program.getHolder().readNodeHeader(this.program.getIndividual(), this.currentIndex, this.header);
-		this.template = this.program.getContext().getFunctions().getOpCode(this.header.getOpcode());
-		this.stackSize = 1;
 	}
 	
 	public boolean next() {
-		if( this.stackSize>0 && this.currentIndex<this.program.getProgramLength() ) {
+		if( !started ) {
+			program.getHolder().readNodeHeader(this.program.getIndividual(), this.currentIndex, this.header);
+			this.template = this.program.getContext().getFunctions().getOpCode(this.header.getOpcode());
+			this.stackSize = 1;
+			this.started = true;
+			
+		} else if( this.stackSize>0 && this.currentIndex<this.program.getProgramLength() ) {
 			this.currentIndex+=template.getInstructionSize(this.header);
 			this.holder.readNodeHeader(this.program.getIndividual(), this.currentIndex, this.header);
 			this.template = this.program.getContext().getFunctions().getOpCode(this.header.getOpcode());
@@ -35,10 +39,11 @@ public class TraverseProgram {
 			} 
 				
 			this.stackSize++;
-			return true;
 		} else {
 			return false;
 		}
+		
+		return this.currentIndex<this.program.getProgramLength();
 	}
 	
 	

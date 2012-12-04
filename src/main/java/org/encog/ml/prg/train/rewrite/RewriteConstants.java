@@ -1,7 +1,5 @@
 package org.encog.ml.prg.train.rewrite;
 
-import java.util.List;
-
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
@@ -24,7 +22,7 @@ public class RewriteConstants implements RewriteRule {
 
 		TraverseProgram trav = new TraverseProgram(this.program);
 		trav.begin(0);
-		do {
+		while (trav.next()) {
 			// have we hit something variable
 			if( trav.getTemplate().isVariableValue() ) {
 				allConst = false;
@@ -44,7 +42,12 @@ public class RewriteConstants implements RewriteRule {
 					}
 				}
 			}
-		} while (trav.next());
+		} 
+		
+		if( potentialRewrite!=-1) {
+			rewrite(rewriteStart,potentialRewrite);
+			return true;
+		}
 		
 		return false;		
 	}

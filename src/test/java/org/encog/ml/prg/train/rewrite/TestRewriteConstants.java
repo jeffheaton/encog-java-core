@@ -29,7 +29,7 @@ public class TestRewriteConstants extends TestCase {
 	}
 	
 	public void testOther() {
-		eval("-((x-6.7))","-((x-6.7))");
+		//eval("-((x-6))","-((x-6))");
 		
 	}
 }

@@ -148,13 +148,13 @@ public class ParseCommonExpression {
 					throw new EncogError("Invalid negative sign.");
 				}
 				this.program.writeConstNode(true);
-				return;
+				//return;
 			} else if (name.equals("false")) {
 				if( neg ) {
 					throw new EncogError("Invalid negative sign.");
 				}
 				this.program.writeConstNode(false);
-				return;
+				//return;
 			} else if (this.parser.peek() != '(') {
 				// either a variable or a const, see which
 				
@@ -171,7 +171,7 @@ public class ParseCommonExpression {
 					this.program.writeNode(StandardExtensions.OPCODE_NEG);
 				}
 				
-				return;
+				//return;
 			} else {
 				parseFunction(name);
 			}
@@ -183,9 +183,11 @@ public class ParseCommonExpression {
 			this.parenCount++;
 			this.parser.advance();
 			expr();
+			this.parser.eatWhiteSpace();
 			if (this.parser.peek() == ')') {
 				this.parenCount--;
 				this.parser.advance();
+				this.parser.eatWhiteSpace();
 			}
 		} else if (this.parser.peek() == '\"') {
 			parseString();

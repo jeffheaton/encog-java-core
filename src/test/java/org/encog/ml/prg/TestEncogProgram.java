@@ -37,7 +37,7 @@ public class TestEncogProgram extends TestCase {
 	
 	public void testString() {
 		EncogProgram prg = new EncogProgram("abs(length(\"abc\"))");
-		Assert.assertEquals("[EncogProgram: size=3, score=0.0, Code: {OpCode:sconst,p1=0,p1=3}{OpCode:length,p1=0,p1=0}{OpCode:abs,p1=0,p1=0}{OpCode:#const,p1=0,p1=0}]",prg.toString());
+		Assert.assertEquals("[EncogProgram: size=3, score=0.0, Code: {OpCode:sconst,p1=0,p1=3}{OpCode:length,p1=0,p1=0}{OpCode:abs,p1=0,p1=0}]",prg.toString());
 		Assert.assertEquals(3, prg.evaluate().toIntValue());
 	}
 	

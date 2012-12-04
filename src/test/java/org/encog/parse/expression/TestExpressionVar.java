@@ -64,4 +64,13 @@ public class TestExpressionVar extends TestCase {
 		expression.getVariables().setVariable("v3",3);
 		Assert.assertEquals(6,expression.evaluate().toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
+	
+	public void testVarComplex() {
+		EncogProgram expression = new EncogProgram("(x^((1+((x^-8)-(4^x)))^(((-7/2)-(0--5.8))/x)))");
+		expression.getVariables().setVariable("x",10);
+		Assert.assertTrue(Double.isNaN(expression.evaluate().toFloatValue()));
+	}
+	
+	
+	
 }
