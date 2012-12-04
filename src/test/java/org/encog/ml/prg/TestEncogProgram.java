@@ -49,4 +49,5 @@ public class TestEncogProgram extends TestCase {
 		Assert.assertEquals(4, prg.findNodeStart(4));
 		Assert.assertEquals(3, prg.findNodeStart(5));
 	}
+	
 }

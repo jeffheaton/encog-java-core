@@ -127,4 +127,8 @@ public class ExpressionStack {
 		result.append("]");
 		return result.toString();
 	}
+
+	public void clear() {
+		this.position = 0;
+	}
 }

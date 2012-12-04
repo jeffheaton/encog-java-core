@@ -259,7 +259,6 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 			EncogProgram prg = null;
 			do {
 				prg = rnd.generate(random);
-				System.out.println(prg.dumpAsCommonExpression());
 				double score = this.scoreFunction.calculateScore(prg);
 				if (!Double.isInfinite(score) && !Double.isNaN(score)) {
 					prg.setScore(score);

@@ -427,6 +427,7 @@ public class EncogProgram implements MLRegression, MLError {
 
 	public ExpressionValue evaluate(int index) {
 		try {
+			this.stack.clear();
 			this.programCounter = index;
 			while (!eof()) {
 				readNodeHeader(this.header);
