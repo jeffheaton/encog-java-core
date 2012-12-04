@@ -1,5 +1,6 @@
 package org.encog.ml.prg.epl.bytearray;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import org.encog.Encog;
@@ -8,6 +9,7 @@ import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.ml.prg.epl.EPLUtil;
 import org.encog.ml.prg.epl.OpCodeHeader;
 import org.encog.util.EngineArray;
+import org.encog.util.text.Base64;
 
 public class ByteArrayHolder implements EPLHolder {
 	private byte[] code;
@@ -99,5 +101,26 @@ public class ByteArrayHolder implements EPLHolder {
 				targetIndex*EPLHolder.FRAME_SIZE,
 				size*EPLHolder.FRAME_SIZE);
 				
+	}
+
+	@Override
+	public String toBase64(int individual, int programLength) {
+		int absoluteIndex = (individual*this.maxIndividualSize);
+		return Base64.encodeBytes(this.code, absoluteIndex, programLength*EPLHolder.FRAME_SIZE);
+	}
+
+	@Override
+	public int fromBase64(int individual, String str) {
+		try {
+			int absoluteIndex = (individual*this.maxIndividualSize);
+			byte[] b = Base64.decode(str);
+			if( b.length>this.maxIndividualSize) {
+				throw new EncogError("Can't decode program, it is too large.  Set the max individual size higher.");
+			}
+			EngineArray.arrayCopy(b, 0, this.code, absoluteIndex, b.length);
+			return b.length/EPLHolder.FRAME_SIZE;
+		} catch (IOException e) {
+			throw new EncogError(e);
+		}
 	}
 }

@@ -78,4 +78,16 @@ public class BufferedHolder implements EPLHolder {
 		
 		
 	}
+
+	@Override
+	public String toBase64(int individual, int programLength) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int fromBase64(int individual, String str) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

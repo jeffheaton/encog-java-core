@@ -22,4 +22,8 @@ public interface EPLHolder {
 	void insert(int individual, int index, int size);
 
 	void copySubTree(EPLHolder targetProgram, int sourceIndex, int targetIndex, int size);
+
+	String toBase64(int individual, int programLength);
+
+	int fromBase64(int individual, String str);
 }
