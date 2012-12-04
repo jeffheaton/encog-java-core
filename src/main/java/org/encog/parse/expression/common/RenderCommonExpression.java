@@ -1,19 +1,17 @@
 package org.encog.parse.expression.common;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.epl.OpCodeHeader;
 import org.encog.ml.prg.extension.KnownConst;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.parse.expression.ExpressionNodeType;
+import org.encog.util.stack.StackString;
 
 public class RenderCommonExpression {
 	private EncogProgram program;
 	private OpCodeHeader header = new OpCodeHeader();
-	private List<String> stack = new ArrayList<String>();
+	private StackString stack = new StackString(100);
 
 	public RenderCommonExpression() {
 	}
@@ -27,14 +25,14 @@ public class RenderCommonExpression {
 	private void handleConst() {
 		switch(this.header.getOpcode()) {
 			case StandardExtensions.OPCODE_CONST_INT:
-				stack.add(0,""+((int)this.header.getParam1()));
+				stack.push(""+((int)this.header.getParam1()));
 				break;
 			case StandardExtensions.OPCODE_CONST_FLOAT:
 				double d = this.program.readDouble();
-				stack.add(0,""+this.program.getContext().getFormat().format(d,32));
+				stack.push(""+this.program.getContext().getFormat().format(d,32));
 				break;
 			default:
-				stack.add(0,"[Unknown Constant]");
+				stack.push("[Unknown Constant]");
 				break;
 		}
 		
@@ -42,12 +40,12 @@ public class RenderCommonExpression {
 	
 	private void handleConstKnown() {
 		ProgramExtensionTemplate temp = this.program.getContext().getFunctions().getOpCode(this.header.getOpcode());
-		stack.add(0,temp.getName());
+		stack.push(temp.getName());
 	}
 
 	private void handleVar() {
 		int varIndex = (int)this.header.getParam2();
-		stack.add(0,this.program.getVariables().getVariableName(varIndex));
+		stack.push(this.program.getVariables().getVariableName(varIndex));
 	}
 	
 	private void handleFunction() {
@@ -61,11 +59,10 @@ public class RenderCommonExpression {
 			if( i>0 ) {
 				result.append(',');
 			}
-			result.append(this.stack.get(0));
-			this.stack.remove(0);
+			result.append(this.stack.pop());
 		}
 		result.append(')');		
-		this.stack.add(0,result.toString());
+		this.stack.push(result.toString());
 	}
 	
 	private void handleOperator() {
@@ -73,15 +70,15 @@ public class RenderCommonExpression {
 		ProgramExtensionTemplate temp = this.program.getContext().getFunctions().getOpCode(opcode);
 		
 		StringBuilder result = new StringBuilder();
+		String a = this.stack.pop();
+		String b = this.stack.pop();
 		result.append("(");
-		result.append(this.stack.get(1));
+		result.append(b);
 		result.append(temp.getName());
-		result.append(this.stack.get(0));
+		result.append(a);
 		result.append(")");
 		
-		this.stack.remove(0);
-		this.stack.remove(0);
-		this.stack.add(0, result.toString());
+		this.stack.push(result.toString());
 	}
 
 	public ExpressionNodeType determineNodeType() {
@@ -136,6 +133,6 @@ public class RenderCommonExpression {
 				break;
 			}
 		}
-		return this.stack.get(0);
+		return this.stack.pop();
 	}
 }
