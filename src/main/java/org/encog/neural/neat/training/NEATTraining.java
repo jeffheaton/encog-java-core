@@ -419,12 +419,6 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 		babyGenome.setGeneticAlgorithm(this);
 		babyGenome.setPopulation(getPopulation());
 		
-		try { 
-			babyGenome.validate();
-		} catch(Throwable t) {
-			crossover(mom, dad);
-		}
-
 		return babyGenome;
 	}
 

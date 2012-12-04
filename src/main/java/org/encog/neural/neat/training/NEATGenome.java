@@ -303,7 +303,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			recurrent = true;
 		}
 
-		validate();
 		// is this a new innovation?
 		if (innovation == null) {
 			// new innovation
@@ -394,7 +393,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 				.getInnovations().checkInnovation(from, to,
 						NEATInnovationType.NewNeuron);
 
-		validate();
 		// prevent chaining
 		if (innovation != null) {
 			final long neuronID = innovation.getNeuronID();
@@ -507,7 +505,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * Convert the genes to an actual network.
 	 */
 	public void decode() {
-		validate();
 		NEATPopulation pop = (NEATPopulation)this.getPopulation();
 		
 		if( ((NEATNeuronGene)this.neuronsChromosome.get(0)).getNeuronType() != NEATNeuronType.Bias ) {
@@ -848,24 +845,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 				throw new EncogError("NEAT Neuron Gene " + i + " should be an input gene.");
 			}
 		}
-				
-		// make sure that all input neurons are connected
-		/*for(int i=0;i<this.inputCount;i++) {
-			NEATNeuronGene gene = (NEATNeuronGene)this.neuronsChromosome.getGene(i);
-			
-			boolean found = false;
-			for(Gene lg: this.linksChromosome.getGenes()) {
-				NEATLinkGene nlg = (NEATLinkGene)lg;
-				if( nlg.getFromNeuronID()==gene.getId()) {
-					found = true;
-					break;
-				}
-			}
-			
-			if( !found ) {
-				throw new EncogError("Input neuron " + i + " is unconnected.");
-			}			
-		}*/
 		
 		// make sure that there are no double links
 		Map<String,NEATLinkGene> map = new HashMap<String,NEATLinkGene>();
