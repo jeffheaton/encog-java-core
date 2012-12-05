@@ -297,13 +297,16 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 
 	}
 
-	public void addGenome(EncogProgram newPrg) {
+	public void addGenome(EncogProgram[] tempProgram, int index, int size) {
 		this.iterationLock.lock();
 		try {
-			int replaceIndex = selection.performAntiSelection();
-			this.population.getMembers()[replaceIndex] = newPrg;
-			evaluateBestGenome(newPrg);
-
+			
+			for(int i=0;i<size;i++) {
+				int replaceIndex = selection.performAntiSelection();
+				this.population.getMembers()[replaceIndex] = tempProgram[index+i];
+				evaluateBestGenome(tempProgram[index+i]);
+			}
+			
 			this.subIterationCounter++;
 			if (this.subIterationCounter > this.population.size()) {
 				this.subIterationCounter = 0;

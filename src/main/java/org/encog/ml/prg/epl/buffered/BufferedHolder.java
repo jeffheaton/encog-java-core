@@ -90,4 +90,11 @@ public class BufferedHolder implements EPLHolder {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public void copy(int sourceIndividual, int sourceIndex,
+			int targetIndividual, int targetIndex, int size) {
+		// TODO Auto-generated method stub
+		
+	}
 }

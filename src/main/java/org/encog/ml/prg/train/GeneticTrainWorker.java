@@ -12,11 +12,18 @@ import org.encog.neural.networks.training.CalculateScore;
 public class GeneticTrainWorker extends Thread {
 	private final PrgGenetic owner;
 	private AtomicBoolean done = new AtomicBoolean();
+	private EncogProgram[] tempProgram;
 	private Random rnd;
 	
 	public GeneticTrainWorker(PrgGenetic theOwner) {
 		this.owner = theOwner;
 		this.rnd = this.owner.getRandomNumberFactory().factor();
+		
+		this.tempProgram = new EncogProgram[1];
+		for(int i=0;i<1;i++) {
+			this.tempProgram[i] = this.owner.getPopulation().createProgram();
+		}
+		
 	}
 	
 	public void run() {
@@ -37,7 +44,7 @@ public class GeneticTrainWorker extends Thread {
 			if( this.rnd.nextDouble()<0.9 ) {
 				
 				EncogProgram parent2 = members[selection.performSelection()];
-				newPrg = crossover.crossover(this.rnd, parent1, parent2);
+				crossover.crossover(this.rnd, parent1, parent2, this.tempProgram,0,1);
 			} else {
 				newPrg = mutation.mutate(this.rnd, parent1);
 			}
@@ -46,7 +53,7 @@ public class GeneticTrainWorker extends Thread {
 			if( !Double.isInfinite(score) && !Double.isNaN(score) ) {
 				population.rewrite(newPrg);
 				newPrg.setScore(score);
-				this.owner.addGenome(newPrg);
+				this.owner.addGenome(this.tempProgram,0,1);
 				
 				if( this.done.get() ) {
 					break;

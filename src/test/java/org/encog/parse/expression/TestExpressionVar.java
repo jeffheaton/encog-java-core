@@ -71,6 +71,5 @@ public class TestExpressionVar extends TestCase {
 		Assert.assertTrue(Double.isNaN(expression.evaluate().toFloatValue()));
 	}
 	
-	
-	
+
 }

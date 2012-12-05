@@ -202,10 +202,9 @@ public class EncogProgram implements MLRegression, MLError {
 		result.append(", score=");
 		result.append(this.score);
 		result.append(", Code: ");
-		
-		
+
 		TraverseProgram trav = new TraverseProgram(this);
-		while(trav.next()) {
+		while (trav.next()) {
 			result.append("{");
 			result.append("OpCode:");
 			result.append(trav.getTemplate().getName());
@@ -214,7 +213,7 @@ public class EncogProgram implements MLRegression, MLError {
 			result.append(",p1=");
 			result.append(trav.getHeader().getParam2());
 			result.append("}");
-		} 
+		}
 
 		result.append("]");
 		return result.toString();
@@ -309,7 +308,7 @@ public class EncogProgram implements MLRegression, MLError {
 	}
 
 	public void writeConstNode(long value) {
-		writeNode(StandardExtensions.OPCODE_CONST_INT, (int)value, (short) 0);
+		writeNode(StandardExtensions.OPCODE_CONST_INT, (int) value, (short) 0);
 	}
 
 	public void writeNodeVar(String name) {
@@ -421,7 +420,7 @@ public class EncogProgram implements MLRegression, MLError {
 		while (trav.next()) {
 			if (trav.getTemplate().isVariableValue())
 				return false;
-		} 
+		}
 		return true;
 	}
 
@@ -445,12 +444,12 @@ public class EncogProgram implements MLRegression, MLError {
 	public void deleteSubtree(int index) {
 		int size = this.frameSize(index);
 		this.holder.deleteSubtree(this.individual, index, size);
-		this.programLength-=size;
+		this.programLength -= size;
 	}
-	
+
 	public void deleteSubtree(int index, int size) {
 		this.holder.deleteSubtree(this.individual, index, size);
-		this.programLength-=size;
+		this.programLength -= size;
 	}
 
 	public int size(int index) {
@@ -458,12 +457,12 @@ public class EncogProgram implements MLRegression, MLError {
 		trav.begin(index);
 		return trav.countRemaining();
 	}
-	
+
 	public int frameSize(int index) {
 		TraverseProgram trav = new TraverseProgram(this);
 		trav.begin(index);
 		trav.countRemaining();
-		return trav.getCurrentIndex()-index;
+		return trav.getCurrentIndex() - index;
 	}
 
 	public ProgramExtensionTemplate getConstTemplate(ExpressionValue c) {
@@ -504,35 +503,50 @@ public class EncogProgram implements MLRegression, MLError {
 
 	public void insert(int index, int len) {
 		this.holder.insert(this.individual, index, len);
-		this.programLength+=len;
+		this.programLength += len;
 	}
 
 	public int findNodeStart(int index) {
 		StackInt stack = new StackInt(100);
-		
+
 		TraverseProgram trav = new TraverseProgram(this);
 		trav.begin(0);
 		while (trav.next()) {
-			if( trav.isLeaf()) {
+			if (trav.isLeaf()) {
 				stack.push(trav.getCurrentIndex());
 			} else {
 				stack.min(trav.getTemplate().getChildNodeCount());
 			}
-			
-			if( trav.getCurrentIndex()==index) {
+
+			if (trav.getCurrentIndex() == index) {
 				return stack.pop();
 			}
-		} 
+		}
 		return -1;
-		
+
 	}
 
-	public void replaceNode(EncogProgram sourceProgram, int sourceIndex, int targetIndex) {
+	/**
+	 * Replace a node (along with its subnodes) from one program to another.
+	 * This program will have the target node (and child nodes) replaced with a
+	 * node (and subnodes) from the source program.
+	 * 
+	 * @param sourceProgram
+	 *            The source program that we will copy from.
+	 * @param sourceIndex
+	 *            The index of the node, in the source program. This is the
+	 *            start of the node in RPN.
+	 * @param targetIndex
+	 *            The target node, index in RPN.
+	 */
+	public void replaceNode(EncogProgram sourceProgram, int sourceIndex,
+			int targetIndex) {
 		int sourceSize = sourceProgram.size(sourceIndex);
 		int targetSize = this.size(targetIndex);
 		deleteSubtree(targetIndex);
 		this.insert(targetIndex, sourceSize);
-		sourceProgram.getHolder().copySubTree(this.holder, sourceIndex, targetIndex, sourceSize);
+		sourceProgram.getHolder().copySubTree(this.holder, sourceIndex,
+				targetIndex, sourceSize);
 	}
 
 	/**
@@ -541,22 +555,25 @@ public class EncogProgram implements MLRegression, MLError {
 	public String getSource() {
 		return source;
 	}
-	
+
 	public String dumpAsCommonExpression() {
 		RenderCommonExpression render = new RenderCommonExpression();
 		return render.render(this);
 	}
-	
+
 	public String toBase64() {
-		return this.holder.toBase64(individual,this.programLength);
+		return this.holder.toBase64(individual, this.programLength);
 	}
-	
+
 	public void fromBase64(String str) {
-		this.programLength = this.holder.fromBase64(individual,str);
+		this.programLength = this.holder.fromBase64(individual, str);
 	}
 
 	public void clear() {
 		this.programLength = 0;
 	}
 
+	public void copy(EncogProgram source) {
+		this.holder.copy(source.getIndividual(), 0, getIndividual(), 0, getProgramLength());
+	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
+import org.encog.ml.prg.EncogProgramVariables;
 import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.ml.prg.train.rewrite.RewriteRule;
 import org.encog.parse.expression.common.RenderCommonExpression;
@@ -16,10 +17,11 @@ public class PrgPopulation {
 	private List<RewriteRule> rewriteRules = new ArrayList<RewriteRule>();
 	private int maxDepth = 5;
 	private int maxPopulation = 1000;
+	private int maxFrameSize = 1024;
 	private EPLHolder holder;
 	
 	public PrgPopulation(EncogProgramContext theContext, int theMaxPopulation) {
-		this.holder = theContext.getHolderFactory().factor(theMaxPopulation, 1024);
+		this.holder = theContext.getHolderFactory().factor(theMaxPopulation, this.maxFrameSize);
 		this.context = theContext;
 		this.maxPopulation = theMaxPopulation;
 		this.members = new EncogProgram[this.maxPopulation];
@@ -88,6 +90,12 @@ public class PrgPopulation {
 	 */
 	public EPLHolder getHolder() {
 		return holder;
+	}
+
+	public EncogProgram createProgram() {
+		EPLHolder newHolder = this.context.getHolderFactory().factor(1, this.maxFrameSize);
+		EncogProgram result = new EncogProgram(this.context, new EncogProgramVariables(), newHolder,0);
+		return result;
 	}
 	
 	

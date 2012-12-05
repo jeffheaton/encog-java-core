@@ -26,4 +26,6 @@ public interface EPLHolder {
 	String toBase64(int individual, int programLength);
 
 	int fromBase64(int individual, String str);
+
+	void copy(int sourceIndividual, int sourceIndex, int targetIndividual, int targetIndex, int size);
 }
