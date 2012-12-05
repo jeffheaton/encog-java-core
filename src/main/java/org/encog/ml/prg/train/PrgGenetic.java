@@ -16,6 +16,8 @@ import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
+import org.encog.ml.prg.EncogProgramVariables;
+import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.ml.prg.train.crossover.PrgCrossover;
 import org.encog.ml.prg.train.crossover.SubtreeCrossover;
 import org.encog.ml.prg.train.mutate.PrgMutate;
@@ -255,11 +257,13 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		Random random = this.randomNumberFactory.factor();
 
 		for (int i = 0; i < this.population.getMaxPopulation(); i++) {
+			EncogProgram prg = new EncogProgram(this.context, new EncogProgramVariables(), this.population.getHolder(), i);
+			this.population.getMembers()[i] = prg;
 
 			boolean done = false;
-			EncogProgram prg = null;
 			do {
-				prg = rnd.generate(random);
+				prg.clear();
+				rnd.createNode(random, this.population.getMembers()[i], maxDepth);
 				double score = this.scoreFunction.calculateScore(prg);
 				if (!Double.isInfinite(score) && !Double.isNaN(score)) {
 					prg.setScore(score);
@@ -270,7 +274,6 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 			evaluateBestGenome(prg);
 
 			this.population.rewrite(prg);
-			this.population.getMembers()[i] = prg;
 		}
 	}
 

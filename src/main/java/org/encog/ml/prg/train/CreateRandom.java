@@ -46,7 +46,7 @@ public class CreateRandom {
 		temp.randomize(random, program, 1.0);
 	}
 	
-	private void createNode(Random random, EncogProgram program, int depth) {		
+	public void createNode(Random random, EncogProgram program, int depth) {		
 		if( depth>=this.maxDepth ) {
 			createLeafNode(random, program);
 			return;

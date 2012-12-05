@@ -555,4 +555,8 @@ public class EncogProgram implements MLRegression, MLError {
 		this.programLength = this.holder.fromBase64(individual,str);
 	}
 
+	public void clear() {
+		this.programLength = 0;
+	}
+
 }
