@@ -5,6 +5,5 @@ import java.util.Random;
 import org.encog.ml.prg.EncogProgram;
 
 public interface PrgMutate {
-	void mutateSelf(Random rnd, EncogProgram program);
-	EncogProgram mutate(Random rnd, EncogProgram program);
+	void mutate(Random rnd, EncogProgram program, EncogProgram[] offspring,int index, int mutationCount);
 }

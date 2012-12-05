@@ -11,24 +11,24 @@ public class SubtreeMutation implements PrgMutate {
 	private CreateRandom rnd;
 	
 	public SubtreeMutation(EncogProgramContext theContext, int theMaxDepth) {
-		//this.rnd = new CreateRandom(theContext, theMaxDepth);
+		this.rnd = new CreateRandom(theContext, theMaxDepth);
 	}
 	
 	@Override
-	public void mutateSelf(Random rnd, EncogProgram program) {
-		/*int index = rnd.nextInt(program.getRootNode().size());
-		ProgramNode node = program.findNode(index);
-		ProgramNode newInsert = this.rnd.generate(program);
-		program.replaceNode(node,newInsert);*/
+	public void mutate(Random random, EncogProgram program,
+			EncogProgram[] offspring, int index, int mutationCount) {
+		for(int i=0;i<mutationCount;i++) {
+			EncogProgram result = offspring[i];
+			result.clear();
+			int programSize = program.size();
+			int mutationPoint = random.nextInt(programSize);
+			int mutationSize = program.size(mutationPoint);
+			result.copy(program,0,0,mutationPoint);
+			result.setProgramCounter(mutationPoint);
+			this.rnd.createNode(random, program, 0);
+			int sz = programSize - (mutationPoint+mutationSize);
+			result.copy(program,mutationPoint+mutationSize,result.getProgramCounter(),sz);
+			result.advanceProgramCounter(mutationSize, true);
+		}		
 	}
-
-	@Override
-	public EncogProgram mutate(Random rnd, EncogProgram program) {
-		/*EncogProgramContext context = program.getContext();
-		EncogProgram result = context.cloneProgram(program);
-		mutateSelf(rnd, result);
-		return result;*/
-		return null;
-	}
-
 }

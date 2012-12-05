@@ -15,6 +15,14 @@ public class ByteArrayHolder implements EPLHolder {
 	private byte[] code;
 	private int maxIndividualSize;
 	
+	public int getMaxIndividualSize() {
+		return this.maxIndividualSize;
+	}
+	
+	public int getPopulationSize() {
+		return this.code.length/this.maxIndividualSize;
+	}
+	
 	public ByteArrayHolder(int thePopulationSize, int theMaxIndividualSize) {
 		this.maxIndividualSize = theMaxIndividualSize;
 		code = new byte[thePopulationSize*maxIndividualSize];
@@ -125,10 +133,20 @@ public class ByteArrayHolder implements EPLHolder {
 	}
 
 	@Override
-	public void copy(int sourceIndividual, int sourceIndex,
-			int targetIndividual, int targetIndex, int size) {
+	public void copy(int sourceIndividual, int sourceIndex, int targetIndividual, int targetIndex, int size) {
 		int absoluteSourceIndex = (sourceIndividual*this.maxIndividualSize)+(sourceIndex*EPLHolder.FRAME_SIZE);
 		int absoluteTargetIndex = (targetIndividual*this.maxIndividualSize)+(targetIndex*EPLHolder.FRAME_SIZE);
 		EngineArray.arrayCopy(this.code, absoluteSourceIndex, this.code, absoluteTargetIndex, size*EPLHolder.FRAME_SIZE);
+	}
+	
+	public void copy(EPLHolder sourceHolder, int sourceIndividual, int sourceIndex, int targetIndividual, int targetIndex, int size) {
+		int absoluteSourceIndex = (sourceIndividual*sourceHolder.getMaxIndividualSize())+(sourceIndex*EPLHolder.FRAME_SIZE);
+		int absoluteTargetIndex = (targetIndividual*this.maxIndividualSize)+(targetIndex*EPLHolder.FRAME_SIZE);
+		EngineArray.arrayCopy(
+				((ByteArrayHolder)sourceHolder).getCode(), 
+				absoluteSourceIndex, 
+				this.code, 
+				absoluteTargetIndex, 
+				size*EPLHolder.FRAME_SIZE);
 	}
 }

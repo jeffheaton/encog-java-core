@@ -97,4 +97,23 @@ public class BufferedHolder implements EPLHolder {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void copy(EPLHolder sourceHolder, int sourceIndividual,
+			int sourceIndex, int targetIndividual, int targetIndex, int size) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getMaxIndividualSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getPopulationSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

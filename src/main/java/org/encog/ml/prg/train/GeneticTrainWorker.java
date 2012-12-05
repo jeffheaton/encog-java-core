@@ -38,7 +38,6 @@ public class GeneticTrainWorker extends Thread {
 		this.done.set(false);
 		
 		for(;;) {
-			EncogProgram newPrg = null;
 			EncogProgram parent1 = members[selection.performSelection()];
 			
 			if( this.rnd.nextDouble()<0.9 ) {
@@ -46,13 +45,13 @@ public class GeneticTrainWorker extends Thread {
 				EncogProgram parent2 = members[selection.performSelection()];
 				crossover.crossover(this.rnd, parent1, parent2, this.tempProgram,0,1);
 			} else {
-				newPrg = mutation.mutate(this.rnd, parent1);
+				mutation.mutate(this.rnd, parent1, this.tempProgram, 0, 1);
 			}
 			
-			double score = scoreFunction.calculateScore(newPrg);
+			double score = scoreFunction.calculateScore(this.tempProgram[0]);
 			if( !Double.isInfinite(score) && !Double.isNaN(score) ) {
-				population.rewrite(newPrg);
-				newPrg.setScore(score);
+				population.rewrite(this.tempProgram[0]);
+				this.tempProgram[0].setScore(score);
 				this.owner.addGenome(this.tempProgram,0,1);
 				
 				if( this.done.get() ) {

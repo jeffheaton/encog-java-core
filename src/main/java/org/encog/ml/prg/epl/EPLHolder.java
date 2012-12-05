@@ -28,4 +28,10 @@ public interface EPLHolder {
 	int fromBase64(int individual, String str);
 
 	void copy(int sourceIndividual, int sourceIndex, int targetIndividual, int targetIndex, int size);
+	
+	void copy(EPLHolder sourceHolder, int sourceIndividual, int sourceIndex, int targetIndividual, int targetIndex, int size);
+	
+	int getMaxIndividualSize();
+	
+	int getPopulationSize();
 }
