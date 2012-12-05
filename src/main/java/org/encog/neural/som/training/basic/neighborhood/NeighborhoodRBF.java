@@ -104,16 +104,16 @@ public class NeighborhoodRBF implements NeighborhoodFunction {
 	public NeighborhoodRBF(final int[] size, final RBFEnum type) {
 		switch (type) {
 		case Gaussian:
-			this.rbf = new GaussianFunction(2);
+			this.rbf = new GaussianFunction(size.length);
 			break;
 		case InverseMultiquadric:
-			this.rbf = new InverseMultiquadricFunction(2);
+			this.rbf = new InverseMultiquadricFunction(size.length);
 			break;
 		case Multiquadric:
-			this.rbf = new MultiquadricFunction(2);
+			this.rbf = new MultiquadricFunction(size.length);
 			break;
 		case MexicanHat:
-			this.rbf = new MexicanHatFunction(2);
+			this.rbf = new MexicanHatFunction(size.length);
 			break;
 		}
 		this.size = size;
