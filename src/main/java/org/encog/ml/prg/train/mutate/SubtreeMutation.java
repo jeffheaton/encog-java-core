@@ -21,15 +21,16 @@ public class SubtreeMutation implements PrgMutate {
 			EncogProgram result = offspring[i];
 			result.clear();
 			int programSize = program.size();
-			int mutationPoint = random.nextInt(programSize);
-			int mutationSize = program.size(mutationPoint);
-			result.copy(program,0,0,mutationPoint);
-			result.advanceProgramCounter(mutationPoint,true);
+			int mutationEnd = random.nextInt(programSize);
+			int mutationStart = program.findNodeStart(mutationEnd);
+			mutationEnd++;
+			//int mutationSize = program.size(mutationPoint);
+			result.copy(program,0,0,mutationStart);
+			result.advanceProgramCounter(mutationStart,true);
 			this.rnd.createNode(random, result, 0);
-			result.toString();
-			int sz = programSize - (mutationPoint+mutationSize);
-			result.copy(program,mutationPoint+mutationSize,result.getProgramCounter(),sz);
-			result.advanceProgramCounter(mutationSize, true);
+			int sz = programSize - mutationEnd;
+			result.copy(program,mutationEnd,result.getProgramCounter(),sz);
+			result.advanceProgramCounter(sz, true);
 		}		
 	}
 }

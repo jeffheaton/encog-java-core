@@ -2,6 +2,7 @@ package org.encog.parse.expression.common;
 
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.epl.OpCodeHeader;
+import org.encog.ml.prg.exception.EncogEPLError;
 import org.encog.ml.prg.extension.KnownConst;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;
@@ -132,6 +133,10 @@ public class RenderCommonExpression {
 				handleFunction();
 				break;
 			}
+		}
+		
+		if( stack.size()>0 ) {
+			throw new EncogEPLError("More than one value remains on stack after expression evaluation.");
 		}
 		return this.stack.pop();
 	}
