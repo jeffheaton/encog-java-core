@@ -528,26 +528,14 @@ public class EncogProgram implements MLRegression, MLError {
 
 	}
 
-	/**
-	 * Replace a node (along with its subnodes) from one program to another.
-	 * This program will have the target node (and child nodes) replaced with a
-	 * node (and subnodes) from the source program.
-	 * 
-	 * @param sourceProgram
-	 *            The source program that we will copy from.
-	 * @param sourceIndex
-	 *            The index of the node, in the source program. This is the
-	 *            start of the node in RPN.
-	 * @param targetIndex
-	 *            The target node, index in RPN.
-	 */
 	public void replaceNode(EncogProgram sourceProgram, int sourceIndex,
 			int targetIndex) {
-		int sourceSize = sourceProgram.size(sourceIndex);
-		int targetSize = this.size(targetIndex);
-		deleteSubtree(targetIndex);
+		int sourceStart = sourceProgram.findNodeStart(sourceIndex);
+		int sourceSize = (sourceIndex - sourceStart)+1;
+		int targetSize = (targetIndex - this.findNodeStart(targetIndex))+1;
+		deleteSubtree(targetIndex,targetSize);
 		this.insert(targetIndex, sourceSize);
-		sourceProgram.getHolder().copySubTree(this.holder, sourceIndex,
+		sourceProgram.getHolder().copySubTree(this.holder, sourceStart,
 				targetIndex, sourceSize);
 	}
 
@@ -579,6 +567,8 @@ public class EncogProgram implements MLRegression, MLError {
 	public void copy(EncogProgram source) {
 		this.holder.copy(source.getHolder(), source.getIndividual(), 0,
 				getIndividual(), 0, source.getProgramLength());
+		this.programLength = source.programLength;
+		this.programCounter = 0;
 	}
 
 	public void copy(EncogProgram sourceProgram, int sourceIndex,

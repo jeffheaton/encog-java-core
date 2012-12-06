@@ -69,12 +69,14 @@ public class ByteArrayHolder implements EPLHolder {
 
 	public void deleteSubtree(int individual, int index, int size) {
 		int absoluteIndex = (individual*this.maxIndividualSize)+(index*EPLHolder.FRAME_SIZE);
+		int absoluteSourceIndex = absoluteIndex+(size*EPLHolder.FRAME_SIZE);
+		int remaining = this.maxIndividualSize - absoluteSourceIndex;
 		EngineArray.arrayCopy(
 				this.code, 
-				absoluteIndex+(size*EPLHolder.FRAME_SIZE), 
+				absoluteSourceIndex, 
 				this.code, 
 				absoluteIndex, 
-				size*EPLHolder.FRAME_SIZE);
+				remaining);
 		
 	}
 	
