@@ -24,8 +24,9 @@ public class SubtreeMutation implements PrgMutate {
 			int mutationPoint = random.nextInt(programSize);
 			int mutationSize = program.size(mutationPoint);
 			result.copy(program,0,0,mutationPoint);
-			result.setProgramCounter(mutationPoint);
-			this.rnd.createNode(random, program, 0);
+			result.advanceProgramCounter(mutationPoint,true);
+			this.rnd.createNode(random, result, 0);
+			result.toString();
 			int sz = programSize - (mutationPoint+mutationSize);
 			result.copy(program,mutationPoint+mutationSize,result.getProgramCounter(),sz);
 			result.advanceProgramCounter(mutationSize, true);

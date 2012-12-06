@@ -23,9 +23,9 @@
  */
 package org.encog.parse.expression.common;
 
-import org.encog.EncogError;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ExpressionError;
+import org.encog.ml.prg.exception.EncogProgramCompileError;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.util.SimpleParser;
 
@@ -145,13 +145,13 @@ public class ParseCommonExpression {
 
 			if (name.equals("true")) {
 				if( neg ) {
-					throw new EncogError("Invalid negative sign.");
+					throw new EncogProgramCompileError("Invalid negative sign.");
 				}
 				this.program.writeConstNode(true);
 				//return;
 			} else if (name.equals("false")) {
 				if( neg ) {
-					throw new EncogError("Invalid negative sign.");
+					throw new EncogProgramCompileError("Invalid negative sign.");
 				}
 				this.program.writeConstNode(false);
 				//return;
@@ -290,7 +290,7 @@ public class ParseCommonExpression {
 			this.parser.eatWhiteSpace();
 			if( !first ) {
 				if( this.parser.peek()!=',' ) {
-					throw new EncogError("Expected , in function call.");
+					throw new EncogProgramCompileError("Expected , in function call.");
 				}
 				this.parser.advance();
 			}

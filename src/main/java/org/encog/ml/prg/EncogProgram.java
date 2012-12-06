@@ -35,6 +35,7 @@ import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.ml.prg.epl.EPLUtil;
 import org.encog.ml.prg.epl.OpCodeHeader;
+import org.encog.ml.prg.exception.EncogProgramError;
 import org.encog.ml.prg.expvalue.ExpressionStack;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.FunctionFactory;
@@ -203,6 +204,7 @@ public class EncogProgram implements MLRegression, MLError {
 		result.append(this.score);
 		result.append(", Code: ");
 
+		try {
 		TraverseProgram trav = new TraverseProgram(this);
 		while (trav.next()) {
 			result.append("{");
@@ -214,13 +216,21 @@ public class EncogProgram implements MLRegression, MLError {
 			result.append(trav.getHeader().getParam2());
 			result.append("}");
 		}
+		} catch(EncogProgramError e) {
+			result.append("##Invalid Program:");
+			result.append(e.toString());
+		}
 
 		result.append("]");
 		return result.toString();
 	}
 
 	public int size() {
-		return size(0);
+		try {
+			return size(0);
+		} catch (EncogProgramError e) {
+			return -1;
+		}
 	}
 
 	public ProgramExtensionTemplate peekTemplate() {
@@ -571,13 +581,28 @@ public class EncogProgram implements MLRegression, MLError {
 
 	public void clear() {
 		this.programLength = 0;
+		this.programCounter = 0;
 	}
 
 	public void copy(EncogProgram source) {
-		this.holder.copy(source.getHolder(),source.getIndividual(), 0, getIndividual(), 0, source.getProgramLength());
+		this.holder.copy(source.getHolder(), source.getIndividual(), 0,
+				getIndividual(), 0, source.getProgramLength());
 	}
 
-	public void copy(EncogProgram sourceProgram, int sourceIndex, int targetIndex, int size) {
-		this.holder.copy(sourceProgram.getIndividual(), sourceIndex, getIndividual(), targetIndex, size);
+	public void copy(EncogProgram sourceProgram, int sourceIndex,
+			int targetIndex, int size) {
+		this.holder.copy(sourceProgram.getIndividual(), sourceIndex,
+				getIndividual(), targetIndex, size);
+	}
+
+	public EncogProgram[] allocateOffspring(int count) {
+		EncogProgram[] result = new EncogProgram[count];
+		for (int i = 0; i < result.length; i++) {
+			EPLHolder newHolder = this.context.getHolderFactory().factor(1,
+					this.getHolder().getMaxIndividualSize());
+			result[i] = new EncogProgram(this.context,
+					new EncogProgramVariables(), newHolder, 0);
+		}
+		return result;
 	}
 }

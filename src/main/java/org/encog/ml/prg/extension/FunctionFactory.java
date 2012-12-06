@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.encog.EncogError;
+import org.encog.ml.prg.exception.EncogEPLError;
+import org.encog.ml.prg.exception.EncogProgramCompileError;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 
 public class FunctionFactory {
@@ -35,7 +37,7 @@ public class FunctionFactory {
 	
 	public ProgramExtensionTemplate getOpCode(int theOpCode) {
 		if( theOpCode<0 || theOpCode>this.standardOpcodes.length || this.standardOpcodes[theOpCode]==null  ) {
-			throw new EncogError("Undefined opcode: " + theOpCode);
+			throw new EncogEPLError("Undefined opcode: " + theOpCode);
 		}
 		
 		return this.standardOpcodes[theOpCode];
@@ -44,7 +46,7 @@ public class FunctionFactory {
 	public short getOpCode(String name, int acnt) {
 		String key = FunctionFactory.createKey(name,acnt);
 		if( !this.templateMap.containsKey(key) ) {
-			throw new EncogError("No function defined named " + name + " and " + acnt + " arguments.");
+			throw new EncogEPLError("No function defined named " + name + " and " + acnt + " arguments.");
 		}
 		return this.templateMap.get(key).getOpcode();
 	}
