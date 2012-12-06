@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.parse.expression.common.RenderCommonExpression;
 
-public class TestRender extends TestCase {
+public class TestRenderCommon extends TestCase {
 	
 	public void testRenderBasic() {
 		EncogProgram expression = new EncogProgram("(2+6)");

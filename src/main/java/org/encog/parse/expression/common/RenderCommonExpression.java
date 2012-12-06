@@ -135,7 +135,7 @@ public class RenderCommonExpression {
 			}
 		}
 		
-		if( stack.size()>0 ) {
+		if( stack.size()>1 ) {
 			throw new EncogEPLError("More than one value remains on stack after expression evaluation.");
 		}
 		return this.stack.pop();

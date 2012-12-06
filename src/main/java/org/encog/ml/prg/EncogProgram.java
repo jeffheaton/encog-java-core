@@ -44,6 +44,7 @@ import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.ml.prg.util.TraverseProgram;
 import org.encog.parse.expression.common.ParseCommonExpression;
 import org.encog.parse.expression.common.RenderCommonExpression;
+import org.encog.parse.expression.rpn.RenderRPN;
 import org.encog.util.simple.EncogUtility;
 import org.encog.util.stack.StackInt;
 
@@ -205,17 +206,8 @@ public class EncogProgram implements MLRegression, MLError {
 		result.append(", Code: ");
 
 		try {
-		TraverseProgram trav = new TraverseProgram(this);
-		while (trav.next()) {
-			result.append("{");
-			result.append("OpCode:");
-			result.append(trav.getTemplate().getName());
-			result.append(",p1=");
-			result.append(trav.getHeader().getParam1());
-			result.append(",p1=");
-			result.append(trav.getHeader().getParam2());
-			result.append("}");
-		}
+			RenderRPN rpn = new RenderRPN();
+			result.append(rpn.render(this));
 		} catch(EncogProgramError e) {
 			result.append("##Invalid Program:");
 			result.append(e.toString());

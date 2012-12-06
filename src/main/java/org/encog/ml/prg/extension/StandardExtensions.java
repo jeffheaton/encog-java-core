@@ -86,6 +86,15 @@ public class StandardExtensions {
 			}
 			prg.getStack().push(result);
 		}
+		
+		@Override
+		public void randomize(Random r, EncogProgram program, double degree) {
+			int range = program.getVariables().size();
+			short index = 0;
+			if( range>0 ) 
+				index = (short)r.nextInt(range);
+			program.writeNode(getOpcode(),0,index);
+		}
 	};
 	
 	/**
@@ -126,7 +135,6 @@ public class StandardExtensions {
 		
 		@Override
 		public void randomize(Random r, EncogProgram program, double degree) {
-			ProgramContextParams params = program.getContext().getParams();
 			program.writeNode(getOpcode(),r.nextBoolean()?1:0,(short)0);
 		}
 	};

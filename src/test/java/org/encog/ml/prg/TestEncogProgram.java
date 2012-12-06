@@ -34,9 +34,9 @@ public class TestEncogProgram extends TestCase {
 	}
 	
 	public void testString() {
-		EncogProgram prg = new EncogProgram("abs(length(\"abc\"))");
-		Assert.assertEquals("[EncogProgram: size=3, score=0.0, Code: {OpCode:sconst,p1=0,p1=3}{OpCode:length,p1=0,p1=0}{OpCode:abs,p1=0,p1=0}]",prg.toString());
-		Assert.assertEquals(3, prg.evaluate().toIntValue());
+		EncogProgram prg = new EncogProgram("1+2+3");
+		Assert.assertEquals("[EncogProgram: size=5, score=0.0, Code: 1 2 [+] 3 [+]]",prg.toString());
+		Assert.assertEquals(6, prg.evaluate().toIntValue());
 	}
 	
 	public void testComplexFindNodeStart0() {
