@@ -44,8 +44,10 @@ public class GeneticTrainWorker extends Thread {
 				
 				EncogProgram parent2 = members[selection.performSelection()];
 				crossover.crossover(this.rnd, parent1, parent2, this.tempProgram,0,1);
+				scoreFunction.calculateScore(this.tempProgram[0]);
 			} else {
 				mutation.mutate(this.rnd, parent1, this.tempProgram, 0, 1);
+				scoreFunction.calculateScore(this.tempProgram[0]);
 			}
 			
 			double score = scoreFunction.calculateScore(this.tempProgram[0]);
