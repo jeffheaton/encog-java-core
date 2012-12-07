@@ -131,6 +131,7 @@ public class EncogProgram implements MLRegression, MLError {
 	}
 
 	public void compileExpression(final String expression) {
+		clear();
 		final ParseCommonExpression parser = new ParseCommonExpression(this);
 		parser.parse(expression);
 		this.source = expression;
