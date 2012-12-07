@@ -263,7 +263,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 			boolean done = false;
 			do {
 				prg.clear();
-				rnd.createNode(random, this.population.getMembers()[i], maxDepth);
+				rnd.createNode(random, this.population.getMembers()[i], 0);
 				double score = this.scoreFunction.calculateScore(prg);
 				if (!Double.isInfinite(score) && !Double.isNaN(score)) {
 					prg.setScore(score);
