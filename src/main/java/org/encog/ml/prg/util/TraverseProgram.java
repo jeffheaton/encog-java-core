@@ -11,42 +11,40 @@ public class TraverseProgram {
 	private final EPLHolder holder;
 	private ProgramExtensionTemplate template;
 	private int currentIndex;
-	private int stackSize;
 	private boolean started = false;
-	
+
 	public TraverseProgram(EncogProgram theProgram) {
 		this.program = theProgram;
 		this.holder = this.program.getHolder();
 	}
-	
+
 	public void begin(int idx) {
 		this.currentIndex = idx;
+		this.started = false;
 	}
 	
+	private void readCurrent() {
+		program.getHolder().readNodeHeader(this.program.getIndividual(),
+				this.currentIndex, this.header);
+		this.template = this.program.getContext().getFunctions()
+				.getOpCode(this.header.getOpcode());		
+	}
+
 	public boolean next() {
-		if( !started ) {
-			program.getHolder().readNodeHeader(this.program.getIndividual(), this.currentIndex, this.header);
-			this.template = this.program.getContext().getFunctions().getOpCode(this.header.getOpcode());
-			this.stackSize = 1;
-			this.started = true;
-			
-		} else if( this.stackSize>0 && this.currentIndex<this.program.getProgramLength() ) {
-			this.currentIndex+=template.getInstructionSize(this.header);
-			this.holder.readNodeHeader(this.program.getIndividual(), this.currentIndex, this.header);
-			this.template = this.program.getContext().getFunctions().getOpCode(this.header.getOpcode());
-			if( template.getChildNodeCount()>0 ) {
-				this.stackSize-=template.getChildNodeCount();
-			} 
-				
-			this.stackSize++;
+		// if we've already started, then advance to the next one.
+		if( started ) {
+			this.currentIndex += template.getInstructionSize(this.header);
+		}
+		started = true;
+		
+		if( this.currentIndex < this.program.getProgramLength() ) {
+			readCurrent();
+			return true;
 		} else {
 			return false;
 		}
-		
-		return this.currentIndex<this.program.getProgramLength();
 	}
-	
-	
+
 	/**
 	 * @return the header
 	 */
@@ -63,7 +61,7 @@ public class TraverseProgram {
 
 	public int countRemaining() {
 		int result = 0;
-		while(next()) {
+		while (next()) {
 			result++;
 		}
 		return result;
@@ -74,10 +72,11 @@ public class TraverseProgram {
 	}
 
 	public boolean isLeaf() {
-		return this.template.getChildNodeCount()==0;
+		return this.template.getChildNodeCount() == 0;
 	}
 
 	public int getNextIndex() {
-		return this.getCurrentIndex()+this.template.getInstructionSize(this.header);
+		return this.getCurrentIndex()
+				+ this.template.getInstructionSize(this.header);
 	}
 }

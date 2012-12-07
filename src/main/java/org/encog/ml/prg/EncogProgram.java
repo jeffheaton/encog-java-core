@@ -222,6 +222,7 @@ public class EncogProgram implements MLRegression, MLError {
 		try {
 			return size(0);
 		} catch (EncogProgramError e) {
+			e.printStackTrace();
 			return -1;
 		}
 	}
@@ -417,16 +418,6 @@ public class EncogProgram implements MLRegression, MLError {
 		return temp.getChildNodeCount() == 0;
 	}
 
-	public boolean areAllConstDescendants(final int index) {
-		TraverseProgram trav = new TraverseProgram(this);
-		trav.begin(0);
-		while (trav.next()) {
-			if (trav.getTemplate().isVariableValue())
-				return false;
-		}
-		return true;
-	}
-
 	public ExpressionValue evaluate(int index) {
 		try {
 			this.stack.clear();
@@ -444,12 +435,6 @@ public class EncogProgram implements MLRegression, MLError {
 		}
 	}
 
-	public void deleteSubtree(int index) {
-		int size = this.frameSize(index);
-		this.holder.deleteSubtree(this.individual, index, size);
-		this.programLength -= size;
-	}
-
 	public void deleteSubtree(int index, int size) {
 		this.holder.deleteSubtree(this.individual, index, size);
 		this.programLength -= size;
@@ -459,13 +444,6 @@ public class EncogProgram implements MLRegression, MLError {
 		TraverseProgram trav = new TraverseProgram(this);
 		trav.begin(index);
 		return trav.countRemaining();
-	}
-
-	public int frameSize(int index) {
-		TraverseProgram trav = new TraverseProgram(this);
-		trav.begin(index);
-		trav.countRemaining();
-		return trav.getCurrentIndex() - index;
 	}
 
 	public ProgramExtensionTemplate getConstTemplate(ExpressionValue c) {
