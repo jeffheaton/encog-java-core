@@ -103,17 +103,6 @@ public class ByteArrayHolder implements EPLHolder {
 	}
 
 	@Override
-	public void copySubTree(EPLHolder targetProgram, int sourceIndex, int targetIndex, int size) {
-		EngineArray.arrayCopy(
-				this.code,
-				sourceIndex*EPLHolder.FRAME_SIZE,
-				((ByteArrayHolder)targetProgram).getCode(),
-				targetIndex*EPLHolder.FRAME_SIZE,
-				size*EPLHolder.FRAME_SIZE);
-				
-	}
-
-	@Override
 	public String toBase64(int individual, int programLength) {
 		int absoluteIndex = (individual*this.maxIndividualSize);
 		return Base64.encodeBytes(this.code, absoluteIndex, programLength*EPLHolder.FRAME_SIZE);

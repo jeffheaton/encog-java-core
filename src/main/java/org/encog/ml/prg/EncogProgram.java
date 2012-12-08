@@ -514,8 +514,7 @@ public class EncogProgram implements MLRegression, MLError {
 		int targetSize = (nextIndex(targetIndex) - this.findNodeStart(targetIndex));
 		deleteSubtree(targetIndex,targetSize);
 		this.insert(targetIndex, sourceSize);
-		sourceProgram.getHolder().copySubTree(this.holder, sourceStart,
-				targetIndex, sourceSize);
+		this.holder.copy(sourceProgram.getHolder(), sourceProgram.getIndividual(), sourceStart, this.individual, targetIndex, sourceSize);
 	}
 
 	private int nextIndex(int index) {

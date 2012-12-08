@@ -19,6 +19,14 @@ public class TestSubtreeCrossover extends TestCase {
 		Assert.assertEquals("(1+(4+5))",render.render(prg));
 	}
 	
+	public void testUnderlying2() {
+		RenderCommonExpression render = new RenderCommonExpression();
+		EncogProgram prg = new EncogProgram("x");
+		EncogProgram prg2 = new EncogProgram("x+x");
+		prg.replaceNode(prg2, 1, 0);
+		Assert.assertEquals("x",render.render(prg));
+	}
+	
 	public void testSimpleReplace() {
 		RenderCommonExpression render = new RenderCommonExpression();
 		EncogProgram prg = new EncogProgram("1.5");

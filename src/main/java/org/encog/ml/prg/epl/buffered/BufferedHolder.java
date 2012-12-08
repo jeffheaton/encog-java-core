@@ -74,12 +74,6 @@ public class BufferedHolder implements EPLHolder {
 	}
 
 	@Override
-	public void copySubTree(EPLHolder targetProgram, int sourceIndex, int targetIndex, int size) {
-		
-		
-	}
-
-	@Override
 	public String toBase64(int individual, int programLength) {
 		// TODO Auto-generated method stub
 		return null;
