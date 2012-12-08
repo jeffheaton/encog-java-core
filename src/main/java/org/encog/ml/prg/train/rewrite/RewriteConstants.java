@@ -20,34 +20,7 @@ public class RewriteConstants implements RewriteRule {
 		int potentialRewrite = -1;
 		boolean allConst = true;
 
-		TraverseProgram trav = new TraverseProgram(this.program);
-		trav.begin(0);
-		while (trav.next()) {
-			// have we hit something variable
-			if( trav.getTemplate().isVariableValue() ) {
-				allConst = false;
-			}
-			
-			// have we hit a node
-			if( trav.getTemplate().getChildNodeCount()>0 ) {
-				if( allConst ) {
-					potentialRewrite = trav.getNextIndex();
-				} else {
-					if( potentialRewrite!=-1 ) {
-						rewrite(rewriteStart,potentialRewrite);
-						return true;
-					} else {
-						rewriteStart = trav.getCurrentIndex();
-						allConst = true;
-					}
-				}
-			}
-		} 
-		
-		if( potentialRewrite!=-1) {
-			rewrite(rewriteStart,potentialRewrite);
-			return true;
-		}
+
 		
 		return false;		
 	}

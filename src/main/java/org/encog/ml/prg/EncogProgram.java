@@ -222,7 +222,6 @@ public class EncogProgram implements MLRegression, MLError {
 		try {
 			return size(0);
 		} catch (EncogProgramError e) {
-			e.printStackTrace();
 			return -1;
 		}
 	}
@@ -510,11 +509,12 @@ public class EncogProgram implements MLRegression, MLError {
 	public void replaceNode(EncogProgram sourceProgram, int sourceIndex,
 			int targetIndex) {
 		int sourceStart = sourceProgram.findNodeStart(sourceIndex);
+		int targetStart = findNodeStart(targetIndex);
 		int sourceSize = (sourceProgram.nextIndex(sourceIndex) - sourceStart);
-		int targetSize = (nextIndex(targetIndex) - this.findNodeStart(targetIndex));
-		deleteSubtree(targetIndex,targetSize);
-		this.insert(targetIndex, sourceSize);
-		this.holder.copy(sourceProgram.getHolder(), sourceProgram.getIndividual(), sourceStart, this.individual, targetIndex, sourceSize);
+		int targetSize = (nextIndex(targetIndex) - targetStart);
+		deleteSubtree(targetStart,targetSize);
+		this.insert(targetStart, sourceSize);
+		this.holder.copy(sourceProgram.getHolder(), sourceProgram.getIndividual(), sourceStart, this.individual, targetStart, sourceSize);
 	}
 
 	private int nextIndex(int index) {
@@ -570,5 +570,17 @@ public class EncogProgram implements MLRegression, MLError {
 					new EncogProgramVariables(), newHolder, 0);
 		}
 		return result;
+	}
+
+	public int findFrame(int position) {
+		TraverseProgram trav = new TraverseProgram(this);
+		trav.begin(0);
+		int i = 0;
+		while(trav.next()) {
+			if( i==position )
+				return trav.getCurrentIndex();
+			i++;
+		}
+		return -1;
 	}
 }
