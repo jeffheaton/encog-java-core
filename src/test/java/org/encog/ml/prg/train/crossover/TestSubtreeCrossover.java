@@ -15,7 +15,7 @@ public class TestSubtreeCrossover extends TestCase {
 		RenderCommonExpression render = new RenderCommonExpression();
 		EncogProgram prg = new EncogProgram("1+2");
 		EncogProgram prg2 = new EncogProgram("4+5");
-		prg.replaceNode(prg2, 2, 1);
+		prg.replaceNodeAtPosition(prg2, 2, 1);
 		Assert.assertEquals("(1+(4+5))",render.render(prg));
 	}
 	
@@ -23,7 +23,7 @@ public class TestSubtreeCrossover extends TestCase {
 		RenderCommonExpression render = new RenderCommonExpression();
 		EncogProgram prg = new EncogProgram("(3+2)*4");
 		EncogProgram prg2 = new EncogProgram("1");
-		prg.replaceNode(prg2, 0, 2);
+		prg.replaceNodeAtPosition(prg2, 0, 2);
 		Assert.assertEquals("(1*4)",render.render(prg));
 	}
 	
@@ -31,16 +31,16 @@ public class TestSubtreeCrossover extends TestCase {
 		RenderCommonExpression render = new RenderCommonExpression();
 		EncogProgram prg = new EncogProgram("1.1+2.2");
 		EncogProgram prg2 = new EncogProgram("1");
-		prg.replaceNode(prg2, 0, 1);
-		Assert.assertEquals("(1+2.2)",render.render(prg));
+		prg.replaceNodeAtPosition(prg2, 0, 1);
+		Assert.assertEquals("(1.1+1)",render.render(prg));
 	}
 	
 	public void testUnderlyingUnderlyingDoubleToShort() {
 		RenderCommonExpression render = new RenderCommonExpression();
 		EncogProgram prg = new EncogProgram("1+2");
 		EncogProgram prg2 = new EncogProgram("1.1");
-		prg.replaceNode(prg2, 0, 1);
-		Assert.assertEquals("(1+2.2)",render.render(prg));
+		prg.replaceNodeAtPosition(prg2, 0, 1);
+		Assert.assertEquals("(1+1.1)",render.render(prg));
 	}
 	
 	public void testSimpleReplace() {

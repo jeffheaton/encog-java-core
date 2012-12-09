@@ -493,12 +493,12 @@ public class EncogProgram implements MLRegression, MLError {
 		trav.begin(0);
 		while (trav.next()) {
 			if (trav.isLeaf()) {
-				stack.push(trav.getCurrentIndex());
+				stack.push(trav.getFrameIndex());
 			} else {
 				stack.min(trav.getTemplate().getChildNodeCount());
 			}
 
-			if (trav.getCurrentIndex() == index) {
+			if (trav.getFrameIndex() == index) {
 				return stack.pop();
 			}
 		}
@@ -578,9 +578,16 @@ public class EncogProgram implements MLRegression, MLError {
 		int i = 0;
 		while(trav.next()) {
 			if( i==position )
-				return trav.getCurrentIndex();
+				return trav.getFrameIndex();
 			i++;
 		}
 		return -1;
+	}
+
+	public void replaceNodeAtPosition(EncogProgram sourceProgram, int sourcePosition,
+			int targetPosition) {
+		int sourceIndex = sourceProgram.findFrame(sourcePosition);
+		int targetIndex = findFrame(targetPosition);
+		replaceNode(sourceProgram,sourceIndex,targetIndex);
 	}
 }

@@ -20,8 +20,17 @@ public class SubtreeMutation implements PrgMutate {
 		for(int i=0;i<mutationCount;i++) {
 			EncogProgram result = offspring[i];
 			result.clear();
+			
+			// find the mutation point, this is simply a node position based on the
+			// node count, it does not take int account node-sizes. Also, because this
+			// is RPN, the mutation point is the end of the mutation.
 			int programSize = program.size();
-			int mutationEnd = program.findFrame(random.nextInt(programSize));
+			int mutationPosition = program.findFrame(random.nextInt(programSize));
+			
+			// now find the actual frame index of the end of the mutation
+			int mutationEnd = program.findFrame(mutationPosition);
+			
+			// now perform the mutation
 			int mutationStart = program.findNodeStart(mutationEnd);
 			mutationEnd++;
 			//int mutationSize = program.size(mutationPoint);

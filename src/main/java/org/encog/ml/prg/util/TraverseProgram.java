@@ -12,6 +12,7 @@ public class TraverseProgram {
 	private ProgramExtensionTemplate template;
 	private int currentIndex;
 	private boolean started = false;
+	private int opcodesRead;
 
 	public TraverseProgram(EncogProgram theProgram) {
 		this.program = theProgram;
@@ -21,6 +22,7 @@ public class TraverseProgram {
 	public void begin(int idx) {
 		this.currentIndex = idx;
 		this.started = false;
+		this.opcodesRead = 0;
 	}
 	
 	private void readCurrent() {
@@ -34,6 +36,7 @@ public class TraverseProgram {
 		// if we've already started, then advance to the next one.
 		if( started ) {
 			this.currentIndex += template.getInstructionSize(this.header);
+			this.opcodesRead++;
 		}
 		started = true;
 		
@@ -67,16 +70,25 @@ public class TraverseProgram {
 		return result;
 	}
 
-	public int getCurrentIndex() {
+	public int getFrameIndex() {
 		return this.currentIndex;
 	}
 
 	public boolean isLeaf() {
 		return this.template.getChildNodeCount() == 0;
 	}
+	
+	
+
+	/**
+	 * @return the opcodesRead
+	 */
+	public int getOpcodesRead() {
+		return opcodesRead;
+	}
 
 	public int getNextIndex() {
-		return this.getCurrentIndex()
+		return this.getFrameIndex()
 				+ this.template.getInstructionSize(this.header);
 	}
 }
