@@ -14,6 +14,7 @@ public class TestSubtreeMutation extends TestCase {
 	
 	public void eval(int seed, String startExpression, String mutateExpression) {
 		EncogProgramContext context = new EncogProgramContext();
+		context.defineVariable("x");
 		StandardExtensions.createNumericOperators(context.getFunctions());
 		EncogProgram prg = new EncogProgram(context);
 		prg.getVariables().setVariable("x", 1);
@@ -26,7 +27,19 @@ public class TestSubtreeMutation extends TestCase {
 		Assert.assertEquals(mutateExpression,render.render(offspring[0]));
 	}
 	
+	public void testAtomicMutate() {
+		eval(2,"1","-(-9)");
+	}
+	
 	public void testMutate() {
 		eval(2,"((1+2)^2/(3+4-2))","(((1+-(-9))^2)/((3+4)-2))");
-	}	
+	}
+	
+	public void testMutateFloat() {
+		eval(7,"1.1+1.2","(1.1+4)");
+	}
+	
+	public void testMutateFloat2() {
+		//eval(2,"((1.1+2.2)^2.2/(3.3+4.4-2,2))","(((1.1+-(-9.9))^2.2)/((3.3+4.4)-2.2))");
+	}
 }

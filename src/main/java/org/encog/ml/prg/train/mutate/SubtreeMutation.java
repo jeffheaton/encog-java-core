@@ -25,27 +25,30 @@ public class SubtreeMutation implements PrgMutate {
 			// node count, it does not take int account node-sizes. Also, because this
 			// is RPN, the mutation point is the end of the mutation.
 			int programSize = program.size();
-			int mutationPosition = program.findFrame(random.nextInt(programSize));
+			int mutationPosition = random.nextInt(programSize);
 			
 			// now find the actual frame index of the end of the mutation
-			int mutationEnd = program.findFrame(mutationPosition);
+			int mutationIndex = program.findFrame(mutationPosition);
 			
-			// now perform the mutation
-			int mutationStart = program.findNodeStart(mutationEnd);
-			mutationEnd++;
-			//int mutationSize = program.size(mutationPoint);
-			result.copy(program,0,0,mutationStart);
-			result.advanceProgramCounter(mutationStart,true);
+			int mutationStart = program.findNodeStart(mutationIndex);
+			int mutationSize = (program.nextIndex(mutationIndex) - mutationStart);
+			int mutationEnd = mutationStart+mutationSize;
+			
+			// copy left of the mutation point
+			result.copy(program, 0, 0, mutationStart);
+			result.setProgramLength(mutationStart);
+			result.setProgramCounter(mutationStart);
+			
+			// handle mutation point
 			this.rnd.createNode(random, result, 0);
-			int sz = programSize - mutationEnd;
-			result.copy(program,mutationEnd,result.getProgramCounter(),sz);
-			result.advanceProgramCounter(sz, true);
 			
-			try {
-				offspring[i].evaluate();
-			} catch(Throwable t) {
-				System.out.println("Stop");
-			}
+			// copy right of the mutation point
+			int rightSize = program.getProgramLength()-mutationStart-mutationSize;
+			result.copy(program, mutationEnd, result.getProgramLength(), rightSize);
+			result.setProgramLength(result.getProgramLength()+rightSize);
+			
+			result.size();
+			result.validate();
 		}		
 	}
 }

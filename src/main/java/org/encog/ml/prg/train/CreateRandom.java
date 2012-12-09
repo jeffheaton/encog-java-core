@@ -33,11 +33,13 @@ public class CreateRandom {
 	public EncogProgram generate(Random random) {
 		EncogProgram program = new EncogProgram(context);
 		createNode(random, program,0);
+		program.validate();
 		return program;
 	}
 	
 	public void generate(Random random, EncogProgram program) {
 		createNode(random, program,0);
+		program.validate();
 	}
 	
 	private void createLeafNode(Random random, EncogProgram program) {

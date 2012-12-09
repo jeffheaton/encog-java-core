@@ -517,7 +517,7 @@ public class EncogProgram implements MLRegression, MLError {
 		this.holder.copy(sourceProgram.getHolder(), sourceProgram.getIndividual(), sourceStart, this.individual, targetStart, sourceSize);
 	}
 
-	private int nextIndex(int index) {
+	public int nextIndex(int index) {
 		this.holder.readNodeHeader(this.individual, index, header);
 		ProgramExtensionTemplate temp = this.context.getFunctions().getOpCode(header.getOpcode());
 		return index+temp.getInstructionSize(header);
@@ -589,5 +589,22 @@ public class EncogProgram implements MLRegression, MLError {
 		int sourceIndex = sourceProgram.findFrame(sourcePosition);
 		int targetIndex = findFrame(targetPosition);
 		replaceNode(sourceProgram,sourceIndex,targetIndex);
+	}
+	
+	public void validate() {
+		if( size()<0 ) {
+			throw new EncogProgramError("Program code invalid");
+		}
+		
+		if( size()==0 ) {
+			throw new EncogProgramError("Zero length program is invalid.");
+		}
+		
+		try {
+		MLData input = new BasicMLData(this.getInputCount());
+		this.compute(input);
+		} catch(Throwable t) {
+			throw new EncogProgramError("Can't evaluate EncogProgram.",t);
+		}
 	}
 }
