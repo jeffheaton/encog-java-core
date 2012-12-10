@@ -6,11 +6,11 @@ import org.encog.Encog;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ExpressionError;
-import org.encog.ml.prg.ProgramContextParams;
 import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.ml.prg.epl.EPLUtil;
 import org.encog.ml.prg.epl.OpCodeHeader;
 import org.encog.ml.prg.expvalue.ExpressionValue;
+import org.encog.ml.prg.train.GeneticTrainingParams;
 
 public class StandardExtensions {
 	
@@ -113,7 +113,7 @@ public class StandardExtensions {
 		
 		@Override
 		public void randomize(Random r, EncogProgram program, double degree) {
-			ProgramContextParams params = program.getContext().getParams();
+			GeneticTrainingParams params = program.getContext().getParams();
 			program.writeNode(getOpcode());
 			program.writeDouble(RangeRandomizer.randomize(r, params.getConstMin(), params.getConstMax()));
 		}
@@ -155,7 +155,7 @@ public class StandardExtensions {
 		
 		@Override
 		public void randomize(Random r, EncogProgram program, double degree) {
-			ProgramContextParams params = program.getContext().getParams();
+			GeneticTrainingParams params = program.getContext().getParams();
 			int value = (int)RangeRandomizer.randomize(r, params.getConstMin(), params.getConstMax());
 			program.writeNode(getOpcode(),value,(short)0);
 		}
@@ -180,7 +180,7 @@ public class StandardExtensions {
 		
 		@Override
 		public void randomize(Random r, EncogProgram program, double degree) {
-			ProgramContextParams params = program.getContext().getParams();
+			GeneticTrainingParams params = program.getContext().getParams();
 			program.writeNode(getOpcode(),0,(short)0);
 		}
 	};

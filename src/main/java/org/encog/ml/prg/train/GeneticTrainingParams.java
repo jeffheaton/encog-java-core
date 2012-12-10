@@ -2,6 +2,10 @@ package org.encog.ml.prg.train;
 
 public class GeneticTrainingParams {
 	
+	private double constMin = -10;
+	
+	private double constMax = 10;
+	
 	/**
 	 * The starting complexity pentalty.
 	 */
@@ -21,6 +25,10 @@ public class GeneticTrainingParams {
 	 * The complexity level at which a full (100%) penalty is applied.
 	 */
 	private int complexityPentaltyFullThreshold = 50;
+	
+	private int maxGeneratedDepth = 5;
+	
+	private int maxIndividualSize = 128;
 
 	/**
 	 * @return the complexityPenalty
@@ -78,8 +86,63 @@ public class GeneticTrainingParams {
 	public void setComplexityFullPenalty(double complexityFullPenalty) {
 		this.complexityFullPenalty = complexityFullPenalty;
 	}
-
 	
+	/**
+	 * @return the maxGeneratedDepth
+	 */
+	public int getMaxGeneratedDepth() {
+		return maxGeneratedDepth;
+	}
+
+	/**
+	 * @param maxGeneratedDepth the maxGeneratedDepth to set
+	 */
+	public void setMaxGeneratedDepth(int maxGeneratedDepth) {
+		this.maxGeneratedDepth = maxGeneratedDepth;
+	}
+
+	/**
+	 * @return the maxIndividualSize
+	 */
+	public int getMaxIndividualSize() {
+		return maxIndividualSize;
+	}
+
+	/**
+	 * @param maxIndividualSize the maxIndividualSize to set
+	 */
+	public void setMaxIndividualSize(int maxIndividualSize) {
+		this.maxIndividualSize = maxIndividualSize;
+	}
+
+	public GeneticTrainingParams() {
+		
+	}
+	
+	/**
+	 * @return the constMin
+	 */
+	public double getConstMin() {
+		return constMin;
+	}
+	/**
+	 * @param constMin the constMin to set
+	 */
+	public void setConstMin(double constMin) {
+		this.constMin = constMin;
+	}
+	/**
+	 * @return the constMax
+	 */
+	public double getConstMax() {
+		return constMax;
+	}
+	/**
+	 * @param constMax the constMax to set
+	 */
+	public void setConstMax(double constMax) {
+		this.constMax = constMax;
+	}
 	
 	
 }

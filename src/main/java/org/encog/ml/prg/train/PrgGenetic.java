@@ -49,7 +49,6 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	private RandomFactory randomNumberFactory = Encog.getInstance()
 			.getRandomFactory().factorFactory();
 	private Throwable currentError;
-	private final GeneticTrainingParams params = new GeneticTrainingParams();
 
 	/**
 	 * Condition used to check if we are done.
@@ -353,20 +352,14 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 
 	}
 
-	/**
-	 * @return the params
-	 */
-	public GeneticTrainingParams getParams() {
-		return params;
-	}
-
 	public void calculateEffectiveScore(EncogProgram prg) {
+		GeneticTrainingParams params = this.context.getParams();
 		double result = prg.getScore();
-		if (prg.size() > this.params.getComplexityPenaltyThreshold()) {
-			int over = prg.size() - this.params.getComplexityPenaltyThreshold();
-			int range = this.params.getComplexityPentaltyFullThreshold()
-					- this.params.getComplexityPenaltyThreshold();
-			double complexityPenalty = ((params.getComplexityFullPenalty() - this.params
+		if (prg.size() > params.getComplexityPenaltyThreshold()) {
+			int over = prg.size() - params.getComplexityPenaltyThreshold();
+			int range = params.getComplexityPentaltyFullThreshold()
+					- params.getComplexityPenaltyThreshold();
+			double complexityPenalty = ((params.getComplexityFullPenalty() - params
 					.getComplexityPenalty()) / range) * over;
 			result += (result * complexityPenalty);
 		}
