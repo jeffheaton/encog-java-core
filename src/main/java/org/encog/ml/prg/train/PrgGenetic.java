@@ -353,7 +353,15 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		} finally {
 			this.iterationLock.unlock();
 		}
-
+	}
+	
+	public void signalDone() {
+		this.iterationLock.lock();
+		try {
+			this.iterationCondition.signal();
+		} finally {
+			this.iterationLock.unlock();
+		}
 	}
 
 	public void calculateEffectiveScore(EncogProgram prg) {
