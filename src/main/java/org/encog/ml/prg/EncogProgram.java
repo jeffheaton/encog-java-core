@@ -225,6 +225,17 @@ public class EncogProgram implements MLRegression, MLError {
 			return -1;
 		}
 	}
+	
+	public int size2() {
+		try {
+			//TraverseProgram trav = new TraverseProgram(this);
+			//trav.begin(0);
+			//return trav.countRemaining();
+			return size();
+		} catch (EncogProgramError e) {
+			return -1;
+		}
+	}
 
 	public ProgramExtensionTemplate peekTemplate() {
 		this.holder.readNodeHeader(this.individual, this.programCounter,
@@ -553,6 +564,8 @@ public class EncogProgram implements MLRegression, MLError {
 				getIndividual(), 0, source.getProgramLength());
 		this.programLength = source.programLength;
 		this.programCounter = 0;
+		this.score = source.score;
+		this.effectiveScore = source.effectiveScore;
 	}
 
 	public void copy(EncogProgram sourceProgram, int sourceIndex,

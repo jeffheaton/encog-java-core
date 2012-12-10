@@ -17,7 +17,6 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.EncogProgramVariables;
-import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.ml.prg.train.crossover.PrgCrossover;
 import org.encog.ml.prg.train.crossover.SubtreeCrossover;
 import org.encog.ml.prg.train.mutate.PrgMutate;
@@ -303,7 +302,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 			
 			for(int i=0;i<size;i++) {
 				int replaceIndex = selection.performAntiSelection();
-				this.population.getMembers()[replaceIndex] = tempProgram[index+i];
+				this.population.getMembers()[replaceIndex].copy(tempProgram[index+i]);
 				evaluateBestGenome(tempProgram[index+i]);
 			}
 			

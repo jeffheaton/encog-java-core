@@ -45,24 +45,24 @@ public class GeneticTrainWorker extends Thread {
 				
 				EncogProgram parent2 = members[selection.performSelection()];
 				parent2.validate();
-				//crossover.crossover(this.rnd, parent1, parent2, this.tempProgram,0,1);
-				//scoreFunction.calculateScore(this.tempProgram[0]);
+				crossover.crossover(this.rnd, parent1, parent2, this.tempProgram,0,1);
+				scoreFunction.calculateScore(this.tempProgram[0]);
 			} else {
 				mutation.mutate(this.rnd, parent1, this.tempProgram, 0, 1);
 				scoreFunction.calculateScore(this.tempProgram[0]);
 			}
 			
-			/*double score = scoreFunction.calculateScore(this.tempProgram[0]);
+			double score = scoreFunction.calculateScore(this.tempProgram[0]);
 			if( !Double.isInfinite(score) && !Double.isNaN(score) ) {
 				//population.rewrite(this.tempProgram[0]);
-				//this.tempProgram[0].setScore(score);
-				//tempProgram[0].validate();
-				//this.owner.addGenome(this.tempProgram,0,1);
+				this.tempProgram[0].setScore(score);
+				tempProgram[0].validate();
+				this.owner.addGenome(this.tempProgram,0,1);
 				
 				if( this.done.get() ) {
 					break;
 				}
-			}*/
+			}
 		}} catch(Throwable t) {
 			this.owner.reportError(t);
 		}
