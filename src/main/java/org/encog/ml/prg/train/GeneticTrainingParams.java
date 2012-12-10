@@ -6,6 +6,10 @@ public class GeneticTrainingParams {
 	
 	private double constMax = 10;
 	
+	private int populationSize = 1000;
+	
+	private int stackSize = 50;
+	
 	/**
 	 * The starting complexity pentalty.
 	 */
@@ -143,6 +147,35 @@ public class GeneticTrainingParams {
 	public void setConstMax(double constMax) {
 		this.constMax = constMax;
 	}
+
+	/**
+	 * @return the stackSize
+	 */
+	public int getStackSize() {
+		return stackSize;
+	}
+
+	/**
+	 * @param stackSize the stackSize to set
+	 */
+	public void setStackSize(int stackSize) {
+		this.stackSize = stackSize;
+	}
+
+	/**
+	 * @return the populationSize
+	 */
+	public int getPopulationSize() {
+		return populationSize;
+	}
+
+	/**
+	 * @param populationSize the populationSize to set
+	 */
+	public void setPopulationSize(int populationSize) {
+		this.populationSize = populationSize;
+	}
+
 	
 	
 }

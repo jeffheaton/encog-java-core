@@ -13,18 +13,24 @@ import org.encog.util.text.Base64;
 
 public class ByteArrayHolder implements EPLHolder {
 	private byte[] code;
+	private int maxIndividualFrames;
 	private int maxIndividualSize;
 	
 	public int getMaxIndividualSize() {
 		return this.maxIndividualSize;
 	}
 	
+	public int getMaxIndividualFrames() {
+		return this.maxIndividualFrames;
+	}
+	
 	public int getPopulationSize() {
 		return this.code.length/this.maxIndividualSize;
 	}
 	
-	public ByteArrayHolder(int thePopulationSize, int theMaxIndividualSize) {
-		this.maxIndividualSize = theMaxIndividualSize;
+	public ByteArrayHolder(int thePopulationSize, int theMaxIndividualFrames) {
+		this.maxIndividualFrames = theMaxIndividualFrames;
+		this.maxIndividualSize = this.maxIndividualFrames*EPLHolder.FRAME_SIZE;
 		code = new byte[thePopulationSize*maxIndividualSize];
 	}
 	

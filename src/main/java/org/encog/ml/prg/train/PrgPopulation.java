@@ -15,16 +15,13 @@ public class PrgPopulation {
 	private final EncogProgramContext context;
 	private EncogProgram[] members;
 	private List<RewriteRule> rewriteRules = new ArrayList<RewriteRule>();
-	private int maxDepth = 5;
-	private int maxPopulation = 1000;
-	private int maxFrameSize = 1024;
 	private EPLHolder holder;
 	
-	public PrgPopulation(EncogProgramContext theContext, int theMaxPopulation) {
-		this.holder = theContext.getHolderFactory().factor(theMaxPopulation, this.maxFrameSize);
+	public PrgPopulation(EncogProgramContext theContext) {
+		GeneticTrainingParams params = theContext.getParams();
+		this.holder = theContext.getHolderFactory().factor(params.getPopulationSize(), params.getMaxIndividualSize());
 		this.context = theContext;
-		this.maxPopulation = theMaxPopulation;
-		this.members = new EncogProgram[this.maxPopulation];
+		this.members = new EncogProgram[params.getPopulationSize()];
 	}
 		
 	public void dumpMembers() {
@@ -36,22 +33,6 @@ public class PrgPopulation {
 			System.out.println(index + ": Score " + prg.getScore() + " : " + render.render(prg));
 			index++;
 		}
-	}
-
-	public int getMaxDepth() {
-		return maxDepth;
-	}
-
-	public void setMaxDepth(int maxDepth) {
-		this.maxDepth = maxDepth;
-	}
-
-	public int getMaxPopulation() {
-		return maxPopulation;
-	}
-
-	public void setMaxPopulation(int maxPopulation) {
-		this.maxPopulation = maxPopulation;
 	}
 
 	public EncogProgramContext getContext() {
@@ -93,7 +74,7 @@ public class PrgPopulation {
 	}
 
 	public EncogProgram createProgram() {
-		EPLHolder newHolder = this.context.getHolderFactory().factor(1, this.maxFrameSize);
+		EPLHolder newHolder = this.context.getHolderFactory().factor(1, this.context.getParams().getMaxIndividualSize());
 		EncogProgram result = new EncogProgram(this.context, new EncogProgramVariables(), newHolder,0);
 		return result;
 	}

@@ -60,7 +60,7 @@ public class EncogProgram implements MLRegression, MLError {
 	private double effectiveScore;
 	private int programLength;
 	private int programCounter;
-	private ExpressionStack stack = new ExpressionStack(100);
+	private ExpressionStack stack;
 	private String source;
 
 	public static ExpressionValue parse(final String str) {
@@ -100,11 +100,12 @@ public class EncogProgram implements MLRegression, MLError {
 	public EncogProgram(EncogProgramContext theContext,
 			EncogProgramVariables theVariables, EPLHolder theHolder,
 			int theIndividual) {
+		this.stack = new ExpressionStack(this.context.getParams().getStackSize());
 		this.context = theContext;
 		this.variables = theVariables;
 
 		if (theHolder == null) {
-			this.holder = this.context.getHolderFactory().factor(1, 1024);
+			this.holder = this.context.getHolderFactory().factor(1, this.context.getParams().getMaxIndividualSize());
 			this.individual = 0;
 		} else {
 			this.holder = theHolder;

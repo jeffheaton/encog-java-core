@@ -17,6 +17,7 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.EncogProgramVariables;
+import org.encog.ml.prg.exception.EncogProgramError;
 import org.encog.ml.prg.train.crossover.PrgCrossover;
 import org.encog.ml.prg.train.crossover.SubtreeCrossover;
 import org.encog.ml.prg.train.mutate.PrgMutate;
@@ -254,7 +255,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		CreateRandom rnd = new CreateRandom(this.context, maxDepth);
 		Random random = this.randomNumberFactory.factor();
 
-		for (int i = 0; i < this.population.getMaxPopulation(); i++) {
+		for (int i = 0; i < this.population.size(); i++) {
 			EncogProgram prg = new EncogProgram(this.context, new EncogProgramVariables(), this.population.getHolder(), i);
 			this.population.getMembers()[i] = prg;
 
@@ -295,14 +296,17 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 
 	}
 
-	public void addGenome(EncogProgram[] tempProgram, int index, int size) {
+	public void addGenome(EncogProgram[] genome, int index, int size) {
 		this.iterationLock.lock();
 		try {
-			
 			for(int i=0;i<size;i++) {
+				if( genome[i].size()>this.population.getHolder().getMaxIndividualSize() ) {
+					throw new EncogProgramError("Program is too large to be added to population.");
+				}
 				int replaceIndex = selection.performAntiSelection();
-				this.population.getMembers()[replaceIndex].copy(tempProgram[index+i]);
-				evaluateBestGenome(tempProgram[index+i]);
+				this.population.getMembers()[replaceIndex].copy(genome[index+i]);
+				evaluateBestGenome(genome[index+i]);
+				
 			}
 			
 			this.subIterationCounter++;
