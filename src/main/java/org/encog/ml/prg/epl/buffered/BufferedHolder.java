@@ -86,13 +86,6 @@ public class BufferedHolder implements EPLHolder {
 	}
 
 	@Override
-	public void copy(int sourceIndividual, int sourceIndex,
-			int targetIndividual, int targetIndex, int size) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void copy(EPLHolder sourceHolder, int sourceIndividual,
 			int sourceIndex, int targetIndividual, int targetIndex, int size) {
 		// TODO Auto-generated method stub
