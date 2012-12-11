@@ -565,10 +565,9 @@ public class EncogProgram implements MLRegression, MLError {
 	}
 
 	public void copy(EncogProgram source) {
+		clear();
 		setProgramLength( source.programLength);
-		this.holder.copy(source.getHolder(), source.getIndividual(), 0,
-				getIndividual(), 0, source.getProgramLength());
-		this.programCounter = 0;
+		copy(source,0,0,source.getProgramLength());
 		this.score = source.score;
 		this.effectiveScore = source.effectiveScore;
 	}
