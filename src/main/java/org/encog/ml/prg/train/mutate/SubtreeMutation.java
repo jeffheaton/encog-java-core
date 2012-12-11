@@ -44,8 +44,9 @@ public class SubtreeMutation implements PrgMutate {
 			
 			// copy right of the mutation point
 			int rightSize = program.getProgramLength()-mutationStart-mutationSize;
-			result.copy(program, mutationEnd, result.getProgramLength(), rightSize);
+			int t = result.getProgramLength();
 			result.setProgramLength(result.getProgramLength()+rightSize);
+			result.copy(program, mutationEnd, t, rightSize);			
 			
 			result.size();
 		}		

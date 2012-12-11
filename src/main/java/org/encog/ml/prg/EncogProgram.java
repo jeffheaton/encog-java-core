@@ -223,18 +223,9 @@ public class EncogProgram implements MLRegression, MLError {
 
 	public int size() {
 		try {
-			return size(0);
-		} catch (EncogProgramError e) {
-			return -1;
-		}
-	}
-	
-	public int size2() {
-		try {
-			//TraverseProgram trav = new TraverseProgram(this);
-			//trav.begin(0);
-			//return trav.countRemaining();
-			return size();
+			TraverseProgram trav = new TraverseProgram(this);
+			trav.begin(0);
+			return trav.countRemaining();
 		} catch (EncogProgramError e) {
 			return -1;
 		}
@@ -301,12 +292,14 @@ public class EncogProgram implements MLRegression, MLError {
 	}
 
 	public void writeNode(short opcode, int param1, short param2) {
+		validateAdvance(1);
 		this.holder.writeNode(this.individual, this.programCounter, opcode,
 				param1, param2);
 		advanceProgramCounter(1, true);
 	}
 
 	public void writeDouble(double value) {
+		validateAdvance(1);
 		this.holder.writeDouble(this.individual, this.programCounter, value);
 		advanceProgramCounter(1, true);
 	}
@@ -453,13 +446,7 @@ public class EncogProgram implements MLRegression, MLError {
 		this.holder.deleteSubtree(this.individual, index, size);
 		setProgramLength(this.programLength-size);
 	}
-
-	public int size(int index) {
-		TraverseProgram trav = new TraverseProgram(this);
-		trav.begin(index);
-		return trav.countRemaining();
-	}
-
+	
 	public ProgramExtensionTemplate getConstTemplate(ExpressionValue c) {
 		switch (c.getCurrentType()) {
 		case booleanType:
@@ -606,6 +593,12 @@ public class EncogProgram implements MLRegression, MLError {
 		int sourceIndex = sourceProgram.findFrame(sourcePosition);
 		int targetIndex = findFrame(targetPosition);
 		replaceNode(sourceProgram,sourceIndex,targetIndex);
+	}
+	
+	private void validateAdvance(int c) {
+		if( (this.programLength+c)>this.holder.getMaxIndividualFrames() ) {
+			throw new EPLTooBig("Program has overrun its maximum length.");
+		}
 	}
 	
 	public void validate() {
