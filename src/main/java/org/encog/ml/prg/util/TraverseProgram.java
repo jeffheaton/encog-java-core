@@ -24,23 +24,23 @@ public class TraverseProgram {
 		this.started = false;
 		this.opcodesRead = 0;
 	}
-	
+
 	private void readCurrent() {
 		program.getHolder().readNodeHeader(this.program.getIndividual(),
 				this.currentIndex, this.header);
 		this.template = this.program.getContext().getFunctions()
-				.getOpCode(this.header.getOpcode());		
+				.getOpCode(this.header.getOpcode());
 	}
 
 	public boolean next() {
 		// if we've already started, then advance to the next one.
-		if( started ) {
+		if (started) {
 			this.currentIndex += template.getInstructionSize(this.header);
 			this.opcodesRead++;
 		}
 		started = true;
-		
-		if( this.currentIndex < this.program.getProgramLength() ) {
+
+		if (this.currentIndex < this.program.getProgramLength()) {
 			readCurrent();
 			return true;
 		} else {
@@ -77,8 +77,6 @@ public class TraverseProgram {
 	public boolean isLeaf() {
 		return this.template.getChildNodeCount() == 0;
 	}
-	
-	
 
 	/**
 	 * @return the opcodesRead
@@ -90,5 +88,11 @@ public class TraverseProgram {
 	public int getNextIndex() {
 		return this.getFrameIndex()
 				+ this.template.getInstructionSize(this.header);
+	}
+
+	public double readDouble() {
+		double result = this.holder.readDouble(this.program.getIndividual(),
+				this.currentIndex+1);
+		return result;
 	}
 }

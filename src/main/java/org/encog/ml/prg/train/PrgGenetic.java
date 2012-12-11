@@ -269,7 +269,6 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 					done = true;
 				}
 			} while (!done);
-
 			evaluateBestGenome(prg);
 
 			this.population.rewrite(prg);
@@ -305,10 +304,16 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 				}
 				int replaceIndex = selection.performAntiSelection();
 				this.population.getMembers()[replaceIndex].copy(genome[index+i]);
-				evaluateBestGenome(genome[index+i]);
-				
+				evaluateBestGenome(genome[index+i]);	
 			}
-			
+		} finally {
+			this.iterationLock.unlock();
+		}
+	}
+	
+	public void notifyProgress() {
+		this.iterationLock.lock();
+		try {			
 			this.subIterationCounter++;
 			if (this.subIterationCounter > this.population.size()) {
 				this.subIterationCounter = 0;
@@ -362,6 +367,15 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		} finally {
 			this.iterationLock.unlock();
 		}
+	}
+	
+	
+
+	/**
+	 * @return the context
+	 */
+	public EncogProgramContext getContext() {
+		return context;
 	}
 
 	public void calculateEffectiveScore(EncogProgram prg) {

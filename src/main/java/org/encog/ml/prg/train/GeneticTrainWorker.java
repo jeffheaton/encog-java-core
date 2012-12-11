@@ -3,6 +3,7 @@ package org.encog.ml.prg.train;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.encog.mathutil.randomize.RandomChoice;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.train.crossover.PrgCrossover;
 import org.encog.ml.prg.train.mutate.PrgMutate;
@@ -26,9 +27,20 @@ public class GeneticTrainWorker extends Thread {
 
 	}
 
+	private void handleNewGenomes() {
+		CalculateScore scoreFunction = this.owner.getScoreFunction();
+		double score = scoreFunction.calculateScore(this.tempProgram[0]);
+		if (!Double.isInfinite(score) && !Double.isNaN(score)) {
+			// population.rewrite(this.tempProgram[0]);
+			this.tempProgram[0].setScore(score);
+			this.owner.addGenome(this.tempProgram, 0, 1);
+		}
+	}
+
 	public void run() {
 
 		try {
+			GeneticTrainingParams params = this.owner.getContext().getParams();
 			PrgPopulation population = this.owner.getPopulation();
 			EncogProgram[] members = this.owner.getPopulation().getMembers();
 			PrgSelection selection = this.owner.getSelection();
@@ -39,31 +51,25 @@ public class GeneticTrainWorker extends Thread {
 
 			for (;;) {
 				EncogProgram parent1 = members[selection.performSelection()];
-				parent1.validate();
 
-				if (this.rnd.nextDouble() < 0.9) {
-
+				if (this.rnd.nextDouble() < params.getCrossoverProbability()) {
 					EncogProgram parent2 = members[selection.performSelection()];
 					parent2.validate();
 					crossover.crossover(this.rnd, parent1, parent2,
 							this.tempProgram, 0, 1);
 					scoreFunction.calculateScore(this.tempProgram[0]);
-				} else {
-					mutation.mutate(this.rnd, parent1, this.tempProgram, 0, 1);
-					scoreFunction.calculateScore(this.tempProgram[0]);
+					handleNewGenomes();
 				}
 
-				double score = scoreFunction
-						.calculateScore(this.tempProgram[0]);
-				if (!Double.isInfinite(score) && !Double.isNaN(score)) {
-					// population.rewrite(this.tempProgram[0]);
-					this.tempProgram[0].setScore(score);
-					tempProgram[0].validate();
-					this.owner.addGenome(this.tempProgram, 0, 1);
+				if (this.rnd.nextDouble() < params.getMutationProbability()) {
+					mutation.mutate(this.rnd, parent1, this.tempProgram, 0, 1);
+					scoreFunction.calculateScore(this.tempProgram[0]);
+					handleNewGenomes();
+				}
 
-					if (this.done.get()) {
-						break;
-					}
+				this.owner.notifyProgress();
+				if (this.done.get()) {
+					break;
 				}
 			}
 		} catch (Throwable t) {

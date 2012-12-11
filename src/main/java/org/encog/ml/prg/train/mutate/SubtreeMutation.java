@@ -48,7 +48,6 @@ public class SubtreeMutation implements PrgMutate {
 			result.setProgramLength(result.getProgramLength()+rightSize);
 			
 			result.size();
-			result.validate();
 		}		
 	}
 }

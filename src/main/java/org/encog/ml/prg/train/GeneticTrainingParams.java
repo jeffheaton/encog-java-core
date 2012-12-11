@@ -2,6 +2,9 @@ package org.encog.ml.prg.train;
 
 public class GeneticTrainingParams {
 	
+	private double mutationProbability = 0.1;
+	private double crossoverProbability = 0.9;
+	
 	private double constMin = -10;
 	
 	private double constMax = 10;
@@ -174,6 +177,34 @@ public class GeneticTrainingParams {
 	 */
 	public void setPopulationSize(int populationSize) {
 		this.populationSize = populationSize;
+	}
+
+	/**
+	 * @return the mutationProbability
+	 */
+	public double getMutationProbability() {
+		return mutationProbability;
+	}
+
+	/**
+	 * @param mutationProbability the mutationProbability to set
+	 */
+	public void setMutationProbability(double mutationProbability) {
+		this.mutationProbability = mutationProbability;
+	}
+
+	/**
+	 * @return the crossoverProbability
+	 */
+	public double getCrossoverProbability() {
+		return crossoverProbability;
+	}
+
+	/**
+	 * @param crossoverProbability the crossoverProbability to set
+	 */
+	public void setCrossoverProbability(double crossoverProbability) {
+		this.crossoverProbability = crossoverProbability;
 	}
 
 	

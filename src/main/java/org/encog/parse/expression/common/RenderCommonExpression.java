@@ -1,17 +1,17 @@
 package org.encog.parse.expression.common;
 
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.epl.OpCodeHeader;
 import org.encog.ml.prg.exception.EncogEPLError;
 import org.encog.ml.prg.extension.KnownConst;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;
+import org.encog.ml.prg.util.TraverseProgram;
 import org.encog.parse.expression.ExpressionNodeType;
 import org.encog.util.stack.StackString;
 
 public class RenderCommonExpression {
 	private EncogProgram program;
-	private OpCodeHeader header = new OpCodeHeader();
+	private TraverseProgram trav;
 	private StackString stack = new StackString(100);
 
 	public RenderCommonExpression() {
@@ -19,17 +19,18 @@ public class RenderCommonExpression {
 
 	public String render(final EncogProgram theProgram) {
 		this.program = theProgram;
-		this.program.setProgramCounter(0);
+		this.trav = new TraverseProgram(theProgram);
+		this.trav.begin(0);
 		return renderNode();
 	}
 
 	private void handleConst() {
-		switch(this.header.getOpcode()) {
+		switch(this.trav.getHeader().getOpcode()) {
 			case StandardExtensions.OPCODE_CONST_INT:
-				stack.push(""+((int)this.header.getParam1()));
+				stack.push(""+((int)trav.getHeader().getParam1()));
 				break;
 			case StandardExtensions.OPCODE_CONST_FLOAT:
-				double d = this.program.readDouble();
+				double d = this.trav.readDouble();
 				stack.push(""+this.program.getContext().getFormat().format(d,32));
 				break;
 			default:
@@ -40,17 +41,17 @@ public class RenderCommonExpression {
 	}
 	
 	private void handleConstKnown() {
-		ProgramExtensionTemplate temp = this.program.getContext().getFunctions().getOpCode(this.header.getOpcode());
+		ProgramExtensionTemplate temp = this.trav.getTemplate();
 		stack.push(temp.getName());
 	}
 
 	private void handleVar() {
-		int varIndex = (int)this.header.getParam2();
+		int varIndex = (int)trav.getHeader().getParam2();
 		stack.push(this.program.getVariables().getVariableName(varIndex));
 	}
 	
 	private void handleFunction() {
-		int opcode = this.header.getOpcode();
+		int opcode = this.trav.getHeader().getOpcode();
 		ProgramExtensionTemplate temp = this.program.getContext().getFunctions().getOpCode(opcode);
 		
 		StringBuilder result = new StringBuilder();
@@ -67,7 +68,7 @@ public class RenderCommonExpression {
 	}
 	
 	private void handleOperator() {
-		int opcode = this.header.getOpcode();
+		int opcode = this.trav.getHeader().getOpcode();
 		ProgramExtensionTemplate temp = this.program.getContext().getFunctions().getOpCode(opcode);
 		
 		StringBuilder result = new StringBuilder();
@@ -83,8 +84,7 @@ public class RenderCommonExpression {
 	}
 
 	public ExpressionNodeType determineNodeType() {
-		this.program.readNodeHeader(this.header);
-		int opcode = this.header.getOpcode();
+		int opcode = this.trav.getHeader().getOpcode();
 		ProgramExtensionTemplate temp = this.program.getContext().getFunctions().getOpCode(opcode);
 		
 		if( temp instanceof KnownConst ) {
@@ -112,10 +112,8 @@ public class RenderCommonExpression {
 		return ExpressionNodeType.Function;		
 	}
 
-	private String renderNode() {
-		this.program.setProgramCounter(0);
-		
-		while(!this.program.eof()) {
+	private String renderNode() {		
+		while(this.trav.next()) {
 			switch (determineNodeType()) {
 			case ConstVal:
 				handleConst();

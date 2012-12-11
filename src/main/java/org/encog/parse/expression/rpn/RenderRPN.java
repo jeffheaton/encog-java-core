@@ -5,11 +5,12 @@ import org.encog.ml.prg.epl.OpCodeHeader;
 import org.encog.ml.prg.extension.KnownConst;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;
+import org.encog.ml.prg.util.TraverseProgram;
 import org.encog.parse.expression.ExpressionNodeType;
 
 public class RenderRPN {
 	private EncogProgram program;
-	private OpCodeHeader header = new OpCodeHeader();
+	private TraverseProgram trav;
 	private StringBuilder result = new StringBuilder();
 
 	public RenderRPN() {
@@ -17,15 +18,16 @@ public class RenderRPN {
 
 	public String render(final EncogProgram theProgram) {
 		this.program = theProgram;
-		this.program.setProgramCounter(0);
 		this.result.setLength(0);
+		this.trav = new TraverseProgram(theProgram);
+		this.trav.begin(0);
 		return renderNode();
 	}
 
 	private void handleConst() {
-		switch (this.header.getOpcode()) {
+		switch (this.trav.getHeader().getOpcode()) {
 		case StandardExtensions.OPCODE_CONST_INT:
-			result.append("" + ((int) this.header.getParam1()));
+			result.append("" + ((int) this.trav.getHeader().getParam1()));
 			break;
 		case StandardExtensions.OPCODE_CONST_FLOAT:
 			double d = this.program.readDouble();
@@ -40,29 +42,30 @@ public class RenderRPN {
 	}
 
 	private void handleConstKnown() {
-		ProgramExtensionTemplate temp = this.program.getContext()
-				.getFunctions().getOpCode(this.header.getOpcode());
+		ProgramExtensionTemplate temp = this.trav.getTemplate();
 		result.append(temp.getName());
 	}
 
 	private void handleVar() {
-		int varIndex = (int) this.header.getParam2();
+		int varIndex = (int)this.trav.getHeader().getParam2();
 		result.append(this.program.getVariables().getVariableName(varIndex));
 	}
 
 	private void handleFunction() {
-		int opcode = this.header.getOpcode();
+		int opcode = this.trav.getHeader().getOpcode();
 		ProgramExtensionTemplate temp = this.program.getContext()
 				.getFunctions().getOpCode(opcode);
 
 		this.result.append("[");
 		this.result.append(temp.getName());
+		if( temp.getOpcode()==StandardExtensions.OPCODE_NEG) {
+			this.result.append("neg");
+		}
 		this.result.append("]");
 	}
 
 	public ExpressionNodeType determineNodeType() {
-		this.program.readNodeHeader(this.header);
-		int opcode = this.header.getOpcode();
+		int opcode = this.trav.getHeader().getOpcode();
 		ProgramExtensionTemplate temp = this.program.getContext()
 				.getFunctions().getOpCode(opcode);
 
@@ -93,7 +96,7 @@ public class RenderRPN {
 	}
 
 	private String renderNode() {
-		while (!this.program.eof()) {
+		while (this.trav.next()) {
 			switch (determineNodeType()) {
 			case ConstVal:
 				handleConst();
