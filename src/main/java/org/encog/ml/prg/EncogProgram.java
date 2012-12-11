@@ -35,6 +35,7 @@ import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.ml.prg.epl.EPLUtil;
 import org.encog.ml.prg.epl.OpCodeHeader;
+import org.encog.ml.prg.exception.EPLTooBig;
 import org.encog.ml.prg.exception.EncogEPLError;
 import org.encog.ml.prg.exception.EncogProgramError;
 import org.encog.ml.prg.expvalue.ExpressionStack;
@@ -496,8 +497,8 @@ public class EncogProgram implements MLRegression, MLError {
 	}
 
 	public void insert(int index, int len) {
-		this.holder.insert(this.individual, index, len);
 		setProgramLength(this.programLength + len);
+		this.holder.insert(this.individual, index, len);
 	}
 
 	public int findNodeStart(int index) {
@@ -630,7 +631,7 @@ public class EncogProgram implements MLRegression, MLError {
 			throw new EncogEPLError("Program length cannot go below zero.");
 		}
 		if( this.programLength>this.holder.getMaxIndividualFrames() ) {
-			throw new EncogEPLError("Program has overrun its maximum length.");
+			throw new EPLTooBig("Program has overrun its maximum length.");
 		}
 	}
 }

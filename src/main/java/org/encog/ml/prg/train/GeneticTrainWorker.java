@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.prg.exception.EPLTooBig;
 import org.encog.ml.prg.train.crossover.PrgCrossover;
 import org.encog.ml.prg.train.mutate.PrgMutate;
 import org.encog.ml.prg.train.selection.PrgSelection;
@@ -51,19 +52,28 @@ public class GeneticTrainWorker extends Thread {
 			for (;;) {
 				EncogProgram parent1 = members[selection.performSelection()];
 
-				if (this.rnd.nextDouble() < params.getCrossoverProbability()) {
-					EncogProgram parent2 = members[selection.performSelection()];
-					parent2.validate();
-					crossover.crossover(this.rnd, parent1, parent2,
-							this.tempProgram, 0, 1);
-					scoreFunction.calculateScore(this.tempProgram[0]);
-					handleNewGenomes();
-				}
+				try {
+					if (this.rnd.nextDouble() < params
+							.getCrossoverProbability()) {
+						EncogProgram parent2 = members[selection
+								.performSelection()];
+						crossover.crossover(this.rnd, parent1, parent2,
+								this.tempProgram, 0, 1);
+						scoreFunction.calculateScore(this.tempProgram[0]);
+						handleNewGenomes();
+					}
 
-				if (this.rnd.nextDouble() < params.getMutationProbability()) {
-					mutation.mutate(this.rnd, parent1, this.tempProgram, 0, 1);
-					scoreFunction.calculateScore(this.tempProgram[0]);
-					handleNewGenomes();
+					if (this.rnd.nextDouble() < params.getMutationProbability()) {
+						mutation.mutate(this.rnd, parent1, this.tempProgram, 0,
+								1);
+						scoreFunction.calculateScore(this.tempProgram[0]);
+						handleNewGenomes();
+					}
+				} catch (EPLTooBig ex) {
+					// This is fine, we discard this Genome. Ideally this won't
+					// happen too often,
+					// as we will use a scoring method that favors smaller
+					// genomes.
 				}
 
 				this.owner.notifyProgress();
