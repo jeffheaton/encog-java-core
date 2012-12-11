@@ -3,7 +3,6 @@ package org.encog.ml.prg.train;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.encog.mathutil.randomize.RandomChoice;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.train.crossover.PrgCrossover;
 import org.encog.ml.prg.train.mutate.PrgMutate;

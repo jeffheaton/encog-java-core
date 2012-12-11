@@ -30,4 +30,6 @@ public interface EPLHolder {
 	int getMaxIndividualSize();
 	
 	int getPopulationSize();
+
+	int getMaxIndividualFrames();
 }

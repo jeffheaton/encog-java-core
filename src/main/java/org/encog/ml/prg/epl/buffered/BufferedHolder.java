@@ -103,4 +103,10 @@ public class BufferedHolder implements EPLHolder {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public int getMaxIndividualFrames() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

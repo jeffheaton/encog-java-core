@@ -35,6 +35,7 @@ import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.ml.prg.epl.EPLUtil;
 import org.encog.ml.prg.epl.OpCodeHeader;
+import org.encog.ml.prg.exception.EncogEPLError;
 import org.encog.ml.prg.exception.EncogProgramError;
 import org.encog.ml.prg.expvalue.ExpressionStack;
 import org.encog.ml.prg.expvalue.ExpressionValue;
@@ -126,9 +127,9 @@ public class EncogProgram implements MLRegression, MLError {
 	public EncogProgram(EncogProgram prg) {
 		this(prg.getContext());
 		this.programCounter = prg.programCounter;
-		this.programLength = prg.programLength;
 		this.holder = prg.holder;
 		this.individual = prg.individual;
+		setProgramLength( prg.programLength );
 	}
 
 	public void compileExpression(final String expression) {
@@ -278,8 +279,9 @@ public class EncogProgram implements MLRegression, MLError {
 	 * @param programLength
 	 *            the programLength to set
 	 */
-	public void setProgramLength(int programLength) {
-		this.programLength = programLength;
+	public void setProgramLength(int theProgramLength) {
+		this.programLength = theProgramLength;
+		this.validateLength();
 	}
 
 	/**
@@ -403,8 +405,8 @@ public class EncogProgram implements MLRegression, MLError {
 	public void advanceProgramCounter(int i, boolean adjustLength) {
 		this.programCounter += i;
 		if (adjustLength) {
-			this.programLength = Math.max(this.programLength,
-					this.programCounter);
+			setProgramLength(Math.max(this.programLength,
+					this.programCounter));
 		}
 	}
 
@@ -448,7 +450,7 @@ public class EncogProgram implements MLRegression, MLError {
 
 	public void deleteSubtree(int index, int size) {
 		this.holder.deleteSubtree(this.individual, index, size);
-		this.programLength -= size;
+		setProgramLength(this.programLength-size);
 	}
 
 	public int size(int index) {
@@ -495,7 +497,7 @@ public class EncogProgram implements MLRegression, MLError {
 
 	public void insert(int index, int len) {
 		this.holder.insert(this.individual, index, len);
-		this.programLength += len;
+		setProgramLength(this.programLength + len);
 	}
 
 	public int findNodeStart(int index) {
@@ -552,18 +554,19 @@ public class EncogProgram implements MLRegression, MLError {
 	}
 
 	public void fromBase64(String str) {
-		this.programLength = this.holder.fromBase64(individual, str);
+		clear();
+		setProgramLength( this.holder.fromBase64(individual, str));
 	}
 
 	public void clear() {
-		this.programLength = 0;
+		setProgramLength(0);
 		this.programCounter = 0;
 	}
 
 	public void copy(EncogProgram source) {
+		setProgramLength( source.programLength);
 		this.holder.copy(source.getHolder(), source.getIndividual(), 0,
 				getIndividual(), 0, source.getProgramLength());
-		this.programLength = source.programLength;
 		this.programCounter = 0;
 		this.score = source.score;
 		this.effectiveScore = source.effectiveScore;
@@ -619,6 +622,15 @@ public class EncogProgram implements MLRegression, MLError {
 		this.compute(input);
 		} catch(Throwable t) {
 			throw new EncogProgramError("Can't evaluate EncogProgram.",t);
+		}
+	}
+	
+	public void validateLength() {
+		if( this.programLength<0 ) {
+			throw new EncogEPLError("Program length cannot go below zero.");
+		}
+		if( this.programLength>this.holder.getMaxIndividualFrames() ) {
+			throw new EncogEPLError("Program has overrun its maximum length.");
 		}
 	}
 }

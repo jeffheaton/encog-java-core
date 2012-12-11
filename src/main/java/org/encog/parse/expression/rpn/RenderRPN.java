@@ -30,7 +30,7 @@ public class RenderRPN {
 			result.append("" + ((int) this.trav.getHeader().getParam1()));
 			break;
 		case StandardExtensions.OPCODE_CONST_FLOAT:
-			double d = this.program.readDouble();
+			double d = this.trav.readDouble();
 			result.append(""
 					+ this.program.getContext().getFormat().format(d, 32));
 			break;
