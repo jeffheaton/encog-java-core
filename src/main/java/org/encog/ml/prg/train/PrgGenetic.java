@@ -40,7 +40,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	private PrgSelection selection;
 	private PrgMutate mutation;
 	private PrgCrossover crossover;
-	private EncogProgram bestGenome = null;
+	private final EncogProgram bestGenome;
 	private Comparator<EncogProgram> compareScore;
 	private int threadCount;
 	private GeneticTrainWorker[] workers;
@@ -50,6 +50,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	private RandomFactory randomNumberFactory = Encog.getInstance()
 			.getRandomFactory().factorFactory();
 	private Throwable currentError;
+	private ThreadedGenomeSelector selector;
 
 	/**
 	 * Condition used to check if we are done.
@@ -65,11 +66,16 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		this.selection = new TournamentSelection(this, 4);
 		this.crossover = new SubtreeCrossover();
 		this.mutation = new SubtreeMutation(thePopulation.getContext(), 4);
+		
+		this.bestGenome = this.population.createProgram();
 		if (theScoreFunction.shouldMinimize()) {
 			this.compareScore = new MinimizeEffectiveScoreComp();
 		} else {
 			this.compareScore = new MaximizeEffectiveScoreComp();
 		}
+		
+		this.selector = new ThreadedGenomeSelector(this);
+		
 	}
 
 	public PrgGenetic(PrgPopulation thePopulation, MLDataSet theTrainingSet) {
@@ -283,8 +289,8 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		this.iterationLock.lock();
 		try {
 			calculateEffectiveScore(prg);
-			if (this.bestGenome == null || isGenomeBetter(prg, this.bestGenome)) {
-				this.bestGenome = prg;
+			if (this.bestGenome.size()==0 || isGenomeBetter(prg, this.bestGenome)) {
+				this.bestGenome.copy(prg);
 			}
 		} finally {
 			this.iterationLock.unlock();
@@ -311,21 +317,22 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	}
 
 	public void addGenome(EncogProgram[] genome, int index, int size) {
+		EncogProgram replaceTarget = null;
 		this.iterationLock.lock();
 		try {
 			for(int i=0;i<size;i++) {
 				if( genome[i].size()>this.population.getHolder().getMaxIndividualSize() ) {
 					throw new EncogProgramError("Program is too large to be added to population.");
 				}
-				int replaceIndex = selection.performAntiSelection();
-				EncogProgram replaceTarget = this.population.getMembers()[replaceIndex];
-				synchronized(replaceTarget) {
-					replaceTarget.copy(genome[index+i]);
-					evaluateBestGenome(genome[index+i]);
-				}
+				replaceTarget = this.selector.antiSelectGenome();
+				replaceTarget.copy(genome[index+i]);
+				evaluateBestGenome(genome[index+i]);
 			}
 		} finally {
 			this.iterationLock.unlock();
+			if( replaceTarget!=null ) {
+				this.selector.releaseGenome(replaceTarget);
+			}
 		}
 	}
 	
@@ -409,5 +416,14 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		}
 		prg.setEffectiveScore(result);
 	}
+
+	/**
+	 * @return the selector
+	 */
+	public ThreadedGenomeSelector getSelector() {
+		return selector;
+	}
+	
+	
 
 }

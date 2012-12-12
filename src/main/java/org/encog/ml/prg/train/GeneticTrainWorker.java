@@ -48,22 +48,21 @@ public class GeneticTrainWorker extends Thread {
 			PrgMutate mutation = this.owner.getMutation();
 			CalculateScore scoreFunction = this.owner.getScoreFunction();
 			this.done.set(false);
+			EncogProgram parent1 = null;
+			EncogProgram parent2 = null;
 
 			for (;;) {
-				EncogProgram parent1 = members[selection.performSelection()];
-
+		
 				try {
+					parent1 = this.owner.getSelector().selectGenome();
+					
 					if (this.rnd.nextDouble() < params
 							.getCrossoverProbability()) {
-						EncogProgram parent2 = members[selection
-								.performSelection()];
+						parent2 = this.owner.getSelector().selectGenome();
 						
-						synchronized(parent1) {
-							synchronized(parent2) {
-								crossover.crossover(this.rnd, parent1, parent2,
-										this.tempProgram, 0, 1);
-							}
-						}
+						crossover.crossover(this.rnd, parent1, parent2,
+							this.tempProgram, 0, 1);
+
 						scoreFunction.calculateScore(this.tempProgram[0]);
 						handleNewGenomes();
 					}
@@ -84,6 +83,14 @@ public class GeneticTrainWorker extends Thread {
 							.isIgnoreExceptions()) {
 						this.owner.reportError(t);
 						return;
+					}
+				}
+				finally {
+					if( parent1!=null ) {
+						this.owner.getSelector().releaseGenome(parent1);
+					}
+					if( parent2!=null ) {
+						this.owner.getSelector().releaseGenome(parent2);
 					}
 				}
 
