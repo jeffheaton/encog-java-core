@@ -57,8 +57,13 @@ public class GeneticTrainWorker extends Thread {
 							.getCrossoverProbability()) {
 						EncogProgram parent2 = members[selection
 								.performSelection()];
-						crossover.crossover(this.rnd, parent1, parent2,
-								this.tempProgram, 0, 1);
+						
+						synchronized(parent1) {
+							synchronized(parent2) {
+								crossover.crossover(this.rnd, parent1, parent2,
+										this.tempProgram, 0, 1);
+							}
+						}
 						scoreFunction.calculateScore(this.tempProgram[0]);
 						handleNewGenomes();
 					}
@@ -74,6 +79,12 @@ public class GeneticTrainWorker extends Thread {
 					// happen too often,
 					// as we will use a scoring method that favors smaller
 					// genomes.
+				} catch (Throwable t) {
+					if (!this.owner.getContext().getParams()
+							.isIgnoreExceptions()) {
+						this.owner.reportError(t);
+						return;
+					}
 				}
 
 				this.owner.notifyProgress();
@@ -90,5 +101,6 @@ public class GeneticTrainWorker extends Thread {
 
 	public void requestTerminate() {
 		this.done.set(true);
+		this.interrupt();
 	}
 }

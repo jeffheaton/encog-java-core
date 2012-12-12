@@ -13,6 +13,8 @@ public class GeneticTrainingParams {
 	
 	private int stackSize = 50;
 	
+	private boolean ignoreExceptions;
+	
 	/**
 	 * The starting complexity pentalty.
 	 */
@@ -207,6 +209,21 @@ public class GeneticTrainingParams {
 		this.crossoverProbability = crossoverProbability;
 	}
 
+	/**
+	 * @return the ignoreExceptions
+	 */
+	public boolean isIgnoreExceptions() {
+		return ignoreExceptions;
+	}
+
+	/**
+	 * @param ignoreExceptions the ignoreExceptions to set
+	 */
+	public void setIgnoreExceptions(boolean ignoreExceptions) {
+		this.ignoreExceptions = ignoreExceptions;
+	}
+
+	
 	
 	
 }

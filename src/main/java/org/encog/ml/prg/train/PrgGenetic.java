@@ -159,6 +159,10 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		} finally {
 			this.iterationLock.unlock();
 		}
+		
+		if( this.currentError!=null ) {
+			finishTraining();
+		}
 	}
 
 	@Override
@@ -276,18 +280,29 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	}
 
 	private void evaluateBestGenome(EncogProgram prg) {
-		calculateEffectiveScore(prg);
-		if (this.bestGenome == null || isGenomeBetter(prg, this.bestGenome)) {
-			this.bestGenome = prg;
+		this.iterationLock.lock();
+		try {
+			calculateEffectiveScore(prg);
+			if (this.bestGenome == null || isGenomeBetter(prg, this.bestGenome)) {
+				this.bestGenome = prg;
+			}
+		} finally {
+			this.iterationLock.unlock();
 		}
+		
 	}
 
 	public boolean isGenomeBetter(EncogProgram genome, EncogProgram betterThan) {
 		return this.compareScore.compare(genome, betterThan) < 0;
 	}
 
-	public EncogProgram getBestGenome() {
-		return this.bestGenome;
+	public void copyBestGenome(EncogProgram target) {
+		this.iterationLock.lock();
+		try {
+			target.copy(this.bestGenome);
+		} finally {
+			this.iterationLock.unlock();
+		}
 	}
 
 	public void sort() {
@@ -303,8 +318,11 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 					throw new EncogProgramError("Program is too large to be added to population.");
 				}
 				int replaceIndex = selection.performAntiSelection();
-				this.population.getMembers()[replaceIndex].copy(genome[index+i]);
-				evaluateBestGenome(genome[index+i]);	
+				EncogProgram replaceTarget = this.population.getMembers()[replaceIndex];
+				synchronized(replaceTarget) {
+					replaceTarget.copy(genome[index+i]);
+					evaluateBestGenome(genome[index+i]);
+				}
 			}
 		} finally {
 			this.iterationLock.unlock();
