@@ -1,7 +1,6 @@
 package org.encog.parse.expression.rpn;
 
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.epl.OpCodeHeader;
 import org.encog.ml.prg.extension.KnownConst;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;

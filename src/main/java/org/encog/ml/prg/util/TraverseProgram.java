@@ -2,8 +2,6 @@ package org.encog.ml.prg.util;
 
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.epl.EPLHolder;
-import org.encog.ml.prg.epl.EPLUtil;
-import org.encog.ml.prg.epl.OpCodeHeader;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 
 public class TraverseProgram {

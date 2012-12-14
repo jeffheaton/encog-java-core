@@ -4,7 +4,6 @@ import java.util.Random;
 
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.epl.EPLHolder;
-import org.encog.ml.prg.epl.OpCodeHeader;
 
 public interface ProgramExtensionTemplate {
 	String getName();

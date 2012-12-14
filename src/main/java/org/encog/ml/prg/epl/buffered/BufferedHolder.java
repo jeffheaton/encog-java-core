@@ -6,7 +6,6 @@ import java.nio.ByteBuffer;
 import org.encog.Encog;
 import org.encog.EncogError;
 import org.encog.ml.prg.epl.EPLHolder;
-import org.encog.ml.prg.epl.OpCodeHeader;
 
 public class BufferedHolder implements EPLHolder {
 	private ByteBuffer code;
@@ -27,13 +26,6 @@ public class BufferedHolder implements EPLHolder {
 	public void writeDouble(int individual, int index, double value) {
 		int absoluteIndex = (individual*this.maxFrameSize)+(index*EPLHolder.FRAME_SIZE);
 		this.code.putDouble(absoluteIndex,value);
-	}
-	
-	public void readNodeHeader(int individual, int index, OpCodeHeader header) {
-		int absoluteIndex = (individual*this.maxFrameSize)+(index*EPLHolder.FRAME_SIZE);
-		header.setOpcode(this.code.getShort(absoluteIndex));
-		header.setParam1(this.code.getInt(absoluteIndex+2));
-		header.setParam2(this.code.getShort(absoluteIndex+6));
 	}
 
 	public double readDouble(int individual, int index) {

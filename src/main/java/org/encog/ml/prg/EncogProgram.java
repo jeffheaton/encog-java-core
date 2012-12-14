@@ -34,7 +34,6 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.ml.prg.epl.EPLUtil;
-import org.encog.ml.prg.epl.OpCodeHeader;
 import org.encog.ml.prg.exception.EPLTooBig;
 import org.encog.ml.prg.exception.EncogEPLError;
 import org.encog.ml.prg.exception.EncogProgramError;
@@ -318,12 +317,6 @@ public class EncogProgram implements MLRegression, MLError {
 				(short) this.variables.getVariableIndex(name));
 	}
 
-	public void readNodeHeader(OpCodeHeader header) {
-		this.holder
-				.readNodeHeader(this.individual, this.programCounter, header);
-		advanceProgramCounter(1, false);
-	}
-
 	public double readDouble() {
 		double result = this.holder.readDouble(this.individual,
 				this.programCounter);
@@ -394,10 +387,8 @@ public class EncogProgram implements MLRegression, MLError {
 	}
 
 	public boolean isLeaf(int index) {
-		OpCodeHeader h = new OpCodeHeader();
-		this.holder.readNodeHeader(this.individual, index, h);
-		ProgramExtensionTemplate temp = this.context.getFunctions().getOpCode(
-				h.getOpcode());
+		int opcode = this.holder.readHeaderOpcode(this.individual, index);
+		ProgramExtensionTemplate temp = this.context.getFunctions().getOpCode(opcode);
 		return temp.getChildNodeCount() == 0;
 	}
 

@@ -7,8 +7,6 @@ public interface EPLHolder {
 	void writeNode(int individual, int index, short opcode, int param1, short param2 );
 	
 	void writeDouble(int individual, int index, double value);
-	
-	void readNodeHeader(int individual, int index, OpCodeHeader header);
 
 	double readDouble(int individual, int index);
 
