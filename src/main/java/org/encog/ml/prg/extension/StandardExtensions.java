@@ -73,13 +73,13 @@ public class StandardExtensions {
 	public static ProgramExtensionTemplate EXTENSION_VAR_SUPPORT = new BasicTemplate(OPCODE_VAR) {
 		
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 
 		@Override
 		public void evaluate(EncogProgram prg) {
-			int idx = (int)prg.getHeader().getParam2();
+			int idx = (int)prg.getEvaluationTraversal().getParam2();
 			ExpressionValue result = prg.getVariables().getVariable(idx);
 			if( result==null ) {
 				throw new ExpressionError("Variable has no value: " + prg.getVariables().getVariableName(idx));
@@ -102,13 +102,13 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_CONST_FLOAT = new BasicTemplate(OPCODE_CONST_FLOAT) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 2;
 		}
 
 		@Override
 		public void evaluate(EncogProgram prg) {
-			prg.getStack().push(prg.readDouble());
+			prg.getStack().push(prg.getEvaluationTraversal().readDouble());
 		}
 		
 		@Override
@@ -124,13 +124,13 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_CONST_BOOL = new BasicTemplate(OPCODE_CONST_BOOL) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 
 		@Override
 		public void evaluate(EncogProgram prg) {
-			prg.getStack().push(prg.getHeader().getParam2()==0?false:true);
+			prg.getStack().push(prg.getEvaluationTraversal().getParam2()==0?false:true);
 		}
 		
 		@Override
@@ -144,13 +144,13 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_CONST_INT = new BasicTemplate(OPCODE_CONST_INT) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 
 		@Override
 		public void evaluate(EncogProgram prg) {
-			prg.getStack().push((int)prg.getHeader().getParam1());
+			prg.getStack().push((int)prg.getEvaluationTraversal().getParam1());
 		}
 		
 		@Override
@@ -166,15 +166,15 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_CONST_STRING = new BasicTemplate(OPCODE_CONST_STRING) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
-			int i = EPLUtil.roundToFrame(header.getParam2());
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
+			int i = EPLUtil.roundToFrame(holder.readHeaderParam2(individual, index));
 			i/=EPLHolder.FRAME_SIZE;
 			return 1+i;
 		}
 
 		@Override
 		public void evaluate(EncogProgram prg) {
-			String str = prg.readString(prg.getHeader().getParam2());
+			String str = prg.getEvaluationTraversal().readString();
 			prg.getStack().push(str);
 		}
 		
@@ -190,7 +190,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_NEG = new BasicTemplate(OPCODE_NEG) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -205,7 +205,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_ADD = new BasicTemplate(OPCODE_ADD) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -220,7 +220,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_SUB = new BasicTemplate(OPCODE_SUB) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -235,7 +235,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_MUL = new BasicTemplate(OPCODE_MUL) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -250,7 +250,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_DIV = new BasicTemplate(OPCODE_DIV) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -265,7 +265,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_POWER = new BasicTemplate(OPCODE_POW) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -280,7 +280,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_AND = new BasicTemplate(OPCODE_AND) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -295,7 +295,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_OR = new BasicTemplate(OPCODE_OR) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -310,7 +310,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_EQUAL = new BasicTemplate(OPCODE_EQUAL) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -326,7 +326,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_GT = new BasicTemplate(OPCODE_GT) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -343,7 +343,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_LT = new BasicTemplate(OPCODE_LT) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -360,7 +360,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_GTE = new BasicTemplate(OPCODE_GTE) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -377,7 +377,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_LTE = new BasicTemplate(OPCODE_LTE) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -395,7 +395,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_ABS = new BasicTemplate(OPCODE_ABS) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -410,7 +410,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_ACOS = new BasicTemplate(OPCODE_ACOS) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -425,7 +425,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_ASIN = new BasicTemplate(OPCODE_ASIN) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -440,7 +440,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_ATAN = new BasicTemplate(OPCODE_ATAN) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -455,7 +455,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_ATAN2 = new BasicTemplate(OPCODE_ATAN2) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -472,7 +472,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_CEIL = new BasicTemplate(OPCODE_CEIL) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -487,7 +487,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_COS = new BasicTemplate(OPCODE_COS) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -502,7 +502,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_COSH = new BasicTemplate(OPCODE_COSH) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -517,7 +517,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_EXP = new BasicTemplate(OPCODE_EXP) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -532,7 +532,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_FLOOR = new BasicTemplate(OPCODE_FLOOR) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -547,7 +547,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_LOG = new BasicTemplate(OPCODE_LOG) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -562,7 +562,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_LOG10 = new BasicTemplate(OPCODE_LOG10) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -577,7 +577,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_MAX = new BasicTemplate(OPCODE_MAX) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -592,7 +592,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_MIN = new BasicTemplate(OPCODE_MIN) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -608,7 +608,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_POWFN = new BasicTemplate(OPCODE_POWFN) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -625,7 +625,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_RANDOM = new BasicTemplate(OPCODE_RAND) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -640,7 +640,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_ROUND = new BasicTemplate(OPCODE_ROUND) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -655,7 +655,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_SIN = new BasicTemplate(OPCODE_SIN) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -670,7 +670,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_SINH = new BasicTemplate(OPCODE_SINH) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -685,7 +685,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_SQRT = new BasicTemplate(OPCODE_SQRT) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -700,7 +700,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_TAN = new BasicTemplate(OPCODE_TAN) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -715,7 +715,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_TANH = new BasicTemplate(OPCODE_TANH) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -730,7 +730,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_TODEG = new BasicTemplate(OPCODE_TODEG) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -745,7 +745,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_TORAD = new BasicTemplate(OPCODE_TORAD) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -760,7 +760,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_LENGTH = new BasicTemplate(OPCODE_LENGTH) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -775,7 +775,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_FORMAT = new BasicTemplate(OPCODE_FORMAT) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -795,7 +795,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_LEFT = new BasicTemplate(OPCODE_LEFT) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -814,7 +814,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_RIGHT = new BasicTemplate(OPCODE_RIGHT) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -833,7 +833,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_CINT = new BasicTemplate(OPCODE_CINT) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -848,7 +848,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_CFLOAT = new BasicTemplate(OPCODE_CFLOAT) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -863,7 +863,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_CSTR = new BasicTemplate(OPCODE_CSTR) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -878,7 +878,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_CBOOL = new BasicTemplate(OPCODE_CBOOL) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -893,7 +893,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_IFF = new BasicTemplate(OPCODE_IFF) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		
@@ -913,7 +913,7 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_CLAMP = new BasicTemplate(OPCODE_CLAMP) {
 		@Override
-		public int getInstructionSize(OpCodeHeader header) {
+		public int getInstructionSize(EPLHolder holder, int individual, int index) {
 			return 1;
 		}
 		

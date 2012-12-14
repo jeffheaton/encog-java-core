@@ -54,7 +54,6 @@ public class EncogProgram implements MLRegression, MLError {
 	public static final int DEFAULT_PROGRAM_SIZE = 1024;
 
 	private EPLHolder holder;
-	private final OpCodeHeader header = new OpCodeHeader();
 	private int individual;
 	private EncogProgramVariables variables = new EncogProgramVariables();
 	private EncogProgramContext context = new EncogProgramContext();
@@ -64,6 +63,7 @@ public class EncogProgram implements MLRegression, MLError {
 	private int programCounter;
 	private ExpressionStack stack;
 	private String source;
+	private TraverseProgram evaluationTraversal;
 
 	public static ExpressionValue parse(final String str) {
 		final EncogProgram holder = new EncogProgram(str);
@@ -231,15 +231,6 @@ public class EncogProgram implements MLRegression, MLError {
 		}
 	}
 
-	public ProgramExtensionTemplate peekTemplate() {
-		this.holder.readNodeHeader(this.individual, this.programCounter,
-				this.header);
-		int opcode = this.header.getOpcode();
-		ProgramExtensionTemplate temp = this.context.getFunctions().getOpCode(
-				opcode);
-		return temp;
-	}
-
 	@Override
 	public double calculateError(MLDataSet data) {
 		return EncogUtility.calculateRegressionError(this, data);
@@ -370,13 +361,6 @@ public class EncogProgram implements MLRegression, MLError {
 		this.individual = individual;
 	}
 
-	/**
-	 * @return the header
-	 */
-	public OpCodeHeader getHeader() {
-		return header;
-	}
-
 	public boolean eof() {
 		return (this.programCounter >= this.programLength);
 	}
@@ -386,14 +370,6 @@ public class EncogProgram implements MLRegression, MLError {
 	 */
 	public ExpressionStack getStack() {
 		return stack;
-	}
-
-	public String readString(int encodedLength) {
-		String result = this.holder.readString(this.individual,
-				this.programCounter, encodedLength);
-		this.programCounter += EPLUtil.roundToFrame(encodedLength)
-				/ EPLHolder.FRAME_SIZE;
-		return result;
 	}
 
 	public void advanceProgramCounter(int i, boolean adjustLength) {
@@ -428,12 +404,11 @@ public class EncogProgram implements MLRegression, MLError {
 	public ExpressionValue evaluate(int index) {
 		try {
 			this.stack.clear();
-			this.programCounter = index;
-			while (!eof()) {
-				readNodeHeader(this.header);
-				int opcode = this.header.getOpcode();
-				ProgramExtensionTemplate temp = this.context.getFunctions()
-						.getOpCode(opcode);
+			this.evaluationTraversal = new TraverseProgram(this);
+			this.evaluationTraversal.begin(index);
+			while (this.evaluationTraversal.next()) {
+				int opcode = evaluationTraversal.getOpcode();
+				ProgramExtensionTemplate temp = this.context.getFunctions().getOpCode(opcode);
 				temp.evaluate(this);
 			}
 			return stack.pop();
@@ -520,9 +495,9 @@ public class EncogProgram implements MLRegression, MLError {
 	}
 
 	public int nextIndex(int index) {
-		this.holder.readNodeHeader(this.individual, index, header);
-		ProgramExtensionTemplate temp = this.context.getFunctions().getOpCode(header.getOpcode());
-		return index+temp.getInstructionSize(header);
+		int opcode = this.holder.readHeaderOpcode(this.individual, index);
+		ProgramExtensionTemplate temp = this.context.getFunctions().getOpCode(opcode);
+		return index+temp.getInstructionSize(this.holder,this.individual,index);
 	}
 
 	/**
@@ -626,4 +601,10 @@ public class EncogProgram implements MLRegression, MLError {
 			throw new EPLTooBig("Program has overrun its maximum length.");
 		}
 	}
+
+	public TraverseProgram getEvaluationTraversal() {
+		return evaluationTraversal;
+	}
+	
+	
 }

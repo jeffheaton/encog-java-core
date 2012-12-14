@@ -109,4 +109,22 @@ public class BufferedHolder implements EPLHolder {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public short readHeaderOpcode(int individual, int index) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int readHeaderParam1(int individual, int index) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public short readHeaderParam2(int individual, int index) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

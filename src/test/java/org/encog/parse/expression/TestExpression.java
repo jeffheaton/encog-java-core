@@ -34,6 +34,7 @@ import org.encog.ml.prg.expvalue.ExpressionValue;
 public class TestExpression extends TestCase {
 	public void testConst() {
 		Assert.assertEquals( 1, EncogProgram.parseFloat("1"),Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals( 1.5, EncogProgram.parseFloat("1.5"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( -1, EncogProgram.parseFloat("-1"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( 1, EncogProgram.parseFloat("--1"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( -1, EncogProgram.parseFloat("---1"),Encog.DEFAULT_DOUBLE_EQUAL);

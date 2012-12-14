@@ -25,9 +25,9 @@ public class RenderCommonExpression {
 	}
 
 	private void handleConst() {
-		switch(this.trav.getHeader().getOpcode()) {
+		switch(this.trav.getOpcode()) {
 			case StandardExtensions.OPCODE_CONST_INT:
-				stack.push(""+((int)trav.getHeader().getParam1()));
+				stack.push(""+((int)trav.getParam1()));
 				break;
 			case StandardExtensions.OPCODE_CONST_FLOAT:
 				double d = this.trav.readDouble();
@@ -46,12 +46,12 @@ public class RenderCommonExpression {
 	}
 
 	private void handleVar() {
-		int varIndex = (int)trav.getHeader().getParam2();
+		int varIndex = (int)trav.getParam2();
 		stack.push(this.program.getVariables().getVariableName(varIndex));
 	}
 	
 	private void handleFunction() {
-		int opcode = this.trav.getHeader().getOpcode();
+		int opcode = this.trav.getOpcode();
 		ProgramExtensionTemplate temp = this.program.getContext().getFunctions().getOpCode(opcode);
 		
 		StringBuilder result = new StringBuilder();
@@ -68,7 +68,7 @@ public class RenderCommonExpression {
 	}
 	
 	private void handleOperator() {
-		int opcode = this.trav.getHeader().getOpcode();
+		int opcode = this.trav.getOpcode();
 		ProgramExtensionTemplate temp = this.program.getContext().getFunctions().getOpCode(opcode);
 		
 		StringBuilder result = new StringBuilder();
@@ -84,7 +84,7 @@ public class RenderCommonExpression {
 	}
 
 	public ExpressionNodeType determineNodeType() {
-		int opcode = this.trav.getHeader().getOpcode();
+		int opcode = this.trav.getOpcode();
 		ProgramExtensionTemplate temp = this.program.getContext().getFunctions().getOpCode(opcode);
 		
 		if( temp instanceof KnownConst ) {

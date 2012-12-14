@@ -24,7 +24,7 @@
 package org.encog.app.analyst.csv.process;
 
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.epl.OpCodeHeader;
+import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.ml.prg.extension.BasicTemplate;
 import org.encog.ml.prg.extension.FunctionFactory;
 
@@ -39,7 +39,7 @@ public class FunctionField extends BasicTemplate {
 	}
 
 	@Override
-	public int getInstructionSize(OpCodeHeader header) {
+	public int getInstructionSize(EPLHolder holder, int individual, int index) {
 		return 1;
 	}
 

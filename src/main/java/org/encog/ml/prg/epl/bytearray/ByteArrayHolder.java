@@ -139,4 +139,22 @@ public class ByteArrayHolder implements EPLHolder {
 				absoluteTargetIndex, 
 				size*EPLHolder.FRAME_SIZE);
 	}
+
+	@Override
+	public short readHeaderOpcode(int individual, int index) {
+		int absoluteIndex = (individual*this.maxIndividualSize)+(index*EPLHolder.FRAME_SIZE);
+		return EPLUtil.bytesToShort(this.code, absoluteIndex);
+	}
+
+	@Override
+	public int readHeaderParam1(int individual, int index) {
+		int absoluteIndex = (individual*this.maxIndividualSize)+(index*EPLHolder.FRAME_SIZE);
+		return EPLUtil.bytesToInt(this.code, absoluteIndex+2);
+	}
+
+	@Override
+	public short readHeaderParam2(int individual, int index) {
+		int absoluteIndex = (individual*this.maxIndividualSize)+(index*EPLHolder.FRAME_SIZE);
+		return EPLUtil.bytesToShort(this.code, absoluteIndex+6);
+	}
 }
