@@ -2,6 +2,7 @@ package org.encog.ml.prg.util;
 
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.epl.EPLHolder;
+import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 
 public class TraverseProgram {
@@ -12,10 +13,12 @@ public class TraverseProgram {
 	private boolean started = false;
 	private int opcodesRead;
 	private short opcode;
+	private FunctionFactory functions;
 
 	public TraverseProgram(EncogProgram theProgram) {
 		this.program = theProgram;
 		this.holder = this.program.getHolder();
+		this.functions = this.program.getContext().getFunctions();
 	}
 
 	public void begin(int idx) {
@@ -38,7 +41,7 @@ public class TraverseProgram {
 
 	private void readCurrent() {
 		this.opcode = this.holder.readHeaderOpcode(this.program.getIndividual(), this.currentIndex);
-		this.template = this.program.getContext().getFunctions().getOpCode(opcode);
+		this.template = this.functions.getOpCode(opcode);
 	}
 
 	public boolean next() {
