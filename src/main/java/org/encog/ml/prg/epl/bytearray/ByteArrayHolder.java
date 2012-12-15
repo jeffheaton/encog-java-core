@@ -7,6 +7,7 @@ import org.encog.Encog;
 import org.encog.EncogError;
 import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.ml.prg.epl.EPLUtil;
+import org.encog.ml.prg.epl.OpCodeHeader;
 import org.encog.util.EngineArray;
 import org.encog.util.text.Base64;
 
@@ -43,6 +44,13 @@ public class ByteArrayHolder implements EPLHolder {
 	public void writeDouble(int individual, int index, double value) {
 		int absoluteIndex = (individual*this.maxIndividualSize)+(index*EPLHolder.FRAME_SIZE);
 		EPLUtil.doubleToBytes(value, this.code, absoluteIndex);
+	}
+	
+	public void readNodeHeader(int individual, int index, OpCodeHeader header) {
+		int absoluteIndex = (individual*this.maxIndividualSize)+(index*EPLHolder.FRAME_SIZE);
+		header.setOpcode(EPLUtil.bytesToShort(this.code, absoluteIndex));
+		header.setParam1(EPLUtil.bytesToInt(this.code, absoluteIndex+2));
+		header.setParam2(EPLUtil.bytesToShort(this.code, absoluteIndex+6));
 	}
 
 	public double readDouble(int individual, int index) {
