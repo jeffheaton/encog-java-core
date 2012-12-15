@@ -14,6 +14,11 @@ public class TraverseProgram {
 	private boolean started = false;
 	private int opcodesRead;
 
+	public TraverseProgram(TraverseProgram trav) {
+		this(trav.program);
+		begin(trav.getFrameIndex());
+	}
+	
 	public TraverseProgram(EncogProgram theProgram) {
 		this.program = theProgram;
 		this.holder = this.program.getHolder();
