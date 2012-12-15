@@ -141,7 +141,7 @@ public class EncogProgram implements MLRegression, MLError {
 	}
 
 	public ExpressionValue evaluate() {
-		return evaluate(0);
+		return evaluate(0, this.programLength);
 	}
 
 	public FunctionFactory getFunctions() {
@@ -425,11 +425,11 @@ public class EncogProgram implements MLRegression, MLError {
 		return temp.getChildNodeCount() == 0;
 	}
 
-	public ExpressionValue evaluate(int index) {
+	public ExpressionValue evaluate(int startAt, int stopAt) {
 		try {
 			this.stack.clear();
-			this.programCounter = index;
-			while (!eof()) {
+			this.programCounter = startAt;
+			while (this.programCounter<=stopAt) {
 				readNodeHeader(this.header);
 				int opcode = this.header.getOpcode();
 				ProgramExtensionTemplate temp = this.context.getFunctions()
