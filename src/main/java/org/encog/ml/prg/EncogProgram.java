@@ -141,7 +141,7 @@ public class EncogProgram implements MLRegression, MLError {
 	}
 
 	public ExpressionValue evaluate() {
-		return evaluate(0, this.programLength);
+		return evaluate(0, this.programLength-1);
 	}
 
 	public FunctionFactory getFunctions() {
