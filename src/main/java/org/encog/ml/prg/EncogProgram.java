@@ -102,7 +102,6 @@ public class EncogProgram implements MLRegression, MLError {
 			EncogProgramVariables theVariables, EPLHolder theHolder,
 			int theIndividual) {
 		this.stack = new ExpressionStack(this.context.getParams().getStackSize());
-		this.evaluationTraversal = new TraverseProgram(this);
 		this.context = theContext;
 		this.variables = theVariables;
 
@@ -118,12 +117,10 @@ public class EncogProgram implements MLRegression, MLError {
 		for (String v : this.context.getDefinedVariables()) {
 			this.variables.defineVariable(v);
 		}
-		this.evaluationTraversal = new TraverseProgram(this);
 	}
 
 	public EncogProgram(final String expression) {
 		this();
-		
 		compileExpression(expression);
 	}
 
@@ -398,10 +395,12 @@ public class EncogProgram implements MLRegression, MLError {
 	public ExpressionValue evaluate(int index) {
 		try {
 			this.stack.clear();
+			this.evaluationTraversal = new TraverseProgram(this);
 			this.evaluationTraversal.begin(index);
 			while (this.evaluationTraversal.next()) {
-				//int opcode = evaluationTraversal.getOpcode();
-				this.evaluationTraversal.getTemplate().evaluate(this);
+				int opcode = evaluationTraversal.getOpcode();
+				ProgramExtensionTemplate temp = this.context.getFunctions().getOpCode(opcode);
+				temp.evaluate(this);
 			}
 			return stack.pop();
 		} catch (ArithmeticException ex) {
