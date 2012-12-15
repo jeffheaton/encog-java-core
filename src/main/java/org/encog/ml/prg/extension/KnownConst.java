@@ -3,7 +3,7 @@ package org.encog.ml.prg.extension;
 import java.util.Random;
 
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.epl.EPLHolder;
+import org.encog.ml.prg.epl.OpCodeHeader;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 
 public class KnownConst implements ProgramExtensionTemplate {
@@ -25,7 +25,7 @@ public class KnownConst implements ProgramExtensionTemplate {
 	}
 
 	@Override
-	public int getInstructionSize(EPLHolder holder, int individual, int index) {
+	public int getInstructionSize(OpCodeHeader header) {
 		return 1;
 	}
 

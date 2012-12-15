@@ -25,9 +25,9 @@ public class RenderRPN {
 	}
 
 	private void handleConst() {
-		switch (this.trav.getOpcode()) {
+		switch (this.trav.getHeader().getOpcode()) {
 		case StandardExtensions.OPCODE_CONST_INT:
-			result.append("" + ((int) this.trav.getParam1()));
+			result.append("" + ((int) this.trav.getHeader().getParam1()));
 			break;
 		case StandardExtensions.OPCODE_CONST_FLOAT:
 			double d = this.trav.readDouble();
@@ -47,12 +47,12 @@ public class RenderRPN {
 	}
 
 	private void handleVar() {
-		int varIndex = (int)this.trav.getParam2();
+		int varIndex = (int)this.trav.getHeader().getParam2();
 		result.append(this.program.getVariables().getVariableName(varIndex));
 	}
 
 	private void handleFunction() {
-		int opcode = this.trav.getOpcode();
+		int opcode = this.trav.getHeader().getOpcode();
 		ProgramExtensionTemplate temp = this.program.getContext()
 				.getFunctions().getOpCode(opcode);
 
@@ -65,7 +65,7 @@ public class RenderRPN {
 	}
 
 	public ExpressionNodeType determineNodeType() {
-		int opcode = this.trav.getOpcode();
+		int opcode = this.trav.getHeader().getOpcode();
 		ProgramExtensionTemplate temp = this.program.getContext()
 				.getFunctions().getOpCode(opcode);
 

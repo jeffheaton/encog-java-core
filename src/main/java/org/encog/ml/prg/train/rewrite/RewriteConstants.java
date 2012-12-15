@@ -26,12 +26,12 @@ public class RewriteConstants implements RewriteRule {
 	}
 
 	private void rewrite(int rewriteStart, int rewriteStop) {
-		/*ExpressionValue c = program.evaluate(rewriteStart);
+		ExpressionValue c = program.evaluate(rewriteStart);
 		program.deleteSubtree(rewriteStart, (rewriteStop-rewriteStart));
 		ProgramExtensionTemplate temp = this.program.getConstTemplate(c);
 		int sz = temp.getInstructionSize(this.program.getHeader());
 		program.insert(rewriteStart, sz);
 		program.setProgramCounter(rewriteStart);
-		program.writeConstNode(c);*/
+		program.writeConstNode(c);
 	}
 }

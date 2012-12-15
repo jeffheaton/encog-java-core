@@ -32,8 +32,4 @@ public interface EPLHolder {
 	int getPopulationSize();
 
 	int getMaxIndividualFrames();
-	
-	short readHeaderOpcode(int individual, int index);
-	int readHeaderParam1(int individual, int index);
-	short readHeaderParam2(int individual, int index);
 }
