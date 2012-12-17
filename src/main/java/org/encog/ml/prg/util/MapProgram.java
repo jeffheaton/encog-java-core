@@ -15,7 +15,7 @@ public class MapProgram {
 			
 			if( !trav.isLeaf() ) {
 				for(int i=0;i<node.getTemplate().getChildNodeCount();i++) {
-					node.getChildren().add(stack.pop());
+					node.getChildren().add(0,stack.pop());
 				}
 			}
 			

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
+import org.encog.ml.prg.extension.StandardExtensions;
 
 public class MappedNode {
 	private final EncogProgram program;
@@ -64,7 +66,31 @@ public class MappedNode {
 	public int getSize() {
 		return size;
 	}
+
+	public boolean isNumericConst() {
+		if( opcode==StandardExtensions.OPCODE_CONST_FLOAT || opcode==StandardExtensions.OPCODE_CONST_INT) {
+			return true;
+		}
+		else return false;
+	}
+
+	public ExpressionValue getConstValue() {
+		this.program.getStack().clear();
+		this.program.setProgramCounter(this.index);
+		this.program.readNodeHeader();
+		this.template.evaluate(this.program);
+		return this.program.getStack().pop();
+	}
 	
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[MappedNode: opcode=");
+		result.append(this.opcode);
+		result.append("(");
+		result.append(this.template.getName());
+		result.append(")]");
+		return result.toString();
+	}
 	
 
 }

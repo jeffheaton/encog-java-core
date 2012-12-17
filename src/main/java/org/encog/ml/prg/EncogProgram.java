@@ -327,7 +327,7 @@ public class EncogProgram implements MLRegression, MLError {
 				(short) this.variables.getVariableIndex(name));
 	}
 
-	public void readNodeHeader(OpCodeHeader header) {
+	public void readNodeHeader() {
 		this.holder
 				.readNodeHeader(this.individual, this.programCounter, header);
 		advanceProgramCounter(1, false);
@@ -430,7 +430,7 @@ public class EncogProgram implements MLRegression, MLError {
 			this.stack.clear();
 			this.programCounter = startAt;
 			while (this.programCounter<=stopAt) {
-				readNodeHeader(this.header);
+				readNodeHeader();
 				int opcode = this.header.getOpcode();
 				ProgramExtensionTemplate temp = this.context.getFunctions()
 						.getOpCode(opcode);

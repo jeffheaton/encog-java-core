@@ -31,13 +31,17 @@ public class TestRewriteAlgebraic {
 	
 	@Test
 	public void testMinusMinus() {
-		//eval("x--3","(x+3)");
+		eval("x--3","(x+3)");
 	}
 	
 	@Test
-	public void testPlusNeg() {
-		//eval("x+-y","(x-y)");
-		//eval("x+-1","(x-1)");
+	public void testPlusNeg1() {
+		eval("x+-y","(x-y)");
+	}
+	
+	@Test
+	public void testPlusNeg2() {
+		eval("x+-1","(x-1)");
 	}
 	
 	@Test
