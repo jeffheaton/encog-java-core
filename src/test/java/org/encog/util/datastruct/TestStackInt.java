@@ -1,9 +1,10 @@
-package org.encog.util.stack;
+package org.encog.util.datastruct;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.EncogError;
+import org.encog.util.datastruct.StackInt;
 
 public class TestStackInt extends TestCase {
 	

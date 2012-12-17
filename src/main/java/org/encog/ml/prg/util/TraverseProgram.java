@@ -100,4 +100,8 @@ public class TraverseProgram {
 				this.currentIndex+1);
 		return result;
 	}
+
+	public EncogProgram getProgram() {
+		return this.program;
+	}
 }

@@ -451,4 +451,10 @@ public final class EngineArray {
 		System.arraycopy(source, sourcePos, target, targetPos, length);
 
 	}
+
+	public static void arrayCopy(int[] source, int sourcePos, int[] target,
+			int targetPos, int length) {
+		System.arraycopy(source, sourcePos, target, targetPos, length);
+		
+	}
 }

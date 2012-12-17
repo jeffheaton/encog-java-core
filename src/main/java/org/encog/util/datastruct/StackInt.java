@@ -1,4 +1,4 @@
-package org.encog.util.stack;
+package org.encog.util.datastruct;
 
 import org.encog.EncogError;
 

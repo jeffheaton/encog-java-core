@@ -7,7 +7,7 @@ import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.ml.prg.util.TraverseProgram;
 import org.encog.parse.expression.ExpressionNodeType;
-import org.encog.util.stack.StackString;
+import org.encog.util.datastruct.StackString;
 
 public class RenderCommonExpression {
 	private EncogProgram program;

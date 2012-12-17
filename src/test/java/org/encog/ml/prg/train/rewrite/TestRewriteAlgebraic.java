@@ -21,8 +21,12 @@ public class TestRewriteAlgebraic {
 
 	@Test
 	public void testDoubleNegative() {
-		//eval("--x","x");
-		////eval("-x","-(x)");
+		eval("--x","x");
+	}
+	
+	@Test
+	public void testDoubleNegativeNothing() {
+		eval("-x","-(x)");
 	}
 	
 	@Test

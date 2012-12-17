@@ -1,31 +1,32 @@
-package org.encog.util.stack;
+package org.encog.util.datastruct;
 
 import org.encog.EncogError;
 
-public class StackString {
-	private String[] stack;
+public class StackObject<T> {
+	private Object[] stack;
 	private int head = 0;
 	
-	public StackString(int size) {
-		this.stack = new String[size];
+	public StackObject(int size) {
+		this.stack = new Object[size];
 	}
 	
 	public boolean isEmpty() {
 		return this.head == 0;
 	}
 	
-	public void push(String str) {
+	public void push(T str) {
 		if( this.head==this.stack.length) {
 			throw new EncogError("Stack overflow");
 		}
 		this.stack[this.head++] = str;
 	}
 	
-	public String pop() {
+	@SuppressWarnings("unchecked")
+	public T pop() {
 		if( this.head==0 ) {
 			throw new EncogError("Stack is empty");
 		}
-		return this.stack[--this.head];
+		return (T)this.stack[--this.head];
 	}
 	
 	public int size() {

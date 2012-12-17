@@ -47,8 +47,8 @@ import org.encog.ml.prg.util.TraverseProgram;
 import org.encog.parse.expression.common.ParseCommonExpression;
 import org.encog.parse.expression.common.RenderCommonExpression;
 import org.encog.parse.expression.rpn.RenderRPN;
+import org.encog.util.datastruct.StackInt;
 import org.encog.util.simple.EncogUtility;
-import org.encog.util.stack.StackInt;
 
 public class EncogProgram implements MLRegression, MLError {
 	public static final int DEFAULT_PROGRAM_SIZE = 1024;
