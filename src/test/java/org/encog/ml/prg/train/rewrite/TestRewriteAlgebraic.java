@@ -35,6 +35,11 @@ public class TestRewriteAlgebraic {
 	}
 	
 	@Test
+	public void testPlusMinus() {
+		eval("x--3","(x+3)");
+	}
+	
+	@Test
 	public void testPlusNeg1() {
 		eval("x+-y","(x-y)");
 	}
@@ -45,11 +50,23 @@ public class TestRewriteAlgebraic {
 	}
 	
 	@Test
-	public void testVarOpVar() {
-		//eval("x-x","0.0");
-		//eval("x+x","(2.0*x)");
-		//eval("x*x","(x^2.0)");
-		//eval("x/x","1.0");
+	public void testVarDoubleSub1() {
+		eval("x-x","0");
+	}
+	
+	@Test
+	public void testVarDoubleAdd1() {
+		eval("x+x","(2*x)");
+	}
+	
+	@Test
+	public void testVarDoubleMul1() {
+		eval("x*x","(x^2)");
+	}
+	
+	@Test
+	public void testVarDoubleDiv1() {
+		eval("x/x","1");
 	}
 
 }

@@ -33,7 +33,27 @@ public class RewriteAlgebraic implements RewriteRule {
 			return true;
 		}
 		
+		if( tryPlusMinus(program,map,parentNode) ) {
+			return true;
+		}
+		
 		if( tryPlusNeg(program,map,parentNode) ) {
+			return true;
+		}
+		
+		if( tryDoubleAdd(program,map,parentNode) ) {
+			return true;
+		}
+		
+		if( tryDoubleMinus(program,map,parentNode) ) {
+			return true;
+		}
+		
+		if( tryDoubleMul(program,map,parentNode) ) {
+			return true;
+		}
+		
+		if( tryDoubleDiv(program,map,parentNode) ) {
 			return true;
 		}
 		
@@ -82,7 +102,7 @@ public class RewriteAlgebraic implements RewriteRule {
 		return false;
 	}
 	
-	private boolean tryPlusNeg(EncogProgram program, MapProgram map, MappedNode parentNode) {
+	private boolean tryPlusMinus(EncogProgram program, MapProgram map, MappedNode parentNode) {
 		if(parentNode.getOpcode() == StandardExtensions.OPCODE_ADD ) {
 			MappedNode child2 = parentNode.getChildren().get(1);
 			
@@ -99,6 +119,112 @@ public class RewriteAlgebraic implements RewriteRule {
 					}
 					return true;
 				}
+			}
+		}
+		
+		return false;
+	}
+	
+	private boolean tryPlusNeg(EncogProgram program, MapProgram map, MappedNode parentNode) {
+		if(parentNode.getOpcode() == StandardExtensions.OPCODE_ADD ) {
+			MappedNode child2 = parentNode.getChildren().get(1);
+			
+			if( child2.getOpcode()==StandardExtensions.OPCODE_NEG ) {
+				program.setProgramCounter(parentNode.getIndex());				
+				program.writeNode(StandardExtensions.OPCODE_SUB);
+				program.deleteSubtree(child2.getIndex(), child2.getSize());
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+
+	private boolean tryDoubleAdd(EncogProgram program, MapProgram map, MappedNode parentNode) {
+		if(parentNode.getOpcode() == StandardExtensions.OPCODE_ADD ) {
+			MappedNode child1 = parentNode.getChildren().get(0);
+			MappedNode child2 = parentNode.getChildren().get(1);
+			
+			if( child1.getOpcode()==StandardExtensions.OPCODE_VAR && child1.getOpcode()==StandardExtensions.OPCODE_VAR ) {
+				if( child1.getParam2()==child2.getParam2() ) {
+					int deleteStart = child1.getIndex();
+					int deleteEnd = parentNode.getIndex()+parentNode.getSize();
+					short v = child1.getParam2();
+					program.deleteSubtree(deleteStart, deleteEnd-deleteStart);
+					program.insert(deleteStart, 4);
+					program.setProgramCounter(deleteStart);
+					program.writeConstNode(2.0);
+					program.writeNode(StandardExtensions.OPCODE_VAR,0,v);
+					program.writeNode(StandardExtensions.OPCODE_MUL);
+					return true;
+				}				
+			}
+		}
+		
+		return false;
+	}
+	
+	private boolean tryDoubleMinus(EncogProgram program, MapProgram map, MappedNode parentNode) {
+		if(parentNode.getOpcode() == StandardExtensions.OPCODE_SUB ) {
+			MappedNode child1 = parentNode.getChildren().get(0);
+			MappedNode child2 = parentNode.getChildren().get(1);
+			
+			if( child1.getOpcode()==StandardExtensions.OPCODE_VAR && child1.getOpcode()==StandardExtensions.OPCODE_VAR ) {
+				if( child1.getParam2()==child2.getParam2() ) {
+					int deleteStart = child1.getIndex();
+					int deleteEnd = parentNode.getIndex()+parentNode.getSize();
+					program.deleteSubtree(deleteStart, deleteEnd-deleteStart);
+					program.insert(deleteStart, 1);
+					program.setProgramCounter(deleteStart);
+					program.writeConstNode(0.0);
+					return true;
+				}				
+			}
+		}
+		
+		return false;
+	}
+	
+	private boolean tryDoubleMul(EncogProgram program, MapProgram map, MappedNode parentNode) {
+		if(parentNode.getOpcode() == StandardExtensions.OPCODE_MUL ) {
+			MappedNode child1 = parentNode.getChildren().get(0);
+			MappedNode child2 = parentNode.getChildren().get(1);
+			
+			if( child1.getOpcode()==StandardExtensions.OPCODE_VAR && child1.getOpcode()==StandardExtensions.OPCODE_VAR ) {
+				if( child1.getParam2()==child2.getParam2() ) {
+					int deleteStart = child1.getIndex();
+					int deleteEnd = parentNode.getIndex()+parentNode.getSize();
+					short v = child1.getParam2();
+					program.deleteSubtree(deleteStart, deleteEnd-deleteStart);
+					program.insert(deleteStart, 4);
+					program.setProgramCounter(deleteStart);
+					program.writeNode(StandardExtensions.OPCODE_VAR,0,v);
+					program.writeConstNode(2.0);
+					program.writeNode(StandardExtensions.OPCODE_POW);
+					return true;
+				}				
+			}
+		}
+		
+		return false;
+	}
+	
+	private boolean tryDoubleDiv(EncogProgram program, MapProgram map, MappedNode parentNode) {
+		if(parentNode.getOpcode() == StandardExtensions.OPCODE_DIV ) {
+			MappedNode child1 = parentNode.getChildren().get(0);
+			MappedNode child2 = parentNode.getChildren().get(1);
+			
+			if( child1.getOpcode()==StandardExtensions.OPCODE_VAR && child1.getOpcode()==StandardExtensions.OPCODE_VAR ) {
+				if( child1.getParam2()==child2.getParam2() ) {
+					int deleteStart = child1.getIndex();
+					int deleteEnd = parentNode.getIndex()+parentNode.getSize();
+					program.deleteSubtree(deleteStart, deleteEnd-deleteStart);
+					program.insert(deleteStart, 1);
+					program.setProgramCounter(deleteStart);
+					program.writeConstNode(1.0);
+					return true;
+				}				
 			}
 		}
 		

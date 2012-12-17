@@ -12,6 +12,8 @@ public class MappedNode {
 	private final EncogProgram program;
 	private final int index;
 	private final int opcode;
+	private final int param1;
+	private final short param2;
 	private final int size;
 	private final List<MappedNode> children = new ArrayList<MappedNode>();
 	private final ProgramExtensionTemplate template;
@@ -20,6 +22,8 @@ public class MappedNode {
 		this.program = trav.getProgram();
 		this.index = trav.getFrameIndex();
 		this.opcode = trav.getHeader().getOpcode();
+		this.param1 = trav.getHeader().getParam1();
+		this.param2 = trav.getHeader().getParam2();
 		this.template = this.program.getContext().getFunctions().getOpCode(this.opcode);
 		this.size = trav.getNextIndex() - trav.getFrameIndex();
 	}
@@ -91,6 +95,15 @@ public class MappedNode {
 		result.append(")]");
 		return result.toString();
 	}
+
+	public int getParam1() {
+		return param1;
+	}
+
+	public short getParam2() {
+		return param2;
+	}
+	
 	
 
 }
