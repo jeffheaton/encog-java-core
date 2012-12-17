@@ -3,13 +3,23 @@ package org.encog.ml.prg.train.rewrite;
 import junit.framework.Assert;
 
 import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.prg.EncogProgramContext;
+import org.encog.ml.prg.EncogProgramVariables;
+import org.encog.ml.prg.epl.EPLHolder;
+import org.encog.ml.prg.epl.bytearray.ByteArrayHolder;
+import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.parse.expression.common.RenderCommonExpression;
 import org.junit.Test;
 
 public class TestRewriteConstants {
 	
 	public void eval(String start, String expect, boolean cycle) {
-		EncogProgram expression = new EncogProgram(start);
+		EncogProgramContext context = new EncogProgramContext();
+		StandardExtensions.createAll(context.getFunctions());
+		EPLHolder holder = new ByteArrayHolder(10,1024);
+		// place it on the last population member to increase changes of an error
+		EncogProgram expression = new EncogProgram(context,new EncogProgramVariables(),holder,9);
+		expression.compileExpression(start);
 		RenderCommonExpression render = new RenderCommonExpression();
 		RewriteConstants rewrite = new RewriteConstants();
 		if( cycle ) {
@@ -87,14 +97,10 @@ public class TestRewriteConstants {
 	@Test
 	public void testPartial3() {
 		eval("1.0/2.0+x","(0.5+x)",false);
-	}
-	
-	
-	
+	}	
 	
 	@Test
 	public void testOther() {
-		eval("-((x-6))","-((x-6))",true);
-		
+		eval("-((x-6))","-((x-6))",true);		
 	}
 }

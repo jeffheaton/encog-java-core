@@ -281,6 +281,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 			} while (!done);
 			evaluateBestGenome(prg);
 
+			System.out.println(prg.dumpAsCommonExpression());
 			this.population.rewrite(prg);
 		}
 	}

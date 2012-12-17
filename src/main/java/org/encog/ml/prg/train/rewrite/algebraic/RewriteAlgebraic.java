@@ -17,7 +17,9 @@ public class RewriteAlgebraic implements RewriteRule {
 	@Override
 	public boolean rewrite(EncogProgram program) {
 		MapProgram map = new MapProgram(program);
-		return rewriteNode(program,map,map.getRootNode());
+		boolean result = rewriteNode(program,map,map.getRootNode());
+		program.validate();
+		return result;
 	}
 	
 	
@@ -70,8 +72,9 @@ public class RewriteAlgebraic implements RewriteRule {
 		if(parentNode.getOpcode() == StandardExtensions.OPCODE_NEG) {
 			MappedNode child = parentNode.getChildren().get(0);
 			if( child.getOpcode()==StandardExtensions.OPCODE_NEG ) {
-				int t = parentNode.getIndex();
+				int t = child.getIndex();
 				program.deleteSubtree(t, parentNode.getSize()+child.getSize());
+				program.validate();
 				return true;
 			}
 		}
@@ -89,11 +92,12 @@ public class RewriteAlgebraic implements RewriteRule {
 					program.setProgramCounter(parentNode.getIndex());
 					program.writeNode(StandardExtensions.OPCODE_ADD);
 					program.setProgramCounter(child2.getIndex());
-					if( child2.getOpcode()==StandardExtensions.OPCODE_CFLOAT) {
+					if( child2.getOpcode()==StandardExtensions.OPCODE_CONST_FLOAT) {
 						program.writeConstNode(-d);
 					} else {
 						program.writeConstNode((int)-d);
 					}
+					program.validate();
 					return true;
 				}
 			}
@@ -112,11 +116,12 @@ public class RewriteAlgebraic implements RewriteRule {
 					program.setProgramCounter(parentNode.getIndex());
 					program.writeNode(StandardExtensions.OPCODE_SUB);
 					program.setProgramCounter(child2.getIndex());
-					if( child2.getOpcode()==StandardExtensions.OPCODE_CFLOAT) {
+					if( child2.getOpcode()==StandardExtensions.OPCODE_CONST_FLOAT) {
 						program.writeConstNode(-d);
 					} else {
 						program.writeConstNode((int)-d);
 					}
+					program.validate();
 					return true;
 				}
 			}
@@ -133,6 +138,7 @@ public class RewriteAlgebraic implements RewriteRule {
 				program.setProgramCounter(parentNode.getIndex());				
 				program.writeNode(StandardExtensions.OPCODE_SUB);
 				program.deleteSubtree(child2.getIndex(), child2.getSize());
+				program.validate();
 				return true;
 			}
 		}
@@ -157,6 +163,7 @@ public class RewriteAlgebraic implements RewriteRule {
 					program.writeConstNode(2.0);
 					program.writeNode(StandardExtensions.OPCODE_VAR,0,v);
 					program.writeNode(StandardExtensions.OPCODE_MUL);
+					program.validate();
 					return true;
 				}				
 			}
@@ -175,9 +182,10 @@ public class RewriteAlgebraic implements RewriteRule {
 					int deleteStart = child1.getIndex();
 					int deleteEnd = parentNode.getIndex()+parentNode.getSize();
 					program.deleteSubtree(deleteStart, deleteEnd-deleteStart);
-					program.insert(deleteStart, 1);
+					program.insert(deleteStart, 2);
 					program.setProgramCounter(deleteStart);
 					program.writeConstNode(0.0);
+					program.validate();
 					return true;
 				}				
 			}
@@ -202,6 +210,7 @@ public class RewriteAlgebraic implements RewriteRule {
 					program.writeNode(StandardExtensions.OPCODE_VAR,0,v);
 					program.writeConstNode(2.0);
 					program.writeNode(StandardExtensions.OPCODE_POW);
+					program.validate();
 					return true;
 				}				
 			}
@@ -220,9 +229,10 @@ public class RewriteAlgebraic implements RewriteRule {
 					int deleteStart = child1.getIndex();
 					int deleteEnd = parentNode.getIndex()+parentNode.getSize();
 					program.deleteSubtree(deleteStart, deleteEnd-deleteStart);
-					program.insert(deleteStart, 1);
+					program.insert(deleteStart, 2);
 					program.setProgramCounter(deleteStart);
 					program.writeConstNode(1.0);
+					program.validate();
 					return true;
 				}				
 			}

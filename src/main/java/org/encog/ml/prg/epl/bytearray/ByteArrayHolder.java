@@ -74,14 +74,15 @@ public class ByteArrayHolder implements EPLHolder {
 	}
 
 	public void deleteSubtree(int individual, int index, int size) {
-		int absoluteIndex = (individual*this.maxIndividualSize)+(index*EPLHolder.FRAME_SIZE);
-		int absoluteSourceIndex = absoluteIndex+(size*EPLHolder.FRAME_SIZE);
-		int remaining = this.maxIndividualSize - absoluteSourceIndex;
+		int individualIndex = (individual*this.maxIndividualSize); 
+		int targetIndex = (index*EPLHolder.FRAME_SIZE);
+		int sourceIndex = targetIndex+(size*EPLHolder.FRAME_SIZE);
+		int remaining = this.maxIndividualSize - sourceIndex;
 		EngineArray.arrayCopy(
 				this.code, 
-				absoluteSourceIndex, 
+				individualIndex+sourceIndex, 
 				this.code, 
-				absoluteIndex, 
+				individualIndex+targetIndex, 
 				remaining);
 		
 	}
@@ -97,14 +98,15 @@ public class ByteArrayHolder implements EPLHolder {
 
 	@Override
 	public void insert(int individual, int index, int size) {
-		int absoluteIndex = (individual*this.maxIndividualSize)+(index*EPLHolder.FRAME_SIZE);
-		int target = absoluteIndex+(size*EPLHolder.FRAME_SIZE);
-		int remaining = this.maxIndividualSize - target;
+		int individualIndex = (individual*this.maxIndividualSize);
+		int sourceIndex = (index*EPLHolder.FRAME_SIZE);
+		int targetIndex = sourceIndex+(size*EPLHolder.FRAME_SIZE);
+		int remaining = this.maxIndividualSize - targetIndex;
 		EngineArray.arrayCopy(
 				this.code, 
-				absoluteIndex, 
+				individualIndex+sourceIndex, 
 				this.code, 
-				target, 
+				individualIndex+targetIndex, 
 				remaining);
 	}
 

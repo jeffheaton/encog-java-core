@@ -25,7 +25,7 @@ public class MappedNode {
 		this.param1 = trav.getHeader().getParam1();
 		this.param2 = trav.getHeader().getParam2();
 		this.template = this.program.getContext().getFunctions().getOpCode(this.opcode);
-		this.size = trav.getNextIndex() - trav.getFrameIndex();
+		this.size = this.template.getInstructionSize(trav.getHeader());
 	}
 
 	/**

@@ -6,14 +6,13 @@ import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.util.TraverseProgram;
 
 public class RewriteConstants implements RewriteRule {
-	private EncogProgram program;
 	
 	public RewriteConstants() {
 		
 	}
 	
-	private boolean areAnyVariable(int rewriteStart, int rewriteStop) {
-		TraverseProgram trav = new TraverseProgram(this.program);
+	private boolean areAnyVariable(EncogProgram program, int rewriteStart, int rewriteStop) {
+		TraverseProgram trav = new TraverseProgram(program);
 		trav.begin(rewriteStart);
 		while( trav.next() && trav.getFrameIndex()<rewriteStop ) {
 			if( trav.getTemplate().isVariableValue() ) {
@@ -24,16 +23,15 @@ public class RewriteConstants implements RewriteRule {
 	}
 
 	@Override
-	public boolean rewrite(EncogProgram theProgram) {
-		this.program = theProgram;
-		TraverseProgram trav = new TraverseProgram(theProgram);
+	public boolean rewrite(EncogProgram program) {
+		TraverseProgram trav = new TraverseProgram(program);
 		trav.begin(0);
 		while(trav.next()) {
 			if( !trav.isLeaf() ) {
 				int rewriteStop = trav.getFrameIndex();
-				int rewriteStart = this.program.findNodeStart(rewriteStop);
-				if( !areAnyVariable(rewriteStart,rewriteStop) ) {
-					rewrite(rewriteStart,rewriteStop);
+				int rewriteStart = program.findNodeStart(rewriteStop);
+				if( !areAnyVariable(program,rewriteStart,rewriteStop) ) {
+					rewrite(program,rewriteStart,rewriteStop);
 					return true;
 				}
 			}
@@ -41,12 +39,12 @@ public class RewriteConstants implements RewriteRule {
 		return false;
 	}
 
-	private void rewrite(int rewriteStart, int rewriteStop) {
+	private void rewrite(EncogProgram program, int rewriteStart, int rewriteStop) {
 		int size = program.nextIndex(rewriteStop)-rewriteStart;
 		ExpressionValue c = program.evaluate(rewriteStart, rewriteStop);
 		program.deleteSubtree(rewriteStart, size);
-		ProgramExtensionTemplate temp = this.program.getConstTemplate(c);
-		int sz = temp.getInstructionSize(this.program.getHeader());
+		ProgramExtensionTemplate temp = program.getConstTemplate(c);
+		int sz = temp.getInstructionSize(program.getHeader());
 		program.insert(rewriteStart, sz);
 		program.setProgramCounter(rewriteStart);
 		program.writeConstNode(c);
