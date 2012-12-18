@@ -72,12 +72,4 @@ public class TestRewriteAlgebraicFloat {
 	public void testPlusNeg3() {
 		eval("(x+-1.1)/2.2","((x-1.1)/2.2)");
 	}
-	
-	@Test
-	public void testOther() {
-		eval("(((x+(-(-2.8)/(-3.2^8)))+x)+(x+x))","0");
-	}
-	
-	
-
 }
