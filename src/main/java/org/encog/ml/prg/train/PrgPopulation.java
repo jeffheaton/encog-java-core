@@ -24,7 +24,7 @@ public class PrgPopulation {
 		this.members = new EncogProgram[params.getPopulationSize()];
 	}
 		
-	public void dumpMembers() {
+	public void dumpMembers(int i) {
 		
 		RenderCommonExpression render = new RenderCommonExpression();
 		
@@ -32,6 +32,9 @@ public class PrgPopulation {
 		for(EncogProgram prg: this.members) {
 			System.out.println(index + ": Score " + prg.getScore() + " : " + render.render(prg));
 			index++;
+			if( index>i) {
+				break;
+			}
 		}
 	}
 
