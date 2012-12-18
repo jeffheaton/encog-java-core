@@ -127,6 +127,17 @@ public class TestRewriteAlgebraic {
 		eval("(x/x)/2","(1/2)");
 	}
 	
+	@Test
+	public void testOther() {
+		eval("(x/x)/2","(1/2)");
+	}
+	
+	@Test
+	public void testOther2() {
+		eval("(3*(x+((((9-(3/-(-(9))))/2)-3)--(((x*3)--((x*x)))))))","(1/2)");
+	}
+	
+	
 	
 
 }

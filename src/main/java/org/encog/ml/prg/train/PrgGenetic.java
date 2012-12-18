@@ -325,6 +325,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 					throw new EncogProgramError("Program is too large to be added to population.");
 				}
 				replaceTarget = this.selector.antiSelectGenome();
+				this.population.rewrite(genome[index+i]);
 				replaceTarget.copy(genome[index+i]);
 				evaluateBestGenome(genome[index+i]);
 			}

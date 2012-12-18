@@ -15,9 +15,7 @@ public class RewriteAlgebraic implements RewriteRule {
 	@Override
 	public boolean rewrite(EncogProgram program) {
 		MapProgram map = new MapProgram(program);
-		boolean result = rewriteNode(program,map,map.getRootNode());
-		program.validate();
-		return result;
+		return rewriteNode(program,map,map.getRootNode());
 	}
 	
 	
