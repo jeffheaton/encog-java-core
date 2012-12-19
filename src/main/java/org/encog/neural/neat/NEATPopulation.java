@@ -160,8 +160,8 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 
 		// create initial innovations
 		NEATGenome genome = (NEATGenome) this.getGenomes().get(0);
-		this.setInnovations(new NEATInnovationList(this, genome.getLinks(),
-				genome.getNeurons()));
+		this.setInnovations(new NEATInnovationList(this, genome.getLinksChromosome(),
+				genome.getNeuronsChromosome()));
 	}
 	
 

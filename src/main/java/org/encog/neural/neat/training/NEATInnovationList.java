@@ -24,6 +24,7 @@
 package org.encog.neural.neat.training;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.encog.EncogError;
 import org.encog.ml.genetic.genes.Gene;
@@ -80,19 +81,16 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	 *            THe neurons.
 	 */
 	public NEATInnovationList(final Population population,
-			final Chromosome links, final Chromosome neurons) {
+			final List<NEATLinkGene> links, final List<NEATNeuronGene> neurons) {
 
 		this.population = population;
-		for (final Gene gene : neurons.getGenes()) {
-			final NEATNeuronGene neuronGene = (NEATNeuronGene) gene;
-
+		for (final NEATNeuronGene neuronGene : neurons) {
 			final NEATInnovation innovation = new NEATInnovation(neuronGene,
 					population.assignInnovationID(), assignNeuronID());
 			add(innovation);
 		}
 
-		for (final Gene gene : links.getGenes()) {
-			final NEATLinkGene linkGene = (NEATLinkGene) gene;
+		for (final NEATLinkGene linkGene : links) {
 			final NEATInnovation innovation = new NEATInnovation(linkGene
 					.getFromNeuronID(), linkGene.getToNeuronID(),
 					NEATInnovationType.NewLink, this.population

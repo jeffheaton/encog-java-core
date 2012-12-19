@@ -322,8 +322,8 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 	public NEATGenome crossover(final NEATGenome mom, final NEATGenome dad) {
 		NEATParent best = favorParent(mom,dad);
 
-		final Chromosome babyNeurons = new Chromosome();
-		final Chromosome babyGenes = new Chromosome();
+		final List<NEATNeuronGene> babyNeurons = new ArrayList<NEATNeuronGene>();
+		final List<NEATLinkGene> babyGenes = new ArrayList<NEATLinkGene>();
 
 		final List<Long> vecNeurons = new ArrayList<Long>();
 
@@ -346,11 +346,11 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 			// grab the actual objects from mom and dad for the specified indexes
 			// if there are none, then null
 			if (curMom < mom.getNumGenes()) {
-				momGene = (NEATLinkGene) mom.getLinks().get(curMom);
+				momGene = (NEATLinkGene) mom.getLinksChromosome().get(curMom);
 			} 
 
 			if (curDad < dad.getNumGenes()) {
-				dadGene = (NEATLinkGene) dad.getLinks().get(curDad);
+				dadGene = (NEATLinkGene) dad.getLinksChromosome().get(curDad);
 			} 
 
 			// now select a gene for mom or dad.  This gene is for the baby
@@ -654,7 +654,7 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 						this.params.maxWeightPerturbation);
 				break;
 			case 1: // add node
-				if (genome.getNeurons().size() < this.params.maxPermittedNeurons) {
+				if (genome.getNeuronsChromosome().size() < this.params.maxPermittedNeurons) {
 					genome.addNeuron(this.params.chanceAddNode,
 							this.params.numTrysToFindOldLink);
 				}

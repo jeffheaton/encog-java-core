@@ -110,12 +110,6 @@ public class PersistNEATPopulation implements EncogPersistor {
 					List<String> cols = EncogFileSection.splitColumns(line);
 					if (cols.get(0).equalsIgnoreCase("g") ) {
 						lastGenome = new NEATGenome();
-						lastGenome.setNeuronsChromosome(new Chromosome());
-						lastGenome.setLinksChromosome(new Chromosome());
-						lastGenome.getChromosomes().add(
-								lastGenome.getNeuronsChromosome());
-						lastGenome.getChromosomes().add(
-								lastGenome.getLinksChromosome());
 						lastGenome.setGenomeID(Integer.parseInt(cols.get(1)));
 						lastGenome.setSpeciesID(Integer.parseInt(cols.get(2)));
 						lastGenome.setAdjustedScore(CSVFormat.EG_FORMAT
@@ -138,7 +132,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 								.setSplitX(CSVFormat.EG_FORMAT.parse(cols.get(5)));
 						neuronGene
 								.setSplitY(CSVFormat.EG_FORMAT.parse(cols.get(6)));
-						lastGenome.getNeurons().add(neuronGene);
+						lastGenome.getNeuronsChromosome().add(neuronGene);
 					} else if (cols.get(0).equalsIgnoreCase("l")) {
 						NEATLinkGene linkGene = new NEATLinkGene();
 						linkGene.setId(Integer.parseInt(cols.get(1)));
@@ -148,7 +142,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 						linkGene.setToNeuronID(Integer.parseInt(cols.get(5)));
 						linkGene.setWeight(CSVFormat.EG_FORMAT.parse(cols.get(6)));
 						linkGene.setInnovationId(Integer.parseInt(cols.get(7)));
-						lastGenome.getLinks().add(linkGene);
+						lastGenome.getLinksChromosome().add(linkGene);
 					}
 				}
 			} else if (section.getSectionName().equals("NEAT-POPULATION")
@@ -278,8 +272,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 			out.addColumn(neatGenome.getScore());
 			out.writeLine();
 
-			for (Gene neuronGene : neatGenome.getNeurons().getGenes()) {
-				NEATNeuronGene neatNeuronGene = (NEATNeuronGene) neuronGene;
+			for (NEATNeuronGene neatNeuronGene : neatGenome.getNeuronsChromosome()) {
 				out.addColumn("n");
 				out.addColumn(neatNeuronGene.getId());
 				out.addColumn(PersistNEATPopulation
@@ -290,8 +283,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 				out.addColumn(neatNeuronGene.getSplitY());
 				out.writeLine();
 			}
-			for (Gene linkGene : neatGenome.getLinks().getGenes()) {
-				NEATLinkGene neatLinkGene = (NEATLinkGene) linkGene;
+			for (NEATLinkGene neatLinkGene : neatGenome.getLinksChromosome()) {
 				out.addColumn("l");
 				out.addColumn(neatLinkGene.getId());
 				out.addColumn(neatLinkGene.isEnabled());

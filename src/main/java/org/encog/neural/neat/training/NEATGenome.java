@@ -24,9 +24,11 @@
 package org.encog.neural.neat.training;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.encog.EncogError;
@@ -86,7 +88,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	/**
 	 * The chromsome that holds the links.
 	 */
-	private Chromosome linksChromosome;
+	private final List<NEATLinkGene> linksChromosome = new ArrayList<NEATLinkGene>();
 
 	/**
 	 * THe network depth.
@@ -96,7 +98,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	/**
 	 * The chromosome that holds the neurons.
 	 */
-	private Chromosome neuronsChromosome;
+	private final List<NEATNeuronGene> neuronsChromosome = new ArrayList<NEATNeuronGene>();
 
 	/**
 	 * The number of outputs.
@@ -115,13 +117,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 *            The other genome.
 	 */
 	public NEATGenome(final NEATGenome other) {
-		this.neuronsChromosome = new Chromosome();
-		this.linksChromosome = new Chromosome();
 		this.setGeneticAlgorithm(other.getGeneticAlgorithm());
-
-		getChromosomes().add(this.neuronsChromosome);
-		getChromosomes().add(this.linksChromosome);
-
 		setGenomeID(other.getGenomeID());
 		this.networkDepth = other.networkDepth;
 		this.setPopulation(other.getPopulation());
@@ -133,22 +129,20 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		this.speciesID = other.speciesID;
 
 		// copy neurons
-		for (final Gene gene : other.getNeurons().getGenes()) {
-			final NEATNeuronGene oldGene = (NEATNeuronGene) gene;
+		for (final NEATNeuronGene oldGene : other.getNeuronsChromosome()) {
 			final NEATNeuronGene newGene = new NEATNeuronGene(oldGene
 					.getNeuronType(), oldGene.getId(), oldGene.getSplitY(),
 					oldGene.getSplitX());
-			getNeurons().add(newGene);
+			this.neuronsChromosome.add(newGene);
 		}
 
 		// copy links
-		for (final Gene gene : other.getLinks().getGenes()) {
-			final NEATLinkGene oldGene = (NEATLinkGene) gene;
+		for (final NEATLinkGene oldGene : other.getLinksChromosome() ) {
 			final NEATLinkGene newGene = new NEATLinkGene(oldGene
 					.getFromNeuronID(), oldGene.getToNeuronID(), oldGene
 					.isEnabled(), oldGene.getInnovationId(), oldGene
 					.getWeight(), oldGene.isRecurrent());
-			getLinks().add(newGene);
+			this.linksChromosome.add(newGene);
 		}
 
 	}
@@ -167,18 +161,16 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 *            The output count.
 	 */
 	public NEATGenome(final long genomeID,
-			final Chromosome neurons, final Chromosome links,
+			final List<NEATNeuronGene> neurons, final List<NEATLinkGene> links,
 			final int inputCount, final int outputCount) {
 		setGenomeID(genomeID);
-		this.linksChromosome = links;
-		this.neuronsChromosome = neurons;
 		setAmountToSpawn(0);
 		setAdjustedScore(0);
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
 
-		getChromosomes().add(this.neuronsChromosome);
-		getChromosomes().add(this.linksChromosome);
+		this.linksChromosome.addAll(links);
+		this.neuronsChromosome.addAll(neurons);
 	}
 
 	/**
@@ -200,11 +192,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		this.speciesID = 0;
 
 		final double inputRowSlice = 0.8 / (inputCount);
-		this.neuronsChromosome = new Chromosome();
-		this.linksChromosome = new Chromosome();
-
-		getChromosomes().add(this.neuronsChromosome);
-		getChromosomes().add(this.linksChromosome);
 		
 		// first bias
 		
@@ -232,7 +219,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			for (int j = 0; j < outputCount; j++) {
 				this.linksChromosome.add(new NEATLinkGene(
 						((NEATNeuronGene) this.neuronsChromosome.get(i))
-								.getId(), ((NEATNeuronGene) getNeurons().get(
+								.getId(), ((NEATNeuronGene)this.neuronsChromosome.get(
 								inputCount + j + 1)).getId(), true, inputCount
 								+ outputCount + 2 + getNumGenes(),
 						RangeRandomizer.randomize(-1, 1), false));
@@ -361,7 +348,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 
 			if ((link.isEnabled())
 					&& (!link.isRecurrent())
-					&& (((NEATNeuronGene) getNeurons().get(
+					&& (((NEATNeuronGene) this.neuronsChromosome.get(
 							getElementPos(fromNeuron))).getNeuronType()
 							!= NEATNeuronType.Bias)) {
 				splitLink = link;
@@ -380,9 +367,9 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		final long from = splitLink.getFromNeuronID();
 		final long to = splitLink.getToNeuronID();
 
-		final NEATNeuronGene fromGene = (NEATNeuronGene) getNeurons().get(
+		final NEATNeuronGene fromGene = (NEATNeuronGene) this.neuronsChromosome.get(
 				getElementPos(from));
-		final NEATNeuronGene toGene = (NEATNeuronGene) getNeurons().get(
+		final NEATNeuronGene toGene = (NEATNeuronGene) this.neuronsChromosome.get(
 				getElementPos(to));
 
 		final double newDepth = (fromGene.getSplitY() + toGene.getSplitY()) / 2;
@@ -464,10 +451,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * @return True if we already have this neuron id.
 	 */
 	public boolean alreadyHaveThisNeuronID(final long id) {
-		for (final Gene gene : this.neuronsChromosome.getGenes()) {
-
-			final NEATNeuronGene neuronGene = (NEATNeuronGene) gene;
-
+		for (final NEATNeuronGene neuronGene : this.neuronsChromosome) {
 			if (neuronGene.getId() == id) {
 				return true;
 			}
@@ -492,7 +476,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			start = this.inputCount + 1;
 		}
 
-		final int neuronPos = RangeRandomizer.randomInt(start, getNeurons()
+		final int neuronPos = RangeRandomizer.randomInt(start, this.neuronsChromosome
 				.size() - 1);
 		final NEATNeuronGene neuronGene
 			= (NEATNeuronGene) this.neuronsChromosome
@@ -511,7 +495,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			throw new NeuralNetworkError("The first neuron must be the bias neuron, this genome is invalid.");
 		}
 		
-		NEATLink[] links = new NEATLink[this.linksChromosome.getGenes().size()];
+		NEATLink[] links = new NEATLink[this.linksChromosome.size()];
 		ActivationFunction[] afs = new ActivationFunction[this.neuronsChromosome.size()];
 		
 		for(int i=0;i<afs.length;i++) {
@@ -581,7 +565,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 				continue;
 			}
 
-			if (g2 == genome.getLinks().size() - 1) {
+			if (g2 == genome.getLinksChromosome().size() - 1) {
 				g1++;
 				numExcess++;
 
@@ -591,7 +575,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			// get innovation numbers for each gene at this point
 			final long id1 = ((NEATLinkGene) this.linksChromosome.get(g1))
 					.getInnovationId();
-			final long id2 = ((NEATLinkGene) genome.getLinks().get(g2))
+			final long id2 = ((NEATLinkGene) genome.getLinksChromosome().get(g2))
 					.getInnovationId();
 
 			// innovation numbers are identical so increase the matched score
@@ -604,7 +588,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 				weightDifference += Math
 						.abs(((NEATLinkGene) this.linksChromosome.get(g1))
 								.getWeight()
-								- ((NEATLinkGene) genome.getLinks().get(g2))
+								- ((NEATLinkGene) genome.getLinksChromosome().get(g2))
 										.getWeight());
 			}
 
@@ -643,9 +627,9 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 */
 	private int getElementPos(final long neuronID) {
 
-		for (int i = 0; i < getNeurons().size(); i++) {
+		for (int i = 0; i < this.neuronsChromosome.size(); i++) {
 			final NEATNeuronGene neuronGene = (NEATNeuronGene) this.neuronsChromosome
-					.getGene(i);
+					.get(i);
 			if (neuronGene.getId() == neuronID) {
 				return i;
 			}
@@ -662,24 +646,10 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	}
 
 	/**
-	 * @return THe links chromosome.
-	 */
-	public Chromosome getLinks() {
-		return this.linksChromosome;
-	}
-
-	/**
 	 * @return The network depth.
 	 */
 	public int getNetworkDepth() {
 		return this.networkDepth;
-	}
-
-	/**
-	 * @return The neurons chromosome.
-	 */
-	public Chromosome getNeurons() {
-		return this.neuronsChromosome;
 	}
 
 	/**
@@ -725,8 +695,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 */
 	public boolean isDuplicateLink(final long fromNeuronID,
 			final long toNeuronID) {
-		for (final Gene gene : getLinks().getGenes()) {
-			final NEATLinkGene linkGene = (NEATLinkGene) gene;
+		for (final NEATLinkGene linkGene : this.linksChromosome) {
 			if ((linkGene.getFromNeuronID() == fromNeuronID)
 					&& (linkGene.getToNeuronID() == toNeuronID)) {
 				return true;
@@ -748,8 +717,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 */
 	public void mutateWeights(final double mutateRate,
 			final double probNewMutate, final double maxPertubation) {
-		for (final Gene gene : this.linksChromosome.getGenes()) {
-			final NEATLinkGene linkGene = (NEATLinkGene) gene;
+		for (final NEATLinkGene linkGene : this.linksChromosome) {
 			if (Math.random() < mutateRate) {
 				if (Math.random() < probNewMutate) {
 					linkGene.setWeight(RangeRandomizer.randomize(-1, 1));
@@ -785,35 +753,21 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * Sort the genes.
 	 */
 	public void sortGenes() {
-		Collections.sort(this.linksChromosome.getGenes());
+		Collections.sort(this.linksChromosome);
 	}
 
 	/**
 	 * @return the linksChromosome
 	 */
-	public Chromosome getLinksChromosome() {
-		return linksChromosome;
-	}
-
-	/**
-	 * @param linksChromosome the linksChromosome to set
-	 */
-	public void setLinksChromosome(Chromosome linksChromosome) {
-		this.linksChromosome = linksChromosome;
+	public List<NEATLinkGene> getLinksChromosome() {
+		return this.linksChromosome;
 	}
 
 	/**
 	 * @return the neuronsChromosome
 	 */
-	public Chromosome getNeuronsChromosome() {
-		return neuronsChromosome;
-	}
-
-	/**
-	 * @param neuronsChromosome the neuronsChromosome to set
-	 */
-	public void setNeuronsChromosome(Chromosome neuronsChromosome) {
-		this.neuronsChromosome = neuronsChromosome;
+	public List<NEATNeuronGene> getNeuronsChromosome() {
+		return this.neuronsChromosome;
 	}
 
 	/**
@@ -833,14 +787,14 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	public void validate() {
 		
 		// make sure that the bias neuron is where it should be
-		NEATNeuronGene g = (NEATNeuronGene)this.neuronsChromosome.getGene(0);
+		NEATNeuronGene g = (NEATNeuronGene)this.neuronsChromosome.get(0);
 		if( g.getNeuronType()!=NEATNeuronType.Bias ) {
 			throw new EncogError("NEAT Neuron Gene 0 should be a bias gene.");
 		}
 		
 		// make sure all input neurons are at the beginning
 		for(int i=1;i<=this.inputCount;i++) {
-			NEATNeuronGene gene = (NEATNeuronGene)this.neuronsChromosome.getGene(i);
+			NEATNeuronGene gene = (NEATNeuronGene)this.neuronsChromosome.get(i);
 			if( gene.getNeuronType()!=NEATNeuronType.Input ) {
 				throw new EncogError("NEAT Neuron Gene " + i + " should be an input gene.");
 			}
@@ -848,7 +802,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		
 		// make sure that there are no double links
 		Map<String,NEATLinkGene> map = new HashMap<String,NEATLinkGene>();
-		for(Gene lg: this.linksChromosome.getGenes()) {
+		for(Gene lg: this.linksChromosome) {
 			NEATLinkGene nlg = (NEATLinkGene)lg;
 			String key = nlg.getFromNeuronID() + "->" + nlg.getToNeuronID();
 			if(map.containsKey(key)) {
@@ -861,7 +815,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	private boolean isNeuronNeeded(long neuronID) {
 		
 		// do not remove bias or input neurons or output
-		for(Gene gene: this.getNeurons().getGenes()) {			
+		for(Gene gene: this.neuronsChromosome) {			
 			if( gene.getId()==neuronID ) {
 				NEATNeuronGene neuron = (NEATNeuronGene)gene;
 				if( neuron.getNeuronType()==NEATNeuronType.Input 
@@ -872,7 +826,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			}
 		}
 		
-		for(Gene gene : this.getLinks().getGenes() ) {
+		for(Gene gene : this.linksChromosome ) {
 			NEATLinkGene linkGene = (NEATLinkGene)gene;
 			if( linkGene.getFromNeuronID()==neuronID ) {
 				return true;
@@ -886,24 +840,24 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	}
 	
 	private void removeNeuron(long neuronID) {
-		for(Gene gene: this.getNeurons().getGenes()) {
+		for(Gene gene: this.neuronsChromosome) {
 			if( gene.getId()==neuronID ) {
-				this.getNeurons().getGenes().remove(gene);
+				this.neuronsChromosome.remove(gene);
 				return;
 			}
 		}
 	}
 
 	public void removeLink() {
-		if( this.getLinks().size()<5 ) {
+		if( this.linksChromosome.size()<5 ) {
 			// don't remove from small genomes
 			return;
 		}
 		
 		// determine the target and remove
-		int target = RangeRandomizer.randomInt(0, this.getLinks().size()-1);
-		NEATLinkGene targetGene = (NEATLinkGene)this.getLinks().get(target);
-		this.getLinks().getGenes().remove(target);
+		int target = RangeRandomizer.randomInt(0, this.linksChromosome.size()-1);
+		NEATLinkGene targetGene = (NEATLinkGene)this.linksChromosome.get(target);
+		this.linksChromosome.remove(target);
 		
 		// if this orphaned any nodes, then kill them too!
 		if( !isNeuronNeeded(targetGene.getFromNeuronID()) ) {
