@@ -82,20 +82,6 @@ public abstract class BasicGenome implements Genome, Serializable {
 	private Population population;
 
 	/**
-	 * @return The number of genes in this genome.
-	 */
-	@Override
-	public int calculateGeneCount() {
-		int result = 0;
-
-		// sum the genes in the chromosomes.
-		for (final Chromosome chromosome : this.chromosomes) {
-			result += chromosome.getGenes().size();
-		}
-		return result;
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	public boolean equals(final Genome other) {

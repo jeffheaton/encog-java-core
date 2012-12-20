@@ -34,9 +34,7 @@ import java.util.Map;
 import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.randomize.RangeRandomizer;
-import org.encog.ml.genetic.genes.Gene;
 import org.encog.ml.genetic.genome.BasicGenome;
-import org.encog.ml.genetic.genome.Chromosome;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.neat.NEATLink;
 import org.encog.neural.neat.NEATNetwork;
@@ -109,6 +107,16 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * The species id.
 	 */
 	private long speciesID;
+	
+	/**
+	 * The genome id.
+	 */
+	private long genomeID;
+	
+	/**
+	 * The amount to spawn.
+	 */
+	private double amountToSpawn;
 
 	/**
 	 * Construct a genome by copying another.
@@ -802,8 +810,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		
 		// make sure that there are no double links
 		Map<String,NEATLinkGene> map = new HashMap<String,NEATLinkGene>();
-		for(Gene lg: this.linksChromosome) {
-			NEATLinkGene nlg = (NEATLinkGene)lg;
+		for(NEATLinkGene nlg: this.linksChromosome) {
 			String key = nlg.getFromNeuronID() + "->" + nlg.getToNeuronID();
 			if(map.containsKey(key)) {
 				throw new EncogError("Double link found: " + key);
@@ -815,7 +822,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	private boolean isNeuronNeeded(long neuronID) {
 		
 		// do not remove bias or input neurons or output
-		for(Gene gene: this.neuronsChromosome) {			
+		for(NEATNeuronGene gene: this.neuronsChromosome) {			
 			if( gene.getId()==neuronID ) {
 				NEATNeuronGene neuron = (NEATNeuronGene)gene;
 				if( neuron.getNeuronType()==NEATNeuronType.Input 
@@ -826,7 +833,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			}
 		}
 		
-		for(Gene gene : this.linksChromosome ) {
+		for(NEATLinkGene gene : this.linksChromosome ) {
 			NEATLinkGene linkGene = (NEATLinkGene)gene;
 			if( linkGene.getFromNeuronID()==neuronID ) {
 				return true;
@@ -840,7 +847,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	}
 	
 	private void removeNeuron(long neuronID) {
-		for(Gene gene: this.neuronsChromosome) {
+		for(NEATNeuronGene gene: this.neuronsChromosome) {
 			if( gene.getId()==neuronID ) {
 				this.neuronsChromosome.remove(gene);
 				return;
@@ -868,4 +875,36 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			removeNeuron(targetGene.getToNeuronID());
 		}
 	}
+
+	public long getGenomeID() {
+		return this.genomeID;
+	}
+
+	/**
+	 * Set the genome id.
+	 * 
+	 * @param theGenomeID
+	 *            the genome id.
+	 */
+	public void setGenomeID(final long theGenomeID) {
+		this.genomeID = theGenomeID;
+	}
+	
+	/**
+	 * @return The amount this genome will spawn.
+	 */
+	public double getAmountToSpawn() {
+		return this.amountToSpawn;
+	}
+	
+	/**
+	 * Set the amount to spawn.
+	 * 
+	 * @param theAmountToSpawn
+	 *            The amount to spawn.
+	 */
+	public void setAmountToSpawn(final double theAmountToSpawn) {
+		this.amountToSpawn = theAmountToSpawn;
+	}
+	
 }

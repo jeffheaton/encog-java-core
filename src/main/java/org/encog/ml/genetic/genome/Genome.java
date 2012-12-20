@@ -36,11 +36,6 @@ import org.encog.ml.genetic.population.Population;
 public interface Genome extends Comparable<Genome> {
 
 	/**
-	 * @return The number of genes in this genome.
-	 */
-	int calculateGeneCount();
-
-	/**
 	 * Use the genes to update the organism.
 	 */
 	void decode();
