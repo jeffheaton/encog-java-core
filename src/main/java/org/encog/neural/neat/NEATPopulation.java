@@ -24,6 +24,8 @@
 package org.encog.neural.neat;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationSteepenedSigmoid;
@@ -59,6 +61,8 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 	private ActivationFunction neatActivationFunction = new ActivationSteepenedSigmoid();
 	
 	private int activationCycles = 4;
+	
+	private final List<NEATSpecies> species = new ArrayList<NEATSpecies>();
 
 
 	/**
@@ -163,6 +167,14 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 		this.setInnovations(new NEATInnovationList(this, genome.getLinksChromosome(),
 				genome.getNeuronsChromosome()));
 	}
+
+	/**
+	 * @return the species
+	 */
+	public List<NEATSpecies> getSpecies() {
+		return species;
+	}
+
 	
 
 }

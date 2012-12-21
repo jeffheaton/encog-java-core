@@ -55,7 +55,7 @@ public final class TestPersistPopulationNPE extends TestCase
 		// reload initial backup and continue training
 		final NEATTraining training2 = new NEATTraining(
 			score,
-			(Population)new PersistNEATPopulation().read(new ByteArrayInputStream(serialized1.toByteArray())));
+			(NEATPopulation)new PersistNEATPopulation().read(new ByteArrayInputStream(serialized1.toByteArray())));
 		training2.iteration();
 		// enough training, backup the reloaded population to continue later
 		final ByteArrayOutputStream serialized2 = new ByteArrayOutputStream();
@@ -64,7 +64,7 @@ public final class TestPersistPopulationNPE extends TestCase
 		// NEATTraining.init() randomly fails with a NPE in NEATGenome.getCompatibilityScore()
 		final NEATTraining training3 = new NEATTraining(
 			score,
-			(Population)new PersistNEATPopulation().read(new ByteArrayInputStream(serialized2.toByteArray())));
+			(NEATPopulation)new PersistNEATPopulation().read(new ByteArrayInputStream(serialized2.toByteArray())));
 		training3.iteration();
 		final ByteArrayOutputStream serialized3 = new ByteArrayOutputStream();
 		new PersistNEATPopulation().save(serialized3, training3.getPopulation());

@@ -30,20 +30,22 @@ import java.util.Random;
 
 import org.encog.mathutil.randomize.RandomChoice;
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.ml.MLContext;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.genetic.GeneticAlgorithm;
-import org.encog.ml.genetic.genome.Chromosome;
+import org.encog.ml.genetic.crossover.Crossover;
+import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.genome.GenomeComparator;
+import org.encog.ml.genetic.mutate.Mutate;
 import org.encog.ml.genetic.population.Population;
-import org.encog.ml.genetic.species.BasicSpecies;
-import org.encog.ml.genetic.species.Species;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATPopulation;
+import org.encog.neural.neat.NEATSpecies;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.genetic.GeneticScoreAdapter;
@@ -74,7 +76,7 @@ enum NEATParent {
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATTraining extends GeneticAlgorithm implements MLTrain {
+public class NEATTraining implements MLTrain, GeneticAlgorithm {
 
 	/**
 	 * The average fit adjustment.
@@ -124,6 +126,18 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 	private RandomChoice mutateChoices;
 	
 	private RandomChoice mutateAddChoices;
+	
+	/**
+	 * The score calculation object.
+	 */
+	private CalculateGenomeScore calculateScore;
+
+	/**
+	 * The genome comparator.
+	 */
+	private GenomeComparator comparator;
+	
+	private NEATPopulation population;
 
 	/**
 	 * Construct a neat trainer with a new population. The new population is
@@ -162,7 +176,7 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 	 *            The population to use.
 	 */
 	public NEATTraining(final CalculateScore calculateScore,
-			final Population population) {
+			final NEATPopulation population) {
 		if (population.size() < 1) {
 			throw new TrainingError("Population can not be empty.");
 		}
@@ -173,7 +187,6 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 		setPopulation(population);
 		this.inputCount = genome.getInputCount();
 		this.outputCount = genome.getOutputCount();
-
 		init();
 	}
 
@@ -236,7 +249,7 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 	 * Adjust each species score.
 	 */
 	public void adjustSpeciesScore() {
-		for (final Species s : getPopulation().getSpecies()) {
+		for (final NEATSpecies s : getPopulation().getSpecies()) {
 			// loop over all genomes and adjust scores as needed
 			for (final Genome member : s.getMembers()) {
 				double score = member.getScore();
@@ -416,7 +429,6 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 		final NEATGenome babyGenome = new NEATGenome(getPopulation()
 				.assignGenomeID(), babyNeurons, babyGenes, mom.getInputCount(),
 				mom.getOutputCount());
-		babyGenome.setGeneticAlgorithm(this);
 		babyGenome.setPopulation(getPopulation());
 		
 		return babyGenome;
@@ -502,6 +514,7 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 	 */
 	private void init() {
 
+		this.population.claim(this);
 		this.mutateChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0, 0.001 } , new Random());
 		this.mutateAddChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0 } , new Random());
 		
@@ -525,10 +538,7 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 				throw new TrainingError(
 						"All NEATGenome's must have the same input and output sizes as the base network.");
 			}
-			neat.setGeneticAlgorithm(this);
 		}
-
-		getPopulation().claim(this);
 
 		resetAndKill();
 		sortAndRecord();
@@ -561,7 +571,7 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 
 		int numSpawnedSoFar = 0;
 
-		for (final Species s : getPopulation().getSpecies()) {
+		for (final NEATSpecies s : getPopulation().getSpecies()) {
 			if (numSpawnedSoFar < getPopulation().size()) {
 				int numToSpawn = (int) Math.round(s.getNumToSpawn());
 
@@ -638,6 +648,7 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 
 		getPopulation().clear();
 		getPopulation().addAll(newPop);
+		getPopulation().claim(this);
 
 		resetAndKill();
 		sortAndRecord();
@@ -655,13 +666,13 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 				break;
 			case 1: // add node
 				if (genome.getNeuronsChromosome().size() < this.params.maxPermittedNeurons) {
-					genome.addNeuron(this.params.chanceAddNode,
+					genome.addNeuron(this, this.params.chanceAddNode,
 							this.params.numTrysToFindOldLink);
 				}
 				break;
 			case 2: // add connection
 				// now there's the chance a link may be added
-				genome.addLink(	this.params.numTrysToFindLoopedLink,
+				genome.addLink(	this, this.params.numTrysToFindLoopedLink,
 						this.params.numAddLinkAttempts);
 				break;
 			case 3: // adjust curve
@@ -703,7 +714,7 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 		final Object[] speciesArray = getPopulation().getSpecies().toArray();
 
 		for (final Object element : speciesArray) {
-			final Species s = (Species) element;
+			final NEATSpecies s = (NEATSpecies) element;
 			s.purge();
 
 			// did the leader die?  If so, disband the species.
@@ -786,7 +797,7 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 			final NEATGenome genome = (NEATGenome) g;
 			boolean added = false;
 
-			for (final Species s : getPopulation().getSpecies()) {
+			for (final NEATSpecies s : getPopulation().getSpecies()) {
 				final double compatibility = genome
 						.getCompatibilityScore((NEATGenome) s.getLeader());
 
@@ -802,7 +813,7 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 			// new species
 			if (!added) {
 				getPopulation().getSpecies().add(
-						new BasicSpecies(getPopulation(), genome,
+						new NEATSpecies(getPopulation(), genome,
 								getPopulation().assignSpeciesID()));
 			}
 		}
@@ -824,7 +835,7 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 			genome.setAmountToSpawn(toSpawn);
 		}
 
-		for (final Species species : getPopulation().getSpecies()) {
+		for (final NEATSpecies species : getPopulation().getSpecies()) {
 			species.calculateSpawnAmount();
 		}
 	}
@@ -853,6 +864,150 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 		}
 
 		return (NEATGenome) getPopulation().get(ChosenOne);
+	}
+	
+	/**
+	 * Add a genome.
+	 * 
+	 * @param species
+	 *            The species to add.
+	 * @param genome
+	 *            The genome to add.
+	 */
+	public void addSpeciesMember(final NEATSpecies species, 
+			final Genome genome) {
+
+		if (getComparator().isBetterThan(genome.getScore(),
+				species.getBestScore())) {
+			species.setBestScore(genome.getScore());
+			species.setGensNoImprovement(0);
+			species.setLeader(genome);
+		}
+
+		species.getMembers().add(genome);
+
+	}
+
+	/**
+	 * @return the calculateScore
+	 */
+	public CalculateGenomeScore getCalculateScore() {
+		return calculateScore;
+	}
+
+	/**
+	 * @param calculateScore the calculateScore to set
+	 */
+	public void setCalculateScore(CalculateGenomeScore calculateScore) {
+		this.calculateScore = calculateScore;
+	}
+
+	/**
+	 * @return the comparator
+	 */
+	public GenomeComparator getComparator() {
+		return comparator;
+	}
+
+	/**
+	 * @param comparator the comparator to set
+	 */
+	public void setComparator(GenomeComparator comparator) {
+		this.comparator = comparator;
+	}
+
+	/**
+	 * @return the population
+	 */
+	public NEATPopulation getPopulation() {
+		return population;
+	}
+
+	/**
+	 * @param population the population to set
+	 */
+	public void setPopulation(NEATPopulation population) {
+		this.population = population;
+	}
+	
+	/**
+	 * Calculate the score for this genome. The genome's score will be set.
+	 * 
+	 * @param g
+	 *            The genome to calculate for.
+	 */
+	public void calculateScore(final Genome g) {
+		if (g.getOrganism() instanceof MLContext) {
+			((MLContext) g.getOrganism()).clearContext();
+		}
+		final double score = this.calculateScore.calculateScore(g);
+		g.setScore(score);
+	}
+
+	@Override
+	public int getThreadCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setThreadCount(int numThreads) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Crossover getCrossover() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double getMutationPercent() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Mutate getMutate() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setPopulation(Population thePopulation) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setMutationPercent(double theMutationPercent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setPercentToMate(double thePercentToMate) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setCrossover(Crossover theCrossover) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setMatingPopulation(double theMatingPopulation) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setMutate(Mutate theMutate) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.ml.genetic.species;
+package org.encog.neural.neat;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import org.encog.ml.genetic.population.Population;
 /**
  * Provides basic functionality for a species.
  */
-public class BasicSpecies implements Species, Serializable {
+public class NEATSpecies implements Serializable {
 
 	/**
 	 * Serial id.
@@ -89,7 +89,7 @@ public class BasicSpecies implements Species, Serializable {
 	/**
 	 * Default constructor, used mainly for persistence.
 	 */
-	public BasicSpecies() {
+	public NEATSpecies() {
 
 	}
 
@@ -103,7 +103,7 @@ public class BasicSpecies implements Species, Serializable {
 	 * @param theSpeciesID
 	 *            The species id.
 	 */
-	public BasicSpecies(final Population thePopulation, final Genome theFirst,
+	public NEATSpecies(final Population thePopulation, final Genome theFirst,
 			final long theSpeciesID) {
 		this.population = thePopulation;
 		this.speciesID = theSpeciesID;
@@ -118,7 +118,6 @@ public class BasicSpecies implements Species, Serializable {
 	/**
 	 * Calculate the amount to spawn.
 	 */
-	@Override
 	public void calculateSpawnAmount() {
 		this.spawnsRequired = 0;
 		for (final Genome genome : this.members) {
@@ -133,7 +132,6 @@ public class BasicSpecies implements Species, Serializable {
 	 * 
 	 * @return The parent.
 	 */
-	@Override
 	public Genome chooseParent() {
 		Genome baby;
 
@@ -157,7 +155,6 @@ public class BasicSpecies implements Species, Serializable {
 	/**
 	 * @return The age of this species.
 	 */
-	@Override
 	public int getAge() {
 		return this.age;
 	}
@@ -165,7 +162,6 @@ public class BasicSpecies implements Species, Serializable {
 	/**
 	 * @return The best score for this species.
 	 */
-	@Override
 	public double getBestScore() {
 		return this.bestScore;
 	}
@@ -173,7 +169,6 @@ public class BasicSpecies implements Species, Serializable {
 	/**
 	 * @return The number of generations with no improvement.
 	 */
-	@Override
 	public int getGensNoImprovement() {
 		return this.gensNoImprovement;
 	}
@@ -181,7 +176,6 @@ public class BasicSpecies implements Species, Serializable {
 	/**
 	 * @return THe leader of this species.
 	 */
-	@Override
 	public Genome getLeader() {
 		return this.leader;
 	}
@@ -189,7 +183,6 @@ public class BasicSpecies implements Species, Serializable {
 	/**
 	 * @return The members of this species.
 	 */
-	@Override
 	public List<Genome> getMembers() {
 		return this.members;
 	}
@@ -197,7 +190,6 @@ public class BasicSpecies implements Species, Serializable {
 	/**
 	 * @return The number to spawn.
 	 */
-	@Override
 	public double getNumToSpawn() {
 		return this.spawnsRequired;
 	}
@@ -212,7 +204,6 @@ public class BasicSpecies implements Species, Serializable {
 	/**
 	 * @return The spawns required.
 	 */
-	@Override
 	public double getSpawnsRequired() {
 		return this.spawnsRequired;
 	}
@@ -220,7 +211,6 @@ public class BasicSpecies implements Species, Serializable {
 	/**
 	 * @return The species ID.
 	 */
-	@Override
 	public long getSpeciesID() {
 		return this.speciesID;
 	}
@@ -236,7 +226,6 @@ public class BasicSpecies implements Species, Serializable {
 	 * Purge all members, increase age by one and count the number of
 	 * generations with no improvement.
 	 */
-	@Override
 	public void purge() {
 		this.members.clear();
 		this.age++;
@@ -251,7 +240,6 @@ public class BasicSpecies implements Species, Serializable {
 	 * @param theAge
 	 *            The age of this species.
 	 */
-	@Override
 	public void setAge(final int theAge) {
 		this.age = theAge;
 	}
@@ -262,7 +250,6 @@ public class BasicSpecies implements Species, Serializable {
 	 * @param theBestScore
 	 *            The best score.
 	 */
-	@Override
 	public void setBestScore(final double theBestScore) {
 		this.bestScore = theBestScore;
 	}
@@ -273,7 +260,6 @@ public class BasicSpecies implements Species, Serializable {
 	 * @param theGensNoImprovement
 	 *            The number of generations.
 	 */
-	@Override
 	public void setGensNoImprovement(final int theGensNoImprovement) {
 		this.gensNoImprovement = theGensNoImprovement;
 	}
@@ -284,7 +270,6 @@ public class BasicSpecies implements Species, Serializable {
 	 * @param theLeader
 	 *            The new leader.
 	 */
-	@Override
 	public void setLeader(final Genome theLeader) {
 		this.leader = theLeader;
 	}
@@ -303,7 +288,6 @@ public class BasicSpecies implements Species, Serializable {
 	 * @param theSpawnsRequired
 	 *            The number of spawns required.
 	 */
-	@Override
 	public void setSpawnsRequired(final double theSpawnsRequired) {
 		this.spawnsRequired = theSpawnsRequired;
 	}

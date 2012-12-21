@@ -23,14 +23,20 @@
  */
 package org.encog.ml.genetic;
 
+import org.encog.ml.MLContext;
+import org.encog.ml.genetic.crossover.Crossover;
+import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
+import org.encog.ml.genetic.genome.GenomeComparator;
+import org.encog.ml.genetic.mutate.Mutate;
+import org.encog.ml.genetic.population.Population;
 import org.encog.util.concurrency.EngineConcurrency;
 import org.encog.util.concurrency.TaskGroup;
 
 /**
  * Provides a basic implementation of a genetic algorithm.
  */
-public class BasicGeneticAlgorithm extends GeneticAlgorithm {
+public class BasicGeneticAlgorithm implements GeneticAlgorithm {
 
 	/**
 	 * Is this the first iteration.
@@ -85,5 +91,247 @@ public class BasicGeneticAlgorithm extends GeneticAlgorithm {
 
 		// sort the next generation
 		getPopulation().sort();
+	}
+	
+	/**
+	 * The thread count;
+	 */
+	private int threadCount;
+	
+	/**
+	 * The score calculation object.
+	 */
+	private CalculateGenomeScore calculateScore;
+
+	/**
+	 * The genome comparator.
+	 */
+	private GenomeComparator comparator;
+
+	/**
+	 * The crossover object.
+	 */
+	private Crossover crossover;
+
+	/**
+	 * Percent of the population that the mating population chooses partners.
+	 * from.
+	 */
+	private double matingPopulation;
+
+	/**
+	 * The mutation object to use.
+	 */
+	private Mutate mutate;
+
+	/**
+	 * The percent that should mutate.
+	 */
+	private double mutationPercent;
+
+	/**
+	 * What percent should be chosen to mate. They will choose partners from the
+	 * entire mating population.
+	 */
+	private double percentToMate;
+
+	/**
+	 * The population.
+	 */
+	private Population population;
+	
+	/**
+	 * Should this run multi-threaded.
+	 */
+	private boolean multiThreaded = true;
+
+
+
+	/**
+	 * Calculate the score for this genome. The genome's score will be set.
+	 * 
+	 * @param g
+	 *            The genome to calculate for.
+	 */
+	@Override
+	public void calculateScore(final Genome g) {
+		if (g.getOrganism() instanceof MLContext) {
+			((MLContext) g.getOrganism()).clearContext();
+		}
+		final double score = this.calculateScore.calculateScore(g);
+		g.setScore(score);
+	}
+
+	/**
+	 * @return The score calculation object.
+	 */
+	@Override
+	public CalculateGenomeScore getCalculateScore() {
+		return this.calculateScore;
+	}
+
+	/**
+	 * @return The comparator.
+	 */
+	@Override
+	public GenomeComparator getComparator() {
+		return this.comparator;
+	}
+
+	/**
+	 * @return The crossover object.
+	 */
+	@Override
+	public Crossover getCrossover() {
+		return this.crossover;
+	}
+
+	/**
+	 * Get the mating population.
+	 * 
+	 * @return The mating population percent.
+	 */
+	public double getMatingPopulation() {
+		return this.matingPopulation;
+	}
+
+	/**
+	 * @return The mutate object.
+	 */
+	@Override
+	public Mutate getMutate() {
+		return this.mutate;
+	}
+
+	/**
+	 * Get the mutation percent.
+	 * 
+	 * @return The mutation percent.
+	 */
+	@Override
+	public double getMutationPercent() {
+		return this.mutationPercent;
+	}
+
+	/**
+	 * Get the percent to mate.
+	 * 
+	 * @return The percent to mate.
+	 */
+	public double getPercentToMate() {
+		return this.percentToMate;
+	}
+
+	/**
+	 * @return The population.
+	 */
+	@Override
+	public Population getPopulation() {
+		return this.population;
+	}
+
+
+	/**
+	 * Set the score calculation object.
+	 * 
+	 * @param theCalculateScore
+	 *            The score calculation object.
+	 */
+	@Override
+	public void setCalculateScore(
+			final CalculateGenomeScore theCalculateScore) {
+		this.calculateScore = theCalculateScore;
+	}
+
+	/**
+	 * Set the comparator.
+	 * 
+	 * @param theComparator
+	 *            The comparator.
+	 */
+	@Override
+	public void setComparator(final GenomeComparator theComparator) {
+		this.comparator = theComparator;
+	}
+
+	/**
+	 * Set the crossover object.
+	 * 
+	 * @param theCrossover
+	 *            The crossover object.
+	 */
+	@Override
+	public void setCrossover(final Crossover theCrossover) {
+		this.crossover = theCrossover;
+	}
+
+	/**
+	 * Set the mating population percent.
+	 * 
+	 * @param theMatingPopulation
+	 *            The mating population percent.
+	 */
+	@Override
+	public void setMatingPopulation(final double theMatingPopulation) {
+		this.matingPopulation = theMatingPopulation;
+	}
+
+	/**
+	 * Set the mutate object.
+	 * 
+	 * @param theMutate
+	 *            The mutate object.
+	 */
+	@Override
+	public void setMutate(final Mutate theMutate) {
+		this.mutate = theMutate;
+	}
+
+	/**
+	 * Set the mutation percent.
+	 * 
+	 * @param theMutationPercent
+	 *            The percent to mutate.
+	 */
+	@Override
+	public void setMutationPercent(final double theMutationPercent) {
+		this.mutationPercent = theMutationPercent;
+	}
+
+	/**
+	 * Set the percent to mate.
+	 * 
+	 * @param thePercentToMate
+	 *            The percent to mate.
+	 */
+	@Override
+	public void setPercentToMate(final double thePercentToMate) {
+		this.percentToMate = thePercentToMate;
+	}
+
+	/**
+	 * Set the population.
+	 * 
+	 * @param thePopulation
+	 *            The population.
+	 */
+	@Override
+	public void setPopulation(final Population thePopulation) {
+		this.population = thePopulation;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getThreadCount() {
+		return this.threadCount;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setThreadCount(int numThreads) {
+		this.threadCount = numThreads;
+		
 	}
 }

@@ -30,7 +30,6 @@ import java.util.List;
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.innovation.InnovationList;
-import org.encog.ml.genetic.species.Species;
 import org.encog.util.identity.BasicGenerateID;
 import org.encog.util.identity.GenerateID;
 
@@ -108,11 +107,6 @@ public class BasicPopulation implements Population {
 	 * How many genomes should be created.
 	 */
 	private int populationSize;
-
-	/**
-	 * The species in this population.
-	 */
-	private final List<Species> species = new ArrayList<Species>();
 
 	/**
 	 * Generate species id's.
@@ -311,14 +305,6 @@ public class BasicPopulation implements Population {
 	@Override
 	public int getPopulationSize() {
 		return this.populationSize;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<Species> getSpecies() {
-		return this.species;
 	}
 
 	/**

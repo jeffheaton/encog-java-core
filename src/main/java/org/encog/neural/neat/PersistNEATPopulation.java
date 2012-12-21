@@ -29,12 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.encog.ml.genetic.genes.Gene;
-import org.encog.ml.genetic.genome.Chromosome;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.innovation.Innovation;
-import org.encog.ml.genetic.species.BasicSpecies;
-import org.encog.ml.genetic.species.Species;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATInnovation;
 import org.encog.neural.neat.training.NEATInnovationList;
@@ -63,8 +59,8 @@ public class PersistNEATPopulation implements EncogPersistor {
 		innovationList.setPopulation(result);
 		result.setInnovations(innovationList);
 		EncogReadHelper in = new EncogReadHelper(is);
-		Map<Integer, Species> speciesMap = new HashMap<Integer, Species>();
-		Map<Species, Integer> leaderMap = new HashMap<Species, Integer>();
+		Map<Integer, NEATSpecies> speciesMap = new HashMap<Integer, NEATSpecies>();
+		Map<NEATSpecies, Integer> leaderMap = new HashMap<NEATSpecies, Integer>();
 		Map<Integer, Genome> genomeMap = new HashMap<Integer, Genome>();
 		EncogFileSection section;
 
@@ -89,7 +85,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 					&& section.getSubSectionName().equals("SPECIES")) {
 				for (String line : section.getLines()) {
 					String[] cols = line.split(",");
-					BasicSpecies species = new BasicSpecies();
+					NEATSpecies species = new NEATSpecies();
 
 					species.setSpeciesID(Integer.parseInt(cols[0]));
 					species.setAge(Integer.parseInt(cols[1]));
@@ -188,7 +184,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 		for (Genome genome : result.getGenomes()) {
 			NEATGenome neatGenome = (NEATGenome) genome;
 			int speciesId = (int) neatGenome.getSpeciesID();
-			Species species = speciesMap.get(speciesId);
+			NEATSpecies species = speciesMap.get(speciesId);
 			if (species != null) {
 				species.getMembers().add(neatGenome);
 			}
@@ -197,14 +193,14 @@ public class PersistNEATPopulation implements EncogPersistor {
 		}
 
 		// set the species leader links
-		for (Species species : leaderMap.keySet()) {
+		for (NEATSpecies species : leaderMap.keySet()) {
 			int leaderID = leaderMap.get(species);
 			Genome leader = genomeMap.get(leaderID);
 			if( leader==null) {
 				throw new PersistError("Unknown leader: genome #" + leader);
 			}
 			species.setLeader(leader);
-			((BasicSpecies)species).setPopulation(result);
+			species.setPopulation(result);
 		}
 		
 		((NEATInnovationList)result.getInnovations()).init();
@@ -296,7 +292,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 			}
 		}
 		out.addSubSection("SPECIES");
-		for (Species species : pop.getSpecies()) {
+		for (NEATSpecies species : pop.getSpecies()) {
 			out.addColumn(species.getSpeciesID());
 			out.addColumn(species.getAge());
 			out.addColumn(species.getBestScore());

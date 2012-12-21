@@ -29,7 +29,6 @@ import java.util.List;
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.innovation.InnovationList;
-import org.encog.ml.genetic.species.Species;
 
 /**
  * Defines a population of genomes.
@@ -176,11 +175,6 @@ public interface Population extends Serializable {
 	 * @return The max population size.
 	 */
 	int getPopulationSize();
-
-	/**
-	 * @return A list of species.
-	 */
-	List<Species> getSpecies();
 
 	/**
 	 * @return The survival rate.

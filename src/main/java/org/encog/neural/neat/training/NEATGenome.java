@@ -252,7 +252,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * @param numTrysToAddLink
 	 *            The number of tries to add a link.
 	 */
-	public void addLink(
+	public void addLink(NEATTraining training,
 			final int numTrysToFindLoop, final int numTrysToAddLink) {
 		int countTrysToAddLink = numTrysToFindLoop;
 
@@ -279,15 +279,15 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			return;
 		}
 		
-		createLink(neuron1ID, neuron2ID);
+		createLink(training, neuron1ID, neuron2ID);
 	}
 	
-	public void createLink(long neuron1ID, long neuron2ID) {
+	public void createLink(NEATTraining training, long neuron1ID, long neuron2ID) {
 
 		boolean recurrent = false;
 
 		// check to see if this innovation has already been tried
-		NEATInnovation innovation = ((NEATTraining) getGeneticAlgorithm())
+		NEATInnovation innovation = training
 				.getInnovations().checkInnovation(neuron1ID, neuron2ID,
 						NEATInnovationType.NewLink);
 
@@ -301,7 +301,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		// is this a new innovation?
 		if (innovation == null) {
 			// new innovation
-			innovation = ((NEATTraining) getGeneticAlgorithm()).getInnovations()
+			innovation = training.getInnovations()
 					.createNewInnovation(neuron1ID, neuron2ID,
 							NEATInnovationType.NewLink);
 
@@ -328,7 +328,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * @param numTrysToFindOldLink
 	 *            The number of tries to find a link to split.
 	 */
-	void addNeuron(final double mutationRate, final int numTrysToFindOldLink) {
+	void addNeuron(final NEATTraining training, final double mutationRate, final int numTrysToFindOldLink) {
 
 		int countTrysToFindOldLink = numTrysToFindOldLink;
 
@@ -384,8 +384,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		final double newWidth = (fromGene.getSplitX() + toGene.getSplitX()) / 2;
 
 		// has this innovation already been tried?
-		NEATInnovation innovation = ((NEATTraining) getGeneticAlgorithm())
-				.getInnovations().checkInnovation(from, to,
+		NEATInnovation innovation = training.getInnovations().checkInnovation(from, to,
 						NEATInnovationType.NewNeuron);
 
 		// prevent chaining
@@ -400,8 +399,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		if (innovation == null) {
 			
 			// this innovation has not been tried, create it
-			innovation = ((NEATTraining) getGeneticAlgorithm())
-					.getInnovations().createNewInnovation(from, to,
+			innovation = training.getInnovations().createNewInnovation(from, to,
 							NEATInnovationType.NewNeuron,
 							NEATNeuronType.Hidden, newWidth, newDepth);
 
@@ -409,10 +407,10 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 					NEATNeuronType.Hidden, innovation.getNeuronID(), newDepth, newWidth));
 
 			// add the first link
-			this.createLink(from, innovation.getNeuronID());
+			this.createLink(training, from, innovation.getNeuronID());
 			
 			// add the second link
-			this.createLink(innovation.getNeuronID(), to);
+			this.createLink(training, innovation.getNeuronID(), to);
 		}
 
 		else {
@@ -420,12 +418,10 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			final long newNeuronID = innovation.getNeuronID();
 
 			final NEATInnovation innovationLink1
-			     = ((NEATTraining) getGeneticAlgorithm())
-					.getInnovations().checkInnovation(from, newNeuronID,
+			     = training.getInnovations().checkInnovation(from, newNeuronID,
 							NEATInnovationType.NewLink);
 			final NEATInnovation innovationLink2
-			     = ((NEATTraining) getGeneticAlgorithm())
-					.getInnovations().checkInnovation(newNeuronID, to,
+			     = training.getInnovations().checkInnovation(newNeuronID, to,
 							NEATInnovationType.NewLink);
 
 			if ((innovationLink1 == null) || (innovationLink2 == null)) {

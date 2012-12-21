@@ -23,14 +23,12 @@
  */
 package org.encog.ml.genetic;
 
-import org.encog.ml.MLContext;
 import org.encog.ml.genetic.crossover.Crossover;
 import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.genome.GenomeComparator;
 import org.encog.ml.genetic.mutate.Mutate;
 import org.encog.ml.genetic.population.Population;
-import org.encog.ml.genetic.species.Species;
 import org.encog.util.concurrency.MultiThreadable;
 
 /**
@@ -41,260 +39,40 @@ import org.encog.util.concurrency.MultiThreadable;
  * The genetic algorithm is also capable of using a thread pool to speed
  * execution.
  */
-public abstract class GeneticAlgorithm  implements MultiThreadable {
+public abstract interface GeneticAlgorithm  extends MultiThreadable {
+
+	CalculateGenomeScore getCalculateScore();
+
+	GenomeComparator getComparator();
+
+	Crossover getCrossover();
+
+	void setCalculateScore(CalculateGenomeScore theCalculateScore);
+
+	void setComparator(GenomeComparator theComparator);
+
+	void calculateScore(Genome g);
+
+	double getMutationPercent();
+
+	Mutate getMutate();
+
+	void setPopulation(Population thePopulation);
+
+	Population getPopulation();
+
+	void setMutationPercent(double theMutationPercent);
+
+	void setPercentToMate(double thePercentToMate);
+
+	void setCrossover(Crossover theCrossover);
+
+	void setMatingPopulation(double theMatingPopulation);
+
+	void setMutate(Mutate theMutate);
+
+	void iteration();
 	
-	/**
-	 * The thread count;
-	 */
-	private int threadCount;
-	
-	/**
-	 * The score calculation object.
-	 */
-	private CalculateGenomeScore calculateScore;
 
-	/**
-	 * The genome comparator.
-	 */
-	private GenomeComparator comparator;
-
-	/**
-	 * The crossover object.
-	 */
-	private Crossover crossover;
-
-	/**
-	 * Percent of the population that the mating population chooses partners.
-	 * from.
-	 */
-	private double matingPopulation;
-
-	/**
-	 * The mutation object to use.
-	 */
-	private Mutate mutate;
-
-	/**
-	 * The percent that should mutate.
-	 */
-	private double mutationPercent;
-
-	/**
-	 * What percent should be chosen to mate. They will choose partners from the
-	 * entire mating population.
-	 */
-	private double percentToMate;
-
-	/**
-	 * The population.
-	 */
-	private Population population;
-	
-	/**
-	 * Should this run multi-threaded.
-	 */
-	private boolean multiThreaded = true;
-
-	/**
-	 * Add a genome.
-	 * 
-	 * @param species
-	 *            The species to add.
-	 * @param genome
-	 *            The genome to add.
-	 */
-	public void addSpeciesMember(final Species species, 
-			final Genome genome) {
-
-		if (getComparator().isBetterThan(genome.getScore(),
-				species.getBestScore())) {
-			species.setBestScore(genome.getScore());
-			species.setGensNoImprovement(0);
-			species.setLeader(genome);
-		}
-
-		species.getMembers().add(genome);
-
-	}
-
-	/**
-	 * Calculate the score for this genome. The genome's score will be set.
-	 * 
-	 * @param g
-	 *            The genome to calculate for.
-	 */
-	public void calculateScore(final Genome g) {
-		if (g.getOrganism() instanceof MLContext) {
-			((MLContext) g.getOrganism()).clearContext();
-		}
-		final double score = this.calculateScore.calculateScore(g);
-		g.setScore(score);
-	}
-
-	/**
-	 * @return The score calculation object.
-	 */
-	public CalculateGenomeScore getCalculateScore() {
-		return this.calculateScore;
-	}
-
-	/**
-	 * @return The comparator.
-	 */
-	public GenomeComparator getComparator() {
-		return this.comparator;
-	}
-
-	/**
-	 * @return The crossover object.
-	 */
-	public Crossover getCrossover() {
-		return this.crossover;
-	}
-
-	/**
-	 * Get the mating population.
-	 * 
-	 * @return The mating population percent.
-	 */
-	public double getMatingPopulation() {
-		return this.matingPopulation;
-	}
-
-	/**
-	 * @return The mutate object.
-	 */
-	public Mutate getMutate() {
-		return this.mutate;
-	}
-
-	/**
-	 * Get the mutation percent.
-	 * 
-	 * @return The mutation percent.
-	 */
-	public double getMutationPercent() {
-		return this.mutationPercent;
-	}
-
-	/**
-	 * Get the percent to mate.
-	 * 
-	 * @return The percent to mate.
-	 */
-	public double getPercentToMate() {
-		return this.percentToMate;
-	}
-
-	/**
-	 * @return The population.
-	 */
-	public Population getPopulation() {
-		return this.population;
-	}
-
-
-	/**
-	 * Set the score calculation object.
-	 * 
-	 * @param theCalculateScore
-	 *            The score calculation object.
-	 */
-	public void setCalculateScore(
-			final CalculateGenomeScore theCalculateScore) {
-		this.calculateScore = theCalculateScore;
-	}
-
-	/**
-	 * Set the comparator.
-	 * 
-	 * @param theComparator
-	 *            The comparator.
-	 */
-	public void setComparator(final GenomeComparator theComparator) {
-		this.comparator = theComparator;
-	}
-
-	/**
-	 * Set the crossover object.
-	 * 
-	 * @param theCrossover
-	 *            The crossover object.
-	 */
-	public void setCrossover(final Crossover theCrossover) {
-		this.crossover = theCrossover;
-	}
-
-	/**
-	 * Set the mating population percent.
-	 * 
-	 * @param theMatingPopulation
-	 *            The mating population percent.
-	 */
-	public void setMatingPopulation(final double theMatingPopulation) {
-		this.matingPopulation = theMatingPopulation;
-	}
-
-	/**
-	 * Set the mutate object.
-	 * 
-	 * @param theMutate
-	 *            The mutate object.
-	 */
-	public void setMutate(final Mutate theMutate) {
-		this.mutate = theMutate;
-	}
-
-	/**
-	 * Set the mutation percent.
-	 * 
-	 * @param theMutationPercent
-	 *            The percent to mutate.
-	 */
-	public void setMutationPercent(final double theMutationPercent) {
-		this.mutationPercent = theMutationPercent;
-	}
-
-	/**
-	 * Set the percent to mate.
-	 * 
-	 * @param thePercentToMate
-	 *            The percent to mate.
-	 */
-	public void setPercentToMate(final double thePercentToMate) {
-		this.percentToMate = thePercentToMate;
-	}
-
-	/**
-	 * Set the population.
-	 * 
-	 * @param thePopulation
-	 *            The population.
-	 */
-	public void setPopulation(final Population thePopulation) {
-		this.population = thePopulation;
-	}
-	
-	/**
-	 * Perform one training iteration.
-	 */
-	public abstract void iteration();
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getThreadCount() {
-		return this.threadCount;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setThreadCount(int numThreads) {
-		this.threadCount = numThreads;
-		
-	}
 	
 }
