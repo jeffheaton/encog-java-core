@@ -30,6 +30,7 @@ import java.util.List;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.population.Population;
+import org.encog.neural.neat.training.NEATGenome;
 
 /**
  * Provides basic functionality for a species.
@@ -59,12 +60,12 @@ public class NEATSpecies implements Serializable {
 	/**
 	 * The leader.
 	 */
-	private Genome leader;
+	private NEATGenome leader;
 
 	/**
 	 * The list of genomes.
 	 */
-	private final List<Genome> members = new ArrayList<Genome>();
+	private final List<NEATGenome> members = new ArrayList<NEATGenome>();
 
 	/**
 	 * The number of spawns required.
@@ -103,7 +104,7 @@ public class NEATSpecies implements Serializable {
 	 * @param theSpeciesID
 	 *            The species id.
 	 */
-	public NEATSpecies(final Population thePopulation, final Genome theFirst,
+	public NEATSpecies(final Population thePopulation, final NEATGenome theFirst,
 			final long theSpeciesID) {
 		this.population = thePopulation;
 		this.speciesID = theSpeciesID;
@@ -120,7 +121,7 @@ public class NEATSpecies implements Serializable {
 	 */
 	public void calculateSpawnAmount() {
 		this.spawnsRequired = 0;
-		for (final Genome genome : this.members) {
+		for (final NEATGenome genome : this.members) {
 			this.spawnsRequired += genome.getAmountToSpawn();
 		}
 
@@ -176,14 +177,14 @@ public class NEATSpecies implements Serializable {
 	/**
 	 * @return THe leader of this species.
 	 */
-	public Genome getLeader() {
+	public NEATGenome getLeader() {
 		return this.leader;
 	}
 
 	/**
 	 * @return The members of this species.
 	 */
-	public List<Genome> getMembers() {
+	public List<NEATGenome> getMembers() {
 		return this.members;
 	}
 
@@ -270,7 +271,7 @@ public class NEATSpecies implements Serializable {
 	 * @param theLeader
 	 *            The new leader.
 	 */
-	public void setLeader(final Genome theLeader) {
+	public void setLeader(final NEATGenome theLeader) {
 		this.leader = theLeader;
 	}
 

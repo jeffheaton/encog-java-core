@@ -55,11 +55,6 @@ public interface Genome extends Comparable<Genome> {
 	double getAdjustedScore();
 
 	/**
-	 * @return The amount of offspring this genome will have.
-	 */
-	double getAmountToSpawn();
-
-	/**
 	 * @return The chromosomes that make up this genome.
 	 */
 	List<Chromosome> getChromosomes();
@@ -69,11 +64,6 @@ public interface Genome extends Comparable<Genome> {
 	 *         field and only used during training.
 	 */
 	GeneticAlgorithm getGeneticAlgorithm();
-
-	/**
-	 * @return The genome ID.
-	 */
-	long getGenomeID();
 
 	/**
 	 * @return The organism produced by this genome.
@@ -111,14 +101,6 @@ public interface Genome extends Comparable<Genome> {
 	void setAdjustedScore(double adjustedScore);
 
 	/**
-	 * Set the amount to spawn.
-	 * 
-	 * @param amountToSpawn
-	 *            The amount to spawn.
-	 */
-	void setAmountToSpawn(double amountToSpawn);
-
-	/**
 	 * Set the GA used by this genome. This is normally a transient field and
 	 * only used during training.
 	 * 
@@ -126,14 +108,6 @@ public interface Genome extends Comparable<Genome> {
 	 *            The GA.
 	 */
 	void setGeneticAlgorithm(GeneticAlgorithm ga);
-
-	/**
-	 * Set the genome ID.
-	 * 
-	 * @param genomeID
-	 *            The genome id.
-	 */
-	void setGenomeID(long genomeID);
 
 	/**
 	 * Set the population that this genome belongs to.

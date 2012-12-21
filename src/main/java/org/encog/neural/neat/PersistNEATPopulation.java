@@ -61,7 +61,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 		EncogReadHelper in = new EncogReadHelper(is);
 		Map<Integer, NEATSpecies> speciesMap = new HashMap<Integer, NEATSpecies>();
 		Map<NEATSpecies, Integer> leaderMap = new HashMap<NEATSpecies, Integer>();
-		Map<Integer, Genome> genomeMap = new HashMap<Integer, Genome>();
+		Map<Integer, NEATGenome> genomeMap = new HashMap<Integer, NEATGenome>();
 		EncogFileSection section;
 
 		while ((section = in.readNextSection()) != null) {
@@ -195,7 +195,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 		// set the species leader links
 		for (NEATSpecies species : leaderMap.keySet()) {
 			int leaderID = leaderMap.get(species);
-			Genome leader = genomeMap.get(leaderID);
+			NEATGenome leader = genomeMap.get(leaderID);
 			if( leader==null) {
 				throw new PersistError("Unknown leader: genome #" + leader);
 			}

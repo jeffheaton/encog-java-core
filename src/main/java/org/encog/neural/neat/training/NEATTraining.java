@@ -875,7 +875,7 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 	 *            The genome to add.
 	 */
 	public void addSpeciesMember(final NEATSpecies species, 
-			final Genome genome) {
+			final NEATGenome genome) {
 
 		if (getComparator().isBetterThan(genome.getScore(),
 				species.getBestScore())) {
