@@ -32,6 +32,7 @@ import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
+import org.encog.ml.genetic.genome.BasicGenome;
 import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.ml.prg.epl.EPLUtil;
 import org.encog.ml.prg.epl.OpCodeHeader;
@@ -50,7 +51,7 @@ import org.encog.parse.expression.rpn.RenderRPN;
 import org.encog.util.datastruct.StackInt;
 import org.encog.util.simple.EncogUtility;
 
-public class EncogProgram implements MLRegression, MLError {
+public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 	public static final int DEFAULT_PROGRAM_SIZE = 1024;
 
 	private EPLHolder holder;
@@ -58,8 +59,6 @@ public class EncogProgram implements MLRegression, MLError {
 	private int individual;
 	private EncogProgramVariables variables = new EncogProgramVariables();
 	private EncogProgramContext context = new EncogProgramContext();
-	private double score;
-	private double effectiveScore;
 	private int programLength;
 	private int programCounter;
 	private ExpressionStack stack;
@@ -193,20 +192,12 @@ public class EncogProgram implements MLRegression, MLError {
 		return result;
 	}
 
-	public double getScore() {
-		return score;
-	}
-
-	public void setScore(double score) {
-		this.score = score;
-	}
-
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append("[EncogProgram: size=");
 		result.append(size());
 		result.append(", score=");
-		result.append(this.score);
+		result.append(this.getScore());
 		result.append(", Code: ");
 
 		try {
@@ -243,21 +234,6 @@ public class EncogProgram implements MLRegression, MLError {
 	@Override
 	public double calculateError(MLDataSet data) {
 		return EncogUtility.calculateRegressionError(this, data);
-	}
-
-	/**
-	 * @return the effectiveScore
-	 */
-	public double getEffectiveScore() {
-		return effectiveScore;
-	}
-
-	/**
-	 * @param effectiveScore
-	 *            the effectiveScore to set
-	 */
-	public void setEffectiveScore(double effectiveScore) {
-		this.effectiveScore = effectiveScore;
 	}
 
 	/**
@@ -555,8 +531,8 @@ public class EncogProgram implements MLRegression, MLError {
 		clear();
 		setProgramLength( source.programLength);
 		copy(source,0,0,source.getProgramLength());
-		this.score = source.score;
-		this.effectiveScore = source.effectiveScore;
+		setScore(source.getScore());
+		this.setAdjustedScore(source.getAdjustedScore());
 	}
 
 	public void copy(EncogProgram sourceProgram, int sourceIndex,
@@ -625,5 +601,17 @@ public class EncogProgram implements MLRegression, MLError {
 		if( this.programLength>this.holder.getMaxIndividualFrames() ) {
 			throw new EPLTooBig("Program has overrun its maximum length.");
 		}
+	}
+
+	@Override
+	public void decode() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void encode() {
+		// TODO Auto-generated method stub
+		
 	}
 }

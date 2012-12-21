@@ -2,12 +2,12 @@ package org.encog.ml.genetic.sort;
 
 import java.util.Comparator;
 
-import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.genetic.genome.Genome;
 
-public class MaximizeScoreComp implements Comparator<EncogProgram> {
+public class MaximizeScoreComp implements Comparator<Genome> {
 
 	@Override
-	public int compare(EncogProgram p1, EncogProgram p2) {
+	public int compare(Genome p1, Genome p2) {
 		return Double.compare(p2.getScore(), p1.getScore());
 	}
 

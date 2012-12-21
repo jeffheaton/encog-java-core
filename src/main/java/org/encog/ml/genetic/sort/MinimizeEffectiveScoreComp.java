@@ -2,13 +2,13 @@ package org.encog.ml.genetic.sort;
 
 import java.util.Comparator;
 
-import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.genetic.genome.Genome;
 
-public class MinimizeEffectiveScoreComp implements Comparator<EncogProgram> {
+public class MinimizeEffectiveScoreComp implements Comparator<Genome> {
 
 	@Override
-	public int compare(EncogProgram p1, EncogProgram p2) {
-		return Double.compare(p1.getEffectiveScore(), p2.getEffectiveScore());
+	public int compare(Genome p1, Genome p2) {
+		return Double.compare(p1.getAdjustedScore(), p2.getAdjustedScore());
 	}
 
 }

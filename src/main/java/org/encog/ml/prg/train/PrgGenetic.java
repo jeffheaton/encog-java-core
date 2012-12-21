@@ -14,6 +14,7 @@ import org.encog.mathutil.randomize.factory.RandomFactory;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.sort.MaximizeEffectiveScoreComp;
 import org.encog.ml.genetic.sort.MinimizeEffectiveScoreComp;
 import org.encog.ml.prg.EncogProgram;
@@ -41,7 +42,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	private PrgMutate mutation;
 	private PrgCrossover crossover;
 	private final EncogProgram bestGenome;
-	private Comparator<EncogProgram> compareScore;
+	private Comparator<Genome> compareScore;
 	private int threadCount;
 	private GeneticTrainWorker[] workers;
 	private int iterationNumber;
@@ -253,11 +254,11 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 
 	}
 
-	public Comparator<EncogProgram> getCompareScore() {
+	public Comparator<Genome> getCompareScore() {
 		return compareScore;
 	}
 
-	public void setCompareScore(Comparator<EncogProgram> compareScore) {
+	public void setCompareScore(Comparator<Genome> compareScore) {
 		this.compareScore = compareScore;
 	}
 
@@ -415,7 +416,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 					.getComplexityPenalty()) / range) * over;
 			result += (result * complexityPenalty);
 		}
-		prg.setEffectiveScore(result);
+		prg.setAdjustedScore(result);
 	}
 
 	/**
