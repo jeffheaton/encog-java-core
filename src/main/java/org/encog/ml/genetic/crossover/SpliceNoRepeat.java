@@ -27,7 +27,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.encog.ml.genetic.GeneticError;
-import org.encog.ml.genetic.genes.Gene;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.genome.IntegerArrayGenome;
 

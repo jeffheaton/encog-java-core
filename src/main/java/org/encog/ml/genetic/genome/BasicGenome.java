@@ -47,11 +47,6 @@ public abstract class BasicGenome implements Genome, Serializable {
 	private double adjustedScore;
 
 	/**
-	 * The chromosomes for this gene.
-	 */
-	private final List<Chromosome> chromosomes = new ArrayList<Chromosome>();
-
-	/**
 	 * The genetic algorithm for this gene.
 	 */
 	private transient GeneticAlgorithm geneticAlgorithm;
@@ -75,7 +70,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	 * {@inheritDoc}
 	 */
 	public boolean equals(final Genome other) {
-		return compareTo(other)==0;
+		return compareTo(other) == 0;
 	}
 
 	/**
@@ -90,20 +85,13 @@ public abstract class BasicGenome implements Genome, Serializable {
 			return Double.compare(other.getScore(), getScore());
 		}
 	}
+
 	/**
 	 * @return The adjusted score, which considers bonuses.
 	 */
 	@Override
 	public double getAdjustedScore() {
 		return this.adjustedScore;
-	}
-
-	/**
-	 * @return The number of chromosomes.
-	 */
-	@Override
-	public List<Chromosome> getChromosomes() {
-		return this.chromosomes;
 	}
 
 	/**
@@ -151,28 +139,15 @@ public abstract class BasicGenome implements Genome, Serializable {
 	@Override
 	public void mate(final Genome father, final Genome child1,
 			final Genome child2) {
-		final int motherChromosomes = getChromosomes().size();
-		final int fatherChromosomes = father.getChromosomes().size();
 
-		if (motherChromosomes != fatherChromosomes) {
-			throw new GeneticError(
-					"Mother and father must have same chromosome count, Mother:"
-							+ motherChromosomes + ",Father:"
-							+ fatherChromosomes);
+		this.geneticAlgorithm.getCrossover().mate(this, father, child1, child2);
+
+		if (Math.random() < this.geneticAlgorithm.getMutationPercent()) {
+			this.geneticAlgorithm.getMutate().performMutation(child1, child1);
 		}
 
-		for (int i = 0; i < fatherChromosomes; i++) {
-			this.geneticAlgorithm.getCrossover().mate(this,
-					father, child1,
-					child2);
-
-			if (Math.random() < this.geneticAlgorithm.getMutationPercent()) {
-				this.geneticAlgorithm.getMutate().performMutation(child1,child1);
-			}
-
-			if (Math.random() < this.geneticAlgorithm.getMutationPercent()) {
-				this.geneticAlgorithm.getMutate().performMutation(child1,child2);
-			}
+		if (Math.random() < this.geneticAlgorithm.getMutationPercent()) {
+			this.geneticAlgorithm.getMutate().performMutation(child1, child2);
 		}
 
 		child1.decode();

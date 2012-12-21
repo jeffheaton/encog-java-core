@@ -24,47 +24,31 @@
 package org.encog.ml.genetic;
 
 import org.encog.ml.MLEncodable;
-import org.encog.ml.genetic.genes.DoubleGene;
-import org.encog.ml.genetic.genes.Gene;
-import org.encog.ml.genetic.genome.BasicGenome;
-import org.encog.ml.genetic.genome.Chromosome;
+import org.encog.ml.genetic.genome.DoubleArrayGenome;
 
 /**
  * Implements a genome that allows a feedforward neural network to be trained
  * using a genetic algorithm. The chromosome for a feed forward neural network
  * is the weight and bias matrix.
  */
-public class MLMethodGenome extends BasicGenome {
+public class MLMethodGenome extends DoubleArrayGenome {
 	
 	/**
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private MLEncodable network;
 
-	/**
-	 * The chromosome.
-	 */
-	private final Chromosome networkChromosome;
 
 	/**
 	 * Construct a neural genome.
 	 * @param network The network to use.
 	 */
 	public MLMethodGenome(
-			final MLEncodable network) {
-		setOrganism(network);
-
-		this.networkChromosome = new Chromosome();
-
-		// create an array of "double genes"
-		final int size = network.encodedArrayLength();
-		for (int i = 0; i < size; i++) {
-			final Gene gene = new DoubleGene();
-			this.networkChromosome.getGenes().add(gene);
-		}
-
-		getChromosomes().add(this.networkChromosome);
-
+			final MLEncodable theNetwork) {
+		super(theNetwork.encodedArrayLength());
+		setOrganism(theNetwork);
 		encode();
 	}
 
@@ -72,29 +56,13 @@ public class MLMethodGenome extends BasicGenome {
 	 * Decode the genomes into a neural network.
 	 */
 	public void decode() {
-		MLEncodable encodable = (MLEncodable)getOrganism();
-		double[] temp = new double[encodable.encodedArrayLength()];
-		
-		for (int i = 0; i < temp.length; i++) {
-			final DoubleGene gene = (DoubleGene) this.networkChromosome
-					.getGenes().get(i);
-			temp[i] = gene.getValue();
-
-		}
-		encodable.decodeFromArray(temp);
-
+		((MLEncodable)getOrganism()).decodeFromArray(getData());
 	}
 
 	/**
 	 * Encode the neural network into genes.
 	 */
 	public void encode() {
-		MLEncodable encodable = (MLEncodable)getOrganism();
-		double[] temp = new double[encodable.encodedArrayLength()];
-		encodable.encodeToArray(temp);
-		
-		for (int i = 0; i < temp.length; i++) {
-			((DoubleGene) this.networkChromosome.getGene(i)).setValue(temp[i]);
-		}
+		((MLEncodable)getOrganism()).encodeToArray(getData());
 	}
 }

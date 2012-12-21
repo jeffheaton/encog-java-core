@@ -25,8 +25,6 @@ package org.encog.neural.neat.training;
 
 import java.io.Serializable;
 
-import org.encog.ml.genetic.genes.BasicGene;
-import org.encog.ml.genetic.genes.Gene;
 import org.encog.neural.neat.NEATNeuronType;
 
 /**
@@ -39,7 +37,7 @@ import org.encog.neural.neat.NEATNeuronType;
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATNeuronGene extends BasicGene implements Serializable {
+public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 
 	/**
 	 * Serial id.
@@ -98,7 +96,7 @@ public class NEATNeuronGene extends BasicGene implements Serializable {
 	 * @param gene
 	 *            The other gene.
 	 */
-	public void copy(final Gene gene) {
+	public void copy(final NEATNeuronGene gene) {
 		final NEATNeuronGene other = (NEATNeuronGene) gene;
 		setId(other.getId());
 		this.neuronType = other.neuronType;

@@ -55,11 +55,6 @@ public interface Genome extends Comparable<Genome> {
 	double getAdjustedScore();
 
 	/**
-	 * @return The chromosomes that make up this genome.
-	 */
-	List<Chromosome> getChromosomes();
-
-	/**
 	 * @return Get the GA used by this genome. This is normally a transient
 	 *         field and only used during training.
 	 */

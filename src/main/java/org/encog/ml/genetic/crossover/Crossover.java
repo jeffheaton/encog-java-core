@@ -23,7 +23,6 @@
  */
 package org.encog.ml.genetic.crossover;
 
-import org.encog.ml.genetic.genome.Chromosome;
 import org.encog.ml.genetic.genome.Genome;
 
 /**

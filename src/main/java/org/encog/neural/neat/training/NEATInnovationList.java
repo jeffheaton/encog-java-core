@@ -27,8 +27,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.encog.EncogError;
-import org.encog.ml.genetic.genes.Gene;
-import org.encog.ml.genetic.genome.Chromosome;
 import org.encog.ml.genetic.innovation.BasicInnovationList;
 import org.encog.ml.genetic.innovation.Innovation;
 import org.encog.ml.genetic.population.Population;

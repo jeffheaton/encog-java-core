@@ -25,9 +25,6 @@ package org.encog.neural.neat.training;
 
 import java.io.Serializable;
 
-import org.encog.ml.genetic.genes.BasicGene;
-import org.encog.ml.genetic.genes.Gene;
-
 /**
  * Implements a NEAT link gene. This describes a way in which two neurons are
  * linked.
@@ -39,7 +36,7 @@ import org.encog.ml.genetic.genes.Gene;
  * http://www.cs.ucf.edu/~kstanley/
  *
  */
-public class NEATLinkGene extends BasicGene implements Serializable {
+public class NEATLinkGene extends NEATBaseGene implements Serializable {
 
 	/**
 	 * Serial id.
@@ -99,7 +96,7 @@ public class NEATLinkGene extends BasicGene implements Serializable {
 	 * @param gene
 	 *            The other gene.
 	 */
-	public void copy(final Gene gene) {
+	public void copy(final NEATLinkGene gene) {
 		final NEATLinkGene other = (NEATLinkGene) gene;
 		setEnabled(other.isEnabled());
 		this.fromNeuronID = other.fromNeuronID;

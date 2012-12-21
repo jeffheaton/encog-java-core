@@ -23,8 +23,6 @@
  */
 package org.encog.ml.genetic.mutate;
 
-import org.encog.ml.genetic.genes.DoubleGene;
-import org.encog.ml.genetic.genes.Gene;
 import org.encog.ml.genetic.genome.DoubleArrayGenome;
 import org.encog.ml.genetic.genome.Genome;
 

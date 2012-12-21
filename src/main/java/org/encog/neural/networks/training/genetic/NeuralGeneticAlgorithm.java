@@ -27,6 +27,7 @@ import org.encog.mathutil.randomize.Randomizer;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.genetic.BasicGeneticAlgorithm;
+import org.encog.ml.genetic.MLMethodGenome;
 import org.encog.ml.genetic.crossover.Splice;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.mutate.MutatePerturb;
@@ -126,7 +127,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining implements MultiThread
 					.clone();
 			randomizer.randomize(chromosomeNetwork);
 
-			final NeuralGenome genome = new NeuralGenome(chromosomeNetwork);
+			final MLMethodGenome genome = new MLMethodGenome(chromosomeNetwork);
 			genome.setGeneticAlgorithm(getGenetic());
 			getGenetic().calculateScore(genome);
 			getGenetic().getPopulation().add(genome);
