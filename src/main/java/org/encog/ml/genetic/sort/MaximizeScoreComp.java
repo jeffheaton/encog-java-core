@@ -1,4 +1,4 @@
-package org.encog.ml.prg.train.sort;
+package org.encog.ml.genetic.sort;
 
 import java.util.Comparator;
 
