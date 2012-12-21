@@ -162,25 +162,16 @@ public abstract class BasicGenome implements Genome, Serializable {
 		}
 
 		for (int i = 0; i < fatherChromosomes; i++) {
-			final Chromosome motherChromosome = this.chromosomes.get(i);
-			final Chromosome fatherChromosome = father.getChromosomes().get(i);
-			final Chromosome offspring1Chromosome = child1.getChromosomes()
-					.get(i);
-			final Chromosome offspring2Chromosome = child2.getChromosomes()
-					.get(i);
-
-			this.geneticAlgorithm.getCrossover().mate(motherChromosome,
-					fatherChromosome, offspring1Chromosome,
-					offspring2Chromosome);
+			this.geneticAlgorithm.getCrossover().mate(this,
+					father, child1,
+					child2);
 
 			if (Math.random() < this.geneticAlgorithm.getMutationPercent()) {
-				this.geneticAlgorithm.getMutate().performMutation(
-						offspring1Chromosome);
+				this.geneticAlgorithm.getMutate().performMutation(child1,child1);
 			}
 
 			if (Math.random() < this.geneticAlgorithm.getMutationPercent()) {
-				this.geneticAlgorithm.getMutate().performMutation(
-						offspring2Chromosome);
+				this.geneticAlgorithm.getMutate().performMutation(child1,child2);
 			}
 		}
 

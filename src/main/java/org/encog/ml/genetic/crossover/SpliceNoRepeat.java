@@ -26,8 +26,10 @@ package org.encog.ml.genetic.crossover;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.genetic.genes.Gene;
-import org.encog.ml.genetic.genome.Chromosome;
+import org.encog.ml.genetic.genome.Genome;
+import org.encog.ml.genetic.genome.IntegerArrayGenome;
 
 /**
  * A simple cross over where genes are simply "spliced". Genes are not allowed
@@ -46,17 +48,17 @@ public class SpliceNoRepeat implements Crossover {
 	 *            An array of the taken genes.
 	 * @return Those genes in source that are not taken.
 	 */
-	private static Gene getNotTaken(final Chromosome source,
-			final Set<Gene> taken) {
+	private static int getNotTaken(final IntegerArrayGenome source,
+			final Set<Integer> taken) {
 
-		for (final Gene trial : source.getGenes()) {
+		for (final int trial : source.getData()) {
 			if (!taken.contains(trial)) {
 				taken.add(trial);
 				return trial;
 			}
 		}
 
-		return null;
+		throw new GeneticError("Ran out of integers to select.");
 	}
 
 	/**
@@ -86,9 +88,15 @@ public class SpliceNoRepeat implements Crossover {
 	 * @param offspring2
 	 *            Returns the second offspring.
 	 */
-	public void mate(final Chromosome mother, final Chromosome father,
-			final Chromosome offspring1, final Chromosome offspring2) {
-		final int geneLength = father.getGenes().size();
+	public void mate(final Genome theMother, final Genome theFather,
+			final Genome theOffspring1, final Genome theOffspring2) {
+		
+		IntegerArrayGenome mother = (IntegerArrayGenome)theMother;
+		IntegerArrayGenome father = (IntegerArrayGenome)theFather;
+		IntegerArrayGenome offspring1 = (IntegerArrayGenome)theOffspring1;
+		IntegerArrayGenome offspring2 = (IntegerArrayGenome)theOffspring2;
+		
+		final int geneLength = mother.size();
 
 		// the chromosome must be cut at two positions, determine them
 		final int cutpoint1 = (int) (Math.random() 
@@ -97,16 +105,16 @@ public class SpliceNoRepeat implements Crossover {
 
 		// keep track of which genes have been taken in each of the two
 		// offspring, defaults to false.
-		final Set<Gene> taken1 = new HashSet<Gene>();
-		final Set<Gene> taken2 = new HashSet<Gene>();
+		final Set<Integer> taken1 = new HashSet<Integer>();
+		final Set<Integer> taken2 = new HashSet<Integer>();
 
 		// handle cut section
 		for (int i = 0; i < geneLength; i++) {
 			if (!((i < cutpoint1) || (i > cutpoint2))) {
-				offspring1.getGene(i).copy(father.getGene(i));
-				offspring2.getGene(i).copy(mother.getGene(i));
-				taken1.add(father.getGene(i));
-				taken2.add(mother.getGene(i));
+				offspring1.copy(father,i,i);
+				offspring2.copy(mother,i,i);
+				taken1.add(father.getData()[i]);
+				taken2.add(mother.getData()[i]);
 			}
 		}
 
@@ -114,10 +122,8 @@ public class SpliceNoRepeat implements Crossover {
 		for (int i = 0; i < geneLength; i++) {
 			if ((i < cutpoint1) || (i > cutpoint2)) {
 
-				offspring1.getGene(i).copy(
-						SpliceNoRepeat.getNotTaken(mother, taken1));
-				offspring2.getGene(i).copy(
-						SpliceNoRepeat.getNotTaken(father, taken2));
+				offspring1.getData()[i] = SpliceNoRepeat.getNotTaken(mother, taken1);
+				offspring2.getData()[i] = SpliceNoRepeat.getNotTaken(father, taken2);
 
 			}
 		}

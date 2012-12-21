@@ -25,7 +25,8 @@ package org.encog.ml.genetic.mutate;
 
 import org.encog.ml.genetic.genes.DoubleGene;
 import org.encog.ml.genetic.genes.Gene;
-import org.encog.ml.genetic.genome.Chromosome;
+import org.encog.ml.genetic.genome.DoubleArrayGenome;
+import org.encog.ml.genetic.genome.Genome;
 
 /**
  * A simple mutation based on random numbers.
@@ -49,14 +50,14 @@ public class MutatePerturb implements Mutate {
 	 * Perform a perturb mutation on the specified chromosome.
 	 * @param chromosome The chromosome to mutate.
 	 */
-	public void performMutation(final Chromosome chromosome) {
-		for (final Gene gene : chromosome.getGenes()) {
-			if (gene instanceof DoubleGene) {
-				final DoubleGene doubleGene = (DoubleGene) gene;
-				double value = doubleGene.getValue();
-				value += (perturbAmount - (Math.random() * perturbAmount * 2));
-				doubleGene.setValue(value);
-			}
+	public void performMutation(final Genome theParent, final Genome theChild) {
+		DoubleArrayGenome parent = (DoubleArrayGenome)theParent;
+		DoubleArrayGenome child = (DoubleArrayGenome)theChild;
+		
+		for(int i=0;i<parent.size();i++) {
+			double value = parent.getData()[i];
+			value += (perturbAmount - (Math.random() * perturbAmount * 2));
+			child.getData()[i] = value;
 		}
 	}
 }

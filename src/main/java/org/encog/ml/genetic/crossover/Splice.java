@@ -23,7 +23,8 @@
  */
 package org.encog.ml.genetic.crossover;
 
-import org.encog.ml.genetic.genome.Chromosome;
+import org.encog.ml.genetic.genome.ArrayGenome;
+import org.encog.ml.genetic.genome.Genome;
 
 /**
  * A simple cross over where genes are simply "spliced". Genes are allowed to
@@ -56,9 +57,15 @@ public class Splice implements Crossover {
 	 * @param offspring2
 	 *            Returns the second offspring.
 	 */
-	public void mate(final Chromosome mother, final Chromosome father,
-			final Chromosome offspring1, final Chromosome offspring2) {
-		final int geneLength = mother.getGenes().size();
+	public void mate(final Genome theMother, final Genome theFather,
+			final Genome theOffspring1, final Genome theOffspring2) {
+		
+		ArrayGenome mother = (ArrayGenome)theMother;
+		ArrayGenome father = (ArrayGenome)theFather;
+		ArrayGenome offspring1 = (ArrayGenome)theOffspring1;
+		ArrayGenome offspring2 = (ArrayGenome)theOffspring2;
+		
+		final int geneLength = mother.size();
 
 		// the chromosome must be cut at two positions, determine them
 		final int cutpoint1 = (int) (Math.random() 
@@ -68,16 +75,16 @@ public class Splice implements Crossover {
 		// handle cut section
 		for (int i = 0; i < geneLength; i++) {
 			if (!((i < cutpoint1) || (i > cutpoint2))) {
-				offspring1.getGene(i).copy(father.getGene(i));
-				offspring2.getGene(i).copy(mother.getGene(i));
+				offspring1.copy(father,i,i);
+				offspring2.copy(mother,i,i);
 			}
 		}
 
 		// handle outer sections
 		for (int i = 0; i < geneLength; i++) {
 			if ((i < cutpoint1) || (i > cutpoint2)) {
-				offspring1.getGene(i).copy(mother.getGene(i));
-				offspring2.getGene(i).copy(father.getGene(i));
+				offspring1.copy(mother,i,i);
+				offspring2.copy(father,i,i);
 			}
 		}
 	}

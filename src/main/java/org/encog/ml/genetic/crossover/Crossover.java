@@ -24,6 +24,7 @@
 package org.encog.ml.genetic.crossover;
 
 import org.encog.ml.genetic.genome.Chromosome;
+import org.encog.ml.genetic.genome.Genome;
 
 /**
  * Specifies how "crossover" or mating happens.
@@ -42,6 +43,6 @@ public interface Crossover {
 	 * @param offspring2
 	 *            The second offspring.
 	 */
-	void mate(final Chromosome mother, final Chromosome father,
-			final Chromosome offspring1, final Chromosome offspring2);
+	void mate(final Genome mother, final Genome father,
+			final Genome offspring1, final Genome offspring2);
 }

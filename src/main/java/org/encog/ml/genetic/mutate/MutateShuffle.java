@@ -24,7 +24,8 @@
 package org.encog.ml.genetic.mutate;
 
 import org.encog.ml.genetic.genes.Gene;
-import org.encog.ml.genetic.genome.Chromosome;
+import org.encog.ml.genetic.genome.ArrayGenome;
+import org.encog.ml.genetic.genome.Genome;
 
 /**
  * A simple mutation where genes are shuffled.
@@ -36,8 +37,13 @@ public class MutateShuffle implements Mutate {
 	 * Perform a shuffle mutation.
 	 * @param chromosome The chromosome to mutate.
 	 */
-	public void performMutation(final Chromosome chromosome) {
-		final int length = chromosome.getGenes().size();
+	public void performMutation(final Genome theParent, final Genome theChild) {
+		ArrayGenome parent = (ArrayGenome)theParent;
+		ArrayGenome child = (ArrayGenome)theChild;
+		
+		child.copy(parent);
+		
+		final int length = parent.size();
 		int iswap1 = (int) (Math.random() * length);
 		int iswap2 = (int) (Math.random() * length);
 
@@ -59,17 +65,8 @@ public class MutateShuffle implements Mutate {
 			iswap1 = iswap2;
 			iswap2 = temp;
 		}
-
-		final Gene gene1 = chromosome.getGenes().get(iswap1);
-		final Gene gene2 = chromosome.getGenes().get(iswap2);
-
-		// remove the two genes
-		chromosome.getGenes().remove(gene1);
-		chromosome.getGenes().remove(gene2);
-
-		// insert them back in, reverse order
-		chromosome.getGenes().add(iswap1, gene2);
-		chromosome.getGenes().add(iswap2, gene1);
+		
+		child.swap(iswap1,iswap2);
 	}
 
 }

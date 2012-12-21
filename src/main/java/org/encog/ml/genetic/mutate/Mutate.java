@@ -23,7 +23,7 @@
  */
 package org.encog.ml.genetic.mutate;
 
-import org.encog.ml.genetic.genome.Chromosome;
+import org.encog.ml.genetic.genome.Genome;
 
 /**
  * Defines how a chromosome is mutated.
@@ -34,6 +34,6 @@ public interface Mutate {
 	 * Perform a mutation on the specified chromosome.
 	 * @param chromosome The chromosome to mutate.
 	 */
-	void performMutation(Chromosome chromosome);
+	void performMutation(Genome parent, Genome child);
 
 }
