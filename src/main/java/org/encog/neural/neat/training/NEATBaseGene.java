@@ -1,6 +1,8 @@
 package org.encog.neural.neat.training;
 
-public class NEATBaseGene implements Comparable<NEATBaseGene> {
+import java.io.Serializable;
+
+public class NEATBaseGene implements Comparable<NEATBaseGene>, Serializable {
 	/**
 	 * Serial id.
 	 */

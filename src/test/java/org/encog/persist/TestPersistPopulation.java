@@ -76,6 +76,7 @@ public class TestPersistPopulation extends TestCase {
 	public void testPersistSerial() throws IOException, ClassNotFoundException
 	{
 		NEATPopulation pop = generate();
+		validate(pop);
 		
 		SerializeObject.save(SERIAL_FILENAME, pop);
 		NEATPopulation pop2 = (NEATPopulation)SerializeObject.load(SERIAL_FILENAME);
