@@ -15,8 +15,8 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.genetic.sort.MaximizeEffectiveScoreComp;
-import org.encog.ml.genetic.sort.MinimizeEffectiveScoreComp;
+import org.encog.ml.genetic.sort.MaximizeAdjustedScoreScoreComp;
+import org.encog.ml.genetic.sort.MinimizeAdjustedScoreScoreComp;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.EncogProgramVariables;
@@ -70,9 +70,9 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		
 		this.bestGenome = this.population.createProgram();
 		if (theScoreFunction.shouldMinimize()) {
-			this.compareScore = new MinimizeEffectiveScoreComp();
+			this.compareScore = new MinimizeAdjustedScoreScoreComp();
 		} else {
-			this.compareScore = new MaximizeEffectiveScoreComp();
+			this.compareScore = new MaximizeAdjustedScoreScoreComp();
 		}
 		
 		this.selector = new ThreadedGenomeSelector(this);

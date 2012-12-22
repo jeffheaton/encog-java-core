@@ -27,9 +27,9 @@ import org.encog.ml.MLContext;
 import org.encog.ml.genetic.crossover.Crossover;
 import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.genetic.genome.GenomeComparator;
 import org.encog.ml.genetic.mutate.Mutate;
 import org.encog.ml.genetic.population.Population;
+import org.encog.ml.genetic.sort.GenomeComparator;
 import org.encog.util.concurrency.EngineConcurrency;
 import org.encog.util.concurrency.TaskGroup;
 
@@ -39,85 +39,35 @@ import org.encog.util.concurrency.TaskGroup;
 public class BasicGeneticAlgorithm implements GeneticAlgorithm {
 
 	/**
-	 * Is this the first iteration.
-	 */
-	private boolean first = true;
-	
-	/**
-	 * Modify the weight matrix and bias values based on the last call to
-	 * calcError.
-	 * 
-	 * @throws NeuralNetworkException
-	 */
-	@Override
-	public final void iteration() {
-
-		if (this.first) {
-			EngineConcurrency.getInstance().setThreadCount(getThreadCount());
-			getPopulation().claim(this);
-			this.first = false;
-		}
-
-		final int countToMate = (int) (getPopulation().getPopulationSize() 
-				* getPercentToMate());
-		final int offspringCount = countToMate * 2;
-		int offspringIndex = getPopulation().getPopulationSize()
-				- offspringCount;
-		final int matingPopulationSize = (int) (getPopulation()
-				.getPopulationSize() * getMatingPopulation());
-
-		final TaskGroup group = EngineConcurrency.getInstance()
-				.createTaskGroup();
-
-		// mate and form the next generation
-		for (int i = 0; i < countToMate; i++) {
-			final Genome mother = getPopulation().getGenomes().get(i);
-			final int fatherInt = (int) (Math.random() * matingPopulationSize);
-			final Genome father = getPopulation().getGenomes().get(fatherInt);
-			final Genome child1 = getPopulation().getGenomes().get(
-					offspringIndex);
-			final Genome child2 = getPopulation().getGenomes().get(
-					offspringIndex + 1);
-
-			final MateWorker worker = new MateWorker(mother, father, child1,
-					child2);
-
-			EngineConcurrency.getInstance().processTask(worker, group);
-			
-			offspringIndex += 2;
-		}
-
-		group.waitForComplete();
-
-		// sort the next generation
-		getPopulation().sort();
-	}
-	
-	/**
-	 * The thread count;
-	 */
-	private int threadCount;
-	
-	/**
 	 * The score calculation object.
 	 */
 	private CalculateGenomeScore calculateScore;
-
+	
 	/**
 	 * The genome comparator.
 	 */
 	private GenomeComparator comparator;
-
+	
 	/**
 	 * The crossover object.
 	 */
 	private Crossover crossover;
+	
+	/**
+	 * Is this the first iteration.
+	 */
+	private boolean first = true;
 
 	/**
 	 * Percent of the population that the mating population chooses partners.
 	 * from.
 	 */
 	private double matingPopulation;
+
+	/**
+	 * Should this run multi-threaded.
+	 */
+	private boolean multiThreaded = true;
 
 	/**
 	 * The mutation object to use.
@@ -139,14 +89,12 @@ public class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	 * The population.
 	 */
 	private Population population;
-	
+
 	/**
-	 * Should this run multi-threaded.
+	 * The thread count;
 	 */
-	private boolean multiThreaded = true;
-
-
-
+	private int threadCount;
+	
 	/**
 	 * Calculate the score for this genome. The genome's score will be set.
 	 * 
@@ -161,6 +109,8 @@ public class BasicGeneticAlgorithm implements GeneticAlgorithm {
 		final double score = this.calculateScore.calculateScore(g);
 		g.setScore(score);
 	}
+
+
 
 	/**
 	 * @return The score calculation object.
@@ -230,6 +180,63 @@ public class BasicGeneticAlgorithm implements GeneticAlgorithm {
 		return this.population;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getThreadCount() {
+		return this.threadCount;
+	}
+
+
+	/**
+	 * Modify the weight matrix and bias values based on the last call to
+	 * calcError.
+	 * 
+	 * @throws NeuralNetworkException
+	 */
+	@Override
+	public final void iteration() {
+
+		if (this.first) {
+			EngineConcurrency.getInstance().setThreadCount(getThreadCount());
+			getPopulation().claim(this);
+			this.first = false;
+		}
+
+		final int countToMate = (int) (getPopulation().getPopulationSize() 
+				* getPercentToMate());
+		final int offspringCount = countToMate * 2;
+		int offspringIndex = getPopulation().getPopulationSize()
+				- offspringCount;
+		final int matingPopulationSize = (int) (getPopulation()
+				.getPopulationSize() * getMatingPopulation());
+
+		final TaskGroup group = EngineConcurrency.getInstance()
+				.createTaskGroup();
+
+		// mate and form the next generation
+		for (int i = 0; i < countToMate; i++) {
+			final Genome mother = getPopulation().getGenomes().get(i);
+			final int fatherInt = (int) (Math.random() * matingPopulationSize);
+			final Genome father = getPopulation().getGenomes().get(fatherInt);
+			final Genome child1 = getPopulation().getGenomes().get(
+					offspringIndex);
+			final Genome child2 = getPopulation().getGenomes().get(
+					offspringIndex + 1);
+
+			final MateWorker worker = new MateWorker(mother, father, child1,
+					child2);
+
+			EngineConcurrency.getInstance().processTask(worker, group);
+			
+			offspringIndex += 2;
+		}
+
+		group.waitForComplete();
+
+		// sort the next generation
+		getPopulation().sort();
+	}
 
 	/**
 	 * Set the score calculation object.
@@ -318,13 +325,6 @@ public class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	@Override
 	public void setPopulation(final Population thePopulation) {
 		this.population = thePopulation;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getThreadCount() {
-		return this.threadCount;
 	}
 
 	/**

@@ -38,9 +38,10 @@ import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.crossover.Crossover;
 import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.genetic.genome.GenomeComparator;
 import org.encog.ml.genetic.mutate.Mutate;
 import org.encog.ml.genetic.population.Population;
+import org.encog.ml.genetic.sort.GenomeComparator;
+import org.encog.ml.genetic.sort.MinimizeAdjustedScoreScoreComp;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.neat.NEATNetwork;
@@ -160,7 +161,7 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 		this.outputCount = outputCount;
 
 		setCalculateScore(new GeneticScoreAdapter(calculateScore));
-		setComparator(new GenomeComparator(getCalculateScore()));
+		setComparator(new MinimizeAdjustedScoreScoreComp());
 		setPopulation(new NEATPopulation(inputCount, outputCount,
 				populationSize));
 
@@ -183,7 +184,7 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 
 		final NEATGenome genome = (NEATGenome) population.getGenomes().get(0);
 		setCalculateScore(new GeneticScoreAdapter(calculateScore));
-		setComparator(new GenomeComparator(getCalculateScore()));
+		setComparator(new MinimizeAdjustedScoreScoreComp());
 		setPopulation(population);
 		this.inputCount = genome.getInputCount();
 		this.outputCount = genome.getOutputCount();
@@ -312,7 +313,7 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 		} else {
 			// mom and dad have different scores, so choose the better score.
 			// important to note, better score COULD BE the larger or smaller score.
-			if (getComparator().isBetterThan(mom.getScore(), dad.getScore())) {
+			if (getComparator().compare(mom, dad)<0) {
 				return NEATParent.Mom;
 			}
 
@@ -780,8 +781,10 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 			this.bestEverNetwork = ((NEATNetwork) genome.getOrganism());
 		}
 
-		this.bestEverScore = getComparator().bestScore(getError(),
-				this.bestEverScore);
+		if( getComparator().isBetterThan(getError(), this.bestEverScore) ) {
+			this.bestEverScore = getError();
+		}
+		
 	}
 
 	/**
@@ -877,8 +880,7 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 	public void addSpeciesMember(final NEATSpecies species, 
 			final NEATGenome genome) {
 
-		if (getComparator().isBetterThan(genome.getScore(),
-				species.getBestScore())) {
+		if (getComparator().compare(genome,species.getLeader())<0) {
 			species.setBestScore(genome.getScore());
 			species.setGensNoImprovement(0);
 			species.setLeader(genome);

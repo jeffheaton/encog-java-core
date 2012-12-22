@@ -26,9 +26,9 @@ package org.encog.ml.genetic;
 import org.encog.ml.genetic.crossover.Crossover;
 import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.genetic.genome.GenomeComparator;
 import org.encog.ml.genetic.mutate.Mutate;
 import org.encog.ml.genetic.population.Population;
+import org.encog.ml.genetic.sort.GenomeComparator;
 import org.encog.util.concurrency.MultiThreadable;
 
 /**
