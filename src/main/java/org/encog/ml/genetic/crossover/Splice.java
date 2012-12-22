@@ -23,6 +23,8 @@
  */
 package org.encog.ml.genetic.crossover;
 
+import java.util.Random;
+
 import org.encog.ml.genetic.genome.ArrayGenome;
 import org.encog.ml.genetic.genome.Genome;
 
@@ -57,13 +59,14 @@ public class Splice implements Crossover {
 	 * @param offspring2
 	 *            Returns the second offspring.
 	 */
-	public void mate(final Genome theMother, final Genome theFather,
-			final Genome theOffspring1, final Genome theOffspring2) {
+	@Override
+	public void performCrossover(Random rnd, Genome theParent1, Genome theParent2,
+			Genome[] theOffspring, int index) {
 		
-		ArrayGenome mother = (ArrayGenome)theMother;
-		ArrayGenome father = (ArrayGenome)theFather;
-		ArrayGenome offspring1 = (ArrayGenome)theOffspring1;
-		ArrayGenome offspring2 = (ArrayGenome)theOffspring2;
+		ArrayGenome mother = (ArrayGenome)theParent1;
+		ArrayGenome father = (ArrayGenome)theParent2;
+		ArrayGenome offspring1 = (ArrayGenome)theOffspring[index];
+		ArrayGenome offspring2 = (ArrayGenome)theOffspring[index+1];
 		
 		final int geneLength = mother.size();
 
@@ -87,5 +90,13 @@ public class Splice implements Crossover {
 				offspring2.copy(father,i,i);
 			}
 		}
+	}
+
+	/**
+	 * @return The number of offspring produced, which is 2 for splice crossover.
+	 */
+	@Override
+	public int offspringProduced() {
+		return 2;
 	}
 }

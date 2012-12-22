@@ -23,6 +23,8 @@
  */
 package org.encog.ml.genetic.mutate;
 
+import java.util.Random;
+
 import org.encog.ml.genetic.genome.DoubleArrayGenome;
 import org.encog.ml.genetic.genome.Genome;
 
@@ -48,14 +50,22 @@ public class MutatePerturb implements Mutate {
 	 * Perform a perturb mutation on the specified chromosome.
 	 * @param chromosome The chromosome to mutate.
 	 */
-	public void performMutation(final Genome theParent, final Genome theChild) {
+	public void performMutation(Random rnd, Genome theParent, Genome[] theOffspring, int index) {
 		DoubleArrayGenome parent = (DoubleArrayGenome)theParent;
-		DoubleArrayGenome child = (DoubleArrayGenome)theChild;
+		DoubleArrayGenome child = (DoubleArrayGenome)theOffspring[0];
 		
 		for(int i=0;i<parent.size();i++) {
 			double value = parent.getData()[i];
 			value += (perturbAmount - (Math.random() * perturbAmount * 2));
 			child.getData()[i] = value;
 		}
+	}
+	
+	/**
+	 * @return The number of offspring produced, which is 1 for this mutation.
+	 */
+	@Override
+	public int offspringProduced() {
+		return 1;
 	}
 }

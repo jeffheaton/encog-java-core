@@ -23,6 +23,8 @@
  */
 package org.encog.ml.genetic.crossover;
 
+import java.util.Random;
+
 import org.encog.ml.genetic.genome.Genome;
 
 /**
@@ -31,17 +33,18 @@ import org.encog.ml.genetic.genome.Genome;
 public interface Crossover {
 
 	/**
-	 * Mate two chromosomes.
-	 * 
-	 * @param mother
-	 *            The mother.
-	 * @param father
-	 *            The father.
-	 * @param offspring1
-	 *            The first offspring.
-	 * @param offspring2
-	 *            The second offspring.
+	 * Perform a crossover between two genomes.
+	 * @param rnd Random number generator.
+	 * @param parent1 The first parent.
+	 * @param parent2 The second parent.
+	 * @param offspring The offspring.
+	 * @param index The index to start writing offspring to.
 	 */
-	void mate(final Genome mother, final Genome father,
-			final Genome offspring1, final Genome offspring2);
+	void performCrossover(Random rnd, Genome parent1, Genome parent2,
+			Genome[] offspring, int index);
+	
+	/**
+	 * @return The number of offspring produced by this type of crossover.
+	 */
+	int offspringProduced();
 }

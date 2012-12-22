@@ -26,6 +26,7 @@ package org.encog.ml.genetic.genome;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.GeneticError;
@@ -140,14 +141,15 @@ public abstract class BasicGenome implements Genome, Serializable {
 	public void mate(final Genome father, final Genome child1,
 			final Genome child2) {
 
-		this.geneticAlgorithm.getCrossover().mate(this, father, child1, child2);
+		Genome[] offspring = { child1, child2 };
+		this.geneticAlgorithm.getCrossover().performCrossover(new Random(), this, father, offspring, 0);
 
 		if (Math.random() < this.geneticAlgorithm.getMutationPercent()) {
-			this.geneticAlgorithm.getMutate().performMutation(child1, child1);
+			this.geneticAlgorithm.getMutate().performMutation(new Random(), child1, offspring, 0);
 		}
 
 		if (Math.random() < this.geneticAlgorithm.getMutationPercent()) {
-			this.geneticAlgorithm.getMutate().performMutation(child1, child2);
+			this.geneticAlgorithm.getMutate().performMutation(new Random(), child1, offspring, 1);
 		}
 
 		child1.decode();

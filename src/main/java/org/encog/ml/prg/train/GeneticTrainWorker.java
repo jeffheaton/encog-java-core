@@ -3,10 +3,10 @@ package org.encog.ml.prg.train;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.encog.ml.genetic.crossover.Crossover;
+import org.encog.ml.genetic.mutate.Mutate;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.exception.EPLTooBig;
-import org.encog.ml.prg.train.crossover.PrgCrossover;
-import org.encog.ml.prg.train.mutate.PrgMutate;
 import org.encog.ml.prg.train.selection.PrgSelection;
 import org.encog.neural.networks.training.CalculateScore;
 
@@ -44,8 +44,8 @@ public class GeneticTrainWorker extends Thread {
 			PrgPopulation population = this.owner.getPopulation();
 			EncogProgram[] members = this.owner.getPopulation().getMembers();
 			PrgSelection selection = this.owner.getSelection();
-			PrgCrossover crossover = this.owner.getCrossover();
-			PrgMutate mutation = this.owner.getMutation();
+			Crossover crossover = this.owner.getCrossover();
+			Mutate mutation = this.owner.getMutation();
 			CalculateScore scoreFunction = this.owner.getScoreFunction();
 			this.done.set(false);
 			EncogProgram parent1 = null;
@@ -60,16 +60,15 @@ public class GeneticTrainWorker extends Thread {
 							.getCrossoverProbability()) {
 						parent2 = this.owner.getSelector().selectGenome();
 						
-						crossover.crossover(this.rnd, parent1, parent2,
-							this.tempProgram, 0, 1);
+						crossover.performCrossover(this.rnd, parent1, parent2,
+							this.tempProgram, 0);
 
 						scoreFunction.calculateScore(this.tempProgram[0]);
 						handleNewGenomes();
 					}
 
 					if (this.rnd.nextDouble() < params.getMutationProbability()) {
-						mutation.mutate(this.rnd, parent1, this.tempProgram, 0,
-								1);
+						mutation.performMutation(this.rnd, parent1, this.tempProgram, 0);
 						scoreFunction.calculateScore(this.tempProgram[0]);
 						handleNewGenomes();
 					}

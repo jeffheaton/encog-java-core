@@ -14,16 +14,16 @@ import org.encog.mathutil.randomize.factory.RandomFactory;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.genetic.crossover.Crossover;
 import org.encog.ml.genetic.genome.Genome;
+import org.encog.ml.genetic.mutate.Mutate;
 import org.encog.ml.genetic.sort.MaximizeAdjustedScoreScoreComp;
 import org.encog.ml.genetic.sort.MinimizeAdjustedScoreScoreComp;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.EncogProgramVariables;
 import org.encog.ml.prg.exception.EncogProgramError;
-import org.encog.ml.prg.train.crossover.PrgCrossover;
 import org.encog.ml.prg.train.crossover.SubtreeCrossover;
-import org.encog.ml.prg.train.mutate.PrgMutate;
 import org.encog.ml.prg.train.mutate.SubtreeMutation;
 import org.encog.ml.prg.train.selection.PrgSelection;
 import org.encog.ml.prg.train.selection.TournamentSelection;
@@ -39,8 +39,8 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	private final PrgPopulation population;
 	private final CalculateScore scoreFunction;
 	private PrgSelection selection;
-	private PrgMutate mutation;
-	private PrgCrossover crossover;
+	private Mutate mutation;
+	private Crossover crossover;
 	private final EncogProgram bestGenome;
 	private Comparator<Genome> compareScore;
 	private int threadCount;
@@ -99,19 +99,19 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		this.selection = selection;
 	}
 
-	public PrgMutate getMutation() {
+	public Mutate getMutation() {
 		return mutation;
 	}
 
-	public void setMutation(PrgMutate mutation) {
+	public void setMutation(Mutate mutation) {
 		this.mutation = mutation;
 	}
 
-	public PrgCrossover getCrossover() {
+	public Crossover getCrossover() {
 		return crossover;
 	}
 
-	public void setCrossover(PrgCrossover crossover) {
+	public void setCrossover(Crossover crossover) {
 		this.crossover = crossover;
 	}
 

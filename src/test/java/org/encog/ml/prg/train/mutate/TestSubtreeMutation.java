@@ -5,6 +5,7 @@ import java.util.Random;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.encog.ml.genetic.mutate.Mutate;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.extension.StandardExtensions;
@@ -20,8 +21,8 @@ public class TestSubtreeMutation extends TestCase {
 		prg.getVariables().setVariable("x", 1);
 		EncogProgram[] offspring = prg.allocateOffspring(1);
 		prg.compileExpression(startExpression);
-		PrgMutate mutate = new SubtreeMutation(context,3);
-		mutate.mutate(new Random(seed), prg, offspring, 0, 1);
+		Mutate mutate = new SubtreeMutation(context,3);
+		mutate.performMutation(new Random(seed), prg, offspring, 0);
 		offspring[0].getVariables().setVariable("x", 1);
 		RenderCommonExpression render = new RenderCommonExpression();
 		Assert.assertEquals(mutateExpression,render.render(offspring[0]));

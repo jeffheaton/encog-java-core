@@ -24,6 +24,7 @@
 package org.encog.ml.genetic.crossover;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import org.encog.ml.genetic.GeneticError;
@@ -87,13 +88,14 @@ public class SpliceNoRepeat implements Crossover {
 	 * @param offspring2
 	 *            Returns the second offspring.
 	 */
-	public void mate(final Genome theMother, final Genome theFather,
-			final Genome theOffspring1, final Genome theOffspring2) {
+	@Override
+	public void performCrossover(Random rnd, Genome theParent1, Genome theParent2,
+			Genome[] theOffspring, int index) {
 		
-		IntegerArrayGenome mother = (IntegerArrayGenome)theMother;
-		IntegerArrayGenome father = (IntegerArrayGenome)theFather;
-		IntegerArrayGenome offspring1 = (IntegerArrayGenome)theOffspring1;
-		IntegerArrayGenome offspring2 = (IntegerArrayGenome)theOffspring2;
+		IntegerArrayGenome mother = (IntegerArrayGenome)theParent1;
+		IntegerArrayGenome father = (IntegerArrayGenome)theParent2;
+		IntegerArrayGenome offspring1 = (IntegerArrayGenome)theOffspring[0];
+		IntegerArrayGenome offspring2 = (IntegerArrayGenome)theOffspring[1];
 		
 		final int geneLength = mother.size();
 
@@ -126,5 +128,13 @@ public class SpliceNoRepeat implements Crossover {
 
 			}
 		}
+	}
+	
+	/**
+	 * @return The number of offspring produced, which is 2 for splice crossover.
+	 */
+	@Override
+	public int offspringProduced() {
+		return 2;
 	}
 }

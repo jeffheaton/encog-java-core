@@ -23,6 +23,8 @@
  */
 package org.encog.ml.genetic.mutate;
 
+import java.util.Random;
+
 import org.encog.ml.genetic.genome.ArrayGenome;
 import org.encog.ml.genetic.genome.Genome;
 
@@ -36,9 +38,9 @@ public class MutateShuffle implements Mutate {
 	 * Perform a shuffle mutation.
 	 * @param chromosome The chromosome to mutate.
 	 */
-	public void performMutation(final Genome theParent, final Genome theChild) {
+	public void performMutation(Random rnd, Genome theParent, Genome[] theOffspring, int index) {
 		ArrayGenome parent = (ArrayGenome)theParent;
-		ArrayGenome child = (ArrayGenome)theChild;
+		ArrayGenome child = (ArrayGenome)theOffspring[0];
 		
 		child.copy(parent);
 		
@@ -66,6 +68,14 @@ public class MutateShuffle implements Mutate {
 		}
 		
 		child.swap(iswap1,iswap2);
+	}
+	
+	/**
+	 * @return The number of offspring produced, which is 1 for this mutation.
+	 */
+	@Override
+	public int offspringProduced() {
+		return 1;
 	}
 
 }

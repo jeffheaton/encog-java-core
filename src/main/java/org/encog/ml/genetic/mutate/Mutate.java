@@ -23,6 +23,8 @@
  */
 package org.encog.ml.genetic.mutate;
 
+import java.util.Random;
+
 import org.encog.ml.genetic.genome.Genome;
 
 /**
@@ -34,6 +36,11 @@ public interface Mutate {
 	 * Perform a mutation on the specified chromosome.
 	 * @param chromosome The chromosome to mutate.
 	 */
-	void performMutation(Genome parent, Genome child);
+	void performMutation(Random rnd, Genome parent, Genome[] offspring, int index);
+	
+	/**
+	 * @return The number of offspring produced by this type of crossover.
+	 */
+	int offspringProduced();
 
 }
