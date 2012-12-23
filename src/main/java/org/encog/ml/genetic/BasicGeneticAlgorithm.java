@@ -24,10 +24,9 @@
 package org.encog.ml.genetic;
 
 import org.encog.ml.MLContext;
-import org.encog.ml.genetic.crossover.Crossover;
+import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
 import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.genetic.mutate.Mutate;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.sort.GenomeComparator;
 import org.encog.util.concurrency.EngineConcurrency;
@@ -51,7 +50,7 @@ public class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	/**
 	 * The crossover object.
 	 */
-	private Crossover crossover;
+	private EvolutionaryOperator crossover;
 	
 	/**
 	 * Is this the first iteration.
@@ -72,7 +71,7 @@ public class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	/**
 	 * The mutation object to use.
 	 */
-	private Mutate mutate;
+	private EvolutionaryOperator mutate;
 
 	/**
 	 * The percent that should mutate.
@@ -132,7 +131,7 @@ public class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	 * @return The crossover object.
 	 */
 	@Override
-	public Crossover getCrossover() {
+	public EvolutionaryOperator getCrossover() {
 		return this.crossover;
 	}
 
@@ -149,7 +148,7 @@ public class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	 * @return The mutate object.
 	 */
 	@Override
-	public Mutate getMutate() {
+	public EvolutionaryOperator getMutate() {
 		return this.mutate;
 	}
 
@@ -268,7 +267,7 @@ public class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	 *            The crossover object.
 	 */
 	@Override
-	public void setCrossover(final Crossover theCrossover) {
+	public void setCrossover(final EvolutionaryOperator theCrossover) {
 		this.crossover = theCrossover;
 	}
 
@@ -290,7 +289,7 @@ public class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	 *            The mutate object.
 	 */
 	@Override
-	public void setMutate(final Mutate theMutate) {
+	public void setMutate(final EvolutionaryOperator theMutate) {
 		this.mutate = theMutate;
 	}
 

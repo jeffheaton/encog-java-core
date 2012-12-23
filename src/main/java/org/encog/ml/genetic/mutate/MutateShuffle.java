@@ -25,6 +25,7 @@ package org.encog.ml.genetic.mutate;
 
 import java.util.Random;
 
+import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
 import org.encog.ml.genetic.genome.ArrayGenome;
 import org.encog.ml.genetic.genome.Genome;
 
@@ -32,15 +33,17 @@ import org.encog.ml.genetic.genome.Genome;
  * A simple mutation where genes are shuffled.
  * This mutation will not produce repeated genes.
  */
-public class MutateShuffle implements Mutate {
+public class MutateShuffle implements EvolutionaryOperator {
 
 	/**
 	 * Perform a shuffle mutation.
 	 * @param chromosome The chromosome to mutate.
 	 */
-	public void performMutation(Random rnd, Genome theParent, Genome[] theOffspring, int index) {
-		ArrayGenome parent = (ArrayGenome)theParent;
-		ArrayGenome child = (ArrayGenome)theOffspring[0];
+	@Override
+	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
+			Genome[] offspring, int offspringIndex) {
+		ArrayGenome parent = (ArrayGenome)parents[parentIndex];
+		ArrayGenome child = (ArrayGenome)offspring[offspringIndex];
 		
 		child.copy(parent);
 		
@@ -75,6 +78,11 @@ public class MutateShuffle implements Mutate {
 	 */
 	@Override
 	public int offspringProduced() {
+		return 1;
+	}
+
+	@Override
+	public int parentsNeeded() {
 		return 1;
 	}
 

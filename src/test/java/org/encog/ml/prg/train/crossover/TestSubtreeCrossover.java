@@ -5,7 +5,9 @@ import java.util.Random;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.encog.ml.genetic.crossover.Crossover;
+import org.encog.ml.genetic.crossover.SubtreeCrossover;
+import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
+import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.extension.StandardExtensions;
@@ -71,8 +73,9 @@ public class TestSubtreeCrossover extends TestCase {
 		// offspring
 		EncogProgram[] offspring = parent1.allocateOffspring(1);
 				
-		Crossover cross = new SubtreeCrossover();
-		cross.performCrossover(new Random(seed), parent1, parent2, offspring, 0);
+		EvolutionaryOperator cross = new SubtreeCrossover();
+		Genome[] parents = {parent1, parent2};
+		cross.performOperation(new Random(seed), parents, 0, offspring, 0);
 		offspring[0].getVariables().setVariable("x", 1);
 		
 		RenderCommonExpression render = new RenderCommonExpression();

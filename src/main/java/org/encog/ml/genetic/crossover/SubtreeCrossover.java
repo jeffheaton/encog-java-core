@@ -1,19 +1,19 @@
-package org.encog.ml.prg.train.crossover;
+package org.encog.ml.genetic.crossover;
 
 import java.util.Random;
 
-import org.encog.ml.genetic.crossover.Crossover;
+import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.prg.EncogProgram;
 
-public class SubtreeCrossover implements Crossover {
+public class SubtreeCrossover implements EvolutionaryOperator {
 
 	@Override
-	public void performCrossover(Random rnd, Genome theParent1, Genome theParent2,
-			Genome[] theOffspring, int index) {
+	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
+			Genome[] theOffspring, int offspringIndex) {
 		
-		EncogProgram parent1 = (EncogProgram)theParent1;
-		EncogProgram parent2 = (EncogProgram)theParent2;
+		EncogProgram parent1 = (EncogProgram)parents[parentIndex];
+		EncogProgram parent2 = (EncogProgram)parents[parentIndex+1];
 		EncogProgram offspring = (EncogProgram)theOffspring[0];
 		
 		
@@ -37,6 +37,11 @@ public class SubtreeCrossover implements Crossover {
 	@Override
 	public int offspringProduced() {
 		return 1;
+	}
+
+	@Override
+	public int parentsNeeded() {
+		return 2;
 	}
 
 }

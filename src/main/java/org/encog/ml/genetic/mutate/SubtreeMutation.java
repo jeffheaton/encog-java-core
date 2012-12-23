@@ -1,14 +1,14 @@
-package org.encog.ml.prg.train.mutate;
+package org.encog.ml.genetic.mutate;
 
 import java.util.Random;
 
+import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
 import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.genetic.mutate.Mutate;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.train.CreateRandom;
 
-public class SubtreeMutation implements Mutate {
+public class SubtreeMutation implements EvolutionaryOperator {
 
 	private CreateRandom rnd;
 	
@@ -17,10 +17,10 @@ public class SubtreeMutation implements Mutate {
 	}
 
 	@Override
-	public void performMutation(Random rnd, Genome theParent, Genome[] theOffspring,
-			int index) {
-		EncogProgram program = (EncogProgram)theParent;
-		EncogProgram result = (EncogProgram)theOffspring[0];
+	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
+			Genome[] offspring, int offspringIndex) {
+		EncogProgram program = (EncogProgram)parents[parentIndex];
+		EncogProgram result = (EncogProgram)offspring[offspringIndex];
 		result.clear();
 		
 		// find the mutation point, this is simply a node position based on the
@@ -57,5 +57,10 @@ public class SubtreeMutation implements Mutate {
 	@Override
 	public int offspringProduced() {
 		return 1;
+	}
+
+	@Override
+	public int parentsNeeded() {
+		return 2;
 	}
 }

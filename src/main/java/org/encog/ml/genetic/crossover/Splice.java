@@ -25,6 +25,7 @@ package org.encog.ml.genetic.crossover;
 
 import java.util.Random;
 
+import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
 import org.encog.ml.genetic.genome.ArrayGenome;
 import org.encog.ml.genetic.genome.Genome;
 
@@ -32,7 +33,7 @@ import org.encog.ml.genetic.genome.Genome;
  * A simple cross over where genes are simply "spliced". Genes are allowed to
  * repeat.
  */
-public class Splice implements Crossover {
+public class Splice implements EvolutionaryOperator {
 
 	/**
 	 * The cut length.
@@ -60,13 +61,13 @@ public class Splice implements Crossover {
 	 *            Returns the second offspring.
 	 */
 	@Override
-	public void performCrossover(Random rnd, Genome theParent1, Genome theParent2,
-			Genome[] theOffspring, int index) {
+	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
+			Genome[] offspring, int offspringIndex) {
 		
-		ArrayGenome mother = (ArrayGenome)theParent1;
-		ArrayGenome father = (ArrayGenome)theParent2;
-		ArrayGenome offspring1 = (ArrayGenome)theOffspring[index];
-		ArrayGenome offspring2 = (ArrayGenome)theOffspring[index+1];
+		ArrayGenome mother = (ArrayGenome)parents[parentIndex];
+		ArrayGenome father = (ArrayGenome)parents[parentIndex+1];
+		ArrayGenome offspring1 = (ArrayGenome)offspring[offspringIndex];
+		ArrayGenome offspring2 = (ArrayGenome)offspring[offspringIndex+1];
 		
 		final int geneLength = mother.size();
 
@@ -97,6 +98,11 @@ public class Splice implements Crossover {
 	 */
 	@Override
 	public int offspringProduced() {
+		return 2;
+	}
+
+	@Override
+	public int parentsNeeded() {
 		return 2;
 	}
 }

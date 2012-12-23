@@ -25,13 +25,14 @@ package org.encog.ml.genetic.mutate;
 
 import java.util.Random;
 
+import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
 import org.encog.ml.genetic.genome.DoubleArrayGenome;
 import org.encog.ml.genetic.genome.Genome;
 
 /**
  * A simple mutation based on random numbers.
  */
-public class MutatePerturb implements Mutate {
+public class MutatePerturb implements EvolutionaryOperator {
 
 	/**
 	 * The amount to perturb by.
@@ -50,9 +51,10 @@ public class MutatePerturb implements Mutate {
 	 * Perform a perturb mutation on the specified chromosome.
 	 * @param chromosome The chromosome to mutate.
 	 */
-	public void performMutation(Random rnd, Genome theParent, Genome[] theOffspring, int index) {
-		DoubleArrayGenome parent = (DoubleArrayGenome)theParent;
-		DoubleArrayGenome child = (DoubleArrayGenome)theOffspring[0];
+	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
+			Genome[] offspring, int offspringIndex) {
+		DoubleArrayGenome parent = (DoubleArrayGenome)parents[parentIndex];
+		DoubleArrayGenome child = (DoubleArrayGenome)offspring[offspringIndex];
 		
 		for(int i=0;i<parent.size();i++) {
 			double value = parent.getData()[i];
@@ -66,6 +68,11 @@ public class MutatePerturb implements Mutate {
 	 */
 	@Override
 	public int offspringProduced() {
+		return 1;
+	}
+
+	@Override
+	public int parentsNeeded() {
 		return 1;
 	}
 }

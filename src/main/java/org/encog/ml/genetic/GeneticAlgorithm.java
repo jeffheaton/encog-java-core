@@ -23,10 +23,9 @@
  */
 package org.encog.ml.genetic;
 
-import org.encog.ml.genetic.crossover.Crossover;
+import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
 import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.genetic.mutate.Mutate;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.sort.GenomeComparator;
 import org.encog.util.concurrency.MultiThreadable;
@@ -39,13 +38,13 @@ import org.encog.util.concurrency.MultiThreadable;
  * The genetic algorithm is also capable of using a thread pool to speed
  * execution.
  */
-public abstract interface GeneticAlgorithm  extends MultiThreadable {
+public interface GeneticAlgorithm  extends MultiThreadable {
 
 	CalculateGenomeScore getCalculateScore();
 
 	GenomeComparator getComparator();
 
-	Crossover getCrossover();
+	EvolutionaryOperator getCrossover();
 
 	void setCalculateScore(CalculateGenomeScore theCalculateScore);
 
@@ -55,7 +54,7 @@ public abstract interface GeneticAlgorithm  extends MultiThreadable {
 
 	double getMutationPercent();
 
-	Mutate getMutate();
+	EvolutionaryOperator getMutate();
 
 	void setPopulation(Population thePopulation);
 
@@ -65,11 +64,11 @@ public abstract interface GeneticAlgorithm  extends MultiThreadable {
 
 	void setPercentToMate(double thePercentToMate);
 
-	void setCrossover(Crossover theCrossover);
+	void setCrossover(EvolutionaryOperator theCrossover);
 
 	void setMatingPopulation(double theMatingPopulation);
 
-	void setMutate(Mutate theMutate);
+	void setMutate(EvolutionaryOperator theMutate);
 
 	void iteration();
 	

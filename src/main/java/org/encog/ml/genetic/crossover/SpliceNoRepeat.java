@@ -28,6 +28,8 @@ import java.util.Random;
 import java.util.Set;
 
 import org.encog.ml.genetic.GeneticError;
+import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
+import org.encog.ml.genetic.genome.ArrayGenome;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.genome.IntegerArrayGenome;
 
@@ -35,7 +37,7 @@ import org.encog.ml.genetic.genome.IntegerArrayGenome;
  * A simple cross over where genes are simply "spliced". Genes are not allowed
  * to repeat.
  */
-public class SpliceNoRepeat implements Crossover {
+public class SpliceNoRepeat implements EvolutionaryOperator {
 
 	/**
 	 * Get a list of the genes that have not been taken before. This is useful
@@ -89,13 +91,13 @@ public class SpliceNoRepeat implements Crossover {
 	 *            Returns the second offspring.
 	 */
 	@Override
-	public void performCrossover(Random rnd, Genome theParent1, Genome theParent2,
-			Genome[] theOffspring, int index) {
+	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
+			Genome[] offspring, int offspringIndex) {
 		
-		IntegerArrayGenome mother = (IntegerArrayGenome)theParent1;
-		IntegerArrayGenome father = (IntegerArrayGenome)theParent2;
-		IntegerArrayGenome offspring1 = (IntegerArrayGenome)theOffspring[0];
-		IntegerArrayGenome offspring2 = (IntegerArrayGenome)theOffspring[1];
+		IntegerArrayGenome mother = (IntegerArrayGenome)parents[parentIndex];
+		IntegerArrayGenome father = (IntegerArrayGenome)parents[parentIndex+1];
+		IntegerArrayGenome offspring1 = (IntegerArrayGenome)offspring[offspringIndex];
+		IntegerArrayGenome offspring2 = (IntegerArrayGenome)offspring[offspringIndex+1];
 		
 		final int geneLength = mother.size();
 
@@ -135,6 +137,11 @@ public class SpliceNoRepeat implements Crossover {
 	 */
 	@Override
 	public int offspringProduced() {
+		return 2;
+	}
+
+	@Override
+	public int parentsNeeded() {
 		return 2;
 	}
 }

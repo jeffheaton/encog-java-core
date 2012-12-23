@@ -35,10 +35,9 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.genetic.GeneticAlgorithm;
-import org.encog.ml.genetic.crossover.Crossover;
+import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
 import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.genetic.mutate.Mutate;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.sort.GenomeComparator;
 import org.encog.ml.genetic.sort.MinimizeAdjustedScoreScoreComp;
@@ -959,7 +958,7 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 	}
 
 	@Override
-	public Crossover getCrossover() {
+	public EvolutionaryOperator getCrossover() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -971,7 +970,7 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 	}
 
 	@Override
-	public Mutate getMutate() {
+	public EvolutionaryOperator getMutate() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -995,7 +994,7 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 	}
 
 	@Override
-	public void setCrossover(Crossover theCrossover) {
+	public void setCrossover(EvolutionaryOperator theCrossover) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -1007,7 +1006,7 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 	}
 
 	@Override
-	public void setMutate(Mutate theMutate) {
+	public void setMutate(EvolutionaryOperator theMutate) {
 		// TODO Auto-generated method stub
 		
 	}

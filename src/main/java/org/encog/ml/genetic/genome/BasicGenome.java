@@ -141,15 +141,16 @@ public abstract class BasicGenome implements Genome, Serializable {
 	public void mate(final Genome father, final Genome child1,
 			final Genome child2) {
 
+		Genome[] parents = {this, father};
 		Genome[] offspring = { child1, child2 };
-		this.geneticAlgorithm.getCrossover().performCrossover(new Random(), this, father, offspring, 0);
+		this.geneticAlgorithm.getCrossover().performOperation(new Random(), parents, 0, offspring, 0);
 
 		if (Math.random() < this.geneticAlgorithm.getMutationPercent()) {
-			this.geneticAlgorithm.getMutate().performMutation(new Random(), child1, offspring, 0);
+			this.geneticAlgorithm.getMutate().performOperation(new Random(), offspring, 0, offspring, 0);
 		}
 
 		if (Math.random() < this.geneticAlgorithm.getMutationPercent()) {
-			this.geneticAlgorithm.getMutate().performMutation(new Random(), child1, offspring, 1);
+			this.geneticAlgorithm.getMutate().performOperation(new Random(), offspring, 1, offspring, 1);
 		}
 
 		child1.decode();
