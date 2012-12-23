@@ -80,7 +80,7 @@ public class NEATSpecies implements Serializable {
 	/**
 	 * The owner class.
 	 */
-	private Population population;
+	private NEATPopulation population;
 
 	/**
 	 * The id of the leader.
@@ -104,7 +104,7 @@ public class NEATSpecies implements Serializable {
 	 * @param theSpeciesID
 	 *            The species id.
 	 */
-	public NEATSpecies(final Population thePopulation, final NEATGenome theFirst,
+	public NEATSpecies(final NEATPopulation thePopulation, final NEATGenome theFirst,
 			final long theSpeciesID) {
 		this.population = thePopulation;
 		this.speciesID = theSpeciesID;
@@ -279,7 +279,7 @@ public class NEATSpecies implements Serializable {
 	 * @param thePopulation
 	 *            the population to set
 	 */
-	public void setPopulation(final Population thePopulation) {
+	public void setPopulation(final NEATPopulation thePopulation) {
 		this.population = thePopulation;
 	}
 

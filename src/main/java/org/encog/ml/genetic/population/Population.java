@@ -34,73 +34,7 @@ import org.encog.ml.genetic.innovation.InnovationList;
  * Defines a population of genomes.
  */
 public interface Population extends Serializable {
-	
-	/**
-	 * Property tag for the next gene id.
-	 */
-	String PROPERTY_NEXT_GENE_ID = "nextGeneID";
-	
-	/**
-	 * Property tag for the next genome id.
-	 */
-	String PROPERTY_NEXT_GENOME_ID = "nextGenomeID";
-	
-	/**
-	 * Property tag for the next innovation id.
-	 */
-	String PROPERTY_NEXT_INNOVATION_ID = "nextInnovationID";
-	
-	/**
-	 * Property tag for the next species id.
-	 */
-	String PROPERTY_NEXT_SPECIES_ID = "nextSpeciesID";
-	
-	/**
-	 * Property tag for the old age penalty.
-	 */
-	String PROPERTY_OLD_AGE_PENALTY = "oldAgePenalty";
-	
-	/**
-	 * Property tag for the old age threshold.
-	 */
-	String PROPERTY_OLD_AGE_THRESHOLD = "oldAgeThreshold";
-	
-	/**
-	 * Property tag for the population size.
-	 */
-	String PROPERTY_POPULATION_SIZE = "populationSize";
-	
-	/**
-	 * Property tag for the survival rate.
-	 */
-	String PROPERTY_SURVIVAL_RATE = "survivalRate";
-	
-	/**
-	 * Property tag for the young age bonus.
-	 */
-	String PROPERTY_YOUNG_AGE_BONUS = "youngAgeBonus";
-	
-	/**
-	 * Property tag for the young age threshold.
-	 */
-	String PROPERTY_YOUNG_AGE_THRESHOLD = "youngAgeThreshold";
-
-	/**
-	 * Property tag for the genomes collection.
-	 */
-	String PROPERTY_GENOMES = "genomes";
-	
-	/**
-	 * Property tag for the innovations collection.
-	 */
-	String PROPERTY_INNOVATIONS = "innovations";
-	
-	/**
-	 * Property tag for the species collection.
-	 */
-	String PROPERTY_SPECIES = "species";
-
-	
+		
 	/**
 	 * Add a genome to the population.
 	 * @param genome The genome to add.
@@ -112,26 +46,6 @@ public interface Population extends Serializable {
 	 * @param newPop A list of new genomes to add.
 	 */
 	void addAll(List<? extends Genome> newPop);
-
-	/**
-	 * @return Assign a gene id.
-	 */
-	long assignGeneID();
-
-	/**
-	 * @return Assign a genome id.
-	 */
-	long assignGenomeID();
-
-	/**
-	 * @return Assign an innovation id.
-	 */
-	long assignInnovationID();
-
-	/**
-	 * @return Assign a species id.
-	 */
-	long assignSpeciesID();
 
 	/**
 	 * Clear all genomes from this population.
@@ -157,81 +71,16 @@ public interface Population extends Serializable {
 	List<Genome> getGenomes();
 
 	/**
-	 * @return A list of innovations in this population.
-	 */
-	InnovationList getInnovations();
-
-	/**
-	 * @return The percent to decrease "old" genom's score by.
-	 */
-	double getOldAgePenalty();
-
-	/**
-	 * @return The age at which to consider a genome "old".
-	 */
-	int getOldAgeThreshold();
-
-	/**
 	 * @return The max population size.
 	 */
 	int getPopulationSize();
 
-	/**
-	 * @return The survival rate.
-	 */
-	double getSurvivalRate();
-
-	/**
-	 * @return The age, below which, a genome is considered "young".
-	 */
-	int getYoungBonusAgeThreshold();
-
-	/**
-	 * @return The bonus given to "young" genomes.
-	 */
-	double getYoungScoreBonus();
-
-	/**
-	 * Set the innovations collection.
-	 * @param innovations The innovations collection.
-	 */
-	void setInnovations(InnovationList innovations);
-
-	/**
-	 * Set the old age penalty.
-	 * @param oldAgePenalty The old age penalty.
-	 */
-	void setOldAgePenalty(double oldAgePenalty);
-
-	/**
-	 * Set the age at which a genome is considered "old".
-	 * @param oldAgeThreshold The old age threshold.
-	 */
-	void setOldAgeThreshold(int oldAgeThreshold);
 
 	/**
 	 * Set the max population size.
 	 * @param populationSize The max population size.
 	 */
 	void setPopulationSize(final int populationSize);
-
-	/**
-	 * Set the survival rate.
-	 * @param survivalRate The survival rate.
-	 */
-	void setSurvivalRate(double survivalRate);
-
-	/**
-	 * Set the age at which genoms are considered young.
-	 * @param youngBonusAgeThreshhold The age.
-	 */
-	void setYoungBonusAgeThreshhold(int youngBonusAgeThreshhold);
-
-	/**
-	 * Set the youth score bonus.
-	 * @param youngScoreBonus The bonus.
-	 */
-	void setYoungScoreBonus(double youngScoreBonus);
 
 	/**
 	 * @return The size of the population.

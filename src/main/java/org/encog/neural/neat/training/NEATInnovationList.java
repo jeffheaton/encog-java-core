@@ -29,7 +29,6 @@ import java.util.List;
 import org.encog.EncogError;
 import org.encog.ml.genetic.innovation.BasicInnovationList;
 import org.encog.ml.genetic.innovation.Innovation;
-import org.encog.ml.genetic.population.Population;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.networks.training.TrainingError;
@@ -59,7 +58,7 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	/**
 	 * The population.
 	 */
-	private Population population;
+	private NEATPopulation population;
 
 	/**
 	 * The default constructor, used mainly for persistance.
@@ -78,7 +77,7 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	 * @param neurons
 	 *            THe neurons.
 	 */
-	public NEATInnovationList(final Population population,
+	public NEATInnovationList(final NEATPopulation population,
 			final List<NEATLinkGene> links, final List<NEATNeuronGene> neurons) {
 
 		this.population = population;

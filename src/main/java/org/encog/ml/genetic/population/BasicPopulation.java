@@ -29,39 +29,11 @@ import java.util.List;
 
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.genetic.innovation.InnovationList;
-import org.encog.util.identity.BasicGenerateID;
-import org.encog.util.identity.GenerateID;
 
 /**
  * Defines the basic functionality for a population of genomes.
  */
 public class BasicPopulation implements Population {
-
-	/**
-	 * Thed default old age penalty.
-	 */
-	public static final double DEFAULT_OLD_AGE_PENALTY = 0.3;
-	
-	/**
-	 * The default old age threshold.
-	 */
-	public static final int DEFAULT_OLD_AGE_THRESHOLD = 50;
-	
-	/**
-	 * The default survival rate.
-	 */
-	public static final double DEFAULT_SURVIVAL_RATE = 0.2;
-	
-	/**
-	 * The default youth penalty.
-	 */
-	public static final double DEFAULT_YOUTH_BONUS = 0.3;
-	
-	/**
-	 * The default youth threshold.
-	 */
-	public static final int DEFAULT_YOUTH_THRESHOLD = 10;
 	
 	/**
 	 * The serial id.
@@ -69,69 +41,19 @@ public class BasicPopulation implements Population {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Generate gene id's.
-	 */
-	private final GenerateID geneIDGenerate = new BasicGenerateID();
-
-	/**
-	 * Generate genome id's.
-	 */
-	private final GenerateID genomeIDGenerate = new BasicGenerateID();
-
-	/**
 	 * The population.
 	 */
 	private final List<Genome> genomes = new ArrayList<Genome>();
 
 	/**
-	 * Generate innovation id's.
+	 * The object name.
 	 */
-	private final GenerateID innovationIDGenerate = new BasicGenerateID();
-
-	/**
-	 * A list of innovations, or null if this feature is not being used.
-	 */
-	private InnovationList innovations;
-
-	/**
-	 * The old age penalty.
-	 */
-	private double oldAgePenalty = DEFAULT_OLD_AGE_PENALTY;
-
-	/**
-	 * The old age threshold.
-	 */
-	private int oldAgeThreshold = DEFAULT_OLD_AGE_THRESHOLD;
+	private String name;
 
 	/**
 	 * How many genomes should be created.
 	 */
 	private int populationSize;
-
-	/**
-	 * Generate species id's.
-	 */
-	private final GenerateID speciesIDGenerate = new BasicGenerateID();
-
-	/**
-	 * The survival rate.
-	 */
-	private double survivalRate = DEFAULT_SURVIVAL_RATE;
-
-	/**
-	 * The young threshold.
-	 */
-	private int youngBonusAgeThreshold = DEFAULT_YOUTH_THRESHOLD;
-
-	/**
-	 * The young score bonus.
-	 */
-	private double youngScoreBonus = DEFAULT_YOUTH_BONUS;
-
-	/**
-	 * The object name.
-	 */
-	private String name;
 
 	/**
 	 * Construct an empty population.
@@ -165,38 +87,6 @@ public class BasicPopulation implements Population {
 	@Override
 	public void addAll(final List<? extends Genome> newPop) {
 		this.genomes.addAll(newPop);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public long assignGeneID() {
-		return this.geneIDGenerate.generate();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public long assignGenomeID() {
-		return this.genomeIDGenerate.generate();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public long assignInnovationID() {
-		return this.innovationIDGenerate.generate();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public long assignSpeciesID() {
-		return this.speciesIDGenerate.generate();
 	}
 
 	/**
@@ -240,40 +130,11 @@ public class BasicPopulation implements Population {
 	}
 
 	/**
-	 * @return the geneIDGenerate
-	 */
-	public GenerateID getGeneIDGenerate() {
-		return this.geneIDGenerate;
-	}
-
-	/**
-	 * @return the genomeIDGenerate
-	 */
-	public GenerateID getGenomeIDGenerate() {
-		return this.genomeIDGenerate;
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public List<Genome> getGenomes() {
 		return this.genomes;
-	}
-
-	/**
-	 * @return the innovationIDGenerate
-	 */
-	public GenerateID getInnovationIDGenerate() {
-		return this.innovationIDGenerate;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public InnovationList getInnovations() {
-		return this.innovations;
 	}
 
 	/**
@@ -287,63 +148,8 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double getOldAgePenalty() {
-		return this.oldAgePenalty;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getOldAgeThreshold() {
-		return this.oldAgeThreshold;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public int getPopulationSize() {
 		return this.populationSize;
-	}
-
-	/**
-	 * @return the speciesIDGenerate
-	 */
-	public GenerateID getSpeciesIDGenerate() {
-		return this.speciesIDGenerate;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public double getSurvivalRate() {
-		return this.survivalRate;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getYoungBonusAgeThreshold() {
-		return this.youngBonusAgeThreshold;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public double getYoungScoreBonus() {
-		return this.youngScoreBonus;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setInnovations(final InnovationList theInnovations) {
-		this.innovations = theInnovations;
 	}
 
 	/**
@@ -361,60 +167,11 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setOldAgePenalty(final double theOldAgePenalty) {
-		this.oldAgePenalty = theOldAgePenalty;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setOldAgeThreshold(final int theOldAgeThreshold) {
-		this.oldAgeThreshold = theOldAgeThreshold;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public void setPopulationSize(final int thePopulationSize) {
 		this.populationSize = thePopulationSize;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setSurvivalRate(final double theSurvivalRate) {
-		this.survivalRate = theSurvivalRate;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setYoungBonusAgeThreshhold(
-			final int theYoungBonusAgeThreshold) {
-		this.youngBonusAgeThreshold = theYoungBonusAgeThreshold;
-	}
-
-	/**
-	 * @param theYoungBonusAgeThreshold
-	 *            the youngBonusAgeThreshold to set
-	 */
-	public void setYoungBonusAgeThreshold(
-			final int theYoungBonusAgeThreshold) {
-		this.youngBonusAgeThreshold = theYoungBonusAgeThreshold;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setYoungScoreBonus(final double theYoungScoreBonus) {
-		this.youngScoreBonus = theYoungScoreBonus;
-	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
