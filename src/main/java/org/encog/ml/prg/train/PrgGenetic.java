@@ -1,5 +1,6 @@
 package org.encog.ml.prg.train;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.genetic.crossover.SubtreeCrossover;
 import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
+import org.encog.ml.genetic.evolutionary.OperationList;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.mutate.SubtreeMutation;
 import org.encog.ml.genetic.sort.MaximizeAdjustedScoreScoreComp;
@@ -38,8 +40,6 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	private final PrgPopulation population;
 	private final CalculateScore scoreFunction;
 	private PrgSelection selection;
-	private EvolutionaryOperator mutation;
-	private EvolutionaryOperator crossover;
 	private final EncogProgram bestGenome;
 	private Comparator<Genome> compareScore;
 	private int threadCount;
@@ -51,6 +51,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 			.getRandomFactory().factorFactory();
 	private Throwable currentError;
 	private ThreadedGenomeSelector selector;
+	private final OperationList operators = new OperationList();
 
 	/**
 	 * Condition used to check if we are done.
@@ -64,8 +65,6 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		this.context = population.getContext();
 		this.scoreFunction = theScoreFunction;
 		this.selection = new TournamentSelection(this, 4);
-		this.crossover = new SubtreeCrossover();
-		this.mutation = new SubtreeMutation(thePopulation.getContext(), 4);
 		
 		this.bestGenome = this.population.createProgram();
 		if (theScoreFunction.shouldMinimize()) {
@@ -76,6 +75,10 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		
 		this.selector = new ThreadedGenomeSelector(this);
 		
+	}
+	
+	public void addOperation(double probability, EvolutionaryOperator opp) {
+		this.operators.add(probability, opp);
 	}
 
 	public PrgGenetic(PrgPopulation thePopulation, MLDataSet theTrainingSet) {
@@ -96,22 +99,6 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 
 	public void setSelection(PrgSelection selection) {
 		this.selection = selection;
-	}
-
-	public EvolutionaryOperator getMutation() {
-		return mutation;
-	}
-
-	public void setMutation(EvolutionaryOperator mutation) {
-		this.mutation = mutation;
-	}
-
-	public EvolutionaryOperator getCrossover() {
-		return crossover;
-	}
-
-	public void setCrossover(EvolutionaryOperator crossover) {
-		this.crossover = crossover;
 	}
 
 	@Override
@@ -151,6 +138,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	@Override
 	public void iteration() {
 		if (this.workers == null) {
+			this.operators.finalizeStructure();
 			startup();
 		}
 
@@ -423,6 +411,13 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	 */
 	public ThreadedGenomeSelector getSelector() {
 		return selector;
+	}
+
+	/**
+	 * @return the operators
+	 */
+	public OperationList getOperators() {
+		return operators;
 	}
 	
 	

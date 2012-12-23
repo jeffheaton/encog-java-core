@@ -4,10 +4,8 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
-import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.exception.EPLTooBig;
-import org.encog.ml.prg.train.selection.PrgSelection;
 import org.encog.neural.networks.training.CalculateScore;
 
 public class GeneticTrainWorker extends Thread {
@@ -20,60 +18,51 @@ public class GeneticTrainWorker extends Thread {
 		this.owner = theOwner;
 		this.rnd = this.owner.getRandomNumberFactory().factor();
 
-		this.tempProgram = new EncogProgram[1];
-		for (int i = 0; i < 1; i++) {
+		this.tempProgram = new EncogProgram[this.owner.getOperators()
+				.maxOffspring()];
+		for (int i = 0; i < this.tempProgram.length; i++) {
 			this.tempProgram[i] = this.owner.getPopulation().createProgram();
 		}
 
 	}
 
-	private void handleNewGenomes() {
-		CalculateScore scoreFunction = this.owner.getScoreFunction();
-		double score = scoreFunction.calculateScore(this.tempProgram[0]);
-		if (!Double.isInfinite(score) && !Double.isNaN(score)) {
-			// population.rewrite(this.tempProgram[0]);
-			this.tempProgram[0].setScore(score);
-			this.owner.addGenome(this.tempProgram, 0, 1);
+	private void handleNewGenomes(int offspringCount) {
+		for (int i = 0; i < offspringCount; i++) {
+			CalculateScore scoreFunction = this.owner.getScoreFunction();
+			double score = scoreFunction.calculateScore(this.tempProgram[0]);
+			if (!Double.isInfinite(score) && !Double.isNaN(score)) {
+				// population.rewrite(this.tempProgram[0]);
+				this.tempProgram[0].setScore(score);
+				this.owner.addGenome(this.tempProgram, 0, 1);
+			}
 		}
 	}
 
 	public void run() {
+		EncogProgram[] parents = new EncogProgram[this.owner.getOperators()
+				.maxParents()];
 
 		try {
-			GeneticTrainingParams params = this.owner.getContext().getParams();
-			PrgPopulation population = this.owner.getPopulation();
-			EncogProgram[] members = this.owner.getPopulation().getMembers();
-			PrgSelection selection = this.owner.getSelection();
-			EvolutionaryOperator crossover = this.owner.getCrossover();
-			EvolutionaryOperator mutation = this.owner.getMutation();
-			CalculateScore scoreFunction = this.owner.getScoreFunction();
 			this.done.set(false);
-			EncogProgram parent1 = null;
-			EncogProgram parent2 = null;
 
 			for (;;) {
-		
+				EvolutionaryOperator opp = null;
+
 				try {
-					parent1 = this.owner.getSelector().selectGenome();
-					
-					if (this.rnd.nextDouble() < params
-							.getCrossoverProbability()) {
-						parent2 = this.owner.getSelector().selectGenome();
-						Genome[] parents = {parent1,parent2};
-						
-						crossover.performOperation(this.rnd, parents,0 ,
+					// choose an operator to use
+					opp = this.owner.getOperators().pickOperator(this.rnd);
+
+					// select and lock parents
+					for (int i = 0; i < opp.parentsNeeded(); i++) {
+						parents[i] = this.owner.getSelector().selectGenome();
+					}
+
+					// perform the operation
+					opp.performOperation(this.rnd, parents, 0,
 							this.tempProgram, 0);
 
-						scoreFunction.calculateScore(this.tempProgram[0]);
-						handleNewGenomes();
-					}
-
-					if (this.rnd.nextDouble() < params.getMutationProbability()) {
-						Genome[] parents = {parent1};
-						mutation.performOperation(this.rnd, parents, 0, this.tempProgram, 0);
-						scoreFunction.calculateScore(this.tempProgram[0]);
-						handleNewGenomes();
-					}
+					// process of the offspring
+					handleNewGenomes(opp.offspringProduced());
 				} catch (EPLTooBig ex) {
 					// This is fine, we discard this Genome. Ideally this won't
 					// happen too often,
@@ -85,13 +74,12 @@ public class GeneticTrainWorker extends Thread {
 						this.owner.reportError(t);
 						return;
 					}
-				}
-				finally {
-					if( parent1!=null ) {
-						this.owner.getSelector().releaseGenome(parent1);
-					}
-					if( parent2!=null ) {
-						this.owner.getSelector().releaseGenome(parent2);
+				} finally {
+					// release parents
+					if (opp != null) {
+						for (int i = 0; i < opp.parentsNeeded(); i++) {
+							this.owner.getSelector().releaseGenome(parents[i]);
+						}
 					}
 				}
 

@@ -515,8 +515,8 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 	private void init() {
 
 		this.population.claim(this);
-		this.mutateChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0, 0.001 } , new Random());
-		this.mutateAddChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0 } , new Random());
+		this.mutateChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0, 0.001 } );
+		this.mutateAddChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0 } );
 		
 		if (getCalculateScore().shouldMinimize()) {
 			this.bestEverScore = Double.MAX_VALUE;
@@ -656,7 +656,7 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 	}
 	
 	public void mutate(NEATGenome genome) {
-		int option = this.mutateChoices.generate();
+		int option = this.mutateChoices.generate(new Random());
 		
 		switch(option) {
 			case 0: // mutate weight

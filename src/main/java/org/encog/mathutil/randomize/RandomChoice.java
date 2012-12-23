@@ -46,18 +46,12 @@ public class RandomChoice {
 	 * The probabilities of each item in the list.
 	 */
 	final private double[] probabilities;
-	
-	/**
-	 * Random number generator.
-	 */
-	final private Random generator;
 
 	/**
 	 * Construct a list of probabilities.
 	 * @param theProbabilities The probability of each item in the list.
 	 */
-	public RandomChoice(double[] theProbabilities, Random theGenerator) {
-		this.generator = theGenerator;
+	public RandomChoice(double[] theProbabilities) {
 		this.probabilities = EngineArray.arrayCopy(theProbabilities);
 
 		double total = 0;
@@ -92,8 +86,8 @@ public class RandomChoice {
 	 * Generate a random choice, based on the probabilities provided to the constructor.
 	 * @return The random choice.
 	 */
-	public int generate() {
-		double r = this.generator.nextDouble();
+	public int generate(Random theGenerator) {
+		double r = theGenerator.nextDouble();
 		double sum = 0.0;
 
 		for (int i = 0; i < probabilities.length; i++) {
@@ -117,10 +111,10 @@ public class RandomChoice {
 	 * @param skip The choice to skip.
 	 * @return The random choice.
 	 */
-	public int generate(int skip) {
+	public int generate(Random theGenerator, int skip) {
 		double totalProb = 1.0 - probabilities[skip];
 
-		double throwValue = this.generator.nextDouble() * totalProb;
+		double throwValue = theGenerator.nextDouble() * totalProb;
 		double accumulator = 0.0;
 
 		for (int i = 0; i < skip; i++) {
