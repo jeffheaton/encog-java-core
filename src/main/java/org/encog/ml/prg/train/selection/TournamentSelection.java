@@ -2,7 +2,7 @@ package org.encog.ml.prg.train.selection;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.genetic.population.Population;
 import org.encog.ml.prg.train.PrgGenetic;
 import org.encog.ml.prg.train.PrgPopulation;
 
@@ -46,7 +46,7 @@ public class TournamentSelection implements PrgSelection {
 
 	@Override
 	public int performSelection() {
-		PrgPopulation population = trainer.getPopulation();
+		Population population = trainer.getPopulation();
 		int bestIndex = RangeRandomizer.randomInt(0, population.size()-1);
 	    Genome best = population.get(bestIndex);
 	    this.trainer.calculateEffectiveScore(best);
@@ -66,7 +66,7 @@ public class TournamentSelection implements PrgSelection {
 
 	@Override
 	public int performAntiSelection() {
-		PrgPopulation population = trainer.getPopulation();
+		Population population = trainer.getPopulation();
 		int worstIndex = RangeRandomizer.randomInt(0, population.size()-1);
 	    Genome worst = population.get(worstIndex);
 	    this.trainer.calculateEffectiveScore(worst);

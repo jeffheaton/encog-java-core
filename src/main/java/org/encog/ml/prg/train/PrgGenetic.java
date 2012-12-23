@@ -17,11 +17,13 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
 import org.encog.ml.genetic.evolutionary.OperationList;
 import org.encog.ml.genetic.genome.Genome;
+import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.sort.MaximizeAdjustedScoreScoreComp;
 import org.encog.ml.genetic.sort.MinimizeAdjustedScoreScoreComp;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.EncogProgramVariables;
+import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.ml.prg.exception.EncogProgramError;
 import org.encog.ml.prg.train.selection.PrgSelection;
 import org.encog.ml.prg.train.selection.TournamentSelection;
@@ -34,7 +36,7 @@ import org.encog.util.concurrency.MultiThreadable;
 
 public class PrgGenetic implements MLTrain, MultiThreadable {
 	private final EncogProgramContext context;
-	private final PrgPopulation population;
+	private final Population population;
 	private final CalculateScore scoreFunction;
 	private PrgSelection selection;
 	private final EncogProgram bestGenome;
@@ -59,11 +61,11 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	public PrgGenetic(PrgPopulation thePopulation,
 			CalculateScore theScoreFunction) {
 		this.population = thePopulation;
-		this.context = population.getContext();
+		this.context = thePopulation.getContext();
 		this.scoreFunction = theScoreFunction;
 		this.selection = new TournamentSelection(this, 4);
 		
-		this.bestGenome = this.population.createProgram();
+		this.bestGenome = thePopulation.createProgram();
 		if (theScoreFunction.shouldMinimize()) {
 			this.compareScore = new MinimizeAdjustedScoreScoreComp();
 		} else {
@@ -82,7 +84,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		this(thePopulation, new TrainingSetScore(theTrainingSet));
 	}
 
-	public PrgPopulation getPopulation() {
+	public Population getPopulation() {
 		return population;
 	}
 
@@ -249,10 +251,11 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	public void createRandomPopulation(int maxDepth) {
 		CreateRandom rnd = new CreateRandom(this.context, maxDepth);
 		Random random = this.randomNumberFactory.factor();
+		EPLHolder holder = ((PrgPopulation)this.population).getHolder();
 
 		this.population.getGenomes().clear();
 		for (int i = 0; i < this.context.getParams().getPopulationSize(); i++) {
-			EncogProgram prg = new EncogProgram(this.context, new EncogProgramVariables(), this.population.getHolder(), i);
+			EncogProgram prg = new EncogProgram(this.context, new EncogProgramVariables(), holder, i);
 			this.population.getGenomes().add(prg);
 
 			boolean done = false;
@@ -301,13 +304,17 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		Collections.sort(this.getPopulation().getGenomes(), this.compareScore);
 
 	}
+	
+	public PrgPopulation getPrgPopulation() {
+		return (PrgPopulation)getPopulation();
+	}
 
 	public void addGenome(EncogProgram[] genome, int index, int size) {
 		EncogProgram replaceTarget = null;
 		this.iterationLock.lock();
 		try {
 			for(int i=0;i<size;i++) {
-				if( genome[i].size()>this.population.getHolder().getMaxIndividualSize() ) {
+				if( genome[i].size()>getPrgPopulation().getHolder().getMaxIndividualSize() ) {
 					throw new EncogProgramError("Program is too large to be added to population.");
 				}
 				replaceTarget = this.selector.antiSelectGenome();

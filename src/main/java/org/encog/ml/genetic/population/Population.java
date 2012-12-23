@@ -29,6 +29,7 @@ import java.util.List;
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.innovation.InnovationList;
+import org.encog.ml.prg.EncogProgram;
 
 /**
  * Defines a population of genomes.
@@ -97,5 +98,7 @@ public interface Population extends Serializable {
 	 * @param ga The GA that is claiming.
 	 */
 	void claim(GeneticAlgorithm ga);
+
+	void rewrite(EncogProgram prg);
 
 }

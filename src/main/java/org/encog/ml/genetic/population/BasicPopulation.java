@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
+import org.encog.ml.prg.EncogProgram;
 
 /**
  * Defines the basic functionality for a population of genomes.
@@ -186,5 +187,10 @@ public class BasicPopulation implements Population {
 	@Override
 	public void sort() {
 		Collections.sort(this.genomes);
+	}
+
+	@Override
+	public void rewrite(EncogProgram prg) {
+		
 	}
 }
