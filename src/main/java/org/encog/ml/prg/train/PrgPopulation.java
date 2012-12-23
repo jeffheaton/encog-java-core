@@ -3,6 +3,8 @@ package org.encog.ml.prg.train;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.ml.genetic.genome.Genome;
+import org.encog.ml.genetic.population.BasicPopulation;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.EncogProgramVariables;
@@ -10,10 +12,9 @@ import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.ml.prg.train.rewrite.RewriteRule;
 import org.encog.parse.expression.common.RenderCommonExpression;
 
-public class PrgPopulation {
+public class PrgPopulation extends BasicPopulation {
 
 	private final EncogProgramContext context;
-	private EncogProgram[] members;
 	private List<RewriteRule> rewriteRules = new ArrayList<RewriteRule>();
 	private EPLHolder holder;
 	
@@ -21,7 +22,6 @@ public class PrgPopulation {
 		GeneticTrainingParams params = theContext.getParams();
 		this.holder = theContext.getHolderFactory().factor(params.getPopulationSize(), params.getMaxIndividualSize());
 		this.context = theContext;
-		this.members = new EncogProgram[params.getPopulationSize()];
 	}
 		
 	public void dumpMembers(int i) {
@@ -29,7 +29,8 @@ public class PrgPopulation {
 		RenderCommonExpression render = new RenderCommonExpression();
 		
 		int index = 0;
-		for(EncogProgram prg: this.members) {
+		for(Genome obj: getGenomes()) {
+			EncogProgram prg = (EncogProgram)obj;
 			System.out.println(index + ": Score " + prg.getScore() + " : " + render.render(prg));
 			index++;
 			if( index>i) {
@@ -42,10 +43,6 @@ public class PrgPopulation {
 		return context;
 	}
 
-	public EncogProgram[] getMembers() {
-		return members;
-	}
-	
 	public void addRewriteRule(RewriteRule rule) {
 		this.rewriteRules.add(rule);
 	}
@@ -63,10 +60,6 @@ public class PrgPopulation {
 				}
 			}
 		}
-	}
-
-	public int size() {
-		return this.members.length;
 	}
 
 	/**

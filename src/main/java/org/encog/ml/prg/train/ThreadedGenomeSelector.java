@@ -19,8 +19,7 @@ public class ThreadedGenomeSelector {
 		synchronized (this) {
 			while (result == null) {
 				int selectedID = owner.getSelection().performSelection();
-				EncogProgram potentialSelection = owner.getPopulation()
-						.getMembers()[selectedID];
+				EncogProgram potentialSelection = (EncogProgram)owner.getPopulation().get(selectedID);
 				if (!used.contains(potentialSelection)) {
 					used.add(potentialSelection);
 					result = potentialSelection;
@@ -36,8 +35,7 @@ public class ThreadedGenomeSelector {
 		synchronized (this) {
 			while (result == null) {
 				int selectedID = owner.getSelection().performAntiSelection();
-				EncogProgram potentialSelection = owner.getPopulation()
-						.getMembers()[selectedID];
+				EncogProgram potentialSelection = (EncogProgram)owner.getPopulation().get(selectedID);
 				if (!used.contains(potentialSelection)) {
 					used.add(potentialSelection);
 					result = potentialSelection;

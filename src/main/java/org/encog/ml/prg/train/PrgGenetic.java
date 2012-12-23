@@ -1,7 +1,6 @@
 package org.encog.ml.prg.train;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
@@ -15,11 +14,9 @@ import org.encog.mathutil.randomize.factory.RandomFactory;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.genetic.crossover.SubtreeCrossover;
 import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
 import org.encog.ml.genetic.evolutionary.OperationList;
 import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.genetic.mutate.SubtreeMutation;
 import org.encog.ml.genetic.sort.MaximizeAdjustedScoreScoreComp;
 import org.encog.ml.genetic.sort.MinimizeAdjustedScoreScoreComp;
 import org.encog.ml.prg.EncogProgram;
@@ -253,14 +250,15 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		CreateRandom rnd = new CreateRandom(this.context, maxDepth);
 		Random random = this.randomNumberFactory.factor();
 
-		for (int i = 0; i < this.population.size(); i++) {
+		this.population.getGenomes().clear();
+		for (int i = 0; i < this.context.getParams().getPopulationSize(); i++) {
 			EncogProgram prg = new EncogProgram(this.context, new EncogProgramVariables(), this.population.getHolder(), i);
-			this.population.getMembers()[i] = prg;
+			this.population.getGenomes().add(prg);
 
 			boolean done = false;
 			do {
 				prg.clear();
-				rnd.createNode(random, this.population.getMembers()[i], 0);
+				rnd.createNode(random, prg, 0);
 				double score = this.scoreFunction.calculateScore(prg);
 				if (!Double.isInfinite(score) && !Double.isNaN(score)) {
 					prg.setScore(score);
@@ -286,7 +284,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		
 	}
 
-	public boolean isGenomeBetter(EncogProgram genome, EncogProgram betterThan) {
+	public boolean isGenomeBetter(Genome genome, Genome betterThan) {
 		return this.compareScore.compare(genome, betterThan) < 0;
 	}
 
@@ -300,7 +298,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	}
 
 	public void sort() {
-		Arrays.sort(this.getPopulation().getMembers(), this.compareScore);
+		Collections.sort(this.getPopulation().getGenomes(), this.compareScore);
 
 	}
 
@@ -392,7 +390,8 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		return context;
 	}
 
-	public void calculateEffectiveScore(EncogProgram prg) {
+	public void calculateEffectiveScore(Genome theGenome) {
+		EncogProgram prg = (EncogProgram)theGenome;
 		GeneticTrainingParams params = this.context.getParams();
 		double result = prg.getScore();
 		if (prg.size() > params.getComplexityPenaltyThreshold()) {
