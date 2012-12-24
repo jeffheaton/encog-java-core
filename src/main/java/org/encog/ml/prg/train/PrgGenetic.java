@@ -14,6 +14,7 @@ import org.encog.mathutil.randomize.factory.RandomFactory;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
 import org.encog.ml.genetic.evolutionary.OperationList;
 import org.encog.ml.genetic.genome.Genome;
@@ -22,7 +23,6 @@ import org.encog.ml.genetic.sort.MaximizeAdjustedScoreScoreComp;
 import org.encog.ml.genetic.sort.MinimizeAdjustedScoreScoreComp;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
-import org.encog.ml.prg.exception.EncogProgramError;
 import org.encog.ml.prg.train.selection.PrgSelection;
 import org.encog.ml.prg.train.selection.TournamentSelection;
 import org.encog.ml.train.MLTrain;
@@ -296,7 +296,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		try {
 			for(int i=0;i<size;i++) {
 				if( genome[i].size()>getPrgPopulation().getHolder().getMaxIndividualSize() ) {
-					throw new EncogProgramError("Program is too large to be added to population.");
+					throw new GeneticError("Program is too large to be added to population.");
 				}
 				replaceTarget = this.selector.antiSelectGenome();
 				this.population.rewrite(genome[index+i]);
@@ -378,19 +378,18 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		return context;
 	}
 
-	public void calculateEffectiveScore(Genome theGenome) {
-		EncogProgram prg = (EncogProgram)theGenome;
+	public void calculateEffectiveScore(Genome genome) {
 		GeneticTrainingParams params = this.context.getParams();
-		double result = prg.getScore();
-		if (prg.size() > params.getComplexityPenaltyThreshold()) {
-			int over = prg.size() - params.getComplexityPenaltyThreshold();
+		double result = genome.getScore();
+		if (genome.size() > params.getComplexityPenaltyThreshold()) {
+			int over = genome.size() - params.getComplexityPenaltyThreshold();
 			int range = params.getComplexityPentaltyFullThreshold()
 					- params.getComplexityPenaltyThreshold();
 			double complexityPenalty = ((params.getComplexityFullPenalty() - params
 					.getComplexityPenalty()) / range) * over;
 			result += (result * complexityPenalty);
 		}
-		prg.setAdjustedScore(result);
+		genome.setAdjustedScore(result);
 	}
 
 	/**
