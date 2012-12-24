@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
+import org.encog.ml.genetic.genome.GenomeFactory;
 import org.encog.ml.prg.EncogProgram;
 
 /**
@@ -50,6 +51,8 @@ public class BasicPopulation implements Population {
 	 * The object name.
 	 */
 	private String name;
+	
+	private GenomeFactory genomeFactory;
 
 	/**
 	 * How many genomes should be created.
@@ -69,8 +72,9 @@ public class BasicPopulation implements Population {
 	 * @param thePopulationSize
 	 *            The population size.
 	 */
-	public BasicPopulation(final int thePopulationSize) {
+	public BasicPopulation(final int thePopulationSize, GenomeFactory theGenomeFactory) {
 		this.populationSize = thePopulationSize;
+		this.genomeFactory = theGenomeFactory;
 	}
 
 	/**
@@ -192,5 +196,10 @@ public class BasicPopulation implements Population {
 	@Override
 	public void rewrite(EncogProgram prg) {
 		
+	}
+
+	@Override
+	public GenomeFactory getGenomeFactory() {
+		return this.genomeFactory;
 	}
 }

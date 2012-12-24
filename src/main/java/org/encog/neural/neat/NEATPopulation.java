@@ -223,7 +223,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 	 */
 	public NEATPopulation(final int inputCount, final int outputCount,
 			final int populationSize) {
-		super(populationSize);
+		super(populationSize, null);
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
 

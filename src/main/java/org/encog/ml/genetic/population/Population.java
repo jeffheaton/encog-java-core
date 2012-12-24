@@ -28,7 +28,7 @@ import java.util.List;
 
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.genetic.innovation.InnovationList;
+import org.encog.ml.genetic.genome.GenomeFactory;
 import org.encog.ml.prg.EncogProgram;
 
 /**
@@ -100,5 +100,7 @@ public interface Population extends Serializable {
 	void claim(GeneticAlgorithm ga);
 
 	void rewrite(EncogProgram prg);
+	
+	GenomeFactory getGenomeFactory();
 
 }

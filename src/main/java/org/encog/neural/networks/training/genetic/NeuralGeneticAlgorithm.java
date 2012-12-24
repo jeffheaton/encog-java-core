@@ -114,7 +114,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining implements MultiThread
 		super(TrainingImplementationType.Iterative);
 		this.genetic = new NeuralGeneticAlgorithmHelper();
 		this.genetic.setCalculateScore(new GeneticScoreAdapter(calculateScore));
-		final Population population = new BasicPopulation(populationSize);
+		final Population population = new BasicPopulation(populationSize, null);
 		getGenetic().setMutationPercent(mutationPercent);
 		getGenetic().setMatingPopulation(percentToMate * 2);
 		getGenetic().setPercentToMate(percentToMate);

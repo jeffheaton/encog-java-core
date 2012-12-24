@@ -21,7 +21,7 @@ public class GeneticTrainWorker extends Thread {
 		this.tempProgram = new EncogProgram[this.owner.getOperators()
 				.maxOffspring()];
 		for (int i = 0; i < this.tempProgram.length; i++) {
-			this.tempProgram[i] = this.owner.getPrgPopulation().createProgram();
+			this.tempProgram[i] = (EncogProgram)this.owner.getPrgPopulation().getGenomeFactory().factor();
 		}
 
 	}

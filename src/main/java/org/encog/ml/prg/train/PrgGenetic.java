@@ -65,7 +65,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		this.scoreFunction = theScoreFunction;
 		this.selection = new TournamentSelection(this, 4);
 		
-		this.bestGenome = thePopulation.createProgram();
+		this.bestGenome = (EncogProgram)thePopulation.getGenomeFactory().factor();
 		if (theScoreFunction.shouldMinimize()) {
 			this.compareScore = new MinimizeAdjustedScoreScoreComp();
 		} else {
