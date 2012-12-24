@@ -65,7 +65,12 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 	 * 
 	 * @author jheaton
 	 */
-	public class MLMethodGeneticAlgorithmHelper extends BasicGeneticAlgorithm {
+	public class MLMethodGeneticAlgorithmHelper extends MultiThreadedGeneticAlgorithm {
+		public MLMethodGeneticAlgorithmHelper(Population thePopulation,
+				CalculateScore theScoreFunction) {
+			super(thePopulation, theScoreFunction);
+		}
+
 		/**
 		 * @return The error from the last iteration.
 		 */
@@ -111,8 +116,7 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 			final int populationSize, final double mutationPercent,
 			final double percentToMate) {
 		super(TrainingImplementationType.Iterative);
-		this.genetic = new MLMethodGeneticAlgorithmHelper();
-		this.genetic.setCalculateScore(new GeneticScoreAdapter(calculateScore));
+		
 		final Population population = new BasicPopulation(populationSize, null);
 		
 		MLEncodable last = null;
@@ -125,6 +129,9 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 			population.add(genome);
 		}
 		
+		this.genetic = new MLMethodGeneticAlgorithmHelper(population, calculateScore);
+		this.genetic.setCalculateScore(new GeneticScoreAdapter(calculateScore));
+		
 		getGenetic().setMutationPercent(mutationPercent);
 		getGenetic().setMatingPopulation(percentToMate * 2);
 		getGenetic().setPercentToMate(percentToMate);
@@ -132,6 +139,8 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 				new Splice(last.encodedArrayLength() / 3));
 		getGenetic().setMutate(new MutatePerturb(4.0));
 		getGenetic().setPopulation(population);
+		
+		
 		
 		population.sort();
 	}
@@ -201,12 +210,13 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 
 	@Override
 	public int getThreadCount() {
-		return this.genetic.getThreadCount();
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
 	public void setThreadCount(int numThreads) {
-		this.genetic.setThreadCount(numThreads);		
-	}	
-
+		// TODO Auto-generated method stub
+		
+	}
 }

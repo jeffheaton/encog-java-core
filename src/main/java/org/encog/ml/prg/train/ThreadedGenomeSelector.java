@@ -3,13 +3,14 @@ package org.encog.ml.prg.train;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
 
 public class ThreadedGenomeSelector {
-	private PrgGenetic owner;
+	private GeneticAlgorithm owner;
 	private Set<Genome> used = new HashSet<Genome>();
 
-	public ThreadedGenomeSelector(PrgGenetic theOwner) {
+	public ThreadedGenomeSelector(GeneticAlgorithm theOwner) {
 		this.owner = theOwner;
 	}
 

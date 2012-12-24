@@ -36,7 +36,6 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NetworkUtil;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.training.anneal.NeuralSimulatedAnnealing;
-import org.encog.neural.networks.training.genetic.NeuralGeneticAlgorithm;
 import org.encog.neural.networks.training.lma.LevenbergMarquardtTraining;
 import org.encog.neural.networks.training.pnn.TrainBasicPNN;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
@@ -110,16 +109,6 @@ public class TestTraining extends TestCase   {
 		CalculateScore score = new TrainingSetScore(trainingData);
 		NeuralSimulatedAnnealing anneal = new NeuralSimulatedAnnealing(network,score,10,2,100);
 		NetworkUtil.testTraining(anneal,0.01);
-	}
-	
-	@Test
-	public void testGenetic() throws Throwable
-	{
-		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);		
-		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
-		CalculateScore score = new TrainingSetScore(trainingData);
-		NeuralGeneticAlgorithm genetic = new NeuralGeneticAlgorithm(network, new RangeRandomizer(-1,1), score, 500,0.1,0.25);
-		NetworkUtil.testTraining(genetic,0.00001);
 	}
 	
 	@Test

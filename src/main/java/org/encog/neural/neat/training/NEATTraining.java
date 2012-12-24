@@ -41,6 +41,8 @@ import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.sort.GenomeComparator;
 import org.encog.ml.genetic.sort.MinimizeAdjustedScoreScoreComp;
+import org.encog.ml.prg.train.GeneticTrainingParams;
+import org.encog.ml.prg.train.selection.PrgSelection;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.neat.NEATNetwork;
@@ -946,18 +948,6 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 	}
 
 	@Override
-	public int getThreadCount() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setThreadCount(int numThreads) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public EvolutionaryOperator getCrossover() {
 		// TODO Auto-generated method stub
 		return null;
@@ -1007,6 +997,42 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 
 	@Override
 	public void setMutate(EvolutionaryOperator theMutate) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void calculateEffectiveScore(Genome genome) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isGenomeBetter(Genome genome, Genome betterThan) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public GeneticTrainingParams getParams() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getMaxIndividualSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public PrgSelection getSelection() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setSelection(PrgSelection selection) {
 		// TODO Auto-generated method stub
 		
 	}

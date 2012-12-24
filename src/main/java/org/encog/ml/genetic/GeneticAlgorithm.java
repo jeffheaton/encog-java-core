@@ -28,7 +28,9 @@ import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.sort.GenomeComparator;
-import org.encog.util.concurrency.MultiThreadable;
+import org.encog.ml.prg.train.GeneticTrainingParams;
+import org.encog.ml.prg.train.ThreadedGenomeSelector;
+import org.encog.ml.prg.train.selection.PrgSelection;
 
 /**
  * Implements a genetic algorithm. This is an abstract class. Other classes are
@@ -38,7 +40,7 @@ import org.encog.util.concurrency.MultiThreadable;
  * The genetic algorithm is also capable of using a thread pool to speed
  * execution.
  */
-public interface GeneticAlgorithm  extends MultiThreadable {
+public interface GeneticAlgorithm {
 
 	CalculateGenomeScore getCalculateScore();
 
@@ -71,7 +73,17 @@ public interface GeneticAlgorithm  extends MultiThreadable {
 	void setMutate(EvolutionaryOperator theMutate);
 
 	void iteration();
-	
 
+	void calculateEffectiveScore(Genome genome);
+
+	boolean isGenomeBetter(Genome genome, Genome betterThan);
+	
+	GeneticTrainingParams getParams();
+	
+	int getMaxIndividualSize();
+	
+	public PrgSelection getSelection();
+
+	public void setSelection(PrgSelection selection);
 	
 }

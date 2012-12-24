@@ -1,4 +1,4 @@
-package org.encog.ml.prg.train;
+package org.encog.ml.genetic;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -7,22 +7,23 @@ import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.exception.EPLTooBig;
+import org.encog.ml.prg.train.PrgGenetic;
 import org.encog.neural.networks.training.CalculateScore;
 
 public class GeneticTrainWorker extends Thread {
-	private final PrgGenetic owner;
+	private final MultiThreadedGeneticAlgorithm owner;
 	private AtomicBoolean done = new AtomicBoolean();
 	private EncogProgram[] tempProgram;
 	private Random rnd;
 
-	public GeneticTrainWorker(PrgGenetic theOwner) {
+	public GeneticTrainWorker(MultiThreadedGeneticAlgorithm theOwner) {
 		this.owner = theOwner;
 		this.rnd = this.owner.getRandomNumberFactory().factor();
 
 		this.tempProgram = new EncogProgram[this.owner.getOperators()
 				.maxOffspring()];
 		for (int i = 0; i < this.tempProgram.length; i++) {
-			this.tempProgram[i] = (EncogProgram)this.owner.getPrgPopulation().getGenomeFactory().factor();
+			this.tempProgram[i] = (EncogProgram)this.owner.getPopulation().getGenomeFactory().factor();
 		}
 
 	}
@@ -70,7 +71,7 @@ public class GeneticTrainWorker extends Thread {
 					// as we will use a scoring method that favors smaller
 					// genomes.
 				} catch (Throwable t) {
-					if (!this.owner.getContext().getParams()
+					if (!this.owner.getParams()
 							.isIgnoreExceptions()) {
 						this.owner.reportError(t);
 						return;

@@ -1,24 +1,24 @@
 package org.encog.ml.prg.train.selection;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.prg.train.PrgGenetic;
-import org.encog.ml.prg.train.PrgPopulation;
 
 public class TournamentSelection implements PrgSelection {
-	private PrgGenetic trainer;
+	private GeneticAlgorithm trainer;
 	private int rounds;
 	
-	public TournamentSelection(PrgGenetic theTrainer, int theRounds) {
+	public TournamentSelection(GeneticAlgorithm theTrainer, int theRounds) {
 		this.trainer = theTrainer;
 		this.rounds = theRounds;
 	}
 
 	
 
-
-	public PrgGenetic getTrainer() {
+	@Override
+	public GeneticAlgorithm getTrainer() {
 		return trainer;
 	}
 
