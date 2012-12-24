@@ -99,7 +99,7 @@ public interface Population extends Serializable {
 	 */
 	void claim(GeneticAlgorithm ga);
 
-	void rewrite(EncogProgram prg);
+	void rewrite(Genome prg);
 	
 	GenomeFactory getGenomeFactory();
 

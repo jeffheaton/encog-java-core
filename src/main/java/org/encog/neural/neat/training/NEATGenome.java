@@ -35,6 +35,7 @@ import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.genetic.genome.BasicGenome;
+import org.encog.ml.genetic.genome.Genome;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.neat.NEATLink;
 import org.encog.neural.neat.NEATNetwork;
@@ -901,6 +902,16 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 */
 	public void setAmountToSpawn(final double theAmountToSpawn) {
 		this.amountToSpawn = theAmountToSpawn;
+	}
+
+	@Override
+	public void copy(Genome source) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int size() {
+		throw new UnsupportedOperationException();
 	}
 	
 }

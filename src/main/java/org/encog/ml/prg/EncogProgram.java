@@ -33,6 +33,7 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.genetic.genome.BasicGenome;
+import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.ml.prg.epl.EPLUtil;
 import org.encog.ml.prg.epl.OpCodeHeader;
@@ -527,12 +528,14 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 		this.programCounter = 0;
 	}
 
-	public void copy(EncogProgram source) {
+	@Override
+	public void copy(Genome source) {
+		EncogProgram sourceProgram = (EncogProgram)source;
 		clear();
-		setProgramLength( source.programLength);
-		copy(source,0,0,source.getProgramLength());
-		setScore(source.getScore());
-		this.setAdjustedScore(source.getAdjustedScore());
+		setProgramLength( sourceProgram.programLength);
+		copy(sourceProgram,0,0,sourceProgram.getProgramLength());
+		setScore(sourceProgram.getScore());
+		this.setAdjustedScore(sourceProgram.getAdjustedScore());
 	}
 
 	public void copy(EncogProgram sourceProgram, int sourceIndex,

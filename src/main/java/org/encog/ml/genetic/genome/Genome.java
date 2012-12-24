@@ -119,4 +119,8 @@ public interface Genome extends Comparable<Genome> {
 	 *            The new score.
 	 */
 	void setScore(double score);
+	
+	void copy(Genome source);
+	
+	int size();
 }

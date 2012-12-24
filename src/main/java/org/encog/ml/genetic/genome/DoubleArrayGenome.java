@@ -39,7 +39,7 @@ public class DoubleArrayGenome extends BasicGenome implements ArrayGenome {
 	}
 	
 	@Override
-	public void copy(ArrayGenome source) {
+	public void copy(Genome source) {
 		DoubleArrayGenome sourceDouble = (DoubleArrayGenome)source;
 		EngineArray.arrayCopy(sourceDouble.data,this.data);
 		

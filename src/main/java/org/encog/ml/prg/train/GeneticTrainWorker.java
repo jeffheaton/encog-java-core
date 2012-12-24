@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
+import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.exception.EPLTooBig;
 import org.encog.neural.networks.training.CalculateScore;
@@ -39,7 +40,7 @@ public class GeneticTrainWorker extends Thread {
 	}
 
 	public void run() {
-		EncogProgram[] parents = new EncogProgram[this.owner.getOperators()
+		Genome[] parents = new EncogProgram[this.owner.getOperators()
 				.maxParents()];
 
 		try {

@@ -194,7 +194,7 @@ public class BasicPopulation implements Population {
 	}
 
 	@Override
-	public void rewrite(EncogProgram prg) {
+	public void rewrite(Genome prg) {
 		
 	}
 

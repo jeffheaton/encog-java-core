@@ -3,23 +3,23 @@ package org.encog.ml.prg.train;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.genetic.genome.Genome;
 
 public class ThreadedGenomeSelector {
 	private PrgGenetic owner;
-	private Set<EncogProgram> used = new HashSet<EncogProgram>();
+	private Set<Genome> used = new HashSet<Genome>();
 
 	public ThreadedGenomeSelector(PrgGenetic theOwner) {
 		this.owner = theOwner;
 	}
 
-	public EncogProgram selectGenome() {
-		EncogProgram result = null;
+	public Genome selectGenome() {
+		Genome result = null;
 
 		synchronized (this) {
 			while (result == null) {
 				int selectedID = owner.getSelection().performSelection();
-				EncogProgram potentialSelection = (EncogProgram)owner.getPopulation().get(selectedID);
+				Genome potentialSelection = (Genome)owner.getPopulation().get(selectedID);
 				if (!used.contains(potentialSelection)) {
 					used.add(potentialSelection);
 					result = potentialSelection;
@@ -29,13 +29,13 @@ public class ThreadedGenomeSelector {
 		}
 	}
 	
-	public EncogProgram antiSelectGenome() {
-		EncogProgram result = null;
+	public Genome antiSelectGenome() {
+		Genome result = null;
 
 		synchronized (this) {
 			while (result == null) {
 				int selectedID = owner.getSelection().performAntiSelection();
-				EncogProgram potentialSelection = (EncogProgram)owner.getPopulation().get(selectedID);
+				Genome potentialSelection = (Genome)owner.getPopulation().get(selectedID);
 				if (!used.contains(potentialSelection)) {
 					used.add(potentialSelection);
 					result = potentialSelection;
@@ -45,7 +45,7 @@ public class ThreadedGenomeSelector {
 		}
 	}
 	
-	public void releaseGenome(EncogProgram genome) {
+	public void releaseGenome(Genome genome) {
 		synchronized(this) {
 			this.used.remove(genome);
 		}

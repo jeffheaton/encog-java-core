@@ -22,8 +22,6 @@ import org.encog.ml.genetic.sort.MaximizeAdjustedScoreScoreComp;
 import org.encog.ml.genetic.sort.MinimizeAdjustedScoreScoreComp;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
-import org.encog.ml.prg.EncogProgramVariables;
-import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.ml.prg.exception.EncogProgramError;
 import org.encog.ml.prg.train.selection.PrgSelection;
 import org.encog.ml.prg.train.selection.TournamentSelection;
@@ -39,7 +37,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	private final Population population;
 	private final CalculateScore scoreFunction;
 	private PrgSelection selection;
-	private final EncogProgram bestGenome;
+	private final Genome bestGenome;
 	private Comparator<Genome> compareScore;
 	private int threadCount;
 	private GeneticTrainWorker[] workers;
@@ -249,32 +247,15 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 	}
 
 	public void createRandomPopulation(int maxDepth) {
-		CreateRandom rnd = new CreateRandom(this.context, maxDepth);
 		Random random = this.randomNumberFactory.factor();
-		EPLHolder holder = ((PrgPopulation)this.population).getHolder();
-
-		this.population.getGenomes().clear();
-		for (int i = 0; i < this.context.getParams().getPopulationSize(); i++) {
-			EncogProgram prg = new EncogProgram(this.context, new EncogProgramVariables(), holder, i);
-			this.population.getGenomes().add(prg);
-
-			boolean done = false;
-			do {
-				prg.clear();
-				rnd.createNode(random, prg, 0);
-				double score = this.scoreFunction.calculateScore(prg);
-				if (!Double.isInfinite(score) && !Double.isNaN(score)) {
-					prg.setScore(score);
-					done = true;
-				}
-			} while (!done);
-			evaluateBestGenome(prg);
-
-			this.population.rewrite(prg);
+		this.population.getGenomeFactory().factorRandomPopulation(random, population, scoreFunction, maxDepth);
+		
+		for(Genome genome: this.population.getGenomes()) {
+			evaluateBestGenome(genome);
 		}
 	}
 
-	private void evaluateBestGenome(EncogProgram prg) {
+	private void evaluateBestGenome(Genome prg) {
 		this.iterationLock.lock();
 		try {
 			calculateEffectiveScore(prg);
@@ -291,7 +272,7 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		return this.compareScore.compare(genome, betterThan) < 0;
 	}
 
-	public void copyBestGenome(EncogProgram target) {
+	public void copyBestGenome(Genome target) {
 		this.iterationLock.lock();
 		try {
 			target.copy(this.bestGenome);
@@ -309,8 +290,8 @@ public class PrgGenetic implements MLTrain, MultiThreadable {
 		return (PrgPopulation)getPopulation();
 	}
 
-	public void addGenome(EncogProgram[] genome, int index, int size) {
-		EncogProgram replaceTarget = null;
+	public void addGenome(Genome[] genome, int index, int size) {
+		Genome replaceTarget = null;
 		this.iterationLock.lock();
 		try {
 			for(int i=0;i<size;i++) {

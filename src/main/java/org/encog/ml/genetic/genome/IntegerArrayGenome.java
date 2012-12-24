@@ -39,7 +39,7 @@ public class IntegerArrayGenome extends BasicGenome implements ArrayGenome {
 	}
 
 	@Override
-	public void copy(ArrayGenome source) {
+	public void copy(Genome source) {
 		IntegerArrayGenome sourceInt = (IntegerArrayGenome)source;
 		EngineArray.arrayCopy(sourceInt.data,this.data);
 		
