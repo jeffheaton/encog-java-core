@@ -76,18 +76,6 @@ public interface Genome extends Comparable<Genome> {
 	double getScore();
 
 	/**
-	 * Mate with another genome and produce two children.
-	 * 
-	 * @param father
-	 *            The father genome.
-	 * @param child1
-	 *            The first child.
-	 * @param child2
-	 *            The second child.
-	 */
-	void mate(Genome father, Genome child1, Genome child2);
-
-	/**
 	 * Set the adjusted score.
 	 * 
 	 * @param adjustedScore

@@ -948,55 +948,7 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 	}
 
 	@Override
-	public EvolutionaryOperator getCrossover() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public double getMutationPercent() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public EvolutionaryOperator getMutate() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void setPopulation(Population thePopulation) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setMutationPercent(double theMutationPercent) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setPercentToMate(double thePercentToMate) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setCrossover(EvolutionaryOperator theCrossover) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setMatingPopulation(double theMatingPopulation) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setMutate(EvolutionaryOperator theMutate) {
 		// TODO Auto-generated method stub
 		
 	}

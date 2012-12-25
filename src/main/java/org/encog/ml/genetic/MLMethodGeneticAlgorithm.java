@@ -113,8 +113,7 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 	 */
 	public MLMethodGeneticAlgorithm(final MethodFactory factory,
 			final CalculateScore calculateScore,
-			final int populationSize, final double mutationPercent,
-			final double percentToMate) {
+			final int populationSize) {
 		super(TrainingImplementationType.Iterative);
 		
 		final Population population = new BasicPopulation(populationSize, null);
@@ -132,12 +131,6 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 		this.genetic = new MLMethodGeneticAlgorithmHelper(population, calculateScore);
 		this.genetic.setCalculateScore(new GeneticScoreAdapter(calculateScore));
 		
-		getGenetic().setMutationPercent(mutationPercent);
-		getGenetic().setMatingPopulation(percentToMate * 2);
-		getGenetic().setPercentToMate(percentToMate);
-		getGenetic().setCrossover(
-				new Splice(last.encodedArrayLength() / 3));
-		getGenetic().setMutate(new MutatePerturb(4.0));
 		getGenetic().setPopulation(population);
 		
 		

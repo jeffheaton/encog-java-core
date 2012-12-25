@@ -119,38 +119,12 @@ public abstract class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	}
 
 	/**
-	 * @return The crossover object.
-	 */
-	@Override
-	public EvolutionaryOperator getCrossover() {
-		return this.crossover;
-	}
-
-	/**
 	 * Get the mating population.
 	 * 
 	 * @return The mating population percent.
 	 */
 	public double getMatingPopulation() {
 		return this.matingPopulation;
-	}
-
-	/**
-	 * @return The mutate object.
-	 */
-	@Override
-	public EvolutionaryOperator getMutate() {
-		return this.mutate;
-	}
-
-	/**
-	 * Get the mutation percent.
-	 * 
-	 * @return The mutation percent.
-	 */
-	@Override
-	public double getMutationPercent() {
-		return this.mutationPercent;
 	}
 
 	/**
@@ -191,61 +165,6 @@ public abstract class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	@Override
 	public void setComparator(final GenomeComparator theComparator) {
 		this.comparator = theComparator;
-	}
-
-	/**
-	 * Set the crossover object.
-	 * 
-	 * @param theCrossover
-	 *            The crossover object.
-	 */
-	@Override
-	public void setCrossover(final EvolutionaryOperator theCrossover) {
-		this.crossover = theCrossover;
-	}
-
-	/**
-	 * Set the mating population percent.
-	 * 
-	 * @param theMatingPopulation
-	 *            The mating population percent.
-	 */
-	@Override
-	public void setMatingPopulation(final double theMatingPopulation) {
-		this.matingPopulation = theMatingPopulation;
-	}
-
-	/**
-	 * Set the mutate object.
-	 * 
-	 * @param theMutate
-	 *            The mutate object.
-	 */
-	@Override
-	public void setMutate(final EvolutionaryOperator theMutate) {
-		this.mutate = theMutate;
-	}
-
-	/**
-	 * Set the mutation percent.
-	 * 
-	 * @param theMutationPercent
-	 *            The percent to mutate.
-	 */
-	@Override
-	public void setMutationPercent(final double theMutationPercent) {
-		this.mutationPercent = theMutationPercent;
-	}
-
-	/**
-	 * Set the percent to mate.
-	 * 
-	 * @param thePercentToMate
-	 *            The percent to mate.
-	 */
-	@Override
-	public void setPercentToMate(final double thePercentToMate) {
-		this.percentToMate = thePercentToMate;
 	}
 
 	/**

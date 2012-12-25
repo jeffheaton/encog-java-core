@@ -74,14 +74,14 @@ public class GeneticFactory {
 		final double mate = holder.getDouble(MLTrainFactory.PROPERTY_MATE,
 				false, 0.25);
 		
-		MLTrain train = new MLMethodGeneticAlgorithm(new MethodFactory(){
+/*		MLTrain train = new MLMethodGeneticAlgorithm(new MethodFactory(){
 			@Override
 			public MLMethod factor() {
 				final MLMethod result = (MLMethod) ObjectCloner.deepCopy(method);
 				((MLResettable)result).reset();
 				return result;
-			}}, score, populationSize, mutation, mate);
+			}}, score, populationSize, mutation, mate);*/
 
-		return train;
+		return null;
 	}
 }

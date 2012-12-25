@@ -23,6 +23,7 @@
  */
 package org.encog.neural.networks.training;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
@@ -114,7 +115,7 @@ public class TestTraining extends TestCase   {
 	@Test
 	public void testMLMethodGenetic() throws Throwable
 	{
-		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);		
+		/*MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);		
 		CalculateScore score = new TrainingSetScore(trainingData);
 		MLMethodGeneticAlgorithm genetic = new MLMethodGeneticAlgorithm(new MethodFactory(){
 			@Override
@@ -123,7 +124,8 @@ public class TestTraining extends TestCase   {
 				network.reset();
 				return network;
 			}}, score, 500,0.1,0.25);
-		NetworkUtil.testTraining(genetic,0.00001);
+		NetworkUtil.testTraining(genetic,0.00001);*/
+		Assert.assertTrue(false);
 	}
 	
 	@Test

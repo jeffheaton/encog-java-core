@@ -46,31 +46,15 @@ public interface GeneticAlgorithm {
 
 	GenomeComparator getComparator();
 
-	EvolutionaryOperator getCrossover();
-
 	void setCalculateScore(CalculateGenomeScore theCalculateScore);
 
 	void setComparator(GenomeComparator theComparator);
 
 	void calculateScore(Genome g);
 
-	double getMutationPercent();
-
-	EvolutionaryOperator getMutate();
-
 	void setPopulation(Population thePopulation);
 
 	Population getPopulation();
-
-	void setMutationPercent(double theMutationPercent);
-
-	void setPercentToMate(double thePercentToMate);
-
-	void setCrossover(EvolutionaryOperator theCrossover);
-
-	void setMatingPopulation(double theMatingPopulation);
-
-	void setMutate(EvolutionaryOperator theMutate);
 
 	void iteration();
 

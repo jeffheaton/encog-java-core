@@ -125,38 +125,6 @@ public abstract class BasicGenome implements Genome, Serializable {
 	}
 
 	/**
-	 * Mate two genomes. Will loop over all chromosomes.
-	 * 
-	 * @param father
-	 *            The father.
-	 * @param child1
-	 *            The first child.
-	 * @param child2
-	 *            The second child.
-	 */
-	@Override
-	public void mate(final Genome father, final Genome child1,
-			final Genome child2) {
-
-		Genome[] parents = {this, father};
-		Genome[] offspring = { child1, child2 };
-		this.geneticAlgorithm.getCrossover().performOperation(new Random(), parents, 0, offspring, 0);
-
-		if (Math.random() < this.geneticAlgorithm.getMutationPercent()) {
-			this.geneticAlgorithm.getMutate().performOperation(new Random(), offspring, 0, offspring, 0);
-		}
-
-		if (Math.random() < this.geneticAlgorithm.getMutationPercent()) {
-			this.geneticAlgorithm.getMutate().performOperation(new Random(), offspring, 1, offspring, 1);
-		}
-
-		child1.decode();
-		child2.decode();
-		this.geneticAlgorithm.calculateScore(child1);
-		this.geneticAlgorithm.calculateScore(child2);
-	}
-
-	/**
 	 * Set the adjusted score.
 	 * 
 	 * @param theAdjustedScore
