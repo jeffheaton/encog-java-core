@@ -123,9 +123,4 @@ public class PrgGenetic extends MultiThreadedGeneticAlgorithm implements MLTrain
 	public EncogProgramContext getContext() {
 		return context;
 	}
-	
-	@Override
-	public int getMaxIndividualSize() {
-		return ((PrgPopulation)this.getPopulation()).getHolder().getMaxIndividualSize();
-	}
 }

@@ -33,7 +33,7 @@ public class OperationList {
 	}
 
 	public int maxOffspring() {
-		int result = Integer.MIN_VALUE;
+		int result = 0;
 		for(OperationHolder holder: this.list) {
 			result = Math.max(result, holder.getOpp().offspringProduced());
 		}

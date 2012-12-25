@@ -29,6 +29,7 @@ import java.util.List;
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.genome.GenomeFactory;
+import org.encog.ml.genetic.genome.IntegerArrayGenomeFactory;
 import org.encog.ml.prg.EncogProgram;
 
 /**
@@ -103,4 +104,7 @@ public interface Population extends Serializable {
 	
 	GenomeFactory getGenomeFactory();
 
+	void setGenomeFactory(GenomeFactory factory);
+
+	int getMaxIndividualSize();
 }

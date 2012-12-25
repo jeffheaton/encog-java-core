@@ -42,6 +42,8 @@ public class IntegerArrayGenome extends BasicGenome implements ArrayGenome {
 	public void copy(Genome source) {
 		IntegerArrayGenome sourceInt = (IntegerArrayGenome)source;
 		EngineArray.arrayCopy(sourceInt.data,this.data);
+		this.setScore(source.getScore());
+		this.setAdjustedScore(source.getAdjustedScore());
 		
 	}
 

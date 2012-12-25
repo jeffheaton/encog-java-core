@@ -30,15 +30,13 @@ import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.sort.GenomeComparator;
 import org.encog.ml.prg.train.GeneticTrainingParams;
-import org.encog.util.concurrency.EngineConcurrency;
-import org.encog.util.concurrency.TaskGroup;
 
 /**
  * Provides a basic implementation of a genetic algorithm.
  */
 public abstract class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	
-	private GeneticTrainingParams params;
+	private GeneticTrainingParams params = new GeneticTrainingParams();
 
 	/**
 	 * The score calculation object.

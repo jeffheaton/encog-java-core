@@ -70,4 +70,9 @@ public class PrgPopulation extends BasicPopulation {
 	public EPLHolder getHolder() {
 		return holder;
 	}
+	
+	@Override
+	public int getMaxIndividualSize() {
+		return getHolder().getMaxIndividualSize();
+	}
 }

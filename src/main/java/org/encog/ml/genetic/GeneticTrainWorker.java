@@ -6,23 +6,22 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
 import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.exception.EPLTooBig;
 
 public class GeneticTrainWorker extends Thread {
 	private final MultiThreadedGeneticAlgorithm owner;
 	private AtomicBoolean done = new AtomicBoolean();
-	private EncogProgram[] tempProgram;
+	private Genome[] tempProgram;
 	private Random rnd;
 
 	public GeneticTrainWorker(MultiThreadedGeneticAlgorithm theOwner) {
 		this.owner = theOwner;
 		this.rnd = this.owner.getRandomNumberFactory().factor();
 
-		this.tempProgram = new EncogProgram[this.owner.getOperators()
+		this.tempProgram = new Genome[this.owner.getOperators()
 				.maxOffspring()];
 		for (int i = 0; i < this.tempProgram.length; i++) {
-			this.tempProgram[i] = (EncogProgram)this.owner.getPopulation().getGenomeFactory().factor();
+			this.tempProgram[i] = this.owner.getPopulation().getGenomeFactory().factor();
 		}
 
 	}
@@ -40,7 +39,7 @@ public class GeneticTrainWorker extends Thread {
 	}
 
 	public void run() {
-		Genome[] parents = new EncogProgram[this.owner.getOperators()
+		Genome[] parents = new Genome[this.owner.getOperators()
 				.maxParents()];
 
 		try {

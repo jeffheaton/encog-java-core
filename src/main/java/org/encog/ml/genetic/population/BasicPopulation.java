@@ -30,6 +30,7 @@ import java.util.List;
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.genome.GenomeFactory;
+import org.encog.ml.genetic.genome.IntegerArrayGenomeFactory;
 import org.encog.ml.prg.EncogProgram;
 
 /**
@@ -201,5 +202,15 @@ public class BasicPopulation implements Population {
 	@Override
 	public GenomeFactory getGenomeFactory() {
 		return this.genomeFactory;
+	}
+
+	@Override
+	public void setGenomeFactory(GenomeFactory factory) {
+		this.genomeFactory = factory;
+	}
+
+	@Override
+	public int getMaxIndividualSize() {
+		return Integer.MAX_VALUE;
 	}
 }

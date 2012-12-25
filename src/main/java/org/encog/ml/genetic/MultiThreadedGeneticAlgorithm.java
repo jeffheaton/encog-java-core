@@ -16,12 +16,10 @@ import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.sort.MaximizeAdjustedScoreScoreComp;
 import org.encog.ml.genetic.sort.MinimizeAdjustedScoreScoreComp;
-import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.train.GeneticTrainingParams;
 import org.encog.ml.prg.train.ThreadedGenomeSelector;
 import org.encog.ml.prg.train.selection.PrgSelection;
 import org.encog.ml.prg.train.selection.TournamentSelection;
-import org.encog.neural.networks.training.CalculateScore;
 import org.encog.util.concurrency.MultiThreadable;
 
 public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm implements MultiThreadable {
@@ -34,6 +32,8 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 	private GeneticTrainWorker[] workers;
 	
 	private final OperationList operators = new OperationList();
+	
+	private boolean needBestGenome = true;
 	
 	private int iterationNumber;
 	private int subIterationCounter;
@@ -66,7 +66,7 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 		this.scoreFunction = theScoreFunction;
 		this.selection = new TournamentSelection(this, 4);
 		
-		this.bestGenome = (EncogProgram)thePopulation.getGenomeFactory().factor();
+		this.bestGenome = thePopulation.getGenomeFactory().factor();
 		if (theScoreFunction.shouldMinimize()) {
 			this.compareScore = new MinimizeAdjustedScoreScoreComp();
 		} else {
@@ -106,6 +106,8 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 			this.workers[i] = new GeneticTrainWorker(this);
 			this.workers[i].start();
 		}
+		
+		this.needBestGenome = true;
 
 	}
 	
@@ -158,8 +160,9 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 		this.iterationLock.lock();
 		try {
 			calculateEffectiveScore(prg);
-			if (this.bestGenome.size()==0 || isGenomeBetter(prg, this.bestGenome)) {
+			if (this.needBestGenome || isGenomeBetter(prg, this.bestGenome)) {
 				this.bestGenome.copy(prg);
+				this.needBestGenome = false;
 			}
 		} finally {
 			this.iterationLock.unlock();
@@ -321,7 +324,6 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 
 	@Override
 	public int getMaxIndividualSize() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.population.getMaxIndividualSize();
 	}	
 }
