@@ -68,7 +68,7 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 	public class MLMethodGeneticAlgorithmHelper extends MultiThreadedGeneticAlgorithm {
 		public MLMethodGeneticAlgorithmHelper(Population thePopulation,
 				CalculateScore theScoreFunction) {
-			super(thePopulation, theScoreFunction);
+			super(thePopulation, new GeneticScoreAdapter(theScoreFunction));
 		}
 
 		/**

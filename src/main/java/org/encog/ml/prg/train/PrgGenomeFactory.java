@@ -2,6 +2,7 @@ package org.encog.ml.prg.train;
 
 import java.util.Random;
 
+import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.genome.GenomeFactory;
 import org.encog.ml.genetic.population.Population;
@@ -9,7 +10,6 @@ import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.EncogProgramVariables;
 import org.encog.ml.prg.epl.EPLHolder;
-import org.encog.neural.networks.training.CalculateScore;
 
 public class PrgGenomeFactory implements GenomeFactory {
 
@@ -27,7 +27,7 @@ public class PrgGenomeFactory implements GenomeFactory {
 	}
 	
 	@Override
-	public void factorRandomPopulation(Random random, Population population, CalculateScore scoreFunction, int maxDepth) {
+	public void factorRandomPopulation(Random random, Population population, CalculateGenomeScore scoreFunction, int maxDepth) {
 		CreateRandom rnd = new CreateRandom(this.context, maxDepth);
 		EPLHolder holder = ((PrgPopulation)population).getHolder();
 

@@ -11,6 +11,7 @@ import org.encog.EncogError;
 import org.encog.mathutil.randomize.factory.RandomFactory;
 import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
 import org.encog.ml.genetic.evolutionary.OperationList;
+import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.sort.MaximizeAdjustedScoreScoreComp;
@@ -40,7 +41,7 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 	private Throwable currentError;
 	private ThreadedGenomeSelector selector;
 	private final Population population;
-	private final CalculateScore scoreFunction;
+	private final CalculateGenomeScore scoreFunction;
 	private PrgSelection selection;
 	private final Genome bestGenome;
 	private Comparator<Genome> compareScore;
@@ -60,7 +61,7 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 	
 	
 	public MultiThreadedGeneticAlgorithm(Population thePopulation,
-			CalculateScore theScoreFunction) {
+			CalculateGenomeScore theScoreFunction) {
 		this.population = thePopulation;
 		this.scoreFunction = theScoreFunction;
 		this.selection = new TournamentSelection(this, 4);
@@ -251,7 +252,7 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 		return population;
 	}
 
-	public CalculateScore getScoreFunction() {
+	public CalculateGenomeScore getScoreFunction() {
 		return scoreFunction;
 	}
 

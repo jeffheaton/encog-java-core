@@ -4,11 +4,10 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
+import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.exception.EPLTooBig;
-import org.encog.ml.prg.train.PrgGenetic;
-import org.encog.neural.networks.training.CalculateScore;
 
 public class GeneticTrainWorker extends Thread {
 	private final MultiThreadedGeneticAlgorithm owner;
@@ -30,7 +29,7 @@ public class GeneticTrainWorker extends Thread {
 
 	private void handleNewGenomes(int offspringCount) {
 		for (int i = 0; i < offspringCount; i++) {
-			CalculateScore scoreFunction = this.owner.getScoreFunction();
+			CalculateGenomeScore scoreFunction = this.owner.getScoreFunction();
 			double score = scoreFunction.calculateScore(this.tempProgram[0]);
 			if (!Double.isInfinite(score) && !Double.isNaN(score)) {
 				// population.rewrite(this.tempProgram[0]);
