@@ -156,7 +156,7 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 
 	}
 	
-	private void evaluateBestGenome(Genome prg) {
+	public void evaluateBestGenome(Genome prg) {
 		this.iterationLock.lock();
 		try {
 			calculateEffectiveScore(prg);

@@ -29,11 +29,12 @@ public class GeneticTrainWorker extends Thread {
 	private void handleNewGenomes(int offspringCount) {
 		for (int i = 0; i < offspringCount; i++) {
 			CalculateGenomeScore scoreFunction = this.owner.getScoreFunction();
-			double score = scoreFunction.calculateScore(this.tempProgram[0]);
+			this.tempProgram[i].decode();
+			double score = scoreFunction.calculateScore(this.tempProgram[i]);
 			if (!Double.isInfinite(score) && !Double.isNaN(score)) {
 				// population.rewrite(this.tempProgram[0]);
-				this.tempProgram[0].setScore(score);
-				this.owner.addGenome(this.tempProgram, 0, 1);
+				this.tempProgram[i].setScore(score);
+				this.owner.addGenome(this.tempProgram, i, 1);
 			}
 		}
 	}

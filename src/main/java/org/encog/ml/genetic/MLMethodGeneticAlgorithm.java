@@ -27,9 +27,14 @@ import org.encog.ml.MLEncodable;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MethodFactory;
 import org.encog.ml.TrainingImplementationType;
+import org.encog.ml.genetic.crossover.Splice;
 import org.encog.ml.genetic.genome.Genome;
+import org.encog.ml.genetic.mutate.MutatePerturb;
 import org.encog.ml.genetic.population.BasicPopulation;
 import org.encog.ml.genetic.population.Population;
+import org.encog.ml.genetic.sort.GenomeComparator;
+import org.encog.ml.genetic.sort.MaximizeScoreComp;
+import org.encog.ml.genetic.sort.MinimizeScoreComp;
 import org.encog.ml.train.BasicTraining;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.genetic.GeneticScoreAdapter;
@@ -67,8 +72,6 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 				CalculateScore theScoreFunction) {
 			super(thePopulation, new GeneticScoreAdapter(theScoreFunction));
 		}
-
-
 	}
 
 	/**
@@ -97,21 +100,34 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 		super(TrainingImplementationType.Iterative);
 		
 		final Population population = new BasicPopulation(populationSize, null);
+		population.setGenomeFactory(new MLMethodGenomeFactory(factory));
+		this.genetic = new MLMethodGeneticAlgorithmHelper(population, calculateScore);
+		
+		GenomeComparator comp = null;
+		if( calculateScore.shouldMinimize() ) {
+			comp = new MinimizeScoreComp();
+		} else {
+			comp = new MaximizeScoreComp();
+		}
+		this.genetic.setBestComparator(comp);
+		this.genetic.setSelectionComparator(comp);
+			
+		this.genetic.setCalculateScore(new GeneticScoreAdapter(calculateScore));
 		
 		for (int i = 0; i < population.getPopulationSize(); i++) {
 			final MLEncodable chromosomeNetwork = (MLEncodable)factory.factor();
 			final MLMethodGenome genome = new MLMethodGenome(chromosomeNetwork);
 			getGenetic().calculateScore(genome);
 			population.add(genome);
+			getGenetic().evaluateBestGenome(genome);
 		}
 		
-		this.genetic = new MLMethodGeneticAlgorithmHelper(population, calculateScore);
-		this.genetic.setCalculateScore(new GeneticScoreAdapter(calculateScore));
-		
+		int s = Math.max(population.get(0).size()/5,1);
 		getGenetic().setPopulation(population);
 		
-		
-		
+		this.genetic.addOperation(0.9,new Splice(s));
+		this.genetic.addOperation(0.1,new MutatePerturb(1.0));
+	
 		population.sort(this.genetic.getBestComparator());
 	}
 
@@ -137,7 +153,8 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 	public MLMethod getMethod() {
 		Genome best = (Genome)genetic.getPopulation().getGenomeFactory().factor();
 		this.genetic.copyBestGenome(best);
-		return (MLMethod)best;
+		best.decode();
+		return (MLMethod)best.getOrganism();
 	}
 
 	/**
@@ -149,8 +166,8 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 		EncogLogging.log(EncogLogging.LEVEL_INFO,
 				"Performing Genetic iteration.");
 		preIteration();
-		getGenetic().iteration();
 		setError(getGenetic().getError());
+		getGenetic().iteration();
 		postIteration();
 	}
 
@@ -182,13 +199,12 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 
 	@Override
 	public int getThreadCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.genetic.getThreadCount();
 	}
 
 	@Override
 	public void setThreadCount(int numThreads) {
-		// TODO Auto-generated method stub
+		this.genetic.setThreadCount(numThreads);
 		
 	}
 }

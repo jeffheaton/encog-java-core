@@ -1,0 +1,33 @@
+package org.encog.ml.genetic;
+
+import java.util.Random;
+
+import org.encog.ml.MLEncodable;
+import org.encog.ml.MethodFactory;
+import org.encog.ml.genetic.genome.CalculateGenomeScore;
+import org.encog.ml.genetic.genome.Genome;
+import org.encog.ml.genetic.genome.GenomeFactory;
+import org.encog.ml.genetic.population.Population;
+
+public class MLMethodGenomeFactory implements GenomeFactory {
+
+	private MethodFactory factory;
+	
+	public MLMethodGenomeFactory(MethodFactory theFactory) {
+		this.factory = theFactory;
+	}
+	
+	@Override
+	public Genome factor() {
+		// TODO Auto-generated method stub
+		return new MLMethodGenome((MLEncodable)this.factory.factor());
+	}
+
+	@Override
+	public void factorRandomPopulation(Random random, Population population,
+			CalculateGenomeScore scoreFunction, int maxDepth) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

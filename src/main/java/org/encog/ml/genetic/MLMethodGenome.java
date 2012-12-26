@@ -37,8 +37,6 @@ public class MLMethodGenome extends DoubleArrayGenome {
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	private MLEncodable network;
 
 
 	/**

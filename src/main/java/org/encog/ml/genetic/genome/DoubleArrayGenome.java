@@ -42,6 +42,8 @@ public class DoubleArrayGenome extends BasicGenome implements ArrayGenome {
 	public void copy(Genome source) {
 		DoubleArrayGenome sourceDouble = (DoubleArrayGenome)source;
 		EngineArray.arrayCopy(sourceDouble.data,this.data);
+		setScore(source.getScore());
+		setAdjustedScore(source.getAdjustedScore());
 		
 	}
 

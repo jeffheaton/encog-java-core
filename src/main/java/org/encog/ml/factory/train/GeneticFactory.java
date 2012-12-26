@@ -69,19 +69,15 @@ public class GeneticFactory {
 		final ParamsHolder holder = new ParamsHolder(args);
 		final int populationSize = holder.getInt(
 				MLTrainFactory.PROPERTY_POPULATION_SIZE, false, 5000);
-		final double mutation = holder.getDouble(
-				MLTrainFactory.PROPERTY_MUTATION, false, 0.1);
-		final double mate = holder.getDouble(MLTrainFactory.PROPERTY_MATE,
-				false, 0.25);
 		
-/*		MLTrain train = new MLMethodGeneticAlgorithm(new MethodFactory(){
+		MLTrain train = new MLMethodGeneticAlgorithm(new MethodFactory(){
 			@Override
 			public MLMethod factor() {
 				final MLMethod result = (MLMethod) ObjectCloner.deepCopy(method);
 				((MLResettable)result).reset();
 				return result;
-			}}, score, populationSize, mutation, mate);*/
+			}}, score, populationSize);
 
-		return null;
+		return train;
 	}
 }

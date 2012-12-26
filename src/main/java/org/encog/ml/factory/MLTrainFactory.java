@@ -193,16 +193,6 @@ public class MLTrainFactory {
 	public static final String PROPERTY_POPULATION_SIZE = "population";
 
 	/**
-	 * Percent to mutate.
-	 */
-	public static final String PROPERTY_MUTATION = "mutate";
-
-	/**
-	 * Percent to mate.
-	 */
-	public static final String PROPERTY_MATE = "mate";
-
-	/**
 	 * Genetic training.
 	 */
 	public static final String TYPE_GENETIC = "genetic";
