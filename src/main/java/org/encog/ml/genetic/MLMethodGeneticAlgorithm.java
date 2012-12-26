@@ -135,7 +135,7 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 		
 		
 		
-		population.sort();
+		population.sort(this.genetic.getBestComparator());
 	}
 
 	/**

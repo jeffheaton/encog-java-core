@@ -23,13 +23,11 @@
  */
 package org.encog.ml.genetic;
 
-import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
 import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.sort.GenomeComparator;
 import org.encog.ml.prg.train.GeneticTrainingParams;
-import org.encog.ml.prg.train.ThreadedGenomeSelector;
 import org.encog.ml.prg.train.selection.PrgSelection;
 
 /**
@@ -44,11 +42,7 @@ public interface GeneticAlgorithm {
 
 	CalculateGenomeScore getCalculateScore();
 
-	GenomeComparator getComparator();
-
 	void setCalculateScore(CalculateGenomeScore theCalculateScore);
-
-	void setComparator(GenomeComparator theComparator);
 
 	void calculateScore(Genome g);
 
@@ -69,5 +63,13 @@ public interface GeneticAlgorithm {
 	public PrgSelection getSelection();
 
 	public void setSelection(PrgSelection selection);
+
+	GenomeComparator getSelectionComparator();
+
+	void setSelectionComparator(GenomeComparator selectionComparator);
+
+	GenomeComparator getBestComparator();
+
+	void setBestComparator(GenomeComparator bestComparator);
 	
 }

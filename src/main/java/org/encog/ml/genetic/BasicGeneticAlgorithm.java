@@ -46,7 +46,12 @@ public abstract class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	/**
 	 * The genome comparator.
 	 */
-	private GenomeComparator comparator;
+	private GenomeComparator bestComparator;
+	
+	/**
+	 * The genome comparator.
+	 */
+	private GenomeComparator selectionComparator;
 	
 	/**
 	 * The crossover object.
@@ -114,8 +119,16 @@ public abstract class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	 * @return The comparator.
 	 */
 	@Override
-	public GenomeComparator getComparator() {
-		return this.comparator;
+	public GenomeComparator getSelectionComparator() {
+		return this.selectionComparator;
+	}
+	
+	/**
+	 * @return The comparator.
+	 */
+	@Override
+	public GenomeComparator getBestComparator() {
+		return this.bestComparator;
 	}
 
 	/**
@@ -163,8 +176,19 @@ public abstract class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	 *            The comparator.
 	 */
 	@Override
-	public void setComparator(final GenomeComparator theComparator) {
-		this.comparator = theComparator;
+	public void setBestComparator(final GenomeComparator theComparator) {
+		this.bestComparator = theComparator;
+	}
+	
+	/**
+	 * Set the comparator.
+	 * 
+	 * @param theComparator
+	 *            The comparator.
+	 */
+	@Override
+	public void setSelectionComparator(final GenomeComparator theComparator) {
+		this.selectionComparator = theComparator;
 	}
 
 	/**

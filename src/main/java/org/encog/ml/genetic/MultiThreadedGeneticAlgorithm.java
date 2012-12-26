@@ -1,6 +1,5 @@
 package org.encog.ml.genetic;
 
-import java.util.Comparator;
 import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -14,6 +13,7 @@ import org.encog.ml.genetic.evolutionary.OperationList;
 import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.population.Population;
+import org.encog.ml.genetic.sort.GenomeComparator;
 import org.encog.ml.genetic.sort.MaximizeAdjustedScoreScoreComp;
 import org.encog.ml.genetic.sort.MinimizeAdjustedScoreScoreComp;
 import org.encog.ml.prg.train.GeneticTrainingParams;
@@ -44,7 +44,7 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 	private final CalculateGenomeScore scoreFunction;
 	private PrgSelection selection;
 	private final Genome bestGenome;
-	private Comparator<Genome> compareScore;
+	private GenomeComparator compareScore;
 	private RandomFactory randomNumberFactory = Encog.getInstance()
 			.getRandomFactory().factorFactory();
 
@@ -275,11 +275,11 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 		return this.iterationNumber;
 	}
 
-	public Comparator<Genome> getCompareScore() {
+	public GenomeComparator getCompareScore() {
 		return compareScore;
 	}
 
-	public void setCompareScore(Comparator<Genome> compareScore) {
+	public void setCompareScore(GenomeComparator compareScore) {
 		this.compareScore = compareScore;
 	}
 

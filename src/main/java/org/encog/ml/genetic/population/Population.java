@@ -24,13 +24,12 @@
 package org.encog.ml.genetic.population;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
 
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.genome.GenomeFactory;
-import org.encog.ml.genetic.genome.IntegerArrayGenomeFactory;
-import org.encog.ml.prg.EncogProgram;
 
 /**
  * Defines a population of genomes.
@@ -92,7 +91,7 @@ public interface Population extends Serializable {
 	/**
 	 * Sort the population by best score.
 	 */
-	void sort();
+	void sort(Comparator<Genome> comp);
 	
 	/**
 	 * Claim the population, before training.

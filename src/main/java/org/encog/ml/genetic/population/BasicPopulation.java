@@ -25,13 +25,12 @@ package org.encog.ml.genetic.population;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.genome.GenomeFactory;
-import org.encog.ml.genetic.genome.IntegerArrayGenomeFactory;
-import org.encog.ml.prg.EncogProgram;
 
 /**
  * Defines the basic functionality for a population of genomes.
@@ -190,8 +189,8 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void sort() {
-		Collections.sort(this.genomes);
+	public void sort(Comparator<Genome> comp) {
+		Collections.sort(this.genomes, comp);
 	}
 
 	@Override
