@@ -7,6 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.encog.Encog;
 import org.encog.EncogError;
+import org.encog.EncogShutdownTask;
 import org.encog.mathutil.randomize.factory.RandomFactory;
 import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
 import org.encog.ml.genetic.evolutionary.OperationList;
@@ -22,19 +23,20 @@ import org.encog.ml.prg.train.selection.PrgSelection;
 import org.encog.ml.prg.train.selection.TournamentSelection;
 import org.encog.util.concurrency.MultiThreadable;
 
-public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm implements MultiThreadable {
+public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm
+		implements MultiThreadable, EncogShutdownTask {
 
 	/**
 	 * Should this run multi-threaded.
 	 */
 	private boolean multiThreaded = true;
-	
+
 	private GeneticTrainWorker[] workers;
-	
+
 	private final OperationList operators = new OperationList();
-	
+
 	private boolean needBestGenome = true;
-	
+
 	private int iterationNumber;
 	private int subIterationCounter;
 	private final Lock iterationLock = new ReentrantLock();
@@ -53,31 +55,29 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 	 */
 	private final Condition iterationCondition = this.iterationLock
 			.newCondition();
-	
+
 	/**
 	 * The thread count;
 	 */
 	private int threadCount;
-	
-	
+
 	public MultiThreadedGeneticAlgorithm(Population thePopulation,
 			CalculateGenomeScore theScoreFunction) {
 		this.population = thePopulation;
 		this.scoreFunction = theScoreFunction;
 		this.selection = new TournamentSelection(this, 4);
-		
+
 		this.bestGenome = thePopulation.getGenomeFactory().factor();
 		if (theScoreFunction.shouldMinimize()) {
 			this.compareScore = new MinimizeAdjustedScoreScoreComp();
 		} else {
 			this.compareScore = new MaximizeAdjustedScoreScoreComp();
 		}
-		
+
 		this.selector = new ThreadedGenomeSelector(this);
-		
+
 	}
-	
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -90,12 +90,13 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 	 */
 	public void setThreadCount(int numThreads) {
 		this.threadCount = numThreads;
-		
+
 	}
-	
+
 	private void startup() {
 		int actualThreadCount = Runtime.getRuntime().availableProcessors();
-
+		Encog.getInstance().addShutdownTask(this);
+		
 		if (this.threadCount != 0) {
 			actualThreadCount = this.threadCount;
 		}
@@ -106,11 +107,11 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 			this.workers[i] = new GeneticTrainWorker(this);
 			this.workers[i].start();
 		}
-		
+
 		this.needBestGenome = true;
 
 	}
-	
+
 	@Override
 	public void iteration() {
 		if (this.workers == null) {
@@ -129,33 +130,36 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 		} finally {
 			this.iterationLock.unlock();
 		}
-		
-		if( this.currentError!=null ) {
+
+		if (this.currentError != null) {
 			finishTraining();
 		}
 	}
-	
+
 	public void addOperation(double probability, EvolutionaryOperator opp) {
 		this.operators.add(probability, opp);
 	}
-	
-	public void finishTraining() {
-		for (int i = 0; i < this.workers.length; i++) {
-			this.workers[i].requestTerminate();
-		}
 
-		for (int i = 0; i < this.workers.length; i++) {
-			try {
-				this.workers[i].join();
-			} catch (InterruptedException e) {
-				throw new EncogError("Can't shut down training threads.");
+	public void finishTraining() {
+		if (this.workers != null) {
+			for (int i = 0; i < this.workers.length; i++) {
+				this.workers[i].requestTerminate();
+			}
+
+			for (int i = 0; i < this.workers.length; i++) {
+				try {
+					this.workers[i].join();
+				} catch (InterruptedException e) {
+					throw new EncogError("Can't shut down training threads.");
+				}
 			}
 		}
 
 		this.workers = null;
+		Encog.getInstance().removeShutdownTask(this);
 
 	}
-	
+
 	public void evaluateBestGenome(Genome prg) {
 		this.iterationLock.lock();
 		try {
@@ -167,7 +171,7 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 		} finally {
 			this.iterationLock.unlock();
 		}
-		
+
 	}
 
 	public boolean isGenomeBetter(Genome genome, Genome betterThan) {
@@ -182,31 +186,32 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 			this.iterationLock.unlock();
 		}
 	}
-	
+
 	public void addGenome(Genome[] genome, int index, int size) {
 		Genome replaceTarget = null;
 		this.iterationLock.lock();
 		try {
-			for(int i=0;i<size;i++) {
-				if( genome[i].size()>getMaxIndividualSize() ) {
-					throw new GeneticError("Program is too large to be added to population.");
+			for (int i = 0; i < size; i++) {
+				if (genome[i].size() > getMaxIndividualSize()) {
+					throw new GeneticError(
+							"Program is too large to be added to population.");
 				}
 				replaceTarget = this.selector.antiSelectGenome();
-				this.population.rewrite(genome[index+i]);
-				replaceTarget.copy(genome[index+i]);
-				evaluateBestGenome(genome[index+i]);
+				this.population.rewrite(genome[index + i]);
+				replaceTarget.copy(genome[index + i]);
+				evaluateBestGenome(genome[index + i]);
 			}
 		} finally {
 			this.iterationLock.unlock();
-			if( replaceTarget!=null ) {
+			if (replaceTarget != null) {
 				this.selector.releaseGenome(replaceTarget);
 			}
 		}
 	}
-	
+
 	public void notifyProgress() {
 		this.iterationLock.lock();
-		try {			
+		try {
 			this.subIterationCounter++;
 			if (this.subIterationCounter > this.population.size()) {
 				this.subIterationCounter = 0;
@@ -227,7 +232,7 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 			this.iterationLock.unlock();
 		}
 	}
-	
+
 	public void signalDone() {
 		this.iterationLock.lock();
 		try {
@@ -236,7 +241,7 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 			this.iterationLock.unlock();
 		}
 	}
-	
+
 	/**
 	 * @return the selector
 	 */
@@ -250,7 +255,7 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 	public OperationList getOperators() {
 		return operators;
 	}
-	
+
 	public Population getPopulation() {
 		return population;
 	}
@@ -285,13 +290,14 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 
 	public void createRandomPopulation(int maxDepth) {
 		Random random = this.randomNumberFactory.factor();
-		this.population.getGenomeFactory().factorRandomPopulation(random, population, scoreFunction, maxDepth);
-		
-		for(Genome genome: this.population.getGenomes()) {
+		this.population.getGenomeFactory().factorRandomPopulation(random,
+				population, scoreFunction, maxDepth);
+
+		for (Genome genome : this.population.getGenomes()) {
 			evaluateBestGenome(genome);
 		}
 	}
-	
+
 	/**
 	 * @return the randomNumberFactory
 	 */
@@ -306,7 +312,7 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 	public void setRandomNumberFactory(RandomFactory randomNumberFactory) {
 		this.randomNumberFactory = randomNumberFactory;
 	}
-	
+
 	public void calculateEffectiveScore(Genome genome) {
 		GeneticTrainingParams params = getParams();
 		double result = genome.getScore();
@@ -321,9 +327,13 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm impleme
 		genome.setAdjustedScore(result);
 	}
 
-
 	@Override
 	public int getMaxIndividualSize() {
 		return this.population.getMaxIndividualSize();
-	}	
+	}
+
+	@Override
+	public void performShutdownTask() {
+		finishTraining();
+	}
 }

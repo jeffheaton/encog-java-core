@@ -26,8 +26,10 @@ package org.encog;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.encog.mathutil.randomize.factory.BasicRandomFactory;
 import org.encog.mathutil.randomize.factory.RandomFactory;
@@ -99,6 +101,8 @@ public final class Encog {
 	 * Used to create random number generators, by default, use Java's Random class.
 	 */
 	private RandomFactory randomFactory = new BasicRandomFactory();
+	
+	private Set<EncogShutdownTask> shutdownTasks = new HashSet<EncogShutdownTask>();
 
 	/**
 	 * The instance.
@@ -201,6 +205,14 @@ public final class Encog {
 	 * thread pool.
 	 */
 	public void shutdown() {
+		while(this.shutdownTasks.size()>0) {
+			Object[] list = this.shutdownTasks.toArray();
+			for(int i=0;i<list.length;i++) {
+				EncogShutdownTask task = (EncogShutdownTask)list[i];
+				this.shutdownTasks.remove(task);
+				task.performShutdownTask();
+			}
+		}
 		EngineConcurrency.getInstance().shutdown(10000);
 	}
 
@@ -241,7 +253,13 @@ public final class Encog {
 		this.randomFactory = randomFactory;
 	}
 	
+	public void addShutdownTask(EncogShutdownTask task) {
+		this.shutdownTasks.add(task);
+	}
 	
+	public void removeShutdownTask(EncogShutdownTask task) {
+		this.shutdownTasks.remove(task);
+	}
 	
 	
 }
