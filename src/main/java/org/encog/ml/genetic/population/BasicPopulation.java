@@ -28,7 +28,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.genome.GenomeFactory;
 
@@ -98,17 +97,6 @@ public class BasicPopulation implements Population {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void claim(final GeneticAlgorithm ga) {
-		for (final Genome genome : this.genomes) {
-			genome.setGeneticAlgorithm(ga);
-		}
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public void clear() {
 		this.genomes.clear();
 
@@ -120,18 +108,6 @@ public class BasicPopulation implements Population {
 	@Override
 	public Genome get(final int i) {
 		return this.genomes.get(i);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Genome getBest() {
-		if (this.genomes.size() == 0) {
-			return null;
-		} else {
-			return this.genomes.get(0);
-		}
 	}
 
 	/**

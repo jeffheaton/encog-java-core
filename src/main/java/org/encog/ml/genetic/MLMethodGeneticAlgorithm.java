@@ -27,13 +27,10 @@ import org.encog.ml.MLEncodable;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MethodFactory;
 import org.encog.ml.TrainingImplementationType;
-import org.encog.ml.genetic.crossover.Splice;
 import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.genetic.mutate.MutatePerturb;
 import org.encog.ml.genetic.population.BasicPopulation;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.train.BasicTraining;
-import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.genetic.GeneticScoreAdapter;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
@@ -71,23 +68,6 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 			super(thePopulation, new GeneticScoreAdapter(theScoreFunction));
 		}
 
-		/**
-		 * @return The error from the last iteration.
-		 */
-		public double getError() {
-			final Genome genome = getPopulation().getBest();
-			return genome.getScore();
-		}
-
-		/**
-		 * Get the current best method.
-		 * 
-		 * @return The current best method.
-		 */
-		public MLMethod getMethod() {
-			final Genome genome = getPopulation().getBest();
-			return (BasicNetwork) genome.getOrganism();
-		}
 
 	}
 
@@ -118,12 +98,9 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 		
 		final Population population = new BasicPopulation(populationSize, null);
 		
-		MLEncodable last = null;
 		for (int i = 0; i < population.getPopulationSize(); i++) {
 			final MLEncodable chromosomeNetwork = (MLEncodable)factory.factor();
-			last = chromosomeNetwork;
 			final MLMethodGenome genome = new MLMethodGenome(chromosomeNetwork);
-			genome.setGeneticAlgorithm(getGenetic());
 			getGenetic().calculateScore(genome);
 			population.add(genome);
 		}
@@ -158,7 +135,9 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 	 */
 	@Override
 	public MLMethod getMethod() {
-		return getGenetic().getMethod();
+		Genome best = (Genome)genetic.getPopulation().getGenomeFactory().factor();
+		this.genetic.copyBestGenome(best);
+		return (MLMethod)best;
 	}
 
 	/**

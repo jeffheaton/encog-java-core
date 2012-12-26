@@ -126,7 +126,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 *            The other genome.
 	 */
 	public NEATGenome(final NEATGenome other) {
-		this.setGeneticAlgorithm(other.getGeneticAlgorithm());
 		setGenomeID(other.getGenomeID());
 		this.networkDepth = other.networkDepth;
 		this.setPopulation(other.getPopulation());

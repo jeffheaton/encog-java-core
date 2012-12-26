@@ -33,7 +33,7 @@ import org.encog.ml.genetic.population.Population;
  * is made up of one or more chromosomes, which are in turn made up of genes.
  * 
  */
-public interface Genome extends Comparable<Genome> {
+public interface Genome {
 
 	/**
 	 * Use the genes to update the organism.
@@ -53,12 +53,6 @@ public interface Genome extends Comparable<Genome> {
 	 * @return The adjusted score.
 	 */
 	double getAdjustedScore();
-
-	/**
-	 * @return Get the GA used by this genome. This is normally a transient
-	 *         field and only used during training.
-	 */
-	GeneticAlgorithm getGeneticAlgorithm();
 
 	/**
 	 * @return The organism produced by this genome.
@@ -82,15 +76,6 @@ public interface Genome extends Comparable<Genome> {
 	 *            The adjusted score.
 	 */
 	void setAdjustedScore(double adjustedScore);
-
-	/**
-	 * Set the GA used by this genome. This is normally a transient field and
-	 * only used during training.
-	 * 
-	 * @param ga
-	 *            The GA.
-	 */
-	void setGeneticAlgorithm(GeneticAlgorithm ga);
 
 	/**
 	 * Set the population that this genome belongs to.

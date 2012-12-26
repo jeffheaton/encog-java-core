@@ -65,39 +65,11 @@ public abstract class BasicGenome implements Genome, Serializable {
 	private Population population;
 
 	/**
-	 * {@inheritDoc}
-	 */
-	public boolean equals(final Genome other) {
-		return compareTo(other) == 0;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int compareTo(final Genome other) {
-
-		if (this.geneticAlgorithm.getCalculateScore().shouldMinimize()) {
-			return Double.compare(getScore(), other.getScore());
-		} else {
-			return Double.compare(other.getScore(), getScore());
-		}
-	}
-
-	/**
 	 * @return The adjusted score, which considers bonuses.
 	 */
 	@Override
 	public double getAdjustedScore() {
 		return this.adjustedScore;
-	}
-
-	/**
-	 * @return The genetic algorithm.
-	 */
-	@Override
-	public GeneticAlgorithm getGeneticAlgorithm() {
-		return this.geneticAlgorithm;
 	}
 
 	/**
@@ -133,17 +105,6 @@ public abstract class BasicGenome implements Genome, Serializable {
 	@Override
 	public void setAdjustedScore(final double theAdjustedScore) {
 		this.adjustedScore = theAdjustedScore;
-	}
-
-	/**
-	 * Set the genetic algorithm to use.
-	 * 
-	 * @param ga
-	 *            The genetic algorithm to use.
-	 */
-	@Override
-	public void setGeneticAlgorithm(final GeneticAlgorithm ga) {
-		this.geneticAlgorithm = ga;
 	}
 
 	/**

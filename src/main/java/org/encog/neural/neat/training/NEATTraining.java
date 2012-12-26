@@ -519,8 +519,6 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 	 * setup for training.
 	 */
 	private void init() {
-
-		this.population.claim(this);
 		this.mutateChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0, 0.001 } );
 		this.mutateAddChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0 } );
 		
@@ -654,7 +652,6 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 
 		getPopulation().clear();
 		getPopulation().addAll(newPop);
-		getPopulation().claim(this);
 
 		resetAndKill();
 		sortAndRecord();
@@ -778,7 +775,7 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 
 		getPopulation().sort(this.bestComparator);
 
-		final Genome genome = getPopulation().getBest();
+		final Genome genome = getPopulation().get(0);
 		final double currentBest = genome.getScore();
 
 		if (getSelectionComparator().isBetterThan(currentBest, this.bestEverScore)) {

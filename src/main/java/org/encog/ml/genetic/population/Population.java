@@ -27,7 +27,6 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
-import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.genome.GenomeFactory;
 
@@ -55,16 +54,11 @@ public interface Population extends Serializable {
 
 	
 	/**
-	 * Get a genome by index.  Index 0 is the best genome.
+	 * Get a genome by index.  Index 0 is the best genome, if sorted.
 	 * @param i The genome to get.
 	 * @return The genome at the specified index.
 	 */
 	Genome get(int i);
-		
-	/**
-	 * @return The best genome in the population.
-	 */
-	Genome getBest();
 
 	/**
 	 * @return The genomes in the population.
@@ -92,12 +86,6 @@ public interface Population extends Serializable {
 	 * Sort the population by best score.
 	 */
 	void sort(Comparator<Genome> comp);
-	
-	/**
-	 * Claim the population, before training.
-	 * @param ga The GA that is claiming.
-	 */
-	void claim(GeneticAlgorithm ga);
 
 	void rewrite(Genome prg);
 	
