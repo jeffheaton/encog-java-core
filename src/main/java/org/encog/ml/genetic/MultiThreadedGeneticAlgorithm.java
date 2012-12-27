@@ -16,17 +16,10 @@ import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.prg.train.GeneticTrainingParams;
 import org.encog.ml.prg.train.ThreadedGenomeSelector;
-import org.encog.ml.prg.train.selection.PrgSelection;
-import org.encog.ml.prg.train.selection.TournamentSelection;
 import org.encog.util.concurrency.MultiThreadable;
 
 public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm
 		implements MultiThreadable, EncogShutdownTask {
-
-	/**
-	 * Should this run multi-threaded.
-	 */
-	private boolean multiThreaded = true;
 
 	private GeneticTrainWorker[] workers;
 
@@ -39,9 +32,6 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm
 	private final Lock iterationLock = new ReentrantLock();
 	private Throwable currentError;
 	private ThreadedGenomeSelector selector;
-	private final Population population;
-	private final CalculateGenomeScore scoreFunction;
-	private PrgSelection selection;
 	private final Genome bestGenome;
 	private RandomFactory randomNumberFactory = Encog.getInstance()
 			.getRandomFactory().factorFactory();
@@ -59,16 +49,10 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm
 
 	public MultiThreadedGeneticAlgorithm(Population thePopulation,
 			CalculateGenomeScore theScoreFunction) {
-		super(theScoreFunction);
-		this.population = thePopulation;
-		this.scoreFunction = theScoreFunction;
-		this.selection = new TournamentSelection(this, 4);
+		super(thePopulation, theScoreFunction);
 
 		this.bestGenome = thePopulation.getGenomeFactory().factor();
-
-
 		this.selector = new ThreadedGenomeSelector(this);
-
 	}
 
 	/**
@@ -186,7 +170,7 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm
 							"Program is too large to be added to population.");
 				}
 				replaceTarget = this.selector.antiSelectGenome();
-				this.population.rewrite(genome[index + i]);
+				getPopulation().rewrite(genome[index + i]);
 				replaceTarget.copy(genome[index + i]);
 				evaluateBestGenome(genome[index + i]);
 			}
@@ -202,7 +186,7 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm
 		this.iterationLock.lock();
 		try {
 			this.subIterationCounter++;
-			if (this.subIterationCounter > this.population.size()) {
+			if (this.subIterationCounter > getPopulation().size()) {
 				this.subIterationCounter = 0;
 				this.iterationNumber++;
 				this.iterationCondition.signal();
@@ -245,38 +229,12 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm
 		return operators;
 	}
 
-	public Population getPopulation() {
-		return population;
-	}
-
-	public CalculateGenomeScore getScoreFunction() {
-		return scoreFunction;
-	}
-
-	public PrgSelection getSelection() {
-		return selection;
-	}
-
-	public void setSelection(PrgSelection selection) {
-		this.selection = selection;
-	}
-
 	public double getError() {
 		return this.bestGenome.getScore();
 	}
 
 	public int getIteration() {
 		return this.iterationNumber;
-	}
-
-	public void createRandomPopulation(int maxDepth) {
-		Random random = this.randomNumberFactory.factor();
-		this.population.getGenomeFactory().factorRandomPopulation(random,
-				population, scoreFunction, maxDepth);
-
-		for (Genome genome : this.population.getGenomes()) {
-			evaluateBestGenome(genome);
-		}
 	}
 
 	/**
@@ -293,6 +251,16 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm
 	public void setRandomNumberFactory(RandomFactory randomNumberFactory) {
 		this.randomNumberFactory = randomNumberFactory;
 	}
+	
+	public void createRandomPopulation(int maxDepth) {
+		Random random = this.randomNumberFactory.factor();
+		getPopulation().getGenomeFactory().factorRandomPopulation(random,
+				getPopulation(), getScoreFunction(), maxDepth);
+
+		for (Genome genome : getPopulation().getGenomes()) {
+			evaluateBestGenome(genome);
+		}
+	}
 
 	public void calculateEffectiveScore(Genome genome) {
 		GeneticTrainingParams params = getParams();
@@ -306,11 +274,6 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm
 			result += (result * complexityPenalty);
 		}
 		genome.setAdjustedScore(result);
-	}
-
-	@Override
-	public int getMaxIndividualSize() {
-		return this.population.getMaxIndividualSize();
 	}
 
 	@Override

@@ -23,6 +23,8 @@
  */
 package org.encog.ml.genetic;
 
+import java.util.Random;
+
 import org.encog.ml.MLContext;
 import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
@@ -33,6 +35,8 @@ import org.encog.ml.genetic.sort.MaximizeScoreComp;
 import org.encog.ml.genetic.sort.MinimizeAdjustedScoreComp;
 import org.encog.ml.genetic.sort.MinimizeScoreComp;
 import org.encog.ml.prg.train.GeneticTrainingParams;
+import org.encog.ml.prg.train.selection.PrgSelection;
+import org.encog.ml.prg.train.selection.TournamentSelection;
 
 /**
  * Provides a basic implementation of a genetic algorithm.
@@ -60,9 +64,16 @@ public abstract class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	 * The population.
 	 */
 	private Population population;
+	private final CalculateGenomeScore scoreFunction;
+	private PrgSelection selection;
 	
 	
-	public BasicGeneticAlgorithm(CalculateGenomeScore theScoreFunction) {
+	public BasicGeneticAlgorithm(Population thePopulation, CalculateGenomeScore theScoreFunction) {
+		
+		this.population = thePopulation;
+		this.scoreFunction = theScoreFunction;
+		this.selection = new TournamentSelection(this, 4);
+		
 		if (theScoreFunction.shouldMinimize()) {
 			this.selectionComparator = new MinimizeAdjustedScoreComp();
 			this.bestComparator = new MinimizeScoreComp();
@@ -181,4 +192,23 @@ public abstract class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	public void setParams(GeneticTrainingParams params) {
 		this.params = params;
 	}
+
+	public CalculateGenomeScore getScoreFunction() {
+		return scoreFunction;
+	}
+
+	public PrgSelection getSelection() {
+		return selection;
+	}
+
+	public void setSelection(PrgSelection selection) {
+		this.selection = selection;
+	}
+	
+	@Override
+	public int getMaxIndividualSize() {
+		return this.population.getMaxIndividualSize();
+	}
+	
+	
 }
