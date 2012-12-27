@@ -52,38 +52,6 @@ public abstract class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	 * The genome comparator.
 	 */
 	private GenomeComparator selectionComparator;
-	
-	/**
-	 * The crossover object.
-	 */
-	private EvolutionaryOperator crossover;
-	
-	/**
-	 * Is this the first iteration.
-	 */
-	private boolean first = true;
-
-	/**
-	 * Percent of the population that the mating population chooses partners.
-	 * from.
-	 */
-	private double matingPopulation;
-
-	/**
-	 * The mutation object to use.
-	 */
-	private EvolutionaryOperator mutate;
-
-	/**
-	 * The percent that should mutate.
-	 */
-	private double mutationPercent;
-
-	/**
-	 * What percent should be chosen to mate. They will choose partners from the
-	 * entire mating population.
-	 */
-	private double percentToMate;
 
 	/**
 	 * The population.
@@ -129,24 +97,6 @@ public abstract class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	@Override
 	public GenomeComparator getBestComparator() {
 		return this.bestComparator;
-	}
-
-	/**
-	 * Get the mating population.
-	 * 
-	 * @return The mating population percent.
-	 */
-	public double getMatingPopulation() {
-		return this.matingPopulation;
-	}
-
-	/**
-	 * Get the percent to mate.
-	 * 
-	 * @return The percent to mate.
-	 */
-	public double getPercentToMate() {
-		return this.percentToMate;
 	}
 
 	/**
@@ -201,25 +151,18 @@ public abstract class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	public void setPopulation(final Population thePopulation) {
 		this.population = thePopulation;
 	}
-
-
-
+	
 	/**
 	 * @return the params
 	 */
 	public GeneticTrainingParams getParams() {
 		return params;
 	}
-
-
-
+	
 	/**
 	 * @param params the params to set
 	 */
 	public void setParams(GeneticTrainingParams params) {
 		this.params = params;
 	}
-	
-	
-
 }
