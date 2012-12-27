@@ -109,8 +109,7 @@ public class PrgGenetic extends MultiThreadedGeneticAlgorithm implements MLTrain
 	
 
 	public void sort() {
-		Collections.sort(this.getPopulation().getGenomes(), this.getCompareScore());
-
+		this.getPopulation().sort(this.getBestComparator());
 	}
 	
 	public PrgPopulation getPrgPopulation() {

@@ -55,7 +55,7 @@ public class TournamentSelection implements PrgSelection {
 	    	int competitorIndex = RangeRandomizer.randomInt(0, population.size()-1);
 	      Genome competitor = population.get(competitorIndex);
 	      this.trainer.calculateEffectiveScore(competitor);
-	      if ( this.trainer.isGenomeBetter(competitor, best) ) {
+	      if ( this.trainer.getSelectionComparator().isBetterThan(competitor, best) ) {
 	        best = competitor;
 	        bestIndex = competitorIndex;
 	      }
@@ -75,7 +75,7 @@ public class TournamentSelection implements PrgSelection {
 	    	int competitorIndex = RangeRandomizer.randomInt(0, population.size()-1);
 	      Genome competitor = population.get(competitorIndex);
 	      this.trainer.calculateEffectiveScore(competitor);
-	      if ( !this.trainer.isGenomeBetter(competitor, worst) ) {
+	      if ( !this.trainer.getSelectionComparator().isBetterThan(competitor, worst) ) {
 	        worst = competitor;
 	        worstIndex = competitorIndex;
 	      }

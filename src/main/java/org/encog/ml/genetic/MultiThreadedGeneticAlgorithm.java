@@ -14,9 +14,6 @@ import org.encog.ml.genetic.evolutionary.OperationList;
 import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.population.Population;
-import org.encog.ml.genetic.sort.GenomeComparator;
-import org.encog.ml.genetic.sort.MaximizeAdjustedScoreScoreComp;
-import org.encog.ml.genetic.sort.MinimizeAdjustedScoreScoreComp;
 import org.encog.ml.prg.train.GeneticTrainingParams;
 import org.encog.ml.prg.train.ThreadedGenomeSelector;
 import org.encog.ml.prg.train.selection.PrgSelection;
@@ -46,7 +43,6 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm
 	private final CalculateGenomeScore scoreFunction;
 	private PrgSelection selection;
 	private final Genome bestGenome;
-	private GenomeComparator compareScore;
 	private RandomFactory randomNumberFactory = Encog.getInstance()
 			.getRandomFactory().factorFactory();
 
@@ -63,16 +59,13 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm
 
 	public MultiThreadedGeneticAlgorithm(Population thePopulation,
 			CalculateGenomeScore theScoreFunction) {
+		super(theScoreFunction);
 		this.population = thePopulation;
 		this.scoreFunction = theScoreFunction;
 		this.selection = new TournamentSelection(this, 4);
 
 		this.bestGenome = thePopulation.getGenomeFactory().factor();
-		if (theScoreFunction.shouldMinimize()) {
-			this.compareScore = new MinimizeAdjustedScoreScoreComp();
-		} else {
-			this.compareScore = new MaximizeAdjustedScoreScoreComp();
-		}
+
 
 		this.selector = new ThreadedGenomeSelector(this);
 
@@ -164,7 +157,7 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm
 		this.iterationLock.lock();
 		try {
 			calculateEffectiveScore(prg);
-			if (this.needBestGenome || isGenomeBetter(prg, this.bestGenome)) {
+			if (this.needBestGenome || this.getSelectionComparator().isBetterThan(prg, this.bestGenome) ) {
 				this.bestGenome.copy(prg);
 				this.needBestGenome = false;
 			}
@@ -172,10 +165,6 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm
 			this.iterationLock.unlock();
 		}
 
-	}
-
-	public boolean isGenomeBetter(Genome genome, Genome betterThan) {
-		return this.compareScore.compare(genome, betterThan) < 0;
 	}
 
 	public void copyBestGenome(Genome target) {
@@ -278,14 +267,6 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm
 
 	public int getIteration() {
 		return this.iterationNumber;
-	}
-
-	public GenomeComparator getCompareScore() {
-		return compareScore;
-	}
-
-	public void setCompareScore(GenomeComparator compareScore) {
-		this.compareScore = compareScore;
 	}
 
 	public void createRandomPopulation(int maxDepth) {

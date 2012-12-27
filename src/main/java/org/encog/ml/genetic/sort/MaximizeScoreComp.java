@@ -14,6 +14,9 @@ public class MaximizeScoreComp extends AbstractGenomeComparator {
 		return false;
 	}
 	
-	
+	@Override
+	public boolean isBetterThan(Genome prg, Genome betterThan) {
+		return isBetterThan(prg.getAdjustedScore(),betterThan.getAdjustedScore());
+	}
 
 }

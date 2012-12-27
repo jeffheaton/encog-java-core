@@ -53,8 +53,6 @@ public interface GeneticAlgorithm {
 	void iteration();
 
 	void calculateEffectiveScore(Genome genome);
-
-	boolean isGenomeBetter(Genome genome, Genome betterThan);
 	
 	GeneticTrainingParams getParams();
 	

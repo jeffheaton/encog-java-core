@@ -1,5 +1,7 @@
 package org.encog.ml.genetic.sort;
 
+import org.encog.ml.genetic.genome.Genome;
+
 public abstract class AbstractGenomeComparator implements GenomeComparator {
 
 	/**
@@ -39,6 +41,4 @@ public abstract class AbstractGenomeComparator implements GenomeComparator {
 			return d1 > d2;
 		}
 	}
-	
-	
 }

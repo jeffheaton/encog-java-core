@@ -42,5 +42,7 @@ public interface GenomeComparator extends Comparator<Genome> {
 	 * @return True if d1 is better than d2.
 	 */
 	boolean isBetterThan(double d1, double d2);
+
+	boolean isBetterThan(Genome prg, Genome bestGenome);
 	
 }

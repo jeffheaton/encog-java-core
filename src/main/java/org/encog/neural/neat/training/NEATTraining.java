@@ -39,7 +39,7 @@ import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.sort.GenomeComparator;
-import org.encog.ml.genetic.sort.MinimizeAdjustedScoreScoreComp;
+import org.encog.ml.genetic.sort.MinimizeAdjustedScoreComp;
 import org.encog.ml.genetic.sort.MinimizeScoreComp;
 import org.encog.ml.prg.train.GeneticTrainingParams;
 import org.encog.ml.prg.train.selection.PrgSelection;
@@ -165,7 +165,7 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 
 		setCalculateScore(new GeneticScoreAdapter(calculateScore));
 		setBestComparator(new MinimizeScoreComp());
-		setSelectionComparator(new MinimizeAdjustedScoreScoreComp());
+		setSelectionComparator(new MinimizeAdjustedScoreComp());
 		setPopulation(new NEATPopulation(inputCount, outputCount,
 				populationSize));
 
@@ -189,7 +189,7 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 		final NEATGenome genome = (NEATGenome) population.getGenomes().get(0);
 		setCalculateScore(new GeneticScoreAdapter(calculateScore));
 		setBestComparator(new MinimizeScoreComp());
-		setSelectionComparator(new MinimizeAdjustedScoreScoreComp());
+		setSelectionComparator(new MinimizeAdjustedScoreComp());
 		setPopulation(population);
 		this.inputCount = genome.getInputCount();
 		this.outputCount = genome.getOutputCount();
@@ -944,12 +944,6 @@ public class NEATTraining implements MLTrain, GeneticAlgorithm {
 	public void calculateEffectiveScore(Genome genome) {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public boolean isGenomeBetter(Genome genome, Genome betterThan) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override

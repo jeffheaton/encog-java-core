@@ -24,11 +24,14 @@
 package org.encog.ml.genetic;
 
 import org.encog.ml.MLContext;
-import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
 import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.sort.GenomeComparator;
+import org.encog.ml.genetic.sort.MaximizeAdjustedScoreComp;
+import org.encog.ml.genetic.sort.MaximizeScoreComp;
+import org.encog.ml.genetic.sort.MinimizeAdjustedScoreComp;
+import org.encog.ml.genetic.sort.MinimizeScoreComp;
 import org.encog.ml.prg.train.GeneticTrainingParams;
 
 /**
@@ -57,6 +60,19 @@ public abstract class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	 * The population.
 	 */
 	private Population population;
+	
+	
+	public BasicGeneticAlgorithm(CalculateGenomeScore theScoreFunction) {
+		if (theScoreFunction.shouldMinimize()) {
+			this.selectionComparator = new MinimizeAdjustedScoreComp();
+			this.bestComparator = new MinimizeScoreComp();
+		} else {
+			this.selectionComparator = new MaximizeAdjustedScoreComp();
+			this.bestComparator = new MaximizeScoreComp();
+		}
+	}
+	
+	
 	
 	/**
 	 * Calculate the score for this genome. The genome's score will be set.

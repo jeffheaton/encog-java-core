@@ -44,7 +44,7 @@ public class TestMaximizeScoreComp {
 	
 	@Test
 	public void testApplyPenalty() {
-		MaximizeAdjustedScoreScoreComp comp = new MaximizeAdjustedScoreScoreComp();
+		MaximizeScoreComp comp = new MaximizeScoreComp();
 		Assert.assertEquals(9, comp.applyPenalty(10, 0.1), Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 }

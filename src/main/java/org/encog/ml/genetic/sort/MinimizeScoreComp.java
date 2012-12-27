@@ -14,6 +14,9 @@ public class MinimizeScoreComp extends AbstractGenomeComparator {
 		return true;
 	}
 	
-	
+	@Override
+	public boolean isBetterThan(Genome prg, Genome betterThan) {
+		return isBetterThan(prg.getScore(),betterThan.getScore());
+	}
 
 }

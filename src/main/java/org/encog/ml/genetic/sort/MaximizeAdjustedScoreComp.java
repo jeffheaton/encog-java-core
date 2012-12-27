@@ -2,7 +2,7 @@ package org.encog.ml.genetic.sort;
 
 import org.encog.ml.genetic.genome.Genome;
 
-public class MaximizeAdjustedScoreScoreComp extends AbstractGenomeComparator {
+public class MaximizeAdjustedScoreComp extends AbstractGenomeComparator {
 
 	@Override
 	public int compare(Genome p1, Genome p2) {
@@ -14,4 +14,8 @@ public class MaximizeAdjustedScoreScoreComp extends AbstractGenomeComparator {
 		return false;
 	}
 
+	@Override
+	public boolean isBetterThan(Genome prg, Genome betterThan) {
+		return isBetterThan(prg.getAdjustedScore(),betterThan.getAdjustedScore());
+	}
 }
