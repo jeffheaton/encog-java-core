@@ -3,14 +3,14 @@ package org.encog.ml.ea.opp.selection;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.Population;
-import org.encog.ml.ea.train.GeneticAlgorithm;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.prg.train.PrgGenetic;
 
 public class TournamentSelection implements PrgSelection {
-	private GeneticAlgorithm trainer;
+	private EvolutionaryAlgorithm trainer;
 	private int rounds;
 	
-	public TournamentSelection(GeneticAlgorithm theTrainer, int theRounds) {
+	public TournamentSelection(EvolutionaryAlgorithm theTrainer, int theRounds) {
 		this.trainer = theTrainer;
 		this.rounds = theRounds;
 	}
@@ -18,7 +18,7 @@ public class TournamentSelection implements PrgSelection {
 	
 
 	@Override
-	public GeneticAlgorithm getTrainer() {
+	public EvolutionaryAlgorithm getTrainer() {
 		return trainer;
 	}
 

@@ -27,10 +27,10 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.encog.EncogError;
-import org.encog.ml.genetic.innovation.BasicInnovationList;
-import org.encog.ml.genetic.innovation.Innovation;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.neat.NEATPopulation;
+import org.encog.neural.neat.training.innovation.BasicInnovationList;
+import org.encog.neural.neat.training.innovation.Innovation;
 import org.encog.neural.networks.training.TrainingError;
 
 /**

@@ -33,7 +33,7 @@ import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.sort.GenomeComparator;
 import org.encog.ml.ea.sort.MaximizeScoreComp;
 import org.encog.ml.ea.sort.MinimizeScoreComp;
-import org.encog.ml.ea.train.threaded.MultiThreadedGeneticAlgorithm;
+import org.encog.ml.ea.train.threaded.MultiThreadedEA;
 import org.encog.ml.genetic.crossover.Splice;
 import org.encog.ml.genetic.mutate.MutatePerturb;
 import org.encog.ml.train.BasicTraining;
@@ -68,7 +68,7 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 	 * 
 	 * @author jheaton
 	 */
-	public class MLMethodGeneticAlgorithmHelper extends MultiThreadedGeneticAlgorithm {
+	public class MLMethodGeneticAlgorithmHelper extends MultiThreadedEA {
 		public MLMethodGeneticAlgorithmHelper(Population thePopulation,
 				CalculateScore theScoreFunction) {
 			super(thePopulation, new GeneticScoreAdapter(theScoreFunction));

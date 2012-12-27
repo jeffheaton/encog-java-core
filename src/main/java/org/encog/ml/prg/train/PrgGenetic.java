@@ -7,7 +7,7 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.genome.CalculateGenomeScore;
-import org.encog.ml.ea.train.threaded.MultiThreadedGeneticAlgorithm;
+import org.encog.ml.ea.train.threaded.MultiThreadedEA;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
@@ -16,7 +16,7 @@ import org.encog.neural.networks.training.genetic.GeneticScoreAdapter;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.util.concurrency.MultiThreadable;
 
-public class PrgGenetic extends MultiThreadedGeneticAlgorithm implements MLTrain, MultiThreadable {
+public class PrgGenetic extends MultiThreadedEA implements MLTrain, MultiThreadable {
 	private final EncogProgramContext context;
 
 	public PrgGenetic(PrgPopulation thePopulation,

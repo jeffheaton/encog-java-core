@@ -30,13 +30,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.ml.ea.genome.Genome;
-import org.encog.ml.genetic.innovation.Innovation;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATInnovation;
 import org.encog.neural.neat.training.NEATInnovationList;
 import org.encog.neural.neat.training.NEATInnovationType;
 import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.NEATNeuronGene;
+import org.encog.neural.neat.training.innovation.Innovation;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;

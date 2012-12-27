@@ -1,9 +1,8 @@
-package org.encog.ml.genetic.crossover;
+package org.encog.ml.ea.opp;
 
 import java.util.Random;
 
 import org.encog.ml.ea.genome.Genome;
-import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.prg.EncogProgram;
 
 public class SubtreeCrossover implements EvolutionaryOperator {

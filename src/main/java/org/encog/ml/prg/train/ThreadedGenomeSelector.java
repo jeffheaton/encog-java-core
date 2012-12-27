@@ -4,13 +4,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.encog.ml.ea.genome.Genome;
-import org.encog.ml.ea.train.GeneticAlgorithm;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 
 public class ThreadedGenomeSelector {
-	private GeneticAlgorithm owner;
+	private EvolutionaryAlgorithm owner;
 	private Set<Genome> used = new HashSet<Genome>();
 
-	public ThreadedGenomeSelector(GeneticAlgorithm theOwner) {
+	public ThreadedGenomeSelector(EvolutionaryAlgorithm theOwner) {
 		this.owner = theOwner;
 	}
 

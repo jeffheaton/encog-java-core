@@ -26,7 +26,7 @@ package org.encog.ml.ea.genome;
 import java.util.List;
 
 import org.encog.ml.ea.population.Population;
-import org.encog.ml.ea.train.GeneticAlgorithm;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 
 /**
  * A genome is the basic blueprint for creating an organism in Encog. A genome

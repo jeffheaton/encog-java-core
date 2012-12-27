@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
-import org.encog.ml.genetic.mutate.SubtreeMutation;
+import org.encog.ml.ea.opp.SubtreeMutation;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.extension.StandardExtensions;

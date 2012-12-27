@@ -38,7 +38,7 @@ import org.encog.ml.prg.train.GeneticTrainingParams;
  * The genetic algorithm is also capable of using a thread pool to speed
  * execution.
  */
-public interface GeneticAlgorithm {
+public interface EvolutionaryAlgorithm {
 
 	CalculateGenomeScore getCalculateScore();
 

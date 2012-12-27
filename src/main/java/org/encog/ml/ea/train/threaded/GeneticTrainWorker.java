@@ -9,12 +9,12 @@ import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.prg.exception.EPLTooBig;
 
 public class GeneticTrainWorker extends Thread {
-	private final MultiThreadedGeneticAlgorithm owner;
+	private final MultiThreadedEA owner;
 	private AtomicBoolean done = new AtomicBoolean();
 	private Genome[] tempProgram;
 	private Random rnd;
 
-	public GeneticTrainWorker(MultiThreadedGeneticAlgorithm theOwner) {
+	public GeneticTrainWorker(MultiThreadedEA theOwner) {
 		this.owner = theOwner;
 		this.rnd = this.owner.getRandomNumberFactory().factor();
 

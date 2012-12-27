@@ -36,13 +36,13 @@ import org.encog.ml.ea.sort.MaximizeAdjustedScoreComp;
 import org.encog.ml.ea.sort.MaximizeScoreComp;
 import org.encog.ml.ea.sort.MinimizeAdjustedScoreComp;
 import org.encog.ml.ea.sort.MinimizeScoreComp;
-import org.encog.ml.ea.train.GeneticAlgorithm;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.prg.train.GeneticTrainingParams;
 
 /**
  * Provides a basic implementation of a genetic algorithm.
  */
-public abstract class BasicGeneticAlgorithm implements GeneticAlgorithm {
+public abstract class BasicEA implements EvolutionaryAlgorithm {
 	
 	private GeneticTrainingParams params = new GeneticTrainingParams();
 
@@ -69,7 +69,7 @@ public abstract class BasicGeneticAlgorithm implements GeneticAlgorithm {
 	private PrgSelection selection;
 	
 	
-	public BasicGeneticAlgorithm(Population thePopulation, CalculateGenomeScore theScoreFunction) {
+	public BasicEA(Population thePopulation, CalculateGenomeScore theScoreFunction) {
 		
 		this.population = thePopulation;
 		this.scoreFunction = theScoreFunction;

@@ -25,8 +25,8 @@ package org.encog.neural.neat.training;
 
 import java.io.Serializable;
 
-import org.encog.ml.genetic.innovation.BasicInnovation;
 import org.encog.neural.neat.NEATNeuronType;
+import org.encog.neural.neat.training.innovation.BasicInnovation;
 
 /**
  * Implements a NEAT innovation. This lets NEAT track what changes it has

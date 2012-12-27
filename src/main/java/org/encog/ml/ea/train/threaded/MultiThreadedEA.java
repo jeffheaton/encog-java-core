@@ -14,13 +14,13 @@ import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.opp.holder.OperationList;
 import org.encog.ml.ea.population.Population;
-import org.encog.ml.ea.train.basic.BasicGeneticAlgorithm;
+import org.encog.ml.ea.train.basic.BasicEA;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.prg.train.GeneticTrainingParams;
 import org.encog.ml.prg.train.ThreadedGenomeSelector;
 import org.encog.util.concurrency.MultiThreadable;
 
-public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm
+public class MultiThreadedEA extends BasicEA
 		implements MultiThreadable, EncogShutdownTask {
 
 	private GeneticTrainWorker[] workers;
@@ -49,7 +49,7 @@ public class MultiThreadedGeneticAlgorithm extends BasicGeneticAlgorithm
 	 */
 	private int threadCount;
 
-	public MultiThreadedGeneticAlgorithm(Population thePopulation,
+	public MultiThreadedEA(Population thePopulation,
 			CalculateGenomeScore theScoreFunction) {
 		super(thePopulation, theScoreFunction);
 

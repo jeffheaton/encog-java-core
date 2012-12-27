@@ -41,7 +41,7 @@ import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.sort.GenomeComparator;
 import org.encog.ml.ea.sort.MinimizeAdjustedScoreComp;
 import org.encog.ml.ea.sort.MinimizeScoreComp;
-import org.encog.ml.ea.train.GeneticAlgorithm;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.prg.train.GeneticTrainingParams;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
@@ -78,7 +78,7 @@ enum NEATParent {
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATTraining implements MLTrain, GeneticAlgorithm {
+public class NEATTraining implements MLTrain, EvolutionaryAlgorithm {
 
 	/**
 	 * The average fit adjustment.
