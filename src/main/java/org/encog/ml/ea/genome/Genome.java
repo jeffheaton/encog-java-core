@@ -21,12 +21,12 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.ml.genetic.genome;
+package org.encog.ml.ea.genome;
 
 import java.util.List;
 
-import org.encog.ml.genetic.GeneticAlgorithm;
-import org.encog.ml.genetic.population.Population;
+import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.train.GeneticAlgorithm;
 
 /**
  * A genome is the basic blueprint for creating an organism in Encog. A genome

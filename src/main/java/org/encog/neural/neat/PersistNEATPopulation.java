@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.encog.ml.genetic.genome.Genome;
+import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.genetic.innovation.Innovation;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATInnovation;

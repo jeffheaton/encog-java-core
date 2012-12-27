@@ -1,4 +1,4 @@
-package org.encog.ml.genetic;
+package org.encog.ml.ea.train.threaded;
 
 import java.util.Random;
 import java.util.concurrent.locks.Condition;
@@ -9,11 +9,13 @@ import org.encog.Encog;
 import org.encog.EncogError;
 import org.encog.EncogShutdownTask;
 import org.encog.mathutil.randomize.factory.RandomFactory;
-import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
-import org.encog.ml.genetic.evolutionary.OperationList;
-import org.encog.ml.genetic.genome.CalculateGenomeScore;
-import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.genetic.population.Population;
+import org.encog.ml.ea.genome.CalculateGenomeScore;
+import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.opp.EvolutionaryOperator;
+import org.encog.ml.ea.opp.holder.OperationList;
+import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.train.basic.BasicGeneticAlgorithm;
+import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.prg.train.GeneticTrainingParams;
 import org.encog.ml.prg.train.ThreadedGenomeSelector;
 import org.encog.util.concurrency.MultiThreadable;

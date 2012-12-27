@@ -1,8 +1,8 @@
-package org.encog.ml.genetic.genome;
+package org.encog.ml.ea.genome;
 
 import java.util.Random;
 
-import org.encog.ml.genetic.population.Population;
+import org.encog.ml.ea.population.Population;
 
 public interface GenomeFactory {
 	Genome factor();

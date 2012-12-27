@@ -1,8 +1,8 @@
-package org.encog.ml.genetic.sort;
+package org.encog.ml.ea.sort;
 
 import java.util.Comparator;
 
-import org.encog.ml.genetic.genome.Genome;
+import org.encog.ml.ea.genome.Genome;
 
 public interface GenomeComparator extends Comparator<Genome> {
 	boolean shouldMinimize();

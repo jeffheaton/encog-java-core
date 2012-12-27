@@ -1,10 +1,11 @@
-package org.encog.ml.genetic.evolutionary;
+package org.encog.ml.ea.opp.holder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import org.encog.mathutil.randomize.RandomChoice;
+import org.encog.ml.ea.opp.EvolutionaryOperator;
 
 public class OperationList {
 	private final List<OperationHolder> list = new ArrayList<OperationHolder>();

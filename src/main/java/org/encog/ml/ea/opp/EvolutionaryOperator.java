@@ -1,8 +1,8 @@
-package org.encog.ml.genetic.evolutionary;
+package org.encog.ml.ea.opp;
 
 import java.util.Random;
 
-import org.encog.ml.genetic.genome.Genome;
+import org.encog.ml.ea.genome.Genome;
 
 public interface EvolutionaryOperator {
 	/**

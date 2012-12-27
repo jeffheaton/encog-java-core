@@ -21,22 +21,23 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.ml.genetic;
+package org.encog.ml.ea.train.basic;
 
 import java.util.Random;
 
 import org.encog.ml.MLContext;
-import org.encog.ml.genetic.genome.CalculateGenomeScore;
-import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.genetic.population.Population;
-import org.encog.ml.genetic.sort.GenomeComparator;
-import org.encog.ml.genetic.sort.MaximizeAdjustedScoreComp;
-import org.encog.ml.genetic.sort.MaximizeScoreComp;
-import org.encog.ml.genetic.sort.MinimizeAdjustedScoreComp;
-import org.encog.ml.genetic.sort.MinimizeScoreComp;
+import org.encog.ml.ea.genome.CalculateGenomeScore;
+import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.opp.selection.PrgSelection;
+import org.encog.ml.ea.opp.selection.TournamentSelection;
+import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.sort.GenomeComparator;
+import org.encog.ml.ea.sort.MaximizeAdjustedScoreComp;
+import org.encog.ml.ea.sort.MaximizeScoreComp;
+import org.encog.ml.ea.sort.MinimizeAdjustedScoreComp;
+import org.encog.ml.ea.sort.MinimizeScoreComp;
+import org.encog.ml.ea.train.GeneticAlgorithm;
 import org.encog.ml.prg.train.GeneticTrainingParams;
-import org.encog.ml.prg.train.selection.PrgSelection;
-import org.encog.ml.prg.train.selection.TournamentSelection;
 
 /**
  * Provides a basic implementation of a genetic algorithm.

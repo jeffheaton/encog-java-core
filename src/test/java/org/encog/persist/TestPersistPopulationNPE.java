@@ -30,7 +30,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.ml.data.basic.BasicMLDataSet;
-import org.encog.ml.genetic.population.Population;
+import org.encog.ml.ea.population.Population;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.PersistNEATPopulation;
 import org.encog.neural.neat.training.NEATTraining;

@@ -29,8 +29,8 @@ import java.util.List;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationSteepenedSigmoid;
+import org.encog.ml.ea.population.BasicPopulation;
 import org.encog.ml.genetic.innovation.InnovationList;
-import org.encog.ml.genetic.population.BasicPopulation;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATInnovationList;

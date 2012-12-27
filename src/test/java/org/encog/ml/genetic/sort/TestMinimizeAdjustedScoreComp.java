@@ -3,7 +3,8 @@ package org.encog.ml.genetic.sort;
 import junit.framework.Assert;
 
 import org.encog.Encog;
-import org.encog.ml.genetic.genome.BasicGenome;
+import org.encog.ml.ea.genome.BasicGenome;
+import org.encog.ml.ea.sort.MinimizeAdjustedScoreComp;
 import org.encog.ml.genetic.genome.IntegerArrayGenome;
 import org.junit.Test;
 

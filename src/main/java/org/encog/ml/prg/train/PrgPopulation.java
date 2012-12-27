@@ -3,9 +3,9 @@ package org.encog.ml.prg.train;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.genetic.genome.GenomeFactory;
-import org.encog.ml.genetic.population.BasicPopulation;
+import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.genome.GenomeFactory;
+import org.encog.ml.ea.population.BasicPopulation;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.EncogProgramVariables;

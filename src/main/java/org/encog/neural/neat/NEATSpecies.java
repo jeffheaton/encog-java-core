@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
-import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.genetic.population.Population;
+import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.population.Population;
 import org.encog.neural.neat.training.NEATGenome;
 
 /**

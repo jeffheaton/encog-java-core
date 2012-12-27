@@ -1,9 +1,9 @@
-package org.encog.ml.prg.train.selection;
+package org.encog.ml.ea.opp.selection;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
-import org.encog.ml.genetic.GeneticAlgorithm;
-import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.genetic.population.Population;
+import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.train.GeneticAlgorithm;
 import org.encog.ml.prg.train.PrgGenetic;
 
 public class TournamentSelection implements PrgSelection {

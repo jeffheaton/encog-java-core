@@ -5,9 +5,9 @@ import java.util.Random;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.genetic.crossover.SubtreeCrossover;
-import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
-import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.extension.StandardExtensions;

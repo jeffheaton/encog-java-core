@@ -1,11 +1,11 @@
-package org.encog.ml.genetic;
+package org.encog.ml.ea.train.threaded;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
-import org.encog.ml.genetic.genome.CalculateGenomeScore;
-import org.encog.ml.genetic.genome.Genome;
+import org.encog.ml.ea.genome.CalculateGenomeScore;
+import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.prg.exception.EPLTooBig;
 
 public class GeneticTrainWorker extends Thread {

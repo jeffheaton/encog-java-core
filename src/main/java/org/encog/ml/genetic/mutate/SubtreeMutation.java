@@ -2,8 +2,8 @@ package org.encog.ml.genetic.mutate;
 
 import java.util.Random;
 
-import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
-import org.encog.ml.genetic.genome.Genome;
+import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.train.CreateRandom;

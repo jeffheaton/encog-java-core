@@ -3,8 +3,8 @@ package org.encog.ml.prg.train;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.encog.ml.genetic.GeneticAlgorithm;
-import org.encog.ml.genetic.genome.Genome;
+import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.train.GeneticAlgorithm;
 
 public class ThreadedGenomeSelector {
 	private GeneticAlgorithm owner;

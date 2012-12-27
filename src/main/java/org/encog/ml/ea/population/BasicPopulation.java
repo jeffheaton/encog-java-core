@@ -21,15 +21,15 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.ml.genetic.population;
+package org.encog.ml.ea.population;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.genetic.genome.GenomeFactory;
+import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.genome.GenomeFactory;
 
 /**
  * Defines the basic functionality for a population of genomes.

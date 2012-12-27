@@ -21,5 +21,5 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.ml.genetic.selection;
+package org.encog.ml.ea.population;
 

@@ -1,6 +1,6 @@
-package org.encog.ml.prg.train.selection;
+package org.encog.ml.ea.opp.selection;
 
-import org.encog.ml.genetic.GeneticAlgorithm;
+import org.encog.ml.ea.train.GeneticAlgorithm;
 
 public interface PrgSelection {
 	int performSelection();

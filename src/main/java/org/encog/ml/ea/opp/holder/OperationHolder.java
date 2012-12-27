@@ -1,6 +1,6 @@
-package org.encog.ml.genetic.evolutionary;
+package org.encog.ml.ea.opp.holder;
 
-import org.encog.ml.genetic.evolutionary.EvolutionaryOperator;
+import org.encog.ml.ea.opp.EvolutionaryOperator;
 
 public class OperationHolder {
 	private final EvolutionaryOperator opp;

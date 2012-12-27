@@ -1,5 +1,7 @@
 package org.encog.ml.genetic.genome;
 
+import org.encog.ml.ea.genome.BasicGenome;
+import org.encog.ml.ea.genome.Genome;
 import org.encog.util.EngineArray;
 
 public class DoubleArrayGenome extends BasicGenome implements ArrayGenome {

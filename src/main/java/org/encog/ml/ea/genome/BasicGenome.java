@@ -21,13 +21,13 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.ml.genetic.genome;
+package org.encog.ml.ea.genome;
 
 import java.io.Serializable;
 import java.util.Random;
 
-import org.encog.ml.genetic.GeneticAlgorithm;
-import org.encog.ml.genetic.population.Population;
+import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.train.GeneticAlgorithm;
 
 /**
  * A basic abstract genome. Provides base functionality.

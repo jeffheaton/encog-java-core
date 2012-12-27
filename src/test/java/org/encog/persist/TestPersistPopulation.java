@@ -32,7 +32,7 @@ import junit.framework.TestCase;
 import org.encog.engine.network.activation.ActivationStep;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
-import org.encog.ml.genetic.population.Population;
+import org.encog.ml.ea.population.Population;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.NEATTraining;
 import org.encog.neural.networks.XOR;
