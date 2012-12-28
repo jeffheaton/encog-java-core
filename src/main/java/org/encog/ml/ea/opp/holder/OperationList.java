@@ -1,5 +1,6 @@
 package org.encog.ml.ea.opp.holder;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -7,7 +8,7 @@ import java.util.Random;
 import org.encog.mathutil.randomize.RandomChoice;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 
-public class OperationList {
+public class OperationList implements Serializable {
 	private final List<OperationHolder> list = new ArrayList<OperationHolder>();
 	private RandomChoice chooser;
 	

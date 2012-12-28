@@ -1,8 +1,10 @@
 package org.encog.ml.ea.opp.holder;
 
+import java.io.Serializable;
+
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 
-public class OperationHolder {
+public class OperationHolder implements Serializable {
 	private final EvolutionaryOperator opp;
 	private final double probability;
 	

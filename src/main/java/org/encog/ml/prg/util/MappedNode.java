@@ -1,5 +1,6 @@
 package org.encog.ml.prg.util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;
 
-public class MappedNode {
+public class MappedNode implements Serializable {
 	private final EncogProgram program;
 	private final int index;
 	private final int opcode;

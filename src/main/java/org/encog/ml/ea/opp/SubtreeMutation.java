@@ -1,5 +1,6 @@
 package org.encog.ml.ea.opp;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import org.encog.ml.ea.genome.Genome;
@@ -7,7 +8,7 @@ import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.train.CreateRandom;
 
-public class SubtreeMutation implements EvolutionaryOperator {
+public class SubtreeMutation implements EvolutionaryOperator, Serializable {
 
 	private CreateRandom rnd;
 	

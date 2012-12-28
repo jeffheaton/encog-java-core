@@ -1,8 +1,10 @@
 package org.encog.ml.ea.sort;
 
+import java.io.Serializable;
+
 import org.encog.ml.ea.genome.Genome;
 
-public class MinimizeAdjustedScoreComp extends AbstractGenomeComparator {
+public class MinimizeAdjustedScoreComp extends AbstractGenomeComparator implements Serializable {
 
 	@Override
 	public int compare(Genome p1, Genome p2) {

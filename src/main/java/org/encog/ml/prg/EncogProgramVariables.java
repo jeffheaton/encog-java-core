@@ -1,5 +1,6 @@
 package org.encog.ml.prg;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Map.Entry;
 
 import org.encog.ml.prg.expvalue.ExpressionValue;
 
-public class EncogProgramVariables {
+public class EncogProgramVariables implements Serializable {
 	
 	private final Map<String, Integer> varMap = new HashMap<String, Integer>();	
 	private final List<ExpressionValue> variables = new ArrayList<ExpressionValue>();

@@ -1,5 +1,7 @@
 package org.encog.ml.prg.train.fitness;
 
+import java.io.Serializable;
+
 import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLRegression;
@@ -9,7 +11,7 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.util.EngineArray;
 
-public class AdaptiveSimpleFitness implements CalculateScore {
+public class AdaptiveSimpleFitness implements CalculateScore, Serializable {
 
 	private MLDataSet trainingData;
 	private double[] minIdeal;

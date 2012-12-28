@@ -1,6 +1,8 @@
 package org.encog.ml.prg.epl;
 
-public class OpCodeHeader {
+import java.io.Serializable;
+
+public class OpCodeHeader implements Serializable {
 	private short opcode; 
 	private int param1;
 	private short param2;

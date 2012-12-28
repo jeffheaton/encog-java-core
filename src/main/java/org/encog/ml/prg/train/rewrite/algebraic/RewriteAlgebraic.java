@@ -1,12 +1,14 @@
 package org.encog.ml.prg.train.rewrite.algebraic;
 
+import java.io.Serializable;
+
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.ml.prg.train.rewrite.RewriteRule;
 import org.encog.ml.prg.util.MapProgram;
 import org.encog.ml.prg.util.MappedNode;
 
-public class RewriteAlgebraic implements RewriteRule {
+public class RewriteAlgebraic implements RewriteRule, Serializable {
 	
 	public RewriteAlgebraic() {
 	}

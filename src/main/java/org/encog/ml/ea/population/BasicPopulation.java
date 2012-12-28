@@ -23,6 +23,7 @@
  */
 package org.encog.ml.ea.population;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -35,7 +36,7 @@ import org.encog.ml.ea.genome.GenomeFactory;
 /**
  * Defines the basic functionality for a population of genomes.
  */
-public class BasicPopulation extends BasicML implements Population {
+public class BasicPopulation extends BasicML implements Population, Serializable {
 	
 	/**
 	 * The serial id.

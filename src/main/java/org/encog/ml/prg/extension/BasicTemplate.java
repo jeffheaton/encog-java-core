@@ -2,6 +2,7 @@ package org.encog.ml.prg.extension;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.Random;
 
 import org.encog.EncogError;
@@ -10,7 +11,7 @@ import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 import org.encog.util.file.ResourceInputStream;
 
-public abstract class BasicTemplate implements ProgramExtensionTemplate {
+public abstract class BasicTemplate implements ProgramExtensionTemplate, Serializable {
 	private short opcode;
 	private boolean variableValue; 
 	private int childNodeCount;

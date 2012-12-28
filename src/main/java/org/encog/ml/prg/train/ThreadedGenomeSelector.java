@@ -1,12 +1,13 @@
 package org.encog.ml.prg.train;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 
-public class ThreadedGenomeSelector {
+public class ThreadedGenomeSelector implements Serializable {
 	private EvolutionaryAlgorithm owner;
 	private Set<Genome> used = new HashSet<Genome>();
 

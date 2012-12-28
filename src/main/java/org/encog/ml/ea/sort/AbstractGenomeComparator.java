@@ -1,8 +1,8 @@
 package org.encog.ml.ea.sort;
 
-import org.encog.ml.ea.genome.Genome;
+import java.io.Serializable;
 
-public abstract class AbstractGenomeComparator implements GenomeComparator {
+public abstract class AbstractGenomeComparator implements GenomeComparator, Serializable {
 
 	/**
 	 * {@inheritDoc}

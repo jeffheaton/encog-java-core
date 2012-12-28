@@ -1,12 +1,13 @@
 package org.encog.ml.prg.extension;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.epl.OpCodeHeader;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 
-public class KnownConst implements ProgramExtensionTemplate {
+public class KnownConst implements ProgramExtensionTemplate, Serializable {
 
 	private String name;
 	private ExpressionValue value;

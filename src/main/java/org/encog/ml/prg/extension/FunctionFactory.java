@@ -1,5 +1,6 @@
 package org.encog.ml.prg.extension;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +10,7 @@ import org.encog.ml.prg.exception.EncogEPLError;
 import org.encog.ml.prg.exception.EncogProgramCompileError;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 
-public class FunctionFactory {
+public class FunctionFactory implements Serializable {
 	public static short USER_DEFINED_OPCODES = 20000;
 	public static short ENCOG_EXTRA_OPCODES = 15000;
 	private final Map<String,ProgramExtensionTemplate> templateMap = new HashMap<String,ProgramExtensionTemplate>();

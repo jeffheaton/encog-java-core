@@ -1,9 +1,11 @@
 package org.encog.ml.prg.util;
 
+import java.io.Serializable;
+
 import org.encog.ml.prg.EncogProgram;
 import org.encog.util.datastruct.StackObject;
 
-public class MapProgram {
+public class MapProgram implements Serializable {
 	
 	private final MappedNode rootNode;
 

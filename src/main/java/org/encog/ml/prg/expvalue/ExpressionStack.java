@@ -1,8 +1,10 @@
 package org.encog.ml.prg.expvalue;
 
+import java.io.Serializable;
+
 import org.encog.EncogError;
 
-public class ExpressionStack {
+public class ExpressionStack implements Serializable {
 	private ExpressionValue[] stack;
 	private int position;
 	

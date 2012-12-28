@@ -1,5 +1,6 @@
 package org.encog.ml.prg.train;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import org.encog.neural.networks.training.genetic.GeneticScoreAdapter;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.util.concurrency.MultiThreadable;
 
-public class PrgGenetic extends MultiThreadedEA implements MLTrain, MultiThreadable {
+public class PrgGenetic extends MultiThreadedEA implements MLTrain, MultiThreadable, Serializable {
 	private final EncogProgramContext context;
 
 	public PrgGenetic(PrgPopulation thePopulation,

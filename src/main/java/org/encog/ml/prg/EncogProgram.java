@@ -23,6 +23,7 @@
  */
 package org.encog.ml.prg;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 
 import org.encog.Encog;
@@ -52,7 +53,7 @@ import org.encog.parse.expression.rpn.RenderRPN;
 import org.encog.util.datastruct.StackInt;
 import org.encog.util.simple.EncogUtility;
 
-public class EncogProgram extends BasicGenome implements MLRegression, MLError {
+public class EncogProgram extends BasicGenome implements MLRegression, MLError, Serializable {
 	public static final int DEFAULT_PROGRAM_SIZE = 1024;
 
 	private EPLHolder holder;

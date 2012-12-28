@@ -1,11 +1,12 @@
 package org.encog.ml.ea.opp;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.prg.EncogProgram;
 
-public class SubtreeCrossover implements EvolutionaryOperator {
+public class SubtreeCrossover implements EvolutionaryOperator, Serializable {
 
 	@Override
 	public void performOperation(Random rnd, Genome[] parents, int parentIndex,

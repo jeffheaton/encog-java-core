@@ -1,8 +1,10 @@
 package org.encog.ml.prg.train.fitness;
 
+import java.io.Serializable;
+
 import org.encog.neural.networks.training.CalculateScore;
 
-public class FitnessObjective {
+public class FitnessObjective implements Serializable {
 	private final double weight;
 	private final CalculateScore score;
 	

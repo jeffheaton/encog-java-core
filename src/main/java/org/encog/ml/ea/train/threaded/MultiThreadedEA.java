@@ -1,5 +1,6 @@
 package org.encog.ml.ea.train.threaded;
 
+import java.io.Serializable;
 import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -21,7 +22,7 @@ import org.encog.ml.prg.train.ThreadedGenomeSelector;
 import org.encog.util.concurrency.MultiThreadable;
 
 public class MultiThreadedEA extends BasicEA
-		implements MultiThreadable, EncogShutdownTask {
+		implements MultiThreadable, EncogShutdownTask, Serializable {
 
 	private GeneticTrainWorker[] workers;
 
@@ -32,7 +33,7 @@ public class MultiThreadedEA extends BasicEA
 	private int iterationNumber;
 	private int subIterationCounter;
 	private final Lock iterationLock = new ReentrantLock();
-	private Throwable currentError;
+	private transient Throwable currentError;
 	private ThreadedGenomeSelector selector;
 	private final Genome bestGenome;
 	private RandomFactory randomNumberFactory = Encog.getInstance()

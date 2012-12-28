@@ -1,6 +1,8 @@
 package org.encog.ml.prg.epl;
 
-public class EPLUtil {
+import java.io.Serializable;
+
+public class EPLUtil implements Serializable {
 	public static int roundToFrame(int num) {
 		return (int) (Math.ceil((double) num / EPLHolder.FRAME_SIZE) * (double) EPLHolder.FRAME_SIZE);
 	}

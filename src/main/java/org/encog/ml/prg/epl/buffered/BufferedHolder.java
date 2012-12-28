@@ -1,5 +1,6 @@
 package org.encog.ml.prg.epl.buffered;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
@@ -8,7 +9,7 @@ import org.encog.EncogError;
 import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.ml.prg.epl.OpCodeHeader;
 
-public class BufferedHolder implements EPLHolder {
+public class BufferedHolder implements EPLHolder, Serializable {
 	private ByteBuffer code;
 	private int maxFrameSize;
 	

@@ -1,5 +1,6 @@
 package org.encog.ml.prg;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.ml.prg.train.GeneticTrainingParams;
 import org.encog.util.csv.CSVFormat;
 
-public class EncogProgramContext {
+public class EncogProgramContext implements Serializable {
 
 	private final CSVFormat format;
 	private final FunctionFactory functions;

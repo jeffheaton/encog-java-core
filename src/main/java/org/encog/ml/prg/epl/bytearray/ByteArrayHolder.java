@@ -1,6 +1,7 @@
 package org.encog.ml.prg.epl.bytearray;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 
 import org.encog.Encog;
@@ -11,7 +12,7 @@ import org.encog.ml.prg.epl.OpCodeHeader;
 import org.encog.util.EngineArray;
 import org.encog.util.text.Base64;
 
-public class ByteArrayHolder implements EPLHolder {
+public class ByteArrayHolder implements EPLHolder, Serializable {
 	private byte[] code;
 	private int maxIndividualFrames;
 	private int maxIndividualSize;

@@ -1,11 +1,13 @@
 package org.encog.ml.prg.train.rewrite;
 
+import java.io.Serializable;
+
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.util.TraverseProgram;
 
-public class RewriteConstants implements RewriteRule {
+public class RewriteConstants implements RewriteRule, Serializable {
 	
 	public RewriteConstants() {
 		

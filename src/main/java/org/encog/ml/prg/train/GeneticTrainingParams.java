@@ -1,6 +1,8 @@
 package org.encog.ml.prg.train;
 
-public class GeneticTrainingParams {
+import java.io.Serializable;
+
+public class GeneticTrainingParams implements Serializable {
 	
 	private double mutationProbability = 0.1;
 	private double crossoverProbability = 0.9;

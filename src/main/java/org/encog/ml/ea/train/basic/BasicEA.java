@@ -23,6 +23,7 @@
  */
 package org.encog.ml.ea.train.basic;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import org.encog.ml.MLContext;
@@ -42,7 +43,7 @@ import org.encog.ml.prg.train.GeneticTrainingParams;
 /**
  * Provides a basic implementation of a genetic algorithm.
  */
-public abstract class BasicEA implements EvolutionaryAlgorithm {
+public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	
 	private GeneticTrainingParams params = new GeneticTrainingParams();
 

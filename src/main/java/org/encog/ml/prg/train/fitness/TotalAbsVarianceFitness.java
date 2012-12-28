@@ -1,5 +1,7 @@
 package org.encog.ml.prg.train.fitness;
 
+import java.io.Serializable;
+
 import org.encog.ml.MLContext;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
@@ -8,7 +10,7 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.neural.networks.training.CalculateScore;
 
-public class TotalAbsVarianceFitness implements CalculateScore {
+public class TotalAbsVarianceFitness implements CalculateScore, Serializable {
 
 	private MLDataSet trainingData;
 	

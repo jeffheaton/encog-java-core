@@ -1,8 +1,10 @@
 package org.encog.ml.ea.score;
 
+import java.io.Serializable;
+
 import org.encog.ml.ea.genome.Genome;
 
-public class EmptyScoreFunction implements CalculateGenomeScore {
+public class EmptyScoreFunction implements CalculateGenomeScore, Serializable {
 
 	@Override
 	public double calculateScore(Genome genome) {

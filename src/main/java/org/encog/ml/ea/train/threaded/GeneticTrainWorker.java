@@ -1,5 +1,6 @@
 package org.encog.ml.ea.train.threaded;
 
+import java.io.Serializable;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -8,7 +9,7 @@ import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.score.CalculateGenomeScore;
 import org.encog.ml.prg.exception.EPLTooBig;
 
-public class GeneticTrainWorker extends Thread {
+public class GeneticTrainWorker extends Thread implements Serializable {
 	private final MultiThreadedEA owner;
 	private AtomicBoolean done = new AtomicBoolean();
 	private Genome[] tempProgram;

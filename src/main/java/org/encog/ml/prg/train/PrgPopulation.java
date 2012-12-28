@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.ml.ea.genome.Genome;
-import org.encog.ml.ea.genome.GenomeFactory;
 import org.encog.ml.ea.population.BasicPopulation;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
-import org.encog.ml.prg.EncogProgramVariables;
 import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.ml.prg.train.rewrite.RewriteRule;
 import org.encog.parse.expression.common.RenderCommonExpression;
@@ -19,8 +17,8 @@ public class PrgPopulation extends BasicPopulation {
 	private List<RewriteRule> rewriteRules = new ArrayList<RewriteRule>();
 	private EPLHolder holder;
 	
-	public PrgPopulation(EncogProgramContext theContext, GenomeFactory theGenomeFactory) {
-		super(theContext.getParams().getPopulationSize(), theGenomeFactory);
+	public PrgPopulation(EncogProgramContext theContext) {
+		super(theContext.getParams().getPopulationSize(), new PrgGenomeFactory(theContext));
 		GeneticTrainingParams params = theContext.getParams();
 		this.holder = theContext.getHolderFactory().factor(params.getPopulationSize(), params.getMaxIndividualSize());
 		this.context = theContext;

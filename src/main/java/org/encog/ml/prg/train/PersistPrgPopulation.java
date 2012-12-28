@@ -70,9 +70,8 @@ public class PersistPrgPopulation implements EncogPersistor {
 	@Override
 	public Object read(final InputStream is) {
 		EncogProgramContext context = new EncogProgramContext();
-		PrgGenomeFactory genomeFactory = new PrgGenomeFactory(context);
 		
-		final PrgPopulation result = new PrgPopulation(context, genomeFactory);
+		final PrgPopulation result = new PrgPopulation(context);
 
 		final EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;

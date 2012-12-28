@@ -1,5 +1,6 @@
 package org.encog.ml.prg.train.fitness;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,7 @@ import org.encog.EncogError;
 import org.encog.ml.MLRegression;
 import org.encog.neural.networks.training.CalculateScore;
 
-public class MultiObjectiveFitness  implements CalculateScore {
+public class MultiObjectiveFitness  implements CalculateScore, Serializable {
 	
 	private final List<FitnessObjective> objectives = new ArrayList<FitnessObjective>();
 	private boolean min;

@@ -1,5 +1,6 @@
 package org.encog.ml.prg.train;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -8,7 +9,7 @@ import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 
-public class CreateRandom {
+public class CreateRandom implements Serializable {
 	
 	private EncogProgramContext context;
 	private int maxDepth;

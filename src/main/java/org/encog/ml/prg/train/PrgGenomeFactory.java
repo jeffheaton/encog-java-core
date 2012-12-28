@@ -1,5 +1,6 @@
 package org.encog.ml.prg.train;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import org.encog.ml.ea.genome.Genome;
@@ -11,7 +12,7 @@ import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.EncogProgramVariables;
 import org.encog.ml.prg.epl.EPLHolder;
 
-public class PrgGenomeFactory implements GenomeFactory {
+public class PrgGenomeFactory implements GenomeFactory, Serializable {
 
 	private EncogProgramContext context;
 	

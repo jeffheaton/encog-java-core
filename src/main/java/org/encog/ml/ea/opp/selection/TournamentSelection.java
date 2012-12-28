@@ -1,12 +1,14 @@
 package org.encog.ml.ea.opp.selection;
 
+import java.io.Serializable;
+
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.prg.train.PrgGenetic;
 
-public class TournamentSelection implements PrgSelection {
+public class TournamentSelection implements PrgSelection, Serializable {
 	private EvolutionaryAlgorithm trainer;
 	private int rounds;
 	

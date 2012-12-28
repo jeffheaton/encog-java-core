@@ -1,11 +1,13 @@
 package org.encog.ml.prg.util;
 
+import java.io.Serializable;
+
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.ml.prg.epl.OpCodeHeader;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 
-public class TraverseProgram {
+public class TraverseProgram implements Serializable {
 	private final OpCodeHeader header = new OpCodeHeader();
 	private final EncogProgram program;
 	private final EPLHolder holder;
