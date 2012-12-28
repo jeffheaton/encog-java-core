@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.encog.EncogError;
 import org.encog.ml.prg.exception.EncogEPLError;
-import org.encog.ml.prg.exception.EncogProgramCompileError;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 
 public class FunctionFactory implements Serializable {

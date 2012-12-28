@@ -6,7 +6,6 @@ import java.io.IOException;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.train.PrgPopulation;
-import org.encog.neural.art.ART1;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
 import org.junit.After;

@@ -28,19 +28,13 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
-import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
-import org.encog.neural.flat.FlatNetwork;
-import org.encog.neural.networks.BasicNetwork;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
 import org.encog.persist.EncogWriteHelper;
-import org.encog.persist.PersistConst;
-import org.encog.persist.PersistError;
-import org.encog.util.csv.CSVFormat;
 
 /**
  * Persist a basic network.

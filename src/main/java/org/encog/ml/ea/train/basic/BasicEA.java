@@ -24,7 +24,6 @@
 package org.encog.ml.ea.train.basic;
 
 import java.io.Serializable;
-import java.util.Random;
 
 import org.encog.ml.MLContext;
 import org.encog.ml.ea.genome.Genome;

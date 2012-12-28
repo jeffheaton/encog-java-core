@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 
 import org.encog.Encog;
 import org.encog.EncogError;
-import org.encog.util.Format;
 
 public class DoubleString {
 	

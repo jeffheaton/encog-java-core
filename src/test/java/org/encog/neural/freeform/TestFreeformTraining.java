@@ -23,7 +23,6 @@
  */
 package org.encog.neural.freeform;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.ml.MLMethod;
