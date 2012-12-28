@@ -28,13 +28,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.encog.ml.BasicML;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
 
 /**
  * Defines the basic functionality for a population of genomes.
  */
-public class BasicPopulation implements Population {
+public class BasicPopulation extends BasicML implements Population {
 	
 	/**
 	 * The serial id.
@@ -187,5 +188,10 @@ public class BasicPopulation implements Population {
 	@Override
 	public int getMaxIndividualSize() {
 		return Integer.MAX_VALUE;
+	}
+
+	@Override
+	public void updateProperties() {
+
 	}
 }

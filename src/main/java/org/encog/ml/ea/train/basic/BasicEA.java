@@ -26,11 +26,11 @@ package org.encog.ml.ea.train.basic;
 import java.util.Random;
 
 import org.encog.ml.MLContext;
-import org.encog.ml.ea.genome.CalculateGenomeScore;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.selection.PrgSelection;
 import org.encog.ml.ea.opp.selection.TournamentSelection;
 import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.score.CalculateGenomeScore;
 import org.encog.ml.ea.sort.GenomeComparator;
 import org.encog.ml.ea.sort.MaximizeAdjustedScoreComp;
 import org.encog.ml.ea.sort.MaximizeScoreComp;

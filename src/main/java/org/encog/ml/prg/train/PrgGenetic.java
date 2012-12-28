@@ -6,7 +6,7 @@ import java.util.List;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.ea.genome.CalculateGenomeScore;
+import org.encog.ml.ea.score.CalculateGenomeScore;
 import org.encog.ml.ea.train.threaded.MultiThreadedEA;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.train.MLTrain;

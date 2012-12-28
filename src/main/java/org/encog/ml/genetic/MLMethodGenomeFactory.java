@@ -4,10 +4,10 @@ import java.util.Random;
 
 import org.encog.ml.MLEncodable;
 import org.encog.ml.MethodFactory;
-import org.encog.ml.ea.genome.CalculateGenomeScore;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
 import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.score.CalculateGenomeScore;
 
 public class MLMethodGenomeFactory implements GenomeFactory {
 
