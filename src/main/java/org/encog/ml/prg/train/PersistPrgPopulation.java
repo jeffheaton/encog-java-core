@@ -84,9 +84,14 @@ public class PersistPrgPopulation implements EncogPersistor {
 			}
 			if (section.getSectionName().equals("BASIC")
 					&& section.getSubSectionName().equals("EPL-POPULATION")) {
-				final Map<String, String> params = section.parseParams();
-
-				
+				for(String line: section.getLines()) {
+					final List<String> cols = EncogFileSection
+							.splitColumns(line);
+					String code = cols.get(0);
+					EncogProgram prg = new EncogProgram(context);
+					prg.fromBase64(code);
+					result.add(prg);
+				}
 			}
 		}
 		return result;
