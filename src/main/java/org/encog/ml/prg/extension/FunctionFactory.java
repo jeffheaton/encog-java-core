@@ -1,17 +1,18 @@
 package org.encog.ml.prg.extension;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.encog.EncogError;
+import org.encog.ml.prg.epl.OpCodeHeader;
 import org.encog.ml.prg.exception.EncogEPLError;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 
 public class FunctionFactory implements Serializable {
-	public static short USER_DEFINED_OPCODES = 20000;
-	public static short ENCOG_EXTRA_OPCODES = 15000;
 	private final Map<String,ProgramExtensionTemplate> templateMap = new HashMap<String,ProgramExtensionTemplate>();
 	private final ProgramExtensionTemplate[] standardOpcodes = new ProgramExtensionTemplate[32767];
 	private final Map<String,Short> knownConsts = new HashMap<String,Short>();
@@ -69,6 +70,17 @@ public class FunctionFactory implements Serializable {
 	 */
 	public Map<String,Short> getKnownConsts() {
 		return knownConsts;
+	}
+
+	public List<ProgramExtensionTemplate> generateOpcodeList() {
+		List<ProgramExtensionTemplate> result = new ArrayList<ProgramExtensionTemplate>();
+		for(int i=0;i<=OpCodeHeader.ENCOG_OPCODE_END;i++) {
+			ProgramExtensionTemplate temp = this.standardOpcodes[i];
+			if( temp!=null ) {
+				result.add(this.standardOpcodes[i]);
+			}
+		}
+		return result;
 	}
 	
 	

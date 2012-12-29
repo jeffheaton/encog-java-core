@@ -26,7 +26,6 @@ package org.encog.app.analyst.csv.process;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.epl.OpCodeHeader;
 import org.encog.ml.prg.extension.BasicTemplate;
-import org.encog.ml.prg.extension.FunctionFactory;
 
 public class FunctionFieldMaxPIP extends BasicTemplate {
 	
@@ -34,7 +33,7 @@ public class FunctionFieldMaxPIP extends BasicTemplate {
 	
 	public FunctionFieldMaxPIP(ProcessExtension theExtension) {
 		super("fieldmaxpip",3,true);
-		this.setOpcode((short)(FunctionFactory.ENCOG_EXTRA_OPCODES+2));
+		this.setOpcode((short)(OpCodeHeader.ENCOG_EXTRA_OPCODES_BEGIN+2));
 		this.extension = theExtension;
 	}
 	

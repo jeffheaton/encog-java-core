@@ -34,7 +34,7 @@ public class FunctionField extends BasicTemplate {
 
 	public FunctionField(ProcessExtension theExtension) {
 		super("field",2,true);
-		this.setOpcode((short)(FunctionFactory.ENCOG_EXTRA_OPCODES+0));
+		this.setOpcode((short)(OpCodeHeader.ENCOG_EXTRA_OPCODES_BEGIN+0));
 		this.extension = theExtension;
 	}
 

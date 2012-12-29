@@ -31,6 +31,8 @@ import java.util.Map;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
+import org.encog.ml.prg.extension.EncogOpcodeRegistry;
+import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
@@ -75,8 +77,7 @@ public class PersistPrgPopulation implements EncogPersistor {
 					&& section.getSubSectionName().equals("PARAMS")) {
 				final Map<String, String> params = section.parseParams();
 				result.getProperties().putAll(params);
-			}
-			if (section.getSectionName().equals("BASIC")
+			} else if (section.getSectionName().equals("BASIC")
 					&& section.getSubSectionName().equals("EPL-POPULATION")) {
 				for(String line: section.getLines()) {
 					final List<String> cols = EncogFileSection
@@ -85,6 +86,23 @@ public class PersistPrgPopulation implements EncogPersistor {
 					EncogProgram prg = new EncogProgram(context);
 					prg.fromBase64(code);
 					result.add(prg);
+				}
+			} else if (section.getSectionName().equals("BASIC")
+					&& section.getSubSectionName().equals("EPL-OPCODES")) {
+				for(String line: section.getLines()) {
+					final List<String> cols = EncogFileSection
+							.splitColumns(line);
+					String code = cols.get(0);
+					int opcode = Integer.parseInt(code);
+					EncogOpcodeRegistry.INSTANCE.register(context,opcode);
+				}
+			} else if (section.getSectionName().equals("BASIC")
+					&& section.getSubSectionName().equals("EPL-SYMBOLIC")) {
+				for(String line: section.getLines()) {
+					final List<String> cols = EncogFileSection
+							.splitColumns(line);
+					String name = cols.get(0);
+					context.defineVariable(name);
 				}
 			}
 		}
@@ -102,6 +120,17 @@ public class PersistPrgPopulation implements EncogPersistor {
 		out.addSection("BASIC");
 		out.addSubSection("PARAMS");
 		out.addProperties(pop.getProperties());
+		out.addSubSection("EPL-OPCODES");
+		for(ProgramExtensionTemplate temp : pop.getContext().getFunctions().generateOpcodeList()) {
+			out.addColumn(temp.getOpcode());
+			out.addColumn(temp.getName());
+			out.writeLine();
+		}
+		out.addSubSection("EPL-SYMBOLIC");
+		for(String name : pop.getContext().getDefinedVariables()) {
+			out.addColumn(name);
+			out.writeLine();
+		}
 		out.addSubSection("EPL-POPULATION");
 		for(Genome genome: pop.getGenomes()) {
 			EncogProgram prg = (EncogProgram)genome;

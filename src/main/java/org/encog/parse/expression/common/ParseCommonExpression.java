@@ -163,6 +163,7 @@ public class ParseCommonExpression {
 					this.program.writeNode(this.program.getFunctions().getKnownConsts().get(name));
 				} else {
 					// var
+					this.program.getContext().defineVariable(name);
 					this.program.getVariables().defineVariable(name);
 					this.program.writeNodeVar(name);
 				} 

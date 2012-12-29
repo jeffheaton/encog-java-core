@@ -34,7 +34,7 @@ public class FunctionFieldMax extends BasicTemplate {
 	
 	public FunctionFieldMax(ProcessExtension theExtension) {
 		super("fieldmax",3,true);
-		this.setOpcode((short)(FunctionFactory.ENCOG_EXTRA_OPCODES+1));
+		this.setOpcode((short)(OpCodeHeader.ENCOG_EXTRA_OPCODES_BEGIN+1));
 		this.extension = theExtension;
 	}
 	

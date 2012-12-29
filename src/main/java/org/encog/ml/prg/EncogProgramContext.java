@@ -42,11 +42,9 @@ public class EncogProgramContext implements Serializable {
 	}
 	
 	public void defineVariable(String v) {
-		if( this.definedVariables.contains(v) ) {
-			throw new ExpressionError("Variable " + v + " already defined.");
-		}
-		definedVariables.add(v);
-		
+		if( !this.definedVariables.contains(v) ) {
+			definedVariables.add(v);
+		}	
 	}
 
 	public List<String> getDefinedVariables() {
