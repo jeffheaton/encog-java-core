@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
+import org.encog.ml.prg.train.rewrite.RewriteRule;
 
 /**
  * Defines a population of genomes.
@@ -94,4 +95,6 @@ public interface Population extends Serializable {
 	void setGenomeFactory(GenomeFactory factory);
 
 	int getMaxIndividualSize();
+
+	void addRewriteRule(RewriteRule rule);
 }

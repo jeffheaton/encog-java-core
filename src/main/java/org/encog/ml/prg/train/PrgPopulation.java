@@ -14,7 +14,6 @@ import org.encog.parse.expression.common.RenderCommonExpression;
 public class PrgPopulation extends BasicPopulation {
 
 	private final EncogProgramContext context;
-	private List<RewriteRule> rewriteRules = new ArrayList<RewriteRule>();
 	private EPLHolder holder;
 	
 	public PrgPopulation(EncogProgramContext theContext) {
@@ -41,25 +40,6 @@ public class PrgPopulation extends BasicPopulation {
 
 	public EncogProgramContext getContext() {
 		return context;
-	}
-
-	public void addRewriteRule(RewriteRule rule) {
-		this.rewriteRules.add(rule);
-	}
-	
-	public void rewrite(EncogProgram prg) {
-		
-		boolean done = false;
-		
-		while(!done) {
-			done = true;
-			
-			for(RewriteRule rule: this.rewriteRules) {
-				if( rule.rewrite(prg) ) {
-					done = false;
-				}
-			}
-		}
 	}
 
 	/**

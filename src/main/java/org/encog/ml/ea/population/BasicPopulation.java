@@ -32,6 +32,7 @@ import java.util.List;
 import org.encog.ml.BasicML;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
+import org.encog.ml.prg.train.rewrite.RewriteRule;
 
 /**
  * Defines the basic functionality for a population of genomes.
@@ -53,6 +54,8 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 	 */
 	private String name;
 	
+	
+	private List<RewriteRule> rewriteRules = new ArrayList<RewriteRule>();
 	private GenomeFactory genomeFactory;
 
 	/**
@@ -172,11 +175,6 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 	}
 
 	@Override
-	public void rewrite(Genome prg) {
-		
-	}
-
-	@Override
 	public GenomeFactory getGenomeFactory() {
 		return this.genomeFactory;
 	}
@@ -194,5 +192,26 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 	@Override
 	public void updateProperties() {
 
+	}
+	
+	@Override
+	public void addRewriteRule(RewriteRule rule) {
+		this.rewriteRules.add(rule);
+	}
+	
+	@Override
+	public void rewrite(Genome prg) {
+		
+		boolean done = false;
+		
+		while(!done) {
+			done = true;
+			
+			for(RewriteRule rule: this.rewriteRules) {
+				if( rule.rewrite(prg) ) {
+					done = false;
+				}
+			}
+		}
 	}
 }

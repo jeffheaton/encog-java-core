@@ -2,6 +2,7 @@ package org.encog.ml.prg.train.rewrite;
 
 import java.io.Serializable;
 
+import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
@@ -25,7 +26,8 @@ public class RewriteConstants implements RewriteRule, Serializable {
 	}
 
 	@Override
-	public boolean rewrite(EncogProgram program) {
+	public boolean rewrite(Genome genome) {
+		EncogProgram program = (EncogProgram)genome;
 		TraverseProgram trav = new TraverseProgram(program);
 		trav.begin(0);
 		while(trav.next()) {

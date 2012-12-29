@@ -2,6 +2,7 @@ package org.encog.ml.prg.train.rewrite.algebraic;
 
 import java.io.Serializable;
 
+import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.ml.prg.train.rewrite.RewriteRule;
@@ -15,7 +16,8 @@ public class RewriteAlgebraic implements RewriteRule, Serializable {
 
 	
 	@Override
-	public boolean rewrite(EncogProgram program) {
+	public boolean rewrite(Genome genome) {
+		EncogProgram program = (EncogProgram)genome;
 		MapProgram map = new MapProgram(program);
 		return rewriteNode(program,map,map.getRootNode());
 	}
