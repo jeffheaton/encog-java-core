@@ -1,3 +1,4 @@
+org.encog.ml.prg.train.PrgPopulation
 org.encog.neural.pnn.BasicPNN
 org.encog.ml.hmm.HiddenMarkovModel
 org.encog.neural.cpn.CPN

@@ -17,6 +17,7 @@ import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.score.CalculateGenomeScore;
 import org.encog.ml.ea.train.basic.BasicEA;
 import org.encog.ml.genetic.GeneticError;
+import org.encog.ml.prg.exception.EncogProgramError;
 import org.encog.ml.prg.train.GeneticTrainingParams;
 import org.encog.ml.prg.train.ThreadedGenomeSelector;
 import org.encog.util.concurrency.MultiThreadable;
@@ -74,6 +75,11 @@ public class MultiThreadedEA extends BasicEA
 	}
 
 	private void startup() {
+		
+		if( this.getOperators().size()<1 ) {
+			throw new EncogProgramError("Can't train, there are no evolutionary operators.");
+		}
+		
 		int actualThreadCount = Runtime.getRuntime().availableProcessors();
 		Encog.getInstance().addShutdownTask(this);
 		

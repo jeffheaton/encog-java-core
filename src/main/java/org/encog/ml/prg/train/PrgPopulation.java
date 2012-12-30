@@ -1,14 +1,10 @@
 package org.encog.ml.prg.train;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.BasicPopulation;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.epl.EPLHolder;
-import org.encog.ml.prg.train.rewrite.RewriteRule;
 import org.encog.parse.expression.common.RenderCommonExpression;
 
 public class PrgPopulation extends BasicPopulation {
