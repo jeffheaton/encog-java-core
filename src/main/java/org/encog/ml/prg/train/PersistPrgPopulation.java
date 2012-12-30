@@ -82,9 +82,13 @@ public class PersistPrgPopulation implements EncogPersistor {
 				for(String line: section.getLines()) {
 					final List<String> cols = EncogFileSection
 							.splitColumns(line);
-					String code = cols.get(0);
+					double score = Double.parseDouble(cols.get(0));
+					double adjustedScore = Double.parseDouble(cols.get(1));
+					String code = cols.get(2);
 					EncogProgram prg = new EncogProgram(context);
 					prg.fromBase64(code);
+					prg.setScore(score);
+					prg.setAdjustedScore(adjustedScore);
 					result.add(prg);
 				}
 			} else if (section.getSectionName().equals("BASIC")
@@ -134,6 +138,8 @@ public class PersistPrgPopulation implements EncogPersistor {
 		out.addSubSection("EPL-POPULATION");
 		for(Genome genome: pop.getGenomes()) {
 			EncogProgram prg = (EncogProgram)genome;
+			out.addColumn(prg.getScore());
+			out.addColumn(prg.getAdjustedScore());
 			out.addColumn(prg.toBase64());
 			out.writeLine();
 		}

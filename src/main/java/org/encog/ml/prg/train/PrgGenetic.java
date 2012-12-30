@@ -86,7 +86,7 @@ public class PrgGenetic extends MultiThreadedEA implements MLTrain, MultiThreada
 	@Override
 	public MLMethod getMethod() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.getPrgPopulation();
 	}
 
 	@Override
