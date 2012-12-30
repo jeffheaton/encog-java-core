@@ -151,7 +151,7 @@ public class MultiThreadedEA extends BasicEA
 	public void evaluateBestGenome(Genome prg) {
 		this.iterationLock.lock();
 		try {
-			calculateEffectiveScore(prg);
+			BasicEA.calculateScoreAdjustment(prg, getScoreAdjusters());
 			if (this.needBestGenome || this.getSelectionComparator().isBetterThan(prg, this.bestGenome) ) {
 				this.bestGenome.copy(prg);
 				this.needBestGenome = false;

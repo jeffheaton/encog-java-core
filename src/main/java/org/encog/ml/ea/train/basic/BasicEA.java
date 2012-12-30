@@ -226,12 +226,11 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 		this.adjusters.add(scoreAdjust);
 	}
 	
-	@Override
-	public void calculateEffectiveScore(Genome genome) {
+	public static void calculateScoreAdjustment(Genome genome, List<AdjustScore> adjusters) {
 		double score = genome.getScore();
 		double delta = 0;
 		
-		for(AdjustScore a: this.adjusters) {
+		for(AdjustScore a: adjusters) {
 			delta+=a.calculateAdjustment(genome);
 		}
 		

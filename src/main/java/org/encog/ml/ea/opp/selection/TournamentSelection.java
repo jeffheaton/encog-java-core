@@ -6,6 +6,7 @@ import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
+import org.encog.ml.ea.train.basic.BasicEA;
 import org.encog.ml.prg.train.PrgGenetic;
 
 public class TournamentSelection implements PrgSelection, Serializable {
@@ -16,50 +17,42 @@ public class TournamentSelection implements PrgSelection, Serializable {
 		this.trainer = theTrainer;
 		this.rounds = theRounds;
 	}
-
 	
-
 	@Override
 	public EvolutionaryAlgorithm getTrainer() {
 		return trainer;
 	}
-
-
-
-
+	
 	public void setTrainer(PrgGenetic trainer) {
 		this.trainer = trainer;
 	}
-
-
-
-
+	
 	public int getRounds() {
 		return rounds;
 	}
 
-
-
 	public void setRounds(int rounds) {
 		this.rounds = rounds;
 	}
-
-
 
 	@Override
 	public int performSelection() {
 		Population population = trainer.getPopulation();
 		int bestIndex = RangeRandomizer.randomInt(0, population.size()-1);
 	    Genome best = population.get(bestIndex);
-	    this.trainer.calculateEffectiveScore(best);
+	    BasicEA.calculateScoreAdjustment(best, this.trainer.getScoreAdjusters());
 	    
 	    for ( int i = 0; i < this.rounds; i ++ ) {
 	    	int competitorIndex = RangeRandomizer.randomInt(0, population.size()-1);
 	      Genome competitor = population.get(competitorIndex);
-	      this.trainer.calculateEffectiveScore(competitor);
-	      if ( this.trainer.getSelectionComparator().isBetterThan(competitor, best) ) {
-	        best = competitor;
-	        bestIndex = competitorIndex;
+	      
+	      // only evaluate valid genomes
+	      if (!Double.isInfinite(competitor.getScore()) && !Double.isNaN(competitor.getScore())) {
+	    	  BasicEA.calculateScoreAdjustment(competitor, this.trainer.getScoreAdjusters());
+		      if ( this.trainer.getSelectionComparator().isBetterThan(competitor, best) ) {
+		        best = competitor;
+		        bestIndex = competitorIndex;
+		      }
 	      }
 	    }
 	    return( bestIndex );
@@ -71,12 +64,18 @@ public class TournamentSelection implements PrgSelection, Serializable {
 		Population population = trainer.getPopulation();
 		int worstIndex = RangeRandomizer.randomInt(0, population.size()-1);
 	    Genome worst = population.get(worstIndex);
-	    this.trainer.calculateEffectiveScore(worst);
+	    BasicEA.calculateScoreAdjustment(worst, this.trainer.getScoreAdjusters());
 	    
 	    for ( int i = 0; i < this.rounds; i ++ ) {
 	    	int competitorIndex = RangeRandomizer.randomInt(0, population.size()-1);
 	      Genome competitor = population.get(competitorIndex);
-	      this.trainer.calculateEffectiveScore(competitor);
+	      
+	      // force an invalid genome to lose
+	      if (Double.isInfinite(competitor.getScore()) || Double.isNaN(competitor.getScore())) {
+	    	  return competitorIndex;
+	      }
+	      
+	      BasicEA.calculateScoreAdjustment(competitor, this.trainer.getScoreAdjusters());
 	      if ( !this.trainer.getSelectionComparator().isBetterThan(competitor, worst) ) {
 	        worst = competitor;
 	        worstIndex = competitorIndex;

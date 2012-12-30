@@ -41,7 +41,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	/**
 	 * The adjusted score.
 	 */
-	private double adjustedScore;
+	private double adjustedScore = Double.NaN;
 
 	/**
 	 * The genetic algorithm for this gene.
@@ -56,7 +56,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	/**
 	 * The score of this genome.
 	 */
-	private double score = 0;
+	private double score = Double.NaN;
 
 	/**
 	 * The population this genome belongs to.

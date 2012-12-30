@@ -37,6 +37,7 @@ import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
 import org.encog.persist.EncogWriteHelper;
+import org.encog.util.csv.CSVFormat;
 
 /**
  * Persist a basic network.
@@ -82,8 +83,18 @@ public class PersistPrgPopulation implements EncogPersistor {
 				for(String line: section.getLines()) {
 					final List<String> cols = EncogFileSection
 							.splitColumns(line);
-					double score = Double.parseDouble(cols.get(0));
-					double adjustedScore = Double.parseDouble(cols.get(1));
+					
+					double score = 0; 
+					double adjustedScore = 0;
+					
+					if( cols.get(0).equalsIgnoreCase("nan") || cols.get(1).equalsIgnoreCase("nan") ) {
+						score = Double.NaN;
+						adjustedScore = Double.NaN;
+					} else {
+						score = CSVFormat.EG_FORMAT.parse(cols.get(0));
+						adjustedScore = CSVFormat.EG_FORMAT.parse(cols.get(1));
+					}
+										
 					String code = cols.get(2);
 					EncogProgram prg = new EncogProgram(context);
 					prg.fromBase64(code);
@@ -138,8 +149,15 @@ public class PersistPrgPopulation implements EncogPersistor {
 		out.addSubSection("EPL-POPULATION");
 		for(Genome genome: pop.getGenomes()) {
 			EncogProgram prg = (EncogProgram)genome;
-			out.addColumn(prg.getScore());
-			out.addColumn(prg.getAdjustedScore());
+			if( Double.isInfinite(prg.getScore()) || Double.isNaN(prg.getScore())) {
+				out.addColumn("NaN");
+				out.addColumn("NaN");
+			} else {
+				
+				out.addColumn(prg.getScore());
+				out.addColumn(prg.getAdjustedScore());
+			}
+
 			out.addColumn(prg.toBase64());
 			out.writeLine();
 		}

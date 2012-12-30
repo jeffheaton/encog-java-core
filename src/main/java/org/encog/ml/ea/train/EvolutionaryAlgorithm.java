@@ -54,8 +54,6 @@ public interface EvolutionaryAlgorithm {
 	Population getPopulation();
 
 	void iteration();
-
-	void calculateEffectiveScore(Genome genome);
 	
 	GeneticTrainingParams getParams();
 	
