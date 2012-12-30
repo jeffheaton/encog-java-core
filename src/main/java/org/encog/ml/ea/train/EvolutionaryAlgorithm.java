@@ -23,9 +23,12 @@
  */
 package org.encog.ml.ea.train;
 
+import java.util.List;
+
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.selection.PrgSelection;
 import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.score.AdjustScore;
 import org.encog.ml.ea.score.CalculateGenomeScore;
 import org.encog.ml.ea.sort.GenomeComparator;
 import org.encog.ml.prg.train.GeneticTrainingParams;
@@ -69,5 +72,9 @@ public interface EvolutionaryAlgorithm {
 	GenomeComparator getBestComparator();
 
 	void setBestComparator(GenomeComparator bestComparator);
+	
+	List<AdjustScore> getScoreAdjusters();
+	
+	void addScoreAdjusters(AdjustScore scoreAdjust);
 	
 }

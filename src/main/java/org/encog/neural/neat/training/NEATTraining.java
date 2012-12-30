@@ -37,6 +37,7 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.selection.PrgSelection;
 import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.score.AdjustScore;
 import org.encog.ml.ea.score.CalculateGenomeScore;
 import org.encog.ml.ea.sort.GenomeComparator;
 import org.encog.ml.ea.sort.MinimizeAdjustedScoreComp;
@@ -1000,6 +1001,18 @@ public class NEATTraining implements MLTrain, EvolutionaryAlgorithm {
 	@Override
 	public void setBestComparator(GenomeComparator bestComparator) {
 		this.bestComparator = bestComparator;
+	}
+
+	@Override
+	public List<AdjustScore> getScoreAdjusters() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addScoreAdjusters(AdjustScore scoreAdjust) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

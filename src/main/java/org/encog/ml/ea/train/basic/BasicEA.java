@@ -24,12 +24,15 @@
 package org.encog.ml.ea.train.basic;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.encog.ml.MLContext;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.selection.PrgSelection;
 import org.encog.ml.ea.opp.selection.TournamentSelection;
 import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.score.AdjustScore;
 import org.encog.ml.ea.score.CalculateGenomeScore;
 import org.encog.ml.ea.sort.GenomeComparator;
 import org.encog.ml.ea.sort.MaximizeAdjustedScoreComp;
@@ -68,6 +71,7 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	private final CalculateGenomeScore scoreFunction;
 	private PrgSelection selection;
 	
+	private List<AdjustScore> adjusters = new ArrayList<AdjustScore>();
 	
 	public BasicEA(Population thePopulation, CalculateGenomeScore theScoreFunction) {
 		
@@ -211,5 +215,27 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 		return this.population.getMaxIndividualSize();
 	}
 	
+
+	@Override
+	public List<AdjustScore> getScoreAdjusters() {
+		return this.adjusters;
+	}
+
+	@Override
+	public void addScoreAdjusters(AdjustScore scoreAdjust) {
+		this.adjusters.add(scoreAdjust);
+	}
+	
+	@Override
+	public void calculateEffectiveScore(Genome genome) {
+		double score = genome.getScore();
+		double delta = 0;
+		
+		for(AdjustScore a: this.adjusters) {
+			delta+=a.calculateAdjustment(genome);
+		}
+		
+		genome.setAdjustedScore(score+delta);
+	}
 	
 }

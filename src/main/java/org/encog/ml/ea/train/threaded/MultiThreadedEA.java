@@ -1,6 +1,7 @@
 package org.encog.ml.ea.train.threaded;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -14,6 +15,7 @@ import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.opp.holder.OperationList;
 import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.score.AdjustScore;
 import org.encog.ml.ea.score.CalculateGenomeScore;
 import org.encog.ml.ea.train.basic.BasicEA;
 import org.encog.ml.genetic.GeneticError;
@@ -269,20 +271,6 @@ public class MultiThreadedEA extends BasicEA
 		for (Genome genome : getPopulation().getGenomes()) {
 			evaluateBestGenome(genome);
 		}
-	}
-
-	public void calculateEffectiveScore(Genome genome) {
-		GeneticTrainingParams params = getParams();
-		double result = genome.getScore();
-		if (genome.size() > params.getComplexityPenaltyThreshold()) {
-			int over = genome.size() - params.getComplexityPenaltyThreshold();
-			int range = params.getComplexityPentaltyFullThreshold()
-					- params.getComplexityPenaltyThreshold();
-			double complexityPenalty = ((params.getComplexityFullPenalty() - params
-					.getComplexityPenalty()) / range) * over;
-			result += (result * complexityPenalty);
-		}
-		genome.setAdjustedScore(result);
 	}
 
 	@Override
