@@ -75,10 +75,10 @@ public class PersistHopfield implements EncogPersistor {
 			if (section.getSectionName().equals("HOPFIELD")
 					&& section.getSubSectionName().equals("NETWORK")) {
 				final Map<String, String> params = section.parseParams();
-				result.setWeights(NumberList.fromList(CSVFormat.EG_FORMAT,
-						params.get(PersistConst.WEIGHTS)));
-				result.setCurrentState(NumberList.fromList(CSVFormat.EG_FORMAT,
-						params.get(PersistConst.OUTPUT)));
+				result.setWeights(section.parseDoubleArray(params,
+						PersistConst.WEIGHTS));
+				result.setCurrentState(section.parseDoubleArray(params,
+						PersistConst.OUTPUT));
 				result.setNeuronCount(EncogFileSection.parseInt(params,
 						PersistConst.NEURON_COUNT));
 			}
