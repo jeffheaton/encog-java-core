@@ -35,7 +35,7 @@ public class TestEncogProgram extends TestCase {
 	
 	public void testString() {
 		EncogProgram prg = new EncogProgram("1+2+3");
-		Assert.assertEquals("[EncogProgram: size=5, score=0.0, Code: 1 2 [+] 3 [+]]",prg.toString());
+		Assert.assertEquals("[EncogProgram: size=5, score=NaN, Code: 1 2 [+] 3 [+]]",prg.toString());
 		Assert.assertEquals(6, prg.evaluate().toIntValue());
 	}
 	

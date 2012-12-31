@@ -1008,6 +1008,12 @@ public class NEATTraining implements MLTrain, EvolutionaryAlgorithm {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public CalculateGenomeScore getScoreFunction() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 

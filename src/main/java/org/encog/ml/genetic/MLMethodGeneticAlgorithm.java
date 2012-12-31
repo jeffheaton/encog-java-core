@@ -112,9 +112,7 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 		}
 		this.genetic.setBestComparator(comp);
 		this.genetic.setSelectionComparator(comp);
-			
-		this.genetic.setCalculateScore(new GeneticScoreAdapter(calculateScore));
-		
+
 		for (int i = 0; i < population.getPopulationSize(); i++) {
 			final MLEncodable chromosomeNetwork = (MLEncodable)factory.factor();
 			final MLMethodGenome genome = new MLMethodGenome(chromosomeNetwork);

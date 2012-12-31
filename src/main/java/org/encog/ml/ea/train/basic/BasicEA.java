@@ -48,11 +48,6 @@ import org.encog.ml.prg.train.GeneticTrainingParams;
 public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	
 	private GeneticTrainingParams params = new GeneticTrainingParams();
-
-	/**
-	 * The score calculation object.
-	 */
-	private CalculateGenomeScore calculateScore;
 	
 	/**
 	 * The genome comparator.
@@ -101,18 +96,8 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 		if (g.getOrganism() instanceof MLContext) {
 			((MLContext) g.getOrganism()).clearContext();
 		}
-		final double score = this.calculateScore.calculateScore(g);
+		final double score = this.getScoreFunction().calculateScore(g);
 		g.setScore(score);
-	}
-
-
-
-	/**
-	 * @return The score calculation object.
-	 */
-	@Override
-	public CalculateGenomeScore getCalculateScore() {
-		return this.calculateScore;
 	}
 
 	/**
@@ -137,18 +122,6 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	@Override
 	public Population getPopulation() {
 		return this.population;
-	}
-
-	/**
-	 * Set the score calculation object.
-	 * 
-	 * @param theCalculateScore
-	 *            The score calculation object.
-	 */
-	@Override
-	public void setCalculateScore(
-			final CalculateGenomeScore theCalculateScore) {
-		this.calculateScore = theCalculateScore;
 	}
 
 	/**
@@ -198,6 +171,7 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 		this.params = params;
 	}
 
+	@Override
 	public CalculateGenomeScore getScoreFunction() {
 		return scoreFunction;
 	}

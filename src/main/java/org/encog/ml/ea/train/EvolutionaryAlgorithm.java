@@ -42,11 +42,6 @@ import org.encog.ml.prg.train.GeneticTrainingParams;
  * execution.
  */
 public interface EvolutionaryAlgorithm {
-
-	CalculateGenomeScore getCalculateScore();
-
-	void setCalculateScore(CalculateGenomeScore theCalculateScore);
-
 	void calculateScore(Genome g);
 
 	void setPopulation(Population thePopulation);
@@ -74,5 +69,7 @@ public interface EvolutionaryAlgorithm {
 	List<AdjustScore> getScoreAdjusters();
 	
 	void addScoreAdjusters(AdjustScore scoreAdjust);
+
+	CalculateGenomeScore getScoreFunction();
 	
 }

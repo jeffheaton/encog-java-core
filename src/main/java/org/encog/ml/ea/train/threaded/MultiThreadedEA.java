@@ -1,7 +1,6 @@
 package org.encog.ml.ea.train.threaded;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -15,12 +14,11 @@ import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.opp.holder.OperationList;
 import org.encog.ml.ea.population.Population;
-import org.encog.ml.ea.score.AdjustScore;
 import org.encog.ml.ea.score.CalculateGenomeScore;
+import org.encog.ml.ea.score.parallel.ParallelScore;
 import org.encog.ml.ea.train.basic.BasicEA;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.prg.exception.EncogProgramError;
-import org.encog.ml.prg.train.GeneticTrainingParams;
 import org.encog.ml.prg.train.ThreadedGenomeSelector;
 import org.encog.util.concurrency.MultiThreadable;
 
@@ -82,6 +80,11 @@ public class MultiThreadedEA extends BasicEA
 			throw new EncogProgramError("Can't train, there are no evolutionary operators.");
 		}
 		
+		// rescore everything
+		ParallelScore s = new ParallelScore(getPopulation(),this.getScoreAdjusters(),this.getScoreFunction());
+		s.process();
+		
+		// spin up the threads
 		int actualThreadCount = Runtime.getRuntime().availableProcessors();
 		Encog.getInstance().addShutdownTask(this);
 		
