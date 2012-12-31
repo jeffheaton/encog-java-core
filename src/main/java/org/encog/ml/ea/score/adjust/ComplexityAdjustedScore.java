@@ -33,6 +33,10 @@ public class ComplexityAdjustedScore implements AdjustScore {
 		this.complexityFullPenalty = theComplexityPenalty;
 		this.complexityFullPenalty = theComplexityFullPenalty;
 	}
+	
+	public ComplexityAdjustedScore() {
+		this(10,50,0.2,2.0);
+	}
 
 	@Override
 	public double calculateAdjustment(Genome genome) {
