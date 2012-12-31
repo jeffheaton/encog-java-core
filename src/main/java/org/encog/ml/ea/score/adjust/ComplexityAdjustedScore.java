@@ -30,7 +30,7 @@ public class ComplexityAdjustedScore implements AdjustScore {
 			double theComplexityPenalty, double theComplexityFullPenalty) {
 		this.complexityPenaltyThreshold = theComplexityPenaltyThreshold;
 		this.complexityPentaltyFullThreshold = theComplexityPentaltyFullThreshold;
-		this.complexityFullPenalty = theComplexityPenalty;
+		this.complexityPenalty = theComplexityPenalty;
 		this.complexityFullPenalty = theComplexityFullPenalty;
 	}
 	
