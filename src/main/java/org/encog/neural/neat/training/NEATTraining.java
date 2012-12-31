@@ -39,6 +39,7 @@ import org.encog.ml.ea.opp.selection.PrgSelection;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.score.AdjustScore;
 import org.encog.ml.ea.score.CalculateGenomeScore;
+import org.encog.ml.ea.score.GeneticScoreAdapter;
 import org.encog.ml.ea.sort.GenomeComparator;
 import org.encog.ml.ea.sort.MinimizeAdjustedScoreComp;
 import org.encog.ml.ea.sort.MinimizeScoreComp;
@@ -51,7 +52,6 @@ import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.NEATSpecies;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.TrainingError;
-import org.encog.neural.networks.training.genetic.GeneticScoreAdapter;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
 /**

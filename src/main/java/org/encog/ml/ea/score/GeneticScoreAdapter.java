@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.training.genetic;
+package org.encog.ml.ea.score;
 
 import org.encog.ml.MLRegression;
 import org.encog.ml.ea.genome.Genome;
