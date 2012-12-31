@@ -68,7 +68,7 @@ public interface EvolutionaryAlgorithm {
 	
 	List<AdjustScore> getScoreAdjusters();
 	
-	void addScoreAdjusters(AdjustScore scoreAdjust);
+	void addScoreAdjuster(AdjustScore scoreAdjust);
 
 	CalculateGenomeScore getScoreFunction();
 	

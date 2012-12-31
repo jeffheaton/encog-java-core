@@ -1004,7 +1004,7 @@ public class NEATTraining implements MLTrain, EvolutionaryAlgorithm {
 	}
 
 	@Override
-	public void addScoreAdjusters(AdjustScore scoreAdjust) {
+	public void addScoreAdjuster(AdjustScore scoreAdjust) {
 		// TODO Auto-generated method stub
 		
 	}

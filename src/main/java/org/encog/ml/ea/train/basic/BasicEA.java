@@ -196,7 +196,7 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	}
 
 	@Override
-	public void addScoreAdjusters(AdjustScore scoreAdjust) {
+	public void addScoreAdjuster(AdjustScore scoreAdjust) {
 		this.adjusters.add(scoreAdjust);
 	}
 	
