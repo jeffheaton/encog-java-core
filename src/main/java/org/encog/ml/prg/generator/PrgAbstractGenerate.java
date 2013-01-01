@@ -40,7 +40,7 @@ public abstract class PrgAbstractGenerate implements PrgPopulationGenerator {
 	public void generate(Random random, Genome genome) {
 		EncogProgram program = (EncogProgram)genome;
 		program.clear();
-		createNode(random, program,0);
+		createNode(random, program,0,getMaxDepth());
 	}
 	
 	protected void createLeafNode(Random random, EncogProgram program) {
@@ -62,7 +62,7 @@ public abstract class PrgAbstractGenerate implements PrgPopulationGenerator {
 			boolean done = false;
 			do {
 				prg.clear();
-				this.createNode(rnd, prg, 0);
+				this.createNode(rnd, prg, 0, getMaxDepth());
 				if (getScoreFunction() != null) {
 					double score = getScoreFunction().calculateScore(prg);
 					if (!Double.isInfinite(score) && !Double.isNaN(score)) {
@@ -88,6 +88,7 @@ public abstract class PrgAbstractGenerate implements PrgPopulationGenerator {
 	/**
 	 * @return the maxDepth
 	 */
+	@Override
 	public int getMaxDepth() {
 		return maxDepth;
 	}

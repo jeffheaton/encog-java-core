@@ -7,9 +7,9 @@ import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 
-public class PrgGrowGenerator extends PrgAbstractGenerate {
+public class PrgFullGenerator extends PrgAbstractGenerate {
 
-	public PrgGrowGenerator(EncogProgramContext theContext,
+	public PrgFullGenerator(EncogProgramContext theContext,
 			CalculateGenomeScore theScoreFunction, int theMaxDepth) {
 		super(theContext, theScoreFunction, theMaxDepth);
 	}
@@ -20,8 +20,8 @@ public class PrgGrowGenerator extends PrgAbstractGenerate {
 			return;
 		}
 		
-		int opCode = random.nextInt(this.getAllNodes().size());
-		ProgramExtensionTemplate temp = this.getAllNodes().get(opCode);
+		int opCode = random.nextInt(this.getBranchNodes().size());
+		ProgramExtensionTemplate temp = this.getBranchNodes().get(opCode);
 		
 		
 		int childNodeCount = temp.getChildNodeCount();

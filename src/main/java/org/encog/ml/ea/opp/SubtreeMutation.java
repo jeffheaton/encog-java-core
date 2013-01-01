@@ -43,7 +43,7 @@ public class SubtreeMutation implements EvolutionaryOperator, Serializable {
 		result.setProgramCounter(mutationStart);
 		
 		// handle mutation point
-		this.generator.createNode(rnd, result, 0);
+		this.generator.createNode(rnd, result, 0, this.generator.getMaxDepth());
 		
 		// copy right of the mutation point
 		int rightSize = program.getProgramLength()-mutationStart-mutationSize;
