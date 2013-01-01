@@ -6,14 +6,15 @@ import java.util.Random;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
-import org.encog.ml.prg.train.CreateRandom;
+import org.encog.ml.prg.generator.PrgGrowGenerator;
+import org.encog.ml.prg.generator.PrgPopulationGenerator;
 
 public class SubtreeMutation implements EvolutionaryOperator, Serializable {
 
-	private CreateRandom rnd;
+	private final PrgPopulationGenerator generator;
 	
 	public SubtreeMutation(EncogProgramContext theContext, int theMaxDepth) {
-		this.rnd = new CreateRandom(theContext, theMaxDepth);
+		this.generator = new PrgGrowGenerator(theContext, null, theMaxDepth);
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public class SubtreeMutation implements EvolutionaryOperator, Serializable {
 		result.setProgramCounter(mutationStart);
 		
 		// handle mutation point
-		this.rnd.createNode(rnd, result, 0);
+		this.generator.createNode(rnd, result, 0);
 		
 		// copy right of the mutation point
 		int rightSize = program.getProgramLength()-mutationStart-mutationSize;

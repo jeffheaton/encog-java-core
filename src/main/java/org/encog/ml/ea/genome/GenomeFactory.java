@@ -7,7 +7,4 @@ import org.encog.ml.ea.score.CalculateGenomeScore;
 
 public interface GenomeFactory {
 	Genome factor();
-
-	void factorRandomPopulation(Random random, Population population,
-			CalculateGenomeScore scoreFunction, int maxDepth);
 }

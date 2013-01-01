@@ -19,12 +19,4 @@ public class IntegerArrayGenomeFactory implements GenomeFactory {
 	public Genome factor() {
 		return new IntegerArrayGenome(this.size);
 	}
-
-	@Override
-	public void factorRandomPopulation(Random random, Population population,
-			CalculateGenomeScore scoreFunction, int maxDepth) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

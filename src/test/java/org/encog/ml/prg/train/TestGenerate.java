@@ -8,6 +8,8 @@ import junit.framework.TestCase;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.extension.StandardExtensions;
+import org.encog.ml.prg.generator.PrgGrowGenerator;
+import org.encog.ml.prg.generator.PrgPopulationGenerator;
 import org.encog.parse.expression.common.RenderCommonExpression;
 
 public class TestGenerate extends TestCase {
@@ -18,8 +20,9 @@ public class TestGenerate extends TestCase {
 		
 		StandardExtensions.createAll(context.getFunctions());
 		
-		CreateRandom rnd = new CreateRandom(context,2);
-		EncogProgram prg = rnd.generate(new Random());
+		PrgPopulationGenerator rnd = new PrgGrowGenerator(context,null,2);
+		EncogProgram prg = new EncogProgram(context);
+		rnd.generate(new Random(),prg);
 		RenderCommonExpression render = new RenderCommonExpression();
 		String str = render.render(prg);
 		System.out.println(str);

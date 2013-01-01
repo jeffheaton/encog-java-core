@@ -18,12 +18,5 @@ public class DoubleArrayGenomeFactory implements GenomeFactory {
 	@Override
 	public Genome factor() {
 		return new DoubleArrayGenome(this.size);
-	}
-
-	@Override
-	public void factorRandomPopulation(Random random, Population population,
-			CalculateGenomeScore scoreFunction, int maxDepth) {
-		// TODO Auto-generated method stub
-	}
-		
+	}	
 }

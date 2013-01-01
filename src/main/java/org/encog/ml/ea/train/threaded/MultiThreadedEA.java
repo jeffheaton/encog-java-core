@@ -265,16 +265,6 @@ public class MultiThreadedEA extends BasicEA
 	public void setRandomNumberFactory(RandomFactory randomNumberFactory) {
 		this.randomNumberFactory = randomNumberFactory;
 	}
-	
-	public void createRandomPopulation(int maxDepth) {
-		Random random = this.randomNumberFactory.factor();
-		getPopulation().getGenomeFactory().factorRandomPopulation(random,
-				getPopulation(), getScoreFunction(), maxDepth);
-
-		for (Genome genome : getPopulation().getGenomes()) {
-			evaluateBestGenome(genome);
-		}
-	}
 
 	@Override
 	public void performShutdownTask() {

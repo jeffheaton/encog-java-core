@@ -22,12 +22,4 @@ public class MLMethodGenomeFactory implements GenomeFactory {
 		// TODO Auto-generated method stub
 		return new MLMethodGenome((MLEncodable)this.factory.factor());
 	}
-
-	@Override
-	public void factorRandomPopulation(Random random, Population population,
-			CalculateGenomeScore scoreFunction, int maxDepth) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
