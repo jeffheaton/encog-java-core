@@ -618,4 +618,15 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError, 
 		// TODO Auto-generated method stub
 		
 	}
+
+	public boolean hasVariable() {
+		TraverseProgram trav = new TraverseProgram(this);
+		trav.begin(0);
+		while(trav.next()) {
+			if( trav.getTemplate().isVariableValue() ) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
