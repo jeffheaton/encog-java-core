@@ -139,6 +139,8 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError, 
 		final ParseCommonExpression parser = new ParseCommonExpression(this);
 		parser.parse(expression);
 		this.source = expression;
+		this.setScore(Double.NaN);
+		this.setAdjustedScore(Double.NaN);
 	}
 
 	public ExpressionValue evaluate() {
