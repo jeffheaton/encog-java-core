@@ -16,6 +16,7 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate, Seriali
 	private boolean variableValue; 
 	private int childNodeCount;
 	private String name;
+	private boolean operator;
 	
 	
 	public BasicTemplate(short opcode) {
@@ -31,6 +32,7 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate, Seriali
 					this.name = csv.get(1);
 					this.childNodeCount = csv.getInt(2);
 					this.variableValue = csv.get(3).equalsIgnoreCase("T");
+					this.operator = csv.get(4).equalsIgnoreCase("T");
 					return;
 				}
 			}
@@ -126,7 +128,9 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate, Seriali
 		this.name = name;
 	}
 	
-	
+	public boolean isOperator() { 
+		return this.operator;
+	}
 
 	
 }

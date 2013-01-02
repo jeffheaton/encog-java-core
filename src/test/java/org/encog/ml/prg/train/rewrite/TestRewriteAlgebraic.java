@@ -39,7 +39,7 @@ public class TestRewriteAlgebraic {
 	
 	@Test
 	public void testDoubleNegativeNothing() {
-		eval("-x","-(x)");
+		eval("-x","(-x)");
 	}
 	
 	@Test

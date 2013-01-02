@@ -12,5 +12,6 @@ public interface ProgramExtensionTemplate {
 	void evaluate(EncogProgram prg);
 	short getOpcode();
 	boolean isVariableValue();
+	boolean isOperator();
 	void randomize(Random r, EncogProgram program, double degree);
 }

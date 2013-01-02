@@ -2,6 +2,7 @@ package org.encog.parse.expression.common;
 
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.exception.EncogEPLError;
+import org.encog.ml.prg.exception.EncogProgramError;
 import org.encog.ml.prg.extension.KnownConst;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;
@@ -16,7 +17,7 @@ public class RenderCommonExpression {
 
 	public RenderCommonExpression() {
 	}
-
+	
 	public String render(final EncogProgram theProgram) {
 		this.program = theProgram;
 		this.trav = new TraverseProgram(theProgram);
@@ -72,13 +73,24 @@ public class RenderCommonExpression {
 		ProgramExtensionTemplate temp = this.program.getContext().getFunctions().getOpCode(opcode);
 		
 		StringBuilder result = new StringBuilder();
-		String a = this.stack.pop();
-		String b = this.stack.pop();
-		result.append("(");
-		result.append(b);
-		result.append(temp.getName());
-		result.append(a);
-		result.append(")");
+		
+		if( this.trav.getTemplate().getChildNodeCount()==2 ) {
+			String a = this.stack.pop();
+			String b = this.stack.pop();
+			result.append("(");
+			result.append(b);
+			result.append(temp.getName());
+			result.append(a);
+			result.append(")");
+		} else if( this.trav.getTemplate().getChildNodeCount()==1 ) {
+			String a = this.stack.pop();
+			result.append("(");
+			result.append(temp.getName());
+			result.append(a);
+			result.append(")");
+		} else {
+			throw new EncogProgramError("An operator must have an arity of 1 or 2, probably should be made a function.");
+		}
 		
 		this.stack.push(result.toString());
 	}
@@ -99,17 +111,12 @@ public class RenderCommonExpression {
 			return ExpressionNodeType.Variable;
 		} 
 		
-		if( temp.getChildNodeCount()!=2 ) {
-			return ExpressionNodeType.Function;
+		if( temp.isOperator() ) {
+			return ExpressionNodeType.Operator;	
+			
 		}
-		
-		String name = temp.getName();
-		
-		if( !Character.isLetterOrDigit(name.charAt(0)) ) {
-			return ExpressionNodeType.Operator;			
-		}
-		
-		return ExpressionNodeType.Function;		
+		return ExpressionNodeType.Function;
+			
 	}
 
 	private String renderNode() {		

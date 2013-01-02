@@ -55,4 +55,10 @@ public class KnownConst implements ProgramExtensionTemplate, Serializable {
 		program.writeNode(this.opcode,0,(short) 0);
 	}
 
+
+	@Override
+	public boolean isOperator() {
+		return false;
+	}
+
 }

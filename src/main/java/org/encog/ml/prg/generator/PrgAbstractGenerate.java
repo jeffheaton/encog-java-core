@@ -54,7 +54,7 @@ public abstract class PrgAbstractGenerate implements PrgPopulationGenerator {
 		temp.randomize(random, program, 1.0);
 	}
 	
-	private void generateGenome(Random rnd, EncogProgram prg, Set<String> populationContents) {
+	private void generateGenome(Random rnd, Population pop, EncogProgram prg, Set<String> populationContents) {
 		boolean done;
 		String key = "";
 		int maxTries = 100000;
@@ -66,6 +66,7 @@ public abstract class PrgAbstractGenerate implements PrgPopulationGenerator {
 			}
 			prg.clear();
 			this.createNode(rnd, prg, 0, getMaxDepth());
+			pop.rewrite(prg);
 			
 			done = true;
 			
@@ -110,8 +111,7 @@ public abstract class PrgAbstractGenerate implements PrgPopulationGenerator {
 			EncogProgram prg = new EncogProgram(getContext(),
 					new EncogProgramVariables(), holder, i);
 			pop.getGenomes().add(prg);
-			generateGenome(rnd,prg,populationContents);
-			pop.rewrite(prg);
+			generateGenome(rnd,pop,prg,populationContents);
 		}
 	}
 

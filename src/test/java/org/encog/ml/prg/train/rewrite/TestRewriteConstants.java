@@ -101,6 +101,6 @@ public class TestRewriteConstants {
 	
 	@Test
 	public void testOther() {
-		eval("-((x-6))","-((x-6))",true);		
+		eval("-((x-6))","(-(x-6))",true);		
 	}
 }
