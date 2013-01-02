@@ -64,4 +64,10 @@ public class GeneticScoreAdapter implements CalculateGenomeScore {
 		return this.calculateScore.shouldMinimize();
 	}
 
+	@Override
+	public boolean requireSingleThreaded() {
+		// TODO Auto-generated method stub
+		return this.calculateScore.requireSingleThreaded();
+	}
+
 }

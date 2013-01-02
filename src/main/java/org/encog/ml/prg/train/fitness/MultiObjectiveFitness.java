@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.encog.EncogError;
 import org.encog.ml.MLRegression;
+import org.encog.ml.data.buffer.BufferedMLDataSet;
 import org.encog.neural.networks.training.CalculateScore;
 
 public class MultiObjectiveFitness  implements CalculateScore, Serializable {
@@ -38,6 +39,16 @@ public class MultiObjectiveFitness  implements CalculateScore, Serializable {
 	@Override
 	public boolean shouldMinimize() {
 		return this.min;
+	}
+	
+	@Override
+	public boolean requireSingleThreaded() {
+		for(FitnessObjective obj: this.objectives) {
+			if( obj.getScore().requireSingleThreaded() ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

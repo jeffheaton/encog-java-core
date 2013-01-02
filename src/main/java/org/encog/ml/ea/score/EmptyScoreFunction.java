@@ -16,4 +16,9 @@ public class EmptyScoreFunction implements CalculateGenomeScore, Serializable {
 		return true;
 	}
 
+	@Override
+	public boolean requireSingleThreaded() {
+		return false;
+	}
+
 }

@@ -44,4 +44,9 @@ public interface CalculateScore {
 	 * @return True if the goal is to minimize the score.
 	 */
 	boolean shouldMinimize();
+
+	/**
+	 * @return True, if this score function cannot be done in parallel.
+	 */
+	boolean requireSingleThreaded();
 }

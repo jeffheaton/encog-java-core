@@ -20,6 +20,11 @@ public class ComplexityBasedScore implements CalculateScore, Serializable {
 		return true;
 	}
 
+	@Override
+	public boolean requireSingleThreaded() {
+		return false;
+	}
+
 	
 	
 }

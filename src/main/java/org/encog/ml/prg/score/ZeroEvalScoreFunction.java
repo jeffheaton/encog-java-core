@@ -24,4 +24,9 @@ public class ZeroEvalScoreFunction implements CalculateGenomeScore, Serializable
 		return true;
 	}
 
+	@Override
+	public boolean requireSingleThreaded() {
+		return false;
+	}
+
 }

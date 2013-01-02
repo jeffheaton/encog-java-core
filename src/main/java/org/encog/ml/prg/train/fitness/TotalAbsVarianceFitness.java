@@ -7,6 +7,7 @@ import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.data.buffer.BufferedMLDataSet;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.neural.networks.training.CalculateScore;
 
@@ -44,4 +45,12 @@ public class TotalAbsVarianceFitness implements CalculateScore, Serializable {
 		return true;
 	}
 
+	@Override
+	public boolean requireSingleThreaded() {
+		if( this.trainingData instanceof BufferedMLDataSet ) {
+			return true;
+		}
+		return false;
+	}
+	
 }

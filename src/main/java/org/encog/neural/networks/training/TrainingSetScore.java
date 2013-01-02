@@ -25,6 +25,7 @@ package org.encog.neural.networks.training;
 
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.data.buffer.BufferedMLDataSet;
 import org.encog.util.error.CalculateRegressionError;
 
 /**
@@ -65,6 +66,14 @@ public class TrainingSetScore implements CalculateScore {
 	 */
 	public boolean shouldMinimize() {
 		return true;
+	}
+	
+	@Override
+	public boolean requireSingleThreaded() {
+		if( this.training instanceof BufferedMLDataSet ) {
+			return true;
+		}
+		return false;
 	}
 
 }

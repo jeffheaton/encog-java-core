@@ -43,4 +43,6 @@ public interface CalculateGenomeScore {
 	 * @return True if the goal is to minimize the score.
 	 */
 	boolean shouldMinimize();
+	
+	boolean requireSingleThreaded();
 }

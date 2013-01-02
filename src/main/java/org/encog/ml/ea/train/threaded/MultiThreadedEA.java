@@ -1,7 +1,6 @@
 package org.encog.ml.ea.train.threaded;
 
 import java.io.Serializable;
-import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -81,7 +80,7 @@ public class MultiThreadedEA extends BasicEA
 		}
 		
 		// rescore everything
-		ParallelScore s = new ParallelScore(getPopulation(),this.getScoreAdjusters(),this.getScoreFunction());
+		ParallelScore s = new ParallelScore(getPopulation(),this.getScoreAdjusters(),this.getScoreFunction(),this.getThreadCount());
 		s.process();
 		
 		// spin up the threads
