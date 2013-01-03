@@ -328,7 +328,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * @param numTrysToFindOldLink
 	 *            The number of tries to find a link to split.
 	 */
-	void addNeuron(final NEATTraining training, final double mutationRate, final int numTrysToFindOldLink) {
+	public void addNeuron(final NEATTraining training, final int numTrysToFindOldLink) {
 
 		int countTrysToFindOldLink = numTrysToFindOldLink;
 

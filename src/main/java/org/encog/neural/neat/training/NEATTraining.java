@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.encog.mathutil.randomize.RandomChoice;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLMethod;
@@ -44,6 +43,7 @@ import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.NEATSpecies;
 import org.encog.neural.neat.training.opp.NEATCrossover;
+import org.encog.neural.neat.training.opp.NEATMutate;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
@@ -99,14 +99,11 @@ public class NEATTraining extends BasicEA implements MLTrain {
 	 * The parameters of NEAT.
 	 */
 	private final NEATParams params = new NEATParams();
-	
-	private RandomChoice mutateChoices;
-	
-	private RandomChoice mutateAddChoices;
 		
 	private NEATPopulation population;
 	
-	private NEATCrossover crossover;
+	private NEATCrossover crossover;	
+	private NEATMutate mutate;
 
 	/**
 	 * Construct a neat trainer with a new population. The new population is
@@ -311,11 +308,12 @@ public class NEATTraining extends BasicEA implements MLTrain {
 	 * setup for training.
 	 */
 	private void init() {
-		this.mutateChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0, 0.001 } );
-		this.mutateAddChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0 } );
-		
+	
 		this.crossover = new NEATCrossover();
 		this.crossover.init(this);
+		
+		this.mutate = new NEATMutate();
+		this.mutate.init(this);
 		
 		if (this.getScoreFunction().shouldMinimize()) {
 			this.bestEverScore = Double.MAX_VALUE;
@@ -414,7 +412,7 @@ public class NEATTraining extends BasicEA implements MLTrain {
 
 						if (children[0] != null) {
 							children[0].setGenomeID(getPopulation().assignGenomeID());
-							mutate(children[0]);
+							this.mutate.performOperation(rnd, children, 0, children, 0);
 						}
 					}
 
@@ -448,34 +446,6 @@ public class NEATTraining extends BasicEA implements MLTrain {
 		resetAndKill();
 		sortAndRecord();
 		speciateAndCalculateSpawnLevels();
-	}
-	
-	public void mutate(NEATGenome genome) {
-		int option = this.mutateChoices.generate(new Random());
-		
-		switch(option) {
-			case 0: // mutate weight
-				genome.mutateWeights(this.params.mutationRate,
-						this.params.probabilityWeightReplaced,
-						this.params.maxWeightPerturbation);
-				break;
-			case 1: // add node
-				if (genome.getNeuronsChromosome().size() < this.params.maxPermittedNeurons) {
-					genome.addNeuron(this, this.params.chanceAddNode,
-							this.params.numTrysToFindOldLink);
-				}
-				break;
-			case 2: // add connection
-				// now there's the chance a link may be added
-				genome.addLink(	this, this.params.numTrysToFindLoopedLink,
-						this.params.numAddLinkAttempts);
-				break;
-			case 3: // adjust curve
-				break;
-			case 4: // remove connection
-				genome.removeLink();
-				break;
-		}
 	}
 
 	/**
@@ -699,5 +669,5 @@ public class NEATTraining extends BasicEA implements MLTrain {
 		}
 		final double score = this.getScoreFunction().calculateScore(g);
 		g.setScore(score);
-	}
+	}	
 }
