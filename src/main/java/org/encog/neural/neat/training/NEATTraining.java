@@ -35,16 +35,12 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.genome.Genome;
-import org.encog.ml.ea.opp.selection.PrgSelection;
-import org.encog.ml.ea.population.Population;
-import org.encog.ml.ea.score.AdjustScore;
 import org.encog.ml.ea.score.CalculateGenomeScore;
 import org.encog.ml.ea.score.GeneticScoreAdapter;
 import org.encog.ml.ea.sort.GenomeComparator;
 import org.encog.ml.ea.sort.MinimizeAdjustedScoreComp;
 import org.encog.ml.ea.sort.MinimizeScoreComp;
-import org.encog.ml.ea.train.EvolutionaryAlgorithm;
-import org.encog.ml.prg.train.GeneticTrainingParams;
+import org.encog.ml.ea.train.basic.BasicEA;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.neat.NEATNetwork;
@@ -79,7 +75,7 @@ enum NEATParent {
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATTraining implements MLTrain, EvolutionaryAlgorithm {
+public class NEATTraining extends BasicEA implements MLTrain {
 
 	/**
 	 * The average fit adjustment.
@@ -112,11 +108,6 @@ public class NEATTraining implements MLTrain, EvolutionaryAlgorithm {
 	private double totalFitAdjustment;
 
 	/**
-	 * Determines if we are using snapshot mode.
-	 */
-	private boolean snapshot;
-
-	/**
 	 * The iteration number.
 	 */
 	private int iteration;
@@ -129,19 +120,7 @@ public class NEATTraining implements MLTrain, EvolutionaryAlgorithm {
 	private RandomChoice mutateChoices;
 	
 	private RandomChoice mutateAddChoices;
-	
-	/**
-	 * The score calculation object.
-	 */
-	private CalculateGenomeScore calculateScore;
-
-	/**
-	 * The genome comparator.
-	 */
-	private GenomeComparator selectionComparator;
-	
-	private GenomeComparator bestComparator;
-	
+		
 	private NEATPopulation population;
 
 	/**
@@ -160,15 +139,14 @@ public class NEATTraining implements MLTrain, EvolutionaryAlgorithm {
 	public NEATTraining(final CalculateScore calculateScore,
 			final int inputCount, final int outputCount,
 			final int populationSize) {
+		super(new NEATPopulation(inputCount, outputCount,
+				populationSize), new GeneticScoreAdapter(calculateScore));
 
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
 
-		setCalculateScore(new GeneticScoreAdapter(calculateScore));
 		setBestComparator(new MinimizeScoreComp());
 		setSelectionComparator(new MinimizeAdjustedScoreComp());
-		setPopulation(new NEATPopulation(inputCount, outputCount,
-				populationSize));
 
 		init();
 	}
@@ -183,12 +161,13 @@ public class NEATTraining implements MLTrain, EvolutionaryAlgorithm {
 	 */
 	public NEATTraining(final CalculateScore calculateScore,
 			final NEATPopulation population) {
+		super(population,new GeneticScoreAdapter(calculateScore));
+		
 		if (population.size() < 1) {
 			throw new TrainingError("Population can not be empty.");
 		}
-
+		
 		final NEATGenome genome = (NEATGenome) population.getGenomes().get(0);
-		setCalculateScore(new GeneticScoreAdapter(calculateScore));
 		setBestComparator(new MinimizeScoreComp());
 		setSelectionComparator(new MinimizeAdjustedScoreComp());
 		setPopulation(population);
@@ -523,7 +502,7 @@ public class NEATTraining implements MLTrain, EvolutionaryAlgorithm {
 		this.mutateChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0, 0.001 } );
 		this.mutateAddChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0 } );
 		
-		if (getCalculateScore().shouldMinimize()) {
+		if (this.getScoreFunction().shouldMinimize()) {
 			this.bestEverScore = Double.MAX_VALUE;
 		} else {
 			this.bestEverScore = Double.MIN_VALUE;
@@ -548,13 +527,6 @@ public class NEATTraining implements MLTrain, EvolutionaryAlgorithm {
 		resetAndKill();
 		sortAndRecord();
 		speciateAndCalculateSpawnLevels();
-	}
-
-	/**
-	 * @return Are we using snapshot mode.
-	 */
-	public boolean isSnapshot() {
-		return this.snapshot;
 	}
 
 	/**
@@ -753,17 +725,6 @@ public class NEATTraining implements MLTrain, EvolutionaryAlgorithm {
 		this.iteration = iteration;
 	}
 
-
-	/**
-	 * Set if we are using snapshot mode.
-	 * 
-	 * @param snapshot
-	 *            True if we are using snapshot mode.
-	 */
-	public void setSnapshot(final boolean snapshot) {
-		this.snapshot = snapshot;
-	}
-
 	/**
 	 * Sort the genomes.
 	 */
@@ -774,7 +735,7 @@ public class NEATTraining implements MLTrain, EvolutionaryAlgorithm {
 			calculateScore(genome);
 		}
 
-		getPopulation().sort(this.bestComparator);
+		getPopulation().sort(this.getBestComparator() );
 
 		final Genome genome = getPopulation().get(0);
 		final double currentBest = genome.getScore();
@@ -894,20 +855,6 @@ public class NEATTraining implements MLTrain, EvolutionaryAlgorithm {
 	}
 
 	/**
-	 * @return the calculateScore
-	 */
-	public CalculateGenomeScore getCalculateScore() {
-		return calculateScore;
-	}
-
-	/**
-	 * @param calculateScore the calculateScore to set
-	 */
-	public void setCalculateScore(CalculateGenomeScore calculateScore) {
-		this.calculateScore = calculateScore;
-	}
-
-	/**
 	 * @return the population
 	 */
 	public NEATPopulation getPopulation() {
@@ -931,90 +878,7 @@ public class NEATTraining implements MLTrain, EvolutionaryAlgorithm {
 		if (g.getOrganism() instanceof MLContext) {
 			((MLContext) g.getOrganism()).clearContext();
 		}
-		final double score = this.calculateScore.calculateScore(g);
+		final double score = this.getScoreFunction().calculateScore(g);
 		g.setScore(score);
 	}
-
-	@Override
-	public void setPopulation(Population thePopulation) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public GeneticTrainingParams getParams() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getMaxIndividualSize() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public PrgSelection getSelection() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setSelection(PrgSelection selection) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/**
-	 * @return the selectionComparator
-	 */
-	@Override
-	public GenomeComparator getSelectionComparator() {
-		return selectionComparator;
-	}
-
-	/**
-	 * @param selectionComparator the selectionComparator to set
-	 */
-	@Override
-	public void setSelectionComparator(GenomeComparator selectionComparator) {
-		this.selectionComparator = selectionComparator;
-	}
-
-	/**
-	 * @return the bestComparator
-	 */
-	@Override
-	public GenomeComparator getBestComparator() {
-		return bestComparator;
-	}
-
-	/**
-	 * @param bestComparator the bestComparator to set
-	 */
-	@Override
-	public void setBestComparator(GenomeComparator bestComparator) {
-		this.bestComparator = bestComparator;
-	}
-
-	@Override
-	public List<AdjustScore> getScoreAdjusters() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void addScoreAdjuster(AdjustScore scoreAdjust) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public CalculateGenomeScore getScoreFunction() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	
-
 }
