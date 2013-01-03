@@ -27,6 +27,7 @@ import java.util.Random;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.genetic.genome.ArrayGenome;
 
 /**
@@ -104,5 +105,11 @@ public class Splice implements EvolutionaryOperator {
 	@Override
 	public int parentsNeeded() {
 		return 2;
+	}
+
+	@Override
+	public void init(EvolutionaryAlgorithm theOwner) {
+		// TODO Auto-generated method stub
+		
 	}
 }

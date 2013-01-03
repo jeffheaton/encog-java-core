@@ -27,6 +27,7 @@ import java.util.Random;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.genetic.genome.ArrayGenome;
 
 /**
@@ -84,6 +85,12 @@ public class MutateShuffle implements EvolutionaryOperator {
 	@Override
 	public int parentsNeeded() {
 		return 1;
+	}
+
+	@Override
+	public void init(EvolutionaryAlgorithm theOwner) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

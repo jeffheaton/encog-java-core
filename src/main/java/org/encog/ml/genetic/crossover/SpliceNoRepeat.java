@@ -29,6 +29,7 @@ import java.util.Set;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.genetic.genome.IntegerArrayGenome;
 
@@ -142,5 +143,11 @@ public class SpliceNoRepeat implements EvolutionaryOperator {
 	@Override
 	public int parentsNeeded() {
 		return 2;
+	}
+
+	@Override
+	public void init(EvolutionaryAlgorithm theOwner) {
+		// TODO Auto-generated method stub
+		
 	}
 }

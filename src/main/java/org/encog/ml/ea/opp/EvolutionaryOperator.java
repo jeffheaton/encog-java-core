@@ -3,6 +3,7 @@ package org.encog.ml.ea.opp;
 import java.util.Random;
 
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 
 public interface EvolutionaryOperator {
 	/**
@@ -25,4 +26,6 @@ public interface EvolutionaryOperator {
 	 * @return The number of parents needed.
 	 */
 	int parentsNeeded();
+
+	void init(EvolutionaryAlgorithm theOwner);
 }

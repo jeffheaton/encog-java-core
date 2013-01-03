@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Random;
 
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.generator.PrgGrowGenerator;
@@ -63,5 +64,11 @@ public class SubtreeMutation implements EvolutionaryOperator, Serializable {
 	@Override
 	public int parentsNeeded() {
 		return 2;
+	}
+
+	@Override
+	public void init(EvolutionaryAlgorithm theOwner) {
+		// TODO Auto-generated method stub
+		
 	}
 }

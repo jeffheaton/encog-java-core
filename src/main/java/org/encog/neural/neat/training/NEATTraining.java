@@ -24,7 +24,6 @@
 package org.encog.neural.neat.training;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -35,9 +34,7 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.genome.Genome;
-import org.encog.ml.ea.score.CalculateGenomeScore;
 import org.encog.ml.ea.score.GeneticScoreAdapter;
-import org.encog.ml.ea.sort.GenomeComparator;
 import org.encog.ml.ea.sort.MinimizeAdjustedScoreComp;
 import org.encog.ml.ea.sort.MinimizeScoreComp;
 import org.encog.ml.ea.train.basic.BasicEA;
@@ -46,24 +43,10 @@ import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.NEATSpecies;
+import org.encog.neural.neat.training.opp.NEATCrossover;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
-
-/**
- * The two parents.
- */
-enum NEATParent {
-	/**
-	 * The father.
-	 */
-	Dad,
-
-	/**
-	 * The mother.
-	 */
-	Mom
-};
 
 /**
  * Implements NEAT genetic training.
@@ -122,6 +105,8 @@ public class NEATTraining extends BasicEA implements MLTrain {
 	private RandomChoice mutateAddChoices;
 		
 	private NEATPopulation population;
+	
+	private NEATCrossover crossover;
 
 	/**
 	 * Construct a neat trainer with a new population. The new population is
@@ -176,25 +161,6 @@ public class NEATTraining extends BasicEA implements MLTrain {
 		init();
 	}
 
-	/**
-	 * Add a neuron.
-	 * 
-	 * @param nodeID
-	 *            The neuron id.
-	 * @param vec
-	 *            THe list of id's used.
-	 */
-	public void addNeuronID(final long nodeID, final List<Long> vec) {
-		for (int i = 0; i < vec.size(); i++) {
-			if (vec.get(i) == nodeID) {
-				return;
-			}
-		}
-
-		vec.add(nodeID);
-
-		return;
-	}
 
 	/**
 	 * Not supported, will throw an error.
@@ -265,160 +231,6 @@ public class NEATTraining extends BasicEA implements MLTrain {
 		return false;
 	}
 	
-	/**
-	 * Choose a parent to favor.
-	 * @param mom The mother.
-	 * @param dad The father.
-	 * @return The parent to favor.
-	 */
-	private NEATParent favorParent(final NEATGenome mom, final NEATGenome dad) {
-		
-		// first determine who is more fit, the mother or the father?
-		// see if mom and dad are the same fitness
-		if (mom.getScore() == dad.getScore()) {
-			// are mom and dad the same fitness
-			if (mom.getNumGenes() == dad.getNumGenes()) {
-				// if mom and dad are the same fitness and have the same number of genes, 
-				// then randomly pick mom or dad as the most fit.
-				if (Math.random() > 0) {
-					return NEATParent.Mom;
-				} else {
-					return NEATParent.Dad;
-				}
-			}
-			// mom and dad are the same fitness, but different number of genes
-			// favor the parent with fewer genes
-			else {
-				if (mom.getNumGenes() < dad.getNumGenes()) {
-					return NEATParent.Mom;
-				} else {
-					return NEATParent.Dad;
-				}
-			}
-		} else {
-			// mom and dad have different scores, so choose the better score.
-			// important to note, better score COULD BE the larger or smaller score.
-			if (getSelectionComparator().compare(mom, dad)<0) {
-				return NEATParent.Mom;
-			}
-
-			else {
-				return NEATParent.Dad;
-			}
-		}
-		
-	}
-
-	/**
-	 * Perform the crossover.
-	 * 
-	 * @param mom
-	 *            The mother.
-	 * @param dad
-	 *            The father.
-	 * @return The child.
-	 */
-	public NEATGenome crossover(final NEATGenome mom, final NEATGenome dad) {
-		NEATParent best = favorParent(mom,dad);
-
-		final List<NEATNeuronGene> babyNeurons = new ArrayList<NEATNeuronGene>();
-		final List<NEATLinkGene> babyGenes = new ArrayList<NEATLinkGene>();
-
-		final List<Long> vecNeurons = new ArrayList<Long>();
-
-		int curMom = 0; // current gene index from mom
-		int curDad = 0; // current gene index from dad
-		NEATLinkGene selectedGene = null;
-		
-		// add in the input and bias, they should always be here
-		int alwaysCount = this.inputCount + this.outputCount + 1;
-		for(int i=0;i<alwaysCount;i++) {
-			addNeuronID(i, vecNeurons);
-		}
-		
-
-		while ((curMom < mom.getNumGenes()) || (curDad < dad.getNumGenes())) {
-			NEATLinkGene momGene = null; // the mom gene object
-			NEATLinkGene dadGene = null; // the dad gene object
-			
-
-			// grab the actual objects from mom and dad for the specified indexes
-			// if there are none, then null
-			if (curMom < mom.getNumGenes()) {
-				momGene = (NEATLinkGene) mom.getLinksChromosome().get(curMom);
-			} 
-
-			if (curDad < dad.getNumGenes()) {
-				dadGene = (NEATLinkGene) dad.getLinksChromosome().get(curDad);
-			} 
-
-			// now select a gene for mom or dad.  This gene is for the baby
-			if ((momGene == null) && (dadGene != null)) {
-				if (best == NEATParent.Dad) {
-					selectedGene = dadGene;
-				}
-				curDad++;
-			} else if ((dadGene == null) && (momGene != null)) {
-				if (best == NEATParent.Mom) {
-					selectedGene = momGene;
-				}
-				curMom++;
-			} else if (momGene.getInnovationId() < dadGene.getInnovationId()) {
-				if (best == NEATParent.Mom) {
-					selectedGene = momGene;
-				}
-				curMom++;
-			} else if (dadGene.getInnovationId() < momGene.getInnovationId()) {
-				if (best == NEATParent.Dad) {
-					selectedGene = dadGene;
-				}
-				curDad++;
-			} else if (dadGene.getInnovationId() == momGene.getInnovationId()) {
-				if (Math.random() < 0.5f) {
-					selectedGene = momGene;
-				}
-
-				else {
-					selectedGene = dadGene;
-				}
-				curMom++;
-				curDad++;
-			}
-
-			if( selectedGene!=null ) {
-				if (babyGenes.size() == 0) {
-					babyGenes.add(selectedGene);
-				} else {
-					if (((NEATLinkGene) babyGenes.get(babyGenes.size() - 1))
-							.getInnovationId() != selectedGene.getInnovationId()) {
-						babyGenes.add(selectedGene);
-					}
-				}
-	
-				// Check if we already have the nodes referred to in SelectedGene.
-				// If not, they need to be added.
-				addNeuronID(selectedGene.getFromNeuronID(), vecNeurons);
-				addNeuronID(selectedGene.getToNeuronID(), vecNeurons);
-			}
-
-		}// end while
-
-		// now create the required nodes. First sort them into order
-		Collections.sort(vecNeurons);
-
-		for (int i = 0; i < vecNeurons.size(); i++) {
-			babyNeurons.add(getInnovations().createNeuronFromID(
-					vecNeurons.get(i)));
-		}
-
-		// finally, create the genome
-		final NEATGenome babyGenome = new NEATGenome(getPopulation()
-				.assignGenomeID(), babyNeurons, babyGenes, mom.getInputCount(),
-				mom.getOutputCount());
-		babyGenome.setPopulation(getPopulation());
-		
-		return babyGenome;
-	}
 
 	/**
 	 * Called when training is done.
@@ -502,6 +314,9 @@ public class NEATTraining extends BasicEA implements MLTrain {
 		this.mutateChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0, 0.001 } );
 		this.mutateAddChoices = new RandomChoice(new double[] {0.988, 0.001, 0.01, 0.0 } );
 		
+		this.crossover = new NEATCrossover();
+		this.crossover.init(this);
+		
 		if (this.getScoreFunction().shouldMinimize()) {
 			this.bestEverScore = Double.MAX_VALUE;
 		} else {
@@ -542,7 +357,11 @@ public class NEATTraining extends BasicEA implements MLTrain {
 	 */
 	@Override
 	public void iteration() {
-
+		NEATGenome[] parents = new NEATGenome[2];
+		NEATGenome[] children = new NEATGenome[1];
+		
+		Random rnd = new Random();
+		
 		this.iteration++;
 		final List<NEATGenome> newPop = new ArrayList<NEATGenome>();
 
@@ -555,10 +374,10 @@ public class NEATTraining extends BasicEA implements MLTrain {
 				boolean bChosenBestYet = false;
 
 				while ((numToSpawn--) > 0) {
-					NEATGenome baby = null;
+					children[0] = null;
 
 					if (!bChosenBestYet) {
-						baby = (NEATGenome) s.getLeader();
+						children[0] = (NEATGenome) s.getLeader();
 
 						bChosenBestYet = true;
 					}
@@ -569,45 +388,45 @@ public class NEATTraining extends BasicEA implements MLTrain {
 						// then we can only perform mutation
 						if (s.getMembers().size() == 1) {
 							// spawn a child
-							baby = new NEATGenome((NEATGenome) s.chooseParent());
+							children[0] = new NEATGenome((NEATGenome) s.chooseParent());
 						} else {
-							final NEATGenome g1 = (NEATGenome) s.chooseParent();
+							parents[0] = (NEATGenome) s.chooseParent();
 
 							if (Math.random() < this.params.crossoverRate) {
-								NEATGenome g2 = (NEATGenome) s.chooseParent();
+								parents[1] = (NEATGenome) s.chooseParent();
 
 								int numAttempts = 5;
 
-								while ((g1.getGenomeID() == g2.getGenomeID())
+								while ((parents[0].getGenomeID() == parents[1].getGenomeID())
 										&& ((numAttempts--) > 0)) {
-									g2 = (NEATGenome) s.chooseParent();
+									parents[1] = (NEATGenome) s.chooseParent();
 								}
 
-								if (g1.getGenomeID() != g2.getGenomeID()) {
-									baby = crossover(g1, g2);
+								if (parents[0].getGenomeID() != parents[1].getGenomeID()) {
+									this.crossover.performOperation(rnd, parents, 0, children, 0);
 								}
 							}
 
 							else {
-								baby = new NEATGenome(g1);
+								children[0] = new NEATGenome(parents[0]);
 							}
 						}
 
-						if (baby != null) {
-							baby.setGenomeID(getPopulation().assignGenomeID());
-							mutate(baby);
+						if (children[0] != null) {
+							children[0].setGenomeID(getPopulation().assignGenomeID());
+							mutate(children[0]);
 						}
 					}
 
-					if (baby != null) {
+					if (children[0] != null) {
 						// sort the baby's genes by their innovation numbers
-						baby.sortGenes();
+						children[0].sortGenes();
 
 						// add to new pop
 						// if (newPop.contains(baby)) {
 						// throw new EncogErrorthis.params("readd");
 						// }
-						newPop.add(baby);
+						newPop.add(children[0]);
 
 						++numSpawnedSoFar;
 
