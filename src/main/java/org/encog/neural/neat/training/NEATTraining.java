@@ -87,17 +87,13 @@ public class NEATTraining extends BasicEA implements MLTrain {
 	 * The iteration number.
 	 */
 	private int iteration;
-	
-	/**
-	 * The parameters of NEAT.
-	 */
-	private final NEATParams params = new NEATParams();
 		
 	private NEATPopulation population;
 	
 	private NEATCrossover crossover;	
 	private NEATMutate mutate;
 	private Speciation speciation;
+	private double crossoverRate = 0.7;
 
 	/**
 	 * Construct a neat trainer with a new population. The new population is
@@ -334,7 +330,7 @@ public class NEATTraining extends BasicEA implements MLTrain {
 						} else {
 							parents[0] = (NEATGenome) s.chooseParent();
 
-							if (Math.random() < this.params.crossoverRate) {
+							if (Math.random() < this.crossoverRate) {
 								parents[1] = (NEATGenome) s.chooseParent();
 
 								int numAttempts = 5;
