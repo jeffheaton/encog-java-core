@@ -24,7 +24,7 @@ public class NEATMutate implements EvolutionaryOperator {
 	private RandomChoice mutateAddChoices;
 	private final double mutateRate = 0.2;
 	private final double probNewMutate = 0.1;
-	private final double maxPertubation = 0.1;
+	private final double maxPertubation = 0.5;
 	private final int maxTries = 5;
 
 	public NEATMutate() {
