@@ -44,6 +44,8 @@ import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.NEATSpecies;
 import org.encog.neural.neat.training.opp.NEATCrossover;
 import org.encog.neural.neat.training.opp.NEATMutate;
+import org.encog.neural.neat.training.species.SimpleNEATSpeciation;
+import org.encog.neural.neat.training.species.Speciation;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
@@ -60,10 +62,6 @@ import org.encog.neural.networks.training.propagation.TrainingContinuation;
  */
 public class NEATTraining extends BasicEA implements MLTrain {
 
-	/**
-	 * The average fit adjustment.
-	 */
-	private double averageFitAdjustment;
 
 	/**
 	 * The best ever score.
@@ -86,11 +84,6 @@ public class NEATTraining extends BasicEA implements MLTrain {
 	private final int outputCount;
 
 	/**
-	 * The total fit adjustment.
-	 */
-	private double totalFitAdjustment;
-
-	/**
 	 * The iteration number.
 	 */
 	private int iteration;
@@ -104,6 +97,7 @@ public class NEATTraining extends BasicEA implements MLTrain {
 	
 	private NEATCrossover crossover;	
 	private NEATMutate mutate;
+	private Speciation speciation;
 
 	/**
 	 * Construct a neat trainer with a new population. The new population is
@@ -169,58 +163,6 @@ public class NEATTraining extends BasicEA implements MLTrain {
 	public void addStrategy(final Strategy strategy) {
 		throw new TrainingError(
 				"Strategies are not supported by this training method.");
-	}
-
-	/**
-	 * Adjust the species compatibility threshold. This prevents us from having
-	 * too many species.
-	 */
-	public void adjustCompatibilityThreshold() {
-
-		// has this been disabled (unlimited species)
-		if (this.params.maxNumberOfSpecies < 1) {
-			return;
-		}
-
-		final double thresholdIncrement = 0.01;
-
-		if (getPopulation().getSpecies().size() > this.params.maxNumberOfSpecies) {
-			this.params.compatibilityThreshold += thresholdIncrement;
-		}
-
-		else if (getPopulation().getSpecies().size() < 2) {
-			this.params.compatibilityThreshold -= thresholdIncrement;
-		}
-
-	}
-
-	/**
-	 * Adjust each species score.
-	 */
-	public void adjustSpeciesScore() {
-		for (final NEATSpecies s : getPopulation().getSpecies()) {
-			// loop over all genomes and adjust scores as needed
-			for (final Genome member : s.getMembers()) {
-				double score = member.getScore();
-
-				// apply a youth bonus
-				if (s.getAge() < getPopulation().getYoungBonusAgeThreshold()) {
-					score = getSelectionComparator().applyBonus(score,
-							getPopulation().getYoungScoreBonus());
-				}
-
-				// apply an old age penalty
-				if (s.getAge() > getPopulation().getOldAgeThreshold()) {
-					score = getSelectionComparator().applyPenalty(score,
-							getPopulation().getOldAgePenalty());
-				}
-
-				final double adjustedScore = score / s.getMembers().size();
-
-				member.setAdjustedScore(adjustedScore);
-
-			}
-		}
 	}
 
 	@Override
@@ -315,6 +257,9 @@ public class NEATTraining extends BasicEA implements MLTrain {
 		this.mutate = new NEATMutate();
 		this.mutate.init(this);
 		
+		this.speciation = new SimpleNEATSpeciation();
+		this.speciation.init(this);
+		
 		if (this.getScoreFunction().shouldMinimize()) {
 			this.bestEverScore = Double.MAX_VALUE;
 		} else {
@@ -337,9 +282,8 @@ public class NEATTraining extends BasicEA implements MLTrain {
 			}
 		}
 
-		resetAndKill();
 		sortAndRecord();
-		speciateAndCalculateSpawnLevels();
+		this.speciation.performSpeciation();
 	}
 
 	/**
@@ -443,9 +387,8 @@ public class NEATTraining extends BasicEA implements MLTrain {
 		getPopulation().clear();
 		getPopulation().addAll(newPop);
 
-		resetAndKill();
 		sortAndRecord();
-		speciateAndCalculateSpawnLevels();
+		this.speciation.performSpeciation();
 	}
 
 	/**
@@ -469,30 +412,7 @@ public class NEATTraining extends BasicEA implements MLTrain {
 		return null;
 	}
 
-	/**
-	 * Reset for an iteration.
-	 */
-	public void resetAndKill() {
-		this.totalFitAdjustment = 0;
-		this.averageFitAdjustment = 0;
 
-		final Object[] speciesArray = getPopulation().getSpecies().toArray();
-
-		for (final Object element : speciesArray) {
-			final NEATSpecies s = (NEATSpecies) element;
-			s.purge();
-
-			// did the leader die?  If so, disband the species.
-			if( !getPopulation().getGenomes().contains(s.getLeader())) {
-				getPopulation().getSpecies().remove(s);
-			}
-			else if ((s.getGensNoImprovement() > this.params.numGensAllowedNoImprovement)
-					&& getSelectionComparator().isBetterThan(this.bestEverScore,
-							s.getBestScore())) {
-				getPopulation().getSpecies().remove(s);
-			}
-		}
-	}
 
 	@Override
 	public void resume(final TrainingContinuation state) {
@@ -540,61 +460,7 @@ public class NEATTraining extends BasicEA implements MLTrain {
 		
 	}
 
-	/**
-	 * Determine the species.
-	 */
-	public void speciateAndCalculateSpawnLevels() {
 
-		// calculate compatibility between genomes and species
-		adjustCompatibilityThreshold();
-
-		// assign genomes to species (if any exist)
-		for (final Genome g : getPopulation().getGenomes()) {
-			final NEATGenome genome = (NEATGenome) g;
-			boolean added = false;
-
-			for (final NEATSpecies s : getPopulation().getSpecies()) {
-				final double compatibility = genome
-						.getCompatibilityScore((NEATGenome) s.getLeader());
-
-				if (compatibility <= this.params.compatibilityThreshold) {
-					addSpeciesMember(s, genome);
-					genome.setSpeciesID(s.getSpeciesID());
-					added = true;
-					break;
-				}
-			}
-
-			// if this genome did not fall into any existing species, create a
-			// new species
-			if (!added) {
-				getPopulation().getSpecies().add(
-						new NEATSpecies(getPopulation(), genome,
-								getPopulation().assignSpeciesID()));
-			}
-		}
-
-		adjustSpeciesScore();
-
-		for (final Genome g : getPopulation().getGenomes()) {
-			final NEATGenome genome = (NEATGenome) g;
-			this.totalFitAdjustment += genome.getAdjustedScore();
-		}
-
-		this.averageFitAdjustment = this.totalFitAdjustment
-				/ getPopulation().size();
-
-		for (final Genome g : getPopulation().getGenomes()) {
-			final NEATGenome genome = (NEATGenome) g;
-			final double toSpawn = genome.getAdjustedScore()
-					/ this.averageFitAdjustment;
-			genome.setAmountToSpawn(toSpawn);
-		}
-
-		for (final NEATSpecies species : getPopulation().getSpecies()) {
-			species.calculateSpawnAmount();
-		}
-	}
 
 	/**
 	 * Select a gene using a tournament.
@@ -620,27 +486,6 @@ public class NEATTraining extends BasicEA implements MLTrain {
 		}
 
 		return (NEATGenome) getPopulation().get(ChosenOne);
-	}
-	
-	/**
-	 * Add a genome.
-	 * 
-	 * @param species
-	 *            The species to add.
-	 * @param genome
-	 *            The genome to add.
-	 */
-	public void addSpeciesMember(final NEATSpecies species, 
-			final NEATGenome genome) {
-
-		if (getSelectionComparator().compare(genome,species.getLeader())<0) {
-			species.setBestScore(genome.getScore());
-			species.setGensNoImprovement(0);
-			species.setLeader(genome);
-		}
-
-		species.getMembers().add(genome);
-
 	}
 
 	/**
