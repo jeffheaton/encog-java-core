@@ -206,6 +206,8 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 	 * The young score bonus.
 	 */
 	private double youngScoreBonus = DEFAULT_YOUTH_BONUS;
+	
+	private int maxIndividualSize = 100;
 
 	public NEATPopulation() {
 
@@ -466,6 +468,15 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 	 */
 	public void setYoungScoreBonus(final double theYoungScoreBonus) {
 		this.youngScoreBonus = theYoungScoreBonus;
+	}
+
+	@Override
+	public int getMaxIndividualSize() {
+		return maxIndividualSize;
+	}
+
+	public void setMaxIndividualSize(int maxIndividualSize) {
+		this.maxIndividualSize = maxIndividualSize;
 	}
 
 	
