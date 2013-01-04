@@ -948,6 +948,7 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_MUL);
 		factory.addExtension(EXTENSION_DIV);
 		factory.addExtension(EXTENSION_POWER);
+		factory.addExtension(EXTENSION_SQRT);
 	}
 	
 	public static void createBooleanOperators(FunctionFactory factory) {
@@ -987,7 +988,6 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_POWFN);
 		factory.addExtension(EXTENSION_RANDOM);
 		factory.addExtension(EXTENSION_ROUND);
-		factory.addExtension(EXTENSION_SQRT);
 		factory.addExtension(EXTENSION_CLAMP);
 	}
 	

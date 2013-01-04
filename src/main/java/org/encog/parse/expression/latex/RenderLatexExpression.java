@@ -19,7 +19,7 @@ public class RenderLatexExpression {
 
 	public RenderLatexExpression() {
 	}
-	
+
 	public String render(final EncogProgram theProgram) {
 		this.program = theProgram;
 		this.trav = new TraverseProgram(theProgram);
@@ -28,65 +28,74 @@ public class RenderLatexExpression {
 	}
 
 	private void handleConst() {
-		switch(this.trav.getHeader().getOpcode()) {
-			case StandardExtensions.OPCODE_CONST_INT:
-				stack.push(""+((int)trav.getHeader().getParam1()));
-				break;
-			case StandardExtensions.OPCODE_CONST_FLOAT:
-				double d = this.trav.readDouble();
-				stack.push(""+this.program.getContext().getFormat().format(d,32));
-				break;
-			default:
-				stack.push("[Unknown Constant]");
-				break;
+		switch (this.trav.getHeader().getOpcode()) {
+		case StandardExtensions.OPCODE_CONST_INT:
+			stack.push("" + ((int) trav.getHeader().getParam1()));
+			break;
+		case StandardExtensions.OPCODE_CONST_FLOAT:
+			double d = this.trav.readDouble();
+			stack.push("" + this.program.getContext().getFormat().format(d, 32));
+			break;
+		default:
+			stack.push("[Unknown Constant]");
+			break;
 		}
-		
+
 	}
-	
+
 	private void handleConstKnown() {
 		ProgramExtensionTemplate temp = this.trav.getTemplate();
 		stack.push(temp.getName());
 	}
 
 	private void handleVar() {
-		int varIndex = (int)trav.getHeader().getParam2();
+		int varIndex = (int) trav.getHeader().getParam2();
 		stack.push(this.program.getVariables().getVariableName(varIndex));
 	}
-	
+
 	private void handleFunction() {
 		int opcode = this.trav.getHeader().getOpcode();
-		ProgramExtensionTemplate temp = this.program.getContext().getFunctions().getOpCode(opcode);
-		
+		ProgramExtensionTemplate temp = this.program.getContext()
+				.getFunctions().getOpCode(opcode);
+
 		StringBuilder result = new StringBuilder();
+		
+		if (opcode == StandardExtensions.OPCODE_SQRT) {
+			result.append("\\sqrt{");
+			String a = this.stack.pop();
+			result.append(a);
+			result.append("}");
+		} else {
 		result.append(temp.getName());
 		result.append('(');
-		for(int i=0;i<temp.getChildNodeCount();i++) {
-			if( i>0 ) {
+		for (int i = 0; i < temp.getChildNodeCount(); i++) {
+			if (i > 0) {
 				result.append(',');
 			}
 			result.append(this.stack.pop());
 		}
-		result.append(')');		
+		result.append(')');}
 		this.stack.push(result.toString());
 	}
-	
+
 	private void handleOperator() {
 		int opcode = this.trav.getHeader().getOpcode();
-		ProgramExtensionTemplate temp = this.program.getContext().getFunctions().getOpCode(opcode);
-		
+		ProgramExtensionTemplate temp = this.program.getContext()
+				.getFunctions().getOpCode(opcode);
+
 		StringBuilder result = new StringBuilder();
-		
-		if( this.trav.getTemplate().getChildNodeCount()==2 ) {
+
+		if (this.trav.getTemplate().getChildNodeCount() == 2) {
 			String a = this.stack.pop();
 			String b = this.stack.pop();
-			
-			if( opcode==StandardExtensions.OPCODE_DIV ) {
+
+			if (opcode == StandardExtensions.OPCODE_DIV) {
 				result.append("\\frac{");
 				result.append(b);
 				result.append("}{");
 				result.append(a);
-				result.append("}");	
-			} else if( opcode==StandardExtensions.OPCODE_MUL ) {
+				result.append("}");
+			} else if (opcode == StandardExtensions.OPCODE_MUL) {
 				result.append("(");
 				result.append(b);
 				result.append("\\cdot ");
@@ -99,47 +108,49 @@ public class RenderLatexExpression {
 				result.append(a);
 				result.append(")");
 			}
-			
-			
-		} else if( this.trav.getTemplate().getChildNodeCount()==1 ) {
+
+		} else if (this.trav.getTemplate().getChildNodeCount() == 1) {
 			String a = this.stack.pop();
 			result.append("(");
 			result.append(temp.getName());
 			result.append(a);
 			result.append(")");
 		} else {
-			throw new EncogProgramError("An operator must have an arity of 1 or 2, probably should be made a function.");
+			throw new EncogProgramError(
+					"An operator must have an arity of 1 or 2, probably should be made a function.");
 		}
-		
+
 		this.stack.push(result.toString());
 	}
 
 	public ExpressionNodeType determineNodeType() {
 		int opcode = this.trav.getHeader().getOpcode();
-		ProgramExtensionTemplate temp = this.program.getContext().getFunctions().getOpCode(opcode);
-		
-		if( temp instanceof KnownConst ) {
+		ProgramExtensionTemplate temp = this.program.getContext()
+				.getFunctions().getOpCode(opcode);
+
+		if (temp instanceof KnownConst) {
 			return ExpressionNodeType.ConstKnown;
 		}
-		
-		if (opcode==StandardExtensions.OPCODE_CONST_FLOAT || opcode==StandardExtensions.OPCODE_CONST_INT) {
+
+		if (opcode == StandardExtensions.OPCODE_CONST_FLOAT
+				|| opcode == StandardExtensions.OPCODE_CONST_INT) {
 			return ExpressionNodeType.ConstVal;
-		}  
-			
-		if (opcode==StandardExtensions.OPCODE_VAR ) {
+		}
+
+		if (opcode == StandardExtensions.OPCODE_VAR) {
 			return ExpressionNodeType.Variable;
-		} 
-		
-		if( temp.isOperator() ) {
-			return ExpressionNodeType.Operator;	
-			
+		}
+
+		if (temp.isOperator()) {
+			return ExpressionNodeType.Operator;
+
 		}
 		return ExpressionNodeType.Function;
-			
+
 	}
 
-	private String renderNode() {		
-		while(this.trav.next()) {
+	private String renderNode() {
+		while (this.trav.next()) {
 			switch (determineNodeType()) {
 			case ConstVal:
 				handleConst();
@@ -158,9 +169,10 @@ public class RenderLatexExpression {
 				break;
 			}
 		}
-		
-		if( stack.size()>1 ) {
-			throw new EncogEPLError("More than one value remains on stack after expression evaluation.");
+
+		if (stack.size() > 1) {
+			throw new EncogEPLError(
+					"More than one value remains on stack after expression evaluation.");
 		}
 		return this.stack.pop();
 	}
