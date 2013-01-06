@@ -100,7 +100,6 @@ Authors of this POM file: iirekm, jheaton
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.7</version>
-				<failOnError>false</failOnError>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
