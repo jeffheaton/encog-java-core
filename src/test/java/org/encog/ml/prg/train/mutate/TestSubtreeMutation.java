@@ -32,15 +32,15 @@ public class TestSubtreeMutation extends TestCase {
 	}
 	
 	public void testAtomicMutate() {
-		eval(2,"1","(--9)");
+		eval(2,"1","8");
 	}
 	
 	public void testMutate() {
-		eval(2,"((1+2)^2/(3+4-2))","(((1+(--9))^2)/((3+4)-2))");
+		eval(2,"((1+2)^2/(3+4-2))","(((1+8)^2)/((3+4)-2))");
 	}
 	
 	public void testMutateFloat() {
-		eval(7,"1.1+1.2","(1.1+4)");
+		eval(7,"1.1+1.2","(1.1+(-9.807420865205021-(x-(-2*-4))))");
 	}
 	
 	public void testMutateFloat2() {
