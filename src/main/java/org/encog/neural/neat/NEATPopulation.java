@@ -238,30 +238,18 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public long assignGeneID() {
 		return this.geneIDGenerate.generate();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	public long assignGenomeID() {
 		return this.genomeIDGenerate.generate();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public long assignInnovationID() {
 		return this.innovationIDGenerate.generate();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	public long assignSpeciesID() {
 		return this.speciesIDGenerate.generate();
 	}
@@ -291,9 +279,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 		return this.innovationIDGenerate;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	public InnovationList getInnovations() {
 		return this.innovations;
 	}
@@ -312,16 +297,10 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 		return neatActivationFunction;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public double getOldAgePenalty() {
 		return this.oldAgePenalty;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public int getOldAgeThreshold() {
 		return this.oldAgeThreshold;
 	}
@@ -347,23 +326,14 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 		return this.speciesIDGenerate;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public double getSurvivalRate() {
 		return this.survivalRate;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	public int getYoungBonusAgeThreshold() {
 		return this.youngBonusAgeThreshold;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	public double getYoungScoreBonus() {
 		return this.youngScoreBonus;
 	}
@@ -396,9 +366,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 		this.activationCycles = activationCycles;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void setInnovations(final InnovationList theInnovations) {
 		this.innovations = theInnovations;
 	}
@@ -425,9 +392,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 		this.oldAgePenalty = theOldAgePenalty;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void setOldAgeThreshold(final int theOldAgeThreshold) {
 		this.oldAgeThreshold = theOldAgeThreshold;
 	}
@@ -439,16 +403,10 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 		this.outputCount = outputCount;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void setSurvivalRate(final double theSurvivalRate) {
 		this.survivalRate = theSurvivalRate;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void setYoungBonusAgeThreshhold(
 			final int theYoungBonusAgeThreshold) {
 		this.youngBonusAgeThreshold = theYoungBonusAgeThreshold;
@@ -463,9 +421,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 		this.youngBonusAgeThreshold = theYoungBonusAgeThreshold;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void setYoungScoreBonus(final double theYoungScoreBonus) {
 		this.youngScoreBonus = theYoungScoreBonus;
 	}
