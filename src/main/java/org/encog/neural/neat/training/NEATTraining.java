@@ -87,8 +87,6 @@ public class NEATTraining extends BasicEA implements MLTrain {
 	 * The iteration number.
 	 */
 	private int iteration;
-		
-	private NEATPopulation population;
 	
 	private NEATCrossover crossover;	
 	private NEATMutate mutate;
@@ -192,7 +190,7 @@ public class NEATTraining extends BasicEA implements MLTrain {
 	 * @return The innovations.
 	 */
 	public NEATInnovationList getInnovations() {
-		return (NEATInnovationList) getPopulation().getInnovations();
+		return (NEATInnovationList)((NEATPopulation)getPopulation()).getInnovations();
 	}
 
 	/**
@@ -305,7 +303,7 @@ public class NEATTraining extends BasicEA implements MLTrain {
 
 		int numSpawnedSoFar = 0;
 
-		for (final NEATSpecies s : getPopulation().getSpecies()) {
+		for (final NEATSpecies s : ((NEATPopulation)getPopulation()).getSpecies()) {
 			if (numSpawnedSoFar < getPopulation().size()) {
 				int numToSpawn = (int) Math.round(s.getNumToSpawn());
 
@@ -351,7 +349,7 @@ public class NEATTraining extends BasicEA implements MLTrain {
 						}
 
 						if (children[0] != null) {
-							children[0].setGenomeID(getPopulation().assignGenomeID());
+							children[0].setGenomeID(((NEATPopulation)getPopulation()).assignGenomeID());
 							this.mutate.performOperation(rnd, children, 0, children, 0);
 						}
 					}
@@ -483,20 +481,6 @@ public class NEATTraining extends BasicEA implements MLTrain {
 
 		return (NEATGenome) getPopulation().get(ChosenOne);
 	}
-
-	/**
-	 * @return the population
-	 */
-	public NEATPopulation getPopulation() {
-		return population;
-	}
-
-	/**
-	 * @param population the population to set
-	 */
-	public void setPopulation(NEATPopulation population) {
-		this.population = population;
-	}
 	
 	/**
 	 * Calculate the score for this genome. The genome's score will be set.
@@ -511,4 +495,8 @@ public class NEATTraining extends BasicEA implements MLTrain {
 		final double score = this.getScoreFunction().calculateScore(g);
 		g.setScore(score);
 	}	
+	
+	public NEATPopulation getNEATPopulation() {
+		return (NEATPopulation)getPopulation();
+	}
 }

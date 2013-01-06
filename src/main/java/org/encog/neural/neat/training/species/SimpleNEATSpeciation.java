@@ -49,7 +49,7 @@ public class SimpleNEATSpeciation implements Speciation {
 			final NEATGenome genome = (NEATGenome) g;
 			boolean added = false;
 
-			for (final NEATSpecies s : owner.getPopulation().getSpecies()) {
+			for (final NEATSpecies s : owner.getNEATPopulation().getSpecies()) {
 				final double compatibility = genome
 						.getCompatibilityScore((NEATGenome) s.getLeader());
 
@@ -64,9 +64,9 @@ public class SimpleNEATSpeciation implements Speciation {
 			// if this genome did not fall into any existing species, create a
 			// new species
 			if (!added) {
-				owner.getPopulation().getSpecies().add(
-						new NEATSpecies(owner.getPopulation(), genome,
-								owner.getPopulation().assignSpeciesID()));
+				owner.getNEATPopulation().getSpecies().add(
+						new NEATSpecies(owner.getNEATPopulation(), genome,
+								owner.getNEATPopulation().assignSpeciesID()));
 			}
 		}
 
@@ -87,7 +87,7 @@ public class SimpleNEATSpeciation implements Speciation {
 			genome.setAmountToSpawn(toSpawn);
 		}
 
-		for (final NEATSpecies species : owner.getPopulation().getSpecies()) {
+		for (final NEATSpecies species : owner.getNEATPopulation().getSpecies()) {
 			species.calculateSpawnAmount();
 		}
 	}
@@ -99,7 +99,7 @@ public class SimpleNEATSpeciation implements Speciation {
 		this.totalFitAdjustment = 0;
 		this.averageFitAdjustment = 0;
 
-		final Object[] speciesArray = owner.getPopulation().getSpecies().toArray();
+		final Object[] speciesArray = owner.getNEATPopulation().getSpecies().toArray();
 
 		for (final Object element : speciesArray) {
 			final NEATSpecies s = (NEATSpecies) element;
@@ -107,12 +107,12 @@ public class SimpleNEATSpeciation implements Speciation {
 
 			// did the leader die?  If so, disband the species.
 			if( !owner.getPopulation().getGenomes().contains(s.getLeader())) {
-				owner.getPopulation().getSpecies().remove(s);
+				owner.getNEATPopulation().getSpecies().remove(s);
 			}
 			else if ((s.getGensNoImprovement() > this.numGensAllowedNoImprovement)
 					&& owner.getSelectionComparator().isBetterThan(this.owner.getError(),
 							s.getBestScore())) {
-				owner.getPopulation().getSpecies().remove(s);
+				owner.getNEATPopulation().getSpecies().remove(s);
 			}
 		}
 	}
@@ -121,21 +121,21 @@ public class SimpleNEATSpeciation implements Speciation {
 	 * Adjust each species score.
 	 */
 	private void adjustSpeciesScore() {
-		for (final NEATSpecies s : owner.getPopulation().getSpecies()) {
+		for (final NEATSpecies s : owner.getNEATPopulation().getSpecies()) {
 			// loop over all genomes and adjust scores as needed
 			for (final Genome member : s.getMembers()) {
 				double score = member.getScore();
 
 				// apply a youth bonus
-				if (s.getAge() < owner.getPopulation().getYoungBonusAgeThreshold()) {
+				if (s.getAge() < owner.getNEATPopulation().getYoungBonusAgeThreshold()) {
 					score = owner.getSelectionComparator().applyBonus(score,
-							owner.getPopulation().getYoungScoreBonus());
+							owner.getNEATPopulation().getYoungScoreBonus());
 				}
 
 				// apply an old age penalty
-				if (s.getAge() > owner.getPopulation().getOldAgeThreshold()) {
+				if (s.getAge() > owner.getNEATPopulation().getOldAgeThreshold()) {
 					score = owner.getSelectionComparator().applyPenalty(score,
-							owner.getPopulation().getOldAgePenalty());
+							owner.getNEATPopulation().getOldAgePenalty());
 				}
 
 				final double adjustedScore = score / s.getMembers().size();
@@ -159,11 +159,11 @@ public class SimpleNEATSpeciation implements Speciation {
 
 		final double thresholdIncrement = 0.01;
 
-		if (owner.getPopulation().getSpecies().size() > this.maxNumberOfSpecies) {
+		if (owner.getNEATPopulation().getSpecies().size() > this.maxNumberOfSpecies) {
 			this.compatibilityThreshold += thresholdIncrement;
 		}
 
-		else if (owner.getPopulation().getSpecies().size() < 2) {
+		else if (owner.getNEATPopulation().getSpecies().size() < 2) {
 			this.compatibilityThreshold -= thresholdIncrement;
 		}
 	}

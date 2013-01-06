@@ -203,7 +203,7 @@ public class NEATCrossover implements EvolutionaryOperator {
 		}
 
 		// finally, create the genome
-		final NEATGenome babyGenome = new NEATGenome(owner.getPopulation()
+		final NEATGenome babyGenome = new NEATGenome(owner.getNEATPopulation()
 				.assignGenomeID(), babyNeurons, babyGenes, mom.getInputCount(),
 				mom.getOutputCount());
 		babyGenome.setPopulation(owner.getPopulation());
