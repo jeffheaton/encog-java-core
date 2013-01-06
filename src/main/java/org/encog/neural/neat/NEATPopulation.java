@@ -385,9 +385,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 		this.neatActivationFunction = neatActivationFunction;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void setOldAgePenalty(final double theOldAgePenalty) {
 		this.oldAgePenalty = theOldAgePenalty;
 	}
