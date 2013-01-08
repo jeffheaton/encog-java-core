@@ -29,6 +29,10 @@ import java.util.List;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationSteepenedSigmoid;
+import org.encog.ml.MLError;
+import org.encog.ml.MLRegression;
+import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.population.BasicPopulation;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.neat.training.NEATGenome;
@@ -37,7 +41,7 @@ import org.encog.neural.neat.training.innovation.InnovationList;
 import org.encog.util.identity.BasicGenerateID;
 import org.encog.util.identity.GenerateID;
 
-public class NEATPopulation extends BasicPopulation implements Serializable {
+public class NEATPopulation extends BasicPopulation implements Serializable, MLError, MLRegression {
 	
 	/**
 	 * Thed default old age penalty.
@@ -429,6 +433,22 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 
 	public void setMaxIndividualSize(int maxIndividualSize) {
 		this.maxIndividualSize = maxIndividualSize;
+	}
+
+	@Override
+	public double calculateError(MLDataSet data) {
+		NEATGenome bestGenome = (NEATGenome)this.getGenomes().get(0);
+		bestGenome.decode();
+		NEATNetwork network = (NEATNetwork)bestGenome.getOrganism();
+		return network.calculateError(data);
+	}
+
+	@Override
+	public MLData compute(MLData input) {
+		NEATGenome bestGenome = (NEATGenome)this.getGenomes().get(0);
+		bestGenome.decode();
+		NEATNetwork network = (NEATNetwork)bestGenome.getOrganism();
+		return network.compute(input);
 	}
 
 	

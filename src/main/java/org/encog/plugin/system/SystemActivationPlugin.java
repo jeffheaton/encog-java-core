@@ -34,6 +34,7 @@ import org.encog.engine.network.activation.ActivationRamp;
 import org.encog.engine.network.activation.ActivationSIN;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationSoftMax;
+import org.encog.engine.network.activation.ActivationSteepenedSigmoid;
 import org.encog.engine.network.activation.ActivationStep;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.ml.MLMethod;
@@ -115,6 +116,10 @@ public class SystemActivationPlugin implements EncogPluginService1 {
 
 		if (name.equalsIgnoreCase(MLActivationFactory.AF_TANH)) {
 			return new ActivationTANH();
+		}
+		
+		if( name.equalsIgnoreCase(MLActivationFactory.AF_SSIGMOID)) {
+			return new ActivationSteepenedSigmoid();
 		}
 
 		return null;

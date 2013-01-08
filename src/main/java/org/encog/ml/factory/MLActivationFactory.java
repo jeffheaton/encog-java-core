@@ -37,6 +37,7 @@ public class MLActivationFactory {
 	public static final String AF_LOG = "log";
 	public static final String AF_RAMP = "ramp";
 	public static final String AF_SIGMOID = "sigmoid";
+	public static final String AF_SSIGMOID = "ssigmoid";
 	public static final String AF_SIN = "sin";
 	public static final String AF_SOFTMAX = "softmax";
 	public static final String AF_STEP = "step";

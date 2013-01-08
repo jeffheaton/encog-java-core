@@ -554,6 +554,27 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
 	}
+	
+	/**
+	 * Generate a NEAT population method.
+	 * 
+	 * @param inputColumns
+	 *            The input column count.
+	 * @param outputColumns
+	 *            The output column count.
+	 */
+	private void generateNEAT(final int inputColumns,
+			final int outputColumns) {
+
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_TYPE,
+				MLMethodFactory.TYPE_NEAT);
+
+		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
+				MLTrainFactory.TYPE_NEAT_GA);
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
+	}
 
 	/**
 	 * Generate a Bayesian network machine learning method.
@@ -786,6 +807,9 @@ public class AnalystWizard {
 			break;
 		case PNN:
 			generatePNN(inputColumns, idealColumns);
+			break;
+		case NEAT:
+			generateNEAT(inputColumns, idealColumns);
 			break;
 		default:
 			throw new AnalystError("Unknown method type");

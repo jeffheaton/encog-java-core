@@ -63,6 +63,19 @@ public class MLMethodFactory {
 	 * A probabilistic neural network. Supports both PNN & GRNN.
 	 */
 	public static final String TYPE_PNN = "pnn";
+	
+	/**
+	 * A probabilistic neural network. Supports both PNN & GRNN.
+	 */
+	public static final String TYPE_NEAT = "neat";
+	
+
+	public static final String PROPERTY_AF = "AF";
+	
+	/**
+	 * Population size.
+	 */
+	public static final String PROPERTY_POPULATION_SIZE = "population";
 
 	/**
 	 * Create a new machine learning method.

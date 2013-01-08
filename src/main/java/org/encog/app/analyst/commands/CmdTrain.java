@@ -34,6 +34,8 @@ import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.train.MLTrain;
+import org.encog.neural.neat.NEATPopulation;
+import org.encog.neural.neat.training.NEATTraining;
 import org.encog.neural.networks.training.cross.CrossValidationKFold;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.util.logging.EncogLogging;
@@ -117,7 +119,13 @@ public class CmdTrain extends Cmd {
 				ScriptProperties.ML_CONFIG_MACHINE_LEARNING_FILE);
 		final File resourceFile = getAnalyst().getScript().resolveFilename(
 				resourceID);
-		method = trainer.getMethod();
+		
+		if( trainer instanceof NEATTraining ) {
+			method = (NEATPopulation)((NEATTraining)trainer).getPopulation();
+		} else {
+			method = trainer.getMethod();	
+		}
+				
 		EncogDirectoryPersistence.saveObject(resourceFile, method);
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "save to:" + resourceID);
 		trainingSet.close();
