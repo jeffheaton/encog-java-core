@@ -23,8 +23,9 @@
  */
 package org.encog.neural.neat;
 
+import java.io.Serializable;
+
 import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.ml.BasicML;
 import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
@@ -49,7 +50,7 @@ import org.encog.util.simple.EncogUtility;
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATNetwork extends BasicML implements MLRegression, MLError {
+public class NEATNetwork implements MLRegression, MLError, Serializable {
 
 	/**
 	 * The serial ID.
@@ -145,11 +146,6 @@ public class NEATNetwork extends BasicML implements MLRegression, MLError {
 	@Override
 	public int getOutputCount() {
 		return this.outputCount;
-	}
-	
-	@Override
-	public void updateProperties() {
-		
 	}
 
 	public void setInputCount(int i) {

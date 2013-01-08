@@ -60,16 +60,6 @@ public class TestPersistNEAT extends TestCase {
 		return result;
 	}
 	
-	public void testPersistEG()
-	{
-		NEATNetwork network = create();
-
-		EncogDirectoryPersistence.saveObject((EG_FILENAME), network);
-		NEATNetwork network2 = (NEATNetwork)EncogDirectoryPersistence.loadObject((EG_FILENAME));
-		
-		validate(network2);
-	}
-	
 	public void testPersistSerial() throws IOException, ClassNotFoundException
 	{
 		NEATNetwork network = create();

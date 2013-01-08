@@ -34,7 +34,6 @@ import org.encog.ml.svm.PersistSVM;
 import org.encog.neural.art.PersistART1;
 import org.encog.neural.bam.PersistBAM;
 import org.encog.neural.cpn.PersistCPN;
-import org.encog.neural.neat.PersistNEATNetwork;
 import org.encog.neural.neat.PersistNEATPopulation;
 import org.encog.neural.networks.PersistBasicNetwork;
 import org.encog.neural.networks.training.propagation.PersistTrainingContinuation;
@@ -83,7 +82,6 @@ public class PersistorRegistry {
 		add(new PersistRBFNetwork());
 		add(new PersistSOM());
 		add(new PersistNEATPopulation());
-		add(new PersistNEATNetwork());
 		add(new PersistBasicPNN());
 		add(new PersistCPN());
 		add(new PersistTrainingContinuation());
