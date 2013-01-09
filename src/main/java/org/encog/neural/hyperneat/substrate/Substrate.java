@@ -1,9 +1,59 @@
 package org.encog.neural.hyperneat.substrate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Substrate {
 
-	public Substrate(int i) {
-		// TODO Auto-generated constructor stub
+	private final int dimensions;
+	private final List<SubstrateNode> inputNodes = new ArrayList<SubstrateNode>();
+	private final List<SubstrateNode> outputNodes = new ArrayList<SubstrateNode>();
+	
+	public Substrate(int theDimensions) {
+		this.dimensions = theDimensions;
+	}
+	
+	public int getDimensions() {
+		return this.dimensions;
+	}
+
+	/**
+	 * @return the inputNodes
+	 */
+	public List<SubstrateNode> getInputNodes() {
+		return inputNodes;
+	}
+
+	/**
+	 * @return the outputNodes
+	 */
+	public List<SubstrateNode> getOutputNodes() {
+		return outputNodes;
+	}
+	
+	public int getInputCount() {
+		return this.inputNodes.size();
+	}
+	
+	public int getOutputCount() {
+		return this.outputNodes.size();
+	}
+	
+	public SubstrateNode createNode() {
+		SubstrateNode result = new SubstrateNode(0, this.dimensions);
+		return result;
+	}
+	
+	public SubstrateNode createInputNode() {
+		SubstrateNode result = createNode();
+		this.inputNodes.add(result);
+		return result;
+	}
+	
+	public SubstrateNode createOutputNode() {
+		SubstrateNode result = createNode();
+		this.outputNodes.add(result);
+		return result;
 	}
 
 }
