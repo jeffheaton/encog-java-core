@@ -94,6 +94,10 @@ public class NEATMutate implements EvolutionaryOperator {
 		while ((countTrysToAddLink--) > 0) {
 			final NEATNeuronGene neuron1 = chooseRandomNeuron(target, true);
 			final NEATNeuronGene neuron2 = chooseRandomNeuron(target, false);
+			
+			if( neuron1==null || neuron2==null ) {
+				return;
+			}
 
 			if (!isDuplicateLink(target, neuron1.getId(), neuron2.getId())
 					&& (neuron2.getNeuronType() != NEATNeuronType.Bias)) {
@@ -298,25 +302,34 @@ public class NEATMutate implements EvolutionaryOperator {
 	 * @return The random neuron.
 	 */
 	private NEATNeuronGene chooseRandomNeuron(NEATGenome target,
-			final boolean includeInput) {
+			final boolean choosingFrom) {
 		int start;
 
-		if (includeInput) {
+		if (choosingFrom) {
 			start = 0;
 		} else {
 			start = owner.getInputCount() + 1;
 		}
+
+		// if this network will not "cycle" then output neurons cannot be source
+		// neurons
+		if (!choosingFrom) {
+			int ac = ((NEATPopulation) target.getPopulation())
+					.getActivationCycles();
+			if (ac == 1) {
+				start += target.getOutputCount();
+			}
+		}
 		
-		int exclude = 1;
+		int end = target
+				.getNeuronsChromosome().size() - 1;
 		
-		// if this network will not "cycle" then output neurons cannot be source neurons
-		int ac = ((NEATPopulation)target.getPopulation()).getActivationCycles();
-		if( ac==1 ) {
-			exclude+=target.getOutputCount();
+		// no neurons to pick!
+		if( start>end ) {
+			return null;
 		}
 
-		final int neuronPos = RangeRandomizer.randomInt(start, target
-				.getNeuronsChromosome().size() - exclude);
+		final int neuronPos = RangeRandomizer.randomInt(start, end);
 		final NEATNeuronGene neuronGene = (NEATNeuronGene) target
 				.getNeuronsChromosome().get(neuronPos);
 		return neuronGene;
