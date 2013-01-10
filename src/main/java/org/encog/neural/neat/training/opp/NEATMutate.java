@@ -10,6 +10,7 @@ import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.neat.NEATNeuronType;
+import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATInnovation;
 import org.encog.neural.neat.training.NEATInnovationType;
@@ -305,9 +306,17 @@ public class NEATMutate implements EvolutionaryOperator {
 		} else {
 			start = owner.getInputCount() + 1;
 		}
+		
+		int exclude = 1;
+		
+		// if this network will not "cycle" then output neurons cannot be source neurons
+		int ac = ((NEATPopulation)target.getPopulation()).getActivationCycles();
+		if( ac==1 ) {
+			exclude+=target.getOutputCount();
+		}
 
 		final int neuronPos = RangeRandomizer.randomInt(start, target
-				.getNeuronsChromosome().size() - 1);
+				.getNeuronsChromosome().size() - exclude);
 		final NEATNeuronGene neuronGene = (NEATNeuronGene) target
 				.getNeuronsChromosome().get(neuronPos);
 		return neuronGene;

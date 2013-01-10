@@ -139,8 +139,12 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
+
+	public static final int DEFAULT_CYCLES = 4;
+
+	public static final String PROPERTY_CYCLES = "cycles";
 	
-	private int activationCycles = 4;
+	private int activationCycles = NEATPopulation.DEFAULT_CYCLES;
 	
 	/**
 	 * Generate gene id's.

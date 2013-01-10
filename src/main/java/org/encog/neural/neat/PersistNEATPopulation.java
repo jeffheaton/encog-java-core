@@ -163,6 +163,8 @@ public class PersistNEATPopulation implements EncogPersistor {
 						params, NEATPopulation.PROPERTY_YOUNG_AGE_THRESHOLD));
 				result.setYoungScoreBonus(EncogFileSection.parseDouble(params,
 						NEATPopulation.PROPERTY_YOUNG_AGE_BONUS));
+				result.setActivationCycles(EncogFileSection.parseInt(params,
+						NEATPopulation.PROPERTY_CYCLES));
 				result.getGenomeIDGenerate().setCurrentID(
 						EncogFileSection.parseInt(params,
 								NEATPopulation.PROPERTY_NEXT_GENOME_ID));
@@ -218,6 +220,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 		out.writeProperty(NEATPopulation.PROPERTY_NEAT_ACTIVATION, pop.getNeatActivationFunction());
 		out.writeProperty(PersistConst.INPUT_COUNT, pop.getInputCount());
 		out.writeProperty(PersistConst.OUTPUT_COUNT, pop.getOutputCount());
+		out.writeProperty(NEATPopulation.PROPERTY_CYCLES, pop.getActivationCycles());
 		out.writeProperty(NEATPopulation.PROPERTY_OLD_AGE_PENALTY,
 				pop.getOldAgePenalty());
 		out.writeProperty(NEATPopulation.PROPERTY_OLD_AGE_THRESHOLD,

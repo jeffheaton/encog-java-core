@@ -76,6 +76,8 @@ public class MLMethodFactory {
 	 * Population size.
 	 */
 	public static final String PROPERTY_POPULATION_SIZE = "population";
+	
+	public static final String PROPERTY_CYCLES = "cycles";
 
 	/**
 	 * Create a new machine learning method.

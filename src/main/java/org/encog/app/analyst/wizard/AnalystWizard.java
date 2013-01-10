@@ -46,6 +46,7 @@ import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.generate.TargetLanguage;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.ml.factory.MLTrainFactory;
+import org.encog.neural.neat.NEATPopulation;
 import org.encog.util.arrayutil.NormalizationAction;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.file.FileUtil;
@@ -569,6 +570,10 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_TYPE,
 				MLMethodFactory.TYPE_NEAT);
+		
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_ARCHITECTURE,
+				"cycles=" + NEATPopulation.DEFAULT_CYCLES);
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				MLTrainFactory.TYPE_NEAT_GA);

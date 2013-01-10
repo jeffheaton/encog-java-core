@@ -78,8 +78,8 @@ public class ParamsHolder {
 	 * @return The value.
 	 */
 	public String getString(String name, boolean required, String defaultValue) {
-		if (this.params.containsKey(name)) {
-			return this.params.get(name);
+		if (this.params.containsKey(name.toUpperCase())) {
+			return this.params.get(name.toUpperCase());
 		} else {
 			if (required) {
 				throw new EncogError("Missing property: " + name);

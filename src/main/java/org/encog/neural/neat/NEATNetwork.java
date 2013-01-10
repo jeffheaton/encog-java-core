@@ -68,7 +68,7 @@ public class NEATNetwork implements MLRegression, MLError, Serializable {
     private final int outputIndex;
 	private int inputCount;
 	private int outputCount;	
-	private int activationCycles = 1;
+	private int activationCycles = NEATPopulation.DEFAULT_CYCLES;
     private boolean hasRelaxed = false;
     private double relaxationThreshold;
 

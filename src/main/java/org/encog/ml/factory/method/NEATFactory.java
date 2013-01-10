@@ -70,10 +70,14 @@ public class NEATFactory {
 		final int populationSize = holder.getInt(
 				MLMethodFactory.PROPERTY_POPULATION_SIZE, false, 5000);
 		
+		final int cycles = holder.getInt(
+				MLMethodFactory.PROPERTY_CYCLES, false, NEATPopulation.DEFAULT_CYCLES);
+		
 		ActivationFunction af = this.factory.create(
 				holder.getString(MLMethodFactory.PROPERTY_AF, false, MLActivationFactory.AF_SSIGMOID));
 
 		NEATPopulation pop = new NEATPopulation(input,output,populationSize);
+		pop.setActivationCycles(cycles);
 		pop.setNeatActivationFunction(af);
 
 		return pop;
