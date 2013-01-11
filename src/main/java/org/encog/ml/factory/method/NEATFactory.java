@@ -78,7 +78,7 @@ public class NEATFactory {
 
 		NEATPopulation pop = new NEATPopulation(input,output,populationSize);
 		pop.setActivationCycles(cycles);
-		pop.setNeatActivationFunction(af);
+		pop.setNEATActivationFunction(af);
 
 		return pop;
 	}

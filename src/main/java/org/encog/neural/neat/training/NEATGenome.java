@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationFunction;
@@ -245,6 +246,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * Convert the genes to an actual network.
 	 */
 	public void decode() {
+		Random rnd = new Random();
 		NEATPopulation pop = (NEATPopulation)this.getPopulation();
 		
 		if( ((NEATNeuronGene)this.neuronsChromosome.get(0)).getNeuronType() != NEATNeuronType.Bias ) {
@@ -255,7 +257,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		ActivationFunction[] afs = new ActivationFunction[this.neuronsChromosome.size()];
 		
 		for(int i=0;i<afs.length;i++) {
-			afs[i] = pop.getNeatActivationFunction();
+			afs[i] = pop.getActivationFunctions().pick(rnd);
 		}
 		
 		Map<Long,Integer> lookup = new HashMap<Long,Integer>();

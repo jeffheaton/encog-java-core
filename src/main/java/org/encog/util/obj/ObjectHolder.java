@@ -1,7 +1,9 @@
 package org.encog.util.obj;
 
+import java.io.Serializable;
 
-public class ObjectHolder<T> {
+
+public class ObjectHolder<T> implements Serializable {
 	private final T obj;
 	private final double probability;
 	

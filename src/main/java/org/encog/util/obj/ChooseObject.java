@@ -40,4 +40,8 @@ public class ChooseObject<T> implements Serializable {
 	public List<ObjectHolder<T>> getList() {
 		return this.list;
 	}
+
+	public void clear() {
+		this.list.clear();
+	}
 }

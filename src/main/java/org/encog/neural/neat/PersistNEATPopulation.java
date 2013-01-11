@@ -29,7 +29,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ml.ea.genome.Genome;
+import org.encog.neural.hyperneat.HyperNEATGenome;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATInnovation;
 import org.encog.neural.neat.training.NEATInnovationList;
@@ -47,6 +49,8 @@ import org.encog.util.csv.CSVFormat;
 
 public class PersistNEATPopulation implements EncogPersistor {
 
+	public static final String TYPE_CPPN = "cppn";
+	
 	@Override
 	public String getPersistClassString() {
 		return NEATPopulation.class.getSimpleName();
@@ -145,7 +149,15 @@ public class PersistNEATPopulation implements EncogPersistor {
 					&& section.getSubSectionName().equals("CONFIG")) {
 				Map<String, String> params = section.parseParams();
 				
-				result.setNeatActivationFunction(EncogFileSection.parseActivationFunction(params,NEATPopulation.PROPERTY_NEAT_ACTIVATION));
+				String afStr = params.get(NEATPopulation.PROPERTY_NEAT_ACTIVATION);
+				
+				if( afStr.equalsIgnoreCase(TYPE_CPPN)) {
+					HyperNEATGenome.buildCPPNActivationFunctions(result.getActivationFunctions());
+				} else {
+					result.setNEATActivationFunction(
+							EncogFileSection.parseActivationFunction(params,NEATPopulation.PROPERTY_NEAT_ACTIVATION));
+				}
+				
 				result.setActivationCycles(EncogFileSection.parseInt(params, PersistConst.ACTIVATION_CYCLES));
 				result.setInputCount(EncogFileSection.parseInt(params,
 						PersistConst.INPUT_COUNT));
@@ -217,7 +229,15 @@ public class PersistNEATPopulation implements EncogPersistor {
 		out.addSection("NEAT-POPULATION");
 		out.addSubSection("CONFIG");
 		out.writeProperty(PersistConst.ACTIVATION_CYCLES, pop.getActivationCycles());
-		out.writeProperty(NEATPopulation.PROPERTY_NEAT_ACTIVATION, pop.getNeatActivationFunction());
+		
+		if( pop.isHyperNEAT() ) {
+			out.writeProperty(NEATPopulation.PROPERTY_NEAT_ACTIVATION, TYPE_CPPN);
+		} else {
+			ActivationFunction af = pop.getActivationFunctions().getList().get(0).getObj();
+			out.writeProperty(NEATPopulation.PROPERTY_NEAT_ACTIVATION, af);	
+		}
+		
+		
 		out.writeProperty(PersistConst.INPUT_COUNT, pop.getInputCount());
 		out.writeProperty(PersistConst.OUTPUT_COUNT, pop.getOutputCount());
 		out.writeProperty(NEATPopulation.PROPERTY_CYCLES, pop.getActivationCycles());

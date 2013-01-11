@@ -23,6 +23,7 @@
  */
 package org.encog.mathutil.randomize;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import org.encog.EncogError;
@@ -40,7 +41,7 @@ import org.encog.util.EngineArray;
  * 
  * http://en.wikipedia.org/wiki/Fitness_proportionate_selection
  */
-public class RandomChoice {
+public class RandomChoice implements Serializable {
 
 	/**
 	 * The probabilities of each item in the list.

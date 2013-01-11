@@ -39,8 +39,10 @@ import org.encog.neural.hyperneat.substrate.Substrate;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATInnovationList;
 import org.encog.neural.neat.training.innovation.InnovationList;
+import org.encog.persist.EncogFileSection;
 import org.encog.util.identity.BasicGenerateID;
 import org.encog.util.identity.GenerateID;
+import org.encog.util.obj.ChooseObject;
 
 public class NEATPopulation extends BasicPopulation implements Serializable, MLError, MLRegression {
 	
@@ -174,11 +176,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	int inputCount;
 	
 	/**
-	 * The activation function for neat to use.
-	 */
-	private ActivationFunction neatActivationFunction = new ActivationSteepenedSigmoid();
-
-	/**
 	 * The old age penalty.
 	 */
 	private double oldAgePenalty = DEFAULT_OLD_AGE_PENALTY;
@@ -219,6 +216,8 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	private int maxIndividualSize = 100;
 	
 	private Substrate substrate;
+	
+	private ChooseObject<ActivationFunction> activationFunctions = new ChooseObject<ActivationFunction>();
 
 	public NEATPopulation() {
 
@@ -239,6 +238,8 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 		super(populationSize, null);
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
+		
+		this.setNEATActivationFunction(new ActivationSteepenedSigmoid());
 
 		if (populationSize == 0) {
 			throw new NeuralNetworkError(
@@ -308,13 +309,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	 */
 	public int getInputCount() {
 		return inputCount;
-	}
-	
-	/**
-	 * @return the neatActivationFunction
-	 */
-	public ActivationFunction getNeatActivationFunction() {
-		return neatActivationFunction;
 	}
 
 	public double getOldAgePenalty() {
@@ -397,13 +391,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 		this.inputCount = inputCount;
 	}
 
-	/**
-	 * @param neatActivationFunction the neatActivationFunction to set
-	 */
-	public void setNeatActivationFunction(
-			ActivationFunction neatActivationFunction) {
-		this.neatActivationFunction = neatActivationFunction;
-	}
+
 
 	public void setOldAgePenalty(final double theOldAgePenalty) {
 		this.oldAgePenalty = theOldAgePenalty;
@@ -474,6 +462,20 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	public Substrate getSubstrate() {
 		return this.substrate;
 	}
+
+	/**
+	 * @return the activationFunctions
+	 */
+	public ChooseObject<ActivationFunction> getActivationFunctions() {
+		return activationFunctions;
+	}
+
+	public void setNEATActivationFunction(ActivationFunction af) {
+		this.activationFunctions.clear();
+		this.activationFunctions.add(1.0, af);
+		this.activationFunctions.finalizeStructure();
+	}
+	
 	
 
 }
