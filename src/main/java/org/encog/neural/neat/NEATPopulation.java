@@ -35,6 +35,7 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.population.BasicPopulation;
 import org.encog.neural.NeuralNetworkError;
+import org.encog.neural.hyperneat.substrate.Substrate;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATInnovationList;
 import org.encog.neural.neat.training.innovation.InnovationList;
@@ -216,6 +217,8 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	private double youngScoreBonus = DEFAULT_YOUTH_BONUS;
 	
 	private int maxIndividualSize = 100;
+	
+	private Substrate substrate;
 
 	public NEATPopulation() {
 
@@ -244,6 +247,15 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 
 		reset(populationSize);
 
+	}
+	
+	public NEATPopulation(Substrate theSubstrate, int populationSize) {
+		super(populationSize,null);
+		this.substrate = theSubstrate;
+		this.inputCount = theSubstrate.getInputCount();
+		this.outputCount = theSubstrate.getOutputCount();
+		
+		reset(populationSize);
 	}
 
 	public long assignGeneID() {
@@ -455,6 +467,13 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 		return network.compute(input);
 	}
 
+	public boolean isHyperNEAT() {
+		return this.substrate!=null;
+	}
+	
+	public Substrate getSubstrate() {
+		return this.substrate;
+	}
 	
 
 }

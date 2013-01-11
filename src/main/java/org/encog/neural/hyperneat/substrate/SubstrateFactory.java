@@ -18,6 +18,11 @@ public class SubstrateFactory {
 		for(int orow=0;orow<inputEdgeSize;orow++) {
 			for(int ocol=0;ocol<inputEdgeSize;ocol++) {
 				SubstrateNode outputNode = result.createOutputNode();
+				
+				// link this output node to every input node
+				for(SubstrateNode inputNode : result.getInputNodes()) {
+					result.createLink(inputNode,outputNode);
+				}
 			}
 		}
 		
