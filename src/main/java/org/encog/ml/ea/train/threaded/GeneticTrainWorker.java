@@ -52,7 +52,7 @@ public class GeneticTrainWorker extends Thread implements Serializable {
 
 				try {
 					// choose an operator to use
-					opp = this.owner.getOperators().pickOperator(this.rnd);
+					opp = this.owner.getOperators().pick(this.rnd);
 
 					// select and lock parents
 					for (int i = 0; i < opp.parentsNeeded(); i++) {

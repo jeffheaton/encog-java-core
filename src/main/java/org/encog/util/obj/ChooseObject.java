@@ -1,12 +1,17 @@
 package org.encog.util.obj;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import org.encog.mathutil.randomize.RandomChoice;
 
-public class ChooseObject<T> {
+public class ChooseObject<T> implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final List<ObjectHolder<T>> list = new ArrayList<ObjectHolder<T>>();
 	private RandomChoice chooser;
 	
@@ -30,5 +35,9 @@ public class ChooseObject<T> {
 	public T pick(Random theGenerator) {
 		int index = this.chooser.generate(theGenerator);
 		return this.list.get(index).getObj();
+	}
+	
+	public List<ObjectHolder<T>> getList() {
+		return this.list;
 	}
 }

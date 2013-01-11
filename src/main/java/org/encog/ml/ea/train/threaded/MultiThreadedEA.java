@@ -11,7 +11,7 @@ import org.encog.EncogShutdownTask;
 import org.encog.mathutil.randomize.factory.RandomFactory;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
-import org.encog.ml.ea.opp.holder.OperationList;
+import org.encog.ml.ea.opp.OperationList;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.score.CalculateGenomeScore;
 import org.encog.ml.ea.score.parallel.ParallelScore;
