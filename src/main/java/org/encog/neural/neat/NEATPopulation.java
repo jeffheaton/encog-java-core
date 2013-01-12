@@ -35,11 +35,12 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.population.BasicPopulation;
 import org.encog.neural.NeuralNetworkError;
+import org.encog.neural.hyperneat.FactorHyperNEATGenome;
+import org.encog.neural.hyperneat.HyperNEATGenome;
 import org.encog.neural.hyperneat.substrate.Substrate;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATInnovationList;
 import org.encog.neural.neat.training.innovation.InnovationList;
-import org.encog.persist.EncogFileSection;
 import org.encog.util.identity.BasicGenerateID;
 import org.encog.util.identity.GenerateID;
 import org.encog.util.obj.ChooseObject;
@@ -216,7 +217,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	private int maxIndividualSize = 100;
 	
 	private Substrate substrate;
-	
+
 	private ChooseObject<ActivationFunction> activationFunctions = new ChooseObject<ActivationFunction>();
 
 	public NEATPopulation() {
@@ -255,6 +256,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 		this.substrate = theSubstrate;
 		this.inputCount = theSubstrate.getInputCount();
 		this.outputCount = theSubstrate.getOutputCount();
+		HyperNEATGenome.buildCPPNActivationFunctions(this.activationFunctions);
 		
 		reset(populationSize);
 	}
@@ -354,6 +356,14 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 
 
 	public void reset(int populationSize) {
+		// create the genome factory
+		if( isHyperNEAT() ) {
+			setGenomeFactory( new FactorNEATGenome() );
+		} else {
+			setGenomeFactory( new FactorHyperNEATGenome() );
+		}
+		
+		// create the new genomes
 		this.getGenomes().clear();
 		this.setPopulationSize(populationSize);		
 		
@@ -365,7 +375,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 		
 		// create the initial population
 		for (int i = 0; i < populationSize; i++) {
-			NEATGenome genome = new NEATGenome(this, assignGenomeID(), inputCount,
+			NEATGenome genome = getGenomeFactory().factor(this, assignGenomeID(), inputCount,
 					outputCount);
 			add(genome);
 		}
@@ -474,6 +484,20 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 		this.activationFunctions.clear();
 		this.activationFunctions.add(1.0, af);
 		this.activationFunctions.finalizeStructure();
+	}
+
+	/**
+	 * @return the genomeFactory
+	 */
+	public NEATGenomeFactory getGenomeFactory() {
+		return (NEATGenomeFactory)super.getGenomeFactory();
+	}
+
+	/**
+	 * @param substrate the substrate to set
+	 */
+	public void setSubstrate(Substrate substrate) {
+		this.substrate = substrate;
 	}
 	
 	

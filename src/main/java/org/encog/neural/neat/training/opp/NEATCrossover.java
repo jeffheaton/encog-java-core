@@ -8,6 +8,7 @@ import java.util.Random;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
+import org.encog.neural.neat.NEATGenomeFactory;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.NEATNeuronGene;
@@ -203,7 +204,8 @@ public class NEATCrossover implements EvolutionaryOperator {
 		}
 
 		// finally, create the genome
-		final NEATGenome babyGenome = new NEATGenome(owner.getNEATPopulation()
+		NEATGenomeFactory factory = (NEATGenomeFactory)this.owner.getPopulation().getGenomeFactory();
+		final NEATGenome babyGenome = factory.factor(owner.getNEATPopulation()
 				.assignGenomeID(), babyNeurons, babyGenes, mom.getInputCount(),
 				mom.getOutputCount());
 		babyGenome.setPopulation(owner.getPopulation());

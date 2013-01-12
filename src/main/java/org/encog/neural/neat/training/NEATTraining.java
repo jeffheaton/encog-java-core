@@ -33,12 +33,14 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.score.CalculateGenomeScore;
 import org.encog.ml.ea.score.GeneticScoreAdapter;
 import org.encog.ml.ea.sort.MinimizeAdjustedScoreComp;
 import org.encog.ml.ea.sort.MinimizeScoreComp;
 import org.encog.ml.ea.train.basic.BasicEA;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
+import org.encog.neural.neat.NEATGenomeFactory;
 import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.NEATSpecies;
@@ -120,6 +122,11 @@ public class NEATTraining extends BasicEA implements MLTrain {
 
 		init();
 	}
+	
+	public NEATTraining(final CalculateScore calculateScore,
+			final NEATPopulation population) {
+		this(new GeneticScoreAdapter(calculateScore),population);
+	}
 
 	/**
 	 * Construct neat training with an existing population.
@@ -129,9 +136,9 @@ public class NEATTraining extends BasicEA implements MLTrain {
 	 * @param population
 	 *            The population to use.
 	 */
-	public NEATTraining(final CalculateScore calculateScore,
+	public NEATTraining(final CalculateGenomeScore calculateScore,
 			final NEATPopulation population) {
-		super(population,new GeneticScoreAdapter(calculateScore));
+		super(population,calculateScore);
 		
 		if (population.size() < 1) {
 			throw new TrainingError("Population can not be empty.");
@@ -324,7 +331,7 @@ public class NEATTraining extends BasicEA implements MLTrain {
 						// then we can only perform mutation
 						if (s.getMembers().size() == 1) {
 							// spawn a child
-							children[0] = new NEATGenome((NEATGenome) s.chooseParent());
+							children[0] = ((NEATGenomeFactory)this.getPopulation().getGenomeFactory()).factor((NEATGenome) s.chooseParent());
 						} else {
 							parents[0] = (NEATGenome) s.chooseParent();
 
@@ -344,7 +351,7 @@ public class NEATTraining extends BasicEA implements MLTrain {
 							}
 
 							else {
-								children[0] = new NEATGenome(parents[0]);
+								children[0] = ((NEATGenomeFactory)this.getPopulation().getGenomeFactory()).factor(parents[0]);
 							}
 						}
 
