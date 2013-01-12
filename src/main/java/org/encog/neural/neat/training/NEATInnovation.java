@@ -95,7 +95,7 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 	}
 
 	/**
-	 * Construct an innovation.
+	 * Construct a link innovation.
 	 *
 	 * @param fromNeuronID
 	 *            The from neuron.
@@ -121,7 +121,7 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 	}
 
 	/**
-	 * Construct an innovation.
+	 * Construct a neuron innovation.
 	 *
 	 * @param fromNeuronID
 	 *            The from neuron.
@@ -138,9 +138,12 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 	 * @param y
 	 *            THe y coordinate.
 	 */
-	public NEATInnovation(final long fromNeuronID, final long toNeuronID,
+	public NEATInnovation(final ActivationFunction theActivationFunction,
+			final long fromNeuronID, final long toNeuronID,
 			final NEATInnovationType innovationType, final long innovationID,
 			final NEATNeuronType neuronType, final double x, final double y) {
+		
+		this.activationFunction = theActivationFunction;
 		this.fromNeuronID = fromNeuronID;
 		this.toNeuronID = toNeuronID;
 		this.innovationType = innovationType;
@@ -162,9 +165,11 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 	 * @param neuronID
 	 *            The neuron id.
 	 */
-	public NEATInnovation(final NEATNeuronGene neuronGene,
+	public NEATInnovation(final ActivationFunction theActivationFunction,
+			final NEATNeuronGene neuronGene,
 			final long innovationID, final long neuronID) {
 
+		this.activationFunction = theActivationFunction;
 		this.neuronID = neuronID;
 		setInnovationID(innovationID);
 		this.splitX = neuronGene.getSplitX();
@@ -297,8 +302,7 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 	}
 
 	public ActivationFunction getActivationFunction() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.activationFunction;
 	}
 
 	/**

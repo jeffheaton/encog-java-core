@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationFunction;

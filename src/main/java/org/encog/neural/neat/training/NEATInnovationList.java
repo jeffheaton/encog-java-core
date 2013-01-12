@@ -83,7 +83,7 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 
 		this.population = population;
 		for (final NEATNeuronGene neuronGene : neurons) {
-			final NEATInnovation innovation = new NEATInnovation(neuronGene,
+			final NEATInnovation innovation = new NEATInnovation(neuronGene.getActivationFunction(), neuronGene,
 					population.assignInnovationID(), assignNeuronID());
 			add(innovation);
 		}
@@ -184,7 +184,7 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	}
 
 	/**
-	 * Create a new innovation.
+	 * Create a new neuron innovation.
 	 * 
 	 * @param from
 	 *            The from neuron.
@@ -200,13 +200,13 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	 *            The y-coordinate.
 	 * @return The new neuron, if one was created.
 	 */
-	public NEATInnovation createNewInnovation(final long from, final long to,
+	public NEATInnovation createNewInnovation(ActivationFunction theActivationFunction, final long from, final long to,
 			final NEATInnovationType innovationType, ActivationFunction af,
 			final NEATNeuronType neuronType, final double x, final double y) {
 		
 		final long innovationID = this.population.assignInnovationID();
 		
-		final NEATInnovation newInnovation = new NEATInnovation(from, to,
+		final NEATInnovation newInnovation = new NEATInnovation(theActivationFunction,from, to,
 				innovationType, innovationID, neuronType, x, y);
 		
 		newInnovation.setActivationFunction(af);

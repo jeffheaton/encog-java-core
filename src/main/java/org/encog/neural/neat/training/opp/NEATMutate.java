@@ -232,7 +232,7 @@ public class NEATMutate implements EvolutionaryOperator {
 			ActivationFunction af = this.owner.getNEATPopulation().getActivationFunctions().pick(new Random());
 					
 			// this innovation has not been tried, create it
-			innovation = owner.getInnovations().createNewInnovation(from, to,
+			innovation = owner.getInnovations().createNewInnovation(af, from, to,
 					NEATInnovationType.NewNeuron, af, NEATNeuronType.Hidden,
 					newWidth, newDepth);
 
