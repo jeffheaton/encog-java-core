@@ -3,6 +3,7 @@ package org.encog.neural.neat.training.opp;
 import java.util.Random;
 
 import org.encog.EncogError;
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.randomize.RandomChoice;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.Genome;
@@ -228,14 +229,15 @@ public class NEATMutate implements EvolutionaryOperator {
 		}
 
 		if (innovation == null) {
-
+			ActivationFunction af = this.owner.getNEATPopulation().getActivationFunctions().pick(new Random());
+					
 			// this innovation has not been tried, create it
 			innovation = owner.getInnovations().createNewInnovation(from, to,
-					NEATInnovationType.NewNeuron, NEATNeuronType.Hidden,
+					NEATInnovationType.NewNeuron, af, NEATNeuronType.Hidden,
 					newWidth, newDepth);
 
 			target.getNeuronsChromosome().add(
-					new NEATNeuronGene(NEATNeuronType.Hidden, innovation
+					new NEATNeuronGene(NEATNeuronType.Hidden, af, innovation
 							.getNeuronID(), newDepth, newWidth));
 
 			// add the first link
@@ -269,7 +271,8 @@ public class NEATMutate implements EvolutionaryOperator {
 			target.getLinksChromosome().add(link2);
 
 			final NEATNeuronGene newNeuron = new NEATNeuronGene(
-					NEATNeuronType.Hidden, newNeuronID, newDepth, newWidth);
+					NEATNeuronType.Hidden, innovation.getActivationFunction(), 
+					newNeuronID, newDepth, newWidth);
 
 			target.getNeuronsChromosome().add(newNeuron);
 		}

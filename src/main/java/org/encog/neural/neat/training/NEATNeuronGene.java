@@ -25,6 +25,7 @@ package org.encog.neural.neat.training;
 
 import java.io.Serializable;
 
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.neat.NEATNeuronType;
 
 /**
@@ -62,6 +63,11 @@ public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 	 * The y-split.
 	 */
 	private double splitY;
+	
+	/**
+	 * The activation function.
+	 */
+	private ActivationFunction activationFunction;
 
 	/**
 	 * The default constructor.
@@ -82,12 +88,13 @@ public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 	 * @param splitX
 	 *            The split x.
 	 */
-	public NEATNeuronGene(final NEATNeuronType type, final long id,
+	public NEATNeuronGene(final NEATNeuronType type, ActivationFunction theActivationFunction, final long id,
 			final double splitY, final double splitX) {
 		this.neuronType = type;
 		setId(id);
 		this.splitX = splitX;
 		this.splitY = splitY;
+		this.activationFunction = theActivationFunction;
 	}
 
 	/**
@@ -102,6 +109,7 @@ public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 		this.neuronType = other.neuronType;
 		this.splitX = other.splitX;
 		this.splitY = other.splitY;
+		this.activationFunction = other.activationFunction;
 
 	}
 	
@@ -156,6 +164,22 @@ public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 		this.splitY = splitY;
 	}
 	
+	
+	
+	/**
+	 * @return the activationFunction
+	 */
+	public ActivationFunction getActivationFunction() {
+		return activationFunction;
+	}
+
+	/**
+	 * @param activationFunction the activationFunction to set
+	 */
+	public void setActivationFunction(ActivationFunction activationFunction) {
+		this.activationFunction = activationFunction;
+	}
+
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append("[NEATNeuronGene: id=");

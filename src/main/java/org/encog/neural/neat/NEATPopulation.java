@@ -365,7 +365,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 		
 		// create the initial population
 		for (int i = 0; i < populationSize; i++) {
-			NEATGenome genome = new NEATGenome(assignGenomeID(), inputCount,
+			NEATGenome genome = new NEATGenome(this, assignGenomeID(), inputCount,
 					outputCount);
 			add(genome);
 		}

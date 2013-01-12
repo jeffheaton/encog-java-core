@@ -25,6 +25,7 @@ package org.encog.neural.neat.training;
 
 import java.io.Serializable;
 
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.neat.training.innovation.BasicInnovation;
 
@@ -80,6 +81,11 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 	 * The to neuron's id.
 	 */
 	private long toNeuronID;
+	
+	/**
+	 * The activation function, if new neuron.
+	 */
+	private ActivationFunction activationFunction;
 
 	/**
 	 * Default constructor, used mainly for persistence.
@@ -289,8 +295,16 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 	public void setToNeuronID(long toNeuronID) {
 		this.toNeuronID = toNeuronID;
 	}
-	
-	
-	
 
+	public ActivationFunction getActivationFunction() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param activationFunction the activationFunction to set
+	 */
+	public void setActivationFunction(ActivationFunction activationFunction) {
+		this.activationFunction = activationFunction;
+	}
 }

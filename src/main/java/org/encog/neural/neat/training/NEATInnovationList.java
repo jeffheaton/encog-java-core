@@ -27,6 +27,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.encog.EncogError;
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.innovation.BasicInnovationList;
@@ -142,8 +143,8 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	 * @return The neuron gene.
 	 */
 	public NEATNeuronGene createNeuronFromID(final long neuronID) {
-		final NEATNeuronGene result = new NEATNeuronGene(NEATNeuronType.Hidden,
-				0, 0, 0);
+		final NEATNeuronGene result = new NEATNeuronGene(NEATNeuronType.Hidden, null,
+				0, 0, 0 );
 
 		for (final Innovation i : getInnovations()) {
 			final NEATInnovation innovation = (NEATInnovation) i;
@@ -152,6 +153,7 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 				result.setId(innovation.getNeuronID());
 				result.setSplitY(innovation.getSplitY());
 				result.setSplitX(innovation.getSplitX());
+				result.setActivationFunction(innovation.getActivationFunction());
 				return result;
 			}
 		}
@@ -199,13 +201,15 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	 * @return The new neuron, if one was created.
 	 */
 	public NEATInnovation createNewInnovation(final long from, final long to,
-			final NEATInnovationType innovationType,
+			final NEATInnovationType innovationType, ActivationFunction af,
 			final NEATNeuronType neuronType, final double x, final double y) {
 		
 		final long innovationID = this.population.assignInnovationID();
 		
 		final NEATInnovation newInnovation = new NEATInnovation(from, to,
 				innovationType, innovationID, neuronType, x, y);
+		
+		newInnovation.setActivationFunction(af);
 
 		if (innovationType == NEATInnovationType.NewNeuron) {
 			long neuronID = assignNeuronID();

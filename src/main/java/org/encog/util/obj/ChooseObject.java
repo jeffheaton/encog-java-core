@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.randomize.RandomChoice;
 
 public class ChooseObject<T> implements Serializable {
@@ -43,5 +44,9 @@ public class ChooseObject<T> implements Serializable {
 
 	public void clear() {
 		this.list.clear();
+	}
+
+	public T pickFirst() {
+		return this.list.get(0).getObj();
 	}
 }
