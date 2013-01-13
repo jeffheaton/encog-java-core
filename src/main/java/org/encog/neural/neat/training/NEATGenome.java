@@ -247,6 +247,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	/**
 	 * Convert the genes to an actual network.
 	 */
+	@Override
 	public void decode() {
 		NEATPopulation pop = (NEATPopulation)this.getPopulation();
 		

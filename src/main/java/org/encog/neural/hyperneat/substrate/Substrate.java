@@ -11,9 +11,12 @@ public class Substrate {
 	private final List<SubstrateNode> inputNodes = new ArrayList<SubstrateNode>();
 	private final List<SubstrateNode> outputNodes = new ArrayList<SubstrateNode>();
 	private final List<SubstrateNode> hiddenNodes = new ArrayList<SubstrateNode>();
+	private final List<SubstrateLink> links = new ArrayList<SubstrateLink>();
+	private int currentNeuronNumber;
 	
 	public Substrate(int theDimensions) {
 		this.dimensions = theDimensions;
+		this.currentNeuronNumber = 1;
 	}
 	
 	
@@ -54,7 +57,7 @@ public class Substrate {
 	}
 	
 	public SubstrateNode createNode() {
-		SubstrateNode result = new SubstrateNode(0, this.dimensions);
+		SubstrateNode result = new SubstrateNode(this.currentNeuronNumber++, this.dimensions);
 		return result;
 	}
 	
@@ -77,12 +80,23 @@ public class Substrate {
 	}
 
 	public void createLink(SubstrateNode inputNode, SubstrateNode outputNode) {
-		// TODO Auto-generated method stub
-		
+		SubstrateLink link = new SubstrateLink(inputNode, outputNode);
+		this.links.add(link);
 	}
 	
-	public NEATNetwork decode(NEATNetwork cppn) {
-		return null;
+	/**
+	 * @return the links
+	 */
+	public List<SubstrateLink> getLinks() {
+		return links;
+	}
+
+	public int getLinkCount() {
+		return links.size();
+	}
+
+	public int getNodeCount() {
+		return 1+this.inputNodes.size()+this.outputNodes.size()+this.hiddenNodes.size();
 	}
 
 }
