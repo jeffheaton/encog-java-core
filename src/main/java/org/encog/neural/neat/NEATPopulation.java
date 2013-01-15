@@ -252,10 +252,10 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	}
 	
 	public NEATPopulation(Substrate theSubstrate, int populationSize) {
-		super(populationSize,null);
+		super(populationSize,new FactorHyperNEATGenome());
 		this.substrate = theSubstrate;
-		this.inputCount = theSubstrate.getInputCount();
-		this.outputCount = theSubstrate.getOutputCount();
+		this.inputCount = 6;
+		this.outputCount = 2;
 		HyperNEATGenome.buildCPPNActivationFunctions(this.activationFunctions);
 		
 		reset(populationSize);
@@ -358,9 +358,9 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	public void reset(int populationSize) {
 		// create the genome factory
 		if( isHyperNEAT() ) {
-			setGenomeFactory( new FactorNEATGenome() );
-		} else {
 			setGenomeFactory( new FactorHyperNEATGenome() );
+		} else {
+			setGenomeFactory( new FactorNEATGenome() );
 		}
 		
 		// create the new genomes
