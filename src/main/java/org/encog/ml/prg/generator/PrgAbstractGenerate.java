@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import org.encog.ml.CalculateScore;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.Population;
-import org.encog.ml.ea.score.CalculateGenomeScore;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
@@ -19,7 +19,7 @@ import org.encog.ml.prg.train.PrgPopulation;
 
 public abstract class PrgAbstractGenerate implements PrgPopulationGenerator {
 	private final EncogProgramContext context;
-	private final CalculateGenomeScore scoreFunction;
+	private final CalculateScore scoreFunction;
 	private final int maxDepth;
 	private final List<ProgramExtensionTemplate> leafNodes = new ArrayList<ProgramExtensionTemplate>();
 	private final List<ProgramExtensionTemplate> branchNodes = new ArrayList<ProgramExtensionTemplate>();
@@ -27,7 +27,7 @@ public abstract class PrgAbstractGenerate implements PrgPopulationGenerator {
 	private boolean requireVariable = true;
 	private boolean requireUnique = true;
 	
-	public PrgAbstractGenerate(EncogProgramContext theContext, CalculateGenomeScore theScoreFunction, int theMaxDepth) {
+	public PrgAbstractGenerate(EncogProgramContext theContext, CalculateScore theScoreFunction, int theMaxDepth) {
 		this.context = theContext;
 		this.maxDepth = theMaxDepth;
 		this.scoreFunction = theScoreFunction;
@@ -154,7 +154,7 @@ public abstract class PrgAbstractGenerate implements PrgPopulationGenerator {
 	/**
 	 * @return the scoreFunction
 	 */
-	public CalculateGenomeScore getScoreFunction() {
+	public CalculateScore getScoreFunction() {
 		return scoreFunction;
 	}
 

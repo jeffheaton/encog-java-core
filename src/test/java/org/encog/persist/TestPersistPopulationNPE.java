@@ -29,12 +29,12 @@ import java.io.ByteArrayOutputStream;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.encog.ml.CalculateScore;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.ea.population.Population;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.PersistNEATPopulation;
 import org.encog.neural.neat.training.NEATTraining;
-import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.TrainingSetScore;
 
 public final class TestPersistPopulationNPE extends TestCase

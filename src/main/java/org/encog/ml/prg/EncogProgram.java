@@ -609,18 +609,6 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError, 
 		}
 	}
 
-	@Override
-	public void decode() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void encode() {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public boolean hasVariable() {
 		TraverseProgram trav = new TraverseProgram(this);
 		trav.begin(0);

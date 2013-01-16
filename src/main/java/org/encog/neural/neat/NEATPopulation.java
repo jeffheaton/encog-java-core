@@ -33,9 +33,11 @@ import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.ea.codec.GeneticCODEC;
 import org.encog.ml.ea.population.BasicPopulation;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.hyperneat.FactorHyperNEATGenome;
+import org.encog.neural.hyperneat.HyperNEATCODEC;
 import org.encog.neural.hyperneat.HyperNEATGenome;
 import org.encog.neural.hyperneat.substrate.Substrate;
 import org.encog.neural.neat.training.NEATGenome;
@@ -169,6 +171,9 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	 * A list of innovations, or null if this feature is not being used.
 	 */
 	private InnovationList innovations;
+	
+	private NEATGenome bestGenome;
+	private NEATNetwork bestNetwork;
 
 	/**
 	 * The number of input units. All members of the population must agree with
@@ -220,6 +225,8 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 
 	private ChooseObject<ActivationFunction> activationFunctions = new ChooseObject<ActivationFunction>();
 
+	private GeneticCODEC codec;
+	
 	public NEATPopulation() {
 
 	}
@@ -358,8 +365,10 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	public void reset(int populationSize) {
 		// create the genome factory
 		if( isHyperNEAT() ) {
+			this.codec = new HyperNEATCODEC();
 			setGenomeFactory( new FactorHyperNEATGenome() );
 		} else {
+			this.codec = new NEATCODEC();
 			setGenomeFactory( new FactorNEATGenome() );
 		}
 		
@@ -448,21 +457,24 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	public void setMaxIndividualSize(int maxIndividualSize) {
 		this.maxIndividualSize = maxIndividualSize;
 	}
+	
+	private void updateBestNetwork() {
+		if( this.bestGenome!=this.getGenomes().get(0)) {
+			this.bestGenome = (NEATGenome) this.getGenomes().get(0);
+			this.bestNetwork = (NEATNetwork)this.codec.decode(this.bestGenome);
+		}
+	}
 
 	@Override
 	public double calculateError(MLDataSet data) {
-		NEATGenome bestGenome = (NEATGenome)this.getGenomes().get(0);
-		bestGenome.decode();
-		NEATNetwork network = (NEATNetwork)bestGenome.getOrganism();
-		return network.calculateError(data);
+		updateBestNetwork();
+		return this.bestNetwork.calculateError(data);
 	}
 
 	@Override
 	public MLData compute(MLData input) {
-		NEATGenome bestGenome = (NEATGenome)this.getGenomes().get(0);
-		bestGenome.decode();
-		NEATNetwork network = (NEATNetwork)bestGenome.getOrganism();
-		return network.compute(input);
+		updateBestNetwork();
+		return this.bestNetwork.compute(input);
 	}
 
 	public boolean isHyperNEAT() {
@@ -498,6 +510,20 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	 */
 	public void setSubstrate(Substrate substrate) {
 		this.substrate = substrate;
+	}
+
+	/**
+	 * @return the codec
+	 */
+	public GeneticCODEC getCodec() {
+		return codec;
+	}
+
+	/**
+	 * @param codec the codec to set
+	 */
+	public void setCodec(GeneticCODEC codec) {
+		this.codec = codec;
 	}
 	
 	

@@ -21,28 +21,32 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.ml.ea.score;
+package org.encog.ml;
 
-import org.encog.ml.ea.genome.Genome;
-
+import org.encog.ml.MLMethod;
 
 /**
- * Genetic Algorithms need a class to calculate the score.
+ * Used by simulated annealing and genetic algorithms to calculate the score
+ * for a machine learnign method.  This allows networks to be ranked.  We may be seeking
+ * a high or a low score, depending on the value the shouldMinimize
+ * method returns.
  */
-public interface CalculateGenomeScore {
+public interface CalculateScore {
+	
 	/**
-	 * Calculate this genome's score.
-	 * 
-	 * @param genome
-	 *            The genome.
+	 * Calculate this network's score.
+	 * @param network The network.
 	 * @return The score.
 	 */
-	double calculateScore(Genome genome);
-
+	double calculateScore(MLMethod method);
+	
 	/**
 	 * @return True if the goal is to minimize the score.
 	 */
 	boolean shouldMinimize();
-	
+
+	/**
+	 * @return True, if this score function cannot be done in parallel.
+	 */
 	boolean requireSingleThreaded();
 }

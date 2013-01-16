@@ -23,6 +23,7 @@
  */
 package org.encog.ml.genetic;
 
+import org.encog.ml.CalculateScore;
 import org.encog.ml.MLEncodable;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MethodFactory;
@@ -30,7 +31,6 @@ import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.BasicPopulation;
 import org.encog.ml.ea.population.Population;
-import org.encog.ml.ea.score.GeneticScoreAdapter;
 import org.encog.ml.ea.sort.GenomeComparator;
 import org.encog.ml.ea.sort.MaximizeScoreComp;
 import org.encog.ml.ea.sort.MinimizeScoreComp;
@@ -38,7 +38,6 @@ import org.encog.ml.ea.train.threaded.MultiThreadedEA;
 import org.encog.ml.genetic.crossover.Splice;
 import org.encog.ml.genetic.mutate.MutatePerturb;
 import org.encog.ml.train.BasicTraining;
-import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.util.concurrency.MultiThreadable;
 import org.encog.util.logging.EncogLogging;
@@ -71,7 +70,7 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 	public class MLMethodGeneticAlgorithmHelper extends MultiThreadedEA {
 		public MLMethodGeneticAlgorithmHelper(Population thePopulation,
 				CalculateScore theScoreFunction) {
-			super(thePopulation, new GeneticScoreAdapter(theScoreFunction));
+			super(thePopulation, theScoreFunction);
 		}
 	}
 
@@ -95,14 +94,15 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 	 * @param percentToMate
 	 *            The percent of the population allowed to mate.
 	 */
-	public MLMethodGeneticAlgorithm(final MethodFactory factory,
+	public MLMethodGeneticAlgorithm(final MethodFactory phenotypeFactory,
 			final CalculateScore calculateScore,
 			final int populationSize) {
 		super(TrainingImplementationType.Iterative);
 		
 		final Population population = new BasicPopulation(populationSize, null);
-		population.setGenomeFactory(new MLMethodGenomeFactory(factory));
+		population.setGenomeFactory(new MLMethodGenomeFactory(phenotypeFactory));
 		this.genetic = new MLMethodGeneticAlgorithmHelper(population, calculateScore);
+		this.genetic.setCODEC(new MLEncodableCODEC());
 		
 		GenomeComparator comp = null;
 		if( calculateScore.shouldMinimize() ) {
@@ -114,7 +114,7 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 		this.genetic.setSelectionComparator(comp);
 
 		for (int i = 0; i < population.getPopulationSize(); i++) {
-			final MLEncodable chromosomeNetwork = (MLEncodable)factory.factor();
+			final MLEncodable chromosomeNetwork = (MLEncodable)phenotypeFactory.factor();
 			final MLMethodGenome genome = new MLMethodGenome(chromosomeNetwork);
 			getGenetic().calculateScore(genome);
 			population.add(genome);
@@ -151,9 +151,7 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 	@Override
 	public MLMethod getMethod() {
 		Genome best = (Genome)genetic.getPopulation().getGenomeFactory().factor();
-		this.genetic.copyBestGenome(best);
-		best.decode();
-		return (MLMethod)best.getOrganism();
+		return this.genetic.getCODEC().decode(best);
 	}
 
 	/**

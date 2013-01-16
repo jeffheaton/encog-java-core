@@ -3,11 +3,10 @@ package org.encog.ml.prg.train;
 import java.io.Serializable;
 import java.util.List;
 
+import org.encog.ml.CalculateScore;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.ea.score.CalculateGenomeScore;
-import org.encog.ml.ea.score.GeneticScoreAdapter;
 import org.encog.ml.ea.train.threaded.MultiThreadedEA;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.train.MLTrain;
@@ -20,7 +19,7 @@ public class PrgGenetic extends MultiThreadedEA implements MLTrain, MultiThreada
 	private final EncogProgramContext context;
 
 	public PrgGenetic(PrgPopulation thePopulation,
-			CalculateGenomeScore theScoreFunction) {
+			CalculateScore theScoreFunction) {
 		super( thePopulation, theScoreFunction);
 		this.context = thePopulation.getContext();	
 		this.setParams(thePopulation.getContext().getParams());
@@ -28,7 +27,7 @@ public class PrgGenetic extends MultiThreadedEA implements MLTrain, MultiThreada
 
 
 	public PrgGenetic(PrgPopulation thePopulation, MLDataSet theTrainingSet) {
-		this(thePopulation, new GeneticScoreAdapter(new TrainingSetScore(theTrainingSet)));
+		this(thePopulation, new TrainingSetScore(theTrainingSet));
 	}
 
 	@Override

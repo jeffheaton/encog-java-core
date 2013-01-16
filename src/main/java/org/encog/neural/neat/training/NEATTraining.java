@@ -28,27 +28,26 @@ import java.util.List;
 import java.util.Random;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.ml.CalculateScore;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.genome.Genome;
-import org.encog.ml.ea.score.CalculateGenomeScore;
-import org.encog.ml.ea.score.GeneticScoreAdapter;
 import org.encog.ml.ea.sort.MinimizeAdjustedScoreComp;
 import org.encog.ml.ea.sort.MinimizeScoreComp;
 import org.encog.ml.ea.train.basic.BasicEA;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
+import org.encog.neural.hyperneat.HyperNEATCODEC;
+import org.encog.neural.neat.NEATCODEC;
 import org.encog.neural.neat.NEATGenomeFactory;
-import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.NEATSpecies;
 import org.encog.neural.neat.training.opp.NEATCrossover;
 import org.encog.neural.neat.training.opp.NEATMutate;
 import org.encog.neural.neat.training.species.SimpleNEATSpeciation;
 import org.encog.neural.neat.training.species.Speciation;
-import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
@@ -73,7 +72,7 @@ public class NEATTraining extends BasicEA implements MLTrain {
 	/**
 	 * The best ever network.
 	 */
-	private NEATNetwork bestEverNetwork;
+	private NEATGenome bestEverGenome;
 
 	/**
 	 * The number of inputs.
@@ -112,7 +111,7 @@ public class NEATTraining extends BasicEA implements MLTrain {
 			final int inputCount, final int outputCount,
 			final int populationSize) {
 		super(new NEATPopulation(inputCount, outputCount,
-				populationSize), new GeneticScoreAdapter(calculateScore));
+				populationSize), calculateScore);
 
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
@@ -121,11 +120,6 @@ public class NEATTraining extends BasicEA implements MLTrain {
 		setSelectionComparator(new MinimizeAdjustedScoreComp());
 
 		init();
-	}
-	
-	public NEATTraining(final CalculateScore calculateScore,
-			final NEATPopulation population) {
-		this(new GeneticScoreAdapter(calculateScore),population);
 	}
 
 	/**
@@ -136,7 +130,7 @@ public class NEATTraining extends BasicEA implements MLTrain {
 	 * @param population
 	 *            The population to use.
 	 */
-	public NEATTraining(final CalculateGenomeScore calculateScore,
+	public NEATTraining(final CalculateScore calculateScore,
 			final NEATPopulation population) {
 		super(population,calculateScore);
 		
@@ -217,7 +211,7 @@ public class NEATTraining extends BasicEA implements MLTrain {
 	 */
 	@Override
 	public MLMethod getMethod() {
-		return this.bestEverNetwork;
+		return this.getCODEC().decode(this.bestEverGenome);
 	}
 
 	/**
@@ -265,6 +259,12 @@ public class NEATTraining extends BasicEA implements MLTrain {
 			this.bestEverScore = Double.MAX_VALUE;
 		} else {
 			this.bestEverScore = Double.MIN_VALUE;
+		}
+		
+		if( this.getNEATPopulation().isHyperNEAT() ) {
+			setCODEC(new HyperNEATCODEC());
+		} else {
+			setCODEC(new NEATCODEC());
 		}
 
 		// check the population
@@ -365,10 +365,6 @@ public class NEATTraining extends BasicEA implements MLTrain {
 						// sort the baby's genes by their innovation numbers
 						children[0].sortGenes();
 
-						// add to new pop
-						// if (newPop.contains(baby)) {
-						// throw new EncogErrorthis.params("readd");
-						// }
 						newPop.add(children[0]);
 
 						++numSpawnedSoFar;
@@ -441,7 +437,6 @@ public class NEATTraining extends BasicEA implements MLTrain {
 	public void sortAndRecord() {
 
 		for (final Genome genome : getPopulation().getGenomes()) {
-			genome.decode();
 			calculateScore(genome);
 		}
 
@@ -452,7 +447,7 @@ public class NEATTraining extends BasicEA implements MLTrain {
 
 		if (getSelectionComparator().isBetterThan(currentBest, this.bestEverScore)) {
 			this.bestEverScore = currentBest;
-			this.bestEverNetwork = ((NEATNetwork) genome.getOrganism());
+			this.bestEverGenome = (NEATGenome)genome;
 		}
 
 		if( getSelectionComparator().isBetterThan(getError(), this.bestEverScore) ) {
@@ -496,10 +491,11 @@ public class NEATTraining extends BasicEA implements MLTrain {
 	 *            The genome to calculate for.
 	 */
 	public void calculateScore(final Genome g) {
-		if (g.getOrganism() instanceof MLContext) {
-			((MLContext) g.getOrganism()).clearContext();
+		MLMethod phenotype = this.getCODEC().decode(g);
+		if (phenotype instanceof MLContext) {
+			((MLContext) phenotype).clearContext();
 		}
-		final double score = this.getScoreFunction().calculateScore(g);
+		final double score = this.getScoreFunction().calculateScore(phenotype);
 		g.setScore(score);
 	}	
 	

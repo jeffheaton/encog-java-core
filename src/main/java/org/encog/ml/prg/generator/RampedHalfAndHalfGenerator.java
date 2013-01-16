@@ -2,7 +2,7 @@ package org.encog.ml.prg.generator;
 
 import java.util.Random;
 
-import org.encog.ml.ea.score.CalculateGenomeScore;
+import org.encog.ml.CalculateScore;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 
@@ -13,7 +13,7 @@ public class RampedHalfAndHalfGenerator extends PrgAbstractGenerate {
 	private final int minDepth;
 	
 	public RampedHalfAndHalfGenerator(EncogProgramContext theContext,
-			CalculateGenomeScore theScoreFunction, int theMinDepth, int theMaxDepth) {
+			CalculateScore theScoreFunction, int theMinDepth, int theMaxDepth) {
 		super(theContext, theScoreFunction, theMaxDepth);
 		this.generateFull = new PrgFullGenerator(theContext,theScoreFunction,theMaxDepth);
 		this.generateGrow = new PrgGrowGenerator(theContext,theScoreFunction,theMaxDepth);

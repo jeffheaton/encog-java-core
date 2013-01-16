@@ -27,13 +27,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.ml.CalculateScore;
 import org.encog.ml.MLContext;
+import org.encog.ml.MLMethod;
+import org.encog.ml.ea.codec.GeneticCODEC;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.selection.PrgSelection;
 import org.encog.ml.ea.opp.selection.TournamentSelection;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.score.AdjustScore;
-import org.encog.ml.ea.score.CalculateGenomeScore;
 import org.encog.ml.ea.sort.GenomeComparator;
 import org.encog.ml.ea.sort.MaximizeAdjustedScoreComp;
 import org.encog.ml.ea.sort.MaximizeScoreComp;
@@ -63,12 +65,14 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	 * The population.
 	 */
 	private Population population;
-	private final CalculateGenomeScore scoreFunction;
+	private final CalculateScore scoreFunction;
 	private PrgSelection selection;
 	
 	private List<AdjustScore> adjusters = new ArrayList<AdjustScore>();
 	
-	public BasicEA(Population thePopulation, CalculateGenomeScore theScoreFunction) {
+	private GeneticCODEC codec;
+	
+	public BasicEA(Population thePopulation, CalculateScore theScoreFunction) {
 		
 		this.population = thePopulation;
 		this.scoreFunction = theScoreFunction;
@@ -93,10 +97,11 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	 */
 	@Override
 	public void calculateScore(final Genome g) {
-		if (g.getOrganism() instanceof MLContext) {
-			((MLContext) g.getOrganism()).clearContext();
+		MLMethod phenotype = this.getCODEC().decode(g);
+		if (phenotype instanceof MLContext) {
+			((MLContext)phenotype).clearContext();
 		}
-		final double score = this.getScoreFunction().calculateScore(g);
+		final double score = this.getScoreFunction().calculateScore(phenotype);
 		g.setScore(score);
 	}
 
@@ -172,7 +177,7 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	}
 
 	@Override
-	public CalculateGenomeScore getScoreFunction() {
+	public CalculateScore getScoreFunction() {
 		return scoreFunction;
 	}
 
@@ -209,6 +214,14 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 		}
 		
 		genome.setAdjustedScore(score+delta);
+	}
+	
+	public GeneticCODEC getCODEC() {
+		return this.codec;
+	}
+	
+	public void setCODEC(GeneticCODEC theCodec) {
+		this.codec = theCodec;
 	}
 	
 }

@@ -37,6 +37,8 @@ public class MLMethodGenome extends DoubleArrayGenome {
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private MLEncodable phenotype;
 
 
 	/**
@@ -44,23 +46,30 @@ public class MLMethodGenome extends DoubleArrayGenome {
 	 * @param network The network to use.
 	 */
 	public MLMethodGenome(
-			final MLEncodable theNetwork) {
-		super(theNetwork.encodedArrayLength());
-		setOrganism(theNetwork);
-		encode();
+			final MLEncodable thePhenotype) {
+		super(thePhenotype.encodedArrayLength());
+		this.phenotype = thePhenotype;
+		this.phenotype.encodeToArray(getData());
 	}
 
+
 	/**
-	 * Decode the genomes into a neural network.
+	 * @return the phenotype
 	 */
+	public MLEncodable getPhenotype() {
+		return phenotype;
+	}
+
+
+	/**
+	 * @param phenotype the phenotype to set
+	 */
+	public void setPhenotype(MLEncodable phenotype) {
+		this.phenotype = phenotype;
+	}
+
+
 	public void decode() {
-		((MLEncodable)getOrganism()).decodeFromArray(getData());
-	}
-
-	/**
-	 * Encode the neural network into genes.
-	 */
-	public void encode() {
-		((MLEncodable)getOrganism()).encodeToArray(getData());
+		this.phenotype.decodeFromArray(getData());
 	}
 }

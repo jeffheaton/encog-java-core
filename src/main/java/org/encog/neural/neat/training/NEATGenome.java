@@ -245,60 +245,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 
 
 	/**
-	 * Convert the genes to an actual network.
-	 */
-	@Override
-	public void decode() {
-		NEATPopulation pop = (NEATPopulation)this.getPopulation();
-		
-		if( ((NEATNeuronGene)this.neuronsChromosome.get(0)).getNeuronType() != NEATNeuronType.Bias ) {
-			throw new NeuralNetworkError("The first neuron must be the bias neuron, this genome is invalid.");
-		}
-		
-		NEATLink[] links = new NEATLink[this.linksChromosome.size()];
-		ActivationFunction[] afs = new ActivationFunction[this.neuronsChromosome.size()];
-		
-		for(int i=0;i<afs.length;i++) {
-			afs[i] = this.getNeuronsChromosome().get(i).getActivationFunction();
-		}
-		
-		Map<Long,Integer> lookup = new HashMap<Long,Integer>();
-		for(int i=0;i<this.neuronsChromosome.size();i++) {
-			NEATNeuronGene neuronGene = (NEATNeuronGene)this.neuronsChromosome.get(i);
-			lookup.put(neuronGene.getId(), i);
-		}
-		
-		// loop over connections
-		for(int i=0;i<this.linksChromosome.size();i++) {
-			NEATLinkGene linkGene = (NEATLinkGene)this.linksChromosome.get(i);
-			links[i] = new NEATLink(
-					lookup.get(linkGene.getFromNeuronID()),
-					lookup.get(linkGene.getToNeuronID()),
-					linkGene.getWeight());
-			
-		}
-		
-		Arrays.sort(links);
-		
-	    NEATNetwork network = new NEATNetwork(
-	    		this.inputCount,
-                this.outputCount,
-	    		links,	    		
-                afs);
-		
-		
-		network.setActivationCycles(pop.getActivationCycles());		
-		setOrganism(network);		
-	}
-
-	/**
-	 * Convert the network to genes. Not currently supported.
-	 */
-	public void encode() {
-
-	}
-
-	/**
 	 * Get the compatibility score with another genome. Used to determine
 	 * species.
 	 *

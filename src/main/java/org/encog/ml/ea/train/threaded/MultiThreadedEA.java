@@ -9,11 +9,11 @@ import org.encog.Encog;
 import org.encog.EncogError;
 import org.encog.EncogShutdownTask;
 import org.encog.mathutil.randomize.factory.RandomFactory;
+import org.encog.ml.CalculateScore;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.opp.OperationList;
 import org.encog.ml.ea.population.Population;
-import org.encog.ml.ea.score.CalculateGenomeScore;
 import org.encog.ml.ea.score.parallel.ParallelScore;
 import org.encog.ml.ea.train.basic.BasicEA;
 import org.encog.ml.genetic.GeneticError;
@@ -51,7 +51,7 @@ public class MultiThreadedEA extends BasicEA
 	private int threadCount;
 
 	public MultiThreadedEA(Population thePopulation,
-			CalculateGenomeScore theScoreFunction) {
+			CalculateScore theScoreFunction) {
 		super(thePopulation, theScoreFunction);
 
 		this.bestGenome = thePopulation.getGenomeFactory().factor();
@@ -80,7 +80,7 @@ public class MultiThreadedEA extends BasicEA
 		}
 		
 		// rescore everything
-		ParallelScore s = new ParallelScore(getPopulation(),this.getScoreAdjusters(),this.getScoreFunction(),this.getThreadCount());
+		ParallelScore s = new ParallelScore(getPopulation(),this.getCODEC(),this.getScoreAdjusters(),this.getScoreFunction(),this.getThreadCount());
 		s.process();
 		
 		// spin up the threads

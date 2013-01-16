@@ -23,12 +23,12 @@
  */
 package org.encog.neural.networks.training.anneal;
 
+import org.encog.ml.CalculateScore;
 import org.encog.ml.MLEncodable;
 import org.encog.ml.MLRegression;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.train.BasicTraining;
 import org.encog.neural.networks.structure.NetworkCODEC;
-import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.util.logging.EncogLogging;

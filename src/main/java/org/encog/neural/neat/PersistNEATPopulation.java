@@ -31,6 +31,8 @@ import java.util.Map;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ml.ea.genome.Genome;
+import org.encog.neural.hyperneat.FactorHyperNEATGenome;
+import org.encog.neural.hyperneat.HyperNEATCODEC;
 import org.encog.neural.hyperneat.HyperNEATGenome;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATInnovation;
@@ -83,6 +85,13 @@ public class PersistNEATPopulation implements EncogPersistor {
 					innovation.setNeuronID(Integer.parseInt(cols.get(5)));
 					innovation.setFromNeuronID(Integer.parseInt(cols.get(6)));
 					innovation.setToNeuronID(Integer.parseInt(cols.get(7)));
+					ActivationFunction af = null;
+					
+					if( !cols.get(8).equalsIgnoreCase("null") ) {
+						af = EncogFileSection.parseActivationFunction(cols.get(8));
+					}
+					
+					innovation.setActivationFunction(af);
 					result.getInnovations().add(innovation);
 				}
 			} else if (section.getSectionName().equals("NEAT-POPULATION")
@@ -124,14 +133,18 @@ public class PersistNEATPopulation implements EncogPersistor {
 					} else if (cols.get(0).equalsIgnoreCase("n") ) {
 						NEATNeuronGene neuronGene = new NEATNeuronGene();
 						neuronGene.setId(Integer.parseInt(cols.get(1)));
+						
+						ActivationFunction af = EncogFileSection.parseActivationFunction(cols.get(2));
+						neuronGene.setActivationFunction(af);
+						
 						neuronGene.setNeuronType(PersistNEATPopulation
-								.stringToNeuronType(cols.get(2)));
-						neuronGene.setEnabled(Integer.parseInt(cols.get(3))>0);
-						neuronGene.setInnovationId(Integer.parseInt(cols.get(4)));
+								.stringToNeuronType(cols.get(3)));
+						neuronGene.setEnabled(Integer.parseInt(cols.get(4))>0);
+						neuronGene.setInnovationId(Integer.parseInt(cols.get(5)));
 						neuronGene
-								.setSplitX(CSVFormat.EG_FORMAT.parse(cols.get(5)));
+								.setSplitX(CSVFormat.EG_FORMAT.parse(cols.get(6)));
 						neuronGene
-								.setSplitY(CSVFormat.EG_FORMAT.parse(cols.get(6)));
+								.setSplitY(CSVFormat.EG_FORMAT.parse(cols.get(7)));
 						lastGenome.getNeuronsChromosome().add(neuronGene);
 					} else if (cols.get(0).equalsIgnoreCase("l")) {
 						NEATLinkGene linkGene = new NEATLinkGene();
@@ -217,6 +230,15 @@ public class PersistNEATPopulation implements EncogPersistor {
 			species.setPopulation(result);
 		}
 		
+		// set factories
+		if( result.isHyperNEAT() ) {
+			result.setGenomeFactory(new FactorHyperNEATGenome());
+			result.setCodec(new HyperNEATCODEC());
+		} else {
+			result.setGenomeFactory(new FactorNEATGenome());
+			result.setCodec(new NEATCODEC());
+		}
+		
 		((NEATInnovationList)result.getInnovations()).init();
 
 		return result;
@@ -276,6 +298,11 @@ public class PersistNEATPopulation implements EncogPersistor {
 				out.addColumn(neatInnovation.getNeuronID());
 				out.addColumn(neatInnovation.getFromNeuronID());
 				out.addColumn(neatInnovation.getToNeuronID());
+				if( neatInnovation.getActivationFunction()==null) {
+					out.addColumn("null");
+				} else {
+					out.addColumn(neatInnovation.getActivationFunction());
+				}
 				out.writeLine();
 			}
 		}
@@ -294,6 +321,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 			for (NEATNeuronGene neatNeuronGene : neatGenome.getNeuronsChromosome()) {
 				out.addColumn("n");
 				out.addColumn(neatNeuronGene.getId());
+				out.addColumn(neatNeuronGene.getActivationFunction());
 				out.addColumn(PersistNEATPopulation
 						.neuronTypeToString(neatNeuronGene.getNeuronType()));
 				out.addColumn(neatNeuronGene.isEnabled());

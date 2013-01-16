@@ -4,9 +4,10 @@ import java.io.Serializable;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.encog.ml.CalculateScore;
+import org.encog.ml.MLMethod;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
-import org.encog.ml.ea.score.CalculateGenomeScore;
 import org.encog.ml.prg.exception.EPLTooBig;
 
 public class GeneticTrainWorker extends Thread implements Serializable {
@@ -29,9 +30,9 @@ public class GeneticTrainWorker extends Thread implements Serializable {
 
 	private void handleNewGenomes(int offspringCount) {
 		for (int i = 0; i < offspringCount; i++) {
-			CalculateGenomeScore scoreFunction = this.owner.getScoreFunction();
-			this.tempProgram[i].decode();
-			double score = scoreFunction.calculateScore(this.tempProgram[i]);
+			CalculateScore scoreFunction = this.owner.getScoreFunction();
+			MLMethod phenotype = this.owner.getCODEC().decode(this.tempProgram[i]);
+			double score = scoreFunction.calculateScore(phenotype);
 			if (!Double.isInfinite(score) && !Double.isNaN(score)) {
 				// population.rewrite(this.tempProgram[0]);
 				this.tempProgram[i].setScore(score);

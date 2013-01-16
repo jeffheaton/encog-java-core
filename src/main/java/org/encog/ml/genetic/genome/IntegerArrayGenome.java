@@ -18,18 +18,6 @@ public class IntegerArrayGenome extends BasicGenome implements ArrayGenome {
 	}
 
 	@Override
-	public void decode() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void encode() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void copy(ArrayGenome source, int sourceIndex, int targetIndex) {
 		IntegerArrayGenome sourceInt = (IntegerArrayGenome)source;
 		this.data[targetIndex] = sourceInt.data[sourceIndex];

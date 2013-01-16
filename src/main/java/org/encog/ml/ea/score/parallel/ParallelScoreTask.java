@@ -2,28 +2,31 @@ package org.encog.ml.ea.score.parallel;
 
 import java.util.List;
 
+import org.encog.ml.CalculateScore;
+import org.encog.ml.MLMethod;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.score.AdjustScore;
-import org.encog.ml.ea.score.CalculateGenomeScore;
 import org.encog.ml.ea.train.basic.BasicEA;
 
 public class ParallelScoreTask implements Runnable {
 
 	private final Genome genome;
-	private final CalculateGenomeScore scoreFunction;
+	private final CalculateScore scoreFunction;
 	private final List<AdjustScore> adjusters; 
+	private final ParallelScore owner;
 	
-	public ParallelScoreTask(Genome genome, CalculateGenomeScore scoreFunction,
-			List<AdjustScore> adjusters) {
+	public ParallelScoreTask(Genome genome, ParallelScore theOwner) {
 		super();
+		this.owner = theOwner;
 		this.genome = genome;
-		this.scoreFunction = scoreFunction;
-		this.adjusters = adjusters;
+		this.scoreFunction = theOwner.getScoreFunction();
+		this.adjusters = theOwner.getAdjusters();
 	}
 
 	@Override
 	public void run() {
-		double score = this.scoreFunction.calculateScore(genome);
+		MLMethod phenotype = this.owner.getCodec().decode(this.genome);
+		double score = this.scoreFunction.calculateScore(phenotype);
 		genome.setScore(score);
 		BasicEA.calculateScoreAdjustment(genome, adjusters);
 	}

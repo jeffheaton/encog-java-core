@@ -25,6 +25,7 @@ package org.encog.ml.factory.train;
 
 import java.util.Map;
 
+import org.encog.ml.CalculateScore;
 import org.encog.ml.MLEncodable;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLResettable;
@@ -34,7 +35,6 @@ import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.factory.parse.ArchitectureParse;
 import org.encog.ml.genetic.MLMethodGeneticAlgorithm;
 import org.encog.ml.train.MLTrain;
-import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.TrainingSetScore;
 import org.encog.util.ParamsHolder;

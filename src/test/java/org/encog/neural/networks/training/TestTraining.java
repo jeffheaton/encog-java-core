@@ -25,6 +25,7 @@ package org.encog.neural.networks.training;
 
 import junit.framework.TestCase;
 
+import org.encog.ml.CalculateScore;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MethodFactory;
 import org.encog.ml.data.MLDataSet;

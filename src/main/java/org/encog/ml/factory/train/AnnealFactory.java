@@ -25,13 +25,13 @@ package org.encog.ml.factory.train;
 
 import java.util.Map;
 
+import org.encog.ml.CalculateScore;
 import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.factory.parse.ArchitectureParse;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.TrainingSetScore;
 import org.encog.neural.networks.training.anneal.NeuralSimulatedAnnealing;

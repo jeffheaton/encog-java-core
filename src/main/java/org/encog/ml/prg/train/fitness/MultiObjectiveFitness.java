@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.EncogError;
-import org.encog.ml.MLRegression;
-import org.encog.ml.data.buffer.BufferedMLDataSet;
-import org.encog.neural.networks.training.CalculateScore;
+import org.encog.ml.CalculateScore;
+import org.encog.ml.MLMethod;
 
 public class MultiObjectiveFitness  implements CalculateScore, Serializable {
 	
@@ -26,7 +25,7 @@ public class MultiObjectiveFitness  implements CalculateScore, Serializable {
 	}
 	
 	@Override
-	public double calculateScore(MLRegression method) {
+	public double calculateScore(MLMethod method) {
 		double result = 0;
 		
 		for(FitnessObjective obj: this.objectives) {

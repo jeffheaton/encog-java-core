@@ -18,18 +18,6 @@ public class DoubleArrayGenome extends BasicGenome implements ArrayGenome {
 	}
 
 	@Override
-	public void decode() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void encode() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void copy(ArrayGenome source, int sourceIndex, int targetIndex) {
 		DoubleArrayGenome sourceInt = (DoubleArrayGenome)source;
 		this.data[targetIndex] = sourceInt.data[sourceIndex];

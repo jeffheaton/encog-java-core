@@ -5,22 +5,26 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.encog.ml.CalculateScore;
+import org.encog.ml.ea.codec.GeneticCODEC;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.score.AdjustScore;
-import org.encog.ml.ea.score.CalculateGenomeScore;
 import org.encog.ml.genetic.GeneticError;
 
 public class ParallelScore {
 	private final Population population;
-	private final CalculateGenomeScore scoreFunction;
+	private final GeneticCODEC codec;
+	private final CalculateScore scoreFunction;
 	private final List<AdjustScore> adjusters;
 	private final int threads;
 
 	public ParallelScore(Population thePopulation,
+			GeneticCODEC theCODEC,
 			List<AdjustScore> theAdjusters,
-			CalculateGenomeScore theScoreFunction,
+			CalculateScore theScoreFunction,
 			int theThreadCount) {
+		this.codec = theCODEC;
 		this.population = thePopulation;
 		this.scoreFunction = theScoreFunction;
 		this.adjusters = theAdjusters;
@@ -43,8 +47,15 @@ public class ParallelScore {
 	/**
 	 * @return the scoreFunction
 	 */
-	public CalculateGenomeScore getScoreFunction() {
+	public CalculateScore getScoreFunction() {
 		return scoreFunction;
+	}
+
+	/**
+	 * @return the codec
+	 */
+	public GeneticCODEC getCodec() {
+		return codec;
 	}
 
 	public void process() {
@@ -60,8 +71,7 @@ public class ParallelScore {
 		Executors.newFixedThreadPool(this.threads);
 
 		for (Genome genome : this.population.getGenomes()) {
-			taskExecutor.execute(new ParallelScoreTask(genome, scoreFunction,
-					adjusters));
+			taskExecutor.execute(new ParallelScoreTask(genome, this));
 		}
 
 		taskExecutor.shutdown();
@@ -70,5 +80,9 @@ public class ParallelScore {
 		} catch (InterruptedException e) {
 			throw new GeneticError(e);
 		}
+	}
+
+	public List<AdjustScore> getAdjusters() {
+		return this.adjusters;
 	}
 }

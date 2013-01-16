@@ -3,13 +3,14 @@ package org.encog.ml.prg.train.fitness;
 import java.io.Serializable;
 
 import org.encog.mathutil.error.ErrorCalculation;
+import org.encog.ml.CalculateScore;
 import org.encog.ml.MLContext;
+import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.buffer.BufferedMLDataSet;
-import org.encog.neural.networks.training.CalculateScore;
 import org.encog.util.EngineArray;
 
 public class AdaptiveSimpleFitness implements CalculateScore, Serializable {
@@ -46,7 +47,7 @@ public class AdaptiveSimpleFitness implements CalculateScore, Serializable {
 	}
 	
 	@Override
-	public double calculateScore(MLRegression method) {
+	public double calculateScore(MLMethod method) {
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 		
 		// clear context
@@ -58,7 +59,7 @@ public class AdaptiveSimpleFitness implements CalculateScore, Serializable {
 		int count = 0;
 		// calculate error
 		for (final MLDataPair pair : this.trainingData) {
-			final MLData actual = method.compute(pair.getInput());
+			final MLData actual = ((MLRegression)method).compute(pair.getInput());
 			
 			for(int i=0;i<actual.size();i++) {
 				//double n1 = norm(i,actual.getData(i));

@@ -2,15 +2,15 @@ package org.encog.ml.prg.train.fitness;
 
 import java.io.Serializable;
 
-import org.encog.ml.MLRegression;
+import org.encog.ml.CalculateScore;
+import org.encog.ml.MLMethod;
 import org.encog.ml.prg.EncogProgram;
-import org.encog.neural.networks.training.CalculateScore;
 
 public class ComplexityBasedScore implements CalculateScore, Serializable {
 	
 
 	@Override
-	public double calculateScore(MLRegression method) {
+	public double calculateScore(MLMethod method) {
 		EncogProgram prg = (EncogProgram)method;
 		return prg.size();
 	}

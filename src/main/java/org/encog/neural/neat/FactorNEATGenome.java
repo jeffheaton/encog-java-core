@@ -1,12 +1,13 @@
 package org.encog.neural.neat;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.NEATNeuronGene;
 
-public class FactorNEATGenome implements NEATGenomeFactory {
+public class FactorNEATGenome implements NEATGenomeFactory, Serializable {
 
 	@Override
 	public NEATGenome factor(NEATGenome other) {

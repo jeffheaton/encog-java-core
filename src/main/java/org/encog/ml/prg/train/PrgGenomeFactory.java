@@ -1,12 +1,9 @@
 package org.encog.ml.prg.train;
 
 import java.io.Serializable;
-import java.util.Random;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
-import org.encog.ml.ea.population.Population;
-import org.encog.ml.ea.score.CalculateGenomeScore;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.EncogProgramVariables;

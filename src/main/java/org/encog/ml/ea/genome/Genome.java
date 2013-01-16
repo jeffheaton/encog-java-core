@@ -33,16 +33,6 @@ import org.encog.ml.ea.population.Population;
 public interface Genome {
 
 	/**
-	 * Use the genes to update the organism.
-	 */
-	void decode();
-
-	/**
-	 * Use the organism to update the genes.
-	 */
-	void encode();
-
-	/**
 	 * Get the adjusted score, this considers old-age penalties and youth
 	 * bonuses. If there are no such bonuses or penalties, this is the same as
 	 * the score.
@@ -50,11 +40,6 @@ public interface Genome {
 	 * @return The adjusted score.
 	 */
 	double getAdjustedScore();
-
-	/**
-	 * @return The organism produced by this genome.
-	 */
-	Object getOrganism();
 
 	/**
 	 * @return The population that this genome belongs to.

@@ -2,7 +2,7 @@ package org.encog.ml.prg.generator;
 
 import java.util.Random;
 
-import org.encog.ml.ea.score.CalculateGenomeScore;
+import org.encog.ml.CalculateScore;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
@@ -10,7 +10,7 @@ import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 public class PrgGrowGenerator extends PrgAbstractGenerate {
 
 	public PrgGrowGenerator(EncogProgramContext theContext,
-			CalculateGenomeScore theScoreFunction, int theMaxDepth) {
+			CalculateScore theScoreFunction, int theMaxDepth) {
 		super(theContext, theScoreFunction, theMaxDepth);
 	}
 	
