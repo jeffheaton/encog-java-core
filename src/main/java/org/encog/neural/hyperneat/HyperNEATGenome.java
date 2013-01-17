@@ -1,22 +1,12 @@
 package org.encog.neural.hyperneat;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.encog.engine.network.activation.ActivationBipolarSteepenedSigmoid;
 import org.encog.engine.network.activation.ActivationClippedLinear;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationGaussian;
 import org.encog.engine.network.activation.ActivationSIN;
-import org.encog.ml.data.MLData;
-import org.encog.ml.data.basic.BasicMLData;
-import org.encog.neural.hyperneat.substrate.Substrate;
-import org.encog.neural.hyperneat.substrate.SubstrateLink;
-import org.encog.neural.hyperneat.substrate.SubstrateNode;
-import org.encog.neural.neat.NEATLink;
-import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATLinkGene;
@@ -31,6 +21,7 @@ public class HyperNEATGenome extends NEATGenome {
 		activationFunctions.add(0.25, new ActivationBipolarSteepenedSigmoid());
 		activationFunctions.add(0.25, new ActivationGaussian());
 		activationFunctions.add(0.25, new ActivationSIN());	
+		activationFunctions.finalizeStructure();
 	}
 	
 	public HyperNEATGenome(final HyperNEATGenome other) {

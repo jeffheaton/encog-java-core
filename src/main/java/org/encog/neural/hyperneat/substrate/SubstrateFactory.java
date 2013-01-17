@@ -5,15 +5,17 @@ public class SubstrateFactory {
 	public static Substrate factorSandwichSubstrate(int inputEdgeSize, int outputEdgeSize) {
 		Substrate result = new Substrate(3);
 	
-		// create the input layer
-		double tick = (2.0 / inputEdgeSize) - 1;
+		double inputTick = 2.0 / inputEdgeSize;
+		double outputTick = 2.0 / inputEdgeSize;
 		
+		// create the input layer
+
 		for(int row=0;row<inputEdgeSize;row++) {
 			for(int col=0;col<inputEdgeSize;col++) {
 				SubstrateNode inputNode = result.createInputNode();
 				inputNode.getLocation()[0] = -1;
-				inputNode.getLocation()[1] = row * tick;
-				inputNode.getLocation()[2] = col * tick;
+				inputNode.getLocation()[1] = -1 + (row * inputTick);
+				inputNode.getLocation()[2] = -1 + (col * inputTick);
 			}
 		}
 		
@@ -23,8 +25,8 @@ public class SubstrateFactory {
 			for(int ocol=0;ocol<inputEdgeSize;ocol++) {
 				SubstrateNode outputNode = result.createOutputNode();
 				outputNode.getLocation()[0] = 1;
-				outputNode.getLocation()[1] = orow * tick;
-				outputNode.getLocation()[2] = ocol * tick;
+				outputNode.getLocation()[1] = -1 + (orow * outputTick);
+				outputNode.getLocation()[2] = -1 + (ocol * outputTick);
 				
 				// link this output node to every input node
 				for(SubstrateNode inputNode : result.getInputNodes()) {

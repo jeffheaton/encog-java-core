@@ -139,8 +139,6 @@ public class NEATTraining extends BasicEA implements MLTrain {
 		}
 		
 		final NEATGenome genome = (NEATGenome) population.getGenomes().get(0);
-		setBestComparator(new MinimizeScoreComp());
-		setSelectionComparator(new MinimizeAdjustedScoreComp());
 		setPopulation(population);
 		this.inputCount = genome.getInputCount();
 		this.outputCount = genome.getOutputCount();
@@ -256,9 +254,9 @@ public class NEATTraining extends BasicEA implements MLTrain {
 		this.speciation.init(this);
 		
 		if (this.getScoreFunction().shouldMinimize()) {
-			this.bestEverScore = Double.MAX_VALUE;
+			this.bestEverScore = Double.POSITIVE_INFINITY;
 		} else {
-			this.bestEverScore = Double.MIN_VALUE;
+			this.bestEverScore = Double.NEGATIVE_INFINITY;
 		}
 		
 		if( this.getNEATPopulation().isHyperNEAT() ) {

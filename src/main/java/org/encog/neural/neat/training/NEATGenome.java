@@ -25,20 +25,17 @@ package org.encog.neural.neat.training;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.BasicGenome;
 import org.encog.ml.ea.genome.Genome;
-import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.neat.NEATLink;
-import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.neat.NEATPopulation;
 
@@ -203,7 +200,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		final double inputRowSlice = 0.8 / (inputCount);
 		
 		// get the activation function
-		ActivationFunction af = pop.getActivationFunctions().pickFirst();
+		ActivationFunction af = pop.getActivationFunctions().pick(new Random());
 		
 		// first bias
 		this.neuronsChromosome.add(new NEATNeuronGene(NEATNeuronType.Bias, af, 

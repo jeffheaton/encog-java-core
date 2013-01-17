@@ -3,8 +3,6 @@ package org.encog.neural.hyperneat.substrate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.neural.neat.NEATNetwork;
-
 public class Substrate {
 
 	private final int dimensions;
@@ -98,5 +96,4 @@ public class Substrate {
 	public int getNodeCount() {
 		return 1+this.inputNodes.size()+this.outputNodes.size()+this.hiddenNodes.size();
 	}
-
 }

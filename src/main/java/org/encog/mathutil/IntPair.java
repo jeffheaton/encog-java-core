@@ -43,5 +43,15 @@ public class IntPair {
 		this.y+=addY;
 	}
 	
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[IntPair:");
+		result.append(this.x);
+		result.append(";");
+		result.append(this.y);
+		result.append("]");
+		return result.toString();
+	}
+	
 	
 }
