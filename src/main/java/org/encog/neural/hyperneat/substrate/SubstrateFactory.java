@@ -5,8 +5,8 @@ public class SubstrateFactory {
 	public static Substrate factorSandwichSubstrate(int inputEdgeSize, int outputEdgeSize) {
 		Substrate result = new Substrate(3);
 	
-		double inputTick = 2.0 / inputEdgeSize;
-		double outputTick = 2.0 / inputEdgeSize;
+		double inputTick = 2.0 / (inputEdgeSize-1);
+		double outputTick = 2.0 / (inputEdgeSize-1);
 		
 		// create the input layer
 
