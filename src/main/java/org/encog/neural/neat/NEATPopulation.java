@@ -172,6 +172,8 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	 */
 	private InnovationList innovations;
 	
+	private final double weightRange = 5;
+	
 	private NEATGenome bestGenome;
 	private NEATNetwork bestNetwork;
 
@@ -524,6 +526,23 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	 */
 	public void setCodec(GeneticCODEC codec) {
 		this.codec = codec;
+	}
+
+	/**
+	 * @return the weightRange
+	 */
+	public double getWeightRange() {
+		return weightRange;
+	}
+
+	public static double clampWeight(double w, double weightRange) {
+		if( w<-weightRange ) {
+			return -weightRange;
+		} else if( w>weightRange ) {
+			return weightRange;
+		} else {
+			return w;
+		}
 	}
 	
 	

@@ -230,7 +230,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 								.getId(), ((NEATNeuronGene)this.neuronsChromosome.get(
 								inputCount + j + 1)).getId(), true, inputCount
 								+ outputCount + 2 + getNumGenes(),
-						RangeRandomizer.randomize(-1, 1), false));
+						RangeRandomizer.randomize(-pop.getWeightRange(), pop.getWeightRange()), false));
 			}
 		}
 

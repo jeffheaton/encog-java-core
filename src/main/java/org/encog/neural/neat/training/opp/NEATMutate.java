@@ -228,9 +228,9 @@ public class NEATMutate implements EvolutionaryOperator {
 			}
 		}
 
+		ActivationFunction af = this.owner.getNEATPopulation().getActivationFunctions().pick(new Random());
+		
 		if (innovation == null) {
-			ActivationFunction af = this.owner.getNEATPopulation().getActivationFunctions().pick(new Random());
-					
 			// this innovation has not been tried, create it
 			innovation = owner.getInnovations().createNewInnovation(af, from, to,
 					NEATInnovationType.NewNeuron, af, NEATNeuronType.Hidden,
@@ -271,7 +271,7 @@ public class NEATMutate implements EvolutionaryOperator {
 			target.getLinksChromosome().add(link2);
 
 			final NEATNeuronGene newNeuron = new NEATNeuronGene(
-					NEATNeuronType.Hidden, innovation.getActivationFunction(), 
+					NEATNeuronType.Hidden, af, 
 					newNeuronID, newDepth, newWidth);
 
 			target.getNeuronsChromosome().add(newNeuron);
@@ -392,13 +392,17 @@ public class NEATMutate implements EvolutionaryOperator {
 	 */
 	public void mutateWeights(NEATGenome target, final double mutateRate,
 			final double probNewMutate, final double maxPertubation) {
+		double weightRange = ((NEATPopulation)target.getPopulation()).getWeightRange();
+		
 		for (final NEATLinkGene linkGene : target.getLinksChromosome()) {
 			if (Math.random() < mutateRate) {
 				if (Math.random() < probNewMutate) {
-					linkGene.setWeight(RangeRandomizer.randomize(-1, 1));
+					linkGene.setWeight(RangeRandomizer.randomize(-weightRange, weightRange));
 				} else {
-					linkGene.setWeight(linkGene.getWeight()
-							+ RangeRandomizer.randomize(-1, 1) * maxPertubation);
+					double w = linkGene.getWeight()
+							+ RangeRandomizer.randomize(-1, 1) * maxPertubation;
+					w = NEATPopulation.clampWeight(w,weightRange);
+					linkGene.setWeight(w);
 				}
 			}
 		}

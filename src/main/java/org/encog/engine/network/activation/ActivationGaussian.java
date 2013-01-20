@@ -101,7 +101,7 @@ public class ActivationGaussian implements ActivationFunction {
 	 */
 	@Override
 	public final String[] getParamNames() {
-		final String[] result = { "center", "width" };
+		final String[] result = {  };
 		return result;
 	}
 
