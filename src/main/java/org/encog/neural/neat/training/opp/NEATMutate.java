@@ -114,10 +114,11 @@ public class NEATMutate implements EvolutionaryOperator {
 			return;
 		}
 
-		createLink(target, neuron1ID, neuron2ID);
+		double r = ((NEATPopulation)target.getPopulation()).getWeightRange();
+		createLink(target, neuron1ID, neuron2ID, RangeRandomizer.randomize(-r,r));
 	}
 
-	public void createLink(NEATGenome target, long neuron1ID, long neuron2ID) {
+	public void createLink(NEATGenome target, long neuron1ID, long neuron2ID, double weight) {
 
 		boolean recurrent = false;
 
@@ -140,13 +141,13 @@ public class NEATMutate implements EvolutionaryOperator {
 
 			final NEATLinkGene linkGene = new NEATLinkGene(neuron1ID,
 					neuron2ID, true, innovation.getInnovationID(),
-					RangeRandomizer.randomize(-1, 1), recurrent);
+					weight, recurrent);
 			target.getLinksChromosome().add(linkGene);
 		} else {
 			// existing innovation
 			final NEATLinkGene linkGene = new NEATLinkGene(neuron1ID,
 					neuron2ID, true, innovation.getInnovationID(),
-					RangeRandomizer.randomize(-1, 1), recurrent);
+					weight, recurrent);
 			target.getLinksChromosome().add(linkGene);
 		}
 	}
@@ -162,6 +163,7 @@ public class NEATMutate implements EvolutionaryOperator {
 	public void addNeuron(NEATGenome target) {
 
 		int countTrysToFindOldLink = this.maxTries;
+		NEATPopulation pop = ((NEATPopulation)target.getPopulation());
 
 		// the link to split
 		NEATLinkGene splitLink = null;
@@ -202,8 +204,6 @@ public class NEATMutate implements EvolutionaryOperator {
 
 		splitLink.setEnabled(false);
 
-		final double originalWeight = splitLink.getWeight();
-
 		final long from = splitLink.getFromNeuronID();
 		final long to = splitLink.getToNeuronID();
 
@@ -241,10 +241,10 @@ public class NEATMutate implements EvolutionaryOperator {
 							.getNeuronID(), newDepth, newWidth));
 
 			// add the first link
-			createLink(target, from, innovation.getNeuronID());
+			createLink(target, from, innovation.getNeuronID(), splitLink.getWeight());
 
 			// add the second link
-			createLink(target, innovation.getNeuronID(), to);
+			createLink(target, innovation.getNeuronID(), to, pop.getWeightRange());
 		}
 
 		else {
@@ -263,9 +263,9 @@ public class NEATMutate implements EvolutionaryOperator {
 			}
 
 			final NEATLinkGene link1 = new NEATLinkGene(from, newNeuronID,
-					true, innovationLink1.getInnovationID(), 1.0, false);
+					true, innovationLink1.getInnovationID(), splitLink.getWeight(), false);
 			final NEATLinkGene link2 = new NEATLinkGene(newNeuronID, to, true,
-					innovationLink2.getInnovationID(), originalWeight, false);
+					innovationLink2.getInnovationID(), pop.getWeightRange(), false);
 
 			target.getLinksChromosome().add(link1);
 			target.getLinksChromosome().add(link2);
