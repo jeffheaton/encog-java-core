@@ -143,16 +143,13 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	 * @return The neuron gene.
 	 */
 	public NEATNeuronGene createNeuronFromID(final long neuronID) {
-		final NEATNeuronGene result = new NEATNeuronGene(NEATNeuronType.Hidden, null,
-				0, 0, 0 );
+		final NEATNeuronGene result = new NEATNeuronGene(NEATNeuronType.Hidden, null, 0);
 
 		for (final Innovation i : getInnovations()) {
 			final NEATInnovation innovation = (NEATInnovation) i;
 			if (innovation.getNeuronID() == neuronID) {
 				result.setNeuronType(innovation.getNeuronType());
 				result.setId(innovation.getNeuronID());
-				result.setSplitY(innovation.getSplitY());
-				result.setSplitX(innovation.getSplitX());
 				result.setActivationFunction(innovation.getActivationFunction());
 				return result;
 			}
@@ -202,12 +199,12 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	 */
 	public NEATInnovation createNewInnovation(ActivationFunction theActivationFunction, final long from, final long to,
 			final NEATInnovationType innovationType, ActivationFunction af,
-			final NEATNeuronType neuronType, final double x, final double y) {
+			final NEATNeuronType neuronType) {
 		
 		final long innovationID = this.population.assignInnovationID();
 		
 		final NEATInnovation newInnovation = new NEATInnovation(theActivationFunction,from, to,
-				innovationType, innovationID, neuronType, x, y);
+				innovationType, innovationID, neuronType);
 		
 		newInnovation.setActivationFunction(af);
 

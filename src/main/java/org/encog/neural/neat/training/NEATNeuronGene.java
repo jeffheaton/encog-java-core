@@ -46,23 +46,11 @@ public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	public static final String PROPERTY_ACT_RESPONSE = "aResp";
-	public static final String PROPERTY_SPLIT_X = "splitX";
-	public static final String PROPERTY_SPLIT_Y = "splitY";
 	
 	/**
 	 * The neuron type.
 	 */
 	private NEATNeuronType neuronType;
-
-	/**
-	 * The x-split.
-	 */
-	private double splitX;
-
-	/**
-	 * The y-split.
-	 */
-	private double splitY;
 	
 	/**
 	 * The activation function.
@@ -88,12 +76,9 @@ public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 	 * @param splitX
 	 *            The split x.
 	 */
-	public NEATNeuronGene(final NEATNeuronType type, ActivationFunction theActivationFunction, final long id,
-			final double splitY, final double splitX) {
+	public NEATNeuronGene(final NEATNeuronType type, ActivationFunction theActivationFunction, final long id) {
 		this.neuronType = type;
 		setId(id);
-		this.splitX = splitX;
-		this.splitY = splitY;
 		this.activationFunction = theActivationFunction;
 	}
 
@@ -107,8 +92,6 @@ public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 		final NEATNeuronGene other = (NEATNeuronGene) gene;
 		setId(other.getId());
 		this.neuronType = other.neuronType;
-		this.splitX = other.splitX;
-		this.splitY = other.splitY;
 		this.activationFunction = other.activationFunction;
 
 	}
@@ -121,20 +104,6 @@ public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 	}
 
 	/**
-	 * @return The split x value.
-	 */
-	public double getSplitX() {
-		return this.splitX;
-	}
-
-	/**
-	 * @return The split y value.
-	 */
-	public double getSplitY() {
-		return this.splitY;
-	}
-
-	/**
 	 * Set the neuron type.
 	 * 
 	 * @param neuronType
@@ -144,28 +113,6 @@ public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 		this.neuronType = neuronType;
 	}
 
-	/**
-	 * Set the split x.
-	 * 
-	 * @param splitX
-	 *            The split x.
-	 */
-	public void setSplitX(final double splitX) {
-		this.splitX = splitX;
-	}
-
-	/**
-	 * Set the split y.
-	 * 
-	 * @param splitY
-	 *            The split y.
-	 */
-	public void setSplitY(final double splitY) {
-		this.splitY = splitY;
-	}
-	
-	
-	
 	/**
 	 * @return the activationFunction
 	 */

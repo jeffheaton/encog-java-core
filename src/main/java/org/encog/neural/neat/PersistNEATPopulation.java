@@ -80,15 +80,13 @@ public class PersistNEATPopulation implements EncogPersistor {
 					innovation.setInnovationType(PersistNEATPopulation
 							.stringToInnovationType(cols.get(1)));
 					innovation.setNeuronType(PersistNEATPopulation.stringToNeuronType(cols.get(2)));
-					innovation.setSplitX(CSVFormat.EG_FORMAT.parse(cols.get(3)));
-					innovation.setSplitY(CSVFormat.EG_FORMAT.parse(cols.get(4)));
-					innovation.setNeuronID(Integer.parseInt(cols.get(5)));
-					innovation.setFromNeuronID(Integer.parseInt(cols.get(6)));
-					innovation.setToNeuronID(Integer.parseInt(cols.get(7)));
+					innovation.setNeuronID(Integer.parseInt(cols.get(3)));
+					innovation.setFromNeuronID(Integer.parseInt(cols.get(4)));
+					innovation.setToNeuronID(Integer.parseInt(cols.get(5)));
 					ActivationFunction af = null;
 					
-					if( !cols.get(8).equalsIgnoreCase("null") ) {
-						af = EncogFileSection.parseActivationFunction(cols.get(8));
+					if( !cols.get(6).equalsIgnoreCase("null") ) {
+						af = EncogFileSection.parseActivationFunction(cols.get(6));
 					}
 					
 					innovation.setActivationFunction(af);
@@ -141,20 +139,15 @@ public class PersistNEATPopulation implements EncogPersistor {
 								.stringToNeuronType(cols.get(3)));
 						neuronGene.setEnabled(Integer.parseInt(cols.get(4))>0);
 						neuronGene.setInnovationId(Integer.parseInt(cols.get(5)));
-						neuronGene
-								.setSplitX(CSVFormat.EG_FORMAT.parse(cols.get(6)));
-						neuronGene
-								.setSplitY(CSVFormat.EG_FORMAT.parse(cols.get(7)));
 						lastGenome.getNeuronsChromosome().add(neuronGene);
 					} else if (cols.get(0).equalsIgnoreCase("l")) {
 						NEATLinkGene linkGene = new NEATLinkGene();
 						linkGene.setId(Integer.parseInt(cols.get(1)));
 						linkGene.setEnabled(Integer.parseInt(cols.get(2))>0);
-						linkGene.setRecurrent(Integer.parseInt(cols.get(3))>0);
-						linkGene.setFromNeuronID(Integer.parseInt(cols.get(4)));
-						linkGene.setToNeuronID(Integer.parseInt(cols.get(5)));
-						linkGene.setWeight(CSVFormat.EG_FORMAT.parse(cols.get(6)));
-						linkGene.setInnovationId(Integer.parseInt(cols.get(7)));
+						linkGene.setFromNeuronID(Integer.parseInt(cols.get(3)));
+						linkGene.setToNeuronID(Integer.parseInt(cols.get(4)));
+						linkGene.setWeight(CSVFormat.EG_FORMAT.parse(cols.get(5)));
+						linkGene.setInnovationId(Integer.parseInt(cols.get(6)));
 						lastGenome.getLinksChromosome().add(linkGene);
 					}
 				}
@@ -293,8 +286,6 @@ public class PersistNEATPopulation implements EncogPersistor {
 								.getInnovationType()));
 				out.addColumn(PersistNEATPopulation
 						.neuronTypeToString(neatInnovation.getNeuronType()));
-				out.addColumn(neatInnovation.getSplitX());
-				out.addColumn(neatInnovation.getSplitY());
 				out.addColumn(neatInnovation.getNeuronID());
 				out.addColumn(neatInnovation.getFromNeuronID());
 				out.addColumn(neatInnovation.getToNeuronID());
@@ -326,15 +317,12 @@ public class PersistNEATPopulation implements EncogPersistor {
 						.neuronTypeToString(neatNeuronGene.getNeuronType()));
 				out.addColumn(neatNeuronGene.isEnabled());
 				out.addColumn(neatNeuronGene.getInnovationId());
-				out.addColumn(neatNeuronGene.getSplitX());
-				out.addColumn(neatNeuronGene.getSplitY());
 				out.writeLine();
 			}
 			for (NEATLinkGene neatLinkGene : neatGenome.getLinksChromosome()) {
 				out.addColumn("l");
 				out.addColumn(neatLinkGene.getId());
 				out.addColumn(neatLinkGene.isEnabled());
-				out.addColumn(neatLinkGene.isRecurrent());
 				out.addColumn(neatLinkGene.getFromNeuronID());
 				out.addColumn(neatLinkGene.getToNeuronID());
 				out.addColumn(neatLinkGene.getWeight());

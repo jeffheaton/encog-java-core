@@ -137,8 +137,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		for (final NEATNeuronGene oldGene : other.getNeuronsChromosome()) {
 			final NEATNeuronGene newGene = new NEATNeuronGene(oldGene
 					.getNeuronType(), oldGene.getActivationFunction(), 
-					oldGene.getId(), oldGene.getSplitY(),
-					oldGene.getSplitX());
+					oldGene.getId());
 			this.neuronsChromosome.add(newGene);
 		}
 
@@ -147,7 +146,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			final NEATLinkGene newGene = new NEATLinkGene(oldGene
 					.getFromNeuronID(), oldGene.getToNeuronID(), oldGene
 					.isEnabled(), oldGene.getInnovationId(), oldGene
-					.getWeight(), oldGene.isRecurrent());
+					.getWeight());
 			this.linksChromosome.add(newGene);
 		}
 
@@ -203,14 +202,12 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		ActivationFunction af = pop.getActivationFunctions().pick(new Random());
 		
 		// first bias
-		this.neuronsChromosome.add(new NEATNeuronGene(NEATNeuronType.Bias, af, 
-				inputCount, 0, 0.9));
+		this.neuronsChromosome.add(new NEATNeuronGene(NEATNeuronType.Bias, af, inputCount));
 
 		// then inputs
 
 		for (int i = 0; i < inputCount; i++) {
-			this.neuronsChromosome.add(new NEATNeuronGene(NEATNeuronType.Input, af, 
-					i, 0, 0.1 + i * inputRowSlice));
+			this.neuronsChromosome.add(new NEATNeuronGene(NEATNeuronType.Input, af, i));
 		}
 
 		// then the other stuff
@@ -219,8 +216,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 
 		for (int i = 0; i < outputCount; i++) {
 			this.neuronsChromosome.add(new NEATNeuronGene(
-					NEATNeuronType.Output, af, i + inputCount + 1, 1, (i + 1)
-							* outputRowSlice));
+					NEATNeuronType.Output, af, i + inputCount + 1));
 		}
 
 		for (int i = 0; i < inputCount + 1; i++) {
@@ -230,7 +226,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 								.getId(), ((NEATNeuronGene)this.neuronsChromosome.get(
 								inputCount + j + 1)).getId(), true, inputCount
 								+ outputCount + 2 + getNumGenes(),
-						RangeRandomizer.randomize(-pop.getWeightRange(), pop.getWeightRange()), false));
+						RangeRandomizer.randomize(-pop.getWeightRange(), pop.getWeightRange())));
 			}
 		}
 
@@ -355,18 +351,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	public long getSpeciesID() {
 		return this.speciesID;
 	}
-
-	/**
-	 * Get the specified split y.
-	 *
-	 * @param nd
-	 *            The neuron.
-	 * @return The split y.
-	 */
-	public double getSplitY(final int nd) {
-		return ((NEATNeuronGene) this.neuronsChromosome.get(nd)).getSplitY();
-	}
-
 
 	/**
 	 * @param networkDepth

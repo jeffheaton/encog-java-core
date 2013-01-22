@@ -120,8 +120,6 @@ public class NEATMutate implements EvolutionaryOperator {
 
 	public void createLink(NEATGenome target, long neuron1ID, long neuron2ID, double weight) {
 
-		boolean recurrent = false;
-
 		// check to see if this innovation has already been tried
 		NEATInnovation innovation = owner.getInnovations().checkInnovation(
 				neuron1ID, neuron2ID, NEATInnovationType.NewLink);
@@ -129,9 +127,6 @@ public class NEATMutate implements EvolutionaryOperator {
 		// see if this is a recurrent(backwards) link
 		final NEATNeuronGene neuronGene = (NEATNeuronGene) target
 				.getNeuronsChromosome().get(getElementPos(target, neuron1ID));
-		if (neuronGene.getSplitY() > neuronGene.getSplitY()) {
-			recurrent = true;
-		}
 
 		// is this a new innovation?
 		if (innovation == null) {
@@ -141,13 +136,13 @@ public class NEATMutate implements EvolutionaryOperator {
 
 			final NEATLinkGene linkGene = new NEATLinkGene(neuron1ID,
 					neuron2ID, true, innovation.getInnovationID(),
-					weight, recurrent);
+					weight);
 			target.getLinksChromosome().add(linkGene);
 		} else {
 			// existing innovation
 			final NEATLinkGene linkGene = new NEATLinkGene(neuron1ID,
 					neuron2ID, true, innovation.getInnovationID(),
-					weight, recurrent);
+					weight);
 			target.getLinksChromosome().add(linkGene);
 		}
 	}
@@ -190,7 +185,6 @@ public class NEATMutate implements EvolutionaryOperator {
 			final long fromNeuron = link.getFromNeuronID();
 
 			if ((link.isEnabled())
-					&& (!link.isRecurrent())
 					&& (((NEATNeuronGene) target.getNeuronsChromosome().get(
 							getElementPos(target, fromNeuron))).getNeuronType() != NEATNeuronType.Bias)) {
 				splitLink = link;
@@ -212,9 +206,6 @@ public class NEATMutate implements EvolutionaryOperator {
 		final NEATNeuronGene toGene = (NEATNeuronGene) target
 				.getNeuronsChromosome().get(getElementPos(target, to));
 
-		final double newDepth = (fromGene.getSplitY() + toGene.getSplitY()) / 2;
-		final double newWidth = (fromGene.getSplitX() + toGene.getSplitX()) / 2;
-
 		// has this innovation already been tried?
 		NEATInnovation innovation = owner.getInnovations().checkInnovation(
 				from, to, NEATInnovationType.NewNeuron);
@@ -233,12 +224,11 @@ public class NEATMutate implements EvolutionaryOperator {
 		if (innovation == null) {
 			// this innovation has not been tried, create it
 			innovation = owner.getInnovations().createNewInnovation(af, from, to,
-					NEATInnovationType.NewNeuron, af, NEATNeuronType.Hidden,
-					newWidth, newDepth);
+					NEATInnovationType.NewNeuron, af, NEATNeuronType.Hidden);
 
 			target.getNeuronsChromosome().add(
 					new NEATNeuronGene(NEATNeuronType.Hidden, af, innovation
-							.getNeuronID(), newDepth, newWidth));
+							.getNeuronID()));
 
 			// add the first link
 			createLink(target, from, innovation.getNeuronID(), splitLink.getWeight());
@@ -263,16 +253,16 @@ public class NEATMutate implements EvolutionaryOperator {
 			}
 
 			final NEATLinkGene link1 = new NEATLinkGene(from, newNeuronID,
-					true, innovationLink1.getInnovationID(), splitLink.getWeight(), false);
+					true, innovationLink1.getInnovationID(), splitLink.getWeight());
 			final NEATLinkGene link2 = new NEATLinkGene(newNeuronID, to, true,
-					innovationLink2.getInnovationID(), pop.getWeightRange(), false);
+					innovationLink2.getInnovationID(), pop.getWeightRange());
 
 			target.getLinksChromosome().add(link1);
 			target.getLinksChromosome().add(link2);
 
 			final NEATNeuronGene newNeuron = new NEATNeuronGene(
 					NEATNeuronType.Hidden, af, 
-					newNeuronID, newDepth, newWidth);
+					newNeuronID);
 
 			target.getNeuronsChromosome().add(newNeuron);
 		}

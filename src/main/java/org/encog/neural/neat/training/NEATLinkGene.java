@@ -49,11 +49,6 @@ public class NEATLinkGene extends NEATBaseGene implements Serializable {
 	private long fromNeuronID;
 
 	/**
-	 * Is this a recurrent connection.
-	 */
-	private boolean recurrent;
-
-	/**
 	 * The to neuron id.
 	 */	
 	private long toNeuronID;
@@ -81,13 +76,12 @@ public class NEATLinkGene extends NEATBaseGene implements Serializable {
 	 */
 	public NEATLinkGene(final long fromNeuronID, final long toNeuronID,
 			final boolean enabled, final long innovationID,
-			final double weight, final boolean recurrent) {
+			final double weight) {
 		this.fromNeuronID = fromNeuronID;
 		this.toNeuronID = toNeuronID;
 		setEnabled(enabled);
 		setInnovationId(innovationID);
 		this.weight = weight;
-		this.recurrent = recurrent;
 	}
 
 	/**
@@ -102,7 +96,6 @@ public class NEATLinkGene extends NEATBaseGene implements Serializable {
 		this.fromNeuronID = other.fromNeuronID;
 		this.toNeuronID = other.toNeuronID;
 		setInnovationId(other.getInnovationId());
-		this.recurrent = other.recurrent;
 		this.weight = other.weight;
 	}
 
@@ -125,13 +118,6 @@ public class NEATLinkGene extends NEATBaseGene implements Serializable {
 	 */
 	public double getWeight() {
 		return this.weight;
-	}
-
-	/**
-	 * @return True if this is a recurrent link.
-	 */
-	public boolean isRecurrent() {
-		return this.recurrent;
 	}
 
 	/**
@@ -169,9 +155,4 @@ public class NEATLinkGene extends NEATBaseGene implements Serializable {
 	public void setToNeuronID(int i) {
 		this.toNeuronID = i;
 	}
-
-	public void setRecurrent(boolean b) {
-		this.recurrent = b;
-	}
-
 }

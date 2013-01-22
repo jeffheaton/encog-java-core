@@ -68,16 +68,6 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 	private NEATNeuronType neuronType;
 
 	/**
-	 * The split x property.
-	 */
-	private double splitX;
-
-	/**
-	 * The split y property.
-	 */
-	private double splitY;
-
-	/**
 	 * The to neuron's id.
 	 */
 	private long toNeuronID;
@@ -115,8 +105,6 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 		setInnovationID(innovationID);
 
 		this.neuronID = -1;
-		this.splitX = 0;
-		this.splitY = 0;
 		this.neuronType = NEATNeuronType.None;
 	}
 
@@ -141,7 +129,7 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 	public NEATInnovation(final ActivationFunction theActivationFunction,
 			final long fromNeuronID, final long toNeuronID,
 			final NEATInnovationType innovationType, final long innovationID,
-			final NEATNeuronType neuronType, final double x, final double y) {
+			final NEATNeuronType neuronType) {
 		
 		this.activationFunction = theActivationFunction;
 		this.fromNeuronID = fromNeuronID;
@@ -149,8 +137,6 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 		this.innovationType = innovationType;
 		setInnovationID(innovationID);
 		this.neuronType = neuronType;
-		this.splitX = x;
-		this.splitY = y;
 
 		this.neuronID = 0;
 	}
@@ -172,8 +158,6 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 		this.activationFunction = theActivationFunction;
 		this.neuronID = neuronID;
 		setInnovationID(innovationID);
-		this.splitX = neuronGene.getSplitX();
-		this.splitY = neuronGene.getSplitY();
 
 		this.neuronType = neuronGene.getNeuronType();
 		this.innovationType = NEATInnovationType.NewNeuron;
@@ -207,20 +191,6 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 	 */
 	public NEATNeuronType getNeuronType() {
 		return this.neuronType;
-	}
-
-	/**
-	 * @return The split x.
-	 */
-	public double getSplitX() {
-		return this.splitX;
-	}
-
-	/**
-	 * @return The split y.
-	 */
-	public double getSplitY() {
-		return this.splitY;
 	}
 
 	/**
@@ -262,10 +232,6 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 		result.append(this.toNeuronID);
 		result.append(",neuron=");
 		result.append(this.neuronID);
-		result.append(",splitX=");
-		result.append(this.splitX);
-		result.append(",splitY=");
-		result.append(this.splitY);
 		result.append("]");
 		return result.toString();
 	}
@@ -278,13 +244,6 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 	public void setNeuronType(NEATNeuronType t) {
 		this.neuronType = t;
 		
-	}
-
-	public void setSplitX(double d) {
-		this.splitX = d;
-	}
-	public void setSplitY(double d) {
-		this.splitY = d;
 	}
 
 	/**
