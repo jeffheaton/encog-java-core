@@ -71,11 +71,6 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 	 * The to neuron's id.
 	 */
 	private long toNeuronID;
-	
-	/**
-	 * The activation function, if new neuron.
-	 */
-	private ActivationFunction activationFunction;
 
 	/**
 	 * Default constructor, used mainly for persistence.
@@ -126,12 +121,11 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 	 * @param y
 	 *            THe y coordinate.
 	 */
-	public NEATInnovation(final ActivationFunction theActivationFunction,
+	public NEATInnovation(
 			final long fromNeuronID, final long toNeuronID,
 			final NEATInnovationType innovationType, final long innovationID,
 			final NEATNeuronType neuronType) {
 		
-		this.activationFunction = theActivationFunction;
 		this.fromNeuronID = fromNeuronID;
 		this.toNeuronID = toNeuronID;
 		this.innovationType = innovationType;
@@ -151,11 +145,10 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 	 * @param neuronID
 	 *            The neuron id.
 	 */
-	public NEATInnovation(final ActivationFunction theActivationFunction,
+	public NEATInnovation(
 			final NEATNeuronGene neuronGene,
 			final long innovationID, final long neuronID) {
 
-		this.activationFunction = theActivationFunction;
 		this.neuronID = neuronID;
 		setInnovationID(innovationID);
 
@@ -258,16 +251,5 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 	 */
 	public void setToNeuronID(long toNeuronID) {
 		this.toNeuronID = toNeuronID;
-	}
-
-	public ActivationFunction getActivationFunction() {
-		return this.activationFunction;
-	}
-
-	/**
-	 * @param activationFunction the activationFunction to set
-	 */
-	public void setActivationFunction(ActivationFunction activationFunction) {
-		this.activationFunction = activationFunction;
 	}
 }

@@ -82,14 +82,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 					innovation.setNeuronType(PersistNEATPopulation.stringToNeuronType(cols.get(2)));
 					innovation.setNeuronID(Integer.parseInt(cols.get(3)));
 					innovation.setFromNeuronID(Integer.parseInt(cols.get(4)));
-					innovation.setToNeuronID(Integer.parseInt(cols.get(5)));
-					ActivationFunction af = null;
-					
-					if( !cols.get(6).equalsIgnoreCase("null") ) {
-						af = EncogFileSection.parseActivationFunction(cols.get(6));
-					}
-					
-					innovation.setActivationFunction(af);
+					innovation.setToNeuronID(Integer.parseInt(cols.get(5)));					
 					result.getInnovations().add(innovation);
 				}
 			} else if (section.getSectionName().equals("NEAT-POPULATION")
@@ -289,11 +282,6 @@ public class PersistNEATPopulation implements EncogPersistor {
 				out.addColumn(neatInnovation.getNeuronID());
 				out.addColumn(neatInnovation.getFromNeuronID());
 				out.addColumn(neatInnovation.getToNeuronID());
-				if( neatInnovation.getActivationFunction()==null) {
-					out.addColumn("null");
-				} else {
-					out.addColumn(neatInnovation.getActivationFunction());
-				}
 				out.writeLine();
 			}
 		}

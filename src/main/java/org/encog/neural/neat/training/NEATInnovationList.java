@@ -83,7 +83,7 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 
 		this.population = population;
 		for (final NEATNeuronGene neuronGene : neurons) {
-			final NEATInnovation innovation = new NEATInnovation(neuronGene.getActivationFunction(), neuronGene,
+			final NEATInnovation innovation = new NEATInnovation(neuronGene,
 					population.assignInnovationID(), assignNeuronID());
 			add(innovation);
 		}
@@ -151,7 +151,6 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 			if (innovation.getNeuronID() == neuronID) {
 				result.setNeuronType(innovation.getNeuronType());
 				result.setId(innovation.getNeuronID());
-				result.setActivationFunction(innovation.getActivationFunction());
 				return result;
 			}
 		}
@@ -204,10 +203,8 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 		
 		final long innovationID = this.population.assignInnovationID();
 		
-		final NEATInnovation newInnovation = new NEATInnovation(theActivationFunction,from, to,
+		final NEATInnovation newInnovation = new NEATInnovation(from, to,
 				innovationType, innovationID, neuronType);
-		
-		newInnovation.setActivationFunction(af);
 
 		if (innovationType == NEATInnovationType.NewNeuron) {
 			long neuronID = assignNeuronID();
