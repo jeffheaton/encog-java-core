@@ -16,21 +16,6 @@ import org.encog.neural.neat.training.NEATTraining;
 
 public class NEATCrossover implements EvolutionaryOperator {
 	
-	/**
-	 * The two parents.
-	 */
-	enum NEATParent {
-		/**
-		 * The father.
-		 */
-		Dad,
-
-		/**
-		 * The mother.
-		 */
-		Mom
-	};
-	
 	@Override
 	public void init(EvolutionaryAlgorithm theOwner) {
 		this.owner = (NEATTraining)theOwner;
@@ -44,7 +29,7 @@ public class NEATCrossover implements EvolutionaryOperator {
 	 * @param dad The father.
 	 * @return The parent to favor.
 	 */
-	private NEATParent favorParent(final NEATGenome mom, final NEATGenome dad) {
+	private NEATGenome favorParent(final NEATGenome mom, final NEATGenome dad) {
 		
 		// first determine who is more fit, the mother or the father?
 		// see if mom and dad are the same fitness
@@ -54,32 +39,40 @@ public class NEATCrossover implements EvolutionaryOperator {
 				// if mom and dad are the same fitness and have the same number of genes, 
 				// then randomly pick mom or dad as the most fit.
 				if (Math.random() > 0) {
-					return NEATParent.Mom;
+					return mom;
 				} else {
-					return NEATParent.Dad;
+					return dad;
 				}
 			}
 			// mom and dad are the same fitness, but different number of genes
 			// favor the parent with fewer genes
 			else {
 				if (mom.getNumGenes() < dad.getNumGenes()) {
-					return NEATParent.Mom;
+					return mom;
 				} else {
-					return NEATParent.Dad;
+					return dad;
 				}
 			}
 		} else {
 			// mom and dad have different scores, so choose the better score.
 			// important to note, better score COULD BE the larger or smaller score.
 			if (owner.getSelectionComparator().compare(mom, dad)<0) {
-				return NEATParent.Mom;
+				return mom;
 			}
 
 			else {
-				return NEATParent.Dad;
+				return dad;
 			}
 		}
 		
+	}
+	
+	private NEATNeuronGene findBestNeuron(long nodeID, NEATGenome best, NEATGenome notBest) {
+		NEATNeuronGene result = best.findNeuron(nodeID);
+		if( result==null ) {
+			result = notBest.findNeuron(nodeID);
+		}
+		return result;
 	}
 	
 	/**
@@ -90,14 +83,14 @@ public class NEATCrossover implements EvolutionaryOperator {
 	 * @param vec
 	 *            THe list of id's used.
 	 */
-	public void addNeuronID(final long nodeID, final List<Long> vec) {
+	public void addNeuronID(final long nodeID, final List<NEATNeuronGene> vec, NEATGenome best, NEATGenome notBest) {
 		for (int i = 0; i < vec.size(); i++) {
-			if (vec.get(i) == nodeID) {
+			if (vec.get(i).getId() == nodeID) {
 				return;
 			}
 		}
 
-		vec.add(nodeID);
+		vec.add(findBestNeuron(nodeID, best, notBest));
 
 		return;
 	}
@@ -111,12 +104,13 @@ public class NEATCrossover implements EvolutionaryOperator {
 		NEATGenome mom = (NEATGenome)parents[parentIndex+0];
 		NEATGenome dad = (NEATGenome)parents[parentIndex+1];
 		
-		NEATParent best = favorParent(mom,dad);
+		NEATGenome best = favorParent(mom,dad);
+		NEATGenome notBest = (best==mom)?mom:dad;
 		
 		final List<NEATNeuronGene> babyNeurons = new ArrayList<NEATNeuronGene>();
 		final List<NEATLinkGene> babyGenes = new ArrayList<NEATLinkGene>();
 
-		final List<Long> vecNeurons = new ArrayList<Long>();
+		final List<NEATNeuronGene> vecNeurons = new ArrayList<NEATNeuronGene>();
 
 		int curMom = 0; // current gene index from mom
 		int curDad = 0; // current gene index from dad
@@ -125,7 +119,7 @@ public class NEATCrossover implements EvolutionaryOperator {
 		// add in the input and bias, they should always be here
 		int alwaysCount = owner.getInputCount() + owner.getOutputCount() + 1;
 		for(int i=0;i<alwaysCount;i++) {
-			addNeuronID(i, vecNeurons);
+			addNeuronID(i, vecNeurons, best, notBest);
 		}
 		
 
@@ -146,22 +140,22 @@ public class NEATCrossover implements EvolutionaryOperator {
 
 			// now select a gene for mom or dad.  This gene is for the baby
 			if ((momGene == null) && (dadGene != null)) {
-				if (best == NEATParent.Dad) {
+				if (best == dad) {
 					selectedGene = dadGene;
 				}
 				curDad++;
 			} else if ((dadGene == null) && (momGene != null)) {
-				if (best == NEATParent.Mom) {
+				if (best == mom) {
 					selectedGene = momGene;
 				}
 				curMom++;
 			} else if (momGene.getInnovationId() < dadGene.getInnovationId()) {
-				if (best == NEATParent.Mom) {
+				if (best == mom) {
 					selectedGene = momGene;
 				}
 				curMom++;
 			} else if (dadGene.getInnovationId() < momGene.getInnovationId()) {
-				if (best == NEATParent.Dad) {
+				if (best == dad) {
 					selectedGene = dadGene;
 				}
 				curDad++;
@@ -189,8 +183,8 @@ public class NEATCrossover implements EvolutionaryOperator {
 	
 				// Check if we already have the nodes referred to in SelectedGene.
 				// If not, they need to be added.
-				addNeuronID(selectedGene.getFromNeuronID(), vecNeurons);
-				addNeuronID(selectedGene.getToNeuronID(), vecNeurons);
+				addNeuronID(selectedGene.getFromNeuronID(), vecNeurons, best, notBest);
+				addNeuronID(selectedGene.getToNeuronID(), vecNeurons, best, notBest);
 			}
 
 		}// end while
@@ -200,7 +194,7 @@ public class NEATCrossover implements EvolutionaryOperator {
 
 		for (int i = 0; i < vecNeurons.size(); i++) {
 			babyNeurons.add(owner.getInnovations().createNeuronFromID(
-					vecNeurons.get(i)));
+					vecNeurons.get(i).getId(),vecNeurons.get(i).getActivationFunction()));
 		}
 
 		// finally, create the genome

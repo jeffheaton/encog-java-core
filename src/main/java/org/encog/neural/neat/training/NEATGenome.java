@@ -475,5 +475,13 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	public int size() {
 		throw new UnsupportedOperationException();
 	}
+
+	public NEATNeuronGene findNeuron(long nodeID) {
+		for(NEATNeuronGene gene : this.neuronsChromosome) {
+			if( gene.getId()==nodeID)
+				return gene;
+		}
+		return null;
+	}
 	
 }

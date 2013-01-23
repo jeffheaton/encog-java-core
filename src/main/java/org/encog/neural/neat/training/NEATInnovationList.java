@@ -140,10 +140,11 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	 * 
 	 * @param neuronID
 	 *            The neuron id.
+	 * @param af 
 	 * @return The neuron gene.
 	 */
-	public NEATNeuronGene createNeuronFromID(final long neuronID) {
-		final NEATNeuronGene result = new NEATNeuronGene(NEATNeuronType.Hidden, null, 0);
+	public NEATNeuronGene createNeuronFromID(final long neuronID, ActivationFunction af) {
+		final NEATNeuronGene result = new NEATNeuronGene(NEATNeuronType.Hidden, af, 0);
 
 		for (final Innovation i : getInnovations()) {
 			final NEATInnovation innovation = (NEATInnovation) i;
