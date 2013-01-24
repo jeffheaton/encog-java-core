@@ -14,13 +14,50 @@ import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.NEATNeuronGene;
 import org.encog.neural.neat.training.NEATTraining;
 
+/**
+ * Crossover is performed by mixing the link genes between the parents to produce an offspring.  Only the 
+ * link genes are considered for crossover.  The neuron genes are chosen by virtue of which link genes were chosen.  
+ * If a neuron gene is present in both parents, then we choose the neuron gene from the more fit of the two parents.
+ * 
+ * For NEAT, it does not really matter what parent we get the neuron gene from.  However, because HyperNEAT also 
+ * encodes a unique activation function into the neuron, the selection of a neuron gene between two parents is more 
+ * important.
+ * 
+ * The crossover operator defines two broad classes of genes.  Matching genes are those genes that are present in 
+ * both parents.  Non-matching genes are only present in one person.  Non-matching genes are further divided into 
+ * two more groups:
+ * 
+ * disjoint genes: Genes in the middle of a genome that do not match between the parents.
+ * excess genes: Genes at the edge of a genome that do not match between the parents.
+ * 
+ * Matching genes are inherited randomly, whereas disjoint genes (those that do not match in the middle) and excess genes 
+ * (those that do not match in the end) are inherited from the more fit parent. In this case, equal fitnesses are 
+ * assumed, so the disjoint and excess genes are also inherited randomly. The disabled genes may become enabled again 
+ * in future generations: there’s a preset chance that an inherited gene is disabled if it is disabled in either parent.
+ * 
+ * This is implemented in this class via the following algorithm.  First, create a counter for each parent.  At each step in 
+ * the loop, perform the following.
+ * 
+ * If both parents have the same innovation number, then randomly choose which parent's gene to use. Increase the parent 
+ * counter who contributed the gene.
+ * Else if one parent has a lower innovation number than the other, then include the lower innovation gene if its parent 
+ * is the most fit. Increase the parent counter who contributed the gene.
+
+ *
+ */
 public class NEATCrossover implements EvolutionaryOperator {
 	
+	/**
+	 * Init this operator.  This allows the EA to be defined.
+	 */
 	@Override
 	public void init(EvolutionaryAlgorithm theOwner) {
 		this.owner = (NEATTraining)theOwner;
 	}
 	
+	/**
+	 * The owning object.
+	 */
 	private NEATTraining owner;
 	
 	/**
@@ -67,6 +104,14 @@ public class NEATCrossover implements EvolutionaryOperator {
 		
 	}
 	
+	/**
+	 * Find the best neuron, between two parents by the specified neuron id.
+	 * @param nodeID The neuron id.
+	 * @param best The best genome.
+	 * @param notBest The non-best (second best) genome. Also the worst, since 
+	 * this is the 2nd best of 2.
+	 * @return The best neuron genome by id.
+	 */
 	private NEATNeuronGene findBestNeuron(long nodeID, NEATGenome best, NEATGenome notBest) {
 		NEATNeuronGene result = best.findNeuron(nodeID);
 		if( result==null ) {
@@ -97,6 +142,9 @@ public class NEATCrossover implements EvolutionaryOperator {
 
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
 			Genome[] offspring, int offspringIndex) {
@@ -207,11 +255,17 @@ public class NEATCrossover implements EvolutionaryOperator {
 		offspring[offspringIndex] = babyGenome;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int offspringProduced() {
 		return 1;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int parentsNeeded() {
 		return 2;
