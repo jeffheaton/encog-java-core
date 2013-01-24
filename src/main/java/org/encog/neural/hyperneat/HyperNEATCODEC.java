@@ -2,6 +2,7 @@ package org.encog.neural.hyperneat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.encog.engine.network.activation.ActivationFunction;
@@ -75,15 +76,11 @@ public class HyperNEATCODEC implements GeneticCODEC {
 				linkList.add( new NEATLink(0, target.getId(), biasWeight));
 			}
 		}
-
-		NEATLink[] links = new NEATLink[linkList.size()]; 
-		for(int i=0;i<links.length;i++) {
-			links[i] = linkList.get(i);
-		}
-		Arrays.sort(links);
+	
+		Collections.sort(linkList);
 
 		NEATNetwork network = new NEATNetwork(substrate.getInputCount(),
-				substrate.getOutputCount(), links, afs);
+				substrate.getOutputCount(), linkList, afs);
 
 		network.setActivationCycles(pop.getActivationCycles());
 		return network;

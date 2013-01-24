@@ -24,6 +24,7 @@
 package org.encog.neural.neat;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ml.MLError;
@@ -75,10 +76,14 @@ public class NEATNetwork implements MLRegression, MLError, Serializable {
     public NEATNetwork(
     		int inputNeuronCount,
             int outputNeuronCount,
-            NEATLink[] connectionArray,
+            List<NEATLink> connectionArray,
             ActivationFunction[] theActivationFunctions)
     {
-        links = connectionArray;
+        links = new NEATLink[connectionArray.size()];
+        for(int i=0;i<connectionArray.size();i++) {
+        	links[i] = connectionArray.get(i);
+        }
+        
         activationFunctions = theActivationFunctions;
         int neuronCount = this.activationFunctions.length;
 

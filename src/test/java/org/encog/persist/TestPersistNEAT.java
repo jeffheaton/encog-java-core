@@ -25,6 +25,8 @@ package org.encog.persist;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -46,14 +48,14 @@ public class TestPersistNEAT extends TestCase {
 	{
 		// simple network, 1 input, 1 bais , those two both conned into output neuron, so that 2 links!
 		ActivationFunction[] activationFunctions = new ActivationFunction[3];
-		NEATLink[] links = new NEATLink[2];
+		List<NEATLink> links = new ArrayList<NEATLink>();
 		
 		for(int i=0;i<activationFunctions.length;i++) {
 			activationFunctions[i] = new ActivationSteepenedSigmoid();
 		}
 		
-		links[0] = new NEATLink(0,2,1.0);
-		links[1] = new NEATLink(1,2,2.0);
+		links.set(0, new NEATLink(0,2,1.0));
+		links.set(1, new NEATLink(1,2,2.0));
 		
 		NEATNetwork result = new NEATNetwork(1,1,links,activationFunctions);
 				

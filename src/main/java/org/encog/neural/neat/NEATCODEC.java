@@ -1,7 +1,9 @@
 package org.encog.neural.neat;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +31,7 @@ public class NEATCODEC implements GeneticCODEC, Serializable {
 			throw new NeuralNetworkError("The first neuron must be the bias neuron, this genome is invalid.");
 		}
 		
-		NEATLink[] links = new NEATLink[linksChromosome.size()];
+		List<NEATLink> links = new ArrayList<NEATLink>();
 		ActivationFunction[] afs = new ActivationFunction[neuronsChromosome.size()];
 		
 		for(int i=0;i<afs.length;i++) {
@@ -45,14 +47,15 @@ public class NEATCODEC implements GeneticCODEC, Serializable {
 		// loop over connections
 		for(int i=0;i<linksChromosome.size();i++) {
 			NEATLinkGene linkGene = (NEATLinkGene)linksChromosome.get(i);
-			links[i] = new NEATLink(
-					lookup.get(linkGene.getFromNeuronID()),
-					lookup.get(linkGene.getToNeuronID()),
-					linkGene.getWeight());
+			if( linkGene.isEnabled() ) {
+				links.add( new NEATLink(lookup.get(linkGene.getFromNeuronID()),
+						lookup.get(linkGene.getToNeuronID()),
+						linkGene.getWeight()));
+			}
 			
 		}
 		
-		Arrays.sort(links);
+		Collections.sort(links);
 		
 	    NEATNetwork network = new NEATNetwork(
 	    		neatGenome.getInputCount(),
