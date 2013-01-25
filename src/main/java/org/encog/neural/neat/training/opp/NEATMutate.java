@@ -101,7 +101,8 @@ public class NEATMutate implements EvolutionaryOperator {
 			}
 
 			if (!isDuplicateLink(target, neuron1.getId(), neuron2.getId())
-					&& (neuron2.getNeuronType() != NEATNeuronType.Bias)) {
+					&& (neuron2.getNeuronType() != NEATNeuronType.Bias)
+					&& (neuron1.getNeuronType() != NEATNeuronType.Output)) {
 
 				neuron1ID = neuron1.getId();
 				neuron2ID = neuron2.getId();
