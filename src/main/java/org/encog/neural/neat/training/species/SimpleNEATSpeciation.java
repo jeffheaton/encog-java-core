@@ -10,7 +10,7 @@ public class SimpleNEATSpeciation implements Speciation {
 	private NEATTraining owner;
 	private double compatibilityThreshold = 0.26;
 	private int numGensAllowedNoImprovement = 15;
-	private int maxNumberOfSpecies = 0;
+	private int maxNumberOfSpecies = 40;
 	
 	/**
 	 * The total fit adjustment.
