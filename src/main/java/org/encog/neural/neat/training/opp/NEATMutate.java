@@ -201,11 +201,6 @@ public class NEATMutate implements EvolutionaryOperator {
 		final long from = splitLink.getFromNeuronID();
 		final long to = splitLink.getToNeuronID();
 
-		final NEATNeuronGene fromGene = (NEATNeuronGene) target
-				.getNeuronsChromosome().get(getElementPos(target, from));
-		final NEATNeuronGene toGene = (NEATNeuronGene) target
-				.getNeuronsChromosome().get(getElementPos(target, to));
-
 		// has this innovation already been tried?
 		NEATInnovation innovation = owner.getInnovations().checkInnovation(
 				from, to, NEATInnovationType.NewNeuron);
