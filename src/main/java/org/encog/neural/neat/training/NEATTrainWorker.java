@@ -90,6 +90,7 @@ public class NEATTrainWorker implements Runnable {
 				// sort the baby's genes by their innovation numbers
 				children[0].sortGenes();
 
+				this.train.calculateScore(children[0]);
 				if (!this.train.addChild(children[0])) {
 					return;
 				}

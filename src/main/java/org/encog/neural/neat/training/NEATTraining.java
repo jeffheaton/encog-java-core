@@ -36,7 +36,8 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.genome.Genome;
-import org.encog.ml.ea.score.parallel.ParallelScoreTask;
+import org.encog.ml.ea.score.AdjustScore;
+import org.encog.ml.ea.score.parallel.ParallelScore;
 import org.encog.ml.ea.sort.MinimizeAdjustedScoreComp;
 import org.encog.ml.ea.sort.MinimizeScoreComp;
 import org.encog.ml.ea.train.basic.BasicEA;
@@ -286,7 +287,12 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 						"All NEATGenome's must have the same input and output sizes as the base network.");
 			}
 		}
+		
+		// score the initial population
+		ParallelScore pscore = new ParallelScore(getPopulation(), this.getCODEC(), new ArrayList<AdjustScore>(), this.getScoreFunction(), inputCount);
+		pscore.process();
 
+		// sort the population
 		sortAndRecord();
 		this.speciation.performSpeciation();
 	}
@@ -403,10 +409,6 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	 * Sort the genomes.
 	 */
 	public void sortAndRecord() {
-
-		for (final Genome genome : getPopulation().getGenomes()) {
-			calculateScore(genome);
-		}
 
 		getPopulation().sort(this.getBestComparator() );
 
