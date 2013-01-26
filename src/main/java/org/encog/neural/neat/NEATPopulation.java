@@ -391,9 +391,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 		}
 
 		// create initial innovations
-		NEATGenome genome = (NEATGenome) this.getGenomes().get(0);
-		this.setInnovations(new NEATInnovationList(this, genome.getLinksChromosome(),
-				genome.getNeuronsChromosome()));
+		this.setInnovations(new NEATInnovationList(this));
 	}
 
 	public void setActivationCycles(int activationCycles) {

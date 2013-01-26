@@ -235,14 +235,13 @@ public class NEATCrossover implements EvolutionaryOperator {
 				addNeuronID(selectedGene.getToNeuronID(), vecNeurons, best, notBest);
 			}
 
-		}// end while
+		}
 
 		// now create the required nodes. First sort them into order
 		Collections.sort(vecNeurons);
 
 		for (int i = 0; i < vecNeurons.size(); i++) {
-			babyNeurons.add(owner.getInnovations().createNeuronFromID(
-					vecNeurons.get(i).getId(),vecNeurons.get(i).getActivationFunction()));
+			babyNeurons.add(new NEATNeuronGene(vecNeurons.get(i)));
 		}
 
 		// finally, create the genome

@@ -82,7 +82,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 					innovation.setNeuronID(Integer.parseInt(cols.get(3)));
 					innovation.setFromNeuronID(Integer.parseInt(cols.get(4)));
 					innovation.setToNeuronID(Integer.parseInt(cols.get(5)));					
-					result.getInnovations().getInnovations().add(innovation);
+					//result.getInnovations().getInnovations().add(innovation);
 				}
 			} else if (section.getSectionName().equals("NEAT-POPULATION")
 					&& section.getSubSectionName().equals("SPECIES")) {
@@ -224,7 +224,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 			result.setCodec(new NEATCODEC());
 		}
 		
-		((NEATInnovationList)result.getInnovations()).init();
+		//((NEATInnovationList)result.getInnovations()).init();
 
 		return result;
 	}
@@ -270,6 +270,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 				.getSpeciesIDGenerate().getCurrentID());
 		out.addSubSection("INNOVATIONS");
 		if (pop.getInnovations() != null) {
+			/*
 			for (NEATInnovation innovation : pop.getInnovations().getInnovations()) {
 				NEATInnovation neatInnovation = (NEATInnovation) innovation;
 				out.addColumn(neatInnovation.getInnovationID());
@@ -282,7 +283,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 				out.addColumn(neatInnovation.getFromNeuronID());
 				out.addColumn(neatInnovation.getToNeuronID());
 				out.writeLine();
-			}
+			}*/
 		}
 		out.addSubSection("GENOMES");
 		for (Genome genome : pop.getGenomes()) {

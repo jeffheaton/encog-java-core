@@ -76,10 +76,15 @@ public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 	 * @param splitX
 	 *            The split x.
 	 */
-	public NEATNeuronGene(final NEATNeuronType type, ActivationFunction theActivationFunction, final long id) {
+	public NEATNeuronGene(final NEATNeuronType type, ActivationFunction theActivationFunction, final long id, final long innovationID) {
 		this.neuronType = type;
+		this.setInnovationId(innovationID);
 		setId(id);
 		this.activationFunction = theActivationFunction;
+	}
+	
+	public NEATNeuronGene(NEATNeuronGene other) {
+		copy(other);
 	}
 
 	/**
@@ -93,7 +98,8 @@ public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 		setId(other.getId());
 		this.neuronType = other.neuronType;
 		this.activationFunction = other.activationFunction;
-
+		this.setInnovationId(other.getInnovationId());
+		this.setEnabled(other.isEnabled());
 	}
 	
 	/**

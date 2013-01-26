@@ -119,33 +119,16 @@ public class NEATMutate implements EvolutionaryOperator {
 		createLink(target, neuron1ID, neuron2ID, RangeRandomizer.randomize(-r,r));
 	}
 
-	public void createLink(NEATGenome target, long neuron1ID, long neuron2ID, double weight) {
+	private void createLink(NEATGenome target, long neuron1ID, long neuron2ID, double weight) {
 
 		// check to see if this innovation has already been tried
-		NEATInnovation innovation = owner.getInnovations().checkInnovation(
-				neuron1ID, neuron2ID, NEATInnovationType.NewLink);
-
-		// see if this is a recurrent(backwards) link
-		final NEATNeuronGene neuronGene = (NEATNeuronGene) target
-				.getNeuronsChromosome().get(getElementPos(target, neuron1ID));
-
-		// is this a new innovation?
-		if (innovation == null) {
-			// new innovation
-			innovation = owner.getInnovations().createNewInnovation(neuron1ID,
-					neuron2ID, NEATInnovationType.NewLink);
-
-			final NEATLinkGene linkGene = new NEATLinkGene(neuron1ID,
-					neuron2ID, true, innovation.getInnovationID(),
-					weight);
-			target.getLinksChromosome().add(linkGene);
-		} else {
-			// existing innovation
-			final NEATLinkGene linkGene = new NEATLinkGene(neuron1ID,
-					neuron2ID, true, innovation.getInnovationID(),
-					weight);
-			target.getLinksChromosome().add(linkGene);
-		}
+		NEATInnovation innovation = owner.getInnovations().findInnovation(neuron1ID, neuron2ID);
+		
+		// now create this link
+		final NEATLinkGene linkGene = new NEATLinkGene(neuron1ID,
+				neuron2ID, true, innovation.getInnovationID(),
+				weight);
+		target.getLinksChromosome().add(linkGene);
 	}
 
 	/**
@@ -202,68 +185,18 @@ public class NEATMutate implements EvolutionaryOperator {
 		final long from = splitLink.getFromNeuronID();
 		final long to = splitLink.getToNeuronID();
 
-		// has this innovation already been tried?
-		NEATInnovation innovation = owner.getInnovations().checkInnovation(
-				from, to, NEATInnovationType.NewNeuron);
-
-		// prevent chaining
-		if (innovation != null) {
-			final long neuronID = innovation.getNeuronID();
-
-			if (alreadyHaveThisNeuronID(target, neuronID)) {
-				innovation = null;
-			}
-		}
-
+		NEATInnovation innovation = owner.getInnovations().findInnovationSplit(from, to);
+		
+		// add the splitting neuron
 		ActivationFunction af = this.owner.getNEATPopulation().getActivationFunctions().pick(new Random());
 		
-		if (innovation == null) {
-			// this innovation has not been tried, create it
-			innovation = owner.getInnovations().createNewInnovation(af, from, to,
-					NEATInnovationType.NewNeuron, af, NEATNeuronType.Hidden);
+		target.getNeuronsChromosome().add(
+				new NEATNeuronGene(NEATNeuronType.Hidden, af, innovation
+						.getNeuronID(), innovation.getInnovationID()));
 
-			target.getNeuronsChromosome().add(
-					new NEATNeuronGene(NEATNeuronType.Hidden, af, innovation
-							.getNeuronID()));
-
-			// add the first link
-			createLink(target, from, innovation.getNeuronID(), splitLink.getWeight());
-
-			// add the second link
-			createLink(target, innovation.getNeuronID(), to, pop.getWeightRange());
-		}
-
-		else {
-			// existing innovation
-			final long newNeuronID = innovation.getNeuronID();
-
-			final NEATInnovation innovationLink1 = owner.getInnovations()
-					.checkInnovation(from, newNeuronID,
-							NEATInnovationType.NewLink);
-			final NEATInnovation innovationLink2 = owner.getInnovations()
-					.checkInnovation(newNeuronID, to,
-							NEATInnovationType.NewLink);
-
-			if ((innovationLink1 == null) || (innovationLink2 == null)) {
-				throw new NeuralNetworkError("NEAT Error");
-			}
-
-			final NEATLinkGene link1 = new NEATLinkGene(from, newNeuronID,
-					true, innovationLink1.getInnovationID(), splitLink.getWeight());
-			final NEATLinkGene link2 = new NEATLinkGene(newNeuronID, to, true,
-					innovationLink2.getInnovationID(), pop.getWeightRange());
-
-			target.getLinksChromosome().add(link1);
-			target.getLinksChromosome().add(link2);
-
-			final NEATNeuronGene newNeuron = new NEATNeuronGene(
-					NEATNeuronType.Hidden, af, 
-					newNeuronID);
-
-			target.getNeuronsChromosome().add(newNeuron);
-		}
-
-		return;
+		// add the other two sides of the link
+		createLink(target, from, innovation.getNeuronID(), splitLink.getWeight());
+		createLink(target, innovation.getNeuronID(), to, pop.getWeightRange());
 	}
 
 	/**

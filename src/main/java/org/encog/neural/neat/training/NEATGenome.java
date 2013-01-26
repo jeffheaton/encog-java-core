@@ -42,13 +42,13 @@ import org.encog.neural.neat.NEATPopulation;
 /**
  * Implements a NEAT genome. This is a "blueprint" for creating a neural
  * network.
- *
+ * 
  * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
  * generation of evolving artificial neural networks. It was developed by Ken
  * Stanley while at The University of Texas at Austin.
- *
+ * 
  * http://www.cs.ucf.edu/~kstanley/
- *
+ * 
  */
 public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 
@@ -56,11 +56,10 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final String PROPERTY_NEURONS = "neurons";
 	public static final String PROPERTY_LINKS = "links";
 
-	
 	/**
 	 * The adjustment factor for disjoint genes.
 	 */
@@ -105,12 +104,12 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * The species id.
 	 */
 	private long speciesID;
-	
+
 	/**
 	 * The genome id.
 	 */
 	private long genomeID;
-	
+
 	/**
 	 * The amount to spawn.
 	 */
@@ -118,7 +117,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 
 	/**
 	 * Construct a genome by copying another.
-	 *
+	 * 
 	 * @param other
 	 *            The other genome.
 	 */
@@ -135,18 +134,16 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 
 		// copy neurons
 		for (final NEATNeuronGene oldGene : other.getNeuronsChromosome()) {
-			final NEATNeuronGene newGene = new NEATNeuronGene(oldGene
-					.getNeuronType(), oldGene.getActivationFunction(), 
-					oldGene.getId());
+			final NEATNeuronGene newGene = new NEATNeuronGene(oldGene);
 			this.neuronsChromosome.add(newGene);
 		}
 
 		// copy links
-		for (final NEATLinkGene oldGene : other.getLinksChromosome() ) {
-			final NEATLinkGene newGene = new NEATLinkGene(oldGene
-					.getFromNeuronID(), oldGene.getToNeuronID(), oldGene
-					.isEnabled(), oldGene.getInnovationId(), oldGene
-					.getWeight());
+		for (final NEATLinkGene oldGene : other.getLinksChromosome()) {
+			final NEATLinkGene newGene = new NEATLinkGene(
+					oldGene.getFromNeuronID(), oldGene.getToNeuronID(),
+					oldGene.isEnabled(), oldGene.getInnovationId(),
+					oldGene.getWeight());
 			this.linksChromosome.add(newGene);
 		}
 
@@ -154,6 +151,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 
 	/**
 	 * Create a NEAT gnome.
+	 * 
 	 * @param genomeID
 	 *            The genome id.
 	 * @param neurons
@@ -165,9 +163,9 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * @param outputCount
 	 *            The output count.
 	 */
-	public NEATGenome(final long genomeID,
-			final List<NEATNeuronGene> neurons, final List<NEATLinkGene> links,
-			final int inputCount, final int outputCount) {
+	public NEATGenome(final long genomeID, final List<NEATNeuronGene> neurons,
+			final List<NEATLinkGene> links, final int inputCount,
+			final int outputCount) {
 		setGenomeID(genomeID);
 		setAmountToSpawn(0);
 		setAdjustedScore(0);
@@ -180,6 +178,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 
 	/**
 	 * Construct a genome, do not provide links and neurons.
+	 * 
 	 * @param id
 	 *            The genome id.
 	 * @param inputCount
@@ -196,51 +195,55 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		setAmountToSpawn(0);
 		this.speciesID = 0;
 
-		final double inputRowSlice = 0.8 / (inputCount);
-		
 		// get the activation function
 		ActivationFunction af = pop.getActivationFunctions().pick(new Random());
-		
+
 		// first bias
-		this.neuronsChromosome.add(new NEATNeuronGene(NEATNeuronType.Bias, af, inputCount));
+		int innovationID = 0;
+		NEATNeuronGene biasGene = new NEATNeuronGene(NEATNeuronType.Bias, af,
+				inputCount,innovationID++);
+		this.neuronsChromosome.add(biasGene);
 
 		// then inputs
 
 		for (int i = 0; i < inputCount; i++) {
-			this.neuronsChromosome.add(new NEATNeuronGene(NEATNeuronType.Input, af, i));
+			NEATNeuronGene gene = new NEATNeuronGene(NEATNeuronType.Input, af,
+					i,innovationID++);
+			this.neuronsChromosome.add(gene);
 		}
 
-		// then the other stuff
-
-		final double outputRowSlice = 1 / (double) (outputCount + 1);
+		// then outputs
 
 		for (int i = 0; i < outputCount; i++) {
-			this.neuronsChromosome.add(new NEATNeuronGene(
-					NEATNeuronType.Output, af, i + inputCount + 1));
+			NEATNeuronGene gene = new NEATNeuronGene(NEATNeuronType.Output, af,
+					i + inputCount + 1, innovationID++);
+			this.neuronsChromosome.add(gene);
 		}
 
+		// and now links
 		for (int i = 0; i < inputCount + 1; i++) {
 			for (int j = 0; j < outputCount; j++) {
-				this.linksChromosome.add(new NEATLinkGene(
-						((NEATNeuronGene) this.neuronsChromosome.get(i))
-								.getId(), ((NEATNeuronGene)this.neuronsChromosome.get(
-								inputCount + j + 1)).getId(), true, inputCount
-								+ outputCount + 2 + getNumGenes(),
-						RangeRandomizer.randomize(-pop.getWeightRange(), pop.getWeightRange())));
+				long fromID = this.neuronsChromosome.get(i).getId();
+				long toID = this.neuronsChromosome.get(inputCount + j + 1)
+						.getId();
+				double w = RangeRandomizer.randomize(-pop.getWeightRange(),
+						pop.getWeightRange());
+				NEATLinkGene gene = new NEATLinkGene(fromID, toID, true,
+						innovationID++, w);
+				this.linksChromosome.add(gene);
 			}
 		}
 
 	}
-	
-	public NEATGenome() {
-		
-	}
 
+	public NEATGenome() {
+
+	}
 
 	/**
 	 * Get the compatibility score with another genome. Used to determine
 	 * species.
-	 *
+	 * 
 	 * @param genome
 	 *            The other genome.
 	 * @return The score.
@@ -274,8 +277,8 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			// get innovation numbers for each gene at this point
 			final long id1 = ((NEATLinkGene) this.linksChromosome.get(g1))
 					.getInnovationId();
-			final long id2 = ((NEATLinkGene) genome.getLinksChromosome().get(g2))
-					.getInnovationId();
+			final long id2 = ((NEATLinkGene) genome.getLinksChromosome()
+					.get(g2)).getInnovationId();
 
 			// innovation numbers are identical so increase the matched score
 			if (id1 == id2) {
@@ -287,8 +290,8 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 				weightDifference += Math
 						.abs(((NEATLinkGene) this.linksChromosome.get(g1))
 								.getWeight()
-								- ((NEATLinkGene) genome.getLinksChromosome().get(g2))
-										.getWeight());
+								- ((NEATLinkGene) genome.getLinksChromosome()
+										.get(g2)).getWeight());
 			}
 
 			// innovation numbers are different so increment the disjoint score
@@ -362,7 +365,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 
 	/**
 	 * Set the species id.
-	 *
+	 * 
 	 * @param species
 	 *            The species id.
 	 */
@@ -392,48 +395,49 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	}
 
 	/**
-	 * @param inputCount the inputCount to set
+	 * @param inputCount
+	 *            the inputCount to set
 	 */
 	public void setInputCount(int inputCount) {
 		this.inputCount = inputCount;
 	}
 
 	/**
-	 * @param outputCount the outputCount to set
+	 * @param outputCount
+	 *            the outputCount to set
 	 */
 	public void setOutputCount(int outputCount) {
 		this.outputCount = outputCount;
-	}	
-	
+	}
+
 	public void validate() {
-		
+
 		// make sure that the bias neuron is where it should be
-		NEATNeuronGene g = (NEATNeuronGene)this.neuronsChromosome.get(0);
-		if( g.getNeuronType()!=NEATNeuronType.Bias ) {
+		NEATNeuronGene g = (NEATNeuronGene) this.neuronsChromosome.get(0);
+		if (g.getNeuronType() != NEATNeuronType.Bias) {
 			throw new EncogError("NEAT Neuron Gene 0 should be a bias gene.");
 		}
-		
+
 		// make sure all input neurons are at the beginning
-		for(int i=1;i<=this.inputCount;i++) {
-			NEATNeuronGene gene = (NEATNeuronGene)this.neuronsChromosome.get(i);
-			if( gene.getNeuronType()!=NEATNeuronType.Input ) {
-				throw new EncogError("NEAT Neuron Gene " + i + " should be an input gene.");
+		for (int i = 1; i <= this.inputCount; i++) {
+			NEATNeuronGene gene = (NEATNeuronGene) this.neuronsChromosome
+					.get(i);
+			if (gene.getNeuronType() != NEATNeuronType.Input) {
+				throw new EncogError("NEAT Neuron Gene " + i
+						+ " should be an input gene.");
 			}
 		}
-		
+
 		// make sure that there are no double links
-		Map<String,NEATLinkGene> map = new HashMap<String,NEATLinkGene>();
-		for(NEATLinkGene nlg: this.linksChromosome) {
+		Map<String, NEATLinkGene> map = new HashMap<String, NEATLinkGene>();
+		for (NEATLinkGene nlg : this.linksChromosome) {
 			String key = nlg.getFromNeuronID() + "->" + nlg.getToNeuronID();
-			if(map.containsKey(key)) {
+			if (map.containsKey(key)) {
 				throw new EncogError("Double link found: " + key);
-			} 
+			}
 			map.put(key, nlg);
 		}
 	}
-	
-	
-	
 
 	public long getGenomeID() {
 		return this.genomeID;
@@ -448,14 +452,14 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	public void setGenomeID(final long theGenomeID) {
 		this.genomeID = theGenomeID;
 	}
-	
+
 	/**
 	 * @return The amount this genome will spawn.
 	 */
 	public double getAmountToSpawn() {
 		return this.amountToSpawn;
 	}
-	
+
 	/**
 	 * Set the amount to spawn.
 	 * 
@@ -477,11 +481,11 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	}
 
 	public NEATNeuronGene findNeuron(long nodeID) {
-		for(NEATNeuronGene gene : this.neuronsChromosome) {
-			if( gene.getId()==nodeID)
+		for (NEATNeuronGene gene : this.neuronsChromosome) {
+			if (gene.getId() == nodeID)
 				return gene;
 		}
 		return null;
 	}
-	
+
 }
