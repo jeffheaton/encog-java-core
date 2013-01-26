@@ -42,7 +42,6 @@ import org.encog.neural.hyperneat.HyperNEATGenome;
 import org.encog.neural.hyperneat.substrate.Substrate;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATInnovationList;
-import org.encog.neural.neat.training.innovation.InnovationList;
 import org.encog.util.identity.BasicGenerateID;
 import org.encog.util.identity.GenerateID;
 import org.encog.util.obj.ChooseObject;
@@ -170,7 +169,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	/**
 	 * A list of innovations, or null if this feature is not being used.
 	 */
-	private InnovationList innovations;
+	private NEATInnovationList innovations;
 	
 	private final double weightRange = 5;
 	
@@ -311,7 +310,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 		return this.innovationIDGenerate;
 	}
 	
-	public InnovationList getInnovations() {
+	public NEATInnovationList getInnovations() {
 		return this.innovations;
 	}
 
@@ -401,7 +400,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 		this.activationCycles = activationCycles;
 	}
 
-	public void setInnovations(final InnovationList theInnovations) {
+	public void setInnovations(final NEATInnovationList theInnovations) {
 		this.innovations = theInnovations;
 	}
 

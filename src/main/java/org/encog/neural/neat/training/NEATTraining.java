@@ -25,7 +25,9 @@ package org.encog.neural.neat.training;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.CalculateScore;
@@ -34,14 +36,15 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.score.parallel.ParallelScoreTask;
 import org.encog.ml.ea.sort.MinimizeAdjustedScoreComp;
 import org.encog.ml.ea.sort.MinimizeScoreComp;
 import org.encog.ml.ea.train.basic.BasicEA;
+import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.hyperneat.HyperNEATCODEC;
 import org.encog.neural.neat.NEATCODEC;
-import org.encog.neural.neat.NEATGenomeFactory;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.NEATSpecies;
 import org.encog.neural.neat.training.opp.NEATCrossover;
@@ -50,6 +53,7 @@ import org.encog.neural.neat.training.species.SimpleNEATSpeciation;
 import org.encog.neural.neat.training.species.Speciation;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
+import org.encog.util.concurrency.MultiThreadable;
 
 /**
  * Implements NEAT genetic training.
@@ -61,7 +65,7 @@ import org.encog.neural.networks.training.propagation.TrainingContinuation;
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATTraining extends BasicEA implements MLTrain {
+public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 
 
 	/**
@@ -93,6 +97,8 @@ public class NEATTraining extends BasicEA implements MLTrain {
 	private NEATMutate mutate;
 	private Speciation speciation;
 	private double crossoverRate = 0.7;
+	private List<NEATGenome> newPopulation = new ArrayList<NEATGenome>();
+	private int threadCount;
 
 	/**
 	 * Construct a neat trainer with a new population. The new population is
@@ -298,92 +304,56 @@ public class NEATTraining extends BasicEA implements MLTrain {
 	 */
 	@Override
 	public void iteration() {
-		NEATGenome[] parents = new NEATGenome[2];
-		NEATGenome[] children = new NEATGenome[1];
-		
-		Random rnd = new Random();
+
 		
 		this.iteration++;
-		final List<NEATGenome> newPop = new ArrayList<NEATGenome>();
 
-		int numSpawnedSoFar = 0;
+		ExecutorService taskExecutor = null;
+		
+		if( this.threadCount==1 ) {
+			taskExecutor = Executors.newSingleThreadScheduledExecutor();
+		} else {
+			if( this.threadCount==0 ) {
+				this.threadCount = Runtime.getRuntime().availableProcessors();
+			}
+			taskExecutor = Executors.newFixedThreadPool(this.threadCount);
+		}
+		
+		Executors.newFixedThreadPool(this.threadCount);
+		newPopulation.clear();
 
 		for (final NEATSpecies s : ((NEATPopulation)getPopulation()).getSpecies()) {
-			if (numSpawnedSoFar < getPopulation().size()) {
-				int numToSpawn = (int) Math.round(s.getNumToSpawn());
-
-				boolean bChosenBestYet = false;
-
-				while ((numToSpawn--) > 0) {
-					children[0] = null;
-
-					if (!bChosenBestYet) {
-						children[0] = (NEATGenome) s.getLeader();
-
-						bChosenBestYet = true;
-					}
-
-					else {
-						// if the number of individuals in this species is only
-						// one
-						// then we can only perform mutation
-						if (s.getMembers().size() == 1) {
-							// spawn a child
-							children[0] = ((NEATGenomeFactory)this.getPopulation().getGenomeFactory()).factor((NEATGenome) s.chooseParent());
-						} else {
-							parents[0] = (NEATGenome) s.chooseParent();
-
-							if (Math.random() < this.crossoverRate) {
-								parents[1] = (NEATGenome) s.chooseParent();
-
-								int numAttempts = 5;
-
-								while ((parents[0].getGenomeID() == parents[1].getGenomeID())
-										&& ((numAttempts--) > 0)) {
-									parents[1] = (NEATGenome) s.chooseParent();
-								}
-
-								if (parents[0].getGenomeID() != parents[1].getGenomeID()) {
-									this.crossover.performOperation(rnd, parents, 0, children, 0);
-								}
-							}
-
-							else {
-								children[0] = ((NEATGenomeFactory)this.getPopulation().getGenomeFactory()).factor(parents[0]);
-							}
-						}
-
-						if (children[0] != null) {
-							children[0].setGenomeID(((NEATPopulation)getPopulation()).assignGenomeID());
-							this.mutate.performOperation(rnd, children, 0, children, 0);
-						}
-					}
-
-					if (children[0] != null) {
-						// sort the baby's genes by their innovation numbers
-						children[0].sortGenes();
-
-						newPop.add(children[0]);
-
-						++numSpawnedSoFar;
-
-						if (numSpawnedSoFar == getPopulation().size()) {
-							numToSpawn = 0;
-						}
-					}
-				}
-			}
+			NEATTrainWorker worker = new NEATTrainWorker(this,s,this.crossoverRate);
+			taskExecutor.execute(worker);
 		}
 
-		while (newPop.size() < getPopulation().size()) {
-			newPop.add(tournamentSelection(getPopulation().size() / 5));
+		taskExecutor.shutdown();
+		try {
+			taskExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.MINUTES);
+		} catch (InterruptedException e) {
+			throw new GeneticError(e);
+		}
+		
+		while (newPopulation.size() < getPopulation().size()) {
+			newPopulation.add(tournamentSelection(getPopulation().size() / 5));
 		}
 
 		getPopulation().clear();
-		getPopulation().addAll(newPop);
+		getPopulation().addAll(newPopulation);
 
 		sortAndRecord();
 		this.speciation.performSpeciation();
+	}
+	
+	public boolean addChild(NEATGenome genome) {
+		synchronized(this.newPopulation) {
+			if( this.newPopulation.size()<this.getPopulation().size() ) {
+				this.newPopulation.add(genome);
+				return true;
+			} else {
+				return false;
+			}
+		}
 	}
 
 	/**
@@ -500,4 +470,44 @@ public class NEATTraining extends BasicEA implements MLTrain {
 	public NEATPopulation getNEATPopulation() {
 		return (NEATPopulation)getPopulation();
 	}
+
+	@Override
+	public int getThreadCount() {
+		return this.threadCount;
+	}
+
+	@Override
+	public void setThreadCount(int numThreads) {
+		this.threadCount = numThreads;
+	}
+
+	/**
+	 * @return the crossover
+	 */
+	public NEATCrossover getCrossover() {
+		return crossover;
+	}
+
+	/**
+	 * @param crossover the crossover to set
+	 */
+	public void setCrossover(NEATCrossover crossover) {
+		this.crossover = crossover;
+	}
+
+	/**
+	 * @return the mutate
+	 */
+	public NEATMutate getMutate() {
+		return mutate;
+	}
+
+	/**
+	 * @param mutate the mutate to set
+	 */
+	public void setMutate(NEATMutate mutate) {
+		this.mutate = mutate;
+	}
+	
+	
 }

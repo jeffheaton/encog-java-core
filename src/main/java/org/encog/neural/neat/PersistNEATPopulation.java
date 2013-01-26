@@ -40,7 +40,6 @@ import org.encog.neural.neat.training.NEATInnovationList;
 import org.encog.neural.neat.training.NEATInnovationType;
 import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.NEATNeuronGene;
-import org.encog.neural.neat.training.innovation.Innovation;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
@@ -83,7 +82,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 					innovation.setNeuronID(Integer.parseInt(cols.get(3)));
 					innovation.setFromNeuronID(Integer.parseInt(cols.get(4)));
 					innovation.setToNeuronID(Integer.parseInt(cols.get(5)));					
-					result.getInnovations().add(innovation);
+					result.getInnovations().getInnovations().add(innovation);
 				}
 			} else if (section.getSectionName().equals("NEAT-POPULATION")
 					&& section.getSubSectionName().equals("SPECIES")) {
@@ -271,7 +270,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 				.getSpeciesIDGenerate().getCurrentID());
 		out.addSubSection("INNOVATIONS");
 		if (pop.getInnovations() != null) {
-			for (Innovation innovation : pop.getInnovations().getInnovations()) {
+			for (NEATInnovation innovation : pop.getInnovations().getInnovations()) {
 				NEATInnovation neatInnovation = (NEATInnovation) innovation;
 				out.addColumn(neatInnovation.getInnovationID());
 				out.addColumn(PersistNEATPopulation

@@ -25,9 +25,7 @@ package org.encog.neural.neat.training;
 
 import java.io.Serializable;
 
-import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.neat.NEATNeuronType;
-import org.encog.neural.neat.training.innovation.BasicInnovation;
 
 /**
  * Implements a NEAT innovation. This lets NEAT track what changes it has
@@ -40,7 +38,7 @@ import org.encog.neural.neat.training.innovation.BasicInnovation;
  * http://www.cs.ucf.edu/~kstanley/
  *
  */
-public class NEATInnovation extends BasicInnovation implements Serializable {
+public class NEATInnovation implements Serializable {
 
 	/**
 	 * Serial id.
@@ -251,5 +249,25 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 	 */
 	public void setToNeuronID(long toNeuronID) {
 		this.toNeuronID = toNeuronID;
+	}
+	
+	/**
+	 * The innovation id.
+	 */
+	private long innovationID;
+
+	/**
+	 * @return The innovation ID.
+	 */
+	public long getInnovationID() {
+		return innovationID;
+	}
+
+	/**
+	 * Set the innovation id.
+	 * @param theInnovationID The innovation id.
+	 */
+	public void setInnovationID(final long theInnovationID) {
+		this.innovationID = theInnovationID;
 	}
 }

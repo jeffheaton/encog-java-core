@@ -24,14 +24,13 @@
 package org.encog.neural.neat.training;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.neat.NEATPopulation;
-import org.encog.neural.neat.training.innovation.BasicInnovationList;
-import org.encog.neural.neat.training.innovation.Innovation;
 import org.encog.neural.networks.training.TrainingError;
 
 /**
@@ -44,7 +43,7 @@ import org.encog.neural.networks.training.TrainingError;
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATInnovationList extends BasicInnovationList implements Serializable {
+public class NEATInnovationList implements Serializable {
 
 	/**
 	 * Serial id.
@@ -60,6 +59,11 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	 * The population.
 	 */
 	private NEATPopulation population;
+	
+	/**
+	 * The list of innovations.
+	 */
+	private List<NEATInnovation> list = new ArrayList<NEATInnovation>();
 
 	/**
 	 * The default constructor, used mainly for persistance.
@@ -81,11 +85,12 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	public NEATInnovationList(final NEATPopulation population,
 			final List<NEATLinkGene> links, final List<NEATNeuronGene> neurons) {
 
+		synchronized(this) {
 		this.population = population;
 		for (final NEATNeuronGene neuronGene : neurons) {
 			final NEATInnovation innovation = new NEATInnovation(neuronGene,
 					population.assignInnovationID(), assignNeuronID());
-			add(innovation);
+			this.list.add(innovation);
 		}
 
 		for (final NEATLinkGene linkGene : links) {
@@ -96,8 +101,8 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 			if( linkGene.getInnovationId()!=innovation.getInnovationID() ) {
 				throw new EncogError("Invalid innovation number creating initial innovations. Gene: " + linkGene.getInnovationId() + ", Innov: " + innovation.getInnovationID());
 			}
-			add(innovation);
-
+			this.list.add(innovation);
+		}
 		}
 	}
 
@@ -123,13 +128,17 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	 */
 	public NEATInnovation checkInnovation(final long in, final long out,
 			final NEATInnovationType type) {
-		for (final Innovation i : getInnovations()) {
+		
+		synchronized(this) {
+		
+		for (final NEATInnovation i : getInnovations()) {
 			final NEATInnovation innovation = (NEATInnovation) i;
 			if ((innovation.getFromNeuronID() == in)
 					&& (innovation.getToNeuronID() == out)
 					&& (innovation.getInnovationType() == type)) {
 				return innovation;
 			}
+		}
 		}
 
 		return null;
@@ -146,13 +155,15 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	public NEATNeuronGene createNeuronFromID(final long neuronID, ActivationFunction af) {
 		final NEATNeuronGene result = new NEATNeuronGene(NEATNeuronType.Hidden, af, 0);
 
-		for (final Innovation i : getInnovations()) {
+		synchronized(this) {
+		for (final NEATInnovation i : getInnovations()) {
 			final NEATInnovation innovation = (NEATInnovation) i;
 			if (innovation.getNeuronID() == neuronID) {
 				result.setNeuronType(innovation.getNeuronType());
 				result.setId(innovation.getNeuronID());
 				return result;
 			}
+		}
 		}
 
 		throw new TrainingError("Failed to find innovation for neuron: " + neuronID );
@@ -167,6 +178,7 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	 */
 	public NEATInnovation createNewInnovation(final long from, final long to,
 			final NEATInnovationType type) {
+		synchronized(this) {
 		final long innovationID = this.population.assignInnovationID();
 		
 		final NEATInnovation newInnovation = new NEATInnovation(from, to, type,
@@ -176,8 +188,9 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 			newInnovation.setNeuronID(assignNeuronID());
 		}
 
-		add(newInnovation);
+		this.list.add(newInnovation);
 		return newInnovation;
+		}
 	}
 
 	/**
@@ -201,6 +214,7 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 			final NEATInnovationType innovationType, ActivationFunction af,
 			final NEATNeuronType neuronType) {
 		
+		synchronized(this) {
 		final long innovationID = this.population.assignInnovationID();
 		
 		final NEATInnovation newInnovation = new NEATInnovation(from, to,
@@ -211,9 +225,10 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 			newInnovation.setNeuronID(neuronID);
 		}
 
-		add(newInnovation);
+		this.list.add(newInnovation);
 
 		return newInnovation; 
+		}
 	}
 
 	public void setPopulation(NEATPopulation population) {
@@ -223,7 +238,7 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	public void init() {
 		long maxNeuron = 0;
 		
-		for(Innovation innovation: this.getInnovations() ) {
+		for(NEATInnovation innovation: this.getInnovations() ) {
 			NEATInnovation ni = (NEATInnovation)innovation;
 			maxNeuron = Math.max(ni.getFromNeuronID(), maxNeuron);
 			maxNeuron = Math.max(ni.getToNeuronID(), maxNeuron);
@@ -234,5 +249,14 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 	
 	public void setNextNeuronID(int l) {
 		this.nextNeuronID = l;		
+	}
+
+
+
+	/**
+	 * @return A list of innovations.
+	 */
+	public List<NEATInnovation> getInnovations() {
+		return list;
 	}
 }
