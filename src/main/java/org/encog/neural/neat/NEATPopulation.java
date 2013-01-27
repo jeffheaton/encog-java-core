@@ -235,7 +235,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 					"Population must have more than zero genomes.");
 		}
 
-		reset(populationSize);
+		reset();
 
 	}
 	
@@ -246,7 +246,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 		this.outputCount = 2;
 		HyperNEATGenome.buildCPPNActivationFunctions(this.activationFunctions);
 		
-		reset(populationSize);
+		reset();
 	}
 
 	public long assignGeneID() {
@@ -343,7 +343,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	}
 
 
-	public void reset(int populationSize) {
+	public void reset() {
 		// create the genome factory
 		if( isHyperNEAT() ) {
 			this.codec = new HyperNEATCODEC();
@@ -354,8 +354,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 		}
 		
 		// create the new genomes
-		this.getGenomes().clear();
-		this.setPopulationSize(populationSize);		
+		this.getGenomes().clear();	
 		
 		// reset counters
 		this.getGeneIDGenerate().setCurrentID(1);
@@ -364,7 +363,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 		this.getSpeciesIDGenerate().setCurrentID(1);
 		
 		// create the initial population
-		for (int i = 0; i < populationSize; i++) {
+		for (int i = 0; i < getPopulationSize(); i++) {
 			NEATGenome genome = getGenomeFactory().factor(this, assignGenomeID(), inputCount,
 					outputCount);
 			add(genome);

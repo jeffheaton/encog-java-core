@@ -134,11 +134,11 @@ public class NEATSpecies implements Serializable {
 	 * @return The parent.
 	 */
 	public Genome chooseParent() {
-		Genome baby;
+		Genome result;
 
 		// If there is a single member, then choose that one.
 		if (this.members.size() == 1) {
-			baby = this.members.get(0);
+			result = this.members.get(0);
 		} else {
 			// If there are many, then choose the population based on survival
 			// rate
@@ -147,10 +147,10 @@ public class NEATSpecies implements Serializable {
 			= (int) (this.population.getSurvivalRate() * this.members
 					.size()) + 1;
 			final int theOne = (int) RangeRandomizer.randomize(0, maxIndexSize);
-			baby = this.members.get(theOne);
+			result = this.members.get(theOne);
 		}
 
-		return baby;
+		return result;
 	}
 
 	/**
