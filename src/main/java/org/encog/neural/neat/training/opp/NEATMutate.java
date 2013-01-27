@@ -9,12 +9,10 @@ import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
-import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATInnovation;
-import org.encog.neural.neat.training.NEATInnovationType;
 import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.NEATNeuronGene;
 import org.encog.neural.neat.training.NEATTraining;
@@ -66,7 +64,7 @@ public class NEATMutate implements EvolutionaryOperator {
 		case 3: // adjust curve
 			break;
 		case 4: // remove connection
-			removeLink(genome);
+			//removeLink(genome);
 			break;
 		}
 
@@ -100,9 +98,10 @@ public class NEATMutate implements EvolutionaryOperator {
 				return;
 			}
 
-			if (!isDuplicateLink(target, neuron1.getId(), neuron2.getId())
-					&& (neuron2.getNeuronType() != NEATNeuronType.Bias)
-					&& (neuron1.getNeuronType() != NEATNeuronType.Output)) {
+			if (!isDuplicateLink(target, neuron1.getId(), neuron2.getId()) // no duplicates
+					&& (neuron2.getNeuronType() != NEATNeuronType.Bias) // do not go to a bias neuron
+					&& (neuron1.getNeuronType() != NEATNeuronType.Output) // do not go from an output neuron
+					&& (neuron2.getNeuronType() != NEATNeuronType.Input)) { // do not go to an input neuron
 
 				neuron1ID = neuron1.getId();
 				neuron2ID = neuron2.getId();

@@ -25,15 +25,9 @@ package org.encog.neural.neat.training;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.encog.EncogError;
-import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.mathutil.randomize.RangeRandomizer;
-import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.neat.NEATPopulation;
-import org.encog.neural.networks.training.TrainingError;
 
 /**
  * Implements a NEAT innovation list.
@@ -51,11 +45,6 @@ public class NEATInnovationList implements Serializable {
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * The next neuron id.
-	 */
-	private long nextNeuronID = 0;
 
 	/**
 	 * The population.
@@ -113,16 +102,19 @@ public class NEATInnovationList implements Serializable {
 
 		this.population = population;
 
-		this.findInnovation(0);
+		this.findInnovation(this.population.assignGeneID()); // bias
 
+		// input neurons
 		for (int i = 0; i < population.getInputCount(); i++) {
-			this.findInnovation(1 + i);
+			this.findInnovation(this.population.assignGeneID());
 		}
 
+		// output neurons
 		for (int i = 0; i < population.getOutputCount(); i++) {
-			this.findInnovation(1 + population.getInputCount() + i);
+			this.findInnovation(this.population.assignGeneID());
 		}
 		
+		// connections
 		for (long fromID = 0; fromID < this.population.getInputCount() + 1; fromID++) {
 			for (long toID = 0; toID < this.population.getOutputCount(); toID++) {
 				findInnovation(fromID, toID);
@@ -219,11 +211,7 @@ public class NEATInnovationList implements Serializable {
 	public void setPopulation(NEATPopulation population) {
 		this.population = population;
 	}
-
-	public void setNextNeuronID(int l) {
-		this.nextNeuronID = l;
-	}
-
+	
 	/**
 	 * @return A list of innovations.
 	 */
