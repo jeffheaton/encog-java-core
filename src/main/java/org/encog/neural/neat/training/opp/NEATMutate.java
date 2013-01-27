@@ -21,7 +21,6 @@ public class NEATMutate implements EvolutionaryOperator {
 
 	private NEATTraining owner;
 	private RandomChoice mutateChoices;
-	private RandomChoice mutateAddChoices;
 	private final double mutateRate = 0.2;
 	private final double probNewMutate = 0.1;
 	private final double maxPertubation = 0.5;
@@ -29,9 +28,7 @@ public class NEATMutate implements EvolutionaryOperator {
 
 	public NEATMutate() {
 		this.mutateChoices = new RandomChoice(new double[] { 0.988, 0.001,
-				0.01, 0.0, 0.001 });
-		this.mutateAddChoices = new RandomChoice(new double[] { 0.988, 0.001,
-				0.01, 0.0 });
+				0.01, 0.001 });
 	}
 
 	@Override
@@ -60,11 +57,8 @@ public class NEATMutate implements EvolutionaryOperator {
 		case 2: // add connection
 			// now there's the chance a link may be added
 			addLink(genome);
-			break;
-		case 3: // adjust curve
-			break;
-		case 4: // remove connection
-			//removeLink(genome);
+		case 3: // remove connection
+			removeLink(genome);
 			break;
 		}
 

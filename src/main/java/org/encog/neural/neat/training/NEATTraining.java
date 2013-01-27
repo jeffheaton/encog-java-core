@@ -100,6 +100,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	private double crossoverRate = 0.7;
 	private List<NEATGenome> newPopulation = new ArrayList<NEATGenome>();
 	private int threadCount;
+	private int actualThreadCount = -1;
 
 	/**
 	 * Construct a neat trainer with a new population. The new population is
@@ -295,6 +296,12 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		// sort the population
 		sortAndRecord();
 		this.speciation.performSpeciation();
+		
+		if( this.threadCount==0 ) {
+			this.actualThreadCount = Runtime.getRuntime().availableProcessors();
+		} else {
+			this.actualThreadCount = this.threadCount;
+		}
 	}
 
 	/**
@@ -310,22 +317,16 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	 */
 	@Override
 	public void iteration() {
-
-		
 		this.iteration++;
 
 		ExecutorService taskExecutor = null;
 		
-		if( this.threadCount==1 ) {
+		if( this.actualThreadCount==1 ) {
 			taskExecutor = Executors.newSingleThreadScheduledExecutor();
 		} else {
-			if( this.threadCount==0 ) {
-				this.threadCount = Runtime.getRuntime().availableProcessors();
-			}
-			taskExecutor = Executors.newFixedThreadPool(this.threadCount);
+			taskExecutor = Executors.newFixedThreadPool(this.actualThreadCount);
 		}
 		
-		Executors.newFixedThreadPool(this.threadCount);
 		newPopulation.clear();
 
 		for (final NEATSpecies s : ((NEATPopulation)getPopulation()).getSpecies()) {

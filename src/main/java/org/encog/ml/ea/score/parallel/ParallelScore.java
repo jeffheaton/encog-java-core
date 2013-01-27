@@ -67,8 +67,6 @@ public class ParallelScore {
 		} else {
 			taskExecutor = Executors.newFixedThreadPool(this.threads);
 		}
-		
-		Executors.newFixedThreadPool(this.threads);
 
 		for (Genome genome : this.population.getGenomes()) {
 			taskExecutor.execute(new ParallelScoreTask(genome, this));
