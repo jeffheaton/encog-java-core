@@ -37,7 +37,6 @@ import org.encog.neural.hyperneat.HyperNEATGenome;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATInnovation;
 import org.encog.neural.neat.training.NEATInnovationList;
-import org.encog.neural.neat.training.NEATInnovationType;
 import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.NEATNeuronGene;
 import org.encog.persist.EncogFileSection;
@@ -75,14 +74,9 @@ public class PersistNEATPopulation implements EncogPersistor {
 				for (String line : section.getLines()) {
 					List<String> cols = EncogFileSection.splitColumns(line);
 					NEATInnovation innovation = new NEATInnovation();
-					innovation.setInnovationID(Integer.parseInt(cols.get(0)));
-					innovation.setInnovationType(PersistNEATPopulation
-							.stringToInnovationType(cols.get(1)));
-					innovation.setNeuronType(PersistNEATPopulation.stringToNeuronType(cols.get(2)));
-					innovation.setNeuronID(Integer.parseInt(cols.get(3)));
-					innovation.setFromNeuronID(Integer.parseInt(cols.get(4)));
-					innovation.setToNeuronID(Integer.parseInt(cols.get(5)));					
-					//result.getInnovations().getInnovations().add(innovation);
+					innovation.setInnovationID(Integer.parseInt(cols.get(1)));
+					innovation.setNeuronID(Integer.parseInt(cols.get(2)));					
+					result.getInnovations().getInnovations().put(cols.get(0),innovation);
 				}
 			} else if (section.getSectionName().equals("NEAT-POPULATION")
 					&& section.getSubSectionName().equals("SPECIES")) {
@@ -270,20 +264,13 @@ public class PersistNEATPopulation implements EncogPersistor {
 				.getSpeciesIDGenerate().getCurrentID());
 		out.addSubSection("INNOVATIONS");
 		if (pop.getInnovations() != null) {
-			/*
-			for (NEATInnovation innovation : pop.getInnovations().getInnovations()) {
-				NEATInnovation neatInnovation = (NEATInnovation) innovation;
-				out.addColumn(neatInnovation.getInnovationID());
-				out.addColumn(PersistNEATPopulation
-						.innovationTypeToString(neatInnovation
-								.getInnovationType()));
-				out.addColumn(PersistNEATPopulation
-						.neuronTypeToString(neatInnovation.getNeuronType()));
-				out.addColumn(neatInnovation.getNeuronID());
-				out.addColumn(neatInnovation.getFromNeuronID());
-				out.addColumn(neatInnovation.getToNeuronID());
+			for(String key: pop.getInnovations().getInnovations().keySet() ) {
+				NEATInnovation innovation = pop.getInnovations().getInnovations().get(key);
+				out.addColumn(key);
+				out.addColumn(innovation.getInnovationID());
+				out.addColumn(innovation.getNeuronID());
 				out.writeLine();
-			}*/
+			}
 		}
 		out.addSubSection("GENOMES");
 		for (Genome genome : pop.getGenomes()) {
@@ -362,26 +349,6 @@ public class PersistNEATPopulation implements EncogPersistor {
 		}
 	}
 
-	public static String innovationTypeToString(NEATInnovationType t) {
-		switch (t) {
-		case NewLink:
-			return "l";
-		case NewNeuron:
-			return "n";
-		default:
-			return null;
-		}
-	}
-
-	public static NEATInnovationType stringToInnovationType(String t) {
-		if (t.equalsIgnoreCase("l")) {
-			return NEATInnovationType.NewLink;
-		} else if (t.equalsIgnoreCase("n")) {
-			return NEATInnovationType.NewNeuron;
-		} else {
-			return null;
-		}
-	}
 
 	public static NEATNeuronType stringToNeuronType(String t) {
 		if (t.equals("b")) {

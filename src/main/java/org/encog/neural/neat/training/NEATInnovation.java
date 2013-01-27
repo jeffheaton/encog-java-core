@@ -25,8 +25,6 @@ package org.encog.neural.neat.training;
 
 import java.io.Serializable;
 
-import org.encog.neural.neat.NEATNeuronType;
-
 /**
  * Implements a NEAT innovation. This lets NEAT track what changes it has
  * previously tried with a neural network.
@@ -44,31 +42,11 @@ public class NEATInnovation implements Serializable {
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-		
-	/**
-	 * The from neuron id.
-	 */
-	private long fromNeuronID;
-
-	/**
-	 * The type of innovation.
-	 */
-	private NEATInnovationType innovationType;
 
 	/**
 	 * The neuron id.
 	 */
 	private long neuronID;
-
-	/**
-	 * The type of neuron, or none, if this is a link innovation.
-	 */
-	private NEATNeuronType neuronType;
-
-	/**
-	 * The to neuron's id.
-	 */
-	private long toNeuronID;
 
 	/**
 	 * Default constructor, used mainly for persistence.
@@ -77,40 +55,11 @@ public class NEATInnovation implements Serializable {
 
 	}
 
-
-	/**
-	 * @return The from neuron id.
-	 */
-	public long getFromNeuronID() {
-		return this.fromNeuronID;
-	}
-
-	/**
-	 * @return The innovation type.
-	 */
-	public NEATInnovationType getInnovationType() {
-		return this.innovationType;
-	}
-
 	/**
 	 * @return The neuron ID.
 	 */
 	public long getNeuronID() {
 		return this.neuronID;
-	}
-
-	/**
-	 * @return The neuron type.
-	 */
-	public NEATNeuronType getNeuronType() {
-		return this.neuronType;
-	}
-
-	/**
-	 * @return The to neuron id.
-	 */
-	public long getToNeuronID() {
-		return this.toNeuronID;
 	}
 
 	/**
@@ -128,49 +77,13 @@ public class NEATInnovation implements Serializable {
 	 */
 	public String toString() {
 		final StringBuilder result = new StringBuilder();
-		result.append("[NeatInnovation:type=");
-		switch (this.innovationType) {
-		case NewLink:
-			result.append("link");
-			break;
-		case NewNeuron:
-			result.append("neuron");
-			break;
-		}
-		result.append(",id=");
+		result.append("[NeatInnovation:");
+		result.append("id=");
 		result.append(this.getInnovationID());
-		result.append(",from=");
-		result.append(this.fromNeuronID);
-		result.append(",to=");
-		result.append(this.toNeuronID);
 		result.append(",neuron=");
 		result.append(this.neuronID);
 		result.append("]");
 		return result.toString();
-	}
-
-	public void setInnovationType(NEATInnovationType t) {
-		this.innovationType = t;
-		
-	}
-
-	public void setNeuronType(NEATNeuronType t) {
-		this.neuronType = t;
-		
-	}
-
-	/**
-	 * @param fromNeuronID the fromNeuronID to set
-	 */
-	public void setFromNeuronID(long fromNeuronID) {
-		this.fromNeuronID = fromNeuronID;
-	}
-
-	/**
-	 * @param toNeuronID the toNeuronID to set
-	 */
-	public void setToNeuronID(long toNeuronID) {
-		this.toNeuronID = toNeuronID;
 	}
 	
 	/**

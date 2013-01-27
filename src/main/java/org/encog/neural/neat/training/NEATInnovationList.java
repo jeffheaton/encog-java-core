@@ -113,15 +113,14 @@ public class NEATInnovationList implements Serializable {
 
 		this.population = population;
 
-		this.findInnovation(0, NEATNeuronType.Bias);
+		this.findInnovation(0);
 
 		for (int i = 0; i < population.getInputCount(); i++) {
-			this.findInnovation(1 + i, NEATNeuronType.Input);
+			this.findInnovation(1 + i);
 		}
 
 		for (int i = 0; i < population.getOutputCount(); i++) {
-			this.findInnovation(1 + population.getInputCount() + i,
-					NEATNeuronType.Output);
+			this.findInnovation(1 + population.getInputCount() + i);
 		}
 		
 		for (long fromID = 0; fromID < this.population.getInputCount() + 1; fromID++) {
@@ -153,13 +152,9 @@ public class NEATInnovationList implements Serializable {
 			} else {
 				long neuronID = this.population.assignGeneID();
 				NEATInnovation innovation = new NEATInnovation();
-				innovation.setFromNeuronID(fromID);
 				innovation
 						.setInnovationID(this.population.assignInnovationID());
-				innovation.setInnovationType(NEATInnovationType.NewNeuron);
 				innovation.setNeuronID(neuronID);
-				innovation.setNeuronType(NEATNeuronType.Hidden);
-				innovation.setToNeuronID(toID);
 				list.put(key, innovation);
 				
 				// create other sides of split, if needed
@@ -179,7 +174,7 @@ public class NEATInnovationList implements Serializable {
 	 *            The neuron ID to find.
 	 * @return The newly created innovation, or the one that matched the search.
 	 */
-	public NEATInnovation findInnovation(long neuronID, NEATNeuronType t) {
+	public NEATInnovation findInnovation(long neuronID) {
 		String key = NEATInnovationList.produceKeyNeuron(neuronID);
 
 		synchronized (this.list) {
@@ -187,13 +182,8 @@ public class NEATInnovationList implements Serializable {
 				return this.list.get(key);
 			} else {
 				NEATInnovation innovation = new NEATInnovation();
-				innovation.setFromNeuronID(-1);
-				innovation
-						.setInnovationID(this.population.assignInnovationID());
-				innovation.setInnovationType(NEATInnovationType.NewNeuron);
+				innovation.setInnovationID(this.population.assignInnovationID());
 				innovation.setNeuronID(neuronID);
-				innovation.setNeuronType(t);
-				innovation.setToNeuronID(-1);
 				list.put(key, innovation);
 				return innovation;
 			}
@@ -217,13 +207,9 @@ public class NEATInnovationList implements Serializable {
 				return this.list.get(key);
 			} else {
 				NEATInnovation innovation = new NEATInnovation();
-				innovation.setFromNeuronID(fromID);
 				innovation
 						.setInnovationID(this.population.assignInnovationID());
-				innovation.setInnovationType(NEATInnovationType.NewLink);
 				innovation.setNeuronID(-1);
-				innovation.setNeuronType(NEATNeuronType.Hidden);
-				innovation.setToNeuronID(toID);
 				list.put(key, innovation);
 				return innovation;
 			}
