@@ -113,12 +113,12 @@ public class PersistNEATPopulation implements EncogPersistor {
 					if (cols.get(0).equalsIgnoreCase("g") ) {
 						lastGenome = new NEATGenome();
 						long genomeID = Integer.parseInt(cols.get(1));
-						lastGenome.setSpeciesID(genomeID);
+						lastGenome.setGenomeID(genomeID);
+						lastGenome.setSpeciesID(Integer.parseInt(cols.get(2)));
 						lastGenome.setAdjustedScore(CSVFormat.EG_FORMAT
-								.parse(cols.get(2)));
-						lastGenome.setAmountToSpawn(CSVFormat.EG_FORMAT
 								.parse(cols.get(3)));
-						lastGenome.setNetworkDepth(Integer.parseInt(cols.get(4)));
+						lastGenome.setAmountToSpawn(CSVFormat.EG_FORMAT
+								.parse(cols.get(4)));
 						lastGenome.setScore(CSVFormat.EG_FORMAT.parse(cols.get(5)));
 						result.add(lastGenome);
 						genomeMap.put((int) lastGenome.getGenomeID(),
@@ -276,7 +276,6 @@ public class PersistNEATPopulation implements EncogPersistor {
 			out.addColumn(neatGenome.getSpeciesID());
 			out.addColumn(neatGenome.getAdjustedScore());
 			out.addColumn(neatGenome.getAmountToSpawn());
-			out.addColumn(neatGenome.getNetworkDepth());
 			out.addColumn(neatGenome.getScore());
 			out.writeLine();
 

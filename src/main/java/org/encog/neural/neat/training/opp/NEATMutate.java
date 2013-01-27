@@ -21,10 +21,10 @@ public class NEATMutate implements EvolutionaryOperator {
 
 	private NEATTraining owner;
 	private RandomChoice mutateChoices;
-	private final double mutateRate = 0.2;
-	private final double probNewMutate = 0.1;
-	private final double maxPertubation = 0.5;
-	private final int maxTries = 5;
+	private double mutateRate = 0.2;
+	private double probNewMutate = 0.1;
+	private double maxPertubation = 0.5;
+	private int maxTries = 5;
 
 	public NEATMutate() {
 		this.mutateChoices = new RandomChoice(new double[] { 0.988, 0.001,
@@ -46,7 +46,7 @@ public class NEATMutate implements EvolutionaryOperator {
 
 		switch (option) {
 		case 0: // mutate weight
-			mutateWeights(genome, mutateRate, probNewMutate, maxPertubation);
+			mutateWeights(genome);
 			break;
 		case 1: // add node
 			if (genome.getNeuronsChromosome().size() < this.owner
@@ -193,23 +193,6 @@ public class NEATMutate implements EvolutionaryOperator {
 	}
 
 	/**
-	 * Do we already have this neuron id?
-	 * 
-	 * @param id
-	 *            The id to check for.
-	 * @return True if we already have this neuron id.
-	 */
-	private boolean alreadyHaveThisNeuronID(NEATGenome target, final long id) {
-		for (final NEATNeuronGene neuronGene : target.getNeuronsChromosome()) {
-			if (neuronGene.getId() == id) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
 	 * Choose a random neuron.
 	 * 
 	 * @param includeInput
@@ -302,8 +285,7 @@ public class NEATMutate implements EvolutionaryOperator {
 	 * @param maxPertubation
 	 *            The max perturbation.
 	 */
-	public void mutateWeights(NEATGenome target, final double mutateRate,
-			final double probNewMutate, final double maxPertubation) {
+	public void mutateWeights(NEATGenome target) {
 		double weightRange = ((NEATPopulation)target.getPopulation()).getWeightRange();
 		
 		for (final NEATLinkGene linkGene : target.getLinksChromosome()) {
@@ -377,6 +359,78 @@ public class NEATMutate implements EvolutionaryOperator {
 		if (!isNeuronNeeded(target, targetGene.getToNeuronID())) {
 			removeNeuron(target, targetGene.getToNeuronID());
 		}
+	}
+	
+	
+
+	/**
+	 * @return the mutateChoices
+	 */
+	public RandomChoice getMutateChoices() {
+		return mutateChoices;
+	}
+
+	/**
+	 * @param mutateChoices the mutateChoices to set
+	 */
+	public void setMutateChoices(RandomChoice mutateChoices) {
+		this.mutateChoices = mutateChoices;
+	}
+
+	/**
+	 * @return the mutateRate
+	 */
+	public double getMutateRate() {
+		return mutateRate;
+	}
+
+	/**
+	 * @param mutateRate the mutateRate to set
+	 */
+	public void setMutateRate(double mutateRate) {
+		this.mutateRate = mutateRate;
+	}
+
+	/**
+	 * @return the probNewMutate
+	 */
+	public double getProbNewMutate() {
+		return probNewMutate;
+	}
+
+	/**
+	 * @param probNewMutate the probNewMutate to set
+	 */
+	public void setProbNewMutate(double probNewMutate) {
+		this.probNewMutate = probNewMutate;
+	}
+
+	/**
+	 * @return the maxPertubation
+	 */
+	public double getMaxPertubation() {
+		return maxPertubation;
+	}
+
+	/**
+	 * @param maxPertubation the maxPertubation to set
+	 */
+	public void setMaxPertubation(double maxPertubation) {
+		this.maxPertubation = maxPertubation;
+	}
+
+	/**
+	 * @return the maxTries
+	 */
+	public int getMaxTries() {
+		return maxTries;
+	}
+
+	/**
+	 * @param maxTries the maxTries to set
+	 */
+	public void setMaxTries(int maxTries) {
+		this.maxTries = maxTries;
 	}
 
 	@Override
