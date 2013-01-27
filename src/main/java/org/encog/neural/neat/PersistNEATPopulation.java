@@ -58,6 +58,12 @@ public class PersistNEATPopulation implements EncogPersistor {
 
 	@Override
 	public Object read(InputStream is) {
+		long nextGenomeID = 0;
+		long nextInnovationID = 0;
+		long nextGeneID = 0;
+		long nextSpeciesID = 0;
+		
+		
 		NEATPopulation result = new NEATPopulation();
 		NEATInnovationList innovationList = new NEATInnovationList();
 		innovationList.setPopulation(result);
@@ -74,17 +80,19 @@ public class PersistNEATPopulation implements EncogPersistor {
 				for (String line : section.getLines()) {
 					List<String> cols = EncogFileSection.splitColumns(line);
 					NEATInnovation innovation = new NEATInnovation();
-					innovation.setInnovationID(Integer.parseInt(cols.get(1)));
+					int innovationID = Integer.parseInt(cols.get(1));
+					innovation.setInnovationID(innovationID);
 					innovation.setNeuronID(Integer.parseInt(cols.get(2)));					
 					result.getInnovations().getInnovations().put(cols.get(0),innovation);
+					nextInnovationID = Math.max(nextInnovationID, innovationID+1);
 				}
 			} else if (section.getSectionName().equals("NEAT-POPULATION")
 					&& section.getSubSectionName().equals("SPECIES")) {
 				for (String line : section.getLines()) {
 					String[] cols = line.split(",");
 					NEATSpecies species = new NEATSpecies();
-
-					species.setSpeciesID(Integer.parseInt(cols[0]));
+					int speciesID = Integer.parseInt(cols[0]);
+					species.setSpeciesID(speciesID);
 					species.setAge(Integer.parseInt(cols[1]));
 					species.setBestScore(CSVFormat.EG_FORMAT.parse(cols[2]));
 					species.setGensNoImprovement(Integer.parseInt(cols[3]));
@@ -95,6 +103,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 					leaderMap.put(species, Integer.parseInt(cols[6]));
 					result.getSpecies().add(species);
 					speciesMap.put((int) species.getSpeciesID(), species);
+					nextSpeciesID = Math.max(nextSpeciesID, speciesID+1);
 				}
 			} else if (section.getSectionName().equals("NEAT-POPULATION")
 					&& section.getSubSectionName().equals("GENOMES")) {
@@ -103,20 +112,22 @@ public class PersistNEATPopulation implements EncogPersistor {
 					List<String> cols = EncogFileSection.splitColumns(line);
 					if (cols.get(0).equalsIgnoreCase("g") ) {
 						lastGenome = new NEATGenome();
-						lastGenome.setGenomeID(Integer.parseInt(cols.get(1)));
-						lastGenome.setSpeciesID(Integer.parseInt(cols.get(2)));
+						long genomeID = Integer.parseInt(cols.get(1));
+						lastGenome.setSpeciesID(genomeID);
 						lastGenome.setAdjustedScore(CSVFormat.EG_FORMAT
-								.parse(cols.get(3)));
+								.parse(cols.get(2)));
 						lastGenome.setAmountToSpawn(CSVFormat.EG_FORMAT
-								.parse(cols.get(4)));
-						lastGenome.setNetworkDepth(Integer.parseInt(cols.get(5)));
-						lastGenome.setScore(CSVFormat.EG_FORMAT.parse(cols.get(6)));
+								.parse(cols.get(3)));
+						lastGenome.setNetworkDepth(Integer.parseInt(cols.get(4)));
+						lastGenome.setScore(CSVFormat.EG_FORMAT.parse(cols.get(5)));
 						result.add(lastGenome);
 						genomeMap.put((int) lastGenome.getGenomeID(),
 								lastGenome);
+						nextGenomeID = Math.max(nextGenomeID, genomeID+1);
 					} else if (cols.get(0).equalsIgnoreCase("n") ) {
 						NEATNeuronGene neuronGene = new NEATNeuronGene();
-						neuronGene.setId(Integer.parseInt(cols.get(1)));
+						int geneID = Integer.parseInt(cols.get(1));
+						neuronGene.setId(geneID);
 						
 						ActivationFunction af = EncogFileSection.parseActivationFunction(cols.get(2));
 						neuronGene.setActivationFunction(af);
@@ -126,6 +137,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 						neuronGene.setEnabled(Integer.parseInt(cols.get(4))>0);
 						neuronGene.setInnovationId(Integer.parseInt(cols.get(5)));
 						lastGenome.getNeuronsChromosome().add(neuronGene);
+						nextGeneID = Math.max(geneID+1, nextGeneID);
 					} else if (cols.get(0).equalsIgnoreCase("l")) {
 						NEATLinkGene linkGene = new NEATLinkGene();
 						linkGene.setId(Integer.parseInt(cols.get(1)));
@@ -169,18 +181,6 @@ public class PersistNEATPopulation implements EncogPersistor {
 						NEATPopulation.PROPERTY_YOUNG_AGE_BONUS));
 				result.setActivationCycles(EncogFileSection.parseInt(params,
 						NEATPopulation.PROPERTY_CYCLES));
-				result.getGenomeIDGenerate().setCurrentID(
-						EncogFileSection.parseInt(params,
-								NEATPopulation.PROPERTY_NEXT_GENOME_ID));
-				result.getInnovationIDGenerate().setCurrentID(
-						EncogFileSection.parseInt(params,
-								NEATPopulation.PROPERTY_NEXT_INNOVATION_ID));
-				result.getGeneIDGenerate().setCurrentID(
-						EncogFileSection.parseInt(params,
-								NEATPopulation.PROPERTY_NEXT_GENE_ID));
-				result.getSpeciesIDGenerate().setCurrentID(
-						EncogFileSection.parseInt(params,
-								NEATPopulation.PROPERTY_NEXT_SPECIES_ID));
 			}
 		}
 
@@ -218,7 +218,11 @@ public class PersistNEATPopulation implements EncogPersistor {
 			result.setCodec(new NEATCODEC());
 		}
 		
-		//((NEATInnovationList)result.getInnovations()).init();
+		// set the next ID's
+		result.getGenomeIDGenerate().setCurrentID(nextGenomeID);
+		result.getInnovationIDGenerate().setCurrentID(nextInnovationID);
+		result.getGeneIDGenerate().setCurrentID(nextGeneID);
+		result.getSpeciesIDGenerate().setCurrentID(nextSpeciesID);
 
 		return result;
 	}
@@ -254,14 +258,6 @@ public class PersistNEATPopulation implements EncogPersistor {
 				pop.getYoungBonusAgeThreshold());
 		out.writeProperty(NEATPopulation.PROPERTY_YOUNG_AGE_BONUS,
 				pop.getYoungScoreBonus());
-		out.writeProperty(NEATPopulation.PROPERTY_NEXT_GENOME_ID, pop
-				.getGenomeIDGenerate().getCurrentID());
-		out.writeProperty(NEATPopulation.PROPERTY_NEXT_INNOVATION_ID, pop
-				.getInnovationIDGenerate().getCurrentID());
-		out.writeProperty(NEATPopulation.PROPERTY_NEXT_GENE_ID, pop
-				.getGeneIDGenerate().getCurrentID());
-		out.writeProperty(NEATPopulation.PROPERTY_NEXT_SPECIES_ID, pop
-				.getSpeciesIDGenerate().getCurrentID());
 		out.addSubSection("INNOVATIONS");
 		if (pop.getInnovations() != null) {
 			for(String key: pop.getInnovations().getInnovations().keySet() ) {

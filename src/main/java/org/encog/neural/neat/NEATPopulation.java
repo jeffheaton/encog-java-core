@@ -86,26 +86,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	public static final String PROPERTY_NEAT_ACTIVATION = "neatAct";
 	
 	/**
-	 * Property tag for the next gene id.
-	 */
-	public static final String PROPERTY_NEXT_GENE_ID = "nextGeneID";
-	
-	/**
-	 * Property tag for the next genome id.
-	 */
-	public static final String PROPERTY_NEXT_GENOME_ID = "nextGenomeID";
-	
-	/**
-	 * Property tag for the next innovation id.
-	 */
-	public static final String PROPERTY_NEXT_INNOVATION_ID = "nextInnovationID";
-	
-	/**
-	 * Property tag for the next species id.
-	 */
-	public static final String PROPERTY_NEXT_SPECIES_ID = "nextSpeciesID";
-
-	/**
 	 * Property tag for the old age penalty.
 	 */
 	public static final String PROPERTY_OLD_AGE_PENALTY = "oldAgePenalty";
