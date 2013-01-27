@@ -155,10 +155,8 @@ public class NEATCrossover implements EvolutionaryOperator {
 		NEATGenome best = favorParent(mom,dad);
 		NEATGenome notBest = (best==mom)?mom:dad;
 		
-		final List<NEATNeuronGene> babyNeurons = new ArrayList<NEATNeuronGene>();
-		final List<NEATLinkGene> babyGenes = new ArrayList<NEATLinkGene>();
-
-		final List<NEATNeuronGene> vecNeurons = new ArrayList<NEATNeuronGene>();
+		final List<NEATLinkGene> selectedLinks = new ArrayList<NEATLinkGene>();
+		final List<NEATNeuronGene> selectedNeurons = new ArrayList<NEATNeuronGene>();
 
 		int curMom = 0; // current gene index from mom
 		int curDad = 0; // current gene index from dad
@@ -167,7 +165,7 @@ public class NEATCrossover implements EvolutionaryOperator {
 		// add in the input and bias, they should always be here
 		int alwaysCount = owner.getInputCount() + owner.getOutputCount() + 1;
 		for(int i=0;i<alwaysCount;i++) {
-			addNeuronID(i, vecNeurons, best, notBest);
+			addNeuronID(i, selectedNeurons, best, notBest);
 		}
 		
 
@@ -220,34 +218,30 @@ public class NEATCrossover implements EvolutionaryOperator {
 			}
 
 			if( selectedGene!=null ) {
-				if (babyGenes.size() == 0) {
-					babyGenes.add(selectedGene);
+				if (selectedLinks.size() == 0) {
+					selectedLinks.add(selectedGene);
 				} else {
-					if (((NEATLinkGene) babyGenes.get(babyGenes.size() - 1))
+					if (((NEATLinkGene) selectedLinks.get(selectedLinks.size() - 1))
 							.getInnovationId() != selectedGene.getInnovationId()) {
-						babyGenes.add(selectedGene);
+						selectedLinks.add(selectedGene);
 					}
 				}
 	
 				// Check if we already have the nodes referred to in SelectedGene.
 				// If not, they need to be added.
-				addNeuronID(selectedGene.getFromNeuronID(), vecNeurons, best, notBest);
-				addNeuronID(selectedGene.getToNeuronID(), vecNeurons, best, notBest);
+				addNeuronID(selectedGene.getFromNeuronID(), selectedNeurons, best, notBest);
+				addNeuronID(selectedGene.getToNeuronID(), selectedNeurons, best, notBest);
 			}
 
 		}
 
 		// now create the required nodes. First sort them into order
-		Collections.sort(vecNeurons);
-
-		for (int i = 0; i < vecNeurons.size(); i++) {
-			babyNeurons.add(new NEATNeuronGene(vecNeurons.get(i)));
-		}
+		Collections.sort(selectedNeurons);
 
 		// finally, create the genome
 		NEATGenomeFactory factory = (NEATGenomeFactory)this.owner.getPopulation().getGenomeFactory();
 		final NEATGenome babyGenome = factory.factor(owner.getNEATPopulation()
-				.assignGenomeID(), babyNeurons, babyGenes, mom.getInputCount(),
+				.assignGenomeID(), selectedNeurons, selectedLinks, mom.getInputCount(),
 				mom.getOutputCount());
 		babyGenome.setPopulation(owner.getPopulation());
 		

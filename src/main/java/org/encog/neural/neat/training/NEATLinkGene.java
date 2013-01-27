@@ -83,6 +83,10 @@ public class NEATLinkGene extends NEATBaseGene implements Serializable {
 		setInnovationId(innovationID);
 		this.weight = weight;
 	}
+	
+	public NEATLinkGene(NEATLinkGene other) {
+		copy(other);
+	}
 
 	/**
 	 * Copy from another gene.

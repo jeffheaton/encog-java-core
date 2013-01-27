@@ -150,7 +150,8 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Create a NEAT gnome.
+	 * Create a NEAT gnome. Neuron genes will be added by reference, links will be
+	 * copied.
 	 * 
 	 * @param genomeID
 	 *            The genome id.
@@ -172,7 +173,10 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
 
-		this.linksChromosome.addAll(links);
+		for(NEATLinkGene gene: links) {
+			this.linksChromosome.add(new NEATLinkGene(gene));
+		}
+		
 		this.neuronsChromosome.addAll(neurons);
 	}
 
