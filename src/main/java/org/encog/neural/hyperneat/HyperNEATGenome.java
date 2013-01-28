@@ -1,6 +1,7 @@
 package org.encog.neural.hyperneat;
 
 import java.util.List;
+import java.util.Random;
 
 import org.encog.engine.network.activation.ActivationBipolarSteepenedSigmoid;
 import org.encog.engine.network.activation.ActivationClippedLinear;
@@ -34,9 +35,9 @@ public class HyperNEATGenome extends NEATGenome {
 		super(genomeID,neurons,links,inputCount,outputCount);
 	}
 
-	public HyperNEATGenome(final NEATPopulation pop, final long id,
-			final int inputCount, final int outputCount) {
-		super(pop,id,inputCount,outputCount);
+	public HyperNEATGenome(NEATPopulation pop, final long id,
+			final int inputCount, final int outputCount, double connectionDensity) {
+		super(pop,id,inputCount,outputCount, connectionDensity);
 
 	}
 	

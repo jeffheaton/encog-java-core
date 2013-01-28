@@ -2,6 +2,7 @@ package org.encog.neural.neat;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Random;
 
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATLinkGene;
@@ -22,8 +23,8 @@ public class FactorNEATGenome implements NEATGenomeFactory, Serializable {
 
 	@Override
 	public NEATGenome factor(NEATPopulation pop, long id, int inputCount,
-			int outputCount) {
-		return new NEATGenome(pop,id,inputCount,outputCount);
+			int outputCount, double connectionDensity) {
+		return new NEATGenome(pop,id,inputCount,outputCount, connectionDensity);
 	}
 
 	@Override

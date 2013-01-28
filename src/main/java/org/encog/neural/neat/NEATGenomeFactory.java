@@ -1,8 +1,8 @@
 package org.encog.neural.neat;
 
 import java.util.List;
+import java.util.Random;
 
-import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATLinkGene;
@@ -16,5 +16,5 @@ public interface NEATGenomeFactory extends GenomeFactory {
 			final int inputCount, final int outputCount);
 
 	NEATGenome factor(final NEATPopulation pop, final long id,
-			final int inputCount, final int outputCount);
+			final int inputCount, final int outputCount, double connectionDensity);
 }

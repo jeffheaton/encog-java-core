@@ -150,8 +150,8 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Create a NEAT gnome. Neuron genes will be added by reference, links will be
-	 * copied.
+	 * Create a NEAT gnome. Neuron genes will be added by reference, links will
+	 * be copied.
 	 * 
 	 * @param genomeID
 	 *            The genome id.
@@ -173,15 +173,16 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
 
-		for(NEATLinkGene gene: links) {
+		for (NEATLinkGene gene : links) {
 			this.linksChromosome.add(new NEATLinkGene(gene));
 		}
-		
+
 		this.neuronsChromosome.addAll(neurons);
 	}
 
 	/**
-	 * Construct a genome, do not provide links and neurons.
+	 * Create a new genome with the specified connection density. This
+	 * constructor is typically used to create the initial population.
 	 * 
 	 * @param id
 	 *            The genome id.
@@ -191,7 +192,8 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 *            The output count.
 	 */
 	public NEATGenome(final NEATPopulation pop, final long id,
-			final int inputCount, final int outputCount) {
+			final int inputCount, final int outputCount,
+			double connectionDensity) {
 		setGenomeID(id);
 		setAdjustedScore(0);
 		this.inputCount = inputCount;
@@ -205,14 +207,14 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		// first bias
 		int innovationID = 0;
 		NEATNeuronGene biasGene = new NEATNeuronGene(NEATNeuronType.Bias, af,
-				inputCount,innovationID++);
+				inputCount, innovationID++);
 		this.neuronsChromosome.add(biasGene);
 
 		// then inputs
 
 		for (int i = 0; i < inputCount; i++) {
 			NEATNeuronGene gene = new NEATNeuronGene(NEATNeuronType.Input, af,
-					i,innovationID++);
+					i, innovationID++);
 			this.neuronsChromosome.add(gene);
 		}
 
@@ -225,16 +227,20 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		}
 
 		// and now links
+		Random rnd = pop.getRandom();
 		for (int i = 0; i < inputCount + 1; i++) {
 			for (int j = 0; j < outputCount; j++) {
-				long fromID = this.neuronsChromosome.get(i).getId();
-				long toID = this.neuronsChromosome.get(inputCount + j + 1)
-						.getId();
-				double w = RangeRandomizer.randomize(-pop.getWeightRange(),
-						pop.getWeightRange());
-				NEATLinkGene gene = new NEATLinkGene(fromID, toID, true,
-						innovationID++, w);
-				this.linksChromosome.add(gene);
+				// make sure we have at least one connection
+				if ( this.linksChromosome.size()<1 || rnd.nextDouble() < connectionDensity) {
+					long fromID = this.neuronsChromosome.get(i).getId();
+					long toID = this.neuronsChromosome.get(inputCount + j + 1)
+							.getId();
+					double w = RangeRandomizer.randomize(rnd, -pop.getWeightRange(),
+							pop.getWeightRange());
+					NEATLinkGene gene = new NEATLinkGene(fromID, toID, true,
+							innovationID++, w);
+					this.linksChromosome.add(gene);
+				}
 			}
 		}
 

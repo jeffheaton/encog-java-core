@@ -1,6 +1,7 @@
 package org.encog.neural.hyperneat;
 
 import java.util.List;
+import java.util.Random;
 
 import org.encog.neural.neat.NEATGenomeFactory;
 import org.encog.neural.neat.NEATPopulation;
@@ -22,8 +23,8 @@ public class FactorHyperNEATGenome implements NEATGenomeFactory {
 
 	@Override
 	public NEATGenome factor(NEATPopulation pop, long id, int inputCount,
-			int outputCount) {
-		return new HyperNEATGenome(pop,id,inputCount,outputCount);
+			int outputCount, double connectionDensity) {
+		return new HyperNEATGenome(pop,id,inputCount,outputCount, connectionDensity);
 	}
 
 	@Override

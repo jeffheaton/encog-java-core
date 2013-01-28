@@ -26,6 +26,7 @@ package org.encog.neural.neat;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationSteepenedSigmoid;
@@ -208,6 +209,10 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 
 	private GeneticCODEC codec;
 	
+	private Random rnd = new Random();
+	
+	private double initialConnectionDensity = 0.1;
+	
 	public NEATPopulation() {
 
 	}
@@ -235,8 +240,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 					"Population must have more than zero genomes.");
 		}
 
-		reset();
-
 	}
 	
 	public NEATPopulation(Substrate theSubstrate, int populationSize) {
@@ -245,8 +248,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 		this.inputCount = 6;
 		this.outputCount = 2;
 		HyperNEATGenome.buildCPPNActivationFunctions(this.activationFunctions);
-		
-		reset();
 	}
 
 	public long assignGeneID() {
@@ -365,7 +366,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 		// create the initial population
 		for (int i = 0; i < getPopulationSize(); i++) {
 			NEATGenome genome = getGenomeFactory().factor(this, assignGenomeID(), inputCount,
-					outputCount);
+					outputCount, this.initialConnectionDensity);
 			add(genome);
 		}
 
@@ -520,7 +521,27 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 			return w;
 		}
 	}
+
+	/**
+	 * @return the initialConnectionDensity
+	 */
+	public double getInitialConnectionDensity() {
+		return initialConnectionDensity;
+	}
+
+	/**
+	 * @param initialConnectionDensity the initialConnectionDensity to set
+	 */
+	public void setInitialConnectionDensity(double initialConnectionDensity) {
+		this.initialConnectionDensity = initialConnectionDensity;
+	}
 	
+	public Random getRandom() {
+		return this.rnd;
+	}
 	
+	public void setRandom(Random theRandom) {
+		this.rnd = theRandom;
+	}
 
 }
