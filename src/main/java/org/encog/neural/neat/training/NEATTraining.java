@@ -342,7 +342,10 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		}
 		
 		while (newPopulation.size() < getPopulation().size()) {
-			newPopulation.add(tournamentSelection(getPopulation().size() / 5));
+			NEATGenome[] parent = { tournamentSelection(getPopulation().size() / 5) };
+			parent[0].setGenomeID(getNEATPopulation().assignGenomeID());
+			this.mutate.performOperation(getNEATPopulation().getRandom(), parent, 0, parent, 0);
+			newPopulation.add(parent[0]);
 		}
 
 		getPopulation().clear();

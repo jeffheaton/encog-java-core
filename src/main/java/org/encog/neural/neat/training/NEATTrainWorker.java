@@ -75,8 +75,7 @@ public class NEATTrainWorker implements Runnable {
 			} else {
 				// clone a child (asexual reproduction)
 				children[0] = ((NEATGenomeFactory) this.population
-						.getGenomeFactory()).factor((NEATGenome) species
-						.chooseParent());
+						.getGenomeFactory()).factor(parents[0]);
 			}
 
 			// process the new child
