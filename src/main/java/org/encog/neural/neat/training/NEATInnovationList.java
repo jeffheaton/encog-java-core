@@ -192,7 +192,7 @@ public class NEATInnovationList implements Serializable {
 	 * @return The newly created innovation, or the one that matched the search.
 	 */
 	public NEATInnovation findInnovation(long fromID, long toID) {
-		String key = NEATInnovationList.produceKeyNeuronSplit(fromID, toID);
+		String key = NEATInnovationList.produceKeyLink(fromID, toID);
 
 		synchronized (this.list) {
 			if (this.list.containsKey(key)) {

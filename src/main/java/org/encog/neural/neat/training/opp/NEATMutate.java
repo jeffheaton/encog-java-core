@@ -57,6 +57,7 @@ public class NEATMutate implements EvolutionaryOperator {
 		case 2: // add connection
 			// now there's the chance a link may be added
 			addLink(genome);
+			break;
 		case 3: // remove connection
 			removeLink(genome);
 			break;
