@@ -17,8 +17,6 @@ public class SimpleNEATSpeciation implements Speciation {
 	 */
 	private double totalFitAdjustment;
 
-	
-
 	/**
 	 * The average fit adjustment.
 	 */
@@ -50,8 +48,7 @@ public class SimpleNEATSpeciation implements Speciation {
 			boolean added = false;
 
 			for (final NEATSpecies s : owner.getNEATPopulation().getSpecies()) {
-				final double compatibility = genome
-						.getCompatibilityScore((NEATGenome) s.getLeader());
+				final double compatibility = getCompatibilityScore(genome, s.getLeader());
 
 				if (compatibility <= this.compatibilityThreshold) {
 					addSpeciesMember(s, genome);
@@ -121,7 +118,16 @@ public class SimpleNEATSpeciation implements Speciation {
 	 * Adjust each species score.
 	 */
 	private void adjustSpeciesScore() {
-		for (final NEATSpecies s : owner.getNEATPopulation().getSpecies()) {
+		Object[] a = owner.getNEATPopulation().getSpecies().toArray();
+		
+		for(int i=0;i<a.length;i++) {
+			NEATSpecies s = (NEATSpecies)a[i];
+			
+			// is species now empty
+			if( s.getMembers().size()<1 ) {
+				owner.getNEATPopulation().getSpecies().remove(s);
+			}
+
 			// loop over all genomes and adjust scores as needed
 			for (final Genome member : s.getMembers()) {
 				double score = member.getScore();
@@ -166,6 +172,80 @@ public class SimpleNEATSpeciation implements Speciation {
 		else if (owner.getNEATPopulation().getSpecies().size() < 2) {
 			this.compatibilityThreshold -= thresholdIncrement;
 		}
+	}
+	
+	/**
+	 * Get the compatibility score with another genome. Used to determine
+	 * species.
+	 * 
+	 * @param genome
+	 *            The other genome.
+	 * @return The score.
+	 */
+	private double getCompatibilityScore(final NEATGenome genome1, final NEATGenome genome) {
+		double numDisjoint = 0;
+		double numExcess = 0;
+		double numMatched = 0;
+		double weightDifference = 0;
+
+		int genome1Size = genome1.getLinksChromosome().size();
+		int g1 = 0;
+		int g2 = 0;
+
+		while ((g1 < genome1Size )
+				|| (g2 < genome1Size )) {
+
+			if (g1 == genome1Size ) {
+				g2++;
+				numExcess++;
+
+				continue;
+			}
+
+			if (g2 == genome.getLinksChromosome().size() ) {
+				g1++;
+				numExcess++;
+
+				continue;
+			}
+
+			// get innovation numbers for each gene at this point
+			final long id1 = genome1.getLinksChromosome().get(g1).getInnovationId();
+			final long id2 = genome.getLinksChromosome().get(g2).getInnovationId();
+
+			// innovation numbers are identical so increase the matched score
+			if (id1 == id2) {
+
+				// get the weight difference between these two genes
+				weightDifference += Math
+						.abs(genome1.getLinksChromosome().get(g1).getWeight()
+								- genome.getLinksChromosome()
+										.get(g2).getWeight());
+				g1++;
+				g2++;
+				numMatched++;
+			}
+
+			// innovation numbers are different so increment the disjoint score
+			if (id1 < id2) {
+				numDisjoint++;
+				g1++;
+			}
+
+			if (id1 > id2) {
+				++numDisjoint;
+				++g2;
+			}
+
+		}
+
+		int longest = this.owner.getMaxGeneLength();
+
+		final double score = (NEATGenome.TWEAK_EXCESS * numExcess / longest)
+				+ (NEATGenome.TWEAK_DISJOINT * numDisjoint / longest)
+				+ (NEATGenome.TWEAK_MATCHED * weightDifference / numMatched);
+
+		return score;
 	}
 	
 	/**

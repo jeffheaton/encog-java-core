@@ -99,6 +99,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	private Speciation speciation;
 	private double crossoverRate = 0.7;
 	private List<NEATGenome> newPopulation = new ArrayList<NEATGenome>();
+	private int maxGeneLength;
 	private int threadCount;
 	private int actualThreadCount = -1;
 
@@ -328,6 +329,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		}
 		
 		newPopulation.clear();
+		this.maxGeneLength = 0;
 
 		for (final NEATSpecies s : ((NEATPopulation)getPopulation()).getSpecies()) {
 			NEATTrainWorker worker = new NEATTrainWorker(this,s,this.crossoverRate);
@@ -345,7 +347,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 			NEATGenome[] parent = { tournamentSelection(getPopulation().size() / 5) };
 			parent[0].setGenomeID(getNEATPopulation().assignGenomeID());
 			this.mutate.performOperation(getNEATPopulation().getRandom(), parent, 0, parent, 0);
-			newPopulation.add(parent[0]);
+			this.addChild(parent[0]);
 		}
 
 		getPopulation().clear();
@@ -359,6 +361,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		synchronized(this.newPopulation) {
 			if( this.newPopulation.size()<this.getPopulation().size() ) {
 				this.newPopulation.add(genome);
+				this.maxGeneLength = Math.max(this.maxGeneLength, genome.getLinksChromosome().size());
 				return true;
 			} else {
 				return false;
@@ -513,6 +516,10 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	 */
 	public void setMutate(NEATMutate mutate) {
 		this.mutate = mutate;
+	}
+
+	public int getMaxGeneLength() {
+		return this.maxGeneLength;
 	}
 	
 	
