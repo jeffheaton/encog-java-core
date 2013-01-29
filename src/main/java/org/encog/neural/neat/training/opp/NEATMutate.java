@@ -27,8 +27,8 @@ public class NEATMutate implements EvolutionaryOperator {
 	private int maxTries = 5;
 
 	public NEATMutate() {
-		//this.mutateChoices = new RandomChoice(new double[] { 0.988, 0.001, 0.01, 0.001 });
-		this.mutateChoices = new RandomChoice(new double[] { 0.75, 0.1, 0.1, 0.05 });
+		this.mutateChoices = new RandomChoice(new double[] { 0.988, 0.001, 0.01, 0.001 });
+		//this.mutateChoices = new RandomChoice(new double[] { 0.75, 0.1, 0.1, 0.05 });
 	}
 
 	@Override
