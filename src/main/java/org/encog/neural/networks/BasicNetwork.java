@@ -570,13 +570,15 @@ public class BasicNetwork extends BasicML implements ContainsFlat, MLContext,
 	 */
 	public boolean isConnected(final int layer, final int fromNeuron,
 			final int toNeuron) {
-		/*
-		 * if (!this.structure.isConnectionLimited()) { return true; } final
-		 * double value = synapse.getMatrix().get(fromNeuron, toNeuron);
-		 * 
-		 * return (Math.abs(value) > this.structure.getConnectionLimit());
-		 */
-		return false;
+		
+		 if (!this.structure.isConnectionLimited()) 
+		 { 
+			 return true; 
+		 } 
+		 
+		 final double value = this.getWeight(layer, fromNeuron, toNeuron);
+		  
+		 return (Math.abs(value) > this.structure.getConnectionLimit());
 	}
 
 	/**
