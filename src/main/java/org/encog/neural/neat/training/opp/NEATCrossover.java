@@ -33,7 +33,7 @@ import org.encog.neural.neat.training.NEATTraining;
  * Matching genes are inherited randomly, whereas disjoint genes (those that do not match in the middle) and excess genes 
  * (those that do not match in the end) are inherited from the more fit parent. In this case, equal fitnesses are 
  * assumed, so the disjoint and excess genes are also inherited randomly. The disabled genes may become enabled again 
- * in future generations: there’s a preset chance that an inherited gene is disabled if it is disabled in either parent.
+ * in future generations: there is a preset chance that an inherited gene is disabled if it is disabled in either parent.
  * 
  * This is implemented in this class via the following algorithm.  First, create a counter for each parent.  At each step in 
  * the loop, perform the following.
