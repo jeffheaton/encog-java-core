@@ -122,6 +122,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		super(new NEATPopulation(inputCount, outputCount,
 				populationSize), calculateScore);
 
+		getNEATPopulation().reset();
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
 
@@ -129,6 +130,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		setSelectionComparator(new MinimizeAdjustedScoreComp());
 
 		init();
+		
 	}
 
 	/**

@@ -48,14 +48,14 @@ public class TestPersistNEAT extends TestCase {
 	{
 		// simple network, 1 input, 1 bais , those two both conned into output neuron, so that 2 links!
 		ActivationFunction[] activationFunctions = new ActivationFunction[3];
-		List<NEATLink> links = new ArrayList<NEATLink>();
+		List<NEATLink> links = new ArrayList<NEATLink>(2);
 		
 		for(int i=0;i<activationFunctions.length;i++) {
 			activationFunctions[i] = new ActivationSteepenedSigmoid();
 		}
 		
-		links.set(0, new NEATLink(0,2,1.0));
-		links.set(1, new NEATLink(1,2,2.0));
+		links.add( new NEATLink(0,2,1.0));
+		links.add( new NEATLink(1,2,2.0));
 		
 		NEATNetwork result = new NEATNetwork(1,1,links,activationFunctions);
 				
