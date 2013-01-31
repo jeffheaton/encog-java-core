@@ -34,7 +34,7 @@ import org.encog.parse.ParseError;
  * AttributeList class. This allows the HTMLTag class to hold a collection of
  * attributes, just as an actual HTML tag does.
  */
-public class Tag {
+public class Tag implements Cloneable {
 
 	/**
 	 * Tag types.

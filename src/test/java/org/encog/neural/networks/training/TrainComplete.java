@@ -43,7 +43,6 @@ public class TrainComplete extends TestCase {
 		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = EncogUtility.simpleFeedForward(2, 5, 7, 1, true);
-		Randomizer randomizer = new ConsistentRandomizer(-1, 1, 19);
 		//randomizer.randomize(network);
 		System.out.println(network.dumpWeights());
 		MLTrain rprop = new ResilientPropagation(network, trainingData);

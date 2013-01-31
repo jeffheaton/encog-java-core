@@ -144,9 +144,6 @@ public class TestParseHTML extends TestCase {
 	
 	public void testToString()
 	{
-		StringBuilder result = new StringBuilder();
-		
-		
 		String html="a<img src=\"picture.gif\" alt=\"A Picture\">b";
 		ByteArrayInputStream bis = new ByteArrayInputStream(html.getBytes());
 		ReadHTML parse = new ReadHTML(bis);

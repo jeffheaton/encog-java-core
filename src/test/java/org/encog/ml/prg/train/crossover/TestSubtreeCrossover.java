@@ -77,9 +77,6 @@ public class TestSubtreeCrossover extends TestCase {
 		Genome[] parents = {parent1, parent2};
 		cross.performOperation(new Random(seed), parents, 0, offspring, 0);
 		offspring[0].getVariables().setVariable("x", 1);
-		
-		RenderCommonExpression render = new RenderCommonExpression();
-		//Assert.assertEquals(offspringExpression,render.render(offspring[0]));
 	}
 	
 	public void testCrossover() {

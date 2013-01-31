@@ -1,9 +1,10 @@
 package org.encog.neural.hyperneat.substrate;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Substrate {
+public class Substrate implements Serializable {
 
 	private final int dimensions;
 	private final List<SubstrateNode> inputNodes = new ArrayList<SubstrateNode>();

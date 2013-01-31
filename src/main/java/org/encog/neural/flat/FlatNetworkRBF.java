@@ -33,7 +33,7 @@ import org.encog.util.EngineArray;
 /**
  * A flat network designed to handle an RBF.
  */
-public class FlatNetworkRBF extends FlatNetwork implements Serializable {
+public class FlatNetworkRBF extends FlatNetwork implements Serializable, Cloneable {
 
 	/**
 	 * 

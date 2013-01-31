@@ -53,6 +53,13 @@ public class FlatLayer {
 	private FlatLayer contextFedBy;
 
 	/**
+	 * Do not use this constructor.  This was added to support serialization.
+	 */
+	public FlatLayer() {
+		count = 0;
+	}
+	
+	/**
 	 * Construct a flat layer.
 	 * 
 	 * @param activation

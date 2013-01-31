@@ -259,7 +259,6 @@ public class EncogWriteHelper {
 				final CSVFormat csvFormat) {
 		String fmt;
 		if ((csvFormat == CSVFormat.ENGLISH)
-				|| (csvFormat == CSVFormat.ENGLISH)
 				|| (csvFormat == CSVFormat.DECIMAL_POINT)) {
 			fmt = "decpnt";
 		} else if (csvFormat == CSVFormat.DECIMAL_COMMA) {

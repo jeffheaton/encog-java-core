@@ -52,7 +52,7 @@ import org.encog.util.EngineArray;
  * network classes will make use of the GPU if you have enabled GPU processing.
  * See the Encog class for more info.
  */
-public class FlatNetwork implements Serializable {
+public class FlatNetwork implements Serializable, Cloneable {
 
 	/**
 	 * The serial ID.

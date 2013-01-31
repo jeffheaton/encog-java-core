@@ -47,13 +47,6 @@ public class NelderMeadFactory {
 	 */
 	public MLTrain create(final MLMethod method,
 			final MLDataSet training, final String argsStr) {
-
-		final Map<String, String> args = ArchitectureParse.parseParams(argsStr);
-		final ParamsHolder holder = new ParamsHolder(args);
-
-		//final double learningRate = holder.getDouble(
-		//		MLTrainFactory.PROPERTY_LEARNING_RATE, false, 0.1);
-
 		return new NelderMeadTraining((BasicNetwork) method, training);
 	}
 }

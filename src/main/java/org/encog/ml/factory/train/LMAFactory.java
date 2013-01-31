@@ -60,9 +60,6 @@ public class LMAFactory {
 							+ method.getClass().getName());
 		}
 
-		final Map<String, String> args = ArchitectureParse.parseParams(argsStr);
-		final ParamsHolder holder = new ParamsHolder(args);
-
 		final LevenbergMarquardtTraining result 
 			= new LevenbergMarquardtTraining(
 				(BasicNetwork) method, training);

@@ -56,6 +56,15 @@ public abstract class FreeformPropagationTraining extends BasicTraining
 	private final Set<FreeformNeuron> visited = new HashSet<FreeformNeuron>();
 	private boolean fixFlatSopt = true;
 
+	/**
+	 * Don't use this constructor, it is for serialization only.
+	 */
+	public FreeformPropagationTraining() {
+		super(TrainingImplementationType.Iterative);
+		this.network = null;
+		this.training = null;
+	}
+	
 	public FreeformPropagationTraining(final FreeformNetwork theNetwork,
 			final MLDataSet theTraining) {
 		super(TrainingImplementationType.Iterative);

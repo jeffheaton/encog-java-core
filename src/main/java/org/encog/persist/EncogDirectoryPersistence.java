@@ -235,6 +235,9 @@ public class EncogDirectoryPersistence {
 			final File path = new File(this.parent, name);
 			br = new BufferedReader(new FileReader(path));
 			final String header = br.readLine();
+			if( header==null ) {
+				throw new PersistError("Invalid file, can't find header");
+			}
 			final String[] params = header.split(",");
 
 			return params[1];

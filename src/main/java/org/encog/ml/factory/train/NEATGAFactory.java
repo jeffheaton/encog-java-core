@@ -53,11 +53,7 @@ public class NEATGAFactory {
 	public MLTrain create(final MLMethod method,
 			final MLDataSet training, final String argsStr) {
 
-		final CalculateScore score = new TrainingSetScore(training);
-
-		final Map<String, String> args = ArchitectureParse.parseParams(argsStr);
-		final ParamsHolder holder = new ParamsHolder(args);
-		
+		final CalculateScore score = new TrainingSetScore(training);		
 		final NEATTraining train = new NEATTraining(score,(NEATPopulation)method);
 
 		return train;
