@@ -1,5 +1,7 @@
 package org.encog.neural.neat.training.species;
 
+import java.util.Collections;
+
 import org.encog.ml.ea.genome.Genome;
 import org.encog.neural.neat.NEATSpecies;
 import org.encog.neural.neat.training.NEATGenome;
@@ -86,6 +88,7 @@ public class SimpleNEATSpeciation implements Speciation {
 
 		for (final NEATSpecies species : owner.getNEATPopulation().getSpecies()) {
 			species.calculateSpawnAmount();
+			Collections.sort(species.getMembers(), this.owner.getBestComparator());
 		}
 	}
 	
