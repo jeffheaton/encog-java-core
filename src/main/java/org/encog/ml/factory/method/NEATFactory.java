@@ -77,6 +77,7 @@ public class NEATFactory {
 				holder.getString(MLMethodFactory.PROPERTY_AF, false, MLActivationFactory.AF_SSIGMOID));
 
 		NEATPopulation pop = new NEATPopulation(input,output,populationSize);
+		pop.reset();
 		pop.setActivationCycles(cycles);
 		pop.setNEATActivationFunction(af);
 

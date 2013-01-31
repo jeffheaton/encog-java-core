@@ -57,7 +57,7 @@ public class NEATTrainWorker implements Runnable {
 			// the crossover probability to determine if we are to use
 			// sexual reproduction.
 			if ((this.species.getMembers().size() > 1)
-					|| (Math.random() < this.crossoverRate)) {
+					&& (Math.random() < this.crossoverRate)) {
 
 				int numAttempts = 5;
 
@@ -76,15 +76,13 @@ public class NEATTrainWorker implements Runnable {
 				// clone a child (asexual reproduction)
 				children[0] = ((NEATGenomeFactory) this.population
 						.getGenomeFactory()).factor(parents[0]);
+				this.mutate.performOperation(rnd, children, 0, children, 0);
 			}
 
 			// process the new child
 			if (children[0] != null) {
 				children[0].setGenomeID(population.assignGenomeID());
-				this.mutate.performOperation(rnd, children, 0, children, 0);
-			}
 
-			if (children[0] != null) {
 				// sort the baby's genes by their innovation numbers
 				children[0].sortGenes();
 

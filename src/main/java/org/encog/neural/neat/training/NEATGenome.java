@@ -38,6 +38,7 @@ import org.encog.ml.ea.genome.BasicGenome;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.neat.NEATPopulation;
+import org.encog.util.Format;
 
 /**
  * Implements a NEAT genome. This is a "blueprint" for creating a neural
@@ -418,4 +419,18 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		return null;
 	}
 
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[");
+		result.append(this.getClass().getSimpleName());
+		result.append(":score=");
+		result.append(Format.formatDouble(this.getScore(), 2));
+		result.append(",neurons=");
+		result.append(this.neuronsChromosome.size());
+		result.append(",links=");
+		result.append(this.linksChromosome.size());
+		result.append("]");
+		return result.toString();
+	}
+	
 }
