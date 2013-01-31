@@ -23,6 +23,7 @@
  */
 package org.encog.ml.data.market;
 
+import org.encog.mathutil.matrices.Matrix;
 import org.encog.util.obj.ReflectionUtil;
 
 /**
@@ -71,29 +72,28 @@ public class TickerSymbol {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean equals(final Object o) {
+	public boolean equals(final Object other) {
 
-		if (!(o instanceof TickerSymbol)) {
-			return false;
-		}
-
-		TickerSymbol other = (TickerSymbol) o;
+	    if (other == null) return false;
+	    if (other == this) return true;
+	    if (!(other instanceof TickerSymbol))return false;
+	    TickerSymbol otherMyClass = (TickerSymbol)other;		
 
 		// if the symbols do not even match then they are not equal
-		if (!other.getSymbol().equals(getSymbol())) {
+		if (!otherMyClass.getSymbol().equals(getSymbol())) {
 			return false;
 		}
 
 		// if the symbols match then we need to compare the exchanges
-		if ((other.getExchange() == null) && (other.getExchange() == null)) {
+		if ((otherMyClass.getExchange() == null) && (otherMyClass.getExchange() == null)) {
 			return true;
 		}
 
-		if ((other.getExchange() == null) || (other.getExchange() == null)) {
+		if ((otherMyClass.getExchange() == null) || (otherMyClass.getExchange() == null)) {
 			return false;
 		}
 
-		return other.getExchange().equals(getExchange());
+		return otherMyClass.getExchange().equals(getExchange());
 	}
 
 	/**

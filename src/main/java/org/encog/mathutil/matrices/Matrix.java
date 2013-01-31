@@ -222,11 +222,13 @@ public class Matrix implements Cloneable, Serializable {
 	 */
 	@Override
 	public boolean equals(final Object other) {
-		if (other instanceof Matrix) {
-			return equals((Matrix) other, Encog.DEFAULT_PRECISION);
-		} else {
-			return false;
-		}
+	
+	    if (other == null) return false;
+	    if (other == this) return true;
+	    if (!(other instanceof Matrix))return false;
+	    Matrix otherMyClass = (Matrix)other;
+			
+	    return equals(otherMyClass, Encog.DEFAULT_PRECISION);
 	}
 
 	/**

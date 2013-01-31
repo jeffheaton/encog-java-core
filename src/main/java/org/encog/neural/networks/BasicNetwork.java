@@ -25,6 +25,7 @@ package org.encog.neural.networks;
 
 import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.randomize.ConsistentRandomizer;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
@@ -378,8 +379,14 @@ public class BasicNetwork extends BasicML implements ContainsFlat, MLContext,
 	 *            The other neural network.
 	 * @return True if the two networks are equal.
 	 */
-	public boolean equals(final BasicNetwork other) {
-		return equals(other, Encog.DEFAULT_PRECISION);
+	@Override
+	public boolean equals(final Object other) {
+	    if (other == null) return false;
+	    if (other == this) return true;
+	    if (!(other instanceof BasicNetwork))return false;
+	    BasicNetwork otherMyClass = (BasicNetwork)other;
+	    
+		return equals(otherMyClass, Encog.DEFAULT_PRECISION);
 	}
 
 	/**

@@ -104,6 +104,14 @@ public class NEATLink implements Serializable, Comparable<NEATLink> {
 	}
 
 
+	@Override
+	public boolean equals(Object other){
+	    if (other == null) return false;
+	    if (other == this) return true;
+	    if (!(other instanceof NEATLink))return false;
+	    NEATLink otherMyClass = (NEATLink)other;
+	    return compareTo(otherMyClass)==0;
+	}
 
 	@Override
 	public int compareTo(NEATLink other) {
