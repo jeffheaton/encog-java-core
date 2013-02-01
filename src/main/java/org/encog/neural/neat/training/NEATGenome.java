@@ -62,21 +62,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	public static final String PROPERTY_LINKS = "links";
 
 	/**
-	 * The adjustment factor for disjoint genes.
-	 */
-	public static final double TWEAK_DISJOINT = 1;
-
-	/**
-	 * The adjustment factor for excess genes.
-	 */
-	public static final double TWEAK_EXCESS = 1;
-
-	/**
-	 * The adjustment factor for matched genes.
-	 */
-	public static final double TWEAK_MATCHED = 0.4;
-
-	/**
 	 * The number of inputs.
 	 */
 	private int inputCount;

@@ -9,6 +9,21 @@ import org.encog.neural.neat.training.NEATTraining;
 
 public class SimpleNEATSpeciation implements Speciation {
 	
+	/**
+	 * The adjustment factor for disjoint genes.
+	 */
+	private double constDisjoint = 1;
+
+	/**
+	 * The adjustment factor for excess genes.
+	 */
+	private double constExcess = 1;
+
+	/**
+	 * The adjustment factor for matched genes.
+	 */
+	private double constMatched = 0.4;
+	
 	private NEATTraining owner;
 	private double compatibilityThreshold = 0.26;
 	private int numGensAllowedNoImprovement = 15;
@@ -244,9 +259,9 @@ public class SimpleNEATSpeciation implements Speciation {
 
 		int longest = this.owner.getMaxGeneLength();
 
-		final double score = (NEATGenome.TWEAK_EXCESS * numExcess / longest)
-				+ (NEATGenome.TWEAK_DISJOINT * numDisjoint / longest)
-				+ (NEATGenome.TWEAK_MATCHED * weightDifference / numMatched);
+		final double score = (this.constExcess * numExcess / longest)
+				+ (this.constDisjoint * numDisjoint / longest)
+				+ (this.constMatched * weightDifference / numMatched);
 
 		return score;
 	}
@@ -271,5 +286,49 @@ public class SimpleNEATSpeciation implements Speciation {
 		species.getMembers().add(genome);
 
 	}
+
+	/**
+	 * @return the constDisjoint
+	 */
+	public double getConstDisjoint() {
+		return constDisjoint;
+	}
+
+	/**
+	 * @param constDisjoint the constDisjoint to set
+	 */
+	public void setConstDisjoint(double constDisjoint) {
+		this.constDisjoint = constDisjoint;
+	}
+
+	/**
+	 * @return the constExcess
+	 */
+	public double getConstExcess() {
+		return constExcess;
+	}
+
+	/**
+	 * @param constExcess the constExcess to set
+	 */
+	public void setConstExcess(double constExcess) {
+		this.constExcess = constExcess;
+	}
+
+	/**
+	 * @return the constMatched
+	 */
+	public double getConstMatched() {
+		return constMatched;
+	}
+
+	/**
+	 * @param constMatched the constMatched to set
+	 */
+	public void setConstMatched(double constMatched) {
+		this.constMatched = constMatched;
+	}
+	
+	
 
 }
