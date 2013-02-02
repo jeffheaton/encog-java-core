@@ -123,10 +123,6 @@ public class MultiThreadedEA extends BasicEA
 		}
 	}
 
-	public void addOperation(double probability, EvolutionaryOperator opp) {
-		this.getOperators().add(probability, opp);
-	}
-
 	public void finishTraining() {
 		if (this.workers != null) {
 			for (int i = 0; i < this.workers.length; i++) {

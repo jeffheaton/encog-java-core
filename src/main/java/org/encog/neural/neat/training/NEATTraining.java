@@ -50,6 +50,10 @@ import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.NEATSpecies;
 import org.encog.neural.neat.training.opp.NEATCrossover;
 import org.encog.neural.neat.training.opp.NEATMutate;
+import org.encog.neural.neat.training.opp.NEATMutateAddLink;
+import org.encog.neural.neat.training.opp.NEATMutateAddNode;
+import org.encog.neural.neat.training.opp.NEATMutateRemoveLink;
+import org.encog.neural.neat.training.opp.NEATMutateWeights;
 import org.encog.neural.neat.training.species.SimpleNEATSpeciation;
 import org.encog.neural.neat.training.species.Speciation;
 import org.encog.neural.networks.training.TrainingError;
@@ -259,6 +263,13 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	 */
 	private void init() {
 	
+		addOperation(0.8,new NEATCrossover());
+		addOperation(0.19,new NEATMutateWeights());
+		addOperation(0.003,new NEATMutateAddNode());
+		addOperation(0.003,new NEATMutateAddLink());
+		addOperation(0.004,new NEATMutateRemoveLink());
+		this.getOperators().finalizeStructure();
+		
 		this.crossover = new NEATCrossover();
 		this.crossover.init(this);
 		

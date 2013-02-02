@@ -32,6 +32,7 @@ import org.encog.ml.MLContext;
 import org.encog.ml.MLMethod;
 import org.encog.ml.ea.codec.GeneticCODEC;
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.opp.OperationList;
 import org.encog.ml.ea.opp.selection.PrgSelection;
 import org.encog.ml.ea.opp.selection.TournamentSelection;
@@ -231,6 +232,11 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	 */
 	public OperationList getOperators() {
 		return operators;
+	}
+	
+	public void addOperation(double probability, EvolutionaryOperator opp) {
+		this.getOperators().add(probability, opp);
+		opp.init(this);
 	}
 	
 }

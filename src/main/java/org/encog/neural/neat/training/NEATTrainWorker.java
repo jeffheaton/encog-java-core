@@ -2,6 +2,7 @@ package org.encog.neural.neat.training;
 
 import java.util.Random;
 
+import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.neural.neat.NEATGenomeFactory;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.NEATSpecies;
@@ -40,6 +41,8 @@ public class NEATTrainWorker implements Runnable {
 		if (!this.train.addChild(this.species.getLeader())) {
 			return;
 		}
+		
+		EvolutionaryOperator opp = this.train.getOperators().pickMaxParents(this.rnd, species.getMembers().size());
 
 		while ((numToSpawn--) > 0) {
 			children[0] = null;
@@ -56,8 +59,7 @@ public class NEATTrainWorker implements Runnable {
 			// one then we can only clone and perhaps mutate, otherwise use
 			// the crossover probability to determine if we are to use
 			// sexual reproduction.
-			if ((this.species.getMembers().size() > 1)
-					&& (Math.random() < this.crossoverRate)) {
+			if (opp.parentsNeeded()>1) {
 
 				int numAttempts = 5;
 
@@ -69,14 +71,14 @@ public class NEATTrainWorker implements Runnable {
 
 				// success, perform crossover
 				if (parents[0].getGenomeID() != parents[1].getGenomeID()) {
-					this.crossover.performOperation(rnd, parents, 0, children,
+					opp.performOperation(rnd, parents, 0, children,
 							0);
 				}
 			} else {
 				// clone a child (asexual reproduction)
 				children[0] = ((NEATGenomeFactory) this.population
 						.getGenomeFactory()).factor(parents[0]);
-				this.mutate.performOperation(rnd, children, 0, children, 0);
+				opp.performOperation(rnd, children, 0, children, 0);
 			}
 
 			// process the new child
