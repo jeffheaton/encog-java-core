@@ -1,11 +1,7 @@
 package org.encog.ml.ea.opp;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
-import org.encog.mathutil.randomize.RandomChoice;
 import org.encog.util.obj.ChooseObject;
 import org.encog.util.obj.ObjectHolder;
 
@@ -26,4 +22,28 @@ public class OperationList extends ChooseObject<EvolutionaryOperator>  {
 		}
 		return result;
 	}
+	
+	public EvolutionaryOperator pickMaxParents(Random rnd, int maxParents) {
+		
+		double total = 0;
+		for(ObjectHolder<EvolutionaryOperator> holder: getList()) {
+			if( holder.getObj().parentsNeeded()<=maxParents ) {
+				total+=holder.getProbability();
+			}
+		}
+		
+		double r = rnd.nextDouble() * total;
+		double current = 0;
+		for(ObjectHolder<EvolutionaryOperator> holder: getList()) {
+			if( holder.getObj().parentsNeeded()<=maxParents ) {
+				current+=holder.getProbability();
+				if( r<current ) {
+					return holder.getObj();
+				}
+			}
+		}
+		
+		return null;
+	}
+	
 }

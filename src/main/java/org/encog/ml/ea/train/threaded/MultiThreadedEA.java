@@ -25,9 +25,6 @@ public class MultiThreadedEA extends BasicEA
 		implements MultiThreadable, EncogShutdownTask, Serializable {
 
 	private GeneticTrainWorker[] workers;
-
-	private final OperationList operators = new OperationList();
-
 	private boolean needBestGenome = true;
 
 	private int iterationNumber;
@@ -105,7 +102,7 @@ public class MultiThreadedEA extends BasicEA
 	@Override
 	public void iteration() {
 		if (this.workers == null) {
-			this.operators.finalizeStructure();
+			this.getOperators().finalizeStructure();
 			startup();
 		}
 
@@ -127,7 +124,7 @@ public class MultiThreadedEA extends BasicEA
 	}
 
 	public void addOperation(double probability, EvolutionaryOperator opp) {
-		this.operators.add(probability, opp);
+		this.getOperators().add(probability, opp);
 	}
 
 	public void finishTraining() {
@@ -233,13 +230,6 @@ public class MultiThreadedEA extends BasicEA
 	 */
 	public ThreadedGenomeSelector getSelector() {
 		return selector;
-	}
-
-	/**
-	 * @return the operators
-	 */
-	public OperationList getOperators() {
-		return operators;
 	}
 
 	public double getError() {

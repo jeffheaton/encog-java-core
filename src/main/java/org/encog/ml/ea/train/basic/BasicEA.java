@@ -32,6 +32,7 @@ import org.encog.ml.MLContext;
 import org.encog.ml.MLMethod;
 import org.encog.ml.ea.codec.GeneticCODEC;
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.opp.OperationList;
 import org.encog.ml.ea.opp.selection.PrgSelection;
 import org.encog.ml.ea.opp.selection.TournamentSelection;
 import org.encog.ml.ea.population.Population;
@@ -69,6 +70,7 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	private PrgSelection selection;
 	
 	private List<AdjustScore> adjusters = new ArrayList<AdjustScore>();
+	private final OperationList operators = new OperationList();
 	
 	private GeneticCODEC codec;
 	
@@ -222,6 +224,13 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	
 	public void setCODEC(GeneticCODEC theCodec) {
 		this.codec = theCodec;
+	}
+	
+	/**
+	 * @return the operators
+	 */
+	public OperationList getOperators() {
+		return operators;
 	}
 	
 }
