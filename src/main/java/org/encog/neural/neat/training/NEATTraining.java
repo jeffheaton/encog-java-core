@@ -48,6 +48,7 @@ import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.hyperneat.HyperNEATCODEC;
 import org.encog.neural.neat.NEATCODEC;
+import org.encog.neural.neat.NEATGenomeFactory;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.NEATSpecies;
 import org.encog.neural.neat.training.opp.NEATCrossover;
@@ -108,6 +109,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	private double mutateRate = 0.2;
 	private double probNewMutate = 0.1;
 	private double maxPertubation = 0.5;
+	private EvolutionaryOperator champMutation;
 
 	/**
 	 * Construct a neat trainer with a new population. The new population is
@@ -261,8 +263,9 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	 */
 	private void init() {
 	
+		this.champMutation = new NEATMutateWeights();
 		addOperation(0.8,new NEATCrossover());
-		addOperation(0.19,new NEATMutateWeights());
+		addOperation(0.19,this.champMutation);
 		addOperation(0.003,new NEATMutateAddNode());
 		addOperation(0.003,new NEATMutateAddLink());
 		addOperation(0.004,new NEATMutateRemoveLink());
@@ -339,6 +342,16 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		
 		newPopulation.clear();
 		this.maxGeneLength = 0;
+		
+		// add in the best genome
+		if( this.bestEverGenome!=null ) {
+			NEATGenome sel = ((NEATGenomeFactory) getPopulation()
+					.getGenomeFactory()).factor((NEATGenome)getPopulation().get(0));
+			NEATGenome[] parent = { sel };
+			parent[0].setGenomeID(getNEATPopulation().assignGenomeID());
+			this.champMutation.performOperation(getNEATPopulation().getRandom(), parent, 0, parent, 0);
+			this.addChild(parent[0]);
+		}
 
 		for (final NEATSpecies s : ((NEATPopulation)getPopulation()).getSpecies()) {
 			NEATTrainWorker worker = new NEATTrainWorker(this,s);
@@ -352,11 +365,17 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 			throw new GeneticError(e);
 		}
 		
+		int champRange = Math.min(this.getPopulation().size(), 10);
+		
+		Random rnd = new Random();
+
 		while (newPopulation.size() < getPopulation().size()) {
-			NEATGenome[] parent = { tournamentSelection(getPopulation().size() / 5) };
+			int index = rnd.nextInt(champRange);
+			NEATGenome sel = ((NEATGenomeFactory) getPopulation()
+					.getGenomeFactory()).factor((NEATGenome)getPopulation().get(0));
+			NEATGenome[] parent = { sel };
 			parent[0].setGenomeID(getNEATPopulation().assignGenomeID());
-			EvolutionaryOperator opp = this.getOperators().pickMaxParents(new Random(),1);
-			opp.performOperation(getNEATPopulation().getRandom(), parent, 0, parent, 0);
+			this.champMutation.performOperation(getNEATPopulation().getRandom(), parent, 0, parent, 0);
 			this.addChild(parent[0]);
 		}
 
