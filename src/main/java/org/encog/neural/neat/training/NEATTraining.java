@@ -102,6 +102,10 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	private int maxGeneLength;
 	private int threadCount;
 	private int actualThreadCount = -1;
+	private int maxTries;
+	private double mutateRate = 0.2;
+	private double probNewMutate = 0.1;
+	private double maxPertubation = 0.5;
 
 	/**
 	 * Construct a neat trainer with a new population. The new population is
@@ -523,6 +527,63 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	public int getMaxGeneLength() {
 		return this.maxGeneLength;
 	}
+
+	/**
+	 * @return the maxTries
+	 */
+	public int getMaxTries() {
+		return maxTries;
+	}
+
+	/**
+	 * @param maxTries the maxTries to set
+	 */
+	public void setMaxTries(int maxTries) {
+		this.maxTries = maxTries;
+	}
+
+	/**
+	 * @return the mutateRate
+	 */
+	public double getMutateRate() {
+		return mutateRate;
+	}
+
+	/**
+	 * @param mutateRate the mutateRate to set
+	 */
+	public void setMutateRate(double mutateRate) {
+		this.mutateRate = mutateRate;
+	}
+
+	/**
+	 * @return the probNewMutate
+	 */
+	public double getProbNewMutate() {
+		return probNewMutate;
+	}
+
+	/**
+	 * @param probNewMutate the probNewMutate to set
+	 */
+	public void setProbNewMutate(double probNewMutate) {
+		this.probNewMutate = probNewMutate;
+	}
+
+	/**
+	 * @return the maxPertubation
+	 */
+	public double getMaxPertubation() {
+		return maxPertubation;
+	}
+
+	/**
+	 * @param maxPertubation the maxPertubation to set
+	 */
+	public void setMaxPertubation(double maxPertubation) {
+		this.maxPertubation = maxPertubation;
+	}
+	
 	
 	
 }
