@@ -22,7 +22,7 @@ public class SimpleNEATSpeciation implements Speciation {
 	/**
 	 * The adjustment factor for matched genes.
 	 */
-	private double constMatched = 0.4;
+	private double constMatched = 1;
 	
 	private NEATTraining owner;
 	private double compatibilityThreshold = 0.26;
