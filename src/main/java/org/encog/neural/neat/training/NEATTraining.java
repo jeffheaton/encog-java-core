@@ -25,6 +25,7 @@ package org.encog.neural.neat.training;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -36,6 +37,7 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.score.AdjustScore;
 import org.encog.ml.ea.score.parallel.ParallelScore;
 import org.encog.ml.ea.sort.MinimizeAdjustedScoreComp;
@@ -49,7 +51,6 @@ import org.encog.neural.neat.NEATCODEC;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.NEATSpecies;
 import org.encog.neural.neat.training.opp.NEATCrossover;
-import org.encog.neural.neat.training.opp.NEATMutate;
 import org.encog.neural.neat.training.opp.NEATMutateAddLink;
 import org.encog.neural.neat.training.opp.NEATMutateAddNode;
 import org.encog.neural.neat.training.opp.NEATMutateRemoveLink;
@@ -98,15 +99,12 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	 */
 	private int iteration;
 	
-	private NEATCrossover crossover;	
-	private NEATMutate mutate;
 	private Speciation speciation;
-	private double crossoverRate = 0.7;
 	private List<NEATGenome> newPopulation = new ArrayList<NEATGenome>();
 	private int maxGeneLength;
 	private int threadCount;
 	private int actualThreadCount = -1;
-	private int maxTries;
+	private int maxTries = 5;
 	private double mutateRate = 0.2;
 	private double probNewMutate = 0.1;
 	private double maxPertubation = 0.5;
@@ -270,12 +268,6 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		addOperation(0.004,new NEATMutateRemoveLink());
 		this.getOperators().finalizeStructure();
 		
-		this.crossover = new NEATCrossover();
-		this.crossover.init(this);
-		
-		this.mutate = new NEATMutate();
-		this.mutate.init(this);
-		
 		this.speciation = new SimpleNEATSpeciation();
 		this.speciation.init(this);
 		
@@ -349,7 +341,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		this.maxGeneLength = 0;
 
 		for (final NEATSpecies s : ((NEATPopulation)getPopulation()).getSpecies()) {
-			NEATTrainWorker worker = new NEATTrainWorker(this,s,this.crossoverRate);
+			NEATTrainWorker worker = new NEATTrainWorker(this,s);
 			taskExecutor.execute(worker);
 		}
 
@@ -363,7 +355,8 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		while (newPopulation.size() < getPopulation().size()) {
 			NEATGenome[] parent = { tournamentSelection(getPopulation().size() / 5) };
 			parent[0].setGenomeID(getNEATPopulation().assignGenomeID());
-			this.mutate.performOperation(getNEATPopulation().getRandom(), parent, 0, parent, 0);
+			EvolutionaryOperator opp = this.getOperators().pickMaxParents(new Random(),1);
+			opp.performOperation(getNEATPopulation().getRandom(), parent, 0, parent, 0);
 			this.addChild(parent[0]);
 		}
 
@@ -505,34 +498,6 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	@Override
 	public void setThreadCount(int numThreads) {
 		this.threadCount = numThreads;
-	}
-
-	/**
-	 * @return the crossover
-	 */
-	public NEATCrossover getCrossover() {
-		return crossover;
-	}
-
-	/**
-	 * @param crossover the crossover to set
-	 */
-	public void setCrossover(NEATCrossover crossover) {
-		this.crossover = crossover;
-	}
-
-	/**
-	 * @return the mutate
-	 */
-	public NEATMutate getMutate() {
-		return mutate;
-	}
-
-	/**
-	 * @param mutate the mutate to set
-	 */
-	public void setMutate(NEATMutate mutate) {
-		this.mutate = mutate;
 	}
 
 	public int getMaxGeneLength() {

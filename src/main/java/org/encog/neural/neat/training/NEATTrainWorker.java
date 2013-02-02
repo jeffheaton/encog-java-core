@@ -6,8 +6,6 @@ import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.neural.neat.NEATGenomeFactory;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.NEATSpecies;
-import org.encog.neural.neat.training.opp.NEATCrossover;
-import org.encog.neural.neat.training.opp.NEATMutate;
 
 public class NEATTrainWorker implements Runnable {
 
@@ -17,19 +15,11 @@ public class NEATTrainWorker implements Runnable {
 	Random rnd = new Random();
 	NEATPopulation population;
 	NEATTraining train;
-	double crossoverRate;
-	NEATCrossover crossover;
-	NEATMutate mutate;
 
-	public NEATTrainWorker(NEATTraining theTrain, NEATSpecies theSpecies,
-			double theCrossoverRate) {
+	public NEATTrainWorker(NEATTraining theTrain, NEATSpecies theSpecies) {
 		this.train = theTrain;
 		this.species = theSpecies;
-		this.crossoverRate = theCrossoverRate;
-		this.crossover = this.train.getCrossover();
-		this.mutate = this.train.getMutate();
 		this.population = this.train.getNEATPopulation();
-
 	}
 
 	@Override
@@ -38,11 +28,14 @@ public class NEATTrainWorker implements Runnable {
 
 		// first, add the leader to the spawn count.
 		numToSpawn--;
-		if (!this.train.addChild(this.species.getLeader())) {
-			return;
+		if (this.species.getMembers().size() > 5) {
+			if (!this.train.addChild(this.species.getLeader())) {
+				return;
+			}
 		}
-		
-		EvolutionaryOperator opp = this.train.getOperators().pickMaxParents(this.rnd, species.getMembers().size());
+
+		EvolutionaryOperator opp = this.train.getOperators().pickMaxParents(
+				this.rnd, species.getMembers().size());
 
 		while ((numToSpawn--) > 0) {
 			children[0] = null;
@@ -59,7 +52,7 @@ public class NEATTrainWorker implements Runnable {
 			// one then we can only clone and perhaps mutate, otherwise use
 			// the crossover probability to determine if we are to use
 			// sexual reproduction.
-			if (opp.parentsNeeded()>1) {
+			if (opp.parentsNeeded() > 1) {
 
 				int numAttempts = 5;
 
@@ -71,8 +64,7 @@ public class NEATTrainWorker implements Runnable {
 
 				// success, perform crossover
 				if (parents[0].getGenomeID() != parents[1].getGenomeID()) {
-					opp.performOperation(rnd, parents, 0, children,
-							0);
+					opp.performOperation(rnd, parents, 0, children, 0);
 				}
 			} else {
 				// clone a child (asexual reproduction)
