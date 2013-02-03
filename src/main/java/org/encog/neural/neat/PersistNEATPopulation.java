@@ -212,10 +212,10 @@ public class PersistNEATPopulation implements EncogPersistor {
 		// set factories
 		if( result.isHyperNEAT() ) {
 			result.setGenomeFactory(new FactorHyperNEATGenome());
-			result.setCodec(new HyperNEATCODEC());
+			result.setCODEC(new HyperNEATCODEC());
 		} else {
 			result.setGenomeFactory(new FactorNEATGenome());
-			result.setCodec(new NEATCODEC());
+			result.setCODEC(new NEATCODEC());
 		}
 		
 		// set the next ID's

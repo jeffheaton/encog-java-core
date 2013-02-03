@@ -494,14 +494,14 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	/**
 	 * @return the codec
 	 */
-	public GeneticCODEC getCodec() {
+	public GeneticCODEC getCODEC() {
 		return codec;
 	}
 
 	/**
 	 * @param codec the codec to set
 	 */
-	public void setCodec(GeneticCODEC codec) {
+	public void setCODEC(GeneticCODEC codec) {
 		this.codec = codec;
 	}
 
