@@ -1,6 +1,8 @@
 package org.encog.mathutil;
 
-public class IntPair {
+import java.io.Serializable;
+
+public class IntPair implements Cloneable, Serializable{
 	private int x;
 	private int y;
 	
@@ -41,6 +43,11 @@ public class IntPair {
 	public void add(int addX, int addY) {
 		this.x+=addX;
 		this.y+=addY;
+	}
+	
+	@Override
+	public Object clone() {
+		return new IntPair(this.x,this.y);
 	}
 	
 	public String toString() {
