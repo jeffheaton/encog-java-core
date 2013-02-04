@@ -115,6 +115,6 @@ public class NEATLink implements Serializable, Comparable<NEATLink> {
 
 	@Override
 	public int compareTo(NEATLink other) {
-		return other.toNeuron - this.fromNeuron;
+		return this.fromNeuron - other.fromNeuron;
 	}
 }
