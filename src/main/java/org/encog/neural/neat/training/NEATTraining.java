@@ -266,8 +266,8 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		this.champMutation = new NEATMutateWeights();
 		addOperation(0.8,new NEATCrossover());
 		addOperation(0.15,this.champMutation);
-		addOperation(0.02,new NEATMutateAddNode());
-		addOperation(0.02,new NEATMutateAddLink());
+		addOperation(0.01,new NEATMutateAddNode());
+		addOperation(0.03,new NEATMutateAddLink());
 		addOperation(0.01,new NEATMutateRemoveLink());
 		this.getOperators().finalizeStructure();
 		

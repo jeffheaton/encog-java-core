@@ -22,10 +22,10 @@ public class SimpleNEATSpeciation implements Speciation {
 	/**
 	 * The adjustment factor for matched genes.
 	 */
-	private double constMatched = 1;
+	private double constMatched = 0.4;
 	
 	private NEATTraining owner;
-	private double compatibilityThreshold = 0.26;
+	private double compatibilityThreshold = 3;// 0.26;
 	private int numGensAllowedNoImprovement = 15;
 	private int maxNumberOfSpecies = 40;
 	
@@ -190,6 +190,7 @@ public class SimpleNEATSpeciation implements Speciation {
 		else if (owner.getNEATPopulation().getSpecies().size() < 2) {
 			this.compatibilityThreshold -= thresholdIncrement;
 		}
+		System.out.println( this.compatibilityThreshold + ", species count=" + this.owner.getNEATPopulation().getSpecies().size());
 	}
 	
 	/**
@@ -200,36 +201,35 @@ public class SimpleNEATSpeciation implements Speciation {
 	 *            The other genome.
 	 * @return The score.
 	 */
-	private double getCompatibilityScore(final NEATGenome genome1, final NEATGenome genome) {
+	private double getCompatibilityScore(final NEATGenome genome1, final NEATGenome genome2) {
 		double numDisjoint = 0;
 		double numExcess = 0;
 		double numMatched = 0;
 		double weightDifference = 0;
 
 		int genome1Size = genome1.getLinksChromosome().size();
+		int genome2Size = genome2.getLinksChromosome().size();
 		int g1 = 0;
 		int g2 = 0;
 
 		while ((g1 < genome1Size )
-				|| (g2 < genome1Size )) {
+				|| (g2 < genome2Size )) {
 
 			if (g1 == genome1Size ) {
 				g2++;
 				numExcess++;
-
 				continue;
 			}
 
-			if (g2 == genome.getLinksChromosome().size() ) {
+			if (g2 == genome2Size ) {
 				g1++;
 				numExcess++;
-
 				continue;
 			}
 
 			// get innovation numbers for each gene at this point
 			final long id1 = genome1.getLinksChromosome().get(g1).getInnovationId();
-			final long id2 = genome.getLinksChromosome().get(g2).getInnovationId();
+			final long id2 = genome2.getLinksChromosome().get(g2).getInnovationId();
 
 			// innovation numbers are identical so increase the matched score
 			if (id1 == id2) {
@@ -237,7 +237,7 @@ public class SimpleNEATSpeciation implements Speciation {
 				// get the weight difference between these two genes
 				weightDifference += Math
 						.abs(genome1.getLinksChromosome().get(g1).getWeight()
-								- genome.getLinksChromosome()
+								- genome2.getLinksChromosome()
 										.get(g2).getWeight());
 				g1++;
 				g2++;

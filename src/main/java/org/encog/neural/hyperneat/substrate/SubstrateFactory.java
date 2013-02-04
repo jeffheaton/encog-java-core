@@ -21,8 +21,8 @@ public class SubstrateFactory {
 		
 		// create the output layer (and connect to input layer)
 		
-		for(int orow=0;orow<inputEdgeSize;orow++) {
-			for(int ocol=0;ocol<inputEdgeSize;ocol++) {
+		for(int orow=0;orow<outputEdgeSize;orow++) {
+			for(int ocol=0;ocol<outputEdgeSize;ocol++) {
 				SubstrateNode outputNode = result.createOutputNode();
 				outputNode.getLocation()[0] = 1;
 				outputNode.getLocation()[1] = -1 + (orow * outputTick);
