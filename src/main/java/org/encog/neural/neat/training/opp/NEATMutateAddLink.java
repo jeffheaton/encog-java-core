@@ -38,12 +38,14 @@ public class NEATMutateAddLink extends NEATMutation {
 			// do not go to an input neuron
 			if (!isDuplicateLink(target, neuron1.getId(), neuron2.getId())
 					&& (neuron2.getNeuronType() != NEATNeuronType.Bias)
-					&& (neuron1.getNeuronType() != NEATNeuronType.Output)
 					&& (neuron2.getNeuronType() != NEATNeuronType.Input)) {
 
-				neuron1ID = neuron1.getId();
-				neuron2ID = neuron2.getId();
-				break;
+				if( this.getOwner().getNEATPopulation().getActivationCycles()!=1 ||
+						neuron1.getNeuronType() != NEATNeuronType.Output ) {
+					neuron1ID = neuron1.getId();
+					neuron2ID = neuron2.getId();
+					break;
+				}
 			}
 		}
 

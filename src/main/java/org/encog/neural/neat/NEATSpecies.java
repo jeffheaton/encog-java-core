@@ -229,6 +229,9 @@ public class NEATSpecies implements Serializable {
 	 */
 	public void purge() {
 		this.members.clear();
+		if( this.leader!=null ) {
+			this.members.add(this.leader);
+		}
 		this.age++;
 		this.gensNoImprovement++;
 		this.spawnsRequired = 0;
@@ -273,6 +276,7 @@ public class NEATSpecies implements Serializable {
 	 */
 	public void setLeader(final NEATGenome theLeader) {
 		this.leader = theLeader;
+		this.leaderID = theLeader.getGenomeID();
 	}
 
 	/**

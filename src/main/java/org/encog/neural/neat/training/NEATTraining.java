@@ -102,7 +102,6 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	
 	private Speciation speciation;
 	private List<NEATGenome> newPopulation = new ArrayList<NEATGenome>();
-	private int maxGeneLength;
 	private int threadCount;
 	private int actualThreadCount = -1;
 	private int maxTries = 5;
@@ -341,7 +340,6 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		}
 		
 		newPopulation.clear();
-		this.maxGeneLength = 0;
 		
 		// add in the best genome
 		if( this.bestEverGenome!=null ) {
@@ -390,7 +388,6 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		synchronized(this.newPopulation) {
 			if( this.newPopulation.size()<this.getPopulation().size() ) {
 				this.newPopulation.add(genome);
-				this.maxGeneLength = Math.max(this.maxGeneLength, genome.getLinksChromosome().size());
 				return true;
 			} else {
 				return false;
@@ -517,10 +514,6 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	@Override
 	public void setThreadCount(int numThreads) {
 		this.threadCount = numThreads;
-	}
-
-	public int getMaxGeneLength() {
-		return this.maxGeneLength;
 	}
 
 	/**

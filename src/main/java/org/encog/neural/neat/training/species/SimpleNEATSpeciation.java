@@ -25,7 +25,7 @@ public class SimpleNEATSpeciation implements Speciation {
 	private double constMatched = 0.4;
 	
 	private NEATTraining owner;
-	private double compatibilityThreshold = 3;// 0.26;
+	private double compatibilityThreshold = 0.26;
 	private int numGensAllowedNoImprovement = 15;
 	private int maxNumberOfSpecies = 40;
 	
@@ -104,6 +104,7 @@ public class SimpleNEATSpeciation implements Speciation {
 		for (final NEATSpecies species : owner.getNEATPopulation().getSpecies()) {
 			species.calculateSpawnAmount();
 			Collections.sort(species.getMembers(), this.owner.getBestComparator());
+			species.setLeader(species.getMembers().get(0));
 		}
 	}
 	
@@ -187,7 +188,7 @@ public class SimpleNEATSpeciation implements Speciation {
 			this.compatibilityThreshold += thresholdIncrement;
 		}
 
-		else if (owner.getNEATPopulation().getSpecies().size() < 2) {
+		else if (owner.getNEATPopulation().getSpecies().size() < (this.maxNumberOfSpecies/2)) {
 			this.compatibilityThreshold -= thresholdIncrement;
 		}
 		System.out.println( this.compatibilityThreshold + ", species count=" + this.owner.getNEATPopulation().getSpecies().size());
@@ -209,6 +210,8 @@ public class SimpleNEATSpeciation implements Speciation {
 
 		int genome1Size = genome1.getLinksChromosome().size();
 		int genome2Size = genome2.getLinksChromosome().size();
+		int n = Math.max(genome1Size, genome2Size);
+		
 		int g1 = 0;
 		int g2 = 0;
 
@@ -257,11 +260,9 @@ public class SimpleNEATSpeciation implements Speciation {
 
 		}
 
-		int longest = this.owner.getMaxGeneLength();
-
-		final double score = (this.constExcess * numExcess / longest)
-				+ (this.constDisjoint * numDisjoint / longest)
-				+ (this.constMatched * weightDifference / numMatched);
+		final double score = ((this.constExcess * numExcess) / n)
+				+ ((this.constDisjoint * numDisjoint) / n)
+				+ (this.constMatched * (weightDifference / numMatched));
 
 		return score;
 	}
