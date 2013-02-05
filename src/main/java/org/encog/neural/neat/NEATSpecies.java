@@ -126,6 +126,11 @@ public class NEATSpecies implements Serializable {
 		}
 
 	}
+	
+	public int getEliteSize() {
+		return (int) (this.population.getSurvivalRate() * this.members
+				.size()) + 1;
+	}
 
 	/**
 	 * Choose a parent to mate. Choose from the population, determined by the
@@ -141,12 +146,8 @@ public class NEATSpecies implements Serializable {
 			result = this.members.get(0);
 		} else {
 			// If there are many, then choose the population based on survival
-			// rate
-			// and select a random genome.
-			final int maxIndexSize 
-			= (int) (this.population.getSurvivalRate() * this.members
-					.size()) + 1;
-			final int theOne = (int) RangeRandomizer.randomize(0, maxIndexSize);
+			// rate and select a random genome.
+			final int theOne = (int) RangeRandomizer.randomize(0, getEliteSize());
 			result = this.members.get(theOne);
 		}
 

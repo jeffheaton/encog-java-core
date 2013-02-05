@@ -103,7 +103,7 @@ public class SimpleNEATSpeciation implements Speciation {
 
 		for (final NEATSpecies species : owner.getNEATPopulation().getSpecies()) {
 			species.calculateSpawnAmount();
-			Collections.sort(species.getMembers(), this.owner.getBestComparator());
+			Collections.sort(species.getMembers(), this.owner.getSelectionComparator());
 			species.setLeader(species.getMembers().get(0));
 		}
 	}
@@ -188,10 +188,10 @@ public class SimpleNEATSpeciation implements Speciation {
 			this.compatibilityThreshold += thresholdIncrement;
 		}
 
-		else if (owner.getNEATPopulation().getSpecies().size() < (this.maxNumberOfSpecies/2)) {
+		else if (owner.getNEATPopulation().getSpecies().size() < 2) {
 			this.compatibilityThreshold -= thresholdIncrement;
 		}
-		System.out.println( this.compatibilityThreshold + ", species count=" + this.owner.getNEATPopulation().getSpecies().size());
+		//System.out.println( this.compatibilityThreshold + ", species count=" + this.owner.getNEATPopulation().getSpecies().size());
 	}
 	
 	/**

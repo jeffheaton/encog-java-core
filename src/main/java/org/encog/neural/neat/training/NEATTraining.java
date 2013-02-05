@@ -263,10 +263,10 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	private void init() {
 	
 		this.champMutation = new NEATMutateWeights();
-		addOperation(0.8,new NEATCrossover());
-		addOperation(0.15,this.champMutation);
-		addOperation(0.01,new NEATMutateAddNode());
-		addOperation(0.03,new NEATMutateAddLink());
+		addOperation(0.5,new NEATCrossover());
+		addOperation(0.40,this.champMutation);
+		addOperation(0.05,new NEATMutateAddNode());
+		addOperation(0.04,new NEATMutateAddLink());
 		addOperation(0.01,new NEATMutateRemoveLink());
 		this.getOperators().finalizeStructure();
 		
@@ -367,7 +367,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		
 		Random rnd = new Random();
 
-		while (newPopulation.size() < getPopulation().size()) {
+		while (newPopulation.size() < getNEATPopulation().getPopulationSize()) {
 			int index = rnd.nextInt(champRange);
 			NEATGenome sel = ((NEATGenomeFactory) getPopulation()
 					.getGenomeFactory()).factor((NEATGenome)getPopulation().get(index));

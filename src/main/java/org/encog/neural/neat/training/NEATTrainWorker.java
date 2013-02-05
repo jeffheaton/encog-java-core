@@ -26,11 +26,15 @@ public class NEATTrainWorker implements Runnable {
 	public void run() {
 		int numToSpawn = (int) Math.round(this.species.getNumToSpawn());
 
-		// first, add the leader to the spawn count.
-		numToSpawn--;
+		// Add elite genomes directly
 		if (this.species.getMembers().size() > 5) {
-			if (!this.train.addChild(this.species.getLeader())) {
-				return;
+			int eliteCount = Math.min(numToSpawn,  species.getEliteSize());
+			//System.out.println("Elite Spwan: " + this.species.getEliteSize() + " of " + this.species.getMembers().size());
+			for(int i=0;i<eliteCount;i++) {
+				numToSpawn--;
+				if (!this.train.addChild(this.species.getMembers().get(i))) {
+					return;
+				}	
 			}
 		}
 
@@ -86,5 +90,6 @@ public class NEATTrainWorker implements Runnable {
 				}
 			}
 		}
+		
 	}
 }
