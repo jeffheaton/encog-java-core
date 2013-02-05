@@ -92,17 +92,19 @@ public class ReadTags {
 	 */
 	public ReadTags(final InputStream is) {
 		this.source = new PeekableInputStream(is);
-
-		if (ReadTags.charMap == null) {
-			ReadTags.charMap = new HashMap<String, Character>();
-			ReadTags.charMap.put("nbsp", ' ');
-			ReadTags.charMap.put("lt", '<');
-			ReadTags.charMap.put("gt", '>');
-			ReadTags.charMap.put("amp", '&');
-			ReadTags.charMap.put("quot", '\"');
-			ReadTags.charMap.put("bull", (char) ReadTags.CHAR_BULLET);
-			ReadTags.charMap.put("trade", (char) ReadTags.CHAR_TRADEMARK);
-		}
+		
+		synchronized(ReadTags.class) {
+			if (ReadTags.charMap == null) {
+				ReadTags.charMap = new HashMap<String, Character>();
+				ReadTags.charMap.put("nbsp", ' ');
+				ReadTags.charMap.put("lt", '<');
+				ReadTags.charMap.put("gt", '>');
+				ReadTags.charMap.put("amp", '&');
+				ReadTags.charMap.put("quot", '\"');
+				ReadTags.charMap.put("bull", (char) ReadTags.CHAR_BULLET);
+				ReadTags.charMap.put("trade", (char) ReadTags.CHAR_TRADEMARK);
+			}
+		}		
 	}
 
 	/**

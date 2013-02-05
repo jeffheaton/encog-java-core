@@ -1,5 +1,7 @@
 package org.encog.util.text;
 
+import org.encog.util.logging.EncogLogging;
+
 /**
  * <p>Encodes and decodes to and from Base64 notation.</p>
  * <p>Homepage: <a href="http://iharder.net/base64">http://iharder.net/base64</a>.</p>
@@ -683,10 +685,10 @@ public class Base64
             throw e;
         }   // end catch
         finally {
-            try{ oos.close();   } catch( Exception e ){}
-            try{ gzos.close();  } catch( Exception e ){}
-            try{ b64os.close(); } catch( Exception e ){}
-            try{ baos.close();  } catch( Exception e ){}
+            try{ oos.close();   } catch( Exception e ){EncogLogging.log(e);}
+            try{ gzos.close();  } catch( Exception e ){EncogLogging.log(e);}
+            try{ b64os.close(); } catch( Exception e ){EncogLogging.log(e);}
+            try{ baos.close();  } catch( Exception e ){EncogLogging.log(e);}
         }   // end finally
         
         // Return value according to relevant encoding.
@@ -925,9 +927,9 @@ public class Base64
                 throw e;
             }   // end catch
             finally {
-                try{ gzos.close();  } catch( Exception e ){}
-                try{ b64os.close(); } catch( Exception e ){}
-                try{ baos.close();  } catch( Exception e ){}
+                try{ gzos.close();  } catch( Exception e ){EncogLogging.log(e);}
+                try{ b64os.close(); } catch( Exception e ){EncogLogging.log(e);}
+                try{ baos.close();  } catch( Exception e ){EncogLogging.log(e);}
             }   // end finally
 
             return baos.toByteArray();
@@ -1286,9 +1288,9 @@ public class Base64
                     // Just return originally-decoded bytes
                 }   // end catch
                 finally {
-                    try{ baos.close(); } catch( Exception e ){}
-                    try{ gzis.close(); } catch( Exception e ){}
-                    try{ bais.close(); } catch( Exception e ){}
+                    try{ baos.close(); } catch( Exception e ){EncogLogging.log(e);}
+                    try{ gzis.close(); } catch( Exception e ){EncogLogging.log(e);}
+                    try{ bais.close(); } catch( Exception e ){EncogLogging.log(e);}
                 }   // end finally
 
             }   // end if: gzipped
@@ -1378,8 +1380,8 @@ public class Base64
             throw e;    // Catch and throw in order to execute finally{}
         }   // end catch
         finally {
-            try{ bais.close(); } catch( Exception e ){}
-            try{ ois.close();  } catch( Exception e ){}
+            try{ bais.close(); } catch( Exception e ){EncogLogging.log(e);}
+            try{ ois.close();  } catch( Exception e ){EncogLogging.log(e);}
         }   // end finally
         
         return obj;

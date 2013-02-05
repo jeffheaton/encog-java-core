@@ -120,17 +120,18 @@ public class CSVDataCODEC implements DataSetCODEC {
 	public CSVDataCODEC(final File theFile, final CSVFormat theFormat,
 			final boolean theHeaders, final int theInputCount,
 			final int theIdealCount, final boolean theExpectSignificance) {
-		if (this.inputCount != 0) {
-			throw new BufferedDataError(
-					"To export CSV, you must use the CSVDataCODEC "
-							+ "constructor that does not specify input or ideal sizes.");
-		}
 		this.file = theFile;
 		this.format = theFormat;
 		this.inputCount = theInputCount;
 		this.idealCount = theIdealCount;
 		this.headers = theHeaders;
 		this.expectSignificance = theExpectSignificance;
+		if (this.inputCount != 0) {
+			throw new BufferedDataError(
+					"To export CSV, you must use the CSVDataCODEC "
+							+ "constructor that does not specify input or ideal sizes.");
+		}
+
 	}
 
 	/**

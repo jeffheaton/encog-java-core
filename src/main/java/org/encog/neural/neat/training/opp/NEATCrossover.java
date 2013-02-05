@@ -172,16 +172,20 @@ public class NEATCrossover implements EvolutionaryOperator {
 		while ((curMom < mom.getNumGenes()) || (curDad < dad.getNumGenes())) {
 			NEATLinkGene momGene = null; // the mom gene object
 			NEATLinkGene dadGene = null; // the dad gene object
+			long momInnovation = -1;
+			long dadInnovation = -1;
 			
 
 			// grab the actual objects from mom and dad for the specified indexes
 			// if there are none, then null
 			if (curMom < mom.getNumGenes()) {
 				momGene = (NEATLinkGene) mom.getLinksChromosome().get(curMom);
+				momInnovation = momGene.getInnovationId();
 			} 
 
 			if (curDad < dad.getNumGenes()) {
 				dadGene = (NEATLinkGene) dad.getLinksChromosome().get(curDad);
+				dadInnovation = dadGene.getInnovationId();
 			} 
 
 			// now select a gene for mom or dad.  This gene is for the baby
@@ -194,18 +198,18 @@ public class NEATCrossover implements EvolutionaryOperator {
 				if (best == mom) {
 					selectedGene = momGene;
 				}
-				curMom++;
-			} else if (momGene.getInnovationId() < dadGene.getInnovationId()) {
+				curMom++;				
+			} else if (momInnovation < dadInnovation) {
 				if (best == mom) {
 					selectedGene = momGene;
 				}
 				curMom++;
-			} else if (dadGene.getInnovationId() < momGene.getInnovationId()) {
+			} else if (dadInnovation < momInnovation) {
 				if (best == dad) {
 					selectedGene = dadGene;
 				}
 				curDad++;
-			} else if (dadGene.getInnovationId() == momGene.getInnovationId()) {
+			} else if (dadInnovation == momInnovation) {
 				if (Math.random() < 0.5f) {
 					selectedGene = momGene;
 				}
