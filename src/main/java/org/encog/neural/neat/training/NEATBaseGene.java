@@ -2,6 +2,16 @@ package org.encog.neural.neat.training;
 
 import java.io.Serializable;
 
+/**
+ * Defines a base class for NEAT genes. A neat gene holds instructions on how to
+ * create either a neuron or a link. The NEATLinkGene and NEATLinkNeuron classes
+ * extend NEATBaseGene to provide this specific functionality.
+ * 
+ * The base gene defines those features that all NEAT genes share.  Particularly, 
+ * this is the ability to have an innovation number.  These innovation numbers
+ * allow NEAT genes to be effectively mapped for the crossover operator.
+ * 
+ */
 public class NEATBaseGene implements Comparable<NEATBaseGene>, Serializable {
 	/**
 	 * Serial id.
@@ -52,7 +62,8 @@ public class NEATBaseGene implements Comparable<NEATBaseGene>, Serializable {
 	}
 
 	/**
-	 * @param e True, if this gene is enabled.
+	 * @param e
+	 *            True, if this gene is enabled.
 	 */
 	public void setEnabled(final boolean e) {
 		enabled = e;
@@ -60,7 +71,9 @@ public class NEATBaseGene implements Comparable<NEATBaseGene>, Serializable {
 
 	/**
 	 * Set the id for this gene.
-	 * @param i The id for this gene.
+	 * 
+	 * @param i
+	 *            The id for this gene.
 	 */
 	public void setId(final long i) {
 		this.id = i;
@@ -68,7 +81,9 @@ public class NEATBaseGene implements Comparable<NEATBaseGene>, Serializable {
 
 	/**
 	 * Set the innovation id for this gene.
-	 * @param theInnovationID The innovation id for this gene.
+	 * 
+	 * @param theInnovationID
+	 *            The innovation id for this gene.
 	 */
 	public void setInnovationId(final long theInnovationID) {
 		innovationId = theInnovationID;
