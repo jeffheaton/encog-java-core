@@ -54,10 +54,12 @@ public final class ConcurrentTrainingManager implements Runnable {
 	 * @return The singleton instance.
 	 */
 	public static ConcurrentTrainingManager getInstance() {
-		if (ConcurrentTrainingManager.instance == null) {
-			ConcurrentTrainingManager.instance = new ConcurrentTrainingManager();
+		synchronized (ConcurrentTrainingManager.class) {
+			if (ConcurrentTrainingManager.instance == null) {
+				ConcurrentTrainingManager.instance = new ConcurrentTrainingManager();
+			}
+			return ConcurrentTrainingManager.instance;
 		}
-		return ConcurrentTrainingManager.instance;
 	}
 
 	/**

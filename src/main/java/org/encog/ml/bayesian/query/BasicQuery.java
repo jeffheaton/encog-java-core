@@ -35,6 +35,8 @@ import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.bayesian.EventType;
 import org.encog.ml.bayesian.query.sample.EventState;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 /**
  * Provides basic functionality for a Bayesian query. This class is abstract,
  * and is not used directly. Rather, other queries make use of it.
@@ -253,7 +255,7 @@ public abstract class BasicQuery implements BayesianQuery, Serializable {
 	}
 
 	public BayesianQuery clone() {
-		return null;
+		throw new NotImplementedException();
 	}
 
 }

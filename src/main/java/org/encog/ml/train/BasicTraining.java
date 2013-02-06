@@ -62,6 +62,13 @@ public abstract class BasicTraining implements MLTrain {
 	private int iteration;
 	
 	private TrainingImplementationType implementationType;
+	
+	/**
+	 * Used for serialization.
+	 */
+	public BasicTraining() {
+		
+	}
 
 	public BasicTraining(TrainingImplementationType implementationType) {
 		this.implementationType = implementationType;
