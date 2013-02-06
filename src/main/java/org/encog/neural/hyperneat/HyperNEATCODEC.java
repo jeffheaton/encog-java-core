@@ -1,7 +1,6 @@
 package org.encog.neural.hyperneat;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,15 +25,10 @@ public class HyperNEATCODEC implements GeneticCODEC {
 	private double minWeight = 0.2;
 	private double maxWeight = 5.0;
 	
-	@Override
-	public MLMethod decode(Genome genome) {
+	public MLMethod decode(NEATPopulation pop, Substrate substrate, Genome genome) {
 		// obtain the CPPN
 		NEATCODEC neatCodec = new NEATCODEC();
 		NEATNetwork cppn = (NEATNetwork) neatCodec.decode(genome);
-
-		// create the phenotype
-		NEATPopulation pop = (NEATPopulation) genome.getPopulation();
-		Substrate substrate = pop.getSubstrate();
 
 		List<NEATLink> linkList = new ArrayList<NEATLink>();
 		
@@ -84,7 +78,14 @@ public class HyperNEATCODEC implements GeneticCODEC {
 
 		network.setActivationCycles(pop.getActivationCycles());
 		return network;
-
+		
+	}
+	
+	@Override
+	public MLMethod decode(Genome genome) {
+		NEATPopulation pop = (NEATPopulation) genome.getPopulation();
+		Substrate substrate = pop.getSubstrate();
+		return decode(pop, substrate, genome);
 	}
 
 	@Override
