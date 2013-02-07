@@ -11,13 +11,15 @@ import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.score.AdjustScore;
 import org.encog.ml.genetic.GeneticError;
+import org.encog.util.concurrency.MultiThreadable;
 
-public class ParallelScore {
+public class ParallelScore implements MultiThreadable {
 	private final Population population;
 	private final GeneticCODEC codec;
 	private final CalculateScore scoreFunction;
 	private final List<AdjustScore> adjusters;
-	private final int threads;
+	private int threads;
+	private int actualThreads;
 
 	public ParallelScore(Population thePopulation,
 			GeneticCODEC theCODEC,
@@ -28,13 +30,7 @@ public class ParallelScore {
 		this.population = thePopulation;
 		this.scoreFunction = theScoreFunction;
 		this.adjusters = theAdjusters;
-		if( theScoreFunction.requireSingleThreaded() ) {
-			this.threads = 1;
-		} else if( theThreadCount==0 ) {
-			this.threads = Runtime.getRuntime().availableProcessors();
-		} else {
-			this.threads = theThreadCount;
-		}
+		this.actualThreads = 0;
 	}
 
 	/**
@@ -59,13 +55,22 @@ public class ParallelScore {
 	}
 
 	public void process() {
-
+		// determine thread usage
+		if( this.scoreFunction.requireSingleThreaded() ) {
+			this.actualThreads = 1;
+		} else if( threads==0 ) {
+			this.actualThreads = Runtime.getRuntime().availableProcessors();
+		} else {
+			this.actualThreads = threads;
+		}
+		
+		// start up
 		ExecutorService taskExecutor = null;
 		
 		if( this.threads==1 ) {
 			taskExecutor = Executors.newSingleThreadScheduledExecutor();
 		} else {
-			taskExecutor = Executors.newFixedThreadPool(this.threads);
+			taskExecutor = Executors.newFixedThreadPool(this.actualThreads);
 		}
 
 		for (Genome genome : this.population.getGenomes()) {
@@ -82,5 +87,15 @@ public class ParallelScore {
 
 	public List<AdjustScore> getAdjusters() {
 		return this.adjusters;
+	}
+
+	@Override
+	public int getThreadCount() {
+		return this.threads;
+	}
+
+	@Override
+	public void setThreadCount(int numThreads) {
+		this.threads = numThreads;
 	}
 }
