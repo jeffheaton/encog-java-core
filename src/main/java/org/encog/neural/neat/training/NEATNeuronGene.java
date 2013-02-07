@@ -99,7 +99,6 @@ public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 		this.neuronType = other.neuronType;
 		this.activationFunction = other.activationFunction;
 		this.setInnovationId(other.getInnovationId());
-		this.setEnabled(other.isEnabled());
 	}
 	
 	/**

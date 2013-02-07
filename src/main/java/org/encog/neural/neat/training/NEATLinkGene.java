@@ -57,6 +57,11 @@ public class NEATLinkGene extends NEATBaseGene implements Serializable {
 	 * The weight of this link.
 	 */
 	private double weight;
+	
+	/**
+	 * Is this gene enabled?
+	 */
+	private boolean enabled = true;
 
 	/**
 	 * Default constructor, used mainly for persistence.
@@ -158,5 +163,20 @@ public class NEATLinkGene extends NEATBaseGene implements Serializable {
 	
 	public void setToNeuronID(int i) {
 		this.toNeuronID = i;
+	}
+	
+	/**
+	 * @return True, if this gene is enabled.
+	 */
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	/**
+	 * @param e
+	 *            True, if this gene is enabled.
+	 */
+	public void setEnabled(final boolean e) {
+		enabled = e;
 	}
 }

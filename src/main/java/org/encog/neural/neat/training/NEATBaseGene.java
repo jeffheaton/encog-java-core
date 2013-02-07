@@ -19,11 +19,6 @@ public class NEATBaseGene implements Comparable<NEATBaseGene>, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Is this gene enabled?
-	 */
-	private boolean enabled = true;
-
-	/**
 	 * ID of this gene, -1 for unassigned.
 	 */
 	private long id = -1;
@@ -52,21 +47,6 @@ public class NEATBaseGene implements Comparable<NEATBaseGene>, Serializable {
 	 */
 	public long getInnovationId() {
 		return innovationId;
-	}
-
-	/**
-	 * @return True, if this gene is enabled.
-	 */
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	/**
-	 * @param e
-	 *            True, if this gene is enabled.
-	 */
-	public void setEnabled(final boolean e) {
-		enabled = e;
 	}
 
 	/**

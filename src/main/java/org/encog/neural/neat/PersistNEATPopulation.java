@@ -134,8 +134,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 						
 						neuronGene.setNeuronType(PersistNEATPopulation
 								.stringToNeuronType(cols.get(3)));
-						neuronGene.setEnabled(Integer.parseInt(cols.get(4))>0);
-						neuronGene.setInnovationId(Integer.parseInt(cols.get(5)));
+						neuronGene.setInnovationId(Integer.parseInt(cols.get(4)));
 						lastGenome.getNeuronsChromosome().add(neuronGene);
 						nextGeneID = Math.max(geneID+1, nextGeneID);
 					} else if (cols.get(0).equalsIgnoreCase("l")) {
@@ -285,7 +284,6 @@ public class PersistNEATPopulation implements EncogPersistor {
 				out.addColumn(neatNeuronGene.getActivationFunction());
 				out.addColumn(PersistNEATPopulation
 						.neuronTypeToString(neatNeuronGene.getNeuronType()));
-				out.addColumn(neatNeuronGene.isEnabled());
 				out.addColumn(neatNeuronGene.getInnovationId());
 				out.writeLine();
 			}
