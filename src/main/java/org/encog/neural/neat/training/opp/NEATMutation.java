@@ -1,6 +1,27 @@
+/*
+ * Encog(tm) Core v3.2 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2012 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.neural.neat.training.opp;
-
-import java.util.Random;
 
 import org.encog.EncogError;
 import org.encog.mathutil.randomize.RangeRandomizer;
@@ -15,42 +36,18 @@ import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.NEATNeuronGene;
 import org.encog.neural.neat.training.NEATTraining;
 
+/**
+ * This class represents a NEAT mutation. NEAT supports several different types
+ * of mutations. This class provides common utility needed by any sort of a NEAT
+ * mutation. This class is abstract and cannot be used by itself.
+ */
 public abstract class NEATMutation implements EvolutionaryOperator {
-	
-	private NEATTraining owner;
 
 	/**
-	 * @return the owner
+	 * The trainer that owns this class.
 	 */
-	public NEATTraining getOwner() {
-		return owner;
-	}
-	
-	@Override
-	public int offspringProduced() {
-		return 1;
-	}
+	private NEATTraining owner;
 
-	@Override
-	public int parentsNeeded() {
-		return 1;
-	}
-	
-	@Override
-	public void init(EvolutionaryAlgorithm theOwner) {
-		this.owner = (NEATTraining) theOwner;	
-	}
-	
-	public NEATGenome obtainGenome(Random rnd, Genome[] parents, int parentIndex,
-			Genome[] offspring, int offspringIndex) {
-		if (parents[parentIndex] != offspring[offspringIndex]) {
-			throw new EncogError(
-					"This mutation only works when the offspring and parents are the same.  That is, it only mutates itself.");
-		}
-
-		return (NEATGenome) parents[parentIndex];
-	}
-	
 	/**
 	 * Choose a random neuron.
 	 * 
@@ -58,41 +55,101 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 	 *            Should the input and bias neurons be included.
 	 * @return The random neuron.
 	 */
-	public NEATNeuronGene chooseRandomNeuron(NEATGenome target,
+	public NEATNeuronGene chooseRandomNeuron(final NEATGenome target,
 			final boolean choosingFrom) {
 		int start;
 
 		if (choosingFrom) {
 			start = 0;
 		} else {
-			start = owner.getInputCount() + 1;
+			start = this.owner.getInputCount() + 1;
 		}
 
 		// if this network will not "cycle" then output neurons cannot be source
 		// neurons
 		if (!choosingFrom) {
-			int ac = ((NEATPopulation) target.getPopulation())
+			final int ac = ((NEATPopulation) target.getPopulation())
 					.getActivationCycles();
 			if (ac == 1) {
 				start += target.getOutputCount();
 			}
 		}
-		
-		int end = target
-				.getNeuronsChromosome().size() - 1;
-		
+
+		final int end = target.getNeuronsChromosome().size() - 1;
+
 		// no neurons to pick!
-		if( start>end ) {
+		if (start > end) {
 			return null;
 		}
 
 		final int neuronPos = RangeRandomizer.randomInt(start, end);
-		final NEATNeuronGene neuronGene = (NEATNeuronGene) target
-				.getNeuronsChromosome().get(neuronPos);
+		final NEATNeuronGene neuronGene = target.getNeuronsChromosome().get(
+				neuronPos);
 		return neuronGene;
 
 	}
-	
+
+	/**
+	 * Create a link between two neuron id's. Create or find any necessary
+	 * innovation records.
+	 * 
+	 * @param target
+	 *            The target genome.
+	 * @param neuron1ID
+	 *            The id of the source neuron.
+	 * @param neuron2ID
+	 *            The id of the target neuron.
+	 * @param weight
+	 *            The weight of this new link.
+	 */
+	public void createLink(final NEATGenome target, final long neuron1ID,
+			final long neuron2ID, final double weight) {
+
+		// check to see if this innovation has already been tried
+		final NEATInnovation innovation = this.owner.getInnovations()
+				.findInnovation(neuron1ID, neuron2ID);
+
+		// now create this link
+		final NEATLinkGene linkGene = new NEATLinkGene(neuron1ID, neuron2ID,
+				true, innovation.getInnovationID(), weight);
+		target.getLinksChromosome().add(linkGene);
+	}
+
+	/**
+	 * Get the specified neuron's index.
+	 * 
+	 * @param neuronID
+	 *            The neuron id to check for.
+	 * @return The index.
+	 */
+	public int getElementPos(final NEATGenome target, final long neuronID) {
+
+		for (int i = 0; i < target.getNeuronsChromosome().size(); i++) {
+			final NEATNeuronGene neuronGene = target.getNeuronsChromosome()
+					.get(i);
+			if (neuronGene.getId() == neuronID) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	/**
+	 * @return the owner
+	 */
+	public NEATTraining getOwner() {
+		return this.owner;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void init(final EvolutionaryAlgorithm theOwner) {
+		this.owner = (NEATTraining) theOwner;
+	}
+
 	/**
 	 * Determine if this is a duplicate link.
 	 * 
@@ -102,8 +159,8 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 	 *            The to neuron id.
 	 * @return True if this is a duplicate link.
 	 */
-	public boolean isDuplicateLink(NEATGenome target, final long fromNeuronID,
-			final long toNeuronID) {
+	public boolean isDuplicateLink(final NEATGenome target,
+			final long fromNeuronID, final long toNeuronID) {
 		for (final NEATLinkGene linkGene : target.getLinksChromosome()) {
 			if ((linkGene.getFromNeuronID() == fromNeuronID)
 					&& (linkGene.getToNeuronID() == toNeuronID)) {
@@ -113,55 +170,34 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 
 		return false;
 	}
-	
-	public void createLink(NEATGenome target, long neuron1ID, long neuron2ID, double weight) {
 
-		// check to see if this innovation has already been tried
-		NEATInnovation innovation = owner.getInnovations().findInnovation(neuron1ID, neuron2ID);
-		
-		// now create this link
-		final NEATLinkGene linkGene = new NEATLinkGene(neuron1ID,
-				neuron2ID, true, innovation.getInnovationID(),
-				weight);
-		target.getLinksChromosome().add(linkGene);
-	}
-	
 	/**
-	 * Get the specified neuron's index.
+	 * Determines if a neuron is still needed. If all links to/from a neuron
+	 * have been removed, then the neuron is no longer needed.
 	 * 
+	 * @param target
+	 *            The target genome.
 	 * @param neuronID
 	 *            The neuron id to check for.
-	 * @return The index.
+	 * @return Returns true, if the neuron is still needed.
 	 */
-	public int getElementPos(NEATGenome target, final long neuronID) {
-
-		for (int i = 0; i < target.getNeuronsChromosome().size(); i++) {
-			final NEATNeuronGene neuronGene = (NEATNeuronGene) target
-					.getNeuronsChromosome().get(i);
-			if (neuronGene.getId() == neuronID) {
-				return i;
-			}
-		}
-
-		return -1;
-	}
-	
-	public boolean isNeuronNeeded(NEATGenome target, long neuronID) {
+	public boolean isNeuronNeeded(final NEATGenome target, final long neuronID) {
 
 		// do not remove bias or input neurons or output
-		for (NEATNeuronGene gene : target.getNeuronsChromosome()) {
+		for (final NEATNeuronGene gene : target.getNeuronsChromosome()) {
 			if (gene.getId() == neuronID) {
-				NEATNeuronGene neuron = (NEATNeuronGene) gene;
-				if (neuron.getNeuronType() == NEATNeuronType.Input
-						|| neuron.getNeuronType() == NEATNeuronType.Bias
-						|| neuron.getNeuronType() == NEATNeuronType.Output) {
+				final NEATNeuronGene neuron = gene;
+				if ((neuron.getNeuronType() == NEATNeuronType.Input)
+						|| (neuron.getNeuronType() == NEATNeuronType.Bias)
+						|| (neuron.getNeuronType() == NEATNeuronType.Output)) {
 					return true;
 				}
 			}
 		}
 
-		for (NEATLinkGene gene : target.getLinksChromosome()) {
-			NEATLinkGene linkGene = (NEATLinkGene) gene;
+		// Now check to see if the neuron is used in any links
+		for (final NEATLinkGene gene : target.getLinksChromosome()) {
+			final NEATLinkGene linkGene = gene;
 			if (linkGene.getFromNeuronID() == neuronID) {
 				return true;
 			}
@@ -173,13 +209,56 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 		return false;
 	}
 
-	public void removeNeuron(NEATGenome target, long neuronID) {
-		for (NEATNeuronGene gene : target.getNeuronsChromosome()) {
+	/**
+	 * Obtain the NEATGenome that we will mutate. NEAT mutates the genomes in
+	 * place. So the parent and child genome must be the same literal object.
+	 * Throw an exception, if this is not the case.
+	 * 
+	 * @param parents The parents.
+	 * @param parentIndex The parent index.
+	 * @param offspring The offspring.
+	 * @param offspringIndex The offspring index.
+	 * @return The genome that we will mutate.
+	 */
+	public NEATGenome obtainGenome(final Genome[] parents,
+			final int parentIndex, final Genome[] offspring,
+			final int offspringIndex) {
+		if (parents[parentIndex] != offspring[offspringIndex]) {
+			throw new EncogError(
+					"This mutation only works when the offspring and parents are the same.  That is, it only mutates itself.");
+		}
+
+		return (NEATGenome) parents[parentIndex];
+	}
+
+	/**
+	 * @return Returns 1, as NEAT mutations only produce one child.
+	 */
+	@Override
+	public int offspringProduced() {
+		return 1;
+	}
+
+	/**
+	 * @return Returns 1, as mutations typically are asexual and only require a single parent.
+	 */
+	@Override
+	public int parentsNeeded() {
+		return 1;
+	}
+
+	/**
+	 * Remove the specified neuron.
+	 * @param target The target genome.
+	 * @param neuronID The neuron to remove.
+	 */
+	public void removeNeuron(final NEATGenome target, final long neuronID) {
+		for (final NEATNeuronGene gene : target.getNeuronsChromosome()) {
 			if (gene.getId() == neuronID) {
 				target.getNeuronsChromosome().remove(gene);
 				return;
 			}
 		}
 	}
-	
+
 }

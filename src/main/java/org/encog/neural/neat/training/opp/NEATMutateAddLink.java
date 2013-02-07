@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.2 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2012 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.neural.neat.training.opp;
 
 import java.util.Random;
@@ -9,15 +32,27 @@ import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATNeuronGene;
 
+/**
+ * Mutates a NEAT genome by adding a link. To add a link, two random neurons are
+ * chosen and a new random link is created between them. There are severals
+ * rules. Bias and input neurons can never be the target of a link. We also do
+ * not create double links. Two neurons cannot have more than one link going in
+ * the same direction. A neuron can have a single link to itself.
+ * 
+ * If the network is only one cycle, then output neurons cannot be a target.
+ */
 public class NEATMutateAddLink extends NEATMutation {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
 			Genome[] offspring, int offspringIndex) {
 		int countTrysToAddLink = this.getOwner().getMaxTries();
 
-		NEATGenome target = this.obtainGenome(rnd, parents, parentIndex,
-				offspring, offspringIndex);
+		NEATGenome target = this.obtainGenome(parents, parentIndex, offspring,
+				offspringIndex);
 
 		// the link will be between these two neurons
 		long neuron1ID = -1;
@@ -40,8 +75,8 @@ public class NEATMutateAddLink extends NEATMutation {
 					&& (neuron2.getNeuronType() != NEATNeuronType.Bias)
 					&& (neuron2.getNeuronType() != NEATNeuronType.Input)) {
 
-				if( this.getOwner().getNEATPopulation().getActivationCycles()!=1 ||
-						neuron1.getNeuronType() != NEATNeuronType.Output ) {
+				if (this.getOwner().getNEATPopulation().getActivationCycles() != 1
+						|| neuron1.getNeuronType() != NEATNeuronType.Output) {
 					neuron1ID = neuron1.getId();
 					neuron2ID = neuron2.getId();
 					break;
