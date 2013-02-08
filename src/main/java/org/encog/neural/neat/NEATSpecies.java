@@ -68,11 +68,6 @@ public class NEATSpecies implements Serializable {
 	private final List<NEATGenome> members = new ArrayList<NEATGenome>();
 
 	/**
-	 * The number of spawns required.
-	 */
-	private double spawnsRequired;
-
-	/**
 	 * The species id.
 	 */
 	private long speciesID;
@@ -86,6 +81,9 @@ public class NEATSpecies implements Serializable {
 	 * The id of the leader.
 	 */
 	private long leaderID;
+	
+	private transient int offspringCount;
+	private transient double offspringShare;
 
 	/**
 	 * Default constructor, used mainly for persistence.
@@ -112,19 +110,7 @@ public class NEATSpecies implements Serializable {
 		this.gensNoImprovement = 0;
 		this.age = 0;
 		this.leader = theFirst;
-		this.spawnsRequired = 0;
 		this.members.add(theFirst);
-	}
-
-	/**
-	 * Calculate the amount to spawn.
-	 */
-	public void calculateSpawnAmount() {
-		this.spawnsRequired = 0;
-		for (final NEATGenome genome : this.members) {
-			this.spawnsRequired += genome.getAmountToSpawn();
-		}
-
 	}
 	
 	public int getEliteSize() {
@@ -189,25 +175,12 @@ public class NEATSpecies implements Serializable {
 		return this.members;
 	}
 
-	/**
-	 * @return The number to spawn.
-	 */
-	public double getNumToSpawn() {
-		return this.spawnsRequired;
-	}
 
 	/**
 	 * @return The population that this species belongs to.
 	 */
 	public Population getPopulation() {
 		return this.population;
-	}
-
-	/**
-	 * @return The spawns required.
-	 */
-	public double getSpawnsRequired() {
-		return this.spawnsRequired;
 	}
 
 	/**
@@ -235,8 +208,8 @@ public class NEATSpecies implements Serializable {
 		}
 		this.age++;
 		this.gensNoImprovement++;
-		this.spawnsRequired = 0;
-
+		this.offspringCount = 0;
+		this.offspringShare = 0;
 	}
 
 	/**
@@ -289,16 +262,6 @@ public class NEATSpecies implements Serializable {
 	}
 
 	/**
-	 * Set the number of spawns required.
-	 * 
-	 * @param theSpawnsRequired
-	 *            The number of spawns required.
-	 */
-	public void setSpawnsRequired(final double theSpawnsRequired) {
-		this.spawnsRequired = theSpawnsRequired;
-	}
-
-	/**
 	 * Set the species id.
 	 * 
 	 * @param i
@@ -317,6 +280,44 @@ public class NEATSpecies implements Serializable {
 	 */
 	public void setTempLeaderID(final long theLeaderID) {
 		this.leaderID = theLeaderID;
+	}
+
+	/**
+	 * @return the offspringCount
+	 */
+	public int getOffspringCount() {
+		return offspringCount;
+	}
+
+	/**
+	 * @param offspringCount the offspringCount to set
+	 */
+	public void setOffspringCount(int offspringCount) {
+		this.offspringCount = offspringCount;
+	}
+
+	/**
+	 * @return the offspringShare
+	 */
+	public double getOffspringShare() {
+		return offspringShare;
+	}
+
+	public double calculateShare(boolean shouldMinimize, double maxScore) {
+		double total = 0;
+		
+		for(NEATGenome genome: this.members) {
+			double s;
+			if( shouldMinimize ) {
+				s = maxScore - genome.getScore();
+			} else {
+				s = genome.getScore();
+			}
+			total+=s;
+		}
+		
+		this.offspringShare = total/this.members.size();
+		return this.offspringShare;
 	}
 
 }

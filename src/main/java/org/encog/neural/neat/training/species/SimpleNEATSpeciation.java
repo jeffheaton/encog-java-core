@@ -1,6 +1,6 @@
 package org.encog.neural.neat.training.species;
 
-import java.util.Collections;
+import java.util.List;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.neural.neat.NEATSpecies;
@@ -28,16 +28,7 @@ public class SimpleNEATSpeciation implements Speciation {
 	private double compatibilityThreshold = 0.26;
 	private int numGensAllowedNoImprovement = 15;
 	private int maxNumberOfSpecies = 40;
-	
-	/**
-	 * The total fit adjustment.
-	 */
-	private double totalFitAdjustment;
 
-	/**
-	 * The average fit adjustment.
-	 */
-	private double averageFitAdjustment;
 	
 	@Override
 	public void init(NEATTraining theOwner) {
@@ -55,56 +46,70 @@ public class SimpleNEATSpeciation implements Speciation {
 	 * Determine the species.
 	 */
 	private void speciateAndCalculateSpawnLevels() {
-
+		NEATSpecies bestSpecies = null;
+		double maxScore = 0;
+		
+		List<NEATSpecies> speciesCollection = this.owner.getNEATPopulation().getSpecies();
+		
 		// calculate compatibility between genomes and species
 		adjustCompatibilityThreshold();
 
 		// assign genomes to species (if any exist)
 		for (final Genome g : owner.getPopulation().getGenomes()) {
+			NEATSpecies currentSpecies = null;
 			final NEATGenome genome = (NEATGenome) g;
-			boolean added = false;
+			
+			maxScore = Math.max(genome.getScore(), maxScore);
 
-			for (final NEATSpecies s : owner.getNEATPopulation().getSpecies()) {
+			for (final NEATSpecies s : speciesCollection) {
 				final double compatibility = getCompatibilityScore(genome, s.getLeader());
 
 				if (compatibility <= this.compatibilityThreshold) {
 					addSpeciesMember(s, genome);
 					genome.setSpeciesID(s.getSpeciesID());
-					added = true;
+					bestSpecies = s;
 					break;
 				}
 			}
 
 			// if this genome did not fall into any existing species, create a
 			// new species
-			if (!added) {
-				owner.getNEATPopulation().getSpecies().add(
-						new NEATSpecies(owner.getNEATPopulation(), genome,
-								owner.getNEATPopulation().assignSpeciesID()));
+			if (currentSpecies==null) {
+				currentSpecies = new NEATSpecies(owner.getNEATPopulation(), genome,
+						owner.getNEATPopulation().assignSpeciesID());
+				owner.getNEATPopulation().getSpecies().add(currentSpecies);
+			}
+			
+			// does this species contain the best genome?
+			if( currentSpecies.getLeader()==this.owner.getMethod()) {
+				bestSpecies = currentSpecies;
 			}
 		}
-
-		adjustSpeciesScore();
-
-		for (final Genome g : owner.getPopulation().getGenomes()) {
-			final NEATGenome genome = (NEATGenome) g;
-			this.totalFitAdjustment += genome.getAdjustedScore();
+		
+		// 
+		double totalSpeciesScore = 0;
+		for(NEATSpecies species: speciesCollection) {
+			totalSpeciesScore+=species.calculateShare(this.owner.getScoreFunction().shouldMinimize(),maxScore);
 		}
+		
+		//
+		Object[] speciesArray = speciesCollection.toArray();
+		for(int i=0;i<speciesArray.length;i++) {
+			NEATSpecies species = (NEATSpecies)speciesArray[i];
+			int share = (int)Math.round((species.getOffspringShare()/totalSpeciesScore) * this.owner.getPopulation().getPopulationSize());
 
-		this.averageFitAdjustment = this.totalFitAdjustment
-				/ owner.getPopulation().size();
-
-		for (final Genome g : owner.getPopulation().getGenomes()) {
-			final NEATGenome genome = (NEATGenome) g;
-			final double toSpawn = genome.getAdjustedScore()
-					/ this.averageFitAdjustment;
-			genome.setAmountToSpawn(toSpawn);
-		}
-
-		for (final NEATSpecies species : owner.getNEATPopulation().getSpecies()) {
-			species.calculateSpawnAmount();
-			Collections.sort(species.getMembers(), this.owner.getSelectionComparator());
-			species.setLeader(species.getMembers().get(0));
+			if( species==bestSpecies && share==0 ) {
+				share = 1;
+			}
+			
+			if( species.getMembers().size()==0 || share==0 ) {
+				speciesCollection.remove(species);
+			} else if ((species.getGensNoImprovement() > this.numGensAllowedNoImprovement)
+					&& species!=bestSpecies) {
+				speciesCollection.remove(species);
+			} else {
+				species.setOffspringCount(share);
+			}
 		}
 	}
 	
@@ -112,9 +117,6 @@ public class SimpleNEATSpeciation implements Speciation {
 	 * Reset for an iteration.
 	 */
 	private void resetSpecies() {
-		this.totalFitAdjustment = 0;
-		this.averageFitAdjustment = 0;
-
 		final Object[] speciesArray = owner.getNEATPopulation().getSpecies().toArray();
 
 		for (final Object element : speciesArray) {
@@ -133,43 +135,6 @@ public class SimpleNEATSpeciation implements Speciation {
 		}
 	}
 	
-	/**
-	 * Adjust each species score.
-	 */
-	private void adjustSpeciesScore() {
-		Object[] a = owner.getNEATPopulation().getSpecies().toArray();
-		
-		for(int i=0;i<a.length;i++) {
-			NEATSpecies s = (NEATSpecies)a[i];
-			
-			// is species now empty
-			if( s.getMembers().size()<1 ) {
-				owner.getNEATPopulation().getSpecies().remove(s);
-			}
-
-			// loop over all genomes and adjust scores as needed
-			for (final Genome member : s.getMembers()) {
-				double score = member.getScore();
-
-				// apply a youth bonus
-				if (s.getAge() < owner.getNEATPopulation().getYoungBonusAgeThreshold()) {
-					score = owner.getSelectionComparator().applyBonus(score,
-							owner.getNEATPopulation().getYoungScoreBonus());
-				}
-
-				// apply an old age penalty
-				if (s.getAge() > owner.getNEATPopulation().getOldAgeThreshold()) {
-					score = owner.getSelectionComparator().applyPenalty(score,
-							owner.getNEATPopulation().getOldAgePenalty());
-				}
-
-				final double adjustedScore = score / s.getMembers().size();
-
-				member.setAdjustedScore(adjustedScore);
-
-			}
-		}
-	}
 	
 	/**
 	 * Adjust the species compatibility threshold. This prevents us from having

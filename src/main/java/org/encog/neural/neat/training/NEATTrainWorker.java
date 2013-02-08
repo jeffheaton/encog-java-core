@@ -24,7 +24,7 @@ public class NEATTrainWorker implements Runnable {
 
 	@Override
 	public void run() {
-		int numToSpawn = (int) Math.round(this.species.getNumToSpawn());
+		int numToSpawn = (int) Math.round(this.species.getOffspringCount());
 
 		// Add elite genomes directly
 		if (this.species.getMembers().size() > 5) {

@@ -96,11 +96,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 					species.setAge(Integer.parseInt(cols[1]));
 					species.setBestScore(CSVFormat.EG_FORMAT.parse(cols[2]));
 					species.setGensNoImprovement(Integer.parseInt(cols[3]));
-					species.setSpawnsRequired(CSVFormat.EG_FORMAT
-							.parse(cols[4]));
-					species.setSpawnsRequired(CSVFormat.EG_FORMAT
-							.parse(cols[5]));
-					leaderMap.put(species, Integer.parseInt(cols[6]));
+					leaderMap.put(species, Integer.parseInt(cols[4]));
 					result.getSpecies().add(species);
 					speciesMap.put((int) species.getSpeciesID(), species);
 					nextSpeciesID = Math.max(nextSpeciesID, speciesID+1);
@@ -117,9 +113,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 						lastGenome.setSpeciesID(Integer.parseInt(cols.get(2)));
 						lastGenome.setAdjustedScore(CSVFormat.EG_FORMAT
 								.parse(cols.get(3)));
-						lastGenome.setAmountToSpawn(CSVFormat.EG_FORMAT
-								.parse(cols.get(4)));
-						lastGenome.setScore(CSVFormat.EG_FORMAT.parse(cols.get(5)));
+						lastGenome.setScore(CSVFormat.EG_FORMAT.parse(cols.get(4)));
 						result.add(lastGenome);
 						genomeMap.put((int) lastGenome.getGenomeID(),
 								lastGenome);
@@ -274,7 +268,6 @@ public class PersistNEATPopulation implements EncogPersistor {
 			out.addColumn(neatGenome.getGenomeID());
 			out.addColumn(neatGenome.getSpeciesID());
 			out.addColumn(neatGenome.getAdjustedScore());
-			out.addColumn(neatGenome.getAmountToSpawn());
 			out.addColumn(neatGenome.getScore());
 			out.writeLine();
 
@@ -304,8 +297,6 @@ public class PersistNEATPopulation implements EncogPersistor {
 			out.addColumn(species.getAge());
 			out.addColumn(species.getBestScore());
 			out.addColumn(species.getGensNoImprovement());
-			out.addColumn(species.getNumToSpawn());
-			out.addColumn(species.getSpawnsRequired());
 			if( species.getLeader()==null ) {
 				out.addColumn(-1);
 			} else {

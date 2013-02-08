@@ -68,7 +68,7 @@ public class NEATFactory {
 		final ParamsHolder holder = new ParamsHolder(args);
 		
 		final int populationSize = holder.getInt(
-				MLMethodFactory.PROPERTY_POPULATION_SIZE, false, 5000);
+				MLMethodFactory.PROPERTY_POPULATION_SIZE, false, 1000);
 		
 		final int cycles = holder.getInt(
 				MLMethodFactory.PROPERTY_CYCLES, false, NEATPopulation.DEFAULT_CYCLES);

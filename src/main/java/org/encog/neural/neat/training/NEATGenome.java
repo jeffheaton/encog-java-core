@@ -97,11 +97,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	private long genomeID;
 
 	/**
-	 * The amount to spawn.
-	 */
-	private double amountToSpawn;
-
-	/**
 	 * Construct a genome by copying another.
 	 * 
 	 * @param other
@@ -113,7 +108,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		this.setPopulation(other.getPopulation());
 		setScore(other.getScore());
 		setAdjustedScore(other.getAdjustedScore());
-		setAmountToSpawn(other.getAmountToSpawn());
 		this.inputCount = other.inputCount;
 		this.outputCount = other.outputCount;
 		this.speciesID = other.speciesID;
@@ -154,7 +148,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			final List<NEATLinkGene> links, final int inputCount,
 			final int outputCount) {
 		setGenomeID(genomeID);
-		setAmountToSpawn(0);
 		setAdjustedScore(0);
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
@@ -184,7 +177,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		setAdjustedScore(0);
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
-		setAmountToSpawn(0);
 		this.speciesID = 0;
 
 		// get the activation function
@@ -367,23 +359,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 */
 	public void setGenomeID(final long theGenomeID) {
 		this.genomeID = theGenomeID;
-	}
-
-	/**
-	 * @return The amount this genome will spawn.
-	 */
-	public double getAmountToSpawn() {
-		return this.amountToSpawn;
-	}
-
-	/**
-	 * Set the amount to spawn.
-	 * 
-	 * @param theAmountToSpawn
-	 *            The amount to spawn.
-	 */
-	public void setAmountToSpawn(final double theAmountToSpawn) {
-		this.amountToSpawn = theAmountToSpawn;
 	}
 
 	@Override
