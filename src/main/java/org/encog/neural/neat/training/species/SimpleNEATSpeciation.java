@@ -1,5 +1,6 @@
 package org.encog.neural.neat.training.species;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.encog.ml.ea.genome.Genome;
@@ -110,6 +111,7 @@ public class SimpleNEATSpeciation implements Speciation {
 				speciesCollection.remove(species);
 			} else {
 				species.setOffspringCount(share);
+				Collections.sort(species.getMembers(),this.owner.getBestComparator());
 			}
 		}
 	}
@@ -157,7 +159,7 @@ public class SimpleNEATSpeciation implements Speciation {
 		else if (owner.getNEATPopulation().getSpecies().size() < 2) {
 			this.compatibilityThreshold -= thresholdIncrement;
 		}
-		System.out.println( this.compatibilityThreshold + ", species count=" + this.owner.getNEATPopulation().getSpecies().size());
+		//System.out.println( this.compatibilityThreshold + ", species count=" + this.owner.getNEATPopulation().getSpecies().size());
 	}
 	
 	/**

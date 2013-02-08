@@ -114,6 +114,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 						lastGenome.setAdjustedScore(CSVFormat.EG_FORMAT
 								.parse(cols.get(3)));
 						lastGenome.setScore(CSVFormat.EG_FORMAT.parse(cols.get(4)));
+						lastGenome.setBirthGeneration(Integer.parseInt(cols.get(5)));
 						result.add(lastGenome);
 						genomeMap.put((int) lastGenome.getGenomeID(),
 								lastGenome);
@@ -269,6 +270,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 			out.addColumn(neatGenome.getSpeciesID());
 			out.addColumn(neatGenome.getAdjustedScore());
 			out.addColumn(neatGenome.getScore());
+			out.addColumn(neatGenome.getBirthGeneration());
 			out.writeLine();
 
 			for (NEATNeuronGene neatNeuronGene : neatGenome.getNeuronsChromosome()) {

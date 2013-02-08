@@ -80,6 +80,7 @@ public class NEATTrainWorker implements Runnable {
 			// process the new child
 			if (children[0] != null) {
 				children[0].setGenomeID(population.assignGenomeID());
+				children[0].setBirthGeneration(this.train.getIteration());
 
 				// sort the baby's genes by their innovation numbers
 				children[0].sortGenes();

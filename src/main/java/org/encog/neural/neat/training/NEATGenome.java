@@ -95,6 +95,8 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * The genome id.
 	 */
 	private long genomeID;
+	
+	private int birthGeneration;
 
 	/**
 	 * Construct a genome by copying another.
@@ -392,5 +394,21 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		result.append("]");
 		return result.toString();
 	}
+
+	/**
+	 * @return the birthGeneration
+	 */
+	public int getBirthGeneration() {
+		return birthGeneration;
+	}
+
+	/**
+	 * @param birthGeneration the birthGeneration to set
+	 */
+	public void setBirthGeneration(int birthGeneration) {
+		this.birthGeneration = birthGeneration;
+	}
+	
+	
 	
 }

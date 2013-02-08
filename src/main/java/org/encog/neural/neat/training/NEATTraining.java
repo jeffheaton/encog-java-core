@@ -360,6 +360,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 					.get(0));
 			NEATGenome[] parent = { sel };
 			parent[0].setGenomeID(getNEATPopulation().assignGenomeID());
+			parent[0].setBirthGeneration(getIteration());
 			this.champMutation.performOperation(
 					getNEATPopulation().getRandom(), parent, 0, parent, 0);
 			this.addChild(parent[0]);
@@ -389,6 +390,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 					.get(index));
 			NEATGenome[] parent = { sel };
 			parent[0].setGenomeID(getNEATPopulation().assignGenomeID());
+			parent[0].setBirthGeneration(getIteration());
 			this.champMutation.performOperation(
 					getNEATPopulation().getRandom(), parent, 0, parent, 0);
 			this.addChild(parent[0]);
