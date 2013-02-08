@@ -25,7 +25,7 @@ public class SimpleNEATSpeciation implements Speciation {
 	private double constMatched = 0.4;
 	
 	private NEATTraining owner;
-	private double compatibilityThreshold = 0.26;
+	private double compatibilityThreshold = 1.0;
 	private int numGensAllowedNoImprovement = 15;
 	private int maxNumberOfSpecies = 40;
 
@@ -65,6 +65,7 @@ public class SimpleNEATSpeciation implements Speciation {
 				final double compatibility = getCompatibilityScore(genome, s.getLeader());
 
 				if (compatibility <= this.compatibilityThreshold) {
+					currentSpecies = s;
 					addSpeciesMember(s, genome);
 					genome.setSpeciesID(s.getSpeciesID());
 					bestSpecies = s;
@@ -156,7 +157,7 @@ public class SimpleNEATSpeciation implements Speciation {
 		else if (owner.getNEATPopulation().getSpecies().size() < 2) {
 			this.compatibilityThreshold -= thresholdIncrement;
 		}
-		//System.out.println( this.compatibilityThreshold + ", species count=" + this.owner.getNEATPopulation().getSpecies().size());
+		System.out.println( this.compatibilityThreshold + ", species count=" + this.owner.getNEATPopulation().getSpecies().size());
 	}
 	
 	/**
