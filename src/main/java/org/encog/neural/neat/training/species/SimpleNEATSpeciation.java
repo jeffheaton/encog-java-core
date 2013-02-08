@@ -29,11 +29,13 @@ public class SimpleNEATSpeciation implements Speciation {
 	private double compatibilityThreshold = 1.0;
 	private int numGensAllowedNoImprovement = 15;
 	private int maxNumberOfSpecies = 40;
+	private SortGenomesForSpecies sortGenomes;
 
 	
 	@Override
 	public void init(NEATTraining theOwner) {
 		this.owner = theOwner;
+		this.sortGenomes = new SortGenomesForSpecies(theOwner);
 	}
 	
 	@Override
@@ -111,7 +113,7 @@ public class SimpleNEATSpeciation implements Speciation {
 				speciesCollection.remove(species);
 			} else {
 				species.setOffspringCount(share);
-				Collections.sort(species.getMembers(),this.owner.getBestComparator());
+				Collections.sort(species.getMembers(),this.sortGenomes);
 			}
 		}
 	}

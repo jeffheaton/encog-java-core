@@ -385,8 +385,12 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		StringBuilder result = new StringBuilder();
 		result.append("[");
 		result.append(this.getClass().getSimpleName());
-		result.append(":score=");
+		result.append(",score=");
 		result.append(Format.formatDouble(this.getScore(), 2));
+		result.append(",adjusted score=");
+		result.append(Format.formatDouble(this.getAdjustedScore(), 2));
+		result.append(",birth generation=");
+		result.append(this.getBirthGeneration());
 		result.append(",neurons=");
 		result.append(this.neuronsChromosome.size());
 		result.append(",links=");
