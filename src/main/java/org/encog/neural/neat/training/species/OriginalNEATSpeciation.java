@@ -8,7 +8,7 @@ import org.encog.neural.neat.NEATSpecies;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATTraining;
 
-public class SimpleNEATSpeciation implements Speciation {
+public class OriginalNEATSpeciation implements Speciation {
 	
 	/**
 	 * The adjustment factor for disjoint genes.
@@ -361,6 +361,12 @@ public class SimpleNEATSpeciation implements Speciation {
 	 */
 	public NEATTraining getOwner() {
 		return owner;
+	}
+
+	@Override
+	public void addChild(NEATGenome genome) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

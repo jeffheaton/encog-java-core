@@ -56,7 +56,7 @@ import org.encog.neural.neat.training.opp.NEATMutateAddLink;
 import org.encog.neural.neat.training.opp.NEATMutateAddNode;
 import org.encog.neural.neat.training.opp.NEATMutateRemoveLink;
 import org.encog.neural.neat.training.opp.NEATMutateWeights;
-import org.encog.neural.neat.training.species.SimpleNEATSpeciation;
+import org.encog.neural.neat.training.species.OriginalNEATSpeciation;
 import org.encog.neural.neat.training.species.Speciation;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
@@ -260,7 +260,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	 * setup for training.
 	 */
 	private void init() {
-		this.speciation = new SimpleNEATSpeciation();
+		this.speciation = new OriginalNEATSpeciation();
 
 		this.champMutation = new NEATMutateWeights();
 		addOperation(0.5, new NEATCrossover());
