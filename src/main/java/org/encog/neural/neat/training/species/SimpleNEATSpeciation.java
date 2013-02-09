@@ -299,6 +299,70 @@ public class SimpleNEATSpeciation implements Speciation {
 	public void setConstMatched(double constMatched) {
 		this.constMatched = constMatched;
 	}
+
+	/**
+	 * @return the compatibilityThreshold
+	 */
+	public double getCompatibilityThreshold() {
+		return compatibilityThreshold;
+	}
+
+	/**
+	 * @param compatibilityThreshold the compatibilityThreshold to set
+	 */
+	public void setCompatibilityThreshold(double compatibilityThreshold) {
+		this.compatibilityThreshold = compatibilityThreshold;
+	}
+
+	/**
+	 * @return the numGensAllowedNoImprovement
+	 */
+	public int getNumGensAllowedNoImprovement() {
+		return numGensAllowedNoImprovement;
+	}
+
+	/**
+	 * @param numGensAllowedNoImprovement the numGensAllowedNoImprovement to set
+	 */
+	public void setNumGensAllowedNoImprovement(int numGensAllowedNoImprovement) {
+		this.numGensAllowedNoImprovement = numGensAllowedNoImprovement;
+	}
+
+	/**
+	 * @return the maxNumberOfSpecies
+	 */
+	public int getMaxNumberOfSpecies() {
+		return maxNumberOfSpecies;
+	}
+
+	/**
+	 * @param maxNumberOfSpecies the maxNumberOfSpecies to set
+	 */
+	public void setMaxNumberOfSpecies(int maxNumberOfSpecies) {
+		this.maxNumberOfSpecies = maxNumberOfSpecies;
+	}
+
+	/**
+	 * @return the sortGenomes
+	 */
+	public SortGenomesForSpecies getSortGenomes() {
+		return sortGenomes;
+	}
+
+	/**
+	 * @param sortGenomes the sortGenomes to set
+	 */
+	public void setSortGenomes(SortGenomesForSpecies sortGenomes) {
+		this.sortGenomes = sortGenomes;
+	}
+
+	/**
+	 * @return the owner
+	 */
+	public NEATTraining getOwner() {
+		return owner;
+	}
+	
 	
 	
 

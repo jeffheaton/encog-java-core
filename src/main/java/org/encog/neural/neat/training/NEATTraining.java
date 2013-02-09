@@ -260,6 +260,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	 * setup for training.
 	 */
 	private void init() {
+		this.speciation = new SimpleNEATSpeciation();
 
 		this.champMutation = new NEATMutateWeights();
 		addOperation(0.5, new NEATCrossover());
@@ -268,9 +269,6 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		addOperation(0.005, new NEATMutateAddLink());
 		addOperation(0.0005, new NEATMutateRemoveLink());
 		this.getOperators().finalizeStructure();
-
-		this.speciation = new SimpleNEATSpeciation();
-		this.speciation.init(this);
 
 		if (this.getScoreFunction().shouldMinimize()) {
 			this.bestEverScore = Double.POSITIVE_INFINITY;
@@ -302,6 +300,9 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	}
 
 	private void preIteration() {
+		
+		this.speciation.init(this);
+		
 		// get a random generator
 		this.rnd = getRandomNumberFactory().factor();
 		
@@ -595,4 +596,19 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		this.maxPertubation = maxPertubation;
 	}
 
+	/**
+	 * @return the speciation
+	 */
+	public Speciation getSpeciation() {
+		return speciation;
+	}
+
+	/**
+	 * @param speciation the speciation to set
+	 */
+	public void setSpeciation(Speciation speciation) {
+		this.speciation = speciation;
+	}
+
+	
 }
