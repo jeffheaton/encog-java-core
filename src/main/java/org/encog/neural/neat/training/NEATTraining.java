@@ -517,6 +517,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		}
 		final double score = this.getScoreFunction().calculateScore(phenotype);
 		g.setScore(score);
+		g.setAdjustedScore(score);
 	}
 
 	public NEATPopulation getNEATPopulation() {

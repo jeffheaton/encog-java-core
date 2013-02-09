@@ -28,6 +28,7 @@ public class ParallelScoreTask implements Runnable {
 		MLMethod phenotype = this.owner.getCodec().decode(this.genome);
 		double score = this.scoreFunction.calculateScore(phenotype);
 		genome.setScore(score);
+		genome.setAdjustedScore(score);
 		BasicEA.calculateScoreAdjustment(genome, adjusters);
 	}
 
