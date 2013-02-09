@@ -105,8 +105,8 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	private int actualThreadCount = -1;
 	private int maxTries = 5;
 	private double mutateRate = 0.2;
-	private double probNewMutate = 0.1;
-	private double maxPertubation = 0.5;
+	private double probNewMutate = 0.0;
+	private double maxPertubation = 0.02;
 	private EvolutionaryOperator champMutation;
 	private Random rnd;
 

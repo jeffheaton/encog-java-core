@@ -48,23 +48,36 @@ public class NEATMutateWeights extends NEATMutation {
 			Genome[] offspring, int offspringIndex) {
 		NEATGenome target = this.obtainGenome(parents, parentIndex, offspring,
 				offspringIndex);
-
 		double weightRange = ((NEATPopulation) target.getPopulation())
 				.getWeightRange();
+		double maxPerturb = this.getOwner().getMaxPertubation();
 
+		boolean mutated = false;
+		
 		for (final NEATLinkGene linkGene : target.getLinksChromosome()) {
-			if (Math.random() < getOwner().getMutateRate()) {
-				if (Math.random() < getOwner().getProbNewMutate()) {
-					linkGene.setWeight(RangeRandomizer.randomize(-weightRange,
-							weightRange));
-				} else {					
-					double w = linkGene.getWeight()
-							+ RangeRandomizer.randomize(-weightRange, weightRange)
-							* getOwner().getMaxPertubation();
-					w = NEATPopulation.clampWeight(w, weightRange);
-					linkGene.setWeight(w);
-				}
+			if (rnd.nextDouble() < getOwner().getMutateRate()) {
+				mutated = true;
+				mutateWeight(rnd, linkGene, weightRange, maxPerturb);	
 			}
+		}
+		
+		if( !mutated ) {
+			int idx = rnd.nextInt(target.getLinksChromosome().size());
+			NEATLinkGene linkGene  = target.getLinksChromosome().get(idx);
+			mutateWeight(rnd, linkGene, weightRange, maxPerturb);	
+		}
+	}
+	
+	public void mutateWeight(Random rnd, NEATLinkGene linkGene, double weightRange, double maxPerturb) {
+		if (rnd.nextDouble() < getOwner().getProbNewMutate()) {
+			linkGene.setWeight(RangeRandomizer.randomize(rnd, -weightRange,
+					weightRange));
+		} else {					
+			double s = rnd.nextBoolean()?1:-1;
+			double delta = s * rnd.nextGaussian() * maxPerturb;
+			double w = linkGene.getWeight() + delta;
+			w = NEATPopulation.clampWeight(w, weightRange);
+			linkGene.setWeight(w);
 		}
 	}
 }
