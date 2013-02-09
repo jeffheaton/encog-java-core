@@ -39,10 +39,11 @@ public class NEATTrainWorker implements Runnable {
 			}
 		}
 
-		EvolutionaryOperator opp = this.train.getOperators().pickMaxParents(
-				this.rnd, species.getMembers().size());
-
 		while ((numToSpawn--) > 0) {
+			// choose an evolutionary operation (i.e. crossover or a type of mutation) to use
+			EvolutionaryOperator opp = this.train.getOperators().pickMaxParents(
+					this.rnd, species.getMembers().size());
+			
 			children[0] = null;
 
 			// prepare for either sexual or asexual reproduction either way, we
