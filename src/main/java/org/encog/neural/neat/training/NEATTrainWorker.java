@@ -9,17 +9,18 @@ import org.encog.neural.neat.NEATSpecies;
 
 public class NEATTrainWorker implements Runnable {
 
-	NEATSpecies species;
-	NEATGenome[] parents = new NEATGenome[2];
-	NEATGenome[] children = new NEATGenome[1];
-	Random rnd = new Random();
-	NEATPopulation population;
-	NEATTraining train;
+	private final NEATSpecies species;
+	private final NEATGenome[] parents = new NEATGenome[2];
+	private final NEATGenome[] children = new NEATGenome[1];
+	private final Random rnd;
+	private final NEATPopulation population;
+	private final NEATTraining train;
 
 	public NEATTrainWorker(NEATTraining theTrain, NEATSpecies theSpecies) {
 		this.train = theTrain;
 		this.species = theSpecies;
 		this.population = this.train.getNEATPopulation();
+		this.rnd = this.train.getRandomNumberFactory().factor();
 	}
 
 	@Override

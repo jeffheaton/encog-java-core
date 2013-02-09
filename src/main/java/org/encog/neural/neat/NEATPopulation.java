@@ -28,8 +28,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationSteepenedSigmoid;
+import org.encog.mathutil.randomize.factory.RandomFactory;
 import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
@@ -208,10 +210,10 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	private ChooseObject<ActivationFunction> activationFunctions = new ChooseObject<ActivationFunction>();
 
 	private GeneticCODEC codec;
-	
-	private Random rnd = new Random();
-	
+
 	private double initialConnectionDensity = 0.1;
+	
+	private RandomFactory randomNumberFactory = Encog.getInstance().getRandomFactory().factorFactory();
 	
 	public NEATPopulation() {
 
@@ -363,9 +365,11 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 		this.getInnovationIDGenerate().setCurrentID(1);
 		this.getSpeciesIDGenerate().setCurrentID(1);
 		
+		Random rnd = this.randomNumberFactory.factor();
+		
 		// create the initial population
 		for (int i = 0; i < getPopulationSize(); i++) {
-			NEATGenome genome = getGenomeFactory().factor(this, assignGenomeID(), inputCount,
+			NEATGenome genome = getGenomeFactory().factor(rnd, this, assignGenomeID(), inputCount,
 					outputCount, this.initialConnectionDensity);
 			add(genome);
 		}
@@ -535,13 +539,20 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	public void setInitialConnectionDensity(double initialConnectionDensity) {
 		this.initialConnectionDensity = initialConnectionDensity;
 	}
-	
-	public Random getRandom() {
-		return this.rnd;
-	}
-	
-	public void setRandom(Random theRandom) {
-		this.rnd = theRandom;
+
+	/**
+	 * @return the randomNumberFactory
+	 */
+	public RandomFactory getRandomNumberFactory() {
+		return randomNumberFactory;
 	}
 
+	/**
+	 * @param randomNumberFactory the randomNumberFactory to set
+	 */
+	public void setRandomNumberFactory(RandomFactory randomNumberFactory) {
+		this.randomNumberFactory = randomNumberFactory;
+	}
+	
+	
 }

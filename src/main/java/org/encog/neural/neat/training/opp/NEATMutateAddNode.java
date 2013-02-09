@@ -50,7 +50,6 @@ public class NEATMutateAddNode extends NEATMutation {
 	public void performOperation(final Random rnd, final Genome[] parents,
 			final int parentIndex, final Genome[] offspring,
 			final int offspringIndex) {
-
 		final NEATGenome target = obtainGenome(parents, parentIndex, offspring,
 				offspringIndex);
 		int countTrysToFindOldLink = getOwner().getMaxTries();

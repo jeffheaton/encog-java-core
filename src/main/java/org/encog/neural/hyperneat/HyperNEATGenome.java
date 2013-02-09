@@ -35,9 +35,9 @@ public class HyperNEATGenome extends NEATGenome {
 		super(genomeID,neurons,links,inputCount,outputCount);
 	}
 
-	public HyperNEATGenome(NEATPopulation pop, final long id,
+	public HyperNEATGenome(Random rnd, NEATPopulation pop, final long id,
 			final int inputCount, final int outputCount, double connectionDensity) {
-		super(pop,id,inputCount,outputCount, connectionDensity);
+		super(rnd, pop,id,inputCount,outputCount, connectionDensity);
 
 	}
 	

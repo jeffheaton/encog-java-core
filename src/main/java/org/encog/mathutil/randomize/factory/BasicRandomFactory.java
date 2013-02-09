@@ -4,28 +4,27 @@ import java.util.Random;
 
 public class BasicRandomFactory implements RandomFactory {
 
-	private long seed = 0;
+	private Random seedProducer;
 	
 	public BasicRandomFactory() {
-		this(0);
+		this.seedProducer = new Random();
 	}
 	
 	public BasicRandomFactory(long theSeed) {
-		this.seed = theSeed;
+		this.seedProducer = new Random(theSeed);
 	}
 	
 	@Override
 	public Random factor() {
-		if( seed==0 ) {
-			return new Random();
-		} else {
+		synchronized(this) {
+			long seed = this.seedProducer.nextLong();
 			return new Random(seed);
 		}
 	}
 
 	@Override
 	public RandomFactory factorFactory() {
-		return new BasicRandomFactory(this.seed);
+		return new BasicRandomFactory(this.seedProducer.nextLong());
 	}
 
 }

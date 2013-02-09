@@ -22,9 +22,9 @@ public class FactorNEATGenome implements NEATGenomeFactory, Serializable {
 	}
 
 	@Override
-	public NEATGenome factor(NEATPopulation pop, long id, int inputCount,
+	public NEATGenome factor(Random rnd, NEATPopulation pop, long id, int inputCount,
 			int outputCount, double connectionDensity) {
-		return new NEATGenome(pop,id,inputCount,outputCount, connectionDensity);
+		return new NEATGenome(rnd, pop,id,inputCount,outputCount, connectionDensity);
 	}
 
 	@Override

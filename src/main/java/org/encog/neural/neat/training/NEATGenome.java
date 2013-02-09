@@ -172,7 +172,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * @param outputCount
 	 *            The output count.
 	 */
-	public NEATGenome(final NEATPopulation pop, final long id,
+	public NEATGenome(final Random rnd, final NEATPopulation pop, final long id,
 			final int inputCount, final int outputCount,
 			double connectionDensity) {
 		setGenomeID(id);
@@ -207,7 +207,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		}
 
 		// and now links
-		Random rnd = pop.getRandom();
 		for (int i = 0; i < inputCount + 1; i++) {
 			for (int j = 0; j < outputCount; j++) {
 				// make sure we have at least one connection

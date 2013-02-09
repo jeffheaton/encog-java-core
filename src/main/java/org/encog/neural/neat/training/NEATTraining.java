@@ -108,6 +108,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	private double probNewMutate = 0.1;
 	private double maxPertubation = 0.5;
 	private EvolutionaryOperator champMutation;
+	private Random rnd;
 
 	/**
 	 * Construct a neat trainer with a new population. The new population is
@@ -301,6 +302,9 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	}
 
 	private void preIteration() {
+		// get a random generator
+		this.rnd = getRandomNumberFactory().factor();
+		
 		// find out how many threads to use
 		if (this.threadCount == 0) {
 			this.actualThreadCount = Runtime.getRuntime().availableProcessors();
@@ -340,7 +344,6 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 			preIteration();
 		}
 		
-		
 		this.iteration++;
 
 		ExecutorService taskExecutor = null;
@@ -361,8 +364,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 			NEATGenome[] parent = { sel };
 			parent[0].setGenomeID(getNEATPopulation().assignGenomeID());
 			parent[0].setBirthGeneration(getIteration());
-			this.champMutation.performOperation(
-					getNEATPopulation().getRandom(), parent, 0, parent, 0);
+			this.champMutation.performOperation(rnd, parent, 0, parent, 0);
 			this.addChild(parent[0]);
 		}
 
@@ -391,8 +393,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 			NEATGenome[] parent = { sel };
 			parent[0].setGenomeID(getNEATPopulation().assignGenomeID());
 			parent[0].setBirthGeneration(getIteration());
-			this.champMutation.performOperation(
-					getNEATPopulation().getRandom(), parent, 0, parent, 0);
+			this.champMutation.performOperation(rnd, parent, 0, parent, 0);
 			this.addChild(parent[0]);
 		}
 

@@ -33,8 +33,6 @@ public class MultiThreadedEA extends BasicEA
 	private transient Throwable currentError;
 	private ThreadedGenomeSelector selector;
 	private final Genome bestGenome;
-	private RandomFactory randomNumberFactory = Encog.getInstance()
-			.getRandomFactory().factorFactory();
 
 	/**
 	 * Condition used to check if we are done.
@@ -234,21 +232,6 @@ public class MultiThreadedEA extends BasicEA
 
 	public int getIteration() {
 		return this.iterationNumber;
-	}
-
-	/**
-	 * @return the randomNumberFactory
-	 */
-	public RandomFactory getRandomNumberFactory() {
-		return randomNumberFactory;
-	}
-
-	/**
-	 * @param randomNumberFactory
-	 *            the randomNumberFactory to set
-	 */
-	public void setRandomNumberFactory(RandomFactory randomNumberFactory) {
-		this.randomNumberFactory = randomNumberFactory;
 	}
 
 	@Override

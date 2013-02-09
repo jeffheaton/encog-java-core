@@ -22,9 +22,9 @@ public class FactorHyperNEATGenome implements NEATGenomeFactory {
 	}
 
 	@Override
-	public NEATGenome factor(NEATPopulation pop, long id, int inputCount,
+	public NEATGenome factor(Random rnd, NEATPopulation pop, long id, int inputCount,
 			int outputCount, double connectionDensity) {
-		return new HyperNEATGenome(pop,id,inputCount,outputCount, connectionDensity);
+		return new HyperNEATGenome(rnd, pop,id,inputCount,outputCount, connectionDensity);
 	}
 
 	@Override

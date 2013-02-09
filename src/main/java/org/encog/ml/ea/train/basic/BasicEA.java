@@ -27,6 +27,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.Encog;
+import org.encog.mathutil.randomize.factory.RandomFactory;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLMethod;
@@ -74,6 +76,7 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	private final OperationList operators = new OperationList();
 	
 	private GeneticCODEC codec;
+	private RandomFactory randomNumberFactory = Encog.getInstance().getRandomFactory().factorFactory();
 	
 	public BasicEA(Population thePopulation, CalculateScore theScoreFunction) {
 		
@@ -237,6 +240,21 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	public void addOperation(double probability, EvolutionaryOperator opp) {
 		this.getOperators().add(probability, opp);
 		opp.init(this);
+	}
+	
+	/**
+	 * @return the randomNumberFactory
+	 */
+	public RandomFactory getRandomNumberFactory() {
+		return randomNumberFactory;
+	}
+
+	/**
+	 * @param randomNumberFactory
+	 *            the randomNumberFactory to set
+	 */
+	public void setRandomNumberFactory(RandomFactory randomNumberFactory) {
+		this.randomNumberFactory = randomNumberFactory;
 	}
 	
 }
