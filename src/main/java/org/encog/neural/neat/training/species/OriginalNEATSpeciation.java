@@ -368,6 +368,12 @@ public class OriginalNEATSpeciation implements Speciation {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void ageSpecies(NEATSpecies species) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 	

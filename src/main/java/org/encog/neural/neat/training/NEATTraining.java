@@ -409,6 +409,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		synchronized (this.newPopulation) {
 			if (this.newPopulation.size() < this.getPopulation().size()) {
 				this.newPopulation.add(genome);
+				this.speciation.addChild(genome);
 				return true;
 			} else {
 				return false;
