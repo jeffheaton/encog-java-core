@@ -178,7 +178,7 @@ public class OriginalNEATSpeciation implements Speciation {
 
 		int genome1Size = genome1.getLinksChromosome().size();
 		int genome2Size = genome2.getLinksChromosome().size();
-		int n = Math.max(genome1Size, genome2Size);
+		int n = 1;//Math.max(genome1Size, genome2Size);
 		
 		int g1 = 0;
 		int g2 = 0;
