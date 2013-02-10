@@ -75,14 +75,9 @@ import org.encog.util.concurrency.MultiThreadable;
 public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 
 	/**
-	 * The best ever score.
-	 */
-	private double bestEverScore;
-
-	/**
 	 * The best ever network.
 	 */
-	private NEATGenome bestEverGenome;
+	private NEATGenome bestGenome;
 
 	/**
 	 * The number of inputs.
@@ -193,7 +188,15 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	 */
 	@Override
 	public double getError() {
-		return this.bestEverScore;
+		if( this.bestGenome!=null ) {
+			return this.bestGenome.getScore();
+		} else {
+			if( this.getScoreFunction().shouldMinimize() ) {
+				return Double.POSITIVE_INFINITY;
+			} else {
+				return Double.NEGATIVE_INFINITY;
+			}
+		}
 	}
 
 	@Override
@@ -226,7 +229,11 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	 */
 	@Override
 	public MLMethod getMethod() {
-		return this.getCODEC().decode(this.bestEverGenome);
+		if( this.bestGenome!=null ) {
+			return this.getCODEC().decode(this.bestGenome);
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -269,12 +276,6 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		addOperation(0.005, new NEATMutateAddLink());
 		addOperation(0.0005, new NEATMutateRemoveLink());
 		this.getOperators().finalizeStructure();
-
-		if (this.getScoreFunction().shouldMinimize()) {
-			this.bestEverScore = Double.POSITIVE_INFINITY;
-		} else {
-			this.bestEverScore = Double.NEGATIVE_INFINITY;
-		}
 
 		if (this.getNEATPopulation().isHyperNEAT()) {
 			setCODEC(new HyperNEATCODEC());
@@ -321,8 +322,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		pscore.process();
 		this.actualThreadCount = pscore.getThreadCount();
 
-		// sort the population
-		sortAndRecord();
+		// speciate
 		this.speciation.performSpeciation();
 
 		
@@ -358,7 +358,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		newPopulation.clear();
 
 		// add in the best genome
-		if (this.bestEverGenome != null) {
+		if (this.bestGenome != null) {
 			NEATGenome sel = ((NEATGenomeFactory) getPopulation()
 					.getGenomeFactory()).factor((NEATGenome) getPopulation()
 					.get(0));
@@ -401,7 +401,6 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		getPopulation().clear();
 		getPopulation().addAll(newPopulation);
 
-		sortAndRecord();
 		this.speciation.performSpeciation();
 	}
 
@@ -410,6 +409,10 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 			if (this.newPopulation.size() < this.getPopulation().size()) {
 				this.newPopulation.add(genome);
 				this.speciation.addChild(genome);
+				
+				if ( this.bestGenome==null || getBestComparator().isBetterThan(genome, this.bestGenome)) {
+					this.bestGenome = genome;
+				}
 				return true;
 			} else {
 				return false;
@@ -461,24 +464,12 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	/**
 	 * Sort the genomes.
 	 */
-	public void sortAndRecord() {
+	public void sortPopulation() {
 
 		getPopulation().sort(this.getBestComparator());
 
 		final Genome genome = getPopulation().get(0);
 		final double currentBest = genome.getScore();
-
-		if (getSelectionComparator().isBetterThan(currentBest,
-				this.bestEverScore)) {
-			this.bestEverScore = currentBest;
-			this.bestEverGenome = (NEATGenome) genome;
-		}
-
-		if (getSelectionComparator().isBetterThan(getError(),
-				this.bestEverScore)) {
-			this.bestEverScore = getError();
-		}
-
 	}
 
 	/**
