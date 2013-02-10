@@ -602,5 +602,14 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		this.speciation = speciation;
 	}
 
+	/**
+	 * @return the bestGenome
+	 */
+	public NEATGenome getBestGenome() {
+		return bestGenome;
+	}
+	
+	
+
 	
 }

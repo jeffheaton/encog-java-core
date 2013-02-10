@@ -83,16 +83,14 @@ public class OriginalNEATSpeciation implements Speciation {
 						owner.getNEATPopulation().assignSpeciesID());
 				owner.getNEATPopulation().getSpecies().add(currentSpecies);
 			}
-			
-			// does this species contain the best genome?
-			if( currentSpecies.getLeader()==this.owner.getMethod()) {
-				bestSpecies = currentSpecies;
-			}
 		}
 		
 		// 
 		double totalSpeciesScore = 0;
 		for(NEATSpecies species: speciesCollection) {
+			if( bestSpecies==null || this.getOwner().getBestComparator().isBetterThan(bestSpecies.getBestScore(), species.getBestScore())) {
+				bestSpecies = species;
+			}
 			totalSpeciesScore+=species.calculateShare(this.owner.getScoreFunction().shouldMinimize(),maxScore);
 		}
 		

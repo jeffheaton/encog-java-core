@@ -31,6 +31,7 @@ import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.Population;
 import org.encog.neural.neat.training.NEATGenome;
+import org.encog.util.Format;
 
 /**
  * Provides basic functionality for a species.
@@ -318,6 +319,16 @@ public class NEATSpecies implements Serializable {
 		
 		this.offspringShare = total/this.members.size();
 		return this.offspringShare;
+	}
+	
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[NEATSpecies: score=");
+		result.append(Format.formatDouble(this.getBestScore(),2));
+		result.append(", members=");
+		result.append(this.members.size());
+		result.append("]");
+		return result.toString();
 	}
 
 }
