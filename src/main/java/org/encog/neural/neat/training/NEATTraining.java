@@ -32,7 +32,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.CalculateScore;
-import org.encog.ml.MLContext;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
@@ -496,22 +495,6 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		}
 
 		return (NEATGenome) getPopulation().get(ChosenOne);
-	}
-
-	/**
-	 * Calculate the score for this genome. The genome's score will be set.
-	 * 
-	 * @param g
-	 *            The genome to calculate for.
-	 */
-	public void calculateScore(final Genome g) {
-		MLMethod phenotype = this.getCODEC().decode(g);
-		if (phenotype instanceof MLContext) {
-			((MLContext) phenotype).clearContext();
-		}
-		final double score = this.getScoreFunction().calculateScore(phenotype);
-		g.setScore(score);
-		g.setAdjustedScore(score);
 	}
 
 	public NEATPopulation getNEATPopulation() {

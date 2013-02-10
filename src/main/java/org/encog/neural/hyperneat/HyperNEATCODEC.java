@@ -44,7 +44,6 @@ public class HyperNEATCODEC implements GeneticCODEC {
 		double c = this.maxWeight / (1.0 - this.minWeight);
 
 		// now create the links
-		int linkIndex = 0;
 		for (SubstrateLink link : substrate.getLinks()) {
 			SubstrateNode source = link.getSource();
 			SubstrateNode target = link.getTarget();
@@ -69,6 +68,11 @@ public class HyperNEATCODEC implements GeneticCODEC {
 				biasWeight = (Math.abs(biasWeight) - this.minWeight) * c * Math.signum(biasWeight);
 				linkList.add( new NEATLink(0, target.getId(), biasWeight));
 			}
+		}
+		
+		// check for invalid neural network
+		if( linkList.size()==0 ) {
+			return null;
 		}
 	
 		Collections.sort(linkList);

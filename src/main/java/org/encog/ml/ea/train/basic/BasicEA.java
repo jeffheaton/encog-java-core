@@ -101,14 +101,27 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	 * @param g
 	 *            The genome to calculate for.
 	 */
-	@Override
 	public void calculateScore(final Genome g) {
 		MLMethod phenotype = this.getCODEC().decode(g);
-		if (phenotype instanceof MLContext) {
-			((MLContext)phenotype).clearContext();
+		double score;
+		
+		// deal with invalid decode
+		if( phenotype==null ) {
+			if( this.getBestComparator().shouldMinimize() ) {
+				score = Double.POSITIVE_INFINITY;
+			} else {
+				score = Double.NEGATIVE_INFINITY;
+			}
+		} else {
+			if (phenotype instanceof MLContext) {
+				((MLContext) phenotype).clearContext();
+			}
+			score = this.getScoreFunction().calculateScore(phenotype);	
 		}
-		final double score = this.getScoreFunction().calculateScore(phenotype);
+		
+		// now set the scores
 		g.setScore(score);
+		g.setAdjustedScore(score);
 	}
 
 	/**

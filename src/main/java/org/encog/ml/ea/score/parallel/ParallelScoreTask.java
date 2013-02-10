@@ -12,9 +12,9 @@ public class ParallelScoreTask implements Runnable {
 
 	private final Genome genome;
 	private final CalculateScore scoreFunction;
-	private final List<AdjustScore> adjusters; 
+	private final List<AdjustScore> adjusters;
 	private final ParallelScore owner;
-	
+
 	public ParallelScoreTask(Genome genome, ParallelScore theOwner) {
 		super();
 		this.owner = theOwner;
@@ -26,10 +26,12 @@ public class ParallelScoreTask implements Runnable {
 	@Override
 	public void run() {
 		MLMethod phenotype = this.owner.getCodec().decode(this.genome);
-		double score = this.scoreFunction.calculateScore(phenotype);
-		genome.setScore(score);
-		genome.setAdjustedScore(score);
-		BasicEA.calculateScoreAdjustment(genome, adjusters);
+		if (phenotype != null) {
+			double score = this.scoreFunction.calculateScore(phenotype);
+			genome.setScore(score);
+			genome.setAdjustedScore(score);
+			BasicEA.calculateScoreAdjustment(genome, adjusters);
+		}
 	}
 
 }
