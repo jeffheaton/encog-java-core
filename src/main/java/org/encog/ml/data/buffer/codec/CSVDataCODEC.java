@@ -126,12 +126,6 @@ public class CSVDataCODEC implements DataSetCODEC {
 		this.idealCount = theIdealCount;
 		this.headers = theHeaders;
 		this.expectSignificance = theExpectSignificance;
-		if (this.inputCount != 0) {
-			throw new BufferedDataError(
-					"To export CSV, you must use the CSVDataCODEC "
-							+ "constructor that does not specify input or ideal sizes.");
-		}
-
 	}
 
 	/**
