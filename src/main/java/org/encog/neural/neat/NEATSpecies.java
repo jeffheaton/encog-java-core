@@ -82,7 +82,7 @@ public class NEATSpecies implements Serializable {
 	 * The id of the leader.
 	 */
 	private long leaderID;
-	
+
 	private transient int offspringCount;
 	private transient double offspringShare;
 
@@ -103,8 +103,8 @@ public class NEATSpecies implements Serializable {
 	 * @param theSpeciesID
 	 *            The species id.
 	 */
-	public NEATSpecies(final NEATPopulation thePopulation, final NEATGenome theFirst,
-			final long theSpeciesID) {
+	public NEATSpecies(final NEATPopulation thePopulation,
+			final NEATGenome theFirst, final long theSpeciesID) {
 		this.population = thePopulation;
 		this.speciesID = theSpeciesID;
 		this.bestScore = theFirst.getScore();
@@ -113,10 +113,9 @@ public class NEATSpecies implements Serializable {
 		this.leader = theFirst;
 		this.members.add(theFirst);
 	}
-	
+
 	public int getEliteSize() {
-		return (int) (this.population.getSurvivalRate() * this.members
-				.size()) + 1;
+		return (int) (this.population.getSurvivalRate() * this.members.size()) + 1;
 	}
 
 	/**
@@ -134,7 +133,8 @@ public class NEATSpecies implements Serializable {
 		} else {
 			// If there are many, then choose the population based on survival
 			// rate and select a random genome.
-			final int theOne = (int) RangeRandomizer.randomize(0, getEliteSize());
+			final int theOne = (int) RangeRandomizer.randomize(0,
+					getEliteSize());
 			result = this.members.get(theOne);
 		}
 
@@ -176,7 +176,6 @@ public class NEATSpecies implements Serializable {
 		return this.members;
 	}
 
-
 	/**
 	 * @return The population that this species belongs to.
 	 */
@@ -204,7 +203,7 @@ public class NEATSpecies implements Serializable {
 	 */
 	public void purge() {
 		this.members.clear();
-		if( this.leader!=null ) {
+		if (this.leader != null) {
 			this.members.add(this.leader);
 		}
 		this.age++;
@@ -291,7 +290,8 @@ public class NEATSpecies implements Serializable {
 	}
 
 	/**
-	 * @param offspringCount the offspringCount to set
+	 * @param offspringCount
+	 *            the offspringCount to set
 	 */
 	public void setOffspringCount(int offspringCount) {
 		this.offspringCount = offspringCount;
@@ -306,25 +306,34 @@ public class NEATSpecies implements Serializable {
 
 	public double calculateShare(boolean shouldMinimize, double maxScore) {
 		double total = 0;
-		
-		for(NEATGenome genome: this.members) {
-			double s;
-			if( shouldMinimize ) {
-				s = maxScore - genome.getScore();
-			} else {
-				s = genome.getScore();
+
+		int count = 0;
+		for (NEATGenome genome : this.members) {
+			if (!Double.isNaN(genome.getScore())
+					&& !Double.isInfinite(genome.getScore())) {
+				double s;
+				if (shouldMinimize) {
+					s = maxScore - genome.getScore();
+				} else {
+					s = genome.getScore();
+				}
+				total += s;
+				count++;
 			}
-			total+=s;
 		}
-		
-		this.offspringShare = total/this.members.size();
+
+		if( count==0 ) {
+			this.offspringShare = 0;
+		} else {
+			this.offspringShare = total / count;
+		}
 		return this.offspringShare;
 	}
-	
+
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append("[NEATSpecies: score=");
-		result.append(Format.formatDouble(this.getBestScore(),2));
+		result.append(Format.formatDouble(this.getBestScore(), 2));
 		result.append(", members=");
 		result.append(this.members.size());
 		result.append("]");

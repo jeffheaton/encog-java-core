@@ -62,7 +62,9 @@ public class OriginalNEATSpeciation implements Speciation {
 			NEATSpecies currentSpecies = null;
 			final NEATGenome genome = (NEATGenome) g;
 			
-			maxScore = Math.max(genome.getScore(), maxScore);
+			if( !Double.isNaN(genome.getScore()) && !Double.isInfinite(genome.getScore())) {
+				maxScore = Math.max(genome.getScore(), maxScore);
+			}
 
 			for (final NEATSpecies s : speciesCollection) {
 				final double compatibility = getCompatibilityScore(genome, s.getLeader());
@@ -71,7 +73,6 @@ public class OriginalNEATSpeciation implements Speciation {
 					currentSpecies = s;
 					addSpeciesMember(s, genome);
 					genome.setSpeciesID(s.getSpeciesID());
-					bestSpecies = s;
 					break;
 				}
 			}
