@@ -33,7 +33,7 @@ import org.encog.neural.neat.training.NEATLinkGene;
 
 /**
  * Mutate the weights of a genome. This works very similar to Simulated
- * Annealing, and is used to finetune the weights of a genome.
+ * Annealing, and is used to fine tune the weights of a genome.
  * 
  * The activation function will be randomly chosen from the activation function 
  * factory stored in the population.
