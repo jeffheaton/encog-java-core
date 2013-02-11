@@ -553,6 +553,16 @@ public class NEATPopulation extends BasicPopulation implements Serializable, MLE
 	public void setRandomNumberFactory(RandomFactory randomNumberFactory) {
 		this.randomNumberFactory = randomNumberFactory;
 	}
+
+	/**
+	 * @return the bestGenome
+	 */
+	public NEATGenome getBestGenome() {
+		this.updateBestNetwork();
+		return bestGenome;
+	}
+	
+	
 	
 	
 }

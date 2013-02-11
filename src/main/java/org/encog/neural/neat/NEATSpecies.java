@@ -26,6 +26,7 @@ package org.encog.neural.neat;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.Genome;
@@ -124,7 +125,7 @@ public class NEATSpecies implements Serializable {
 	 * 
 	 * @return The parent.
 	 */
-	public Genome chooseParent() {
+	public Genome chooseParent(Random rnd) {
 		Genome result;
 
 		// If there is a single member, then choose that one.
@@ -133,7 +134,7 @@ public class NEATSpecies implements Serializable {
 		} else {
 			// If there are many, then choose the population based on survival
 			// rate and select a random genome.
-			final int theOne = (int) RangeRandomizer.randomize(0,
+			final int theOne = (int) RangeRandomizer.randomize(rnd, 0,
 					getEliteSize());
 			result = this.members.get(theOne);
 		}

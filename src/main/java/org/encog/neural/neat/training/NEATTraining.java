@@ -179,7 +179,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	 */
 	@Override
 	public void finishTraining() {
-
+		sortPopulation();
 	}
 
 	/**
@@ -464,11 +464,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	 * Sort the genomes.
 	 */
 	public void sortPopulation() {
-
 		getPopulation().sort(this.getBestComparator());
-
-		final Genome genome = getPopulation().get(0);
-		final double currentBest = genome.getScore();
 	}
 
 	/**

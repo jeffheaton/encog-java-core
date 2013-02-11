@@ -52,7 +52,7 @@ public class NEATTrainWorker implements Runnable {
 			//
 			// Chose the first parent, there must be at least one genome in this
 			// species
-			parents[0] = (NEATGenome) this.species.chooseParent();
+			parents[0] = (NEATGenome) this.species.chooseParent(rnd);
 
 			// if the number of individuals in this species is only
 			// one then we can only clone and perhaps mutate, otherwise use
@@ -62,10 +62,10 @@ public class NEATTrainWorker implements Runnable {
 
 				int numAttempts = 5;
 
-				parents[1] = (NEATGenome) species.chooseParent();
+				parents[1] = (NEATGenome) species.chooseParent(rnd);
 				while ((parents[0].getGenomeID() == parents[1].getGenomeID())
 						&& ((numAttempts--) > 0)) {
-					parents[1] = (NEATGenome) species.chooseParent();
+					parents[1] = (NEATGenome) species.chooseParent(rnd);
 				}
 
 				// success, perform crossover
