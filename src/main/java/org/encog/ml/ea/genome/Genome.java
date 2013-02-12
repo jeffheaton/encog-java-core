@@ -74,8 +74,17 @@ public interface Genome {
 	 *            The new score.
 	 */
 	void setScore(double score);
-	
+
+	/**
+	 * Copy from the specified genome into this one.
+	 * 
+	 * @param source The source genome.
+	 */
 	void copy(Genome source);
-	
+
+	/**
+	 * @return Return the size of this genome. This size is a relative number
+	 *         that indicates the complexity of the genome.
+	 */
 	int size();
 }
