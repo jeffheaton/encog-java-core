@@ -1,8 +1,9 @@
 package org.encog.mathutil.randomize.factory;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class BasicRandomFactory implements RandomFactory {
+public class BasicRandomFactory implements RandomFactory, Serializable {
 
 	private Random seedProducer;
 	
