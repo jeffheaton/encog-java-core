@@ -46,7 +46,7 @@ import org.encog.neural.thermal.PersistHopfield;
 /**
  * Registry to hold persistors.  This is a singleton.
  */
-public class PersistorRegistry {
+public final class PersistorRegistry {
 
 	/**
 	 * The instance.
