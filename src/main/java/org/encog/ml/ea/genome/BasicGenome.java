@@ -26,7 +26,6 @@ package org.encog.ml.ea.genome;
 import java.io.Serializable;
 
 import org.encog.ml.ea.population.Population;
-import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 
 /**
  * A basic abstract genome. Provides base functionality.
@@ -39,7 +38,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * The adjusted score.
+	 * The adjusted score.  If unknown, it is set to NaN.
 	 */
 	private double adjustedScore = Double.NaN;
 

@@ -26,11 +26,19 @@ package org.encog.app.analyst.missing;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.normalize.AnalystField;
 
+/**
+ * Handle missing values by discarding them.
+ *
+ */
 public class DiscardMissing implements HandleMissingValues {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public double[] handleMissing(EncogAnalyst analyst, AnalystField stat) {
-		return null;
+	public double[] handleMissing(final EncogAnalyst analyst,
+			final AnalystField stat) {
+		return new double[0];
 	}
 
 }
