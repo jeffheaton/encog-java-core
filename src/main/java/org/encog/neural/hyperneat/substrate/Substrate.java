@@ -12,6 +12,7 @@ public class Substrate implements Serializable {
 	private final List<SubstrateNode> hiddenNodes = new ArrayList<SubstrateNode>();
 	private final List<SubstrateLink> links = new ArrayList<SubstrateLink>();
 	private int currentNeuronNumber;
+	private int activationCycles = 1;
 	
 	public Substrate(int theDimensions) {
 		this.dimensions = theDimensions;
@@ -96,5 +97,30 @@ public class Substrate implements Serializable {
 
 	public int getNodeCount() {
 		return 1+this.inputNodes.size()+this.outputNodes.size()+this.hiddenNodes.size();
+	}
+
+	/**
+	 * @return the activationCycles
+	 */
+	public int getActivationCycles() {
+		return activationCycles;
+	}
+
+
+
+	/**
+	 * @param activationCycles the activationCycles to set
+	 */
+	public void setActivationCycles(int activationCycles) {
+		this.activationCycles = activationCycles;
+	}
+
+
+
+	public List<SubstrateNode> getBiasedNodes() {
+		List<SubstrateNode> result = new ArrayList<SubstrateNode>();
+		result.addAll(this.hiddenNodes);
+		result.addAll(this.outputNodes);
+		return result;
 	}
 }

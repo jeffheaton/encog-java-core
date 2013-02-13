@@ -19,6 +19,7 @@ import org.encog.neural.neat.NEATCODEC;
 import org.encog.neural.neat.NEATLink;
 import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATPopulation;
+import org.encog.util.EngineArray;
 
 public class HyperNEATCODEC implements GeneticCODEC {
 
@@ -42,12 +43,13 @@ public class HyperNEATCODEC implements GeneticCODEC {
 		}
 		
 		double c = this.maxWeight / (1.0 - this.minWeight);
-
-		// now create the links
+		MLData input = new BasicMLData(cppn.getInputCount());
+		
+		// First create all of the non-bias links.
 		for (SubstrateLink link : substrate.getLinks()) {
 			SubstrateNode source = link.getSource();
 			SubstrateNode target = link.getTarget();
-			MLData input = new BasicMLData(cppn.getInputCount());
+			
 			int index = 0;
 			for (double d : source.getLocation()) {
 				input.setData(index++, d);
@@ -62,6 +64,18 @@ public class HyperNEATCODEC implements GeneticCODEC {
 				weight = (Math.abs(weight) - this.minWeight) * c * Math.signum(weight);
 				linkList.add(new NEATLink(source.getId(), target.getId(),weight));
 			}
+		}
+		
+		// now create biased links
+		input.clear();
+		int d = substrate.getDimensions();
+		List<SubstrateNode> biasedNodes = substrate.getBiasedNodes();
+		for(SubstrateNode target: biasedNodes) {
+			for(int i=0;i<d;i++) {
+				input.setData(d+i, target.getLocation()[i]);
+			}
+			
+			MLData output = cppn.compute(input);
 			
 			double biasWeight = output.getData(1);
 			if( Math.abs(biasWeight)>this.minWeight) {
@@ -80,7 +94,7 @@ public class HyperNEATCODEC implements GeneticCODEC {
 		NEATNetwork network = new NEATNetwork(substrate.getInputCount(),
 				substrate.getOutputCount(), linkList, afs);
 
-		network.setActivationCycles(pop.getActivationCycles());
+		network.setActivationCycles(substrate.getActivationCycles());
 		return network;
 		
 	}

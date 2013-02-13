@@ -37,7 +37,7 @@ public class ActivationClippedLinear implements ActivationFunction {
 	
 	@Override
 	public void activationFunction(double[] d, int start, int size) {
-		for(int i=0;i<size;i++) {
+		for (int i = start; i < start + size; i++) {
             if(d[i] < -1.0) {
                 d[i] = -1.0;
             }
