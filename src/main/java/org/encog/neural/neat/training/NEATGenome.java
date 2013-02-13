@@ -182,7 +182,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		this.speciesID = 0;
 
 		// get the activation function
-		ActivationFunction af = pop.getActivationFunctions().pick(new Random());
+		ActivationFunction af = pop.getActivationFunctions().pickFirst();
 
 		// first bias
 		int innovationID = 0;
