@@ -3,6 +3,7 @@ package org.encog.neural.neat.training.species;
 import java.util.Collections;
 import java.util.List;
 
+import org.encog.Encog;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.neural.neat.NEATSpecies;
 import org.encog.neural.neat.training.NEATGenome;
@@ -49,7 +50,6 @@ public class OriginalNEATSpeciation implements Speciation {
 	 * Determine the species.
 	 */
 	private void speciateAndCalculateSpawnLevels() {
-		NEATSpecies bestSpecies = null;
 		double maxScore = 0;
 		
 		List<NEATSpecies> speciesCollection = this.owner.getNEATPopulation().getSpecies();
@@ -89,13 +89,36 @@ public class OriginalNEATSpeciation implements Speciation {
 		// 
 		double totalSpeciesScore = 0;
 		for(NEATSpecies species: speciesCollection) {
-			if( bestSpecies==null || this.getOwner().getBestComparator().isBetterThan(bestSpecies.getBestScore(), species.getBestScore())) {
-				bestSpecies = species;
-			}
 			totalSpeciesScore+=species.calculateShare(this.owner.getScoreFunction().shouldMinimize(),maxScore);
 		}
 		
-		//
+		if( totalSpeciesScore<Encog.DEFAULT_DOUBLE_EQUAL) {
+			// This should not happen much, or if it does, only in the beginning.
+			// All species scored zero.  So they are all equally bad.  Just divide
+			// up the right to produce offspring evenly.
+			divideEven(speciesCollection);
+		} else {
+			// Divide up the number of offspring produced to the most fit species.
+			divideByFittestSpecies(speciesCollection, totalSpeciesScore);
+		}
+		
+	}
+	
+	private void divideEven(List<NEATSpecies> speciesCollection) {
+		double ratio = 1.0 / speciesCollection.size();
+		for(NEATSpecies species: speciesCollection) {
+			int share = (int)Math.round(ratio * this.owner.getPopulation().getPopulationSize());
+			species.setOffspringCount(share);
+		}
+	}
+		
+	private void divideByFittestSpecies(List<NEATSpecies> speciesCollection, double totalSpeciesScore) {
+		NEATSpecies bestSpecies = null;
+		
+		if( this.owner.getBestGenome() !=null ) {
+			bestSpecies = this.owner.getBestGenome().getSpecies();
+		}
+			
 		Object[] speciesArray = speciesCollection.toArray();
 		for(int i=0;i<speciesArray.length;i++) {
 			NEATSpecies species = (NEATSpecies)speciesArray[i];
