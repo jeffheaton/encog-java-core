@@ -72,6 +72,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 		Map<Integer, NEATSpecies> speciesMap = new HashMap<Integer, NEATSpecies>();
 		Map<NEATSpecies, Integer> leaderMap = new HashMap<NEATSpecies, Integer>();
 		Map<Integer, NEATGenome> genomeMap = new HashMap<Integer, NEATGenome>();
+		Map<NEATGenome, Integer> genomeSpeciesMap = new HashMap<NEATGenome, Integer>();
 		EncogFileSection section;
 
 		while ((section = in.readNextSection()) != null) {
@@ -110,7 +111,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 						lastGenome = new NEATGenome();
 						long genomeID = Integer.parseInt(cols.get(1));
 						lastGenome.setGenomeID(genomeID);
-						lastGenome.setSpeciesID(Integer.parseInt(cols.get(2)));
+						genomeSpeciesMap.put(lastGenome, Integer.parseInt(cols.get(2)));
 						lastGenome.setAdjustedScore(CSVFormat.EG_FORMAT
 								.parse(cols.get(3)));
 						lastGenome.setScore(CSVFormat.EG_FORMAT.parse(cols.get(4)));
@@ -183,7 +184,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 		// first put all the genomes into correct species
 		for (Genome genome : result.getGenomes()) {
 			NEATGenome neatGenome = (NEATGenome) genome;
-			int speciesId = (int) neatGenome.getSpeciesID();
+			int speciesId = (int) genomeSpeciesMap.get(neatGenome);
 			NEATSpecies species = speciesMap.get(speciesId);
 			if (species != null) {
 				species.getMembers().add(neatGenome);
@@ -267,7 +268,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 			NEATGenome neatGenome = (NEATGenome) genome;
 			out.addColumn("g");
 			out.addColumn(neatGenome.getGenomeID());
-			out.addColumn(neatGenome.getSpeciesID());
+			out.addColumn((neatGenome.getSpecies()==null)?0:neatGenome.getSpecies().getSpeciesID());
 			out.addColumn(neatGenome.getAdjustedScore());
 			out.addColumn(neatGenome.getScore());
 			out.addColumn(neatGenome.getBirthGeneration());

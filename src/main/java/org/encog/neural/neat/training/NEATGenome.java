@@ -38,6 +38,7 @@ import org.encog.ml.ea.genome.BasicGenome;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.neat.NEATPopulation;
+import org.encog.neural.neat.NEATSpecies;
 import org.encog.util.Format;
 
 /**
@@ -85,11 +86,8 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * The number of outputs.
 	 */
 	private int outputCount;
-
-	/**
-	 * The species id.
-	 */
-	private long speciesID;
+	
+	private NEATSpecies species;
 
 	/**
 	 * The genome id.
@@ -112,7 +110,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		setAdjustedScore(other.getAdjustedScore());
 		this.inputCount = other.inputCount;
 		this.outputCount = other.outputCount;
-		this.speciesID = other.speciesID;
+		this.species = other.species;
 
 		// copy neurons
 		for (final NEATNeuronGene oldGene : other.getNeuronsChromosome()) {
@@ -179,7 +177,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		setAdjustedScore(0);
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
-		this.speciesID = 0;
 
 		// get the activation function
 		ActivationFunction af = pop.getActivationFunctions().pickFirst();
@@ -258,28 +255,11 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	}
 
 	/**
-	 * @return The species ID.
-	 */
-	public long getSpeciesID() {
-		return this.speciesID;
-	}
-
-	/**
 	 * @param networkDepth
 	 *            the networkDepth to set
 	 */
 	public void setNetworkDepth(final int networkDepth) {
 		this.networkDepth = networkDepth;
-	}
-
-	/**
-	 * Set the species id.
-	 * 
-	 * @param species
-	 *            The species id.
-	 */
-	public void setSpeciesID(final long species) {
-		this.speciesID = species;
 	}
 
 	/**
@@ -410,6 +390,20 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 */
 	public void setBirthGeneration(int birthGeneration) {
 		this.birthGeneration = birthGeneration;
+	}
+
+	/**
+	 * @return the species
+	 */
+	public NEATSpecies getSpecies() {
+		return species;
+	}
+
+	/**
+	 * @param species the species to set
+	 */
+	public void setSpecies(NEATSpecies species) {
+		this.species = species;
 	}
 	
 	

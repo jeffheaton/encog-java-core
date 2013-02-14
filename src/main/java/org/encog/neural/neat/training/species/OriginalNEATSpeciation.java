@@ -72,7 +72,7 @@ public class OriginalNEATSpeciation implements Speciation {
 				if (compatibility <= this.compatibilityThreshold) {
 					currentSpecies = s;
 					addSpeciesMember(s, genome);
-					genome.setSpeciesID(s.getSpeciesID());
+					genome.setSpecies(s);
 					break;
 				}
 			}

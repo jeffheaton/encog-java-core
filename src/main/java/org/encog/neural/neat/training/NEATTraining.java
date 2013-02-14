@@ -187,10 +187,10 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	 */
 	@Override
 	public double getError() {
-		if( this.bestGenome!=null ) {
+		if (this.bestGenome != null) {
 			return this.bestGenome.getScore();
 		} else {
-			if( this.getScoreFunction().shouldMinimize() ) {
+			if (this.getScoreFunction().shouldMinimize()) {
 				return Double.POSITIVE_INFINITY;
 			} else {
 				return Double.NEGATIVE_INFINITY;
@@ -228,7 +228,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	 */
 	@Override
 	public MLMethod getMethod() {
-		if( this.bestGenome!=null ) {
+		if (this.bestGenome != null) {
 			return this.getCODEC().decode(this.bestGenome);
 		} else {
 			return null;
@@ -300,19 +300,19 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	}
 
 	private void preIteration() {
-		
+
 		this.speciation.init(this);
-		
+
 		// get a random generator
 		this.rnd = getRandomNumberFactory().factor();
-		
+
 		// find out how many threads to use
 		if (this.threadCount == 0) {
 			this.actualThreadCount = Runtime.getRuntime().availableProcessors();
 		} else {
 			this.actualThreadCount = this.threadCount;
 		}
-		
+
 		// score the initial population
 		ParallelScore pscore = new ParallelScore(getPopulation(),
 				this.getCODEC(), new ArrayList<AdjustScore>(),
@@ -324,7 +324,6 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		// speciate
 		this.speciation.performSpeciation();
 
-		
 	}
 
 	/**
@@ -340,10 +339,10 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	 */
 	@Override
 	public void iteration() {
-		if( this.actualThreadCount==-1 ) {
+		if (this.actualThreadCount == -1) {
 			preIteration();
 		}
-		
+
 		this.iteration++;
 
 		ExecutorService taskExecutor = null;
@@ -358,14 +357,8 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 
 		// add in the best genome
 		if (this.bestGenome != null) {
-			NEATGenome sel = ((NEATGenomeFactory) getPopulation()
-					.getGenomeFactory()).factor((NEATGenome) getPopulation()
-					.get(0));
-			NEATGenome[] parent = { sel };
-			parent[0].setGenomeID(getNEATPopulation().assignGenomeID());
-			parent[0].setBirthGeneration(getIteration());
-			this.champMutation.performOperation(rnd, parent, 0, parent, 0);
-			this.addChild(parent[0]);
+			this.bestGenome = null;
+			this.addChild(this.bestGenome);
 		}
 
 		for (final NEATSpecies s : ((NEATPopulation) getPopulation())
@@ -406,10 +399,15 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	public boolean addChild(NEATGenome genome) {
 		synchronized (this.newPopulation) {
 			if (this.newPopulation.size() < this.getPopulation().size()) {
-				this.newPopulation.add(genome);
-				this.speciation.addChild(genome);
-				
-				if ( this.bestGenome==null || getBestComparator().isBetterThan(genome, this.bestGenome)) {
+				// don't readd the best genome
+				if (genome != this.bestGenome) {
+					this.newPopulation.add(genome);
+					this.speciation.addChild(genome);
+				}
+
+				if (this.bestGenome == null
+						|| getBestComparator().isBetterThan(genome,
+								this.bestGenome)) {
 					this.bestGenome = genome;
 				}
 				return true;
@@ -575,7 +573,8 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	}
 
 	/**
-	 * @param speciation the speciation to set
+	 * @param speciation
+	 *            the speciation to set
 	 */
 	public void setSpeciation(Speciation speciation) {
 		this.speciation = speciation;
@@ -587,8 +586,5 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	public NEATGenome getBestGenome() {
 		return bestGenome;
 	}
-	
-	
 
-	
 }
