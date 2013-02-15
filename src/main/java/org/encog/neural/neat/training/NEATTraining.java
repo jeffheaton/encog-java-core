@@ -103,6 +103,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	private double probNewMutate = 0.0;
 	private double maxPertubation = 0.02;
 	private EvolutionaryOperator champMutation;
+	private Throwable reportedError;
 
 	/**
 	 * Construct a neat trainer with a new population. The new population is
@@ -373,6 +374,10 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		} catch (InterruptedException e) {
 			throw new GeneticError(e);
 		}
+		
+		if( this.reportedError!=null ) {
+			throw new GeneticError(this.reportedError);
+		}
 
 		int champRange = Math.min(this.getPopulation().size(), 10);
 
@@ -598,6 +603,14 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	 */
 	public NEATGenome getBestGenome() {
 		return bestGenome;
+	}
+
+	public void reportError(Throwable t) {
+		synchronized(this) {
+			if( this.reportedError==null ) {
+				this.reportedError = t;
+			}
+		}
 	}
 
 }
