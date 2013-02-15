@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.encog.EncogError;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.MLMethod;
@@ -102,7 +103,6 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	private double probNewMutate = 0.0;
 	private double maxPertubation = 0.02;
 	private EvolutionaryOperator champMutation;
-	private Random rnd;
 
 	/**
 	 * Construct a neat trainer with a new population. The new population is
@@ -303,9 +303,6 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 
 		this.speciation.init(this);
 
-		// get a random generator
-		this.rnd = getRandomNumberFactory().factor();
-
 		// find out how many threads to use
 		if (this.threadCount == 0) {
 			this.actualThreadCount = Runtime.getRuntime().availableProcessors();
@@ -356,11 +353,14 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		newPopulation.clear();
 
 		// add in the best genome
+		NEATGenome oldBest = this.bestGenome;
+		
 		if (this.bestGenome != null) {
+			NEATGenome temp = this.bestGenome;
 			this.bestGenome = null;
-			this.addChild(this.bestGenome);
+			this.addChild(temp);
 		}
-
+		
 		for (final NEATSpecies s : ((NEATPopulation) getPopulation())
 				.getSpecies()) {
 			NEATTrainWorker worker = new NEATTrainWorker(this, s);
@@ -392,6 +392,11 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 
 		getPopulation().clear();
 		getPopulation().addAll(newPopulation);
+		
+		if( oldBest!=null && 
+				!this.getPopulation().getGenomes().contains(oldBest)) {
+			throw new EncogError("The top genome died, this should never happen!!");
+		}
 
 		this.speciation.performSpeciation();
 	}
