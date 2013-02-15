@@ -393,9 +393,11 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		getPopulation().clear();
 		getPopulation().addAll(newPopulation);
 		
-		if( oldBest!=null && 
-				!this.getPopulation().getGenomes().contains(oldBest)) {
-			throw new EncogError("The top genome died, this should never happen!!");
+		if( isValidationMode() ) {
+			if( oldBest!=null && 
+					!this.getPopulation().getGenomes().contains(oldBest)) {
+				throw new EncogError("The top genome died, this should never happen!!");
+			}
 		}
 
 		this.speciation.performSpeciation();
@@ -403,6 +405,12 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 
 	public boolean addChild(NEATGenome genome) {
 		synchronized (this.newPopulation) {
+			if( isValidationMode() ) {
+				if( this.newPopulation.contains(genome) ) {
+					throw new EncogError("Genome already added to population: " + genome.toString());
+				}
+			}
+			
 			if (this.newPopulation.size() < this.getPopulation().size()) {
 				// don't readd the best genome
 				if (genome != this.bestGenome) {
