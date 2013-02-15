@@ -328,6 +328,7 @@ public class NEATSpecies implements Serializable {
 		} else {
 			this.offspringShare = total / count;
 		}
+		
 		return this.offspringShare;
 	}
 
@@ -337,6 +338,16 @@ public class NEATSpecies implements Serializable {
 		result.append(Format.formatDouble(this.getBestScore(), 2));
 		result.append(", members=");
 		result.append(this.members.size());
+		result.append(", age=");
+		result.append(this.age);
+		result.append(", no_improv=");
+		result.append(this.gensNoImprovement);
+		result.append(", share=");
+		result.append(this.offspringShare);
+		result.append(", offspring count=");
+		result.append(this.offspringShare);
+		result.append(", elite=");
+		result.append(this.getEliteSize());
 		result.append("]");
 		return result.toString();
 	}

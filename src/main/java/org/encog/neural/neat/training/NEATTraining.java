@@ -23,6 +23,12 @@
  */
 package org.encog.neural.neat.training;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -356,11 +362,12 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		// add in the best genome
 		NEATGenome oldBest = this.bestGenome;
 		
-		if (this.bestGenome != null) {
+		/*if (this.bestGenome != null) {
 			NEATGenome temp = this.bestGenome;
 			this.bestGenome = null;
 			this.addChild(temp);
-		}
+		}*/
+		this.bestGenome = null;
 		
 		for (final NEATSpecies s : ((NEATPopulation) getPopulation())
 				.getSpecies()) {
@@ -398,12 +405,12 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		getPopulation().clear();
 		getPopulation().addAll(newPopulation);
 		
-		if( isValidationMode() ) {
+		/*if( isValidationMode() ) {
 			if( oldBest!=null && 
 					!this.getPopulation().getGenomes().contains(oldBest)) {
 				throw new EncogError("The top genome died, this should never happen!!");
 			}
-		}
+		}*/
 
 		this.speciation.performSpeciation();
 	}
@@ -611,6 +618,51 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 				this.reportedError = t;
 			}
 		}
+	}
+	
+	public void dump(File file) {
+		try {
+			FileOutputStream fos = new FileOutputStream(file);
+			dump(fos);
+			fos.close();
+		} catch(IOException ex) {
+			throw new GeneticError(ex);
+		}
+	}
+	
+	public void dump(OutputStream os) {
+		this.sortPopulation();
+		
+		PrintWriter out = new PrintWriter(new OutputStreamWriter(os));
+				
+		if( this.bestGenome!=null ) {
+			out.println("Best genome: " + this.bestGenome.toString());
+		}
+		
+		
+		out.println("Species");
+		for(int i=0;i<this.getNEATPopulation().getSpecies().size();i++) {
+			NEATSpecies species = this.getNEATPopulation().getSpecies().get(i);
+			out.println("Species #" + i + ":" + species.toString());
+		}
+		
+		out.println("Species Detail");
+		for(int i=0;i<this.getNEATPopulation().getSpecies().size();i++) {
+			NEATSpecies species = this.getNEATPopulation().getSpecies().get(i);
+			out.println("Species #" + i + ":" + species.toString());
+			out.println("Leader:" + species.getLeader()); 
+			for(int j=0;j<species.getMembers().size();j++) {
+				out.println("Species Member #" + j + ":" + species.getMembers().get(j));
+			}
+		}
+		
+		out.println("Population Dump");
+		for(int i=0;i<this.getNEATPopulation().getGenomes().size();i++) {
+			out.println("Genome #" + i + ":" + this.getNEATPopulation().getGenomes().get(i));
+		}
+		
+		out.flush();
+				
 	}
 
 }

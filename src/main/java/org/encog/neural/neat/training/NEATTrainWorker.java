@@ -29,7 +29,7 @@ public class NEATTrainWorker implements Runnable {
 			int numToSpawn = (int) Math.round(this.species.getOffspringCount());
 
 			// Add elite genomes directly
-			if (this.species.getMembers().size() > 5) {
+			if( this.species.getMembers().size()>5 ) {
 				int eliteCount = Math.min(numToSpawn, species.getEliteSize());
 				// System.out.println("Elite Spwan: " +
 				// this.species.getEliteSize() + " of " +

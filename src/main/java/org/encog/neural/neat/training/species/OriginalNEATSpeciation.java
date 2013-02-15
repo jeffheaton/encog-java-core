@@ -1,16 +1,18 @@
 package org.encog.neural.neat.training.species;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.encog.Encog;
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.genetic.GeneticError;
 import org.encog.neural.neat.NEATSpecies;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATTraining;
 
 public class OriginalNEATSpeciation implements Speciation {
-	
+
 	/**
 	 * The adjustment factor for disjoint genes.
 	 */
@@ -25,49 +27,52 @@ public class OriginalNEATSpeciation implements Speciation {
 	 * The adjustment factor for matched genes.
 	 */
 	private double constMatched = 0.4;
-	
+
 	private NEATTraining owner;
 	private double compatibilityThreshold = 1.0;
 	private int numGensAllowedNoImprovement = 15;
 	private int maxNumberOfSpecies = 40;
 	private SortGenomesForSpecies sortGenomes;
 
-	
 	@Override
 	public void init(NEATTraining theOwner) {
 		this.owner = theOwner;
 		this.sortGenomes = new SortGenomesForSpecies(theOwner);
 	}
-	
+
 	@Override
 	public void performSpeciation() {
-		resetSpecies();
-		speciateAndCalculateSpawnLevels();
+		List<NEATGenome> genomes = resetSpecies();
+		speciateAndCalculateSpawnLevels(genomes);
 	}
-	
-	
+
 	/**
 	 * Determine the species.
+	 * 
+	 * @param genomes
 	 */
-	private void speciateAndCalculateSpawnLevels() {
+	private void speciateAndCalculateSpawnLevels(List<NEATGenome> genomes) {
 		double maxScore = 0;
-		
-		List<NEATSpecies> speciesCollection = this.owner.getNEATPopulation().getSpecies();
-		
+
+		List<NEATSpecies> speciesCollection = this.owner.getNEATPopulation()
+				.getSpecies();
+
 		// calculate compatibility between genomes and species
 		adjustCompatibilityThreshold();
 
 		// assign genomes to species (if any exist)
-		for (final Genome g : owner.getPopulation().getGenomes()) {
+		for (final Genome g : genomes) {
 			NEATSpecies currentSpecies = null;
 			final NEATGenome genome = (NEATGenome) g;
-			
-			if( !Double.isNaN(genome.getScore()) && !Double.isInfinite(genome.getScore())) {
+
+			if (!Double.isNaN(genome.getScore())
+					&& !Double.isInfinite(genome.getScore())) {
 				maxScore = Math.max(genome.getScore(), maxScore);
 			}
 
 			for (final NEATSpecies s : speciesCollection) {
-				final double compatibility = getCompatibilityScore(genome, s.getLeader());
+				final double compatibility = getCompatibilityScore(genome,
+						s.getLeader());
 
 				if (compatibility <= this.compatibilityThreshold) {
 					currentSpecies = s;
@@ -79,90 +84,111 @@ public class OriginalNEATSpeciation implements Speciation {
 
 			// if this genome did not fall into any existing species, create a
 			// new species
-			if (currentSpecies==null) {
-				currentSpecies = new NEATSpecies(owner.getNEATPopulation(), genome,
-						owner.getNEATPopulation().assignSpeciesID());
+			if (currentSpecies == null) {
+				currentSpecies = new NEATSpecies(owner.getNEATPopulation(),
+						genome, owner.getNEATPopulation().assignSpeciesID());
 				owner.getNEATPopulation().getSpecies().add(currentSpecies);
 			}
 		}
-		
-		// 
+
+		//
 		double totalSpeciesScore = 0;
-		for(NEATSpecies species: speciesCollection) {
-			totalSpeciesScore+=species.calculateShare(this.owner.getScoreFunction().shouldMinimize(),maxScore);
+		for (NEATSpecies species : speciesCollection) {
+			totalSpeciesScore += species.calculateShare(this.owner
+					.getScoreFunction().shouldMinimize(), maxScore);
 		}
-		
-		if( totalSpeciesScore<Encog.DEFAULT_DOUBLE_EQUAL) {
-			// This should not happen much, or if it does, only in the beginning.
-			// All species scored zero.  So they are all equally bad.  Just divide
+
+		if (totalSpeciesScore < Encog.DEFAULT_DOUBLE_EQUAL) {
+			// This should not happen much, or if it does, only in the
+			// beginning.
+			// All species scored zero. So they are all equally bad. Just divide
 			// up the right to produce offspring evenly.
 			divideEven(speciesCollection);
 		} else {
-			// Divide up the number of offspring produced to the most fit species.
+			// Divide up the number of offspring produced to the most fit
+			// species.
 			divideByFittestSpecies(speciesCollection, totalSpeciesScore);
 		}
-		
+
 	}
-	
+
 	private void divideEven(List<NEATSpecies> speciesCollection) {
 		double ratio = 1.0 / speciesCollection.size();
-		for(NEATSpecies species: speciesCollection) {
-			int share = (int)Math.round(ratio * this.owner.getPopulation().getPopulationSize());
+		for (NEATSpecies species : speciesCollection) {
+			int share = (int) Math.round(ratio
+					* this.owner.getPopulation().getPopulationSize());
 			species.setOffspringCount(share);
 		}
 	}
-		
-	private void divideByFittestSpecies(List<NEATSpecies> speciesCollection, double totalSpeciesScore) {
+
+	private void divideByFittestSpecies(List<NEATSpecies> speciesCollection,
+			double totalSpeciesScore) {
 		NEATSpecies bestSpecies = null;
-		
-		if( this.owner.getBestGenome() !=null ) {
+
+		if (this.owner.getBestGenome() != null) {
 			bestSpecies = this.owner.getBestGenome().getSpecies();
 		}
-			
-		Object[] speciesArray = speciesCollection.toArray();
-		for(int i=0;i<speciesArray.length;i++) {
-			NEATSpecies species = (NEATSpecies)speciesArray[i];
-			int share = (int)Math.round((species.getOffspringShare()/totalSpeciesScore) * this.owner.getPopulation().getPopulationSize());
 
-			if( species==bestSpecies && share==0 ) {
+		Object[] speciesArray = speciesCollection.toArray();
+		for (int i = 0; i < speciesArray.length; i++) {
+			NEATSpecies species = (NEATSpecies) speciesArray[i];
+			int share = (int) Math
+					.round((species.getOffspringShare() / totalSpeciesScore)
+							* this.owner.getPopulation().getPopulationSize());
+
+			if (species == bestSpecies && share == 0) {
 				share = 1;
 			}
-			
-			if( species.getMembers().size()==0 || share==0 ) {
+
+			if (species.getMembers().size() == 0 || share == 0) {
 				speciesCollection.remove(species);
 			} else if ((species.getGensNoImprovement() > this.numGensAllowedNoImprovement)
-					&& species!=bestSpecies) {
+					&& species != bestSpecies) {
 				speciesCollection.remove(species);
 			} else {
 				species.setOffspringCount(share);
-				Collections.sort(species.getMembers(),this.sortGenomes);
+				Collections.sort(species.getMembers(), this.sortGenomes);
 			}
 		}
 	}
-	
+
 	/**
 	 * Reset for an iteration.
+	 * 
+	 * @return
 	 */
-	private void resetSpecies() {
-		final Object[] speciesArray = owner.getNEATPopulation().getSpecies().toArray();
+	private List<NEATGenome> resetSpecies() {
+		final List<NEATGenome> result = new ArrayList<NEATGenome>();
+		final Object[] speciesArray = owner.getNEATPopulation().getSpecies()
+				.toArray();
+
+		// Add the NEAT genomes
+		for (Genome genome : this.owner.getNEATPopulation().getGenomes()) {
+			result.add((NEATGenome) genome);
+		}
 
 		for (final Object element : speciesArray) {
 			final NEATSpecies s = (NEATSpecies) element;
 			s.purge();
 
-			// did the leader die?  If so, disband the species.
-			if( !owner.getPopulation().getGenomes().contains(s.getLeader())) {
+			// did the leader die? If so, disband the species. (but don't kill
+			// the genomes)
+			if (!owner.getPopulation().getGenomes().contains(s.getLeader())) {
+				owner.getNEATPopulation().getSpecies().remove(s);
+			} else if ((s.getGensNoImprovement() > this.numGensAllowedNoImprovement)
+					&& owner.getSelectionComparator().isBetterThan(
+							this.owner.getError(), s.getBestScore())) {
 				owner.getNEATPopulation().getSpecies().remove(s);
 			}
-			else if ((s.getGensNoImprovement() > this.numGensAllowedNoImprovement)
-					&& owner.getSelectionComparator().isBetterThan(this.owner.getError(),
-							s.getBestScore())) {
-				owner.getNEATPopulation().getSpecies().remove(s);
-			}
+
+			// remove the leader from the list we return. the leader already has
+			// a species
+			result.remove(s.getLeader());
 		}
+
+		return result;
 	}
-	
-	
+
 	/**
 	 * Adjust the species compatibility threshold. This prevents us from having
 	 * too many species.
@@ -183,9 +209,10 @@ public class OriginalNEATSpeciation implements Speciation {
 		else if (owner.getNEATPopulation().getSpecies().size() < 2) {
 			this.compatibilityThreshold -= thresholdIncrement;
 		}
-		//System.out.println( this.compatibilityThreshold + ", species count=" + this.owner.getNEATPopulation().getSpecies().size());
+		// System.out.println( this.compatibilityThreshold + ", species count="
+		// + this.owner.getNEATPopulation().getSpecies().size());
 	}
-	
+
 	/**
 	 * Get the compatibility score with another genome. Used to determine
 	 * species.
@@ -194,7 +221,8 @@ public class OriginalNEATSpeciation implements Speciation {
 	 *            The other genome.
 	 * @return The score.
 	 */
-	private double getCompatibilityScore(final NEATGenome genome1, final NEATGenome genome2) {
+	private double getCompatibilityScore(final NEATGenome genome1,
+			final NEATGenome genome2) {
 		double numDisjoint = 0;
 		double numExcess = 0;
 		double numMatched = 0;
@@ -202,38 +230,38 @@ public class OriginalNEATSpeciation implements Speciation {
 
 		int genome1Size = genome1.getLinksChromosome().size();
 		int genome2Size = genome2.getLinksChromosome().size();
-		int n = 1;//Math.max(genome1Size, genome2Size);
-		
+		int n = 1;// Math.max(genome1Size, genome2Size);
+
 		int g1 = 0;
 		int g2 = 0;
 
-		while ((g1 < genome1Size )
-				|| (g2 < genome2Size )) {
+		while ((g1 < genome1Size) || (g2 < genome2Size)) {
 
-			if (g1 == genome1Size ) {
+			if (g1 == genome1Size) {
 				g2++;
 				numExcess++;
 				continue;
 			}
 
-			if (g2 == genome2Size ) {
+			if (g2 == genome2Size) {
 				g1++;
 				numExcess++;
 				continue;
 			}
 
 			// get innovation numbers for each gene at this point
-			final long id1 = genome1.getLinksChromosome().get(g1).getInnovationId();
-			final long id2 = genome2.getLinksChromosome().get(g2).getInnovationId();
+			final long id1 = genome1.getLinksChromosome().get(g1)
+					.getInnovationId();
+			final long id2 = genome2.getLinksChromosome().get(g2)
+					.getInnovationId();
 
 			// innovation numbers are identical so increase the matched score
 			if (id1 == id2) {
 
 				// get the weight difference between these two genes
-				weightDifference += Math
-						.abs(genome1.getLinksChromosome().get(g1).getWeight()
-								- genome2.getLinksChromosome()
-										.get(g2).getWeight());
+				weightDifference += Math.abs(genome1.getLinksChromosome()
+						.get(g1).getWeight()
+						- genome2.getLinksChromosome().get(g2).getWeight());
 				g1++;
 				g2++;
 				numMatched++;
@@ -258,7 +286,7 @@ public class OriginalNEATSpeciation implements Speciation {
 
 		return score;
 	}
-	
+
 	/**
 	 * Add a genome.
 	 * 
@@ -267,10 +295,17 @@ public class OriginalNEATSpeciation implements Speciation {
 	 * @param genome
 	 *            The genome to add.
 	 */
-	private void addSpeciesMember(final NEATSpecies species, 
+	private void addSpeciesMember(final NEATSpecies species,
 			final NEATGenome genome) {
 
-		if (owner.getSelectionComparator().compare(genome,species.getLeader())<0) {
+		if (this.owner.isValidationMode()) {
+			if (species.getMembers().contains(genome)) {
+				throw new GeneticError("Species already contains genome: "
+						+ genome.toString());
+			}
+		}
+
+		if (owner.getSelectionComparator().compare(genome, species.getLeader()) < 0) {
 			species.setBestScore(genome.getScore());
 			species.setGensNoImprovement(0);
 			species.setLeader(genome);
@@ -288,7 +323,8 @@ public class OriginalNEATSpeciation implements Speciation {
 	}
 
 	/**
-	 * @param constDisjoint the constDisjoint to set
+	 * @param constDisjoint
+	 *            the constDisjoint to set
 	 */
 	public void setConstDisjoint(double constDisjoint) {
 		this.constDisjoint = constDisjoint;
@@ -302,7 +338,8 @@ public class OriginalNEATSpeciation implements Speciation {
 	}
 
 	/**
-	 * @param constExcess the constExcess to set
+	 * @param constExcess
+	 *            the constExcess to set
 	 */
 	public void setConstExcess(double constExcess) {
 		this.constExcess = constExcess;
@@ -316,7 +353,8 @@ public class OriginalNEATSpeciation implements Speciation {
 	}
 
 	/**
-	 * @param constMatched the constMatched to set
+	 * @param constMatched
+	 *            the constMatched to set
 	 */
 	public void setConstMatched(double constMatched) {
 		this.constMatched = constMatched;
@@ -330,7 +368,8 @@ public class OriginalNEATSpeciation implements Speciation {
 	}
 
 	/**
-	 * @param compatibilityThreshold the compatibilityThreshold to set
+	 * @param compatibilityThreshold
+	 *            the compatibilityThreshold to set
 	 */
 	public void setCompatibilityThreshold(double compatibilityThreshold) {
 		this.compatibilityThreshold = compatibilityThreshold;
@@ -344,7 +383,8 @@ public class OriginalNEATSpeciation implements Speciation {
 	}
 
 	/**
-	 * @param numGensAllowedNoImprovement the numGensAllowedNoImprovement to set
+	 * @param numGensAllowedNoImprovement
+	 *            the numGensAllowedNoImprovement to set
 	 */
 	public void setNumGensAllowedNoImprovement(int numGensAllowedNoImprovement) {
 		this.numGensAllowedNoImprovement = numGensAllowedNoImprovement;
@@ -358,7 +398,8 @@ public class OriginalNEATSpeciation implements Speciation {
 	}
 
 	/**
-	 * @param maxNumberOfSpecies the maxNumberOfSpecies to set
+	 * @param maxNumberOfSpecies
+	 *            the maxNumberOfSpecies to set
 	 */
 	public void setMaxNumberOfSpecies(int maxNumberOfSpecies) {
 		this.maxNumberOfSpecies = maxNumberOfSpecies;
@@ -372,7 +413,8 @@ public class OriginalNEATSpeciation implements Speciation {
 	}
 
 	/**
-	 * @param sortGenomes the sortGenomes to set
+	 * @param sortGenomes
+	 *            the sortGenomes to set
 	 */
 	public void setSortGenomes(SortGenomesForSpecies sortGenomes) {
 		this.sortGenomes = sortGenomes;
@@ -388,16 +430,13 @@ public class OriginalNEATSpeciation implements Speciation {
 	@Override
 	public void addChild(NEATGenome genome) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void ageSpecies(NEATSpecies species) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
-	
-	
 
 }
