@@ -55,7 +55,7 @@ public class NEATMutateWeights extends NEATMutation {
 		boolean mutated = false;
 		
 		for (final NEATLinkGene linkGene : target.getLinksChromosome()) {
-			if (rnd.nextDouble() < getOwner().getMutateRate()) {
+			if (rnd.nextDouble() < getOwner().getProbMutate()) {
 				mutated = true;
 				mutateWeight(rnd, linkGene, weightRange, maxPerturb);	
 			}
@@ -69,7 +69,7 @@ public class NEATMutateWeights extends NEATMutation {
 	}
 	
 	public void mutateWeight(Random rnd, NEATLinkGene linkGene, double weightRange, double maxPerturb) {
-		if (rnd.nextDouble() < getOwner().getProbNewMutate()) {
+		if (rnd.nextDouble() < getOwner().getProbNewWeight()) {
 			linkGene.setWeight(RangeRandomizer.randomize(rnd, -weightRange,
 					weightRange));
 		} else {					
