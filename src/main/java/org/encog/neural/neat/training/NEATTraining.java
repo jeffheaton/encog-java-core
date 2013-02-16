@@ -37,7 +37,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.encog.EncogError;
-import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
@@ -121,6 +120,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	private double maxPertubation = 0.5;
 	private EvolutionaryOperator champMutation;
 	private Throwable reportedError;
+	private NEATGenome oldBestGenome;
 
 	/**
 	 * Construct a neat trainer with a new population. The new population is
@@ -371,13 +371,13 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		newPopulation.clear();
 
 		// add in the best genome
-		NEATGenome oldBest = this.bestGenome;
+		this.oldBestGenome = this.bestGenome;
 		
-		/*if (this.bestGenome != null) {
+		if (this.bestGenome != null) {
 			NEATGenome temp = this.bestGenome;
 			this.bestGenome = null;
 			this.addChild(temp);
-		}*/
+		}
 		this.bestGenome = null;
 		
 		for (final NEATSpecies s : ((NEATPopulation) getPopulation())
@@ -416,12 +416,19 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		getPopulation().clear();
 		getPopulation().addAll(newPopulation);
 		
-		/*if( isValidationMode() ) {
-			if( oldBest!=null && 
-					!this.getPopulation().getGenomes().contains(oldBest)) {
+		if( isValidationMode() ) {
+			int currentPopSize = this.getPopulation().getGenomes().size();
+			int targetPopSize = this.getNEATPopulation().getPopulationSize();
+			if( currentPopSize != targetPopSize) {
+				throw new EncogError("Population size of "+currentPopSize+" is outside of the target size of " + targetPopSize);
+			}
+			
+			
+			if( this.oldBestGenome!=null && 
+					!this.getPopulation().getGenomes().contains(this.oldBestGenome)) {
 				throw new EncogError("The top genome died, this should never happen!!");
 			}
-		}*/
+		}
 
 		this.speciation.performSpeciation();
 	}
@@ -499,32 +506,6 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	 */
 	public void sortPopulation() {
 		getPopulation().sort(this.getBestComparator());
-	}
-
-	/**
-	 * Select a gene using a tournament.
-	 * 
-	 * @param numComparisons
-	 *            The number of compares to do.
-	 * @return The chosen genome.
-	 */
-	public NEATGenome tournamentSelection(final int numComparisons) {
-		double bestScoreSoFar = 0;
-
-		int ChosenOne = 0;
-
-		for (int i = 0; i < numComparisons; ++i) {
-			final int ThisTry = (int) RangeRandomizer.randomize(0,
-					getPopulation().size() - 1);
-
-			if (getPopulation().get(ThisTry).getScore() > bestScoreSoFar) {
-				ChosenOne = ThisTry;
-
-				bestScoreSoFar = getPopulation().get(ThisTry).getScore();
-			}
-		}
-
-		return (NEATGenome) getPopulation().get(ChosenOne);
 	}
 
 	public NEATPopulation getNEATPopulation() {
@@ -673,6 +654,13 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	 */
 	public void setProbNewWeight(double probNewWeight) {
 		this.probNewWeight = probNewWeight;
+	}
+
+	/**
+	 * @return the oldBestGenome
+	 */
+	public NEATGenome getOldBestGenome() {
+		return oldBestGenome;
 	}
 	
 	

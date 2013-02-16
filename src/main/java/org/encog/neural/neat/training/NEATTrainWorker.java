@@ -29,19 +29,20 @@ public class NEATTrainWorker implements Runnable {
 			int numToSpawn = (int) Math.round(this.species.getOffspringCount());
 
 			// Add elite genomes directly
-			if( this.species.getMembers().size()>5 ) {
+			if (this.species.getMembers().size() > 5) {
 				int eliteCount = Math.min(numToSpawn, species.getEliteSize());
-				// System.out.println("Elite Spwan: " +
-				// this.species.getEliteSize() + " of " +
-				// this.species.getMembers().size());
 				for (int i = 0; i < eliteCount; i++) {
-					numToSpawn--;
-					if (!this.train.addChild(this.species.getMembers().get(i))) {
-						return;
+					NEATGenome eliteGenome = this.species.getMembers().get(i);
+					if (this.train.getOldBestGenome() != eliteGenome) {
+						numToSpawn--;
+						if (!this.train.addChild(eliteGenome)) {
+							return;
+						}
 					}
 				}
 			}
 
+			// handle the rest of the offspring
 			while ((numToSpawn--) > 0) {
 				// choose an evolutionary operation (i.e. crossover or a type of
 				// mutation) to use

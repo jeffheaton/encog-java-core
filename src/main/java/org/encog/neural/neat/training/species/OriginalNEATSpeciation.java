@@ -109,6 +109,8 @@ public class OriginalNEATSpeciation implements Speciation {
 			// species.
 			divideByFittestSpecies(speciesCollection, totalSpeciesScore);
 		}
+		
+		levelOff();
 
 	}
 
@@ -151,6 +153,46 @@ public class OriginalNEATSpeciation implements Speciation {
 			}
 		}
 	}
+	
+	private void levelOff() {
+		int total = 0;
+		List<NEATSpecies> list = this.owner.getNEATPopulation().getSpecies();
+		Collections.sort(list, new SpeciesComparator(this.owner));
+		
+		// best species gets at least one offspring
+		if( list.get(0).getOffspringCount()==0 ) {
+			list.get(0).setOffspringCount(1);
+		}
+		
+		// total up offspring
+		for(NEATSpecies species: list) {
+			total+=species.getOffspringCount();
+		}
+		
+		// how does the total offspring count match the target
+		int diff = this.owner.getNEATPopulation().getPopulationSize() - total;
+		
+		
+		if( diff<0 ) {
+			// need less offspring
+			int index = list.size()-1;
+			while(diff!=0 && index>0) {
+				NEATSpecies species = list.get(index);
+				int t = Math.min(species.getOffspringCount(), Math.abs(diff));
+				species.setOffspringCount(species.getOffspringCount()-t);
+				if( species.getOffspringCount()==0 ) {
+					list.remove(index);
+				}
+				diff+=t;
+				index--;
+			}
+		} else {
+			// need more offspring
+			list.get(0).setOffspringCount(list.get(0).getOffspringCount()+diff);
+		}
+	}
+
+	
 
 	/**
 	 * Reset for an iteration.
