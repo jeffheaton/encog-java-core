@@ -295,15 +295,15 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(1),new MutatePerturbLinkWeight(0.02)));
 		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(2),new MutatePerturbLinkWeight(0.02)));
 		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(3),new MutatePerturbLinkWeight(0.02)));
-		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectProportion(0.2),new MutatePerturbLinkWeight(0.02)));
+		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectProportion(0.02),new MutatePerturbLinkWeight(0.02)));
 		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(1),new MutatePerturbLinkWeight(1)));
 		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(2),new MutatePerturbLinkWeight(1)));
 		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(3),new MutatePerturbLinkWeight(1)));
-		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectProportion(0.2),new MutatePerturbLinkWeight(1)));
+		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectProportion(0.02),new MutatePerturbLinkWeight(1)));
 		weightMutation.getComponents().add(0.03,new NEATMutateWeights(new SelectFixed(1),new MutateResetLinkWeight()));
 		weightMutation.getComponents().add(0.03,new NEATMutateWeights(new SelectFixed(2),new MutateResetLinkWeight()));
 		weightMutation.getComponents().add(0.03,new NEATMutateWeights(new SelectFixed(3),new MutateResetLinkWeight()));		
-		weightMutation.getComponents().add(0.01,new NEATMutateWeights(new SelectProportion(0.2),new MutateResetLinkWeight()));
+		weightMutation.getComponents().add(0.01,new NEATMutateWeights(new SelectProportion(0.02),new MutateResetLinkWeight()));
 		weightMutation.getComponents().finalizeStructure();
 		
 		this.champMutation = weightMutation;
