@@ -42,6 +42,7 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.opp.CompoundOperator;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.score.AdjustScore;
 import org.encog.ml.ea.score.parallel.ParallelScore;
@@ -61,6 +62,10 @@ import org.encog.neural.neat.training.opp.NEATMutateAddLink;
 import org.encog.neural.neat.training.opp.NEATMutateAddNode;
 import org.encog.neural.neat.training.opp.NEATMutateRemoveLink;
 import org.encog.neural.neat.training.opp.NEATMutateWeights;
+import org.encog.neural.neat.training.opp.links.MutatePerturbLinkWeight;
+import org.encog.neural.neat.training.opp.links.MutateResetLinkWeight;
+import org.encog.neural.neat.training.opp.links.SelectFixed;
+import org.encog.neural.neat.training.opp.links.SelectProportion;
 import org.encog.neural.neat.training.species.OriginalNEATSpeciation;
 import org.encog.neural.neat.training.species.Speciation;
 import org.encog.neural.networks.training.TrainingError;
@@ -286,7 +291,22 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	private void init() {
 		this.speciation = new OriginalNEATSpeciation();
 
-		this.champMutation = new NEATMutateWeights();
+		CompoundOperator weightMutation = new CompoundOperator();
+		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(1),new MutatePerturbLinkWeight(0.02)));
+		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(2),new MutatePerturbLinkWeight(0.02)));
+		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(3),new MutatePerturbLinkWeight(0.02)));
+		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectProportion(0.2),new MutatePerturbLinkWeight(0.02)));
+		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(1),new MutatePerturbLinkWeight(1)));
+		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(2),new MutatePerturbLinkWeight(1)));
+		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(3),new MutatePerturbLinkWeight(1)));
+		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectProportion(0.2),new MutatePerturbLinkWeight(1)));
+		weightMutation.getComponents().add(0.03,new NEATMutateWeights(new SelectFixed(1),new MutateResetLinkWeight()));
+		weightMutation.getComponents().add(0.03,new NEATMutateWeights(new SelectFixed(2),new MutateResetLinkWeight()));
+		weightMutation.getComponents().add(0.03,new NEATMutateWeights(new SelectFixed(3),new MutateResetLinkWeight()));		
+		weightMutation.getComponents().add(0.01,new NEATMutateWeights(new SelectProportion(0.2),new MutateResetLinkWeight()));
+		weightMutation.getComponents().finalizeStructure();
+		
+		this.champMutation = weightMutation;
 		addOperation(0.5, new NEATCrossover());
 		addOperation(0.494, this.champMutation);
 		addOperation(0.0005, new NEATMutateAddNode());

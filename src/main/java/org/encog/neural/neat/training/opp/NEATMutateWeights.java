@@ -23,6 +23,7 @@
  */
 package org.encog.neural.neat.training.opp;
 
+import java.util.List;
 import java.util.Random;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
@@ -30,6 +31,8 @@ import org.encog.ml.ea.genome.Genome;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATLinkGene;
+import org.encog.neural.neat.training.opp.links.MutateLinkWeight;
+import org.encog.neural.neat.training.opp.links.SelectLinks;
 
 /**
  * Mutate the weights of a genome. This works very similar to Simulated
@@ -40,6 +43,34 @@ import org.encog.neural.neat.training.NEATLinkGene;
  */
 public class NEATMutateWeights extends NEATMutation {
 	
+	private SelectLinks linkSelection; 
+	private MutateLinkWeight weightMutation;
+	
+	public NEATMutateWeights(SelectLinks theLinkSelection, MutateLinkWeight theWeightMutation) {
+		this.linkSelection = theLinkSelection;
+		this.weightMutation = theWeightMutation;
+	}
+	
+	
+	
+	/**
+	 * @return the linkSelection
+	 */
+	public SelectLinks getLinkSelection() {
+		return linkSelection;
+	}
+
+
+
+	/**
+	 * @return the weightMutation
+	 */
+	public MutateLinkWeight getWeightMutation() {
+		return weightMutation;
+	}
+
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -48,36 +79,23 @@ public class NEATMutateWeights extends NEATMutation {
 			Genome[] offspring, int offspringIndex) {
 		NEATGenome target = this.obtainGenome(parents, parentIndex, offspring,
 				offspringIndex);
-		double weightRange = ((NEATPopulation) target.getPopulation())
-				.getWeightRange();
-		double maxPerturb = this.getOwner().getMaxPertubation();
-
-		boolean mutated = false;
-		
-		for (final NEATLinkGene linkGene : target.getLinksChromosome()) {
-			if (rnd.nextDouble() < getOwner().getProbMutate()) {
-				mutated = true;
-				mutateWeight(rnd, linkGene, weightRange, maxPerturb);	
-			}
-		}
-		
-		if( !mutated ) {
-			int idx = rnd.nextInt(target.getLinksChromosome().size());
-			NEATLinkGene linkGene  = target.getLinksChromosome().get(idx);
-			mutateWeight(rnd, linkGene, weightRange, maxPerturb);	
+		double weightRange = this.getOwner().getNEATPopulation().getWeightRange();
+		List<NEATLinkGene> list = this.linkSelection.selectLinks(rnd, target);
+		for(NEATLinkGene gene: list) {
+			this.weightMutation.mutateWeight(rnd, gene, weightRange);
 		}
 	}
 	
-	public void mutateWeight(Random rnd, NEATLinkGene linkGene, double weightRange, double maxPerturb) {
-		if (rnd.nextDouble() < getOwner().getProbNewWeight()) {
-			linkGene.setWeight(RangeRandomizer.randomize(rnd, -weightRange,
-					weightRange));
-		} else {					
-			double s = rnd.nextBoolean()?1:-1;
-			double delta = s * rnd.nextGaussian() * maxPerturb;
-			double w = linkGene.getWeight() + delta;
-			w = NEATPopulation.clampWeight(w, weightRange);
-			linkGene.setWeight(w);
-		}
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[");
+		result.append(this.getClass().getSimpleName());
+		result.append(":sel=");
+		result.append(this.linkSelection.toString());
+		result.append(",mutate=");
+		result.append(this.weightMutation.toString());
+		result.append("]");
+		return result.toString();
 	}
+
 }
