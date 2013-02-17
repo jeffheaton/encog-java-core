@@ -104,6 +104,17 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 	 */
 	public void createLink(final NEATGenome target, final long neuron1ID,
 			final long neuron2ID, final double weight) {
+		
+		// first, does this link exist? (and if so, hopefully disabled, otherwise we have a problem)
+		for (final NEATLinkGene linkGene : target.getLinksChromosome()) {
+			if ( (linkGene.getFromNeuronID() == neuron1ID)
+					&& (linkGene.getToNeuronID() == neuron2ID)) {
+				// bring the link back, at the new weight
+				linkGene.setEnabled(true);
+				linkGene.setWeight(weight);
+				return;
+			}
+		}
 
 		// check to see if this innovation has already been tried
 		final NEATInnovation innovation = this.owner.getInnovations()
@@ -162,7 +173,8 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 	public boolean isDuplicateLink(final NEATGenome target,
 			final long fromNeuronID, final long toNeuronID) {
 		for (final NEATLinkGene linkGene : target.getLinksChromosome()) {
-			if ((linkGene.getFromNeuronID() == fromNeuronID)
+			if ( (linkGene.isEnabled())
+					&& (linkGene.getFromNeuronID() == fromNeuronID)
 					&& (linkGene.getToNeuronID() == toNeuronID)) {
 				return true;
 			}
