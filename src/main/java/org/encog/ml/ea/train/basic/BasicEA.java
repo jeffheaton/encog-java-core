@@ -77,7 +77,7 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	
 	private GeneticCODEC codec;
 	private RandomFactory randomNumberFactory = Encog.getInstance().getRandomFactory().factorFactory();
-	private boolean validationMode = true;
+	private boolean validationMode = true;	
 	
 	public BasicEA(Population thePopulation, CalculateScore theScoreFunction) {
 		

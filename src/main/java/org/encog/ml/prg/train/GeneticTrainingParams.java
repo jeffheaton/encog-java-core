@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 public class GeneticTrainingParams implements Serializable {
 	
-	private double mutationProbability = 0.1;
-	private double crossoverProbability = 0.9;
-	
 	private double constMin = -10;
 	
 	private double constMax = 10;
@@ -17,100 +14,8 @@ public class GeneticTrainingParams implements Serializable {
 	
 	private boolean ignoreExceptions;
 	
-	/**
-	 * The starting complexity pentalty.
-	 */
-	private double complexityPenalty = .2;
-	
-	/**
-	 * The starting complexity pentalty.
-	 */
-	private double complexityFullPenalty = 2.0;
-	
-	/**
-	 * The complexity level at which a penalty begins to be applied.
-	 */
-	private int complexityPenaltyThreshold = 10;
-	
-	/**
-	 * The complexity level at which a full (100%) penalty is applied.
-	 */
-	private int complexityPentaltyFullThreshold = 50;
-	
-	private int maxGeneratedDepth = 5;
-	
 	private int maxIndividualSize = 128;
 
-	/**
-	 * @return the complexityPenalty
-	 */
-	public double getComplexityPenalty() {
-		return complexityPenalty;
-	}
-
-	/**
-	 * @param complexityPenalty the complexityPenalty to set
-	 */
-	public void setComplexityPenalty(double complexityPenalty) {
-		this.complexityPenalty = complexityPenalty;
-	}
-
-	/**
-	 * @return the complexityPenaltyThreshold
-	 */
-	public int getComplexityPenaltyThreshold() {
-		return complexityPenaltyThreshold;
-	}
-
-	/**
-	 * @param complexityPenaltyThreshold the complexityPenaltyThreshold to set
-	 */
-	public void setComplexityPenaltyThreshold(int complexityPenaltyThreshold) {
-		this.complexityPenaltyThreshold = complexityPenaltyThreshold;
-	}
-
-	/**
-	 * @return the complexityPentaltyFullThreshold
-	 */
-	public int getComplexityPentaltyFullThreshold() {
-		return complexityPentaltyFullThreshold;
-	}
-
-	/**
-	 * @param complexityPentaltyFullThreshold the complexityPentaltyFullThreshold to set
-	 */
-	public void setComplexityPentaltyFullThreshold(
-			int complexityPentaltyFullThreshold) {
-		this.complexityPentaltyFullThreshold = complexityPentaltyFullThreshold;
-	}
-
-	/**
-	 * @return the complexityFullPenalty
-	 */
-	public double getComplexityFullPenalty() {
-		return complexityFullPenalty;
-	}
-
-	/**
-	 * @param complexityFullPenalty the complexityFullPenalty to set
-	 */
-	public void setComplexityFullPenalty(double complexityFullPenalty) {
-		this.complexityFullPenalty = complexityFullPenalty;
-	}
-	
-	/**
-	 * @return the maxGeneratedDepth
-	 */
-	public int getMaxGeneratedDepth() {
-		return maxGeneratedDepth;
-	}
-
-	/**
-	 * @param maxGeneratedDepth the maxGeneratedDepth to set
-	 */
-	public void setMaxGeneratedDepth(int maxGeneratedDepth) {
-		this.maxGeneratedDepth = maxGeneratedDepth;
-	}
 
 	/**
 	 * @return the maxIndividualSize
@@ -181,34 +86,6 @@ public class GeneticTrainingParams implements Serializable {
 	 */
 	public void setPopulationSize(int populationSize) {
 		this.populationSize = populationSize;
-	}
-
-	/**
-	 * @return the mutationProbability
-	 */
-	public double getMutationProbability() {
-		return mutationProbability;
-	}
-
-	/**
-	 * @param mutationProbability the mutationProbability to set
-	 */
-	public void setMutationProbability(double mutationProbability) {
-		this.mutationProbability = mutationProbability;
-	}
-
-	/**
-	 * @return the crossoverProbability
-	 */
-	public double getCrossoverProbability() {
-		return crossoverProbability;
-	}
-
-	/**
-	 * @param crossoverProbability the crossoverProbability to set
-	 */
-	public void setCrossoverProbability(double crossoverProbability) {
-		this.crossoverProbability = crossoverProbability;
 	}
 
 	/**
