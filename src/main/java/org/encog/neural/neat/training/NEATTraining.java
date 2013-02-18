@@ -109,20 +109,6 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 	private int threadCount;
 	private int actualThreadCount = -1;
 	private int maxTries = 5;
-	/**
-	 * The probability of each individual link gene being mutated.
-	 */
-	private double probMutate = 0.5;
-	
-	/**
-	 * The probability of each mutated link gene being assigned a totally new weight.
-	 */
-	private double probNewWeight = 0.5;
-	
-	/**
-	 * The maximum amount by which a mutation will change the weight.
-	 */
-	private double maxPertubation = 0.5;
 	private EvolutionaryOperator champMutation;
 	private Throwable reportedError;
 	private NEATGenome oldBestGenome;
@@ -464,7 +450,7 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 
 	public boolean addChild(NEATGenome genome) {
 		synchronized (this.newPopulation) {
-			if (this.newPopulation.size() < this.getPopulation().size()) {
+			if (this.newPopulation.size() < this.getPopulation().getPopulationSize()) {
 				// don't readd the old best genome, it was already added
 				if( genome!=this.oldBestGenome ) {
 					
@@ -567,22 +553,6 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		this.maxTries = maxTries;
 	}
 
-
-	/**
-	 * @return the maxPertubation
-	 */
-	public double getMaxPertubation() {
-		return maxPertubation;
-	}
-
-	/**
-	 * @param maxPertubation
-	 *            the maxPertubation to set
-	 */
-	public void setMaxPertubation(double maxPertubation) {
-		this.maxPertubation = maxPertubation;
-	}
-
 	/**
 	 * @return the speciation
 	 */
@@ -656,34 +626,6 @@ public class NEATTraining extends BasicEA implements MLTrain, MultiThreadable {
 		
 		out.flush();
 				
-	}
-
-	/**
-	 * @return the probMutate
-	 */
-	public double getProbMutate() {
-		return probMutate;
-	}
-
-	/**
-	 * @param probMutate the probMutate to set
-	 */
-	public void setProbMutate(double probMutate) {
-		this.probMutate = probMutate;
-	}
-
-	/**
-	 * @return the probNewWeight
-	 */
-	public double getProbNewWeight() {
-		return probNewWeight;
-	}
-
-	/**
-	 * @param probNewWeight the probNewWeight to set
-	 */
-	public void setProbNewWeight(double probNewWeight) {
-		this.probNewWeight = probNewWeight;
 	}
 
 	/**
