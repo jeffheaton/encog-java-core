@@ -86,12 +86,8 @@ public class TestPersistPopulation extends TestCase {
 	
 	private void validate(NEATPopulation pop)
 	{
-		Assert.assertEquals(0.3,pop.getOldAgePenalty());
-		Assert.assertEquals(50,pop.getOldAgeThreshold());
 		Assert.assertEquals(10,pop.getPopulationSize());
 		Assert.assertEquals(0.2,pop.getSurvivalRate());
-		Assert.assertEquals(10,pop.getYoungBonusAgeThreshold());
-		Assert.assertEquals(0.3,pop.getYoungScoreBonus());
 		
 		// see if the population can actually be used to train
 		MLDataSet trainingSet = new BasicMLDataSet(XOR.XOR_INPUT, XOR.XOR_IDEAL);		

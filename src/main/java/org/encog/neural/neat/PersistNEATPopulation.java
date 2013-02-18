@@ -162,18 +162,10 @@ public class PersistNEATPopulation implements EncogPersistor {
 						PersistConst.INPUT_COUNT));
 				result.setOutputCount(EncogFileSection.parseInt(params,
 						PersistConst.OUTPUT_COUNT));
-				result.setOldAgePenalty(EncogFileSection.parseDouble(params,
-						NEATPopulation.PROPERTY_OLD_AGE_PENALTY));
-				result.setOldAgeThreshold(EncogFileSection.parseInt(params,
-						NEATPopulation.PROPERTY_OLD_AGE_THRESHOLD));
 				result.setPopulationSize(EncogFileSection.parseInt(params,
 						NEATPopulation.PROPERTY_POPULATION_SIZE));
 				result.setSurvivalRate(EncogFileSection.parseDouble(params,
 						NEATPopulation.PROPERTY_SURVIVAL_RATE));
-				result.setYoungBonusAgeThreshhold(EncogFileSection.parseInt(
-						params, NEATPopulation.PROPERTY_YOUNG_AGE_THRESHOLD));
-				result.setYoungScoreBonus(EncogFileSection.parseDouble(params,
-						NEATPopulation.PROPERTY_YOUNG_AGE_BONUS));
 				result.setActivationCycles(EncogFileSection.parseInt(params,
 						NEATPopulation.PROPERTY_CYCLES));
 			}
@@ -241,18 +233,10 @@ public class PersistNEATPopulation implements EncogPersistor {
 		out.writeProperty(PersistConst.INPUT_COUNT, pop.getInputCount());
 		out.writeProperty(PersistConst.OUTPUT_COUNT, pop.getOutputCount());
 		out.writeProperty(NEATPopulation.PROPERTY_CYCLES, pop.getActivationCycles());
-		out.writeProperty(NEATPopulation.PROPERTY_OLD_AGE_PENALTY,
-				pop.getOldAgePenalty());
-		out.writeProperty(NEATPopulation.PROPERTY_OLD_AGE_THRESHOLD,
-				pop.getOldAgeThreshold());
 		out.writeProperty(NEATPopulation.PROPERTY_POPULATION_SIZE,
 				pop.getPopulationSize());
 		out.writeProperty(NEATPopulation.PROPERTY_SURVIVAL_RATE,
 				pop.getSurvivalRate());
-		out.writeProperty(NEATPopulation.PROPERTY_YOUNG_AGE_THRESHOLD,
-				pop.getYoungBonusAgeThreshold());
-		out.writeProperty(NEATPopulation.PROPERTY_YOUNG_AGE_BONUS,
-				pop.getYoungScoreBonus());
 		out.addSubSection("INNOVATIONS");
 		if (pop.getInnovations() != null) {
 			for(String key: pop.getInnovations().getInnovations().keySet() ) {

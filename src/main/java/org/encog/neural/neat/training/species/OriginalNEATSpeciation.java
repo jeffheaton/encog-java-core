@@ -469,16 +469,4 @@ public class OriginalNEATSpeciation implements Speciation {
 		return owner;
 	}
 
-	@Override
-	public void addChild(NEATGenome genome) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void ageSpecies(NEATSpecies species) {
-		// TODO Auto-generated method stub
-
-	}
-
 }
