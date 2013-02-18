@@ -68,7 +68,7 @@ public class PersistPrgPopulation implements EncogPersistor {
 	public Object read(final InputStream is) {
 		EncogProgramContext context = new EncogProgramContext();
 		
-		final PrgPopulation result = new PrgPopulation(context);
+		final PrgPopulation result = new PrgPopulation(context,0);
 
 		final EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;
@@ -121,6 +121,7 @@ public class PersistPrgPopulation implements EncogPersistor {
 				}
 			}
 		}
+		result.setPopulationSize(result.getGenomes().size());
 		return result;
 	}
 

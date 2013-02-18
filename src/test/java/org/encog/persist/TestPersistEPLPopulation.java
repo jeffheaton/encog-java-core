@@ -24,7 +24,7 @@ public class TestPersistEPLPopulation {
 	{
 		EncogProgramContext context = new EncogProgramContext();
 		StandardExtensions.createAll(context.getFunctions());
-		PrgPopulation pop = new PrgPopulation(context);
+		PrgPopulation pop = new PrgPopulation(context,10);
 		EncogProgram prg1 = new EncogProgram(context);
 		EncogProgram prg2 = new EncogProgram(context);
 		prg1.compileExpression("x+1");

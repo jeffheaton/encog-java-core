@@ -14,12 +14,12 @@ public class PrgPopulation extends BasicPopulation implements MLRegression {
 	private final EncogProgramContext context;
 	private EPLHolder holder;
 
-	public PrgPopulation(EncogProgramContext theContext) {
-		super(theContext.getParams().getPopulationSize(), new PrgGenomeFactory(
+	public PrgPopulation(EncogProgramContext theContext, int thePopulationSize) {
+		super(thePopulationSize, new PrgGenomeFactory(
 				theContext));
 		GeneticTrainingParams params = theContext.getParams();
 		this.holder = theContext.getHolderFactory().factor(
-				params.getPopulationSize(), params.getMaxIndividualSize());
+				thePopulationSize, params.getMaxIndividualSize());
 		this.context = theContext;
 	}
 
