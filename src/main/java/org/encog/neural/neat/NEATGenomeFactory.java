@@ -9,12 +9,11 @@ import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.NEATNeuronGene;
 
 public interface NEATGenomeFactory extends GenomeFactory {
+	NEATGenome factor(long genomeID, List<NEATNeuronGene> neurons,
+			List<NEATLinkGene> links, int inputCount, int outputCount);
+
 	NEATGenome factor(NEATGenome other);
 
-	NEATGenome factor(long genomeID,
-			List<NEATNeuronGene> neurons, List<NEATLinkGene> links,
-			int inputCount, int outputCount);
-
-	NEATGenome factor(Random rnd, NEATPopulation pop, long id,
-			int inputCount, int outputCount, double connectionDensity);
+	NEATGenome factor(Random rnd, NEATPopulation pop, long id, int inputCount,
+			int outputCount, double connectionDensity);
 }

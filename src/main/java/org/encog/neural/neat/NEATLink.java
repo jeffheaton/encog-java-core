@@ -42,84 +42,74 @@ public class NEATLink implements Serializable, Comparable<NEATLink> {
 	 */
 	private static final long serialVersionUID = -4117045705080951946L;
 
-
 	private int fromNeuron;
 	private int toNeuron;
 	private double weight;
-		
 
-
-	public NEATLink(int theFromNeuron, int theToNeuron, double theWeight) {
+	public NEATLink(final int theFromNeuron, final int theToNeuron,
+			final double theWeight) {
 		this.fromNeuron = theFromNeuron;
 		this.toNeuron = theToNeuron;
 		this.weight = theWeight;
 	}
 
+	@Override
+	public int compareTo(final NEATLink other) {
+		final int result = this.fromNeuron - other.fromNeuron;
+		if (result != 0) {
+			return result;
+		}
 
-
-	public int getFromNeuron() {
-		return fromNeuron;
+		return this.toNeuron - other.toNeuron;
 	}
 
+	@Override
+	public boolean equals(final Object other) {
+		if (other == null) {
+			return false;
+		}
+		if (other == this) {
+			return true;
+		}
+		if (!(other instanceof NEATLink)) {
+			return false;
+		}
+		final NEATLink otherMyClass = (NEATLink) other;
+		return compareTo(otherMyClass) == 0;
+	}
 
+	public int getFromNeuron() {
+		return this.fromNeuron;
+	}
 
-	public void setFromNeuron(int fromNeuron) {
+	public int getToNeuron() {
+		return this.toNeuron;
+	}
+
+	public double getWeight() {
+		return this.weight;
+	}
+
+	public void setFromNeuron(final int fromNeuron) {
 		this.fromNeuron = fromNeuron;
 	}
 
-
-
-	public int getToNeuron() {
-		return toNeuron;
-	}
-
-
-
-	public void setToNeuron(int toNeuron) {
+	public void setToNeuron(final int toNeuron) {
 		this.toNeuron = toNeuron;
 	}
 
-
-
-	public double getWeight() {
-		return weight;
-	}
-
-
-
-	public void setWeight(double weight) {
+	public void setWeight(final double weight) {
 		this.weight = weight;
 	}
 
-
-
+	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 		result.append("[NEATLink: fromNeuron=");
 		result.append(this.fromNeuron);
 		result.append(", toNeuron=");
 		result.append(this.toNeuron);
 		result.append("]");
 		return result.toString();
-	}
-
-
-	@Override
-	public boolean equals(Object other){
-	    if (other == null) return false;
-	    if (other == this) return true;
-	    if (!(other instanceof NEATLink))return false;
-	    NEATLink otherMyClass = (NEATLink)other;
-	    return compareTo(otherMyClass)==0;
-	}
-
-	@Override
-	public int compareTo(NEATLink other) {
-		int result = this.fromNeuron - other.fromNeuron;
-		if( result!=0 ) {
-			return result;
-		}
-		
-		return this.toNeuron - other.toNeuron;
 	}
 }

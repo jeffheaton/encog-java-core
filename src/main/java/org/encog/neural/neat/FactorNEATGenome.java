@@ -10,26 +10,34 @@ import org.encog.neural.neat.training.NEATNeuronGene;
 
 public class FactorNEATGenome implements NEATGenomeFactory, Serializable {
 
-	@Override
-	public NEATGenome factor(NEATGenome other) {
-		return new NEATGenome(other);
-	}
-
-	@Override
-	public NEATGenome factor(long genomeID, List<NEATNeuronGene> neurons,
-			List<NEATLinkGene> links, int inputCount, int outputCount) {
-		return new NEATGenome(genomeID, neurons, links, inputCount, outputCount);
-	}
-
-	@Override
-	public NEATGenome factor(Random rnd, NEATPopulation pop, long id, int inputCount,
-			int outputCount, double connectionDensity) {
-		return new NEATGenome(rnd, pop,id,inputCount,outputCount, connectionDensity);
-	}
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public NEATGenome factor() {
 		return new NEATGenome();
+	}
+
+	@Override
+	public NEATGenome factor(final long genomeID,
+			final List<NEATNeuronGene> neurons, final List<NEATLinkGene> links,
+			final int inputCount, final int outputCount) {
+		return new NEATGenome(genomeID, neurons, links, inputCount, outputCount);
+	}
+
+	@Override
+	public NEATGenome factor(final NEATGenome other) {
+		return new NEATGenome(other);
+	}
+
+	@Override
+	public NEATGenome factor(final Random rnd, final NEATPopulation pop,
+			final long id, final int inputCount, final int outputCount,
+			final double connectionDensity) {
+		return new NEATGenome(rnd, pop, id, inputCount, outputCount,
+				connectionDensity);
 	}
 
 }

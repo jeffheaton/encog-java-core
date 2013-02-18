@@ -26,68 +26,76 @@ package org.encog.neural.neat.training.opp;
 import java.util.List;
 import java.util.Random;
 
-import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.Genome;
-import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.opp.links.MutateLinkWeight;
 import org.encog.neural.neat.training.opp.links.SelectLinks;
 
 /**
- * Mutate the weights of a genome. This works very similar to Simulated
- * Annealing, and is used to fine tune the weights of a genome.
- * 
- * The activation function will be randomly chosen from the activation function 
- * factory stored in the population.
+ * Mutate the weights of a genome. A method is select the links for mutation.
+ * Another method should also be provided for the actual mutation.
  */
 public class NEATMutateWeights extends NEATMutation {
-	
-	private SelectLinks linkSelection; 
-	private MutateLinkWeight weightMutation;
-	
-	public NEATMutateWeights(SelectLinks theLinkSelection, MutateLinkWeight theWeightMutation) {
+	/**
+	 * The method used to select the links to mutate.
+	 */
+	private final SelectLinks linkSelection;
+
+	/**
+	 * The method used to mutate the selected links.
+	 */
+	private final MutateLinkWeight weightMutation;
+
+	/**
+	 * Construct a weight mutation operator.
+	 * @param theLinkSelection The method used to choose the links for mutation.
+	 * @param theWeightMutation The method used to actually mutate the weights.
+	 */
+	public NEATMutateWeights(final SelectLinks theLinkSelection,
+			final MutateLinkWeight theWeightMutation) {
 		this.linkSelection = theLinkSelection;
 		this.weightMutation = theWeightMutation;
 	}
-	
-	
-	
+
 	/**
-	 * @return the linkSelection
+	 * @return The method used to select links for mutation.
 	 */
 	public SelectLinks getLinkSelection() {
-		return linkSelection;
+		return this.linkSelection;
 	}
-
-
 
 	/**
-	 * @return the weightMutation
+	 * @return The method used to mutate the weights.
 	 */
 	public MutateLinkWeight getWeightMutation() {
-		return weightMutation;
+		return this.weightMutation;
 	}
-
-
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
-			Genome[] offspring, int offspringIndex) {
-		NEATGenome target = this.obtainGenome(parents, parentIndex, offspring,
+	public void performOperation(final Random rnd, final Genome[] parents,
+			final int parentIndex, final Genome[] offspring,
+			final int offspringIndex) {
+		final NEATGenome target = obtainGenome(parents, parentIndex, offspring,
 				offspringIndex);
-		double weightRange = this.getOwner().getNEATPopulation().getWeightRange();
-		List<NEATLinkGene> list = this.linkSelection.selectLinks(rnd, target);
-		for(NEATLinkGene gene: list) {
+		final double weightRange = getOwner().getNEATPopulation()
+				.getWeightRange();
+		final List<NEATLinkGene> list = this.linkSelection.selectLinks(rnd,
+				target);
+		for (final NEATLinkGene gene : list) {
 			this.weightMutation.mutateWeight(rnd, gene, weightRange);
 		}
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 		result.append("[");
 		result.append(this.getClass().getSimpleName());
 		result.append(":sel=");

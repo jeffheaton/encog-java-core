@@ -61,42 +61,51 @@ public class NEATNetwork implements MLRegression, MLError, Serializable {
 	public static final String PROPERTY_NETWORK_DEPTH = "depth";
 	public static final String PROPERTY_LINKS = "links";
 	public static final String PROPERTY_SNAPSHOT = "snapshot";
-	
-    private final NEATLink[] links;
+
+	private final NEATLink[] links;
 	private final ActivationFunction[] activationFunctions;
-    private final double[] preActivation;
-    private final double[] postActivation;
-    private final int outputIndex;
+	private final double[] preActivation;
+	private final double[] postActivation;
+	private final int outputIndex;
 	private int inputCount;
-	private int outputCount;	
+	private int outputCount;
 	private int activationCycles = NEATPopulation.DEFAULT_CYCLES;
-    private boolean hasRelaxed = false;
-    private double relaxationThreshold;
+	private boolean hasRelaxed = false;
+	private double relaxationThreshold;
 
-    public NEATNetwork(
-    		int inputNeuronCount,
-            int outputNeuronCount,
-            List<NEATLink> connectionArray,
-            ActivationFunction[] theActivationFunctions)
-    {
-        links = new NEATLink[connectionArray.size()];
-        for(int i=0;i<connectionArray.size();i++) {
-        	links[i] = connectionArray.get(i);
-        }
-        
-        activationFunctions = theActivationFunctions;
-        int neuronCount = this.activationFunctions.length;
+	public NEATNetwork(final int inputNeuronCount, final int outputNeuronCount,
+			final List<NEATLink> connectionArray,
+			final ActivationFunction[] theActivationFunctions) {
+		this.links = new NEATLink[connectionArray.size()];
+		for (int i = 0; i < connectionArray.size(); i++) {
+			this.links[i] = connectionArray.get(i);
+		}
 
-        preActivation = new double[neuronCount];
-        postActivation = new double[neuronCount];
+		this.activationFunctions = theActivationFunctions;
+		final int neuronCount = this.activationFunctions.length;
 
-        this.inputCount = inputNeuronCount;
-        outputIndex = inputNeuronCount+1;
-        this.outputCount = outputNeuronCount;
+		this.preActivation = new double[neuronCount];
+		this.postActivation = new double[neuronCount];
 
-        // bias
-        postActivation[0] = 1.0;
-    }
+		this.inputCount = inputNeuronCount;
+		this.outputIndex = inputNeuronCount + 1;
+		this.outputCount = outputNeuronCount;
+
+		// bias
+		this.postActivation[0] = 1.0;
+	}
+
+	/**
+	 * Calculate the error for this neural network.
+	 * 
+	 * @param data
+	 *            The training set.
+	 * @return The error percentage.
+	 */
+	@Override
+	public double calculateError(final MLDataSet data) {
+		return EncogUtility.calculateRegressionError(this, data);
+	}
 
 	/**
 	 * Compute the output from this synapse.
@@ -105,47 +114,46 @@ public class NEATNetwork implements MLRegression, MLError, Serializable {
 	 *            The input to this synapse.
 	 * @return The output from this synapse.
 	 */
+	@Override
 	public MLData compute(final MLData input) {
 		final MLData result = new BasicMLData(this.outputCount);
-		
+
 		// clear from previous
-    	EngineArray.fill(this.preActivation, 0.0);
-    	EngineArray.fill(this.postActivation, 0.0);
-    	postActivation[0] = 1.0;
-		
+		EngineArray.fill(this.preActivation, 0.0);
+		EngineArray.fill(this.postActivation, 0.0);
+		this.postActivation[0] = 1.0;
+
 		// copy input
-		EngineArray.arrayCopy(input.getData(), 0, this.postActivation, 1, this.inputCount);
-				
+		EngineArray.arrayCopy(input.getData(), 0, this.postActivation, 1,
+				this.inputCount);
 
 		// iterate through the network activationCycles times
-		for (int i = 0; i < activationCycles; ++i) {
+		for (int i = 0; i < this.activationCycles; ++i) {
 			internalCompute();
 		}
-		
+
 		// copy output
-		EngineArray.arrayCopy(this.postActivation, this.outputIndex, result.getData(), 0, this.outputCount);
+		EngineArray.arrayCopy(this.postActivation, this.outputIndex,
+				result.getData(), 0, this.outputCount);
 
 		return result;
 	}
-	
-    private void internalCompute()
-    {
-            for(int j=0; j<links.length; j++) {
-                preActivation[links[j].getToNeuron()] += postActivation[links[j].getFromNeuron()] 
-                		* links[j].getWeight();
-            }
 
-            for(int j=outputIndex; j<preActivation.length; j++)
-            {
-            	postActivation[j] = preActivation[j];
-            	activationFunctions[j].activationFunction(postActivation, j, 1);            	
-                preActivation[j] = 0.0F;
-            }
-    }
+	public int getActivationCycles() {
+		return this.activationCycles;
+	}
+
+	public ActivationFunction[] getActivationFunctions() {
+		return this.activationFunctions;
+	}
 
 	@Override
 	public int getInputCount() {
 		return this.inputCount;
+	}
+
+	public NEATLink[] getLinks() {
+		return this.links;
 	}
 
 	@Override
@@ -153,67 +161,58 @@ public class NEATNetwork implements MLRegression, MLError, Serializable {
 		return this.outputCount;
 	}
 
-	public void setInputCount(int i) {
-		this.inputCount = i;		
-	}
-	
-	public void setOutputCount(int i) {
-		this.outputCount = i;		
-	}
-
-	/**
-	 * Calculate the error for this neural network. 
-	 * 
-	 * @param data
-	 *            The training set.
-	 * @return The error percentage.
-	 */
-	public double calculateError(final MLDataSet data) {
-		return EncogUtility.calculateRegressionError(this,data);
-	}
-
-	public int getActivationCycles() {
-		return activationCycles;
-	}
-
-	public void setActivationCycles(int activationCycles) {
-		this.activationCycles = activationCycles;
-	}
-
-	public boolean isHasRelaxed() {
-		return hasRelaxed;
-	}
-
-	public void setHasRelaxed(boolean hasRelaxed) {
-		this.hasRelaxed = hasRelaxed;
-	}
-
-	public double getRelaxationThreshold() {
-		return relaxationThreshold;
-	}
-
-	public void setRelaxationThreshold(double relaxationThreshold) {
-		this.relaxationThreshold = relaxationThreshold;
-	}
-
-	public NEATLink[] getLinks() {
-		return links;
-	}
-
-	public double[] getPreActivation() {
-		return preActivation;
+	public int getOutputIndex() {
+		return this.outputIndex;
 	}
 
 	public double[] getPostActivation() {
-		return postActivation;
+		return this.postActivation;
 	}
 
-	public int getOutputIndex() {
-		return outputIndex;
-	}	
-	
-    public ActivationFunction[] getActivationFunctions() {
-		return activationFunctions;
-	}	
+	public double[] getPreActivation() {
+		return this.preActivation;
+	}
+
+	public double getRelaxationThreshold() {
+		return this.relaxationThreshold;
+	}
+
+	private void internalCompute() {
+		for (int j = 0; j < this.links.length; j++) {
+			this.preActivation[this.links[j].getToNeuron()] += this.postActivation[this.links[j]
+					.getFromNeuron()] * this.links[j].getWeight();
+		}
+
+		for (int j = this.outputIndex; j < this.preActivation.length; j++) {
+			this.postActivation[j] = this.preActivation[j];
+			this.activationFunctions[j].activationFunction(this.postActivation,
+					j, 1);
+			this.preActivation[j] = 0.0F;
+		}
+	}
+
+	public boolean isHasRelaxed() {
+		return this.hasRelaxed;
+	}
+
+	public void setActivationCycles(final int activationCycles) {
+		this.activationCycles = activationCycles;
+	}
+
+	public void setHasRelaxed(final boolean hasRelaxed) {
+		this.hasRelaxed = hasRelaxed;
+	}
+
+	public void setInputCount(final int i) {
+		this.inputCount = i;
+	}
+
+	public void setOutputCount(final int i) {
+		this.outputCount = i;
+	}
+
+	public void setRelaxationThreshold(final double relaxationThreshold) {
+		this.relaxationThreshold = relaxationThreshold;
+	}
 
 }
