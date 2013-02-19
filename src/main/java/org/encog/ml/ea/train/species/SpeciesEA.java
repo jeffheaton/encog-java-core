@@ -247,22 +247,6 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 			throw new GeneticError(this.reportedError);
 		}
 
-		int champRange = Math.min(this.getPopulation().size(), 10);
-
-		Random rnd = new Random();
-
-		while (newPopulation.size() < getPopulation().getPopulationSize()) {
-			int index = rnd.nextInt(champRange);
-			NEATGenome sel = ((NEATGenomeFactory) getPopulation()
-					.getGenomeFactory()).factor((NEATGenome) getPopulation()
-					.get(index));
-			NEATGenome[] parent = { sel };
-			parent[0].setGenomeID(((NEATPopulation)getPopulation()).assignGenomeID());
-			parent[0].setBirthGeneration(getIteration());
-			this.champMutation.performOperation(rnd, parent, 0, parent, 0);
-			this.addChild(parent[0]);
-		}
-
 		getPopulation().clear();
 		getPopulation().addAll(newPopulation);
 		

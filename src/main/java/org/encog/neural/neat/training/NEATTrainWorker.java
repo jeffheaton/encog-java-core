@@ -44,7 +44,7 @@ public class NEATTrainWorker implements Runnable {
 			}
 
 			// handle the rest of the offspring
-			while ((numToSpawn--) > 0) {
+			while (numToSpawn > 0) {
 				// choose an evolutionary operation (i.e. crossover or a type of
 				// mutation) to use
 				EvolutionaryOperator opp = this.train.getOperators()
@@ -89,6 +89,7 @@ public class NEATTrainWorker implements Runnable {
 
 				// process the new child
 				if (children[0] != null) {
+					numToSpawn--;
 					children[0].setGenomeID(population.assignGenomeID());
 					children[0].setBirthGeneration(this.train.getIteration());
 
