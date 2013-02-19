@@ -16,15 +16,15 @@ public class FactorHyperNEATGenome implements NEATGenomeFactory {
 	}
 
 	@Override
-	public NEATGenome factor(long genomeID, List<NEATNeuronGene> neurons,
+	public NEATGenome factor(List<NEATNeuronGene> neurons,
 			List<NEATLinkGene> links, int inputCount, int outputCount) {
-		return new HyperNEATGenome(genomeID, neurons, links, inputCount, outputCount);
+		return new HyperNEATGenome(neurons, links, inputCount, outputCount);
 	}
 
 	@Override
-	public NEATGenome factor(Random rnd, NEATPopulation pop, long id, int inputCount,
+	public NEATGenome factor(Random rnd, NEATPopulation pop, int inputCount,
 			int outputCount, double connectionDensity) {
-		return new HyperNEATGenome(rnd, pop,id,inputCount,outputCount, connectionDensity);
+		return new HyperNEATGenome(rnd, pop, inputCount,outputCount, connectionDensity);
 	}
 
 	@Override

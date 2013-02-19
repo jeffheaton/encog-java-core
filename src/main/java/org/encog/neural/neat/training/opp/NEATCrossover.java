@@ -306,8 +306,7 @@ public class NEATCrossover implements EvolutionaryOperator {
 		// finally, create the genome
 		final NEATGenomeFactory factory = (NEATGenomeFactory) this.owner
 				.getPopulation().getGenomeFactory();
-		final NEATGenome babyGenome = factory.factor(this.owner
-				.getNEATPopulation().assignGenomeID(), selectedNeurons,
+		final NEATGenome babyGenome = factory.factor(selectedNeurons,
 				selectedLinks, mom.getInputCount(), mom.getOutputCount());
 		babyGenome.setBirthGeneration(this.owner.getIteration());
 		babyGenome.setPopulation(this.owner.getPopulation());

@@ -21,10 +21,10 @@ public class FactorNEATGenome implements NEATGenomeFactory, Serializable {
 	}
 
 	@Override
-	public NEATGenome factor(final long genomeID,
+	public NEATGenome factor(
 			final List<NEATNeuronGene> neurons, final List<NEATLinkGene> links,
 			final int inputCount, final int outputCount) {
-		return new NEATGenome(genomeID, neurons, links, inputCount, outputCount);
+		return new NEATGenome(neurons, links, inputCount, outputCount);
 	}
 
 	@Override
@@ -34,9 +34,9 @@ public class FactorNEATGenome implements NEATGenomeFactory, Serializable {
 
 	@Override
 	public NEATGenome factor(final Random rnd, final NEATPopulation pop,
-			final long id, final int inputCount, final int outputCount,
+			final int inputCount, final int outputCount,
 			final double connectionDensity) {
-		return new NEATGenome(rnd, pop, id, inputCount, outputCount,
+		return new NEATGenome(rnd, pop, inputCount, outputCount,
 				connectionDensity);
 	}
 

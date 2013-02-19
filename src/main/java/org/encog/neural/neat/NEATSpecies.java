@@ -70,19 +70,10 @@ public class NEATSpecies implements Serializable {
 	private final List<NEATGenome> members = new ArrayList<NEATGenome>();
 
 	/**
-	 * The species id.
-	 */
-	private long speciesID;
-
-	/**
 	 * The owner class.
 	 */
 	private NEATPopulation population;
 
-	/**
-	 * The id of the leader.
-	 */
-	private long leaderID;
 
 	private transient int offspringCount;
 	private transient double offspringShare;
@@ -105,9 +96,8 @@ public class NEATSpecies implements Serializable {
 	 *            The species id.
 	 */
 	public NEATSpecies(final NEATPopulation thePopulation,
-			final NEATGenome theFirst, final long theSpeciesID) {
+			final NEATGenome theFirst) {
 		this.population = thePopulation;
-		this.speciesID = theSpeciesID;
 		this.bestScore = theFirst.getScore();
 		this.gensNoImprovement = 0;
 		this.age = 0;
@@ -227,20 +217,6 @@ public class NEATSpecies implements Serializable {
 	}
 
 	/**
-	 * @return The species ID.
-	 */
-	public long getSpeciesID() {
-		return this.speciesID;
-	}
-
-	/**
-	 * @return the leaderID
-	 */
-	public long getTempLeaderID() {
-		return this.leaderID;
-	}
-
-	/**
 	 * Purge all members, increase age by one and count the number of
 	 * generations with no improvement.
 	 */
@@ -293,7 +269,6 @@ public class NEATSpecies implements Serializable {
 	 */
 	public void setLeader(final NEATGenome theLeader) {
 		this.leader = theLeader;
-		this.leaderID = theLeader.getGenomeID();
 	}
 
 	/**
@@ -310,27 +285,6 @@ public class NEATSpecies implements Serializable {
 	 */
 	public void setPopulation(final NEATPopulation thePopulation) {
 		this.population = thePopulation;
-	}
-
-	/**
-	 * Set the species id.
-	 * 
-	 * @param i
-	 *            The new species id.
-	 */
-	public void setSpeciesID(final int i) {
-		this.speciesID = i;
-	}
-
-	/**
-	 * Set the leader id. This value is not persisted, it is used only for
-	 * loading.
-	 * 
-	 * @param theLeaderID
-	 *            the leaderID to set
-	 */
-	public void setTempLeaderID(final long theLeaderID) {
-		this.leaderID = theLeaderID;
 	}
 
 	@Override

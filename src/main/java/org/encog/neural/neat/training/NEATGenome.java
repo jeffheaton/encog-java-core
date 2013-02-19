@@ -88,11 +88,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	private int outputCount;
 	
 	private NEATSpecies species;
-
-	/**
-	 * The genome id.
-	 */
-	private long genomeID;
 	
 	private int birthGeneration;
 
@@ -103,7 +98,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 *            The other genome.
 	 */
 	public NEATGenome(final NEATGenome other) {
-		setGenomeID(other.getGenomeID());
 		this.networkDepth = other.networkDepth;
 		this.setPopulation(other.getPopulation());
 		setScore(other.getScore());
@@ -144,10 +138,9 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * @param outputCount
 	 *            The output count.
 	 */
-	public NEATGenome(final long genomeID, final List<NEATNeuronGene> neurons,
+	public NEATGenome(final List<NEATNeuronGene> neurons,
 			final List<NEATLinkGene> links, final int inputCount,
 			final int outputCount) {
-		setGenomeID(genomeID);
 		setAdjustedScore(0);
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
@@ -170,10 +163,9 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * @param outputCount
 	 *            The output count.
 	 */
-	public NEATGenome(final Random rnd, final NEATPopulation pop, final long id,
+	public NEATGenome(final Random rnd, final NEATPopulation pop, 
 			final int inputCount, final int outputCount,
 			double connectionDensity) {
-		setGenomeID(id);
 		setAdjustedScore(0);
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
@@ -326,20 +318,6 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 			}
 			map.put(key, nlg);
 		}
-	}
-
-	public long getGenomeID() {
-		return this.genomeID;
-	}
-
-	/**
-	 * Set the genome id.
-	 * 
-	 * @param theGenomeID
-	 *            the genome id.
-	 */
-	public void setGenomeID(final long theGenomeID) {
-		this.genomeID = theGenomeID;
 	}
 
 	@Override

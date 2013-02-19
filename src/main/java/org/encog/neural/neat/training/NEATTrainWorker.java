@@ -71,13 +71,12 @@ public class NEATTrainWorker implements Runnable {
 					int numAttempts = 5;
 
 					parents[1] = (NEATGenome) species.chooseParent(rnd);
-					while ((parents[0].getGenomeID() == parents[1]
-							.getGenomeID()) && ((numAttempts--) > 0)) {
+					while ((parents[0] == parents[1]) && ((numAttempts--) > 0)) {
 						parents[1] = (NEATGenome) species.chooseParent(rnd);
 					}
 
 					// success, perform crossover
-					if (parents[0].getGenomeID() != parents[1].getGenomeID()) {
+					if (parents[0] != parents[1]) {
 						opp.performOperation(rnd, parents, 0, children, 0);
 					}
 				} else {
@@ -90,7 +89,6 @@ public class NEATTrainWorker implements Runnable {
 				// process the new child
 				if (children[0] != null) {
 					numToSpawn--;
-					children[0].setGenomeID(population.assignGenomeID());
 					children[0].setBirthGeneration(this.train.getIteration());
 
 					// sort the baby's genes by their innovation numbers

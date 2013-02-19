@@ -111,11 +111,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	private final GenerateID geneIDGenerate = new BasicGenerateID();
 
 	/**
-	 * Generate genome id's.
-	 */
-	private final GenerateID genomeIDGenerate = new BasicGenerateID();
-
-	/**
 	 * Generate innovation id's.
 	 */
 	private final GenerateID innovationIDGenerate = new BasicGenerateID();
@@ -143,11 +138,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	int outputCount;
 
 	private final List<NEATSpecies> species = new ArrayList<NEATSpecies>();
-
-	/**
-	 * Generate species id's.
-	 */
-	private final GenerateID speciesIDGenerate = new BasicGenerateID();
 
 	/**
 	 * The survival rate.
@@ -208,16 +198,8 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 		return this.geneIDGenerate.generate();
 	}
 
-	public long assignGenomeID() {
-		return this.genomeIDGenerate.generate();
-	}
-
 	public long assignInnovationID() {
 		return this.innovationIDGenerate.generate();
-	}
-
-	public long assignSpeciesID() {
-		return this.speciesIDGenerate.generate();
 	}
 
 	@Override
@@ -274,13 +256,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	}
 
 	/**
-	 * @return the genomeIDGenerate
-	 */
-	public GenerateID getGenomeIDGenerate() {
-		return this.genomeIDGenerate;
-	}
-
-	/**
 	 * @return the initialConnectionDensity
 	 */
 	public double getInitialConnectionDensity() {
@@ -333,13 +308,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 		return this.species;
 	}
 
-	/**
-	 * @return the speciesIDGenerate
-	 */
-	public GenerateID getSpeciesIDGenerate() {
-		return this.speciesIDGenerate;
-	}
-
 	public Substrate getSubstrate() {
 		return this.substrate;
 	}
@@ -374,16 +342,14 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 
 		// reset counters
 		getGeneIDGenerate().setCurrentID(1);
-		getGenomeIDGenerate().setCurrentID(1);
 		getInnovationIDGenerate().setCurrentID(1);
-		getSpeciesIDGenerate().setCurrentID(1);
 
 		final Random rnd = this.randomNumberFactory.factor();
 
 		// create the initial population
 		for (int i = 0; i < getPopulationSize(); i++) {
 			final NEATGenome genome = getGenomeFactory().factor(rnd, this,
-					assignGenomeID(), this.inputCount, this.outputCount,
+					this.inputCount, this.outputCount,
 					this.initialConnectionDensity);
 			add(genome);
 		}

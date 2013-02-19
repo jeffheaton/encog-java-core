@@ -552,8 +552,7 @@ public class OriginalNEATSpeciation implements Speciation {
 			// new species
 			if (currentSpecies == null) {
 				currentSpecies = new NEATSpecies(
-						this.owner.getNEATPopulation(), genome, this.owner
-								.getNEATPopulation().assignSpeciesID());
+						this.owner.getNEATPopulation(), genome);
 				this.owner.getNEATPopulation().getSpecies().add(currentSpecies);
 			}
 		}
