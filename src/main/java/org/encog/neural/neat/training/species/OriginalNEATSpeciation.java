@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.encog.Encog;
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.neural.neat.NEATSpecies;
 import org.encog.neural.neat.training.NEATGenome;
@@ -356,9 +357,9 @@ public class OriginalNEATSpeciation implements Speciation {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void init(final NEATTraining theOwner) {
-		this.owner = theOwner;
-		this.sortGenomes = new SortGenomesForSpecies(theOwner);
+	public void init(final EvolutionaryAlgorithm theOwner) {
+		this.owner = (NEATTraining) theOwner;
+		this.sortGenomes = new SortGenomesForSpecies(this.owner);
 	}
 
 	/**
