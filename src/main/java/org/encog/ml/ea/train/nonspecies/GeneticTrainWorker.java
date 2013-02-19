@@ -1,4 +1,4 @@
-package org.encog.ml.ea.train.threaded;
+package org.encog.ml.ea.train.nonspecies;
 
 import java.io.Serializable;
 import java.util.Random;
@@ -11,12 +11,12 @@ import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.prg.exception.EPLTooBig;
 
 public class GeneticTrainWorker extends Thread implements Serializable {
-	private final MultiThreadedEA owner;
+	private final NonSpeciesEA owner;
 	private AtomicBoolean done = new AtomicBoolean();
 	private Genome[] tempProgram;
 	private Random rnd;
 
-	public GeneticTrainWorker(MultiThreadedEA theOwner) {
+	public GeneticTrainWorker(NonSpeciesEA theOwner) {
 		this.owner = theOwner;
 		this.rnd = this.owner.getRandomNumberFactory().factor();
 

@@ -1,4 +1,4 @@
-package org.encog.ml.ea.train.threaded;
+package org.encog.ml.ea.train.nonspecies;
 
 import java.io.Serializable;
 import java.util.concurrent.locks.Condition;
@@ -18,7 +18,7 @@ import org.encog.ml.prg.exception.EncogProgramError;
 import org.encog.ml.prg.train.ThreadedGenomeSelector;
 import org.encog.util.concurrency.MultiThreadable;
 
-public class MultiThreadedEA extends BasicEA
+public class NonSpeciesEA extends BasicEA
 		implements MultiThreadable, EncogShutdownTask, Serializable {
 
 	private GeneticTrainWorker[] workers;
@@ -42,7 +42,7 @@ public class MultiThreadedEA extends BasicEA
 	 */
 	private int threadCount;
 
-	public MultiThreadedEA(Population thePopulation,
+	public NonSpeciesEA(Population thePopulation,
 			CalculateScore theScoreFunction) {
 		super(thePopulation, theScoreFunction);
 
