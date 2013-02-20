@@ -52,14 +52,14 @@ import org.encog.ml.prg.train.GeneticTrainingParams;
  * Provides a basic implementation of a genetic algorithm.
  */
 public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
-	
+
 	private GeneticTrainingParams params = new GeneticTrainingParams();
-	
+
 	/**
 	 * The genome comparator.
 	 */
 	private GenomeComparator bestComparator;
-	
+
 	/**
 	 * The genome comparator.
 	 */
@@ -71,20 +71,21 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	private Population population;
 	private final CalculateScore scoreFunction;
 	private PrgSelection selection;
-	
+
 	private List<AdjustScore> adjusters = new ArrayList<AdjustScore>();
 	private final OperationList operators = new OperationList();
-	
+
 	private GeneticCODEC codec;
-	private RandomFactory randomNumberFactory = Encog.getInstance().getRandomFactory().factorFactory();
-	private boolean validationMode = true;	
-	
+	private RandomFactory randomNumberFactory = Encog.getInstance()
+			.getRandomFactory().factorFactory();
+	private boolean validationMode = true;
+
 	public BasicEA(Population thePopulation, CalculateScore theScoreFunction) {
-		
+
 		this.population = thePopulation;
 		this.scoreFunction = theScoreFunction;
 		this.selection = new TournamentSelection(this, 4);
-		
+
 		if (theScoreFunction.shouldMinimize()) {
 			this.selectionComparator = new MinimizeAdjustedScoreComp();
 			this.bestComparator = new MinimizeScoreComp();
@@ -93,9 +94,7 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 			this.bestComparator = new MaximizeScoreComp();
 		}
 	}
-	
-	
-	
+
 	/**
 	 * Calculate the score for this genome. The genome's score will be set.
 	 * 
@@ -105,10 +104,10 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	public void calculateScore(final Genome g) {
 		MLMethod phenotype = this.getCODEC().decode(g);
 		double score;
-		
+
 		// deal with invalid decode
-		if( phenotype==null ) {
-			if( this.getBestComparator().shouldMinimize() ) {
+		if (phenotype == null) {
+			if (this.getBestComparator().shouldMinimize()) {
 				score = Double.POSITIVE_INFINITY;
 			} else {
 				score = Double.NEGATIVE_INFINITY;
@@ -117,9 +116,9 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 			if (phenotype instanceof MLContext) {
 				((MLContext) phenotype).clearContext();
 			}
-			score = this.getScoreFunction().calculateScore(phenotype);	
+			score = this.getScoreFunction().calculateScore(phenotype);
 		}
-		
+
 		// now set the scores
 		g.setScore(score);
 		g.setAdjustedScore(score);
@@ -132,7 +131,7 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	public GenomeComparator getSelectionComparator() {
 		return this.selectionComparator;
 	}
-	
+
 	/**
 	 * @return The comparator.
 	 */
@@ -159,7 +158,7 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	public void setBestComparator(final GenomeComparator theComparator) {
 		this.bestComparator = theComparator;
 	}
-	
+
 	/**
 	 * Set the comparator.
 	 * 
@@ -181,16 +180,17 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	public void setPopulation(final Population thePopulation) {
 		this.population = thePopulation;
 	}
-	
+
 	/**
 	 * @return the params
 	 */
 	public GeneticTrainingParams getParams() {
 		return params;
 	}
-	
+
 	/**
-	 * @param params the params to set
+	 * @param params
+	 *            the params to set
 	 */
 	public void setParams(GeneticTrainingParams params) {
 		this.params = params;
@@ -208,12 +208,11 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	public void setSelection(PrgSelection selection) {
 		this.selection = selection;
 	}
-	
+
 	@Override
 	public int getMaxIndividualSize() {
 		return this.population.getMaxIndividualSize();
 	}
-	
 
 	@Override
 	public List<AdjustScore> getScoreAdjusters() {
@@ -224,38 +223,39 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	public void addScoreAdjuster(AdjustScore scoreAdjust) {
 		this.adjusters.add(scoreAdjust);
 	}
-	
-	public static void calculateScoreAdjustment(Genome genome, List<AdjustScore> adjusters) {
+
+	public static void calculateScoreAdjustment(Genome genome,
+			List<AdjustScore> adjusters) {
 		double score = genome.getScore();
 		double delta = 0;
-		
-		for(AdjustScore a: adjusters) {
-			delta+=a.calculateAdjustment(genome);
+
+		for (AdjustScore a : adjusters) {
+			delta += a.calculateAdjustment(genome);
 		}
-		
-		genome.setAdjustedScore(score+delta);
+
+		genome.setAdjustedScore(score + delta);
 	}
-	
+
 	public GeneticCODEC getCODEC() {
 		return this.codec;
 	}
-	
+
 	public void setCODEC(GeneticCODEC theCodec) {
 		this.codec = theCodec;
 	}
-	
+
 	/**
 	 * @return the operators
 	 */
 	public OperationList getOperators() {
 		return operators;
 	}
-	
+
 	public void addOperation(double probability, EvolutionaryOperator opp) {
 		this.getOperators().add(probability, opp);
 		opp.init(this);
 	}
-	
+
 	/**
 	 * @return the randomNumberFactory
 	 */
@@ -271,8 +271,6 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 		this.randomNumberFactory = randomNumberFactory;
 	}
 
-
-
 	/**
 	 * @return the validationMode
 	 */
@@ -280,15 +278,12 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 		return validationMode;
 	}
 
-
-
 	/**
-	 * @param validationMode the validationMode to set
+	 * @param validationMode
+	 *            the validationMode to set
 	 */
 	public void setValidationMode(boolean validationMode) {
 		this.validationMode = validationMode;
 	}
-	
-	
-	
+
 }
