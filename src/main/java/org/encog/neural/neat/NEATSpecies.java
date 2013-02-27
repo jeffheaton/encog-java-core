@@ -171,6 +171,9 @@ public class NEATSpecies implements Serializable {
 	}
 
 	public int getEliteSize() {
+		if( this.population==null || this.members==null) {
+			System.out.println("S");
+		}
 		return (int) (this.population.getSurvivalRate() * this.members.size()) + 1;
 	}
 

@@ -346,13 +346,20 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 
 		final Random rnd = this.randomNumberFactory.factor();
 
+		// create one default species
+		NEATSpecies defaultSpecies = new NEATSpecies();
+		defaultSpecies.setPopulation(this);
+		
 		// create the initial population
 		for (int i = 0; i < getPopulationSize(); i++) {
 			final NEATGenome genome = getGenomeFactory().factor(rnd, this,
 					this.inputCount, this.outputCount,
 					this.initialConnectionDensity);
 			add(genome);
+			defaultSpecies.getMembers().add(genome);
 		}
+		defaultSpecies.setLeader(defaultSpecies.getMembers().get(0));
+		this.species.add(defaultSpecies);
 
 		// create initial innovations
 		setInnovations(new NEATInnovationList(this));
