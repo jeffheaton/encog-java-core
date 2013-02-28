@@ -22,7 +22,6 @@ import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.NEATSpecies;
-import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATTrainWorker;
 import org.encog.neural.neat.training.species.Speciation;
 import org.encog.neural.networks.training.TrainingError;
@@ -40,14 +39,14 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 	private int actualThreadCount = -1;
 	private Speciation speciation;
 	private Throwable reportedError;
-	private NEATGenome oldBestGenome;
+	private Genome oldBestGenome;
 	private List<Genome> newPopulation = new ArrayList<Genome>();
 	private EvolutionaryOperator champMutation;
 	
 	/**
 	 * The best ever network.
 	 */
-	private NEATGenome bestGenome;
+	private Genome bestGenome;
 	
 	
 
@@ -184,7 +183,7 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 	/**
 	 * @return the bestGenome
 	 */
-	public NEATGenome getBestGenome() {
+	public Genome getBestGenome() {
 		return bestGenome;
 	}
 
@@ -276,7 +275,7 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 		this.speciation.performSpeciation(newPopulation);
 	}
 
-	public boolean addChild(NEATGenome genome) {
+	public boolean addChild(Genome genome) {
 		synchronized (this.newPopulation) {
 			if (this.newPopulation.size() < this.getPopulation().getPopulationSize()) {
 				// don't readd the old best genome, it was already added
@@ -319,7 +318,7 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 	/**
 	 * @return the oldBestGenome
 	 */
-	public NEATGenome getOldBestGenome() {
+	public Genome getOldBestGenome() {
 		return oldBestGenome;
 	}
 	
@@ -345,7 +344,7 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 		// just pick the first genome as best, it will be updated later.
 		// also most populations are sorted this way after training finishes (for reload)
 		// if there is an empty population, the constructor would have blow
-		this.bestGenome = (NEATGenome) this.getPopulation().getSpecies().get(0).getMembers().get(0);
+		this.bestGenome = this.getPopulation().getSpecies().get(0).getMembers().get(0);
 
 		// speciate
 		List<Genome> genomes = this.getPopulation().flatten();

@@ -172,7 +172,7 @@ public class OriginalNEATSpeciation implements Speciation {
 
 		// determine the best species.
 		if (this.owner.getBestGenome() != null) {
-			bestSpecies = this.owner.getBestGenome().getSpecies();
+			bestSpecies = ((NEATGenome)this.owner.getBestGenome()).getSpecies();
 		}
 
 		// loop over all species and calculate its share
