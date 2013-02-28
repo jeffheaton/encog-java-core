@@ -12,6 +12,10 @@ public class DoubleArrayGenome extends BasicGenome implements ArrayGenome {
 		this.data = new double[size];
 	}
 	
+	public DoubleArrayGenome(DoubleArrayGenome other) {
+		this.data = other.getData().clone();
+	}
+
 	@Override
 	public int size() {
 		return this.data.length;

@@ -92,6 +92,7 @@ public class NEATMutateAddLink extends NEATMutation {
 		double r = ((NEATPopulation) target.getPopulation()).getWeightRange();
 		createLink(target, neuron1ID, neuron2ID,
 				RangeRandomizer.randomize(rnd, -r, r));
+		target.sortGenes();
 	}
 
 }

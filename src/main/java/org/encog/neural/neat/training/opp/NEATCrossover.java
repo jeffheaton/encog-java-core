@@ -310,6 +310,7 @@ public class NEATCrossover implements EvolutionaryOperator {
 				selectedLinks, mom.getInputCount(), mom.getOutputCount());
 		babyGenome.setBirthGeneration(this.owner.getIteration());
 		babyGenome.setPopulation(this.owner.getPopulation());
+		babyGenome.sortGenes();
 
 		offspring[offspringIndex] = babyGenome;
 	}

@@ -25,4 +25,10 @@ public class PrgGenomeFactory implements GenomeFactory, Serializable {
 				new EncogProgramVariables(), newHolder, 0);
 		return result;
 	}
+
+	@Override
+	public Genome factor(Genome other) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

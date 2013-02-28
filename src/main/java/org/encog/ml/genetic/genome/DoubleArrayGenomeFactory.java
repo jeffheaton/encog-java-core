@@ -14,5 +14,11 @@ public class DoubleArrayGenomeFactory implements GenomeFactory {
 	@Override
 	public Genome factor() {
 		return new DoubleArrayGenome(this.size);
+	}
+
+	@Override
+	public Genome factor(Genome other) {
+		// TODO Auto-generated method stub
+		return new DoubleArrayGenome((DoubleArrayGenome)other);
 	}	
 }

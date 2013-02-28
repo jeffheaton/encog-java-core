@@ -24,6 +24,7 @@
 package org.encog.ml.ea.genome;
 
 
+
 /**
  * Defines a factory that produces genomes.
  */
@@ -32,4 +33,6 @@ public interface GenomeFactory {
 	 * @return The newly created genome.
 	 */
 	Genome factor();
+	
+	Genome factor(Genome other);
 }

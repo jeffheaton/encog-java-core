@@ -15,4 +15,9 @@ public class IntegerArrayGenomeFactory implements GenomeFactory {
 	public Genome factor() {
 		return new IntegerArrayGenome(this.size);
 	}
+
+	@Override
+	public Genome factor(Genome other) {
+		return new IntegerArrayGenome( ((IntegerArrayGenome)other));
+	}
 }

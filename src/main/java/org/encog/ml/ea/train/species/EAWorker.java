@@ -14,8 +14,8 @@ import org.encog.neural.neat.training.NEATTraining;
 public class EAWorker implements Runnable {
 
 	private final Species species;
-	private final NEATGenome[] parents = new NEATGenome[2];
-	private final NEATGenome[] children = new NEATGenome[1];
+	private final Genome[] parents = new Genome[2];
+	private final Genome[] children = new Genome[1];
 	private final Random rnd;
 	private final NEATPopulation population;
 	private final NEATTraining train;
@@ -90,8 +90,7 @@ public class EAWorker implements Runnable {
 					}
 				} else {
 					// clone a child (asexual reproduction)
-					children[0] = ((NEATGenomeFactory) this.population
-							.getGenomeFactory()).factor(parents[0]);
+					children[0] = this.population.getGenomeFactory().factor(parents[0]);
 					opp.performOperation(rnd, children, 0, children, 0);
 				}
 
@@ -99,9 +98,6 @@ public class EAWorker implements Runnable {
 				if (children[0] != null) {
 					numToSpawn--;
 					children[0].setBirthGeneration(this.train.getIteration());
-
-					// sort the baby's genes by their innovation numbers
-					children[0].sortGenes();
 
 					this.train.calculateScore(children[0]);
 					if (!this.train.addChild(children[0])) {

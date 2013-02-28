@@ -3,6 +3,7 @@ package org.encog.neural.hyperneat;
 import java.util.List;
 import java.util.Random;
 
+import org.encog.ml.ea.genome.Genome;
 import org.encog.neural.neat.NEATGenomeFactory;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.NEATGenome;
@@ -11,7 +12,7 @@ import org.encog.neural.neat.training.NEATNeuronGene;
 
 public class FactorHyperNEATGenome implements NEATGenomeFactory {
 	@Override
-	public NEATGenome factor(NEATGenome other) {
+	public Genome factor(Genome other) {
 		return new HyperNEATGenome((HyperNEATGenome)other);
 	}
 

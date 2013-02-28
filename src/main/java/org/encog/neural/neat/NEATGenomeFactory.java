@@ -12,8 +12,6 @@ public interface NEATGenomeFactory extends GenomeFactory {
 	NEATGenome factor(List<NEATNeuronGene> neurons,
 			List<NEATLinkGene> links, int inputCount, int outputCount);
 
-	NEATGenome factor(NEATGenome other);
-
 	NEATGenome factor(Random rnd, NEATPopulation pop, int inputCount,
 			int outputCount, double connectionDensity);
 }

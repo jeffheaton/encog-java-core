@@ -112,6 +112,8 @@ public class NEATMutateAddNode extends NEATMutation {
 		createLink(target, from, innovation.getNeuronID(),
 				splitLink.getWeight());
 		createLink(target, innovation.getNeuronID(), to, pop.getWeightRange());
+		
+		target.sortGenes();
 	}
 
 }

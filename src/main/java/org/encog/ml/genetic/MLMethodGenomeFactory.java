@@ -17,4 +17,11 @@ public class MLMethodGenomeFactory implements GenomeFactory {
 	public Genome factor() {
 		return new MLMethodGenome((MLEncodable)this.factory.factor());
 	}
+
+	@Override
+	public Genome factor(Genome other) {
+		MLMethodGenome result = (MLMethodGenome)factor();
+		result.copy((MLMethodGenome)other);
+		return result;
+	}
 }

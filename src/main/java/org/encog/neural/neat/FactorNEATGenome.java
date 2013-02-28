@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
+import org.encog.ml.ea.genome.Genome;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.NEATNeuronGene;
@@ -28,8 +29,8 @@ public class FactorNEATGenome implements NEATGenomeFactory, Serializable {
 	}
 
 	@Override
-	public NEATGenome factor(final NEATGenome other) {
-		return new NEATGenome(other);
+	public Genome factor(final Genome other) {
+		return new NEATGenome((NEATGenome)other);
 	}
 
 	@Override

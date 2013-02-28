@@ -12,6 +12,10 @@ public class IntegerArrayGenome extends BasicGenome implements ArrayGenome {
 		this.data = new int[size];
 	}
 	
+	public IntegerArrayGenome(IntegerArrayGenome other) {
+		this.data = other.getData().clone();
+	}
+
 	@Override
 	public int size() {
 		return this.data.length;
