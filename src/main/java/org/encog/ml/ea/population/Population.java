@@ -30,6 +30,7 @@ import java.util.List;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
 import org.encog.ml.prg.train.rewrite.RewriteRule;
+import org.encog.neural.neat.NEATSpecies;
 
 /**
  * Defines a population of genomes.
@@ -97,4 +98,6 @@ public interface Population extends Serializable {
 	int getMaxIndividualSize();
 
 	void addRewriteRule(RewriteRule rule);
+
+	List<NEATSpecies> getSpecies();
 }

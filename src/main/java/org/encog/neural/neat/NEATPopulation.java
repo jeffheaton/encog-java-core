@@ -137,8 +137,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	 */
 	int outputCount;
 
-	private final List<NEATSpecies> species = new ArrayList<NEATSpecies>();
-
 	/**
 	 * The survival rate.
 	 */
@@ -301,13 +299,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 		return this.randomNumberFactory;
 	}
 
-	/**
-	 * @return the species
-	 */
-	public List<NEATSpecies> getSpecies() {
-		return this.species;
-	}
-
 	public Substrate getSubstrate() {
 		return this.substrate;
 	}
@@ -359,7 +350,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 			defaultSpecies.getMembers().add(genome);
 		}
 		defaultSpecies.setLeader(defaultSpecies.getMembers().get(0));
-		this.species.add(defaultSpecies);
+		this.getSpecies().add(defaultSpecies);
 
 		// create initial innovations
 		setInnovations(new NEATInnovationList(this));

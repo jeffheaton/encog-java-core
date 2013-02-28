@@ -33,6 +33,7 @@ import org.encog.ml.BasicML;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
 import org.encog.ml.prg.train.rewrite.RewriteRule;
+import org.encog.neural.neat.NEATSpecies;
 
 /**
  * Defines the basic functionality for a population of genomes.
@@ -53,6 +54,8 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 	 * The object name.
 	 */
 	private String name;
+	
+	private final List<NEATSpecies> species = new ArrayList<NEATSpecies>();
 	
 	
 	private List<RewriteRule> rewriteRules = new ArrayList<RewriteRule>();
@@ -147,6 +150,14 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 	public void setName(final String theName) {
 		this.name = theName;
 
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<NEATSpecies> getSpecies() {
+		return this.species;
 	}
 
 	/**
