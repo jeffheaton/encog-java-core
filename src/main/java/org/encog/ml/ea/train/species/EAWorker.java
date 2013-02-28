@@ -5,6 +5,7 @@ import java.util.Random;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.species.BasicSpecies;
+import org.encog.ml.ea.species.Species;
 import org.encog.neural.neat.NEATGenomeFactory;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.NEATGenome;
@@ -12,14 +13,14 @@ import org.encog.neural.neat.training.NEATTraining;
 
 public class EAWorker implements Runnable {
 
-	private final BasicSpecies species;
+	private final Species species;
 	private final NEATGenome[] parents = new NEATGenome[2];
 	private final NEATGenome[] children = new NEATGenome[1];
 	private final Random rnd;
 	private final NEATPopulation population;
 	private final NEATTraining train;
 
-	public EAWorker(SpeciesEA theTrain, BasicSpecies theSpecies) {
+	public EAWorker(SpeciesEA theTrain, Species theSpecies) {
 		this.train = (NEATTraining) theTrain;
 		this.species = theSpecies;
 		this.population = this.train.getNEATPopulation();
@@ -38,7 +39,8 @@ public class EAWorker implements Runnable {
 
 			// Add elite genomes directly
 			if (this.species.getMembers().size() > 5) {
-				int eliteCount = Math.min(numToSpawn, species.getEliteSize());
+				int idealEliteCount = (int)(species.getMembers().size() * this.train.getNEATPopulation().getSurvivalRate());
+				int eliteCount = Math.min(numToSpawn, idealEliteCount);
 				for (int i = 0; i < eliteCount; i++) {
 					Genome eliteGenome = this.species.getMembers().get(i);
 					if (this.train.getOldBestGenome() != eliteGenome) {

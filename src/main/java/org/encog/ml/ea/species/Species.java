@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.Population;
-import org.encog.neural.neat.NEATPopulation;
-import org.encog.neural.neat.training.NEATGenome;
 
 public interface Species {
 
@@ -37,6 +35,6 @@ public interface Species {
 
 	void setOffspringCount(int offspringCount);
 
-	void setPopulation(NEATPopulation thePopulation);
+	void setPopulation(Population thePopulation);
 
 }

@@ -26,13 +26,9 @@ package org.encog.ml.ea.species;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.Population;
-import org.encog.neural.neat.NEATPopulation;
-import org.encog.neural.neat.training.NEATGenome;
 import org.encog.util.Format;
 
 /**
@@ -73,7 +69,7 @@ public class BasicSpecies implements Serializable, Species {
 	/**
 	 * The owner class.
 	 */
-	private NEATPopulation population;
+	private Population population;
 
 
 	private transient int offspringCount;
@@ -96,8 +92,8 @@ public class BasicSpecies implements Serializable, Species {
 	 * @param theSpeciesID
 	 *            The species id.
 	 */
-	public BasicSpecies(final NEATPopulation thePopulation,
-			final NEATGenome theFirst) {
+	public BasicSpecies(final Population thePopulation,
+			final Genome theFirst) {
 		this.population = thePopulation;
 		this.bestScore = theFirst.getScore();
 		this.gensNoImprovement = 0;
@@ -149,13 +145,6 @@ public class BasicSpecies implements Serializable, Species {
 	@Override
 	public double getBestScore() {
 		return this.bestScore;
-	}
-
-	public int getEliteSize() {
-		if( this.population==null || this.members==null) {
-			System.out.println("S");
-		}
-		return (int) (this.population.getSurvivalRate() * this.members.size()) + 1;
 	}
 
 	/**
@@ -279,7 +268,7 @@ public class BasicSpecies implements Serializable, Species {
 	 *            the population to set
 	 */
 	@Override
-	public void setPopulation(final NEATPopulation thePopulation) {
+	public void setPopulation(final Population thePopulation) {
 		this.population = thePopulation;
 	}
 
@@ -298,8 +287,6 @@ public class BasicSpecies implements Serializable, Species {
 		result.append(this.offspringShare);
 		result.append(", offspring count=");
 		result.append(this.offspringShare);
-		result.append(", elite=");
-		result.append(getEliteSize());
 		result.append("]");
 		return result.toString();
 	}
