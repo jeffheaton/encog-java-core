@@ -136,29 +136,6 @@ public class BasicSpecies implements Serializable, Species {
 	}
 
 	/**
-	 * Choose a parent to mate. Choose from the population, determined by the
-	 * survival rate. From this pool, a random parent is chosen.
-	 * 
-	 * @return The parent.
-	 */
-	public Genome chooseParent(final Random rnd) {
-		Genome result;
-
-		// If there is a single member, then choose that one.
-		if (this.members.size() == 1) {
-			result = this.members.get(0);
-		} else {
-			// If there are many, then choose the population based on survival
-			// rate and select a random genome.
-			final int theOne = (int) RangeRandomizer.randomize(rnd, 0,
-					getEliteSize());
-			result = this.members.get(theOne);
-		}
-
-		return result;
-	}
-
-	/**
 	 * @return The age of this species.
 	 */
 	@Override

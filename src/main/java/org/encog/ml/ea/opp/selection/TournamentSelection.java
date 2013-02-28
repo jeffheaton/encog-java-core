@@ -1,10 +1,12 @@
 package org.encog.ml.ea.opp.selection;
 
 import java.io.Serializable;
+import java.util.Random;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.species.Species;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.ea.train.basic.BasicEA;
 import org.encog.ml.prg.train.PrgGenetic;
@@ -36,9 +38,9 @@ public class TournamentSelection implements PrgSelection, Serializable {
 	}
 
 	@Override
-	public int performSelection() {
+	public int performSelection(Random rnd, Species species) {
 		Population population = trainer.getPopulation();
-		int bestIndex = RangeRandomizer.randomInt(0, population.size()-1);
+		int bestIndex = rnd.nextInt(population.size());
 	    Genome best = population.get(bestIndex);
 	    BasicEA.calculateScoreAdjustment(best, this.trainer.getScoreAdjusters());
 	    
@@ -60,9 +62,9 @@ public class TournamentSelection implements PrgSelection, Serializable {
 
 
 	@Override
-	public int performAntiSelection() {
+	public int performAntiSelection(Random rnd, Species species) {
 		Population population = trainer.getPopulation();
-		int worstIndex = RangeRandomizer.randomInt(0, population.size()-1);
+		int worstIndex = rnd.nextInt(population.size());
 	    Genome worst = population.get(worstIndex);
 	    BasicEA.calculateScoreAdjustment(worst, this.trainer.getScoreAdjusters());
 	    

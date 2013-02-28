@@ -1,6 +1,7 @@
 package org.encog.ml.ea.train.nonspecies;
 
 import java.io.Serializable;
+import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -47,7 +48,7 @@ public class NonSpeciesEA extends BasicEA
 		super(thePopulation, theScoreFunction);
 
 		this.bestGenome = thePopulation.getGenomeFactory().factor();
-		this.selector = new ThreadedGenomeSelector(this);
+		this.selector = new ThreadedGenomeSelector(this, new Random());
 	}
 
 	/**

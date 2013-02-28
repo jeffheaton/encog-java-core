@@ -25,6 +25,11 @@ public class EAWorker implements Runnable {
 		this.population = this.train.getNEATPopulation();
 		this.rnd = this.train.getRandomNumberFactory().factor();
 	}
+	
+	private Genome chooseParent() {
+		int idx = this.train.getSelection().performSelection(rnd, species);
+		return this.species.getMembers().get(idx);
+	}
 
 	@Override
 	public void run() {
@@ -62,7 +67,7 @@ public class EAWorker implements Runnable {
 				// Chose the first parent, there must be at least one genome in
 				// this
 				// species
-				parents[0] = (NEATGenome) this.species.chooseParent(rnd);
+				parents[0] = (NEATGenome) chooseParent();
 
 				// if the number of individuals in this species is only
 				// one then we can only clone and perhaps mutate, otherwise use
@@ -72,9 +77,9 @@ public class EAWorker implements Runnable {
 
 					int numAttempts = 5;
 
-					parents[1] = (NEATGenome) species.chooseParent(rnd);
+					parents[1] = (NEATGenome) chooseParent();
 					while ((parents[0] == parents[1]) && ((numAttempts--) > 0)) {
-						parents[1] = (NEATGenome) species.chooseParent(rnd);
+						parents[1] = (NEATGenome) chooseParent();
 					}
 
 					// success, perform crossover

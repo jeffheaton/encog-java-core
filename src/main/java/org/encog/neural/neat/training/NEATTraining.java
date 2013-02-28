@@ -33,6 +33,7 @@ import java.io.PrintWriter;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.CompoundOperator;
+import org.encog.ml.ea.opp.selection.TruncationSelection;
 import org.encog.ml.ea.sort.MinimizeAdjustedScoreComp;
 import org.encog.ml.ea.sort.MinimizeScoreComp;
 import org.encog.ml.ea.species.BasicSpecies;
@@ -166,6 +167,7 @@ public class NEATTraining extends SpeciesEA {
 	private void init() {
 		this.setSpeciation( new OriginalNEATSpeciation());
 
+		this.setSelection(new TruncationSelection(this,0.3));		
 		CompoundOperator weightMutation = new CompoundOperator();
 		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(1),new MutatePerturbLinkWeight(0.02)));
 		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(2),new MutatePerturbLinkWeight(0.02)));
