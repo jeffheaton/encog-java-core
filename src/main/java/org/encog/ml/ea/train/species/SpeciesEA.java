@@ -247,10 +247,10 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 		}
 
 		getPopulation().clear();
-		getPopulation().addAll(newPopulation);
+		//getPopulation().addAll(newPopulation);
 		
 		if( isValidationMode() ) {
-			int currentPopSize = this.getPopulation().getGenomes().size();
+			int currentPopSize = this.newPopulation.size();
 			int targetPopSize = this.getPopulation().getPopulationSize();
 			if( currentPopSize != targetPopSize) {
 				throw new EncogError("Population size of "+currentPopSize+" is outside of the target size of " + targetPopSize);
@@ -258,7 +258,7 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 			
 			
 			if( this.oldBestGenome!=null && 
-					!this.getPopulation().getGenomes().contains(this.oldBestGenome)) {
+					!this.newPopulation.contains(this.oldBestGenome)) {
 				throw new EncogError("The top genome died, this should never happen!!");
 			}
 			
