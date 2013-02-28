@@ -411,9 +411,9 @@ public class OriginalNEATSpeciation implements Speciation {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void performSpeciation() {
-		final List<NEATGenome> genomes = resetSpecies();
-		speciateAndCalculateSpawnLevels(genomes);
+	public void performSpeciation(List<Genome> genomeList) {
+		final List<NEATGenome> newGenomeList = resetSpecies(genomeList);
+		speciateAndCalculateSpawnLevels(newGenomeList);
 	}
 
 	/**
@@ -421,13 +421,13 @@ public class OriginalNEATSpeciation implements Speciation {
 	 * 
 	 * @return
 	 */
-	private List<NEATGenome> resetSpecies() {
+	private List<NEATGenome> resetSpecies(List<Genome> inputGenomes) {
 		final List<NEATGenome> result = new ArrayList<NEATGenome>();
 		final Object[] speciesArray = this.owner.getNEATPopulation()
 				.getSpecies().toArray();
 
 		// Add the NEAT genomes
-		for (final Genome genome : this.owner.getNEATPopulation().getGenomes()) {
+		for (final Genome genome : inputGenomes) {
 			result.add((NEATGenome) genome);
 		}
 
@@ -437,8 +437,7 @@ public class OriginalNEATSpeciation implements Speciation {
 
 			// did the leader die? If so, disband the species. (but don't kill
 			// the genomes)
-			if (!this.owner.getPopulation().getGenomes()
-					.contains(s.getLeader())) {
+			if (!inputGenomes.contains(s.getLeader())) {
 				this.owner.getNEATPopulation().getSpecies().remove(s);
 			} else if ((s.getGensNoImprovement() > this.numGensAllowedNoImprovement)
 					&& this.owner.getSelectionComparator().isBetterThan(

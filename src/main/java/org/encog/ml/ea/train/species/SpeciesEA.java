@@ -2,7 +2,6 @@ package org.encog.ml.ea.train.species;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -12,6 +11,7 @@ import org.encog.ml.CalculateScore;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.score.AdjustScore;
@@ -20,7 +20,6 @@ import org.encog.ml.ea.train.basic.BasicEA;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
-import org.encog.neural.neat.NEATGenomeFactory;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.NEATSpecies;
 import org.encog.neural.neat.training.NEATGenome;
@@ -42,7 +41,7 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 	private Speciation speciation;
 	private Throwable reportedError;
 	private NEATGenome oldBestGenome;
-	private List<NEATGenome> newPopulation = new ArrayList<NEATGenome>();
+	private List<Genome> newPopulation = new ArrayList<Genome>();
 	private EvolutionaryOperator champMutation;
 	
 	/**
@@ -274,7 +273,7 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 			}
 		}
 
-		this.speciation.performSpeciation();
+		this.speciation.performSpeciation(newPopulation);
 	}
 
 	public boolean addChild(NEATGenome genome) {
@@ -348,7 +347,7 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 		this.bestGenome = (NEATGenome) this.getPopulation().getGenomes().get(0);
 
 		// speciate
-		this.speciation.performSpeciation();
+		this.speciation.performSpeciation(this.getPopulation().getGenomes());
 
 	}
 	
