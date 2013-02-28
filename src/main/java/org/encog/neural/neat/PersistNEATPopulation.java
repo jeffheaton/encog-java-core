@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.neural.hyperneat.FactorHyperNEATGenome;
 import org.encog.neural.hyperneat.HyperNEATCODEC;
 import org.encog.neural.hyperneat.HyperNEATGenome;
@@ -122,14 +123,14 @@ public class PersistNEATPopulation implements EncogPersistor {
 			} else if (section.getSectionName().equals("NEAT-POPULATION")
 					&& section.getSubSectionName().equals("SPECIES")) {
 				NEATGenome lastGenome = null;
-				NEATSpecies lastSpecies = null;
+				BasicSpecies lastSpecies = null;
 
 				for (final String line : section.getLines()) {
 					final List<String> cols = EncogFileSection
 							.splitColumns(line);
 
 					if (cols.get(0).equalsIgnoreCase("s")) {
-						lastSpecies = new NEATSpecies();
+						lastSpecies = new BasicSpecies();
 						lastSpecies.setPopulation(result);
 						lastSpecies.setAge(Integer.parseInt(cols.get(1)));
 						lastSpecies.setBestScore(CSVFormat.EG_FORMAT.parse(cols
@@ -269,7 +270,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 		}
 
 		out.addSubSection("SPECIES");
-		for (final NEATSpecies species : pop.getSpecies()) {
+		for (final BasicSpecies species : pop.getSpecies()) {
 			out.addColumn("s");
 			out.addColumn(species.getAge());
 			out.addColumn(species.getBestScore());

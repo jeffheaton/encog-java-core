@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.neat;
+package org.encog.ml.ea.species;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,13 +31,14 @@ import java.util.Random;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.Population;
+import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.util.Format;
 
 /**
  * Provides basic functionality for a species.
  */
-public class NEATSpecies implements Serializable {
+public class BasicSpecies implements Serializable, Species {
 
 	/**
 	 * Serial id.
@@ -62,12 +63,12 @@ public class NEATSpecies implements Serializable {
 	/**
 	 * The leader.
 	 */
-	private NEATGenome leader;
+	private Genome leader;
 
 	/**
 	 * The list of genomes.
 	 */
-	private final List<NEATGenome> members = new ArrayList<NEATGenome>();
+	private final List<Genome> members = new ArrayList<Genome>();
 
 	/**
 	 * The owner class.
@@ -81,7 +82,7 @@ public class NEATSpecies implements Serializable {
 	/**
 	 * Default constructor, used mainly for persistence.
 	 */
-	public NEATSpecies() {
+	public BasicSpecies() {
 
 	}
 
@@ -95,7 +96,7 @@ public class NEATSpecies implements Serializable {
 	 * @param theSpeciesID
 	 *            The species id.
 	 */
-	public NEATSpecies(final NEATPopulation thePopulation,
+	public BasicSpecies(final NEATPopulation thePopulation,
 			final NEATGenome theFirst) {
 		this.population = thePopulation;
 		this.bestScore = theFirst.getScore();
@@ -105,12 +106,13 @@ public class NEATSpecies implements Serializable {
 		this.members.add(theFirst);
 	}
 
+	@Override
 	public double calculateShare(final boolean shouldMinimize,
 			final double maxScore) {
 		double total = 0;
 
 		int count = 0;
-		for (final NEATGenome genome : this.members) {
+		for (final Genome genome : this.members) {
 			if (!Double.isNaN(genome.getScore())
 					&& !Double.isInfinite(genome.getScore())) {
 				double s;
@@ -159,6 +161,7 @@ public class NEATSpecies implements Serializable {
 	/**
 	 * @return The age of this species.
 	 */
+	@Override
 	public int getAge() {
 		return this.age;
 	}
@@ -166,6 +169,7 @@ public class NEATSpecies implements Serializable {
 	/**
 	 * @return The best score for this species.
 	 */
+	@Override
 	public double getBestScore() {
 		return this.bestScore;
 	}
@@ -180,6 +184,7 @@ public class NEATSpecies implements Serializable {
 	/**
 	 * @return The number of generations with no improvement.
 	 */
+	@Override
 	public int getGensNoImprovement() {
 		return this.gensNoImprovement;
 	}
@@ -187,20 +192,23 @@ public class NEATSpecies implements Serializable {
 	/**
 	 * @return THe leader of this species.
 	 */
-	public NEATGenome getLeader() {
+	@Override
+	public Genome getLeader() {
 		return this.leader;
 	}
 
 	/**
 	 * @return The members of this species.
 	 */
-	public List<NEATGenome> getMembers() {
+	@Override
+	public List<Genome> getMembers() {
 		return this.members;
 	}
 
 	/**
 	 * @return the offspringCount
 	 */
+	@Override
 	public int getOffspringCount() {
 		return this.offspringCount;
 	}
@@ -208,6 +216,7 @@ public class NEATSpecies implements Serializable {
 	/**
 	 * @return the offspringShare
 	 */
+	@Override
 	public double getOffspringShare() {
 		return this.offspringShare;
 	}
@@ -215,6 +224,7 @@ public class NEATSpecies implements Serializable {
 	/**
 	 * @return The population that this species belongs to.
 	 */
+	@Override
 	public Population getPopulation() {
 		return this.population;
 	}
@@ -240,6 +250,7 @@ public class NEATSpecies implements Serializable {
 	 * @param theAge
 	 *            The age of this species.
 	 */
+	@Override
 	public void setAge(final int theAge) {
 		this.age = theAge;
 	}
@@ -250,6 +261,7 @@ public class NEATSpecies implements Serializable {
 	 * @param theBestScore
 	 *            The best score.
 	 */
+	@Override
 	public void setBestScore(final double theBestScore) {
 		this.bestScore = theBestScore;
 	}
@@ -260,6 +272,7 @@ public class NEATSpecies implements Serializable {
 	 * @param theGensNoImprovement
 	 *            The number of generations.
 	 */
+	@Override
 	public void setGensNoImprovement(final int theGensNoImprovement) {
 		this.gensNoImprovement = theGensNoImprovement;
 	}
@@ -270,7 +283,8 @@ public class NEATSpecies implements Serializable {
 	 * @param theLeader
 	 *            The new leader.
 	 */
-	public void setLeader(final NEATGenome theLeader) {
+	@Override
+	public void setLeader(final Genome theLeader) {
 		this.leader = theLeader;
 	}
 
@@ -278,6 +292,7 @@ public class NEATSpecies implements Serializable {
 	 * @param offspringCount
 	 *            the offspringCount to set
 	 */
+	@Override
 	public void setOffspringCount(final int offspringCount) {
 		this.offspringCount = offspringCount;
 	}
@@ -286,6 +301,7 @@ public class NEATSpecies implements Serializable {
 	 * @param thePopulation
 	 *            the population to set
 	 */
+	@Override
 	public void setPopulation(final NEATPopulation thePopulation) {
 		this.population = thePopulation;
 	}

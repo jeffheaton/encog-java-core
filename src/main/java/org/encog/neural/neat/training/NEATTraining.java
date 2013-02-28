@@ -35,12 +35,12 @@ import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.CompoundOperator;
 import org.encog.ml.ea.sort.MinimizeAdjustedScoreComp;
 import org.encog.ml.ea.sort.MinimizeScoreComp;
+import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.ml.ea.train.species.SpeciesEA;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.neural.hyperneat.HyperNEATCODEC;
 import org.encog.neural.neat.NEATCODEC;
 import org.encog.neural.neat.NEATPopulation;
-import org.encog.neural.neat.NEATSpecies;
 import org.encog.neural.neat.training.opp.NEATCrossover;
 import org.encog.neural.neat.training.opp.NEATMutateAddLink;
 import org.encog.neural.neat.training.opp.NEATMutateAddNode;
@@ -124,7 +124,7 @@ public class NEATTraining extends SpeciesEA {
 			throw new TrainingError("Population has no species.");
 		}
 		
-		NEATSpecies species = population.getSpecies().get(0);
+		BasicSpecies species = population.getSpecies().get(0);
 		
 		if ( species.getMembers().size() < 1) {
 			throw new TrainingError("First NEAT species is empty");
@@ -257,13 +257,13 @@ public class NEATTraining extends SpeciesEA {
 		
 		out.println("Species");
 		for(int i=0;i<this.getNEATPopulation().getSpecies().size();i++) {
-			NEATSpecies species = this.getNEATPopulation().getSpecies().get(i);
+			BasicSpecies species = this.getNEATPopulation().getSpecies().get(i);
 			out.println("Species #" + i + ":" + species.toString());
 		}
 		
 		out.println("Species Detail");
 		for(int i=0;i<this.getNEATPopulation().getSpecies().size();i++) {
-			NEATSpecies species = this.getNEATPopulation().getSpecies().get(i);
+			BasicSpecies species = this.getNEATPopulation().getSpecies().get(i);
 			out.println("Species #" + i + ":" + species.toString());
 			out.println("Leader:" + species.getLeader()); 
 			for(int j=0;j<species.getMembers().size();j++) {

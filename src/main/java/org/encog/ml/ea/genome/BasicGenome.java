@@ -51,6 +51,8 @@ public abstract class BasicGenome implements Genome, Serializable {
 	 * The population this genome belongs to.
 	 */
 	private Population population;
+	
+	private int birthGeneration;
 
 	/**
 	 * @return The adjusted score, which considers bonuses.
@@ -105,6 +107,22 @@ public abstract class BasicGenome implements Genome, Serializable {
 	@Override
 	public void setScore(final double theScore) {
 		this.score = theScore;
+	}
+	
+	/**
+	 * @return the birthGeneration
+	 */
+	@Override
+	public int getBirthGeneration() {
+		return birthGeneration;
+	}
+
+	/**
+	 * @param birthGeneration the birthGeneration to set
+	 */
+	@Override
+	public void setBirthGeneration(int birthGeneration) {
+		this.birthGeneration = birthGeneration;
 	}
 
 	/**

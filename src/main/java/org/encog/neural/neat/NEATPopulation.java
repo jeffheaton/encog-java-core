@@ -36,6 +36,7 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.codec.GeneticCODEC;
 import org.encog.ml.ea.population.BasicPopulation;
+import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.hyperneat.FactorHyperNEATGenome;
 import org.encog.neural.hyperneat.HyperNEATCODEC;
@@ -336,7 +337,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 		final Random rnd = this.randomNumberFactory.factor();
 
 		// create one default species
-		NEATSpecies defaultSpecies = new NEATSpecies();
+		BasicSpecies defaultSpecies = new BasicSpecies();
 		defaultSpecies.setPopulation(this);
 		
 		// create the initial population

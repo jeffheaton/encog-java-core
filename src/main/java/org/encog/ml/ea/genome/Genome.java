@@ -87,4 +87,8 @@ public interface Genome {
 	 *         that indicates the complexity of the genome.
 	 */
 	int size();
+
+	int getBirthGeneration();
+
+	void setBirthGeneration(int birthGeneration);
 }

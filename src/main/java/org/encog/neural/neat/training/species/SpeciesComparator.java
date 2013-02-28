@@ -2,10 +2,10 @@ package org.encog.neural.neat.training.species;
 
 import java.util.Comparator;
 
-import org.encog.neural.neat.NEATSpecies;
+import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.neural.neat.training.NEATTraining;
 
-public class SpeciesComparator implements Comparator<NEATSpecies> {
+public class SpeciesComparator implements Comparator<BasicSpecies> {
 
 	private NEATTraining training;
 	
@@ -14,7 +14,7 @@ public class SpeciesComparator implements Comparator<NEATSpecies> {
 	}
 	
 	@Override
-	public int compare(NEATSpecies sp1, NEATSpecies sp2) {
+	public int compare(BasicSpecies sp1, BasicSpecies sp2) {
 		return training.getBestComparator().compare(sp1.getLeader(), sp2.getLeader());
 	}
 

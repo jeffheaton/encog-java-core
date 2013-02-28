@@ -2,10 +2,11 @@ package org.encog.neural.neat.training.species;
 
 import java.util.Comparator;
 
+import org.encog.ml.ea.genome.Genome;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATTraining;
 
-public class SortGenomesForSpecies implements Comparator<NEATGenome> {
+public class SortGenomesForSpecies implements Comparator<Genome> {
 
 	private final NEATTraining train;
 
@@ -14,7 +15,7 @@ public class SortGenomesForSpecies implements Comparator<NEATGenome> {
 	}
 
 	@Override
-	public int compare(final NEATGenome g1, final NEATGenome g2) {
+	public int compare(Genome g1, Genome g2) {
 		final int result = this.train.getSelectionComparator().compare(g1, g2);
 
 		if (result != 0) {

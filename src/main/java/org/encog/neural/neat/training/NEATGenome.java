@@ -36,9 +36,9 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.BasicGenome;
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.neat.NEATPopulation;
-import org.encog.neural.neat.NEATSpecies;
 import org.encog.util.Format;
 
 /**
@@ -87,9 +87,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 */
 	private int outputCount;
 	
-	private NEATSpecies species;
-	
-	private int birthGeneration;
+	private BasicSpecies species;
 
 	/**
 	 * Construct a genome by copying another.
@@ -357,30 +355,16 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	}
 
 	/**
-	 * @return the birthGeneration
-	 */
-	public int getBirthGeneration() {
-		return birthGeneration;
-	}
-
-	/**
-	 * @param birthGeneration the birthGeneration to set
-	 */
-	public void setBirthGeneration(int birthGeneration) {
-		this.birthGeneration = birthGeneration;
-	}
-
-	/**
 	 * @return the species
 	 */
-	public NEATSpecies getSpecies() {
+	public BasicSpecies getSpecies() {
 		return species;
 	}
 
 	/**
 	 * @param species the species to set
 	 */
-	public void setSpecies(NEATSpecies species) {
+	public void setSpecies(BasicSpecies species) {
 		this.species = species;
 	}
 	

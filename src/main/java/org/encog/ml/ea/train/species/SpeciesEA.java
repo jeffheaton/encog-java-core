@@ -16,12 +16,12 @@ import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.score.AdjustScore;
 import org.encog.ml.ea.score.parallel.ParallelScore;
+import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.ml.ea.train.basic.BasicEA;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.neat.NEATPopulation;
-import org.encog.neural.neat.NEATSpecies;
 import org.encog.neural.neat.training.species.Speciation;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
@@ -226,7 +226,7 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 		this.oldBestGenome = this.bestGenome;
 		
 		// execute species in parallel
-		for (final NEATSpecies s : ((NEATPopulation) getPopulation())
+		for (final BasicSpecies s : ((NEATPopulation) getPopulation())
 				.getSpecies()) {
 			EAWorker worker = new EAWorker(this, s);
 			taskExecutor.execute(worker);

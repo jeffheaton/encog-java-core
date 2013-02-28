@@ -29,9 +29,9 @@ import java.util.List;
 
 import org.encog.Encog;
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.genetic.GeneticError;
-import org.encog.neural.neat.NEATSpecies;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATTraining;
 
@@ -111,7 +111,7 @@ public class OriginalNEATSpeciation implements Speciation {
 	 * @param genome
 	 *            The genome to add.
 	 */
-	private void addSpeciesMember(final NEATSpecies species,
+	private void addSpeciesMember(final BasicSpecies species,
 			final NEATGenome genome) {
 
 		if (this.owner.isValidationMode()) {
@@ -166,9 +166,9 @@ public class OriginalNEATSpeciation implements Speciation {
 	 *            The total score over all species.
 	 */
 	private void divideByFittestSpecies(
-			final List<NEATSpecies> speciesCollection,
+			final List<BasicSpecies> speciesCollection,
 			final double totalSpeciesScore) {
-		NEATSpecies bestSpecies = null;
+		BasicSpecies bestSpecies = null;
 
 		// determine the best species.
 		if (this.owner.getBestGenome() != null) {
@@ -178,7 +178,7 @@ public class OriginalNEATSpeciation implements Speciation {
 		// loop over all species and calculate its share
 		final Object[] speciesArray = speciesCollection.toArray();
 		for (final Object element : speciesArray) {
-			final NEATSpecies species = (NEATSpecies) element;
+			final BasicSpecies species = (BasicSpecies) element;
 			// calculate the species share based on the percent of the total
 			// species score
 			int share = (int) Math
@@ -214,9 +214,9 @@ public class OriginalNEATSpeciation implements Speciation {
 	 * @param speciesCollection
 	 *            The current set of species.
 	 */
-	private void divideEven(final List<NEATSpecies> speciesCollection) {
+	private void divideEven(final List<BasicSpecies> speciesCollection) {
 		final double ratio = 1.0 / speciesCollection.size();
-		for (final NEATSpecies species : speciesCollection) {
+		for (final BasicSpecies species : speciesCollection) {
 			final int share = (int) Math.round(ratio
 					* this.owner.getPopulation().getPopulationSize());
 			species.setOffspringCount(share);
@@ -369,7 +369,7 @@ public class OriginalNEATSpeciation implements Speciation {
 	 */
 	private void levelOff() {
 		int total = 0;
-		final List<NEATSpecies> list = this.owner.getNEATPopulation()
+		final List<BasicSpecies> list = this.owner.getNEATPopulation()
 				.getSpecies();
 		Collections.sort(list, new SpeciesComparator(this.owner));
 
@@ -379,7 +379,7 @@ public class OriginalNEATSpeciation implements Speciation {
 		}
 
 		// total up offspring
-		for (final NEATSpecies species : list) {
+		for (final BasicSpecies species : list) {
 			total += species.getOffspringCount();
 		}
 
@@ -390,7 +390,7 @@ public class OriginalNEATSpeciation implements Speciation {
 			// need less offspring
 			int index = list.size() - 1;
 			while ((diff != 0) && (index > 0)) {
-				final NEATSpecies species = list.get(index);
+				final BasicSpecies species = list.get(index);
 				final int t = Math.min(species.getOffspringCount(),
 						Math.abs(diff));
 				species.setOffspringCount(species.getOffspringCount() - t);
@@ -432,7 +432,7 @@ public class OriginalNEATSpeciation implements Speciation {
 		}
 
 		for (final Object element : speciesArray) {
-			final NEATSpecies s = (NEATSpecies) element;
+			final BasicSpecies s = (BasicSpecies) element;
 			s.purge();
 
 			// did the leader die? If so, disband the species. (but don't kill
@@ -519,7 +519,7 @@ public class OriginalNEATSpeciation implements Speciation {
 	private void speciateAndCalculateSpawnLevels(final List<NEATGenome> genomes) {
 		double maxScore = 0;
 
-		final List<NEATSpecies> speciesCollection = this.owner
+		final List<BasicSpecies> speciesCollection = this.owner
 				.getNEATPopulation().getSpecies();
 
 		// calculate compatibility between genomes and species
@@ -527,7 +527,7 @@ public class OriginalNEATSpeciation implements Speciation {
 
 		// assign genomes to species (if any exist)
 		for (final Genome g : genomes) {
-			NEATSpecies currentSpecies = null;
+			BasicSpecies currentSpecies = null;
 			final NEATGenome genome = (NEATGenome) g;
 
 			if (!Double.isNaN(genome.getScore())
@@ -535,9 +535,9 @@ public class OriginalNEATSpeciation implements Speciation {
 				maxScore = Math.max(genome.getScore(), maxScore);
 			}
 
-			for (final NEATSpecies s : speciesCollection) {
+			for (final BasicSpecies s : speciesCollection) {
 				final double compatibility = getCompatibilityScore(genome,
-						s.getLeader());
+						(NEATGenome)s.getLeader());
 
 				if (compatibility <= this.compatibilityThreshold) {
 					currentSpecies = s;
@@ -550,7 +550,7 @@ public class OriginalNEATSpeciation implements Speciation {
 			// if this genome did not fall into any existing species, create a
 			// new species
 			if (currentSpecies == null) {
-				currentSpecies = new NEATSpecies(
+				currentSpecies = new BasicSpecies(
 						this.owner.getNEATPopulation(), genome);
 				this.owner.getNEATPopulation().getSpecies().add(currentSpecies);
 			}
@@ -558,7 +558,7 @@ public class OriginalNEATSpeciation implements Speciation {
 
 		//
 		double totalSpeciesScore = 0;
-		for (final NEATSpecies species : speciesCollection) {
+		for (final BasicSpecies species : speciesCollection) {
 			totalSpeciesScore += species.calculateShare(this.owner
 					.getScoreFunction().shouldMinimize(), maxScore);
 		}

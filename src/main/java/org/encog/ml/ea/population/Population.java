@@ -29,8 +29,8 @@ import java.util.List;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
+import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.ml.prg.train.rewrite.RewriteRule;
-import org.encog.neural.neat.NEATSpecies;
 
 /**
  * Defines a population of genomes.
@@ -99,7 +99,7 @@ public interface Population extends Serializable {
 
 	void addRewriteRule(RewriteRule rule);
 
-	List<NEATSpecies> getSpecies();
+	List<BasicSpecies> getSpecies();
 
 	List<Genome> flatten();
 }
