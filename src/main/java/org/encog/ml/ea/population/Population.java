@@ -100,4 +100,6 @@ public interface Population extends Serializable {
 	void addRewriteRule(RewriteRule rule);
 
 	List<NEATSpecies> getSpecies();
+
+	List<Genome> flatten();
 }

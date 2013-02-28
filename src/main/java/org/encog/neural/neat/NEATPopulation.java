@@ -24,8 +24,6 @@
 package org.encog.neural.neat;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import org.encog.Encog;

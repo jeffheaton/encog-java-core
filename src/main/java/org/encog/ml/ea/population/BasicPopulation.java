@@ -225,4 +225,13 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 			}
 		}
 	}
+
+	@Override
+	public List<Genome> flatten() {
+		List<Genome> result = new ArrayList<Genome>();
+		for(NEATSpecies species: this.species) {
+			result.addAll(species.getMembers());
+		}
+		return result;
+	}
 }

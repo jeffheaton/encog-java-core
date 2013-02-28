@@ -120,11 +120,17 @@ public class NEATTraining extends SpeciesEA {
 			final NEATPopulation population) {
 		super(population, calculateScore);
 
-		if (population.size() < 1) {
-			throw new TrainingError("Population can not be empty.");
+		if (population.getSpecies().size() < 1) {
+			throw new TrainingError("Population has no species.");
+		}
+		
+		NEATSpecies species = population.getSpecies().get(0);
+		
+		if ( species.getMembers().size() < 1) {
+			throw new TrainingError("First NEAT species is empty");
 		}
 
-		final NEATGenome genome = (NEATGenome) population.getGenomes().get(0);
+		final NEATGenome genome = (NEATGenome) species.getMembers().get(0);
 		setPopulation(population);
 		this.inputCount = genome.getInputCount();
 		this.outputCount = genome.getOutputCount();

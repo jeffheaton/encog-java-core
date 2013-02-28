@@ -344,10 +344,12 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 		
 		// just pick the first genome as best, it will be updated later.
 		// also most populations are sorted this way after training finishes (for reload)
-		this.bestGenome = (NEATGenome) this.getPopulation().getGenomes().get(0);
+		// if there is an empty population, the constructor would have blow
+		this.bestGenome = (NEATGenome) this.getPopulation().getSpecies().get(0).getMembers().get(0);
 
 		// speciate
-		this.speciation.performSpeciation(this.getPopulation().getGenomes());
+		List<Genome> genomes = this.getPopulation().flatten();
+		this.speciation.performSpeciation(genomes);
 
 	}
 	
