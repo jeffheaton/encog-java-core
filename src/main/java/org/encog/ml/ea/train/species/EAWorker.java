@@ -1,14 +1,15 @@
-package org.encog.neural.neat.training;
+package org.encog.ml.ea.train.species;
 
 import java.util.Random;
 
 import org.encog.ml.ea.opp.EvolutionaryOperator;
-import org.encog.ml.ea.train.species.SpeciesEA;
 import org.encog.neural.neat.NEATGenomeFactory;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.NEATSpecies;
+import org.encog.neural.neat.training.NEATGenome;
+import org.encog.neural.neat.training.NEATTraining;
 
-public class NEATTrainWorker implements Runnable {
+public class EAWorker implements Runnable {
 
 	private final NEATSpecies species;
 	private final NEATGenome[] parents = new NEATGenome[2];
@@ -17,7 +18,7 @@ public class NEATTrainWorker implements Runnable {
 	private final NEATPopulation population;
 	private final NEATTraining train;
 
-	public NEATTrainWorker(SpeciesEA theTrain, NEATSpecies theSpecies) {
+	public EAWorker(SpeciesEA theTrain, NEATSpecies theSpecies) {
 		this.train = (NEATTraining) theTrain;
 		this.species = theSpecies;
 		this.population = this.train.getNEATPopulation();

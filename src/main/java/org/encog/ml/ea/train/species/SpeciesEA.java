@@ -22,7 +22,6 @@ import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.NEATSpecies;
-import org.encog.neural.neat.training.NEATTrainWorker;
 import org.encog.neural.neat.training.species.Speciation;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
@@ -229,7 +228,7 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 		// execute species in parallel
 		for (final NEATSpecies s : ((NEATPopulation) getPopulation())
 				.getSpecies()) {
-			NEATTrainWorker worker = new NEATTrainWorker(this, s);
+			EAWorker worker = new EAWorker(this, s);
 			taskExecutor.execute(worker);
 		}
 
