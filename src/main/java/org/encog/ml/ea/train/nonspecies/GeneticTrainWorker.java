@@ -57,7 +57,7 @@ public class GeneticTrainWorker extends Thread implements Serializable {
 
 					// select and lock parents
 					for (int i = 0; i < opp.parentsNeeded(); i++) {
-						parents[i] = this.owner.getSelector().selectGenome(null);
+						parents[i] = this.owner.getSelector().selectGenome(this.owner.getPopulation().getSpecies().get(0));
 					}
 
 					// perform the operation

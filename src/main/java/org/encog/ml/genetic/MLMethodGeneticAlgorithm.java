@@ -116,12 +116,13 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 
 		BasicSpecies defaultSpecies = new BasicSpecies();
 		defaultSpecies.setPopulation(population);
+		population.getSpecies().add(defaultSpecies);
 		
 		for (int i = 0; i < population.getPopulationSize(); i++) {
 			final MLEncodable chromosomeNetwork = (MLEncodable)phenotypeFactory.factor();
 			final MLMethodGenome genome = new MLMethodGenome(chromosomeNetwork);
 			getGenetic().calculateScore(genome);
-			defaultSpecies.getMembers().add(genome);
+			defaultSpecies.add(genome);
 			getGenetic().evaluateBestGenome(genome);
 		}
 		defaultSpecies.setLeader(defaultSpecies.getMembers().get(0));
@@ -131,8 +132,6 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 		
 		this.genetic.addOperation(0.9,new Splice(s));
 		this.genetic.addOperation(0.1,new MutatePerturb(1.0));
-	
-		population.sort(this.genetic.getBestComparator());
 	}
 
 	/**

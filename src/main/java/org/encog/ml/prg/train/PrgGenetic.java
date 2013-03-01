@@ -105,12 +105,7 @@ public class PrgGenetic extends NonSpeciesEA implements MLTrain, MultiThreadable
 		// TODO Auto-generated method stub
 
 	}
-	
 
-	public void sort() {
-		this.getPopulation().sort(this.getBestComparator());
-	}
-	
 	public PrgPopulation getPrgPopulation() {
 		return (PrgPopulation)getPopulation();
 	}

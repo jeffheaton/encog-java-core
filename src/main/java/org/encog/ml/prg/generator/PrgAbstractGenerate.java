@@ -114,7 +114,7 @@ public abstract class PrgAbstractGenerate implements PrgPopulationGenerator {
 		for (int i = 0; i < pop.getPopulationSize(); i++) {
 			EncogProgram prg = new EncogProgram(getContext(),
 					new EncogProgramVariables(), holder, i);
-			defaultSpecies.getMembers().add(prg);
+			defaultSpecies.add(prg);
 			generateGenome(rnd,pop,prg,populationContents);
 		}
 	}

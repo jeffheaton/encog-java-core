@@ -135,7 +135,6 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 	 */
 	@Override
 	public void finishTraining() {
-		sortPopulation();
 	}
 
 	/**
@@ -192,13 +191,6 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 				this.reportedError = t;
 			}
 		}
-	}
-	
-	/**
-	 * Sort the genomes.
-	 */
-	public void sortPopulation() {
-		getPopulation().sort(this.getBestComparator());
 	}
 	
 	/**

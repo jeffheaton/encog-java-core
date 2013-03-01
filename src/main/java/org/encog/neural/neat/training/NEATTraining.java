@@ -281,8 +281,6 @@ public class NEATTraining extends SpeciesEA {
 	}
 
 	public void dump(OutputStream os) {
-		this.sortPopulation();
-
 		PrintWriter out = new PrintWriter(new OutputStreamWriter(os));
 
 		if (this.getBestGenome() != null) {

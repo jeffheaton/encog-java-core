@@ -151,7 +151,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 								.get(2)));
 						lastGenome.setBirthGeneration(Integer.parseInt(cols
 								.get(3)));
-						lastSpecies.getMembers().add(lastGenome);
+						lastSpecies.add(lastGenome);
 						if (isLeader) {
 							lastSpecies.setLeader(lastGenome);
 						}

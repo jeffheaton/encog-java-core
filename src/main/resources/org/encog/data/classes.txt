@@ -3,7 +3,7 @@ org.encog.neural.pnn.BasicPNN
 org.encog.ml.hmm.HiddenMarkovModel
 org.encog.neural.cpn.CPN
 org.encog.neural.neat.NEATPopulation
-org.encog.neural.neat.NEATSpecies
+org.encog.ml.ea.species.BasicSpecies
 org.encog.ml.bayesian.BayesianNetwork
 org.encog.neural.rbf.RBFNetwork
 org.encog.ml.svm.SVM

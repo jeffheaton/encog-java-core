@@ -24,7 +24,7 @@ public class ThreadedGenomeSelector implements Serializable {
 
 		synchronized (this) {
 			while (result == null) {
-				int selectedID = owner.getSelection().performSelection(this.rnd, null);
+				int selectedID = owner.getSelection().performSelection(this.rnd, species);
 				Genome potentialSelection = (Genome)species.getMembers().get(selectedID);
 				if (!used.contains(potentialSelection)) {
 					used.add(potentialSelection);
@@ -40,7 +40,7 @@ public class ThreadedGenomeSelector implements Serializable {
 
 		synchronized (this) {
 			while (result == null) {
-				int selectedID = owner.getSelection().performAntiSelection(this.rnd, null);
+				int selectedID = owner.getSelection().performAntiSelection(this.rnd, species);
 				Genome potentialSelection = (Genome)species.getMembers().get(selectedID);
 				if (!used.contains(potentialSelection)) {
 					used.add(potentialSelection);

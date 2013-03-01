@@ -32,7 +32,6 @@ import java.util.List;
 import org.encog.ml.BasicML;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
-import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.train.rewrite.RewriteRule;
 
@@ -45,11 +44,6 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * The population.
-	 */
-	private final List<Genome> genomes = new ArrayList<Genome>();
 
 	/**
 	 * The object name.
@@ -90,7 +84,7 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 	 */
 	@Override
 	public void clear() {
-		this.genomes.clear();
+		this.species.clear();
 
 	}
 
@@ -142,15 +136,7 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 	 */
 	@Override
 	public int size() {
-		return this.genomes.size();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void sort(Comparator<Genome> comp) {
-		Collections.sort(this.genomes, comp);
+		return flatten().size();
 	}
 
 	@Override

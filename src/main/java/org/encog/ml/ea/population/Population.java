@@ -59,11 +59,6 @@ public interface Population extends Serializable {
 	 */
 	int size();
 
-	/**
-	 * Sort the population by best score.
-	 */
-	void sort(Comparator<Genome> comp);
-
 	void rewrite(Genome prg);
 	
 	GenomeFactory getGenomeFactory();

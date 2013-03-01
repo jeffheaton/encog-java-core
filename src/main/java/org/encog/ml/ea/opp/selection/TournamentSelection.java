@@ -39,13 +39,12 @@ public class TournamentSelection implements PrgSelection, Serializable {
 
 	@Override
 	public int performSelection(Random rnd, Species species) {
-		Population population = trainer.getPopulation();
-		int bestIndex = rnd.nextInt(population.size());
+		int bestIndex = rnd.nextInt(species.getMembers().size());
 	    Genome best = species.getMembers().get(bestIndex);
 	    BasicEA.calculateScoreAdjustment(best, this.trainer.getScoreAdjusters());
 	    
 	    for ( int i = 0; i < this.rounds; i ++ ) {
-	    	int competitorIndex = RangeRandomizer.randomInt(0, population.size()-1);
+	    	int competitorIndex = RangeRandomizer.randomInt(0, species.getMembers().size()-1);
 	      Genome competitor = species.getMembers().get(competitorIndex);
 	      
 	      // only evaluate valid genomes
@@ -63,13 +62,12 @@ public class TournamentSelection implements PrgSelection, Serializable {
 
 	@Override
 	public int performAntiSelection(Random rnd, Species species) {
-		Population population = trainer.getPopulation();
-		int worstIndex = rnd.nextInt(population.size());
+		int worstIndex = rnd.nextInt(species.getMembers().size());
 	    Genome worst = species.getMembers().get(worstIndex);
 	    BasicEA.calculateScoreAdjustment(worst, this.trainer.getScoreAdjusters());
 	    
 	    for ( int i = 0; i < this.rounds; i ++ ) {
-	    	int competitorIndex = RangeRandomizer.randomInt(0, population.size()-1);
+	    	int competitorIndex = RangeRandomizer.randomInt(0, species.getMembers().size()-1);
 	      Genome competitor = species.getMembers().get(competitorIndex);
 	      
 	      // force an invalid genome to lose
