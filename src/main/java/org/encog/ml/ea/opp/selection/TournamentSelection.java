@@ -25,7 +25,7 @@ public class TournamentSelection implements PrgSelection, Serializable {
 		return trainer;
 	}
 	
-	public void setTrainer(PrgGenetic trainer) {
+	public void setTrainer(EvolutionaryAlgorithm trainer) {
 		this.trainer = trainer;
 	}
 	
