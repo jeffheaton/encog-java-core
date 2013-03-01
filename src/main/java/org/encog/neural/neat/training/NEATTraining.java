@@ -37,6 +37,7 @@ import org.encog.ml.ea.opp.selection.TruncationSelection;
 import org.encog.ml.ea.sort.MinimizeAdjustedScoreComp;
 import org.encog.ml.ea.sort.MinimizeScoreComp;
 import org.encog.ml.ea.species.BasicSpecies;
+import org.encog.ml.ea.species.Species;
 import org.encog.ml.ea.train.species.SpeciesEA;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.neural.hyperneat.HyperNEATCODEC;
@@ -77,7 +78,6 @@ public class NEATTraining extends SpeciesEA {
 	private final int outputCount;
 
 	private int maxTries = 5;
-
 
 	/**
 	 * Construct a neat trainer with a new population. The new population is
@@ -124,10 +124,10 @@ public class NEATTraining extends SpeciesEA {
 		if (population.getSpecies().size() < 1) {
 			throw new TrainingError("Population has no species.");
 		}
-		
-		BasicSpecies species = population.getSpecies().get(0);
-		
-		if ( species.getMembers().size() < 1) {
+
+		Species species = population.getSpecies().get(0);
+
+		if (species.getMembers().size() < 1) {
 			throw new TrainingError("First NEAT species is empty");
 		}
 
@@ -152,7 +152,6 @@ public class NEATTraining extends SpeciesEA {
 	public int getInputCount() {
 		return this.inputCount;
 	}
-	
 
 	/**
 	 * @return The number of output neurons.
@@ -165,24 +164,60 @@ public class NEATTraining extends SpeciesEA {
 	 * setup for training.
 	 */
 	private void init() {
-		this.setSpeciation( new OriginalNEATSpeciation());
+		this.setSpeciation(new OriginalNEATSpeciation());
 
-		this.setSelection(new TruncationSelection(this,0.3));		
+		this.setSelection(new TruncationSelection(this, 0.3));
 		CompoundOperator weightMutation = new CompoundOperator();
-		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(1),new MutatePerturbLinkWeight(0.02)));
-		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(2),new MutatePerturbLinkWeight(0.02)));
-		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(3),new MutatePerturbLinkWeight(0.02)));
-		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectProportion(0.02),new MutatePerturbLinkWeight(0.02)));
-		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(1),new MutatePerturbLinkWeight(1)));
-		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(2),new MutatePerturbLinkWeight(1)));
-		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectFixed(3),new MutatePerturbLinkWeight(1)));
-		weightMutation.getComponents().add(0.1125,new NEATMutateWeights(new SelectProportion(0.02),new MutatePerturbLinkWeight(1)));
-		weightMutation.getComponents().add(0.03,new NEATMutateWeights(new SelectFixed(1),new MutateResetLinkWeight()));
-		weightMutation.getComponents().add(0.03,new NEATMutateWeights(new SelectFixed(2),new MutateResetLinkWeight()));
-		weightMutation.getComponents().add(0.03,new NEATMutateWeights(new SelectFixed(3),new MutateResetLinkWeight()));		
-		weightMutation.getComponents().add(0.01,new NEATMutateWeights(new SelectProportion(0.02),new MutateResetLinkWeight()));
+		weightMutation.getComponents().add(
+				0.1125,
+				new NEATMutateWeights(new SelectFixed(1),
+						new MutatePerturbLinkWeight(0.02)));
+		weightMutation.getComponents().add(
+				0.1125,
+				new NEATMutateWeights(new SelectFixed(2),
+						new MutatePerturbLinkWeight(0.02)));
+		weightMutation.getComponents().add(
+				0.1125,
+				new NEATMutateWeights(new SelectFixed(3),
+						new MutatePerturbLinkWeight(0.02)));
+		weightMutation.getComponents().add(
+				0.1125,
+				new NEATMutateWeights(new SelectProportion(0.02),
+						new MutatePerturbLinkWeight(0.02)));
+		weightMutation.getComponents().add(
+				0.1125,
+				new NEATMutateWeights(new SelectFixed(1),
+						new MutatePerturbLinkWeight(1)));
+		weightMutation.getComponents().add(
+				0.1125,
+				new NEATMutateWeights(new SelectFixed(2),
+						new MutatePerturbLinkWeight(1)));
+		weightMutation.getComponents().add(
+				0.1125,
+				new NEATMutateWeights(new SelectFixed(3),
+						new MutatePerturbLinkWeight(1)));
+		weightMutation.getComponents().add(
+				0.1125,
+				new NEATMutateWeights(new SelectProportion(0.02),
+						new MutatePerturbLinkWeight(1)));
+		weightMutation.getComponents().add(
+				0.03,
+				new NEATMutateWeights(new SelectFixed(1),
+						new MutateResetLinkWeight()));
+		weightMutation.getComponents().add(
+				0.03,
+				new NEATMutateWeights(new SelectFixed(2),
+						new MutateResetLinkWeight()));
+		weightMutation.getComponents().add(
+				0.03,
+				new NEATMutateWeights(new SelectFixed(3),
+						new MutateResetLinkWeight()));
+		weightMutation.getComponents().add(
+				0.01,
+				new NEATMutateWeights(new SelectProportion(0.02),
+						new MutateResetLinkWeight()));
 		weightMutation.getComponents().finalizeStructure();
-		
+
 		this.setChampMutation(weightMutation);
 		addOperation(0.5, new NEATCrossover());
 		addOperation(0.494, weightMutation);
@@ -198,25 +233,23 @@ public class NEATTraining extends SpeciesEA {
 		}
 
 		// check the population
-		for (final Genome obj : getPopulation().getGenomes()) {
-			if (!(obj instanceof NEATGenome)) {
-				throw new TrainingError(
-						"Population can only contain objects of NEATGenome.");
-			}
+		for (Species species : getPopulation().getSpecies()) {
+			for (final Genome obj : species.getMembers()) {
+				if (!(obj instanceof NEATGenome)) {
+					throw new TrainingError(
+							"Population can only contain objects of NEATGenome.");
+				}
 
-			final NEATGenome neat = (NEATGenome) obj;
+				final NEATGenome neat = (NEATGenome) obj;
 
-			if ((neat.getInputCount() != this.inputCount)
-					|| (neat.getOutputCount() != this.outputCount)) {
-				throw new TrainingError(
-						"All NEATGenome's must have the same input and output sizes as the base network.");
+				if ((neat.getInputCount() != this.inputCount)
+						|| (neat.getOutputCount() != this.outputCount)) {
+					throw new TrainingError(
+							"All NEATGenome's must have the same input and output sizes as the base network.");
+				}
 			}
 		}
 	}
-
-
-
-
 
 	public NEATPopulation getNEATPopulation() {
 		return (NEATPopulation) getPopulation();
@@ -236,49 +269,44 @@ public class NEATTraining extends SpeciesEA {
 	public void setMaxTries(int maxTries) {
 		this.maxTries = maxTries;
 	}
-	
+
 	public void dump(File file) {
 		try {
 			FileOutputStream fos = new FileOutputStream(file);
 			dump(fos);
 			fos.close();
-		} catch(IOException ex) {
+		} catch (IOException ex) {
 			throw new GeneticError(ex);
 		}
 	}
-	
+
 	public void dump(OutputStream os) {
 		this.sortPopulation();
-		
+
 		PrintWriter out = new PrintWriter(new OutputStreamWriter(os));
-				
-		if( this.getBestGenome()!=null ) {
+
+		if (this.getBestGenome() != null) {
 			out.println("Best genome: " + this.getBestGenome().toString());
 		}
-		
-		
+
 		out.println("Species");
-		for(int i=0;i<this.getNEATPopulation().getSpecies().size();i++) {
-			BasicSpecies species = this.getNEATPopulation().getSpecies().get(i);
+		for (int i = 0; i < this.getNEATPopulation().getSpecies().size(); i++) {
+			Species species = this.getNEATPopulation().getSpecies().get(i);
 			out.println("Species #" + i + ":" + species.toString());
 		}
-		
+
 		out.println("Species Detail");
-		for(int i=0;i<this.getNEATPopulation().getSpecies().size();i++) {
-			BasicSpecies species = this.getNEATPopulation().getSpecies().get(i);
+		for (int i = 0; i < this.getNEATPopulation().getSpecies().size(); i++) {
+			Species species = this.getNEATPopulation().getSpecies().get(i);
 			out.println("Species #" + i + ":" + species.toString());
-			out.println("Leader:" + species.getLeader()); 
-			for(int j=0;j<species.getMembers().size();j++) {
-				out.println("Species Member #" + j + ":" + species.getMembers().get(j));
+			out.println("Leader:" + species.getLeader());
+			for (int j = 0; j < species.getMembers().size(); j++) {
+				out.println("Species Member #" + j + ":"
+						+ species.getMembers().get(j));
 			}
 		}
 		
-		out.println("Population Dump");
-		for(int i=0;i<this.getNEATPopulation().getGenomes().size();i++) {
-			out.println("Genome #" + i + ":" + this.getNEATPopulation().getGenomes().get(i));
-		}
-		
 		out.flush();
-				
+
 	}
 }

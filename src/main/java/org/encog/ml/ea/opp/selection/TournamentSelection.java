@@ -41,12 +41,12 @@ public class TournamentSelection implements PrgSelection, Serializable {
 	public int performSelection(Random rnd, Species species) {
 		Population population = trainer.getPopulation();
 		int bestIndex = rnd.nextInt(population.size());
-	    Genome best = population.get(bestIndex);
+	    Genome best = species.getMembers().get(bestIndex);
 	    BasicEA.calculateScoreAdjustment(best, this.trainer.getScoreAdjusters());
 	    
 	    for ( int i = 0; i < this.rounds; i ++ ) {
 	    	int competitorIndex = RangeRandomizer.randomInt(0, population.size()-1);
-	      Genome competitor = population.get(competitorIndex);
+	      Genome competitor = species.getMembers().get(competitorIndex);
 	      
 	      // only evaluate valid genomes
 	      if (!Double.isInfinite(competitor.getScore()) && !Double.isNaN(competitor.getScore())) {
@@ -65,12 +65,12 @@ public class TournamentSelection implements PrgSelection, Serializable {
 	public int performAntiSelection(Random rnd, Species species) {
 		Population population = trainer.getPopulation();
 		int worstIndex = rnd.nextInt(population.size());
-	    Genome worst = population.get(worstIndex);
+	    Genome worst = species.getMembers().get(worstIndex);
 	    BasicEA.calculateScoreAdjustment(worst, this.trainer.getScoreAdjusters());
 	    
 	    for ( int i = 0; i < this.rounds; i ++ ) {
 	    	int competitorIndex = RangeRandomizer.randomInt(0, population.size()-1);
-	      Genome competitor = population.get(competitorIndex);
+	      Genome competitor = species.getMembers().get(competitorIndex);
 	      
 	      // force an invalid genome to lose
 	      if (Double.isInfinite(competitor.getScore()) || Double.isNaN(competitor.getScore())) {

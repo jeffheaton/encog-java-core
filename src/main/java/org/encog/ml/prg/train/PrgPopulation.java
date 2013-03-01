@@ -4,6 +4,7 @@ import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.BasicPopulation;
+import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.epl.EPLHolder;
@@ -15,11 +16,10 @@ public class PrgPopulation extends BasicPopulation implements MLRegression {
 	private EPLHolder holder;
 
 	public PrgPopulation(EncogProgramContext theContext, int thePopulationSize) {
-		super(thePopulationSize, new PrgGenomeFactory(
-				theContext));
+		super(thePopulationSize, new PrgGenomeFactory(theContext));
 		GeneticTrainingParams params = theContext.getParams();
-		this.holder = theContext.getHolderFactory().factor(
-				thePopulationSize, params.getMaxIndividualSize());
+		this.holder = theContext.getHolderFactory().factor(thePopulationSize,
+				params.getMaxIndividualSize());
 		this.context = theContext;
 	}
 
@@ -28,13 +28,15 @@ public class PrgPopulation extends BasicPopulation implements MLRegression {
 		RenderCommonExpression render = new RenderCommonExpression();
 
 		int index = 0;
-		for (Genome obj : getGenomes()) {
-			EncogProgram prg = (EncogProgram) obj;
-			System.out.println(index + ": Score " + prg.getScore() + " : "
-					+ render.render(prg));
-			index++;
-			if (index > i) {
-				break;
+		for (Species species : getSpecies()) {
+			for (Genome obj : species.getMembers()) {
+				EncogProgram prg = (EncogProgram) obj;
+				System.out.println(index + ": Score " + prg.getScore() + " : "
+						+ render.render(prg));
+				index++;
+				if (index > i) {
+					break;
+				}
 			}
 		}
 	}
@@ -57,24 +59,24 @@ public class PrgPopulation extends BasicPopulation implements MLRegression {
 
 	@Override
 	public int getInputCount() {
-		EncogProgram best = (EncogProgram) this.getGenomes().get(0);
-		return best.getInputCount();
+		return ((EncogProgram)getSpecies().get(0).getLeader()).getInputCount();
 	}
 
 	@Override
 	public int getOutputCount() {
-		EncogProgram best = (EncogProgram) this.getGenomes().get(0);
-		return best.getOutputCount();
+		return ((EncogProgram)getSpecies().get(0).getLeader()).getOutputCount();
 	}
 
 	/**
 	 * Compute the output from the best Genome. Note: it is not safe to call
 	 * this method while training is progressing.
-	 * @param input The input to the 
+	 * 
+	 * @param input
+	 *            The input to the
 	 */
 	@Override
 	public MLData compute(MLData input) {
-		EncogProgram best = (EncogProgram) this.getGenomes().get(0);
-		return best.compute(input);
+		//EncogProgram best = (EncogProgram) this.getGenomes().get(0);
+		return null;// best.compute(input);
 	}
 }

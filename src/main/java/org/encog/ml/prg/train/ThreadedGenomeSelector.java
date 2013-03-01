@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.Set;
 
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.species.Species;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 
 public class ThreadedGenomeSelector implements Serializable {
@@ -18,13 +19,13 @@ public class ThreadedGenomeSelector implements Serializable {
 		this.rnd = theRandom;
 	}
 
-	public Genome selectGenome() {
+	public Genome selectGenome(Species species) {
 		Genome result = null;
 
 		synchronized (this) {
 			while (result == null) {
 				int selectedID = owner.getSelection().performSelection(this.rnd, null);
-				Genome potentialSelection = (Genome)owner.getPopulation().get(selectedID);
+				Genome potentialSelection = (Genome)species.getMembers().get(selectedID);
 				if (!used.contains(potentialSelection)) {
 					used.add(potentialSelection);
 					result = potentialSelection;
@@ -34,13 +35,13 @@ public class ThreadedGenomeSelector implements Serializable {
 		}
 	}
 	
-	public Genome antiSelectGenome() {
+	public Genome antiSelectGenome(Species species) {
 		Genome result = null;
 
 		synchronized (this) {
 			while (result == null) {
 				int selectedID = owner.getSelection().performAntiSelection(this.rnd, null);
-				Genome potentialSelection = (Genome)owner.getPopulation().get(selectedID);
+				Genome potentialSelection = (Genome)species.getMembers().get(selectedID);
 				if (!used.contains(potentialSelection)) {
 					used.add(potentialSelection);
 					result = potentialSelection;

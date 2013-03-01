@@ -33,6 +33,7 @@ import org.encog.ml.BasicML;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
 import org.encog.ml.ea.species.BasicSpecies;
+import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.train.rewrite.RewriteRule;
 
 /**
@@ -55,7 +56,7 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 	 */
 	private String name;
 	
-	private final List<BasicSpecies> species = new ArrayList<BasicSpecies>();
+	private final List<Species> species = new ArrayList<Species>();
 	
 	
 	private List<RewriteRule> rewriteRules = new ArrayList<RewriteRule>();
@@ -88,42 +89,9 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void add(final Genome genome) {
-		this.genomes.add(genome);
-		genome.setPopulation(this);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addAll(final List<? extends Genome> newPop) {
-		this.genomes.addAll(newPop);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public void clear() {
 		this.genomes.clear();
 
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Genome get(final int i) {
-		return this.genomes.get(i);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<Genome> getGenomes() {
-		return this.genomes;
 	}
 
 	/**
@@ -156,7 +124,7 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<BasicSpecies> getSpecies() {
+	public List<Species> getSpecies() {
 		return this.species;
 	}
 
@@ -229,7 +197,7 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 	@Override
 	public List<Genome> flatten() {
 		List<Genome> result = new ArrayList<Genome>();
-		for(BasicSpecies species: this.species) {
+		for(Species species: this.species) {
 			result.addAll(species.getMembers());
 		}
 		return result;

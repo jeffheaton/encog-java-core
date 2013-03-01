@@ -37,4 +37,5 @@ public interface Species {
 
 	void setPopulation(Population thePopulation);
 
+	void add(Genome genome);
 }

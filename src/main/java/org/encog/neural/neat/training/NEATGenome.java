@@ -37,6 +37,7 @@ import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.BasicGenome;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.species.BasicSpecies;
+import org.encog.ml.ea.species.Species;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.util.Format;
@@ -87,7 +88,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 */
 	private int outputCount;
 	
-	private BasicSpecies species;
+	private Species species;
 
 	/**
 	 * Construct a genome by copying another.
@@ -357,15 +358,15 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	/**
 	 * @return the species
 	 */
-	public BasicSpecies getSpecies() {
+	public Species getSpecies() {
 		return species;
 	}
 
 	/**
-	 * @param species the species to set
+	 * @param s the species to set
 	 */
-	public void setSpecies(BasicSpecies species) {
-		this.species = species;
+	public void setSpecies(Species s) {
+		this.species = s;
 	}
 	
 	

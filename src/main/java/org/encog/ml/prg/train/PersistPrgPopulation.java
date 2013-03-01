@@ -28,7 +28,10 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.EncogError;
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.species.BasicSpecies;
+import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.extension.EncogOpcodeRegistry;
@@ -41,7 +44,7 @@ import org.encog.util.csv.CSVFormat;
 
 /**
  * Persist a basic network.
- *
+ * 
  */
 public class PersistPrgPopulation implements EncogPersistor {
 
@@ -67,12 +70,14 @@ public class PersistPrgPopulation implements EncogPersistor {
 	@Override
 	public Object read(final InputStream is) {
 		EncogProgramContext context = new EncogProgramContext();
-		
-		final PrgPopulation result = new PrgPopulation(context,0);
+
+		final PrgPopulation result = new PrgPopulation(context, 0);
 
 		final EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;
 
+		int count = 0;
+		Species lastSpecies=null;
 		while ((section = in.readNextSection()) != null) {
 			if (section.getSectionName().equals("BASIC")
 					&& section.getSubSectionName().equals("PARAMS")) {
@@ -80,40 +85,57 @@ public class PersistPrgPopulation implements EncogPersistor {
 				result.getProperties().putAll(params);
 			} else if (section.getSectionName().equals("BASIC")
 					&& section.getSubSectionName().equals("EPL-POPULATION")) {
-				for(String line: section.getLines()) {
+				for (String line : section.getLines()) {
 					final List<String> cols = EncogFileSection
 							.splitColumns(line);
-					
-					double score = 0; 
-					double adjustedScore = 0;
-					
-					if( cols.get(0).equalsIgnoreCase("nan") || cols.get(1).equalsIgnoreCase("nan") ) {
-						score = Double.NaN;
-						adjustedScore = Double.NaN;
-					} else {
-						score = CSVFormat.EG_FORMAT.parse(cols.get(0));
-						adjustedScore = CSVFormat.EG_FORMAT.parse(cols.get(1));
+
+					if (cols.get(0).equalsIgnoreCase("s")) {
+						lastSpecies = new BasicSpecies();
+						lastSpecies.setAge(Integer.parseInt(cols.get(1)));
+						lastSpecies.setBestScore(CSVFormat.EG_FORMAT
+								.parse(cols.get(2)));
+						lastSpecies.setPopulation(result);
+						lastSpecies.setGensNoImprovement(Integer.parseInt(cols.get(3)));
+						result.getSpecies().add(lastSpecies);
+					} else if (cols.get(0).equalsIgnoreCase("p")) {
+						double score = 0;
+						double adjustedScore = 0;
+
+						if (cols.get(1).equalsIgnoreCase("nan")
+								|| cols.get(2).equalsIgnoreCase("nan")) {
+							score = Double.NaN;
+							adjustedScore = Double.NaN;
+						} else {
+							score = CSVFormat.EG_FORMAT.parse(cols.get(1));
+							adjustedScore = CSVFormat.EG_FORMAT.parse(cols
+									.get(2));
+						}
+
+						String code = cols.get(3);
+						EncogProgram prg = new EncogProgram(context);
+						prg.fromBase64(code);
+						prg.setScore(score);
+						prg.setAdjustedScore(adjustedScore);
+						if( lastSpecies==null ) {
+							throw new EncogError("Have not defined a species yet");
+						} else {
+							lastSpecies.add(prg);
+						}
+						count++;
 					}
-										
-					String code = cols.get(2);
-					EncogProgram prg = new EncogProgram(context);
-					prg.fromBase64(code);
-					prg.setScore(score);
-					prg.setAdjustedScore(adjustedScore);
-					result.add(prg);
 				}
 			} else if (section.getSectionName().equals("BASIC")
 					&& section.getSubSectionName().equals("EPL-OPCODES")) {
-				for(String line: section.getLines()) {
+				for (String line : section.getLines()) {
 					final List<String> cols = EncogFileSection
 							.splitColumns(line);
 					String code = cols.get(0);
 					int opcode = Integer.parseInt(code);
-					EncogOpcodeRegistry.INSTANCE.register(context,opcode);
+					EncogOpcodeRegistry.INSTANCE.register(context, opcode);
 				}
 			} else if (section.getSectionName().equals("BASIC")
 					&& section.getSubSectionName().equals("EPL-SYMBOLIC")) {
-				for(String line: section.getLines()) {
+				for (String line : section.getLines()) {
 					final List<String> cols = EncogFileSection
 							.splitColumns(line);
 					String name = cols.get(0);
@@ -121,7 +143,7 @@ public class PersistPrgPopulation implements EncogPersistor {
 				}
 			}
 		}
-		result.setPopulationSize(result.getGenomes().size());
+		result.setPopulationSize(count);
 		return result;
 	}
 
@@ -132,35 +154,45 @@ public class PersistPrgPopulation implements EncogPersistor {
 	public void save(final OutputStream os, final Object obj) {
 		final EncogWriteHelper out = new EncogWriteHelper(os);
 		final PrgPopulation pop = (PrgPopulation) obj;
-		
+
 		out.addSection("BASIC");
 		out.addSubSection("PARAMS");
 		out.addProperties(pop.getProperties());
 		out.addSubSection("EPL-OPCODES");
-		for(ProgramExtensionTemplate temp : pop.getContext().getFunctions().generateOpcodeList()) {
+		for (ProgramExtensionTemplate temp : pop.getContext().getFunctions()
+				.generateOpcodeList()) {
 			out.addColumn(temp.getOpcode());
 			out.addColumn(temp.getName());
 			out.writeLine();
 		}
 		out.addSubSection("EPL-SYMBOLIC");
-		for(String name : pop.getContext().getDefinedVariables()) {
+		for (String name : pop.getContext().getDefinedVariables()) {
 			out.addColumn(name);
 			out.writeLine();
 		}
 		out.addSubSection("EPL-POPULATION");
-		for(Genome genome: pop.getGenomes()) {
-			EncogProgram prg = (EncogProgram)genome;
-			if( Double.isInfinite(prg.getScore()) || Double.isNaN(prg.getScore())) {
-				out.addColumn("NaN");
-				out.addColumn("NaN");
-			} else {
-				
-				out.addColumn(prg.getScore());
-				out.addColumn(prg.getAdjustedScore());
-			}
-
-			out.addColumn(prg.toBase64());
+		for (Species species : pop.getSpecies()) {
+			out.addColumn("s");
+			out.addColumn(species.getAge());
+			out.addColumn(species.getBestScore());
+			out.addColumn(species.getGensNoImprovement());
 			out.writeLine();
+			for (Genome genome : species.getMembers()) {
+				EncogProgram prg = (EncogProgram) genome;
+				out.addColumn("p");
+				if (Double.isInfinite(prg.getScore())
+						|| Double.isNaN(prg.getScore())) {
+					out.addColumn("NaN");
+					out.addColumn("NaN");
+				} else {
+
+					out.addColumn(prg.getScore());
+					out.addColumn(prg.getAdjustedScore());
+				}
+
+				out.addColumn(prg.toBase64());
+				out.writeLine();
+			}
 		}
 
 		out.flush();

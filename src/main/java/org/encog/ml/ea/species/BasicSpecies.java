@@ -291,4 +291,10 @@ public class BasicSpecies implements Serializable, Species {
 		return result.toString();
 	}
 
+	@Override
+	public void add(Genome genome) {
+		genome.setPopulation(this.population);
+		this.members.add(genome);
+	}
+
 }

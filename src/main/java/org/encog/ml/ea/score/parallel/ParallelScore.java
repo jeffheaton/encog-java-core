@@ -10,6 +10,7 @@ import org.encog.ml.ea.codec.GeneticCODEC;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.score.AdjustScore;
+import org.encog.ml.ea.species.Species;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.util.concurrency.MultiThreadable;
 
@@ -21,10 +22,8 @@ public class ParallelScore implements MultiThreadable {
 	private int threads;
 	private int actualThreads;
 
-	public ParallelScore(Population thePopulation,
-			GeneticCODEC theCODEC,
-			List<AdjustScore> theAdjusters,
-			CalculateScore theScoreFunction,
+	public ParallelScore(Population thePopulation, GeneticCODEC theCODEC,
+			List<AdjustScore> theAdjusters, CalculateScore theScoreFunction,
 			int theThreadCount) {
 		this.codec = theCODEC;
 		this.population = thePopulation;
@@ -56,25 +55,27 @@ public class ParallelScore implements MultiThreadable {
 
 	public void process() {
 		// determine thread usage
-		if( this.scoreFunction.requireSingleThreaded() ) {
+		if (this.scoreFunction.requireSingleThreaded()) {
 			this.actualThreads = 1;
-		} else if( threads==0 ) {
+		} else if (threads == 0) {
 			this.actualThreads = Runtime.getRuntime().availableProcessors();
 		} else {
 			this.actualThreads = threads;
 		}
-		
+
 		// start up
 		ExecutorService taskExecutor = null;
-		
-		if( this.threads==1 ) {
+
+		if (this.threads == 1) {
 			taskExecutor = Executors.newSingleThreadScheduledExecutor();
 		} else {
 			taskExecutor = Executors.newFixedThreadPool(this.actualThreads);
 		}
 
-		for (Genome genome : this.population.getGenomes()) {
-			taskExecutor.execute(new ParallelScoreTask(genome, this));
+		for (Species species : this.population.getSpecies()) {
+			for (Genome genome : species.getMembers()) {
+				taskExecutor.execute(new ParallelScoreTask(genome, this));
+			}
 		}
 
 		taskExecutor.shutdown();

@@ -31,6 +31,7 @@ import java.util.Map;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.species.BasicSpecies;
+import org.encog.ml.ea.species.Species;
 import org.encog.neural.hyperneat.FactorHyperNEATGenome;
 import org.encog.neural.hyperneat.HyperNEATCODEC;
 import org.encog.neural.hyperneat.HyperNEATGenome;
@@ -154,7 +155,6 @@ public class PersistNEATPopulation implements EncogPersistor {
 						if (isLeader) {
 							lastSpecies.setLeader(lastGenome);
 						}
-						result.add(lastGenome);
 					} else if (cols.get(0).equalsIgnoreCase("n")) {
 						final NEATNeuronGene neuronGene = new NEATNeuronGene();
 						final int geneID = Integer.parseInt(cols.get(1));
@@ -270,7 +270,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 		}
 
 		out.addSubSection("SPECIES");
-		for (final BasicSpecies species : pop.getSpecies()) {
+		for (final Species species : pop.getSpecies()) {
 			out.addColumn("s");
 			out.addColumn(species.getAge());
 			out.addColumn(species.getBestScore());

@@ -328,7 +328,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 		}
 
 		// create the new genomes
-		getGenomes().clear();
+		getSpecies().clear();
 
 		// reset counters
 		getGeneIDGenerate().setCurrentID(1);
@@ -345,8 +345,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 			final NEATGenome genome = getGenomeFactory().factor(rnd, this,
 					this.inputCount, this.outputCount,
 					this.initialConnectionDensity);
-			add(genome);
-			defaultSpecies.getMembers().add(genome);
+			defaultSpecies.add(genome);
 		}
 		defaultSpecies.setLeader(defaultSpecies.getMembers().get(0));
 		this.getSpecies().add(defaultSpecies);
@@ -427,10 +426,10 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	}
 
 	private void updateBestNetwork() {
-		if (this.bestGenome != getGenomes().get(0)) {
+		/*if (this.bestGenome != getGenomes().get(0)) {
 			this.bestGenome = (NEATGenome) getGenomes().get(0);
 			this.bestNetwork = (NEATNetwork) this.codec.decode(this.bestGenome);
-		}
+		}*/
 	}
 
 }

@@ -2,9 +2,11 @@ package org.encog.persist;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import junit.framework.Assert;
 
+import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.extension.StandardExtensions;
@@ -30,8 +32,8 @@ public class TestPersistEPLPopulation {
 		prg1.compileExpression("x+1");
 		prg2.compileExpression("(x+5)/2");
 		
-		pop.add(prg1);
-		pop.add(prg2);
+		//pop.add(prg1);
+		//pop.add(prg2);
 		return pop;
 	}
 	
@@ -56,10 +58,11 @@ public class TestPersistEPLPopulation {
 		
 	private void validate(PrgPopulation pop)
 	{
-		Assert.assertEquals(2, pop.getGenomes().size());
+		List<Genome> list = pop.flatten();
+		Assert.assertEquals(2, list.size());
 		
-		EncogProgram prg1 = (EncogProgram)pop.getGenomes().get(0);
-		EncogProgram prg2 = (EncogProgram)pop.getGenomes().get(1);
+		EncogProgram prg1 = (EncogProgram)list.get(0);
+		EncogProgram prg2 = (EncogProgram)list.get(1);
 		
 		RenderCommonExpression render = new RenderCommonExpression();
 		Assert.assertEquals("(x+1)", render.render(prg1));

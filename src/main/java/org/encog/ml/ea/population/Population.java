@@ -29,43 +29,18 @@ import java.util.List;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
-import org.encog.ml.ea.species.BasicSpecies;
+import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.train.rewrite.RewriteRule;
 
 /**
  * Defines a population of genomes.
  */
 public interface Population extends Serializable {
-		
-	/**
-	 * Add a genome to the population.
-	 * @param genome The genome to add.
-	 */
-	void add(Genome genome);
-
-	/**
-	 * Add all of the specified members to this population.
-	 * @param newPop A list of new genomes to add.
-	 */
-	void addAll(List<? extends Genome> newPop);
 
 	/**
 	 * Clear all genomes from this population.
 	 */
 	void clear();
-
-	
-	/**
-	 * Get a genome by index.  Index 0 is the best genome, if sorted.
-	 * @param i The genome to get.
-	 * @return The genome at the specified index.
-	 */
-	Genome get(int i);
-
-	/**
-	 * @return The genomes in the population.
-	 */
-	List<Genome> getGenomes();
 
 	/**
 	 * @return The max population size.
@@ -99,7 +74,7 @@ public interface Population extends Serializable {
 
 	void addRewriteRule(RewriteRule rule);
 
-	List<BasicSpecies> getSpecies();
+	List<Species> getSpecies();
 
 	List<Genome> flatten();
 }

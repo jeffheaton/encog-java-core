@@ -171,7 +171,7 @@ public class NonSpeciesEA extends BasicEA
 					throw new GeneticError(
 							"Program is too large to be added to population.");
 				}
-				replaceTarget = this.selector.antiSelectGenome();
+				replaceTarget = this.selector.antiSelectGenome(null);
 				getPopulation().rewrite(genome[index + i]);
 				replaceTarget.copy(genome[index + i]);
 				evaluateBestGenome(genome[index + i]);
