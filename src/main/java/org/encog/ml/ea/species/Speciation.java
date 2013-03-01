@@ -1,4 +1,4 @@
-package org.encog.neural.neat.training.species;
+package org.encog.ml.ea.species;
 
 import java.util.List;
 
@@ -9,4 +9,5 @@ public interface Speciation {
 
 	void init(EvolutionaryAlgorithm theOwner);
 	void performSpeciation(List<Genome> genomeList );
+	boolean isIterationBased();
 }

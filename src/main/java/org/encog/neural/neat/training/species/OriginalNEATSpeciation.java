@@ -30,6 +30,7 @@ import java.util.List;
 import org.encog.Encog;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.species.BasicSpecies;
+import org.encog.ml.ea.species.Speciation;
 import org.encog.ml.ea.species.Species;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.genetic.GeneticError;
@@ -578,6 +579,11 @@ public class OriginalNEATSpeciation implements Speciation {
 
 		levelOff();
 
+	}
+
+	@Override
+	public boolean isIterationBased() {
+		return true;
 	}
 
 }
