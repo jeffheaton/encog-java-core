@@ -4,27 +4,27 @@ import java.util.Random;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
-import org.encog.ml.ea.species.BasicSpecies;
+import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.species.Species;
-import org.encog.neural.neat.NEATGenomeFactory;
-import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.NEATGenome;
-import org.encog.neural.neat.training.NEATTraining;
 
 public class EAWorker implements Runnable {
 
 	private final Species species;
-	private final Genome[] parents = new Genome[2];
-	private final Genome[] children = new Genome[1];
+	private Genome[] parents;
+	private Genome[] children;
 	private final Random rnd;
-	private final NEATPopulation population;
-	private final NEATTraining train;
+	private final Population population;
+	private final SpeciesEA train;
 
 	public EAWorker(SpeciesEA theTrain, Species theSpecies) {
-		this.train = (NEATTraining) theTrain;
+		this.train = theTrain;
 		this.species = theSpecies;
-		this.population = this.train.getNEATPopulation();
+		this.population = this.train.getPopulation();
 		this.rnd = this.train.getRandomNumberFactory().factor();
+		
+		this.parents = new Genome[this.train.getOperators().maxParents()];
+		this.children = new Genome[this.train.getOperators().maxOffspring()];
 	}
 	
 	private Genome chooseParent() {
@@ -39,7 +39,7 @@ public class EAWorker implements Runnable {
 
 			// Add elite genomes directly
 			if (this.species.getMembers().size() > 5) {
-				int idealEliteCount = (int)(species.getMembers().size() * this.train.getNEATPopulation().getSurvivalRate());
+				int idealEliteCount = (int)(species.getMembers().size() * this.train.getEliteRate());
 				int eliteCount = Math.min(numToSpawn, idealEliteCount);
 				for (int i = 0; i < eliteCount; i++) {
 					Genome eliteGenome = this.species.getMembers().get(i);
@@ -69,7 +69,7 @@ public class EAWorker implements Runnable {
 				// Chose the first parent, there must be at least one genome in
 				// this
 				// species
-				parents[0] = (NEATGenome) chooseParent();
+				parents[0] = chooseParent();
 
 				// if the number of individuals in this species is only
 				// one then we can only clone and perhaps mutate, otherwise use
@@ -79,9 +79,9 @@ public class EAWorker implements Runnable {
 
 					int numAttempts = 5;
 
-					parents[1] = (NEATGenome) chooseParent();
+					parents[1] = chooseParent();
 					while ((parents[0] == parents[1]) && ((numAttempts--) > 0)) {
-						parents[1] = (NEATGenome) chooseParent();
+						parents[1] = chooseParent();
 					}
 
 					// success, perform crossover

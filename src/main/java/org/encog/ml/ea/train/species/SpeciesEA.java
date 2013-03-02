@@ -23,7 +23,6 @@ import org.encog.ml.ea.train.basic.BasicEA;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
-import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.util.concurrency.MultiThreadable;
@@ -42,6 +41,7 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 	private Genome oldBestGenome;
 	private List<Genome> newPopulation = new ArrayList<Genome>();
 	private EvolutionaryOperator champMutation;
+	private double eliteRate = 0.3;
 	
 	/**
 	 * The best ever network.
@@ -376,7 +376,18 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 	public void setChampMutation(EvolutionaryOperator champMutation) {
 		this.champMutation = champMutation;
 	}
-	
-	
-	
+
+	/**
+	 * @return the eliteRate
+	 */
+	public double getEliteRate() {
+		return eliteRate;
+	}
+
+	/**
+	 * @param eliteRate the eliteRate to set
+	 */
+	public void setEliteRate(double eliteRate) {
+		this.eliteRate = eliteRate;
+	}
 }
