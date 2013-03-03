@@ -33,6 +33,7 @@ import org.encog.ml.CalculateScore;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLMethod;
 import org.encog.ml.ea.codec.GeneticCODEC;
+import org.encog.ml.ea.codec.GenomeAsPhenomeCODEC;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.opp.OperationList;
@@ -75,7 +76,7 @@ public abstract class BasicEA implements EvolutionaryAlgorithm, Serializable {
 	private List<AdjustScore> adjusters = new ArrayList<AdjustScore>();
 	private final OperationList operators = new OperationList();
 
-	private GeneticCODEC codec;
+	private GeneticCODEC codec = new GenomeAsPhenomeCODEC();
 	private RandomFactory randomNumberFactory = Encog.getInstance()
 			.getRandomFactory().factorFactory();
 	private boolean validationMode = true;

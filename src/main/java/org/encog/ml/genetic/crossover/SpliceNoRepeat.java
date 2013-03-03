@@ -31,13 +31,16 @@ import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.genetic.GeneticError;
+import org.encog.ml.genetic.genome.ArrayGenome;
 import org.encog.ml.genetic.genome.IntegerArrayGenome;
 
 /**
  * A simple cross over where genes are simply "spliced". Genes are not allowed
- * to repeat.
+ * to repeat.  This method only works with IntegerArrayGenome.
  */
 public class SpliceNoRepeat implements EvolutionaryOperator {
+	
+	private EvolutionaryAlgorithm owner;
 
 	/**
 	 * Get a list of the genes that have not been taken before. This is useful
@@ -96,8 +99,11 @@ public class SpliceNoRepeat implements EvolutionaryOperator {
 		
 		IntegerArrayGenome mother = (IntegerArrayGenome)parents[parentIndex];
 		IntegerArrayGenome father = (IntegerArrayGenome)parents[parentIndex+1];
-		IntegerArrayGenome offspring1 = (IntegerArrayGenome)offspring[offspringIndex];
-		IntegerArrayGenome offspring2 = (IntegerArrayGenome)offspring[offspringIndex+1];
+		IntegerArrayGenome offspring1 = (IntegerArrayGenome)this.owner.getPopulation().getGenomeFactory().factor();
+		IntegerArrayGenome offspring2 = (IntegerArrayGenome)this.owner.getPopulation().getGenomeFactory().factor();
+		
+		offspring[offspringIndex] = offspring1;
+		offspring[offspringIndex+1] = offspring2;
 		
 		final int geneLength = mother.size();
 
@@ -147,7 +153,6 @@ public class SpliceNoRepeat implements EvolutionaryOperator {
 
 	@Override
 	public void init(EvolutionaryAlgorithm theOwner) {
-		// TODO Auto-generated method stub
-		
+		this.owner = theOwner;	
 	}
 }

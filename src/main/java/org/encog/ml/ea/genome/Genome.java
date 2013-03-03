@@ -23,6 +23,7 @@
  */
 package org.encog.ml.ea.genome;
 
+import org.encog.ml.MLMethod;
 import org.encog.ml.ea.population.Population;
 
 /**
@@ -30,7 +31,7 @@ import org.encog.ml.ea.population.Population;
  * is made up of one or more chromosomes, which are in turn made up of genes.
  * 
  */
-public interface Genome {
+public interface Genome extends MLMethod {
 
 	/**
 	 * Get the adjusted score, this considers old-age penalties and youth
