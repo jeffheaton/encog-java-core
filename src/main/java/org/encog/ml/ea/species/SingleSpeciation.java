@@ -11,8 +11,9 @@ public class SingleSpeciation implements Speciation {
 	private EvolutionaryAlgorithm owner;
 	
 	private void updateShare() {
-		if( this.owner.getPopulation().getSpecies().size()!=1 ) {
-			throw new EncogError("SingleSpeciation can only be used with a species count of 1.");
+		int speciesCount = this.owner.getPopulation().getSpecies().size();
+		if( speciesCount!=1 ) {
+			throw new EncogError("SingleSpeciation can only be used with a species count of 1, species count is " + speciesCount);
 		}
 		
 		Species species = this.owner.getPopulation().getSpecies().get(0);

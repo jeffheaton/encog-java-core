@@ -169,6 +169,7 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 		preIteration();
 		setError(getGenetic().getError());
 		getGenetic().iteration();
+		setError(getGenetic().getError());
 		postIteration();
 	}
 

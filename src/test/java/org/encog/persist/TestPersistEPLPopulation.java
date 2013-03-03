@@ -7,6 +7,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.extension.StandardExtensions;
@@ -32,8 +33,9 @@ public class TestPersistEPLPopulation {
 		prg1.compileExpression("x+1");
 		prg2.compileExpression("(x+5)/2");
 		
-		//pop.add(prg1);
-		//pop.add(prg2);
+		Species defaultSpecies = pop.createSpecies();
+		defaultSpecies.add(prg1);
+		defaultSpecies.add(prg2);
 		return pop;
 	}
 	

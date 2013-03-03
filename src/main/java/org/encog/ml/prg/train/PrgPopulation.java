@@ -4,6 +4,7 @@ import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.BasicPopulation;
+import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
@@ -78,5 +79,12 @@ public class PrgPopulation extends BasicPopulation implements MLRegression {
 	public MLData compute(MLData input) {
 		//EncogProgram best = (EncogProgram) this.getGenomes().get(0);
 		return null;// best.compute(input);
+	}
+
+	public Species createSpecies() {
+		Species species = new BasicSpecies();
+		species.setPopulation(this);
+		this.getSpecies().add(species);
+		return species;
 	}
 }

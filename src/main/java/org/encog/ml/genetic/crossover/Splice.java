@@ -40,6 +40,8 @@ public class Splice implements EvolutionaryOperator {
 	 * The cut length.
 	 */
 	private final int cutLength;
+	
+	private EvolutionaryAlgorithm owner;
 
 	/**
 	 * Create a slice crossover with the specified cut length.
@@ -67,8 +69,11 @@ public class Splice implements EvolutionaryOperator {
 		
 		ArrayGenome mother = (ArrayGenome)parents[parentIndex];
 		ArrayGenome father = (ArrayGenome)parents[parentIndex+1];
-		ArrayGenome offspring1 = (ArrayGenome)offspring[offspringIndex];
-		ArrayGenome offspring2 = (ArrayGenome)offspring[offspringIndex+1];
+		ArrayGenome offspring1 = (ArrayGenome)this.owner.getPopulation().getGenomeFactory().factor();
+		ArrayGenome offspring2 = (ArrayGenome)this.owner.getPopulation().getGenomeFactory().factor();
+		
+		offspring[offspringIndex] = offspring1;
+		offspring[offspringIndex+1] = offspring2;
 		
 		final int geneLength = mother.size();
 
@@ -109,7 +114,7 @@ public class Splice implements EvolutionaryOperator {
 
 	@Override
 	public void init(EvolutionaryAlgorithm theOwner) {
-		// TODO Auto-generated method stub
+		this.owner = theOwner;
 		
 	}
 }

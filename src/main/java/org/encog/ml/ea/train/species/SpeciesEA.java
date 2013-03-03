@@ -236,9 +236,6 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 			throw new GeneticError(this.reportedError);
 		}
 
-		getPopulation().clear();
-		//getPopulation().addAll(newPopulation);
-		
 		if( isValidationMode() ) {
 			int currentPopSize = this.newPopulation.size();
 			int targetPopSize = this.getPopulation().getPopulationSize();
@@ -283,6 +280,7 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 				
 				if ( getBestComparator().isBetterThan(genome,this.bestGenome)) {
 					this.bestGenome = genome;
+					this.setError(genome.getScore());
 				}
 				return true;
 			} else {
