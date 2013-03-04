@@ -36,6 +36,8 @@ import org.encog.ml.genetic.genome.ArrayGenome;
  */
 public class MutateShuffle implements EvolutionaryOperator {
 
+	private EvolutionaryAlgorithm owner;
+	
 	/**
 	 * Perform a shuffle mutation.
 	 * @param chromosome The chromosome to mutate.
@@ -44,6 +46,7 @@ public class MutateShuffle implements EvolutionaryOperator {
 	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
 			Genome[] offspring, int offspringIndex) {
 		ArrayGenome parent = (ArrayGenome)parents[parentIndex];
+		offspring[offspringIndex] = this.owner.getPopulation().getGenomeFactory().factor();
 		ArrayGenome child = (ArrayGenome)offspring[offspringIndex];
 		
 		child.copy(parent);
@@ -89,8 +92,7 @@ public class MutateShuffle implements EvolutionaryOperator {
 
 	@Override
 	public void init(EvolutionaryAlgorithm theOwner) {
-		// TODO Auto-generated method stub
-		
+		this.owner = theOwner;
 	}
 
 }
