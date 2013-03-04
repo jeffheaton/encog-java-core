@@ -48,12 +48,14 @@ public class SubtreeCrossover implements EvolutionaryOperator, Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private EvolutionaryAlgorithm owner;
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void init(final EvolutionaryAlgorithm theOwner) {
-
+		this.owner = theOwner;
 	}
 
 	/**
@@ -82,7 +84,7 @@ public class SubtreeCrossover implements EvolutionaryOperator, Serializable {
 
 		final EncogProgram parent1 = (EncogProgram) parents[parentIndex];
 		final EncogProgram parent2 = (EncogProgram) parents[parentIndex + 1];
-		theOffspring[0] = parents[0].getPopulation().getGenomeFactory().factor();
+		theOffspring[0] = owner.getPopulation().getGenomeFactory().factor();
 		final EncogProgram offspring = (EncogProgram) theOffspring[0];
 
 		// find the position for the two cut-points, this is simply a node

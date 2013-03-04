@@ -52,6 +52,8 @@ public class SubtreeMutation implements EvolutionaryOperator, Serializable {
 	 * A random population generator.
 	 */
 	private final PrgPopulationGenerator generator;
+	
+	private EvolutionaryAlgorithm owner;
 
 	public SubtreeMutation(final EncogProgramContext theContext,
 			final int theMaxDepth) {
@@ -63,6 +65,7 @@ public class SubtreeMutation implements EvolutionaryOperator, Serializable {
 	 */
 	@Override
 	public void init(final EvolutionaryAlgorithm theOwner) {
+		this.owner = theOwner;
 	}
 
 	/**
@@ -89,7 +92,7 @@ public class SubtreeMutation implements EvolutionaryOperator, Serializable {
 			final int parentIndex, final Genome[] offspring,
 			final int offspringIndex) {
 		final EncogProgram program = (EncogProgram) parents[parentIndex];
-		offspring[offspringIndex] = parents[0].getPopulation().getGenomeFactory().factor(parents[0]);
+		offspring[offspringIndex] = this.owner.getPopulation().getGenomeFactory().factor(parents[0]);
 		final EncogProgram result = (EncogProgram) offspring[offspringIndex];
 		result.clear();
 

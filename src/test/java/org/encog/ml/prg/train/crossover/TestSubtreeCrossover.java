@@ -8,9 +8,15 @@ import junit.framework.TestCase;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.opp.SubtreeCrossover;
+import org.encog.ml.ea.opp.SubtreeMutation;
+import org.encog.ml.ea.score.adjust.ComplexityAdjustedScore;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
+import org.encog.ml.prg.PrgCODEC;
 import org.encog.ml.prg.extension.StandardExtensions;
+import org.encog.ml.prg.train.PrgGenetic;
+import org.encog.ml.prg.train.PrgPopulation;
+import org.encog.ml.prg.train.fitness.MultiObjectiveFitness;
 import org.encog.parse.expression.common.RenderCommonExpression;
 
 public class TestSubtreeCrossover extends TestCase {
@@ -74,6 +80,14 @@ public class TestSubtreeCrossover extends TestCase {
 		EncogProgram[] offspring = parent1.allocateOffspring(1);
 				
 		EvolutionaryOperator cross = new SubtreeCrossover();
+		
+		// create a trainer
+		PrgPopulation pop = new PrgPopulation(context,1000);
+		PrgGenetic genetic = new PrgGenetic(pop, new MultiObjectiveFitness());
+		genetic.setCODEC(new PrgCODEC());
+		genetic.addOperation(1.0, cross);
+		
+		// test cross over
 		Genome[] parents = {parent1, parent2};
 		cross.performOperation(new Random(seed), parents, 0, offspring, 0);
 		offspring[0].getVariables().setVariable("x", 1);

@@ -10,7 +10,11 @@ import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.opp.SubtreeMutation;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
+import org.encog.ml.prg.PrgCODEC;
 import org.encog.ml.prg.extension.StandardExtensions;
+import org.encog.ml.prg.train.PrgGenetic;
+import org.encog.ml.prg.train.PrgPopulation;
+import org.encog.ml.prg.train.fitness.MultiObjectiveFitness;
 import org.encog.parse.expression.common.RenderCommonExpression;
 
 public class TestSubtreeMutation extends TestCase {
@@ -24,6 +28,14 @@ public class TestSubtreeMutation extends TestCase {
 		EncogProgram[] offspring = prg.allocateOffspring(1);
 		prg.compileExpression(startExpression);
 		EvolutionaryOperator mutate = new SubtreeMutation(context,3);
+		
+		// create a trainer
+		PrgPopulation pop = new PrgPopulation(context,1000);
+		PrgGenetic genetic = new PrgGenetic(pop, new MultiObjectiveFitness());
+		genetic.setCODEC(new PrgCODEC());
+		genetic.addOperation(1.0, mutate);
+		
+		// test it
 		Genome[] parents = {prg};
 		mutate.performOperation(new Random(seed), parents, 0, offspring, 0);
 		offspring[0].getVariables().setVariable("x", 1);
