@@ -9,7 +9,7 @@ import java.util.Set;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.Population;
-import org.encog.ml.ea.species.BasicSpecies;
+import org.encog.ml.ea.species.Species;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
@@ -108,8 +108,7 @@ public abstract class PrgAbstractGenerate implements PrgPopulationGenerator {
 		EPLHolder holder = ((PrgPopulation) pop).getHolder();
 
 		pop.getSpecies().clear();
-		BasicSpecies defaultSpecies = new BasicSpecies();
-		defaultSpecies.setPopulation(pop);
+		Species defaultSpecies = pop.createSpecies();
 		
 		for (int i = 0; i < pop.getPopulationSize(); i++) {
 			EncogProgram prg = new EncogProgram(getContext(),

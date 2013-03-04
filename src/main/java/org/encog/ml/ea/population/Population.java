@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
+import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.train.rewrite.RewriteRule;
 
@@ -72,4 +73,6 @@ public interface Population extends Serializable {
 	List<Species> getSpecies();
 
 	List<Genome> flatten();
+
+	Species createSpecies();
 }

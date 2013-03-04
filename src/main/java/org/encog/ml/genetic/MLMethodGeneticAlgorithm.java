@@ -34,7 +34,7 @@ import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.sort.GenomeComparator;
 import org.encog.ml.ea.sort.MaximizeScoreComp;
 import org.encog.ml.ea.sort.MinimizeScoreComp;
-import org.encog.ml.ea.species.BasicSpecies;
+import org.encog.ml.ea.species.Species;
 import org.encog.ml.ea.train.species.SpeciesEA;
 import org.encog.ml.genetic.crossover.Splice;
 import org.encog.ml.genetic.mutate.MutatePerturb;
@@ -114,16 +114,13 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 		this.genetic.setBestComparator(comp);
 		this.genetic.setSelectionComparator(comp);
 
-		BasicSpecies defaultSpecies = new BasicSpecies();
-		defaultSpecies.setPopulation(population);
-		population.getSpecies().add(defaultSpecies);
-		
+		Species defaultSpecies = population.createSpecies();
+
 		for (int i = 0; i < population.getPopulationSize(); i++) {
 			final MLEncodable chromosomeNetwork = (MLEncodable)phenotypeFactory.factor();
 			final MLMethodGenome genome = new MLMethodGenome(chromosomeNetwork);
 			getGenetic().calculateScore(genome);
 			defaultSpecies.add(genome);
-			//getGenetic().evaluateBestGenome(genome);
 		}
 		defaultSpecies.setLeader(defaultSpecies.getMembers().get(0));
 		

@@ -32,6 +32,7 @@ import java.util.List;
 import org.encog.ml.BasicML;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
+import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.train.rewrite.RewriteRule;
 
@@ -187,5 +188,13 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 			result.addAll(species.getMembers());
 		}
 		return result;
+	}
+	
+	@Override
+	public Species createSpecies() {
+		Species species = new BasicSpecies();
+		species.setPopulation(this);
+		this.getSpecies().add(species);
+		return species;
 	}
 }
