@@ -25,8 +25,6 @@ package org.encog.ml.ea.population;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.encog.ml.BasicML;
@@ -52,6 +50,8 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 	private String name;
 	
 	private final List<Species> species = new ArrayList<Species>();
+	
+	private Genome bestGenome;
 	
 	
 	private List<RewriteRule> rewriteRules = new ArrayList<RewriteRule>();
@@ -196,5 +196,26 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 		species.setPopulation(this);
 		this.getSpecies().add(species);
 		return species;
+	}
+
+	@Override
+	public Genome getBestGenome() {
+		return this.bestGenome;
+	}
+
+	@Override
+	public void setBestGenome(Genome genome) {
+		this.bestGenome = genome;
+		
+	}
+
+	@Override
+	public Species determineBestSpecies() {
+		for(Species species : this.species) {
+			if( species.getMembers().contains(this.bestGenome) ) {
+				return species;
+			}
+		}
+		return null;
 	}
 }

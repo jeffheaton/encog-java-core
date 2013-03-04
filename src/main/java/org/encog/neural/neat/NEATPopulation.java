@@ -35,8 +35,10 @@ import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.codec.GeneticCODEC;
+import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.BasicPopulation;
 import org.encog.ml.ea.species.BasicSpecies;
+import org.encog.ml.ea.species.Species;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.hyperneat.FactorHyperNEATGenome;
 import org.encog.neural.hyperneat.HyperNEATCODEC;
@@ -120,8 +122,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	private NEATInnovationList innovations;
 
 	private final double weightRange = 5;
-	private NEATGenome bestGenome;
-
+	private Genome cachedBestGenome;
 	private NEATNetwork bestNetwork;
 
 	/**
@@ -220,14 +221,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	 */
 	public ChooseObject<ActivationFunction> getActivationFunctions() {
 		return this.activationFunctions;
-	}
-
-	/**
-	 * @return the bestGenome
-	 */
-	public NEATGenome getBestGenome() {
-		updateBestNetwork();
-		return this.bestGenome;
 	}
 
 	/**
@@ -426,10 +419,10 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	}
 
 	private void updateBestNetwork() {
-		/*if (this.bestGenome != getGenomes().get(0)) {
-			this.bestGenome = (NEATGenome) getGenomes().get(0);
-			this.bestNetwork = (NEATNetwork) this.codec.decode(this.bestGenome);
-		}*/
+		if( getBestGenome() != this.cachedBestGenome ) {
+			this.cachedBestGenome = getBestGenome();
+			this.bestNetwork = (NEATNetwork) this.getCODEC().decode(getBestGenome());
+		}
 	}
 
 }

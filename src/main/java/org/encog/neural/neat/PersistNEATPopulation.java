@@ -226,8 +226,57 @@ public class PersistNEATPopulation implements EncogPersistor {
 		// set the next ID's
 		result.getInnovationIDGenerate().setCurrentID(nextInnovationID);
 		result.getGeneIDGenerate().setCurrentID(nextGeneID);
+		
+		// find first genome, which should be the best genome
+		if( result.getSpecies().size()>0 ) {
+			Species species = result.getSpecies().get(0);
+			if( species.getMembers().size()>0 ) {
+				result.setBestGenome(species.getMembers().get(0));
+			}
+		}
 
 		return result;
+	}
+	
+	private void saveSpecies(EncogWriteHelper out, Species species) {
+		out.addColumn("s");
+		out.addColumn(species.getAge());
+		out.addColumn(species.getBestScore());
+		out.addColumn(species.getGensNoImprovement());
+		out.writeLine();
+
+		for (final Genome genome : species.getMembers()) {
+			final NEATGenome neatGenome = (NEATGenome) genome;
+			out.addColumn("g");
+			out.addColumn(neatGenome.getAdjustedScore());
+			out.addColumn(neatGenome.getScore());
+			out.addColumn(neatGenome.getBirthGeneration());
+			out.writeLine();
+
+			for (final NEATNeuronGene neatNeuronGene : neatGenome
+					.getNeuronsChromosome()) {
+				out.addColumn("n");
+				out.addColumn(neatNeuronGene.getId());
+				out.addColumn(neatNeuronGene.getActivationFunction());
+				out.addColumn(PersistNEATPopulation
+						.neuronTypeToString(neatNeuronGene.getNeuronType()));
+				out.addColumn(neatNeuronGene.getInnovationId());
+				out.writeLine();
+			}
+			for (final NEATLinkGene neatLinkGene : neatGenome
+					.getLinksChromosome()) {
+				out.addColumn("l");
+				out.addColumn(neatLinkGene.getId());
+				out.addColumn(neatLinkGene.isEnabled());
+				out.addColumn(neatLinkGene.getFromNeuronID());
+				out.addColumn(neatLinkGene.getToNeuronID());
+				out.addColumn(neatLinkGene.getWeight());
+				out.addColumn(neatLinkGene.getInnovationId());
+				out.writeLine();
+			}
+
+		}
+
 	}
 
 	@Override
@@ -270,45 +319,18 @@ public class PersistNEATPopulation implements EncogPersistor {
 		}
 
 		out.addSubSection("SPECIES");
+		
+		// make sure the best species goes first
+		Species bestSpecies = pop.determineBestSpecies();
+		if( bestSpecies!=null ) {
+			saveSpecies(out,bestSpecies);
+		}
+		
+		// now write the other species, other than the best one
 		for (final Species species : pop.getSpecies()) {
-			out.addColumn("s");
-			out.addColumn(species.getAge());
-			out.addColumn(species.getBestScore());
-			out.addColumn(species.getGensNoImprovement());
-			out.writeLine();
-
-			for (final Genome genome : species.getMembers()) {
-				final NEATGenome neatGenome = (NEATGenome) genome;
-				out.addColumn("g");
-				out.addColumn(neatGenome.getAdjustedScore());
-				out.addColumn(neatGenome.getScore());
-				out.addColumn(neatGenome.getBirthGeneration());
-				out.writeLine();
-
-				for (final NEATNeuronGene neatNeuronGene : neatGenome
-						.getNeuronsChromosome()) {
-					out.addColumn("n");
-					out.addColumn(neatNeuronGene.getId());
-					out.addColumn(neatNeuronGene.getActivationFunction());
-					out.addColumn(PersistNEATPopulation
-							.neuronTypeToString(neatNeuronGene.getNeuronType()));
-					out.addColumn(neatNeuronGene.getInnovationId());
-					out.writeLine();
-				}
-				for (final NEATLinkGene neatLinkGene : neatGenome
-						.getLinksChromosome()) {
-					out.addColumn("l");
-					out.addColumn(neatLinkGene.getId());
-					out.addColumn(neatLinkGene.isEnabled());
-					out.addColumn(neatLinkGene.getFromNeuronID());
-					out.addColumn(neatLinkGene.getToNeuronID());
-					out.addColumn(neatLinkGene.getWeight());
-					out.addColumn(neatLinkGene.getInnovationId());
-					out.writeLine();
-				}
-
+			if( species!=bestSpecies ) {
+				saveSpecies(out,species);
 			}
-
 		}
 		out.flush();
 	}

@@ -75,4 +75,10 @@ public interface Population extends Serializable {
 	List<Genome> flatten();
 
 	Species createSpecies();
+	
+	Genome getBestGenome();
+
+	void setBestGenome(Genome bestGenome);
+	
+	Species determineBestSpecies();
 }

@@ -136,6 +136,7 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 	 */
 	@Override
 	public void finishTraining() {
+		this.getPopulation().setBestGenome(this.bestGenome);
 	}
 
 	/**
@@ -280,6 +281,7 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 				
 				if ( getBestComparator().isBetterThan(genome,this.bestGenome)) {
 					this.bestGenome = genome;
+					this.getPopulation().setBestGenome(this.bestGenome);
 					this.setError(genome.getScore());
 				}
 				return true;
@@ -334,6 +336,7 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 		// also most populations are sorted this way after training finishes (for reload)
 		// if there is an empty population, the constructor would have blow
 		this.bestGenome = this.getPopulation().getSpecies().get(0).getMembers().get(0);
+		this.getPopulation().setBestGenome(this.bestGenome);
 
 		// speciate
 		List<Genome> genomes = this.getPopulation().flatten();
