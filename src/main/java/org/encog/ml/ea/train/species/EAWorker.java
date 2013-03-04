@@ -90,8 +90,7 @@ public class EAWorker implements Runnable {
 					}
 				} else {
 					// clone a child (asexual reproduction)
-					children[0] = this.population.getGenomeFactory().factor(parents[0]);
-					opp.performOperation(rnd, children, 0, children, 0);
+					opp.performOperation(rnd, parents, 0, children, 0);
 				}
 
 				// process the new child

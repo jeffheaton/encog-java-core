@@ -235,12 +235,8 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 	public NEATGenome obtainGenome(final Genome[] parents,
 			final int parentIndex, final Genome[] offspring,
 			final int offspringIndex) {
-		if (parents[parentIndex] != offspring[offspringIndex]) {
-			throw new EncogError(
-					"This mutation only works when the offspring and parents are the same.  That is, it only mutates itself.");
-		}
-
-		return (NEATGenome) parents[parentIndex];
+		offspring[offspringIndex] = this.getOwner().getPopulation().getGenomeFactory().factor(parents[0]);
+		return (NEATGenome) parents[offspringIndex];
 	}
 
 	/**

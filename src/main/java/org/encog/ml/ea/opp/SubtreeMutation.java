@@ -89,6 +89,7 @@ public class SubtreeMutation implements EvolutionaryOperator, Serializable {
 			final int parentIndex, final Genome[] offspring,
 			final int offspringIndex) {
 		final EncogProgram program = (EncogProgram) parents[parentIndex];
+		offspring[offspringIndex] = parents[0].getPopulation().getGenomeFactory().factor(parents[0]);
 		final EncogProgram result = (EncogProgram) offspring[offspringIndex];
 		result.clear();
 

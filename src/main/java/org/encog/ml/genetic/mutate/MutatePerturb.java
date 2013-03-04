@@ -55,6 +55,7 @@ public class MutatePerturb implements EvolutionaryOperator {
 	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
 			Genome[] offspring, int offspringIndex) {
 		DoubleArrayGenome parent = (DoubleArrayGenome)parents[parentIndex];
+		offspring[offspringIndex] = parent.getPopulation().getGenomeFactory().factor();
 		DoubleArrayGenome child = (DoubleArrayGenome)offspring[offspringIndex];
 		
 		for(int i=0;i<parent.size();i++) {

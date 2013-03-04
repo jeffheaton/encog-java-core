@@ -28,7 +28,11 @@ public class PrgGenomeFactory implements GenomeFactory, Serializable {
 
 	@Override
 	public Genome factor(Genome other) {
-		// TODO Auto-generated method stub
-		return null;
+		EPLHolder newHolder = this.context.getHolderFactory().factor(1,
+				this.context.getParams().getMaxIndividualSize());
+		EncogProgram result = new EncogProgram(this.context,
+				new EncogProgramVariables(), newHolder, 0);
+		result.copy(other);
+		return result;
 	}
 }
