@@ -106,7 +106,7 @@ public class BasicEA implements EvolutionaryAlgorithm,
 	private GeneticCODEC codec = new GenomeAsPhenomeCODEC();
 	private RandomFactory randomNumberFactory = Encog.getInstance()
 			.getRandomFactory().factorFactory();
-	private boolean validationMode = true;
+	private boolean validationMode;
 
 	/**
 	 * The iteration number.

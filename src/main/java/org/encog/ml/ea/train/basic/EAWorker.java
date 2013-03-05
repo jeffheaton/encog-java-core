@@ -6,7 +6,6 @@ import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.species.Species;
-import org.encog.ml.ea.train.species.TrainEA;
 import org.encog.neural.neat.training.NEATGenome;
 
 public class EAWorker implements Runnable {

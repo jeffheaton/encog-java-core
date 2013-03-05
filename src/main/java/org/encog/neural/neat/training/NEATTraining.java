@@ -37,7 +37,7 @@ import org.encog.ml.ea.opp.selection.TruncationSelection;
 import org.encog.ml.ea.sort.MinimizeAdjustedScoreComp;
 import org.encog.ml.ea.sort.MinimizeScoreComp;
 import org.encog.ml.ea.species.Species;
-import org.encog.ml.ea.train.species.TrainEA;
+import org.encog.ml.ea.train.basic.TrainEA;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.neural.hyperneat.HyperNEATCODEC;
 import org.encog.neural.neat.NEATCODEC;
