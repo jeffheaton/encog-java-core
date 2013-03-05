@@ -41,51 +41,51 @@ import org.encog.ml.prg.train.GeneticTrainingParams;
  * potential "solutions".
  */
 public interface EvolutionaryAlgorithm {
-	
-	void calculateScore(Genome g);
-
-	void setPopulation(Population thePopulation);
-
-	Population getPopulation();
-
-	void iteration();
-
-	GeneticTrainingParams getParams();
-
-	int getMaxIndividualSize();
-
-	public SelectionOperator getSelection();
-
-	public void setSelection(SelectionOperator selection);
-
-	GenomeComparator getSelectionComparator();
-
-	void setSelectionComparator(GenomeComparator selectionComparator);
-
-	GenomeComparator getBestComparator();
-
-	void setBestComparator(GenomeComparator bestComparator);
-
-	List<AdjustScore> getScoreAdjusters();
 
 	void addScoreAdjuster(AdjustScore scoreAdjust);
 
-	CalculateScore getScoreFunction();
+	void calculateScore(Genome g);
 
-	GeneticCODEC getCODEC();
+	void finishTraining();
 
-	int getIteration();
-	
-	int getMaxTries();
-
-	boolean isValidationMode();
+	GenomeComparator getBestComparator();
 
 	Genome getBestGenome();
 
+	GeneticCODEC getCODEC();
+
 	double getError();
 
-	void setSpeciation(Speciation originalNEATSpeciation);
+	int getIteration();
 
-	void finishTraining();
+	int getMaxIndividualSize();
+
+	int getMaxTries();
+
+	GeneticTrainingParams getParams();
+
+	Population getPopulation();
+
+	List<AdjustScore> getScoreAdjusters();
+
+	CalculateScore getScoreFunction();
+
+	public SelectionOperator getSelection();
+
+	GenomeComparator getSelectionComparator();
+
+	boolean isValidationMode();
+
+	void iteration();
+
+	void setBestComparator(GenomeComparator bestComparator);
+
+	void setPopulation(Population thePopulation);
+
+	public void setSelection(SelectionOperator selection);
+
+	void setSelectionComparator(GenomeComparator selectionComparator);
+
+	void setSpeciation(Speciation originalNEATSpeciation);
 
 }

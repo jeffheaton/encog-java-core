@@ -36,15 +36,15 @@ public class GenomeAsPhenomeCODEC implements GeneticCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public MLMethod decode(Genome genome) {
-		return (MLMethod) genome;
+	public MLMethod decode(final Genome genome) {
+		return genome;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Genome encode(MLMethod phenotype) {
+	public Genome encode(final MLMethod phenotype) {
 		return (Genome) phenotype;
 	}
 

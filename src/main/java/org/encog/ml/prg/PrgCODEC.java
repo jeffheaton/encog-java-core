@@ -7,13 +7,13 @@ import org.encog.ml.ea.genome.Genome;
 public class PrgCODEC implements GeneticCODEC {
 
 	@Override
-	public MLMethod decode(Genome genome) {
-		return (MLMethod)genome;
+	public MLMethod decode(final Genome genome) {
+		return genome;
 	}
 
 	@Override
-	public Genome encode(MLMethod phenotype) {
-		return (Genome)phenotype;
+	public Genome encode(final MLMethod phenotype) {
+		return (Genome) phenotype;
 	}
 
 }

@@ -7,6 +7,8 @@ import org.encog.ml.ea.population.Population;
 
 public interface Species {
 
+	void add(Genome genome);
+
 	double calculateShare(boolean shouldMinimize, double maxScore);
 
 	int getAge();
@@ -36,6 +38,4 @@ public interface Species {
 	void setOffspringCount(int offspringCount);
 
 	void setPopulation(Population thePopulation);
-
-	void add(Genome genome);
 }

@@ -2,7 +2,8 @@ package org.encog.ml.ea.sort;
 
 import java.io.Serializable;
 
-public abstract class AbstractGenomeComparator implements GenomeComparator, Serializable {
+public abstract class AbstractGenomeComparator implements GenomeComparator,
+		Serializable {
 
 	/**
 	 * {@inheritDoc}
@@ -10,7 +11,7 @@ public abstract class AbstractGenomeComparator implements GenomeComparator, Seri
 	@Override
 	public double applyBonus(final double value, final double bonus) {
 		final double amount = value * bonus;
-		if ( shouldMinimize()) {
+		if (shouldMinimize()) {
 			return value - amount;
 		} else {
 			return value + amount;
@@ -29,7 +30,7 @@ public abstract class AbstractGenomeComparator implements GenomeComparator, Seri
 			return value + amount;
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

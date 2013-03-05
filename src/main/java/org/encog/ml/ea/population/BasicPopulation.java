@@ -67,7 +67,7 @@ public class BasicPopulation extends BasicML implements Population,
 	 * Rewrite rules that can simplify genomes.
 	 */
 	private final List<RewriteRule> rewriteRules = new ArrayList<RewriteRule>();
-	
+
 	/**
 	 * A factory that can be used to store create genomes.
 	 */

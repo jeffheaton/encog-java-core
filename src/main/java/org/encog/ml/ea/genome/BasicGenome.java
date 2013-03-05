@@ -38,7 +38,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * The adjusted score.  If unknown, it is set to NaN.
+	 * The adjusted score. If unknown, it is set to NaN.
 	 */
 	private double adjustedScore = Double.NaN;
 
@@ -51,7 +51,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	 * The population this genome belongs to.
 	 */
 	private Population population;
-	
+
 	private int birthGeneration;
 
 	/**
@@ -60,6 +60,14 @@ public abstract class BasicGenome implements Genome, Serializable {
 	@Override
 	public double getAdjustedScore() {
 		return this.adjustedScore;
+	}
+
+	/**
+	 * @return the birthGeneration
+	 */
+	@Override
+	public int getBirthGeneration() {
+		return this.birthGeneration;
 	}
 
 	/**
@@ -90,6 +98,15 @@ public abstract class BasicGenome implements Genome, Serializable {
 	}
 
 	/**
+	 * @param birthGeneration
+	 *            the birthGeneration to set
+	 */
+	@Override
+	public void setBirthGeneration(final int birthGeneration) {
+		this.birthGeneration = birthGeneration;
+	}
+
+	/**
 	 * @param thePopulation
 	 *            the population to set
 	 */
@@ -107,22 +124,6 @@ public abstract class BasicGenome implements Genome, Serializable {
 	@Override
 	public void setScore(final double theScore) {
 		this.score = theScore;
-	}
-	
-	/**
-	 * @return the birthGeneration
-	 */
-	@Override
-	public int getBirthGeneration() {
-		return birthGeneration;
-	}
-
-	/**
-	 * @param birthGeneration the birthGeneration to set
-	 */
-	@Override
-	public void setBirthGeneration(int birthGeneration) {
-		this.birthGeneration = birthGeneration;
 	}
 
 	/**

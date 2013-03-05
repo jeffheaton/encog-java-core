@@ -16,57 +16,20 @@ public class TraverseProgram implements Serializable {
 	private boolean started = false;
 	private int opcodesRead;
 
-	public TraverseProgram(TraverseProgram trav) {
-		this(trav.program);
-		begin(trav.getFrameIndex());
-	}
-	
-	public TraverseProgram(EncogProgram theProgram) {
+	public TraverseProgram(final EncogProgram theProgram) {
 		this.program = theProgram;
 		this.holder = this.program.getHolder();
 	}
 
-	public void begin(int idx) {
+	public TraverseProgram(final TraverseProgram trav) {
+		this(trav.program);
+		begin(trav.getFrameIndex());
+	}
+
+	public void begin(final int idx) {
 		this.currentIndex = idx;
 		this.started = false;
 		this.opcodesRead = 0;
-	}
-
-	private void readCurrent() {
-		program.getHolder().readNodeHeader(this.program.getIndividual(),
-				this.currentIndex, this.header);
-		this.template = this.program.getContext().getFunctions()
-				.getOpCode(this.header.getOpcode());
-	}
-
-	public boolean next() {
-		// if we've already started, then advance to the next one.
-		if (started) {
-			this.currentIndex += template.getInstructionSize(this.header);
-			this.opcodesRead++;
-		}
-		started = true;
-
-		if (this.currentIndex < this.program.getProgramLength()) {
-			readCurrent();
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * @return the header
-	 */
-	public OpCodeHeader getHeader() {
-		return header;
-	}
-
-	/**
-	 * @return the template
-	 */
-	public ProgramExtensionTemplate getTemplate() {
-		return template;
 	}
 
 	public int countRemaining() {
@@ -81,29 +44,65 @@ public class TraverseProgram implements Serializable {
 		return this.currentIndex;
 	}
 
-	public boolean isLeaf() {
-		return this.template.getChildNodeCount() == 0;
+	/**
+	 * @return the header
+	 */
+	public OpCodeHeader getHeader() {
+		return this.header;
+	}
+
+	public int getNextIndex() {
+		return getFrameIndex() + this.template.getInstructionSize(this.header);
 	}
 
 	/**
 	 * @return the opcodesRead
 	 */
 	public int getOpcodesRead() {
-		return opcodesRead;
-	}
-
-	public int getNextIndex() {
-		return this.getFrameIndex()
-				+ this.template.getInstructionSize(this.header);
-	}
-
-	public double readDouble() {
-		double result = this.holder.readDouble(this.program.getIndividual(),
-				this.currentIndex+1);
-		return result;
+		return this.opcodesRead;
 	}
 
 	public EncogProgram getProgram() {
 		return this.program;
+	}
+
+	/**
+	 * @return the template
+	 */
+	public ProgramExtensionTemplate getTemplate() {
+		return this.template;
+	}
+
+	public boolean isLeaf() {
+		return this.template.getChildNodeCount() == 0;
+	}
+
+	public boolean next() {
+		// if we've already started, then advance to the next one.
+		if (this.started) {
+			this.currentIndex += this.template.getInstructionSize(this.header);
+			this.opcodesRead++;
+		}
+		this.started = true;
+
+		if (this.currentIndex < this.program.getProgramLength()) {
+			readCurrent();
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private void readCurrent() {
+		this.program.getHolder().readNodeHeader(this.program.getIndividual(),
+				this.currentIndex, this.header);
+		this.template = this.program.getContext().getFunctions()
+				.getOpCode(this.header.getOpcode());
+	}
+
+	public double readDouble() {
+		final double result = this.holder.readDouble(
+				this.program.getIndividual(), this.currentIndex + 1);
+		return result;
 	}
 }

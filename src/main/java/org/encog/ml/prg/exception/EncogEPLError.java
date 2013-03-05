@@ -49,17 +49,6 @@ public class EncogEPLError extends EncogProgramError {
 	/**
 	 * Construct an exception that holds another exception.
 	 * 
-	 * @param t
-	 *            The other exception.
-	 */
-	public EncogEPLError(final Throwable t) {
-		super(t);
-		EncogLogging.log(EncogLogging.LEVEL_ERROR, t);
-	}
-
-	/**
-	 * Construct an exception that holds another exception.
-	 * 
 	 * @param msg
 	 *            A message.
 	 * @param t
@@ -68,6 +57,17 @@ public class EncogEPLError extends EncogProgramError {
 	public EncogEPLError(final String msg, final Throwable t) {
 		super(msg, t);
 		EncogLogging.log(EncogLogging.LEVEL_ERROR, msg);
+		EncogLogging.log(EncogLogging.LEVEL_ERROR, t);
+	}
+
+	/**
+	 * Construct an exception that holds another exception.
+	 * 
+	 * @param t
+	 *            The other exception.
+	 */
+	public EncogEPLError(final Throwable t) {
+		super(t);
 		EncogLogging.log(EncogLogging.LEVEL_ERROR, t);
 	}
 }

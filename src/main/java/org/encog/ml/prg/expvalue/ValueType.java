@@ -26,8 +26,5 @@ package org.encog.ml.prg.expvalue;
 import java.io.Serializable;
 
 public enum ValueType implements Serializable {
-	floatingType,
-	stringType,
-	booleanType,
-	intType
+	floatingType, stringType, booleanType, intType
 }

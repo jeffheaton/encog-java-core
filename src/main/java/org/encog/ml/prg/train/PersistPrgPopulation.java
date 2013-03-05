@@ -69,7 +69,7 @@ public class PersistPrgPopulation implements EncogPersistor {
 	 */
 	@Override
 	public Object read(final InputStream is) {
-		EncogProgramContext context = new EncogProgramContext();
+		final EncogProgramContext context = new EncogProgramContext();
 
 		final PrgPopulation result = new PrgPopulation(context, 0);
 
@@ -77,7 +77,7 @@ public class PersistPrgPopulation implements EncogPersistor {
 		EncogFileSection section;
 
 		int count = 0;
-		Species lastSpecies=null;
+		Species lastSpecies = null;
 		while ((section = in.readNextSection()) != null) {
 			if (section.getSectionName().equals("BASIC")
 					&& section.getSubSectionName().equals("PARAMS")) {
@@ -85,17 +85,18 @@ public class PersistPrgPopulation implements EncogPersistor {
 				result.getProperties().putAll(params);
 			} else if (section.getSectionName().equals("BASIC")
 					&& section.getSubSectionName().equals("EPL-POPULATION")) {
-				for (String line : section.getLines()) {
+				for (final String line : section.getLines()) {
 					final List<String> cols = EncogFileSection
 							.splitColumns(line);
 
 					if (cols.get(0).equalsIgnoreCase("s")) {
 						lastSpecies = new BasicSpecies();
 						lastSpecies.setAge(Integer.parseInt(cols.get(1)));
-						lastSpecies.setBestScore(CSVFormat.EG_FORMAT
-								.parse(cols.get(2)));
+						lastSpecies.setBestScore(CSVFormat.EG_FORMAT.parse(cols
+								.get(2)));
 						lastSpecies.setPopulation(result);
-						lastSpecies.setGensNoImprovement(Integer.parseInt(cols.get(3)));
+						lastSpecies.setGensNoImprovement(Integer.parseInt(cols
+								.get(3)));
 						result.getSpecies().add(lastSpecies);
 					} else if (cols.get(0).equalsIgnoreCase("p")) {
 						double score = 0;
@@ -111,13 +112,14 @@ public class PersistPrgPopulation implements EncogPersistor {
 									.get(2));
 						}
 
-						String code = cols.get(3);
-						EncogProgram prg = new EncogProgram(context);
+						final String code = cols.get(3);
+						final EncogProgram prg = new EncogProgram(context);
 						prg.fromBase64(code);
 						prg.setScore(score);
 						prg.setAdjustedScore(adjustedScore);
-						if( lastSpecies==null ) {
-							throw new EncogError("Have not defined a species yet");
+						if (lastSpecies == null) {
+							throw new EncogError(
+									"Have not defined a species yet");
 						} else {
 							lastSpecies.add(prg);
 						}
@@ -126,19 +128,19 @@ public class PersistPrgPopulation implements EncogPersistor {
 				}
 			} else if (section.getSectionName().equals("BASIC")
 					&& section.getSubSectionName().equals("EPL-OPCODES")) {
-				for (String line : section.getLines()) {
+				for (final String line : section.getLines()) {
 					final List<String> cols = EncogFileSection
 							.splitColumns(line);
-					String code = cols.get(0);
-					int opcode = Integer.parseInt(code);
+					final String code = cols.get(0);
+					final int opcode = Integer.parseInt(code);
 					EncogOpcodeRegistry.INSTANCE.register(context, opcode);
 				}
 			} else if (section.getSectionName().equals("BASIC")
 					&& section.getSubSectionName().equals("EPL-SYMBOLIC")) {
-				for (String line : section.getLines()) {
+				for (final String line : section.getLines()) {
 					final List<String> cols = EncogFileSection
 							.splitColumns(line);
-					String name = cols.get(0);
+					final String name = cols.get(0);
 					context.defineVariable(name);
 				}
 			}
@@ -159,26 +161,26 @@ public class PersistPrgPopulation implements EncogPersistor {
 		out.addSubSection("PARAMS");
 		out.addProperties(pop.getProperties());
 		out.addSubSection("EPL-OPCODES");
-		for (ProgramExtensionTemplate temp : pop.getContext().getFunctions()
-				.generateOpcodeList()) {
+		for (final ProgramExtensionTemplate temp : pop.getContext()
+				.getFunctions().generateOpcodeList()) {
 			out.addColumn(temp.getOpcode());
 			out.addColumn(temp.getName());
 			out.writeLine();
 		}
 		out.addSubSection("EPL-SYMBOLIC");
-		for (String name : pop.getContext().getDefinedVariables()) {
+		for (final String name : pop.getContext().getDefinedVariables()) {
 			out.addColumn(name);
 			out.writeLine();
 		}
 		out.addSubSection("EPL-POPULATION");
-		for (Species species : pop.getSpecies()) {
+		for (final Species species : pop.getSpecies()) {
 			out.addColumn("s");
 			out.addColumn(species.getAge());
 			out.addColumn(species.getBestScore());
 			out.addColumn(species.getGensNoImprovement());
 			out.writeLine();
-			for (Genome genome : species.getMembers()) {
-				EncogProgram prg = (EncogProgram) genome;
+			for (final Genome genome : species.getMembers()) {
+				final EncogProgram prg = (EncogProgram) genome;
 				out.addColumn("p");
 				if (Double.isInfinite(prg.getScore())
 						|| Double.isNaN(prg.getScore())) {

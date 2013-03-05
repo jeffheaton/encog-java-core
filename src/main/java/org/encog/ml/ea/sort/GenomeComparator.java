@@ -5,8 +5,6 @@ import java.util.Comparator;
 import org.encog.ml.ea.genome.Genome;
 
 public interface GenomeComparator extends Comparator<Genome> {
-	boolean shouldMinimize();
-	
 	/**
 	 * Apply a bonus, this is a simple percent that is applied in the direction
 	 * specified by the "should minimize" property of the score function.
@@ -44,5 +42,7 @@ public interface GenomeComparator extends Comparator<Genome> {
 	boolean isBetterThan(double d1, double d2);
 
 	boolean isBetterThan(Genome prg, Genome bestGenome);
-	
+
+	boolean shouldMinimize();
+
 }

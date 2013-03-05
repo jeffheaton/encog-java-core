@@ -3,7 +3,6 @@ package org.encog.neural.neat;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.ea.opp.CompoundOperator;
 import org.encog.ml.ea.opp.selection.TruncationSelection;
-import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.ea.train.basic.TrainEA;
 import org.encog.neural.hyperneat.HyperNEATCODEC;
 import org.encog.neural.neat.training.opp.NEATCrossover;
@@ -18,12 +17,22 @@ import org.encog.neural.neat.training.opp.links.SelectProportion;
 import org.encog.neural.neat.training.species.OriginalNEATSpeciation;
 
 public class NEATUtil {
-	public static TrainEA constructNEATTrainer(NEATPopulation population, CalculateScore calculateScore) {
-		TrainEA result = new TrainEA(population, calculateScore);
+	public static TrainEA constructNEATTrainer(
+			final CalculateScore calculateScore, final int inputCount,
+			final int outputCount, final int populationSize) {
+		final NEATPopulation pop = new NEATPopulation(inputCount, outputCount,
+				populationSize);
+		pop.reset();
+		return constructNEATTrainer(pop, calculateScore);
+	}
+
+	public static TrainEA constructNEATTrainer(final NEATPopulation population,
+			final CalculateScore calculateScore) {
+		final TrainEA result = new TrainEA(population, calculateScore);
 		result.setSpeciation(new OriginalNEATSpeciation());
 
 		result.setSelection(new TruncationSelection(result, 0.3));
-		CompoundOperator weightMutation = new CompoundOperator();
+		final CompoundOperator weightMutation = new CompoundOperator();
 		weightMutation.getComponents().add(
 				0.1125,
 				new NEATMutateWeights(new SelectFixed(1),
@@ -87,15 +96,7 @@ public class NEATUtil {
 		} else {
 			result.setCODEC(new NEATCODEC());
 		}
-		
+
 		return result;
-	}
-	
-	public static TrainEA constructNEATTrainer(final CalculateScore calculateScore,
-			final int inputCount, final int outputCount,
-			final int populationSize) {
-		NEATPopulation pop = new NEATPopulation(inputCount, outputCount, populationSize);
-		pop.reset();
-		return constructNEATTrainer(pop,calculateScore);
 	}
 }

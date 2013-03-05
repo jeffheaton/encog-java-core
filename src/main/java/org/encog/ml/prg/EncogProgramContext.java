@@ -18,81 +18,83 @@ public class EncogProgramContext implements Serializable {
 	private final List<String> definedVariables = new ArrayList<String>();
 	private EPLHolderFactory holderFactory = new ByteArrayHolderFactory();
 	private GeneticTrainingParams params = new GeneticTrainingParams();
-	//private EPLHolderFactory holderFactory = new BufferedHolderFactory();
-	
-	public EncogProgramContext(CSVFormat theFormat, FunctionFactory theFunctions) {
-		this.format = theFormat;
-		this.functions = theFunctions;
-	}
-	
-	public EncogProgramContext(CSVFormat format) {
-		this(format, new FunctionFactory());
-	}
-	
+
+	// private EPLHolderFactory holderFactory = new BufferedHolderFactory();
+
 	public EncogProgramContext() {
 		this(CSVFormat.EG_FORMAT, new FunctionFactory());
 	}
 
-	public CSVFormat getFormat() {
-		return format;
+	public EncogProgramContext(final CSVFormat format) {
+		this(format, new FunctionFactory());
 	}
 
-	public FunctionFactory getFunctions() {
-		return functions;
+	public EncogProgramContext(final CSVFormat theFormat,
+			final FunctionFactory theFunctions) {
+		this.format = theFormat;
+		this.functions = theFunctions;
 	}
-	
-	public void defineVariable(String v) {
-		if( !this.definedVariables.contains(v) ) {
-			definedVariables.add(v);
-		}	
+
+	public EncogProgram cloneProgram(final EncogProgram prg) {
+		return new EncogProgram(prg);
+	}
+
+	public EncogProgram createProgram(final String str) {
+		final EncogProgram result = new EncogProgram(this);
+		result.compileExpression(str);
+		return result;
+	}
+
+	public void defineVariable(final String v) {
+		if (!this.definedVariables.contains(v)) {
+			this.definedVariables.add(v);
+		}
 	}
 
 	public List<String> getDefinedVariables() {
 		return this.definedVariables;
 	}
-	
-	/**
-	 * @return the params
-	 */
-	public GeneticTrainingParams getParams() {
-		return params;
+
+	public CSVFormat getFormat() {
+		return this.format;
 	}
 
-	/**
-	 * @param params the params to set
-	 */
-	public void setParams(GeneticTrainingParams params) {
-		this.params = params;
-	}
-
-	public void loadAllFunctions() {
-		StandardExtensions.createAll(getFunctions());
-	}
-
-	public EncogProgram createProgram(String str) {
-		EncogProgram result = new EncogProgram(this);
-		result.compileExpression(str);
-		return result;
-	}
-
-	public EncogProgram cloneProgram(EncogProgram prg) {
-		return new EncogProgram(prg);
+	public FunctionFactory getFunctions() {
+		return this.functions;
 	}
 
 	/**
 	 * @return the holderFactory
 	 */
 	public EPLHolderFactory getHolderFactory() {
-		return holderFactory;
+		return this.holderFactory;
 	}
 
 	/**
-	 * @param holderFactory the holderFactory to set
+	 * @return the params
 	 */
-	public void setHolderFactory(EPLHolderFactory holderFactory) {
+	public GeneticTrainingParams getParams() {
+		return this.params;
+	}
+
+	public void loadAllFunctions() {
+		StandardExtensions.createAll(getFunctions());
+	}
+
+	/**
+	 * @param holderFactory
+	 *            the holderFactory to set
+	 */
+	public void setHolderFactory(final EPLHolderFactory holderFactory) {
 		this.holderFactory = holderFactory;
 	}
-	
-	
-	
+
+	/**
+	 * @param params
+	 *            the params to set
+	 */
+	public void setParams(final GeneticTrainingParams params) {
+		this.params = params;
+	}
+
 }

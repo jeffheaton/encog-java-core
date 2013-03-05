@@ -22,15 +22,15 @@ public class FactorNEATGenome implements NEATGenomeFactory, Serializable {
 	}
 
 	@Override
-	public NEATGenome factor(
-			final List<NEATNeuronGene> neurons, final List<NEATLinkGene> links,
-			final int inputCount, final int outputCount) {
-		return new NEATGenome(neurons, links, inputCount, outputCount);
+	public Genome factor(final Genome other) {
+		return new NEATGenome((NEATGenome) other);
 	}
 
 	@Override
-	public Genome factor(final Genome other) {
-		return new NEATGenome((NEATGenome)other);
+	public NEATGenome factor(final List<NEATNeuronGene> neurons,
+			final List<NEATLinkGene> links, final int inputCount,
+			final int outputCount) {
+		return new NEATGenome(neurons, links, inputCount, outputCount);
 	}
 
 	@Override

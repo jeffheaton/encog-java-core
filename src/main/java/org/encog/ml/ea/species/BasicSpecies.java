@@ -71,7 +71,6 @@ public class BasicSpecies implements Serializable, Species {
 	 */
 	private Population population;
 
-
 	private transient int offspringCount;
 	private transient double offspringShare;
 
@@ -92,14 +91,19 @@ public class BasicSpecies implements Serializable, Species {
 	 * @param theSpeciesID
 	 *            The species id.
 	 */
-	public BasicSpecies(final Population thePopulation,
-			final Genome theFirst) {
+	public BasicSpecies(final Population thePopulation, final Genome theFirst) {
 		this.population = thePopulation;
 		this.bestScore = theFirst.getScore();
 		this.gensNoImprovement = 0;
 		this.age = 0;
 		this.leader = theFirst;
 		this.members.add(theFirst);
+	}
+
+	@Override
+	public void add(final Genome genome) {
+		genome.setPopulation(this.population);
+		this.members.add(genome);
 	}
 
 	@Override
@@ -289,12 +293,6 @@ public class BasicSpecies implements Serializable, Species {
 		result.append(this.offspringShare);
 		result.append("]");
 		return result.toString();
-	}
-
-	@Override
-	public void add(Genome genome) {
-		genome.setPopulation(this.population);
-		this.members.add(genome);
 	}
 
 }

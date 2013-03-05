@@ -53,18 +53,9 @@ import org.encog.parse.expression.rpn.RenderRPN;
 import org.encog.util.datastruct.StackInt;
 import org.encog.util.simple.EncogUtility;
 
-public class EncogProgram extends BasicGenome implements MLRegression, MLError, Serializable {
+public class EncogProgram extends BasicGenome implements MLRegression, MLError,
+		Serializable {
 	public static final int DEFAULT_PROGRAM_SIZE = 1024;
-
-	private EPLHolder holder;
-	private final OpCodeHeader header = new OpCodeHeader();
-	private int individual;
-	private EncogProgramVariables variables = new EncogProgramVariables();
-	private EncogProgramContext context = new EncogProgramContext();
-	private int programLength;
-	private int programCounter;
-	private ExpressionStack stack;
-	private String source;
 
 	public static ExpressionValue parse(final String str) {
 		final EncogProgram holder = new EncogProgram(str);
@@ -91,24 +82,49 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError, 
 		return holder.evaluate().toStringValue();
 	}
 
+	private EPLHolder holder;
+	private final OpCodeHeader header = new OpCodeHeader();
+	private int individual;
+	private EncogProgramVariables variables = new EncogProgramVariables();
+
+	private EncogProgramContext context = new EncogProgramContext();
+
+	private int programLength;
+
+	private int programCounter;
+
+	private final ExpressionStack stack;
+
+	private String source;
+
 	public EncogProgram() {
 		this(new EncogProgramContext(), new EncogProgramVariables(), null, 0);
 		StandardExtensions.createAll(this.context.getFunctions());
 	}
 
-	public EncogProgram(EncogProgramContext theContext) {
+	public EncogProgram(final EncogProgram prg) {
+		this(prg.getContext());
+		this.programCounter = prg.programCounter;
+		this.holder = prg.holder;
+		this.individual = prg.individual;
+		setProgramLength(prg.programLength);
+	}
+
+	public EncogProgram(final EncogProgramContext theContext) {
 		this(theContext, new EncogProgramVariables(), null, 0);
 	}
 
-	public EncogProgram(EncogProgramContext theContext,
-			EncogProgramVariables theVariables, EPLHolder theHolder,
-			int theIndividual) {
-		this.stack = new ExpressionStack(this.context.getParams().getStackSize());
+	public EncogProgram(final EncogProgramContext theContext,
+			final EncogProgramVariables theVariables,
+			final EPLHolder theHolder, final int theIndividual) {
+		this.stack = new ExpressionStack(this.context.getParams()
+				.getStackSize());
 		this.context = theContext;
 		this.variables = theVariables;
 
 		if (theHolder == null) {
-			this.holder = this.context.getHolderFactory().factor(1, this.context.getParams().getMaxIndividualSize());
+			this.holder = this.context.getHolderFactory().factor(1,
+					this.context.getParams().getMaxIndividualSize());
 			this.individual = 0;
 		} else {
 			this.holder = theHolder;
@@ -116,7 +132,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError, 
 		}
 
 		// define variables
-		for (String v : this.context.getDefinedVariables()) {
+		for (final String v : this.context.getDefinedVariables()) {
 			this.variables.defineVariable(v);
 		}
 	}
@@ -126,12 +142,32 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError, 
 		compileExpression(expression);
 	}
 
-	public EncogProgram(EncogProgram prg) {
-		this(prg.getContext());
-		this.programCounter = prg.programCounter;
-		this.holder = prg.holder;
-		this.individual = prg.individual;
-		setProgramLength( prg.programLength );
+	public void advanceProgramCounter(final int i, final boolean adjustLength) {
+		this.programCounter += i;
+		if (adjustLength) {
+			setProgramLength(Math.max(this.programLength, this.programCounter));
+		}
+	}
+
+	public EncogProgram[] allocateOffspring(final int count) {
+		final EncogProgram[] result = new EncogProgram[count];
+		for (int i = 0; i < result.length; i++) {
+			final EPLHolder newHolder = this.context.getHolderFactory().factor(
+					1, getHolder().getMaxIndividualSize());
+			result[i] = new EncogProgram(this.context,
+					new EncogProgramVariables(), newHolder, 0);
+		}
+		return result;
+	}
+
+	@Override
+	public double calculateError(final MLDataSet data) {
+		return EncogUtility.calculateRegressionError(this, data);
+	}
+
+	public void clear() {
+		setProgramLength(0);
+		this.programCounter = 0;
 	}
 
 	public void compileExpression(final String expression) {
@@ -139,47 +175,15 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError, 
 		final ParseCommonExpression parser = new ParseCommonExpression(this);
 		parser.parse(expression);
 		this.source = expression;
-		this.setScore(Double.NaN);
-		this.setAdjustedScore(Double.NaN);
-	}
-
-	public ExpressionValue evaluate() {
-		return evaluate(0, this.programLength-1);
-	}
-
-	public FunctionFactory getFunctions() {
-		return this.context.getFunctions();
+		setScore(Double.NaN);
+		setAdjustedScore(Double.NaN);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getInputCount() {
-		return this.variables.size();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getOutputCount() {
-		return 1;
-	}
-
-	public EncogProgramVariables getVariables() {
-		return variables;
-	}
-
-	public EncogProgramContext getContext() {
-		return context;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public MLData compute(MLData input) {
+	public MLData compute(final MLData input) {
 		if (input.size() != getInputCount()) {
 			throw new ExpressionError("Invalid input count.");
 		}
@@ -188,246 +192,105 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError, 
 			this.variables.getVariable(i).setValue(input.getData(i));
 		}
 
-		double d = evaluate().toFloatValue();
+		final double d = evaluate().toFloatValue();
 
-		MLData result = new BasicMLData(1);
+		final MLData result = new BasicMLData(1);
 		result.setData(0, d);
 
 		return result;
 	}
 
-	public String toString() {
-		StringBuilder result = new StringBuilder();
-		result.append("[EncogProgram: size=");
-		result.append(size());
-		result.append(", score=");
-		result.append(this.getScore());
-		result.append(", Code: ");
-
-		try {
-			RenderRPN rpn = new RenderRPN();
-			result.append(rpn.render(this));
-		} catch(EncogProgramError e) {
-			result.append("##Invalid Program:");
-			result.append(e.toString());
-		}
-
-		result.append("]");
-		return result.toString();
-	}
-
-	public int size() {
-		try {
-			TraverseProgram trav = new TraverseProgram(this);
-			trav.begin(0);
-			return trav.countRemaining();
-		} catch (EncogProgramError e) {
-			return -1;
-		}
-	}
-
-	public ProgramExtensionTemplate peekTemplate() {
-		this.holder.readNodeHeader(this.individual, this.programCounter,
-				this.header);
-		int opcode = this.header.getOpcode();
-		ProgramExtensionTemplate temp = this.context.getFunctions().getOpCode(
-				opcode);
-		return temp;
+	public void copy(final EncogProgram sourceProgram, final int sourceIndex,
+			final int targetIndex, final int size) {
+		this.holder.copy(sourceProgram.getHolder(),
+				sourceProgram.getIndividual(), sourceIndex, getIndividual(),
+				targetIndex, size);
 	}
 
 	@Override
-	public double calculateError(MLDataSet data) {
-		return EncogUtility.calculateRegressionError(this, data);
+	public void copy(final Genome source) {
+		final EncogProgram sourceProgram = (EncogProgram) source;
+		clear();
+		setProgramLength(sourceProgram.programLength);
+		copy(sourceProgram, 0, 0, sourceProgram.getProgramLength());
+		setScore(sourceProgram.getScore());
+		setAdjustedScore(sourceProgram.getAdjustedScore());
 	}
 
-	/**
-	 * @return the programLength
-	 */
-	public int getProgramLength() {
-		return programLength;
+	public void deleteSubtree(final int index, final int size) {
+		this.holder.deleteSubtree(this.individual, index, size);
+		setProgramLength(this.programLength - size);
 	}
 
-	/**
-	 * @param programLength
-	 *            the programLength to set
-	 */
-	public void setProgramLength(int theProgramLength) {
-		this.programLength = theProgramLength;
-		this.validateLength();
-	}
-
-	/**
-	 * @return the programCounter
-	 */
-	public int getProgramCounter() {
-		return programCounter;
-	}
-
-	/**
-	 * @param programCounter
-	 *            the programCounter to set
-	 */
-	public void setProgramCounter(int programCounter) {
-		this.programCounter = programCounter;
-	}
-
-	public void writeNode(short opcode, int param1, short param2) {
-		validateAdvance(1);
-		this.holder.writeNode(this.individual, this.programCounter, opcode,
-				param1, param2);
-		advanceProgramCounter(1, true);
-	}
-
-	public void writeDouble(double value) {
-		validateAdvance(1);
-		this.holder.writeDouble(this.individual, this.programCounter, value);
-		advanceProgramCounter(1, true);
-	}
-
-	public void writeNode(short opcode) {
-		writeNode(opcode, 0, (short) 0);
-	}
-
-	public void writeConstNode(boolean value) {
-		writeNode(StandardExtensions.OPCODE_CONST_BOOL, 0, (short) (value ? 1
-				: 0));
-	}
-
-	public void writeConstNode(double value) {
-		writeNode(StandardExtensions.OPCODE_CONST_FLOAT, 0, (short) 0);
-		writeDouble(value);
-	}
-
-	public void writeConstNode(long value) {
-		writeNode(StandardExtensions.OPCODE_CONST_INT, (int) value, (short) 0);
-	}
-
-	public void writeNodeVar(String name) {
-		writeNode(StandardExtensions.OPCODE_VAR, 0,
-				(short) this.variables.getVariableIndex(name));
-	}
-
-	public void readNodeHeader() {
-		this.holder
-				.readNodeHeader(this.individual, this.programCounter, header);
-		advanceProgramCounter(1, false);
-	}
-
-	public double readDouble() {
-		double result = this.holder.readDouble(this.individual,
-				this.programCounter);
-		advanceProgramCounter(1, false);
-		return result;
-	}
-
-	/**
-	 * @return the holder
-	 */
-	public EPLHolder getHolder() {
-		return holder;
-	}
-
-	/**
-	 * @param holder
-	 *            the holder to set
-	 */
-	public void setHolder(EPLHolder holder) {
-		this.holder = holder;
-	}
-
-	/**
-	 * @return the individual
-	 */
-	public int getIndividual() {
-		return individual;
-	}
-
-	/**
-	 * @param individual
-	 *            the individual to set
-	 */
-	public void setIndividual(int individual) {
-		this.individual = individual;
-	}
-
-	/**
-	 * @return the header
-	 */
-	public OpCodeHeader getHeader() {
-		return header;
+	public String dumpAsCommonExpression() {
+		final RenderCommonExpression render = new RenderCommonExpression();
+		return render.render(this);
 	}
 
 	public boolean eof() {
-		return (this.programCounter >= this.programLength);
+		return this.programCounter >= this.programLength;
 	}
 
-	/**
-	 * @return the stack
-	 */
-	public ExpressionStack getStack() {
-		return stack;
+	public ExpressionValue evaluate() {
+		return evaluate(0, this.programLength - 1);
 	}
 
-	public String readString(int encodedLength) {
-		String result = this.holder.readString(this.individual,
-				this.programCounter, encodedLength);
-		this.programCounter += EPLUtil.roundToFrame(encodedLength)
-				/ EPLHolder.FRAME_SIZE;
-		return result;
-	}
-
-	public void advanceProgramCounter(int i, boolean adjustLength) {
-		this.programCounter += i;
-		if (adjustLength) {
-			setProgramLength(Math.max(this.programLength,
-					this.programCounter));
-		}
-	}
-
-	public void writeNodeString(String str) {
-		try {
-			byte[] b = str.getBytes(Encog.DEFAULT_ENCODING);
-			writeNode(StandardExtensions.OPCODE_CONST_STRING, 0,
-					(short) b.length);
-			this.holder.writeByte(this.individual, this.programCounter, b);
-			advanceProgramCounter(EPLUtil.roundToFrame(b.length)
-					/ EPLHolder.FRAME_SIZE, true);
-		} catch (UnsupportedEncodingException e) {
-			throw new EncogError(e);
-		}
-	}
-
-	public boolean isLeaf(int index) {
-		OpCodeHeader h = new OpCodeHeader();
-		this.holder.readNodeHeader(this.individual, index, h);
-		ProgramExtensionTemplate temp = this.context.getFunctions().getOpCode(
-				h.getOpcode());
-		return temp.getChildNodeCount() == 0;
-	}
-
-	public ExpressionValue evaluate(int startAt, int stopAt) {
+	public ExpressionValue evaluate(final int startAt, final int stopAt) {
 		try {
 			this.stack.clear();
 			this.programCounter = startAt;
-			while (this.programCounter<=stopAt) {
+			while (this.programCounter <= stopAt) {
 				readNodeHeader();
-				int opcode = this.header.getOpcode();
-				ProgramExtensionTemplate temp = this.context.getFunctions()
-						.getOpCode(opcode);
+				final int opcode = this.header.getOpcode();
+				final ProgramExtensionTemplate temp = this.context
+						.getFunctions().getOpCode(opcode);
 				temp.evaluate(this);
 			}
-			return stack.pop();
-		} catch (ArithmeticException ex) {
+			return this.stack.pop();
+		} catch (final ArithmeticException ex) {
 			return new ExpressionValue(Double.NaN);
 		}
 	}
 
-	public void deleteSubtree(int index, int size) {
-		this.holder.deleteSubtree(this.individual, index, size);
-		setProgramLength(this.programLength-size);
+	public int findFrame(final int position) {
+		final TraverseProgram trav = new TraverseProgram(this);
+		trav.begin(0);
+		int i = 0;
+		while (trav.next()) {
+			if (i == position) {
+				return trav.getFrameIndex();
+			}
+			i++;
+		}
+		return -1;
 	}
-	
-	public ProgramExtensionTemplate getConstTemplate(ExpressionValue c) {
+
+	public int findNodeStart(final int index) {
+		final StackInt stack = new StackInt(100);
+
+		final TraverseProgram trav = new TraverseProgram(this);
+		trav.begin(0);
+		while (trav.next()) {
+			if (trav.isLeaf()) {
+				stack.push(trav.getFrameIndex());
+			} else {
+				stack.min(trav.getTemplate().getChildNodeCount());
+			}
+
+			if (trav.getFrameIndex() == index) {
+				return stack.pop();
+			}
+		}
+		return -1;
+
+	}
+
+	public void fromBase64(final String str) {
+		clear();
+		setProgramLength(this.holder.fromBase64(this.individual, str));
+	}
+
+	public ProgramExtensionTemplate getConstTemplate(final ExpressionValue c) {
 		switch (c.getCurrentType()) {
 		case booleanType:
 			return this.context.getFunctions().getOpCode(
@@ -446,7 +309,277 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError, 
 		}
 	}
 
-	public void writeConstNode(ExpressionValue c) {
+	public EncogProgramContext getContext() {
+		return this.context;
+	}
+
+	public FunctionFactory getFunctions() {
+		return this.context.getFunctions();
+	}
+
+	/**
+	 * @return the header
+	 */
+	public OpCodeHeader getHeader() {
+		return this.header;
+	}
+
+	/**
+	 * @return the holder
+	 */
+	public EPLHolder getHolder() {
+		return this.holder;
+	}
+
+	/**
+	 * @return the individual
+	 */
+	public int getIndividual() {
+		return this.individual;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getInputCount() {
+		return this.variables.size();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getOutputCount() {
+		return 1;
+	}
+
+	/**
+	 * @return the programCounter
+	 */
+	public int getProgramCounter() {
+		return this.programCounter;
+	}
+
+	/**
+	 * @return the programLength
+	 */
+	public int getProgramLength() {
+		return this.programLength;
+	}
+
+	/**
+	 * @return the source
+	 */
+	public String getSource() {
+		return this.source;
+	}
+
+	/**
+	 * @return the stack
+	 */
+	public ExpressionStack getStack() {
+		return this.stack;
+	}
+
+	public EncogProgramVariables getVariables() {
+		return this.variables;
+	}
+
+	public boolean hasVariable() {
+		final TraverseProgram trav = new TraverseProgram(this);
+		trav.begin(0);
+		while (trav.next()) {
+			if (trav.getTemplate().isVariableValue()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void insert(final int index, final int len) {
+		setProgramLength(this.programLength + len);
+		this.holder.insert(this.individual, index, len);
+	}
+
+	public boolean isLeaf(final int index) {
+		final OpCodeHeader h = new OpCodeHeader();
+		this.holder.readNodeHeader(this.individual, index, h);
+		final ProgramExtensionTemplate temp = this.context.getFunctions()
+				.getOpCode(h.getOpcode());
+		return temp.getChildNodeCount() == 0;
+	}
+
+	public int nextIndex(final int index) {
+		this.holder.readNodeHeader(this.individual, index, this.header);
+		final ProgramExtensionTemplate temp = this.context.getFunctions()
+				.getOpCode(this.header.getOpcode());
+		return index + temp.getInstructionSize(this.header);
+	}
+
+	public ProgramExtensionTemplate peekTemplate() {
+		this.holder.readNodeHeader(this.individual, this.programCounter,
+				this.header);
+		final int opcode = this.header.getOpcode();
+		final ProgramExtensionTemplate temp = this.context.getFunctions()
+				.getOpCode(opcode);
+		return temp;
+	}
+
+	public double readDouble() {
+		final double result = this.holder.readDouble(this.individual,
+				this.programCounter);
+		advanceProgramCounter(1, false);
+		return result;
+	}
+
+	public void readNodeHeader() {
+		this.holder.readNodeHeader(this.individual, this.programCounter,
+				this.header);
+		advanceProgramCounter(1, false);
+	}
+
+	public String readString(final int encodedLength) {
+		final String result = this.holder.readString(this.individual,
+				this.programCounter, encodedLength);
+		this.programCounter += EPLUtil.roundToFrame(encodedLength)
+				/ EPLHolder.FRAME_SIZE;
+		return result;
+	}
+
+	public void replaceNode(final EncogProgram sourceProgram,
+			final int sourceIndex, final int targetIndex) {
+		final int sourceStart = sourceProgram.findNodeStart(sourceIndex);
+		final int targetStart = findNodeStart(targetIndex);
+		final int sourceSize = sourceProgram.nextIndex(sourceIndex)
+				- sourceStart;
+		final int targetSize = nextIndex(targetIndex) - targetStart;
+		deleteSubtree(targetStart, targetSize);
+		insert(targetStart, sourceSize);
+		this.holder.copy(sourceProgram.getHolder(),
+				sourceProgram.getIndividual(), sourceStart, this.individual,
+				targetStart, sourceSize);
+	}
+
+	public void replaceNodeAtPosition(final EncogProgram sourceProgram,
+			final int sourcePosition, final int targetPosition) {
+		final int sourceIndex = sourceProgram.findFrame(sourcePosition);
+		final int targetIndex = findFrame(targetPosition);
+		replaceNode(sourceProgram, sourceIndex, targetIndex);
+	}
+
+	/**
+	 * @param holder
+	 *            the holder to set
+	 */
+	public void setHolder(final EPLHolder holder) {
+		this.holder = holder;
+	}
+
+	/**
+	 * @param individual
+	 *            the individual to set
+	 */
+	public void setIndividual(final int individual) {
+		this.individual = individual;
+	}
+
+	/**
+	 * @param programCounter
+	 *            the programCounter to set
+	 */
+	public void setProgramCounter(final int programCounter) {
+		this.programCounter = programCounter;
+	}
+
+	/**
+	 * @param programLength
+	 *            the programLength to set
+	 */
+	public void setProgramLength(final int theProgramLength) {
+		this.programLength = theProgramLength;
+		validateLength();
+	}
+
+	@Override
+	public int size() {
+		try {
+			final TraverseProgram trav = new TraverseProgram(this);
+			trav.begin(0);
+			return trav.countRemaining();
+		} catch (final EncogProgramError e) {
+			return -1;
+		}
+	}
+
+	public String toBase64() {
+		return this.holder.toBase64(this.individual, this.programLength);
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder result = new StringBuilder();
+		result.append("[EncogProgram: size=");
+		result.append(size());
+		result.append(", score=");
+		result.append(getScore());
+		result.append(", Code: ");
+
+		try {
+			final RenderRPN rpn = new RenderRPN();
+			result.append(rpn.render(this));
+		} catch (final EncogProgramError e) {
+			result.append("##Invalid Program:");
+			result.append(e.toString());
+		}
+
+		result.append("]");
+		return result.toString();
+	}
+
+	public void validate() {
+		if (size() < 0) {
+			throw new EncogProgramError("Program code invalid");
+		}
+
+		if (size() == 0) {
+			throw new EncogProgramError("Zero length program is invalid.");
+		}
+
+		try {
+			final MLData input = new BasicMLData(getInputCount());
+			compute(input);
+		} catch (final Throwable t) {
+			throw new EncogProgramError("Can't evaluate EncogProgram.", t);
+		}
+	}
+
+	private void validateAdvance(final int c) {
+		if (this.programLength + c > this.holder.getMaxIndividualFrames()) {
+			throw new EPLTooBig("Program has overrun its maximum length.");
+		}
+	}
+
+	public void validateLength() {
+		if (this.programLength < 0) {
+			throw new EncogEPLError("Program length cannot go below zero.");
+		}
+		if (this.programLength > this.holder.getMaxIndividualFrames()) {
+			throw new EPLTooBig("Program has overrun its maximum length.");
+		}
+	}
+
+	public void writeConstNode(final boolean value) {
+		writeNode(StandardExtensions.OPCODE_CONST_BOOL, 0, (short) (value ? 1
+				: 0));
+	}
+
+	public void writeConstNode(final double value) {
+		writeNode(StandardExtensions.OPCODE_CONST_FLOAT, 0, (short) 0);
+		writeDouble(value);
+	}
+
+	public void writeConstNode(final ExpressionValue c) {
 		switch (c.getCurrentType()) {
 		case booleanType:
 			this.writeConstNode(c.toBooleanValue());
@@ -458,165 +591,48 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError, 
 			this.writeConstNode(c.toIntValue());
 			break;
 		case stringType:
-			this.writeNodeString(c.toStringValue());
+			writeNodeString(c.toStringValue());
 			break;
 		}
 	}
 
-	public void insert(int index, int len) {
-		setProgramLength(this.programLength + len);
-		this.holder.insert(this.individual, index, len);
+	public void writeConstNode(final long value) {
+		writeNode(StandardExtensions.OPCODE_CONST_INT, (int) value, (short) 0);
 	}
 
-	public int findNodeStart(int index) {
-		StackInt stack = new StackInt(100);
-
-		TraverseProgram trav = new TraverseProgram(this);
-		trav.begin(0);
-		while (trav.next()) {
-			if (trav.isLeaf()) {
-				stack.push(trav.getFrameIndex());
-			} else {
-				stack.min(trav.getTemplate().getChildNodeCount());
-			}
-
-			if (trav.getFrameIndex() == index) {
-				return stack.pop();
-			}
-		}
-		return -1;
-
+	public void writeDouble(final double value) {
+		validateAdvance(1);
+		this.holder.writeDouble(this.individual, this.programCounter, value);
+		advanceProgramCounter(1, true);
 	}
 
-	public void replaceNode(EncogProgram sourceProgram, int sourceIndex,
-			int targetIndex) {
-		int sourceStart = sourceProgram.findNodeStart(sourceIndex);
-		int targetStart = findNodeStart(targetIndex);
-		int sourceSize = (sourceProgram.nextIndex(sourceIndex) - sourceStart);
-		int targetSize = (nextIndex(targetIndex) - targetStart);
-		deleteSubtree(targetStart,targetSize);
-		this.insert(targetStart, sourceSize);
-		this.holder.copy(sourceProgram.getHolder(), sourceProgram.getIndividual(), sourceStart, this.individual, targetStart, sourceSize);
+	public void writeNode(final short opcode) {
+		writeNode(opcode, 0, (short) 0);
 	}
 
-	public int nextIndex(int index) {
-		this.holder.readNodeHeader(this.individual, index, header);
-		ProgramExtensionTemplate temp = this.context.getFunctions().getOpCode(header.getOpcode());
-		return index+temp.getInstructionSize(header);
+	public void writeNode(final short opcode, final int param1,
+			final short param2) {
+		validateAdvance(1);
+		this.holder.writeNode(this.individual, this.programCounter, opcode,
+				param1, param2);
+		advanceProgramCounter(1, true);
 	}
 
-	/**
-	 * @return the source
-	 */
-	public String getSource() {
-		return source;
-	}
-
-	public String dumpAsCommonExpression() {
-		RenderCommonExpression render = new RenderCommonExpression();
-		return render.render(this);
-	}
-
-	public String toBase64() {
-		return this.holder.toBase64(individual, this.programLength);
-	}
-
-	public void fromBase64(String str) {
-		clear();
-		setProgramLength( this.holder.fromBase64(individual, str));
-	}
-
-	public void clear() {
-		setProgramLength(0);
-		this.programCounter = 0;
-	}
-
-	@Override
-	public void copy(Genome source) {
-		EncogProgram sourceProgram = (EncogProgram)source;
-		clear();
-		setProgramLength( sourceProgram.programLength);
-		copy(sourceProgram,0,0,sourceProgram.getProgramLength());
-		setScore(sourceProgram.getScore());
-		this.setAdjustedScore(sourceProgram.getAdjustedScore());
-	}
-
-	public void copy(EncogProgram sourceProgram, int sourceIndex,
-			int targetIndex, int size) {
-		this.holder.copy(sourceProgram.getHolder(), sourceProgram.getIndividual(), sourceIndex,
-				getIndividual(), targetIndex, size);
-	}
-
-	public EncogProgram[] allocateOffspring(int count) {
-		EncogProgram[] result = new EncogProgram[count];
-		for (int i = 0; i < result.length; i++) {
-			EPLHolder newHolder = this.context.getHolderFactory().factor(1,
-					this.getHolder().getMaxIndividualSize());
-			result[i] = new EncogProgram(this.context,
-					new EncogProgramVariables(), newHolder, 0);
-		}
-		return result;
-	}
-
-	public int findFrame(int position) {
-		TraverseProgram trav = new TraverseProgram(this);
-		trav.begin(0);
-		int i = 0;
-		while(trav.next()) {
-			if( i==position )
-				return trav.getFrameIndex();
-			i++;
-		}
-		return -1;
-	}
-
-	public void replaceNodeAtPosition(EncogProgram sourceProgram, int sourcePosition,
-			int targetPosition) {
-		int sourceIndex = sourceProgram.findFrame(sourcePosition);
-		int targetIndex = findFrame(targetPosition);
-		replaceNode(sourceProgram,sourceIndex,targetIndex);
-	}
-	
-	private void validateAdvance(int c) {
-		if( (this.programLength+c)>this.holder.getMaxIndividualFrames() ) {
-			throw new EPLTooBig("Program has overrun its maximum length.");
-		}
-	}
-	
-	public void validate() {
-		if( size()<0 ) {
-			throw new EncogProgramError("Program code invalid");
-		}
-		
-		if( size()==0 ) {
-			throw new EncogProgramError("Zero length program is invalid.");
-		}
-		
+	public void writeNodeString(final String str) {
 		try {
-		MLData input = new BasicMLData(this.getInputCount());
-		this.compute(input);
-		} catch(Throwable t) {
-			throw new EncogProgramError("Can't evaluate EncogProgram.",t);
-		}
-	}
-	
-	public void validateLength() {
-		if( this.programLength<0 ) {
-			throw new EncogEPLError("Program length cannot go below zero.");
-		}
-		if( this.programLength>this.holder.getMaxIndividualFrames() ) {
-			throw new EPLTooBig("Program has overrun its maximum length.");
+			final byte[] b = str.getBytes(Encog.DEFAULT_ENCODING);
+			writeNode(StandardExtensions.OPCODE_CONST_STRING, 0,
+					(short) b.length);
+			this.holder.writeByte(this.individual, this.programCounter, b);
+			advanceProgramCounter(EPLUtil.roundToFrame(b.length)
+					/ EPLHolder.FRAME_SIZE, true);
+		} catch (final UnsupportedEncodingException e) {
+			throw new EncogError(e);
 		}
 	}
 
-	public boolean hasVariable() {
-		TraverseProgram trav = new TraverseProgram(this);
-		trav.begin(0);
-		while(trav.next()) {
-			if( trav.getTemplate().isVariableValue() ) {
-				return true;
-			}
-		}
-		return false;
+	public void writeNodeVar(final String name) {
+		writeNode(StandardExtensions.OPCODE_VAR, 0,
+				(short) this.variables.getVariableIndex(name));
 	}
 }

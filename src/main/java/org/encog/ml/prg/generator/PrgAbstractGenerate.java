@@ -27,102 +27,129 @@ public abstract class PrgAbstractGenerate implements PrgPopulationGenerator {
 	private final List<ProgramExtensionTemplate> allNodes = new ArrayList<ProgramExtensionTemplate>();
 	private boolean requireVariable = true;
 	private boolean requireUnique = true;
-	
-	public PrgAbstractGenerate(EncogProgramContext theContext, CalculateScore theScoreFunction, int theMaxDepth) {
+
+	public PrgAbstractGenerate(final EncogProgramContext theContext,
+			final CalculateScore theScoreFunction, final int theMaxDepth) {
 		this.context = theContext;
 		this.maxDepth = theMaxDepth;
 		this.scoreFunction = theScoreFunction;
-		
-		for(ProgramExtensionTemplate temp : this.context.getFunctions().getOpCodes() ) {
+
+		for (final ProgramExtensionTemplate temp : this.context.getFunctions()
+				.getOpCodes()) {
 			this.allNodes.add(temp);
-			if( temp.getChildNodeCount()==0 ) {
+			if (temp.getChildNodeCount() == 0) {
 				this.leafNodes.add(temp);
 			} else {
 				this.branchNodes.add(temp);
 			}
 		}
 	}
-	
-	public void generate(Random random, Genome genome) {
-		EncogProgram program = (EncogProgram)genome;
-		program.clear();
-		createNode(random, program,0,getMaxDepth());
-	}
-	
-	protected void createLeafNode(Random random, EncogProgram program) {
-		int opCode = random.nextInt(this.leafNodes.size());
-		ProgramExtensionTemplate temp = this.leafNodes.get(opCode);
+
+	protected void createLeafNode(final Random random,
+			final EncogProgram program) {
+		final int opCode = random.nextInt(this.leafNodes.size());
+		final ProgramExtensionTemplate temp = this.leafNodes.get(opCode);
 		temp.randomize(random, program, 1.0);
 	}
-	
-	private void generateGenome(Random rnd, Population pop, EncogProgram prg, Set<String> populationContents) {
+
+	@Override
+	public void generate(final Random random, final Genome genome) {
+		final EncogProgram program = (EncogProgram) genome;
+		program.clear();
+		createNode(random, program, 0, getMaxDepth());
+	}
+
+	@Override
+	public void generate(final Random rnd, final Population pop) {
+		final Set<String> populationContents = new HashSet<String>();
+		final EPLHolder holder = ((PrgPopulation) pop).getHolder();
+
+		pop.getSpecies().clear();
+		final Species defaultSpecies = pop.createSpecies();
+
+		for (int i = 0; i < pop.getPopulationSize(); i++) {
+			final EncogProgram prg = new EncogProgram(getContext(),
+					new EncogProgramVariables(), holder, i);
+			defaultSpecies.add(prg);
+			generateGenome(rnd, pop, prg, populationContents);
+		}
+	}
+
+	private void generateGenome(final Random rnd, final Population pop,
+			final EncogProgram prg, final Set<String> populationContents) {
 		boolean done;
 		String key = "";
 		int maxTries = 100000;
-		
+
 		do {
 			maxTries--;
-			if( maxTries<0 ) {
-				throw new GeneticError("Endless loop generating population.  You are likely creating a population size too small and requring uniqueness or variables.");
+			if (maxTries < 0) {
+				throw new GeneticError(
+						"Endless loop generating population.  You are likely creating a population size too small and requring uniqueness or variables.");
 			}
 			prg.clear();
-			this.createNode(rnd, prg, 0, getMaxDepth());
+			createNode(rnd, prg, 0, getMaxDepth());
 			pop.rewrite(prg);
-			
+
 			done = true;
-			
+
 			// is the program unique?
-			if( this.requireUnique ) {
+			if (this.requireUnique) {
 				key = prg.toBase64();
-				if( populationContents.contains(key)) {
+				if (populationContents.contains(key)) {
 					done = false;
 				}
 			}
-			
+
 			// does the program contain a variable?
-			if( done && !prg.hasVariable() ) {
+			if (done && !prg.hasVariable()) {
 				done = false;
 			}
-			
+
 			// does program produce a valid score?
-			if ( done && getScoreFunction() != null) {
-				double score = getScoreFunction().calculateScore(prg);
-				
-				if ( Double.isInfinite(score) || Double.isNaN(score)) {
+			if (done && getScoreFunction() != null) {
+				final double score = getScoreFunction().calculateScore(prg);
+
+				if (Double.isInfinite(score) || Double.isNaN(score)) {
 					done = false;
 				} else {
 					prg.setScore(score);
 				}
 			}
-			
+
 		} while (!done);
-		
-		if( this.requireUnique ) {
+
+		if (this.requireUnique) {
 			populationContents.add(key);
 		}
 	}
-		
-	@Override
-	public void generate(Random rnd, Population pop) {
-		Set<String> populationContents = new HashSet<String>();
-		EPLHolder holder = ((PrgPopulation) pop).getHolder();
 
-		pop.getSpecies().clear();
-		Species defaultSpecies = pop.createSpecies();
-		
-		for (int i = 0; i < pop.getPopulationSize(); i++) {
-			EncogProgram prg = new EncogProgram(getContext(),
-					new EncogProgramVariables(), holder, i);
-			defaultSpecies.add(prg);
-			generateGenome(rnd,pop,prg,populationContents);
-		}
+	/**
+	 * @return the allNodes
+	 */
+	public List<ProgramExtensionTemplate> getAllNodes() {
+		return this.allNodes;
+	}
+
+	/**
+	 * @return the branchNodes
+	 */
+	public List<ProgramExtensionTemplate> getBranchNodes() {
+		return this.branchNodes;
 	}
 
 	/**
 	 * @return the context
 	 */
 	public EncogProgramContext getContext() {
-		return context;
+		return this.context;
+	}
+
+	/**
+	 * @return the leafNodes
+	 */
+	public List<ProgramExtensionTemplate> getLeafNodes() {
+		return this.leafNodes;
 	}
 
 	/**
@@ -130,65 +157,44 @@ public abstract class PrgAbstractGenerate implements PrgPopulationGenerator {
 	 */
 	@Override
 	public int getMaxDepth() {
-		return maxDepth;
-	}
-
-	/**
-	 * @return the leafNodes
-	 */
-	public List<ProgramExtensionTemplate> getLeafNodes() {
-		return leafNodes;
-	}
-
-	/**
-	 * @return the branchNodes
-	 */
-	public List<ProgramExtensionTemplate> getBranchNodes() {
-		return branchNodes;
-	}
-
-	/**
-	 * @return the allNodes
-	 */
-	public List<ProgramExtensionTemplate> getAllNodes() {
-		return allNodes;
+		return this.maxDepth;
 	}
 
 	/**
 	 * @return the scoreFunction
 	 */
 	public CalculateScore getScoreFunction() {
-		return scoreFunction;
-	}
-
-	/**
-	 * @return the requireVariable
-	 */
-	public boolean isRequireVariable() {
-		return requireVariable;
-	}
-
-	/**
-	 * @param requireVariable the requireVariable to set
-	 */
-	public void setRequireVariable(boolean requireVariable) {
-		this.requireVariable = requireVariable;
+		return this.scoreFunction;
 	}
 
 	/**
 	 * @return the requireUnique
 	 */
 	public boolean isRequireUnique() {
-		return requireUnique;
+		return this.requireUnique;
 	}
 
 	/**
-	 * @param requireUnique the requireUnique to set
+	 * @return the requireVariable
 	 */
-	public void setRequireUnique(boolean requireUnique) {
+	public boolean isRequireVariable() {
+		return this.requireVariable;
+	}
+
+	/**
+	 * @param requireUnique
+	 *            the requireUnique to set
+	 */
+	public void setRequireUnique(final boolean requireUnique) {
 		this.requireUnique = requireUnique;
 	}
-	
-	
-	
+
+	/**
+	 * @param requireVariable
+	 *            the requireVariable to set
+	 */
+	public void setRequireVariable(final boolean requireVariable) {
+		this.requireVariable = requireVariable;
+	}
+
 }

@@ -7,36 +7,43 @@ import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 
 public class RampedHalfAndHalfGenerator extends PrgAbstractGenerate {
-	
+
 	private final PrgFullGenerator generateFull;
 	private final PrgGrowGenerator generateGrow;
 	private final int minDepth;
-	
-	public RampedHalfAndHalfGenerator(EncogProgramContext theContext,
-			CalculateScore theScoreFunction, int theMinDepth, int theMaxDepth) {
+
+	public RampedHalfAndHalfGenerator(final EncogProgramContext theContext,
+			final CalculateScore theScoreFunction, final int theMinDepth,
+			final int theMaxDepth) {
 		super(theContext, theScoreFunction, theMaxDepth);
-		this.generateFull = new PrgFullGenerator(theContext,theScoreFunction,theMaxDepth);
-		this.generateGrow = new PrgGrowGenerator(theContext,theScoreFunction,theMaxDepth);
+		this.generateFull = new PrgFullGenerator(theContext, theScoreFunction,
+				theMaxDepth);
+		this.generateGrow = new PrgGrowGenerator(theContext, theScoreFunction,
+				theMaxDepth);
 		this.minDepth = theMinDepth;
 	}
-	
-	
+
 	@Override
-	public void createNode(Random rnd, EncogProgram prg, int currentDepth, int desiredDepth) {	
+	public void createNode(final Random rnd, final EncogProgram prg,
+			final int currentDepth, final int desiredDepth) {
 		int actualDesiredDepth = desiredDepth;
-		
-		// If we are at the root, then adjust the desired depth to be ramped value.
+
+		// If we are at the root, then adjust the desired depth to be ramped
+		// value.
 		// The ramped value is an equal distribution between the min and max.
-		if( currentDepth==0 ) {
-			actualDesiredDepth = rnd.nextInt(desiredDepth-this.minDepth)+this.minDepth;
+		if (currentDepth == 0) {
+			actualDesiredDepth = rnd.nextInt(desiredDepth - this.minDepth)
+					+ this.minDepth;
 		}
-		
+
 		// split half-and-half between full and grow
-		if( rnd.nextDouble()>0.5 ) {
-			this.generateFull.createNode(rnd, prg, currentDepth, actualDesiredDepth);
+		if (rnd.nextDouble() > 0.5) {
+			this.generateFull.createNode(rnd, prg, currentDepth,
+					actualDesiredDepth);
 		} else {
-			this.generateGrow.createNode(rnd, prg, currentDepth, actualDesiredDepth);
+			this.generateGrow.createNode(rnd, prg, currentDepth,
+					actualDesiredDepth);
 		}
 	}
-	
+
 }

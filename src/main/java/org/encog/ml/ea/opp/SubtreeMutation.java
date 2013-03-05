@@ -52,7 +52,7 @@ public class SubtreeMutation implements EvolutionaryOperator, Serializable {
 	 * A random population generator.
 	 */
 	private final PrgPopulationGenerator generator;
-	
+
 	/**
 	 * The owner of this operator.
 	 */
@@ -60,8 +60,11 @@ public class SubtreeMutation implements EvolutionaryOperator, Serializable {
 
 	/**
 	 * Construct the mutation operator.
-	 * @param theContext The context.
-	 * @param theMaxDepth The maximum depth.
+	 * 
+	 * @param theContext
+	 *            The context.
+	 * @param theMaxDepth
+	 *            The maximum depth.
 	 */
 	public SubtreeMutation(final EncogProgramContext theContext,
 			final int theMaxDepth) {
@@ -100,7 +103,8 @@ public class SubtreeMutation implements EvolutionaryOperator, Serializable {
 			final int parentIndex, final Genome[] offspring,
 			final int offspringIndex) {
 		final EncogProgram program = (EncogProgram) parents[parentIndex];
-		offspring[offspringIndex] = this.owner.getPopulation().getGenomeFactory().factor(parents[0]);
+		offspring[offspringIndex] = this.owner.getPopulation()
+				.getGenomeFactory().factor(parents[0]);
 		final EncogProgram result = (EncogProgram) offspring[offspringIndex];
 		result.clear();
 
@@ -115,7 +119,8 @@ public class SubtreeMutation implements EvolutionaryOperator, Serializable {
 		final int mutationIndex = program.findFrame(mutationPosition);
 
 		final int mutationStart = program.findNodeStart(mutationIndex);
-		final int mutationSize = (program.nextIndex(mutationIndex) - mutationStart);
+		final int mutationSize = program.nextIndex(mutationIndex)
+				- mutationStart;
 		final int mutationEnd = mutationStart + mutationSize;
 
 		// copy left of the mutation point

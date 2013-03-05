@@ -46,14 +46,29 @@ public class CompoundOperator implements EvolutionaryOperator {
 	private final OperationList components = new OperationList();
 
 	/**
+	 * @return the components
+	 */
+	public OperationList getComponents() {
+		return this.components;
+	}
+
+	/**
+	 * @return the owner
+	 */
+	public EvolutionaryAlgorithm getOwner() {
+		return this.owner;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
-			Genome[] offspring, int offspringIndex) {
-		EvolutionaryOperator opp = this.components.pick(rnd);
-		opp.performOperation(rnd, parents, parentIndex, offspring,
-				offspringIndex);
+	public void init(final EvolutionaryAlgorithm theOwner) {
+		this.owner = theOwner;
+		for (final ObjectHolder<EvolutionaryOperator> obj : this.components
+				.getList()) {
+			obj.getObj().init(theOwner);
+		}
 	}
 
 	/**
@@ -76,24 +91,11 @@ public class CompoundOperator implements EvolutionaryOperator {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void init(EvolutionaryAlgorithm theOwner) {
-		this.owner = theOwner;
-		for (ObjectHolder<EvolutionaryOperator> obj : components.getList()) {
-			obj.getObj().init(theOwner);
-		}
-	}
-
-	/**
-	 * @return the owner
-	 */
-	public EvolutionaryAlgorithm getOwner() {
-		return owner;
-	}
-
-	/**
-	 * @return the components
-	 */
-	public OperationList getComponents() {
-		return components;
+	public void performOperation(final Random rnd, final Genome[] parents,
+			final int parentIndex, final Genome[] offspring,
+			final int offspringIndex) {
+		final EvolutionaryOperator opp = this.components.pick(rnd);
+		opp.performOperation(rnd, parents, parentIndex, offspring,
+				offspringIndex);
 	}
 }

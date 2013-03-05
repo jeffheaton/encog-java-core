@@ -9,29 +9,30 @@ import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 
 public class PrgFullGenerator extends PrgAbstractGenerate {
 
-	public PrgFullGenerator(EncogProgramContext theContext,
-			CalculateScore theScoreFunction, int theMaxDepth) {
+	public PrgFullGenerator(final EncogProgramContext theContext,
+			final CalculateScore theScoreFunction, final int theMaxDepth) {
 		super(theContext, theScoreFunction, theMaxDepth);
 	}
-	
-	public void createNode(Random random, EncogProgram program, int currentDepth, int desiredDepth) {		
-		if( currentDepth>=desiredDepth ) {
+
+	@Override
+	public void createNode(final Random random, final EncogProgram program,
+			final int currentDepth, final int desiredDepth) {
+		if (currentDepth >= desiredDepth) {
 			createLeafNode(random, program);
 			return;
 		}
-		
-		int opCode = random.nextInt(this.getBranchNodes().size());
-		ProgramExtensionTemplate temp = this.getBranchNodes().get(opCode);
-		
-		
-		int childNodeCount = temp.getChildNodeCount();
 
-		for(int i=0;i<childNodeCount;i++) {
-			createNode(random, program, currentDepth+1, desiredDepth);	
+		final int opCode = random.nextInt(getBranchNodes().size());
+		final ProgramExtensionTemplate temp = getBranchNodes().get(opCode);
+
+		final int childNodeCount = temp.getChildNodeCount();
+
+		for (int i = 0; i < childNodeCount; i++) {
+			createNode(random, program, currentDepth + 1, desiredDepth);
 		}
-		
+
 		// write the node with random params
 		temp.randomize(random, program, 1.0);
 	}
-	
+
 }

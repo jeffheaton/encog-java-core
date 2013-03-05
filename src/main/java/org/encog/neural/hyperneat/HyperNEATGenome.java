@@ -17,31 +17,32 @@ import org.encog.util.obj.ChooseObject;
 public class HyperNEATGenome extends NEATGenome {
 
 	public static void buildCPPNActivationFunctions(
-			ChooseObject<ActivationFunction> activationFunctions) {
+			final ChooseObject<ActivationFunction> activationFunctions) {
 		activationFunctions.add(0.25, new ActivationClippedLinear());
 		activationFunctions.add(0.25, new ActivationBipolarSteepenedSigmoid());
 		activationFunctions.add(0.25, new ActivationGaussian());
-		activationFunctions.add(0.25, new ActivationSIN());	
+		activationFunctions.add(0.25, new ActivationSIN());
 		activationFunctions.finalizeStructure();
 	}
-	
+
+	public HyperNEATGenome() {
+
+	}
+
 	public HyperNEATGenome(final HyperNEATGenome other) {
 		super(other);
 	}
 
-	public HyperNEATGenome(
-			final List<NEATNeuronGene> neurons, final List<NEATLinkGene> links,
-			final int inputCount, final int outputCount) {
-		super(neurons,links,inputCount,outputCount);
+	public HyperNEATGenome(final List<NEATNeuronGene> neurons,
+			final List<NEATLinkGene> links, final int inputCount,
+			final int outputCount) {
+		super(neurons, links, inputCount, outputCount);
 	}
 
-	public HyperNEATGenome(Random rnd, NEATPopulation pop, 
-			final int inputCount, final int outputCount, double connectionDensity) {
-		super(rnd, pop,inputCount,outputCount, connectionDensity);
+	public HyperNEATGenome(final Random rnd, final NEATPopulation pop,
+			final int inputCount, final int outputCount,
+			final double connectionDensity) {
+		super(rnd, pop, inputCount, outputCount, connectionDensity);
 
-	}
-	
-	public HyperNEATGenome() {
-		
 	}
 }

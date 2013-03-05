@@ -71,8 +71,11 @@ public class OperationList extends ChooseObject<EvolutionaryOperator> {
 
 	/**
 	 * Pick a operator based on the number of parents available.
-	 * @param rnd A random number generator.
-	 * @param maxParents The maximum number of parents available.
+	 * 
+	 * @param rnd
+	 *            A random number generator.
+	 * @param maxParents
+	 *            The maximum number of parents available.
 	 * @return The operator that was selected.
 	 */
 	public EvolutionaryOperator pickMaxParents(final Random rnd,

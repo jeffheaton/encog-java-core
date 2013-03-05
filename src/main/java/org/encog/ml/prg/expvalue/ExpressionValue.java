@@ -28,47 +28,65 @@ import java.io.Serializable;
 import org.encog.ml.prg.ExpressionError;
 
 public class ExpressionValue implements Serializable {
-	
+
 	private String stringValue;
 	private double floatValue;
 	private boolean boolValue;
 	private ValueType currentType;
 	private long intValue;
-	
-	public ExpressionValue(ExpressionValue other) {
+
+	public ExpressionValue(final boolean theValue) {
+		setValue(theValue);
+	}
+
+	public ExpressionValue(final double theValue) {
+		setValue(theValue);
+	}
+
+	public ExpressionValue(final ExpressionValue other) {
 		setValue(other);
 	}
-	
-	public ExpressionValue(String theValue) {
-		setValue( theValue );
+
+	public ExpressionValue(final long theValue) {
+		setValue(theValue);
 	}
-	
-	public ExpressionValue(double theValue) {
-		setValue( theValue );
+
+	public ExpressionValue(final String theValue) {
+		setValue(theValue);
 	}
-	
-	public ExpressionValue(boolean theValue) {
-		setValue( theValue );
-	}
-	
-	public ExpressionValue(long theValue) {
-		setValue( theValue );
-	}
-	
+
 	public ValueType getCurrentType() {
-		return currentType;
+		return this.currentType;
 	}
-	public void setCurrentType(ValueType currentType) {
+
+	public boolean isFloat() {
+		return this.currentType == ValueType.floatingType;
+	}
+
+	public boolean isInt() {
+		return this.currentType == ValueType.intType;
+	}
+
+	public boolean isString() {
+		return this.currentType == ValueType.stringType;
+	}
+
+	public void setCurrentType(final ValueType currentType) {
 		this.currentType = currentType;
 	}
 
-	public void setValue(String stringValue) {
-		this.stringValue = stringValue;
-		this.currentType = ValueType.stringType;
+	public void setValue(final boolean boolValue) {
+		this.boolValue = boolValue;
+		this.currentType = ValueType.booleanType;
 	}
-	
-	public void setValue(ExpressionValue expValue) {
-		switch(this.currentType = expValue.currentType) {
+
+	public void setValue(final double floatValue) {
+		this.floatValue = floatValue;
+		this.currentType = ValueType.floatingType;
+	}
+
+	public void setValue(final ExpressionValue expValue) {
+		switch (this.currentType = expValue.currentType) {
 		case booleanType:
 			this.boolValue = expValue.boolValue;
 			break;
@@ -83,100 +101,88 @@ public class ExpressionValue implements Serializable {
 			break;
 		default:
 			throw new ExpressionError("Unsupported type.");
-		
+
 		}
 	}
-	
-	public void setValue(double floatValue) {
-		this.floatValue = floatValue;
-		this.currentType = ValueType.floatingType;
-	}
-	
-	public void setValue(long intValue) {
+
+	public void setValue(final long intValue) {
 		this.intValue = intValue;
 		this.currentType = ValueType.intType;
 	}
-	
-	public void setValue(boolean boolValue) {
-		this.boolValue = boolValue;
-		this.currentType = ValueType.booleanType;
+
+	public void setValue(final String stringValue) {
+		this.stringValue = stringValue;
+		this.currentType = ValueType.stringType;
+	}
+
+	public boolean toBooleanValue() {
+		switch (this.currentType) {
+		case intType:
+			throw new ExpressionError("Type Mismatch: can't " + this.intValue
+					+ " to boolean.");
+		case floatingType:
+			throw new ExpressionError("Type Mismatch: can't " + this.floatValue
+					+ " to boolean.");
+		case booleanType:
+			return this.boolValue;
+		case stringType:
+			throw new ExpressionError("Type Mismatch: can't "
+					+ this.stringValue + " to boolean.");
+		default:
+			throw new ExpressionError("Unknown type: " + this.currentType);
+		}
 	}
 
 	public double toFloatValue() {
-		switch(currentType) {
-			case intType:
-				return this.intValue;
-			case floatingType:
-				return this.floatValue;
-			case booleanType:
-				throw(new ExpressionError("Type Mismatch: can't convert float to boolean."));
-			case stringType:
-				try {
-					return Double.parseDouble(this.stringValue);
-				} catch(NumberFormatException ex) {
-					throw(new ExpressionError("Type Mismatch: can't convert "+this.stringValue+" to floating point."));
-				}
-			default:
-				throw(new ExpressionError("Unknown type: " + this.currentType));
+		switch (this.currentType) {
+		case intType:
+			return this.intValue;
+		case floatingType:
+			return this.floatValue;
+		case booleanType:
+			throw new ExpressionError(
+					"Type Mismatch: can't convert float to boolean.");
+		case stringType:
+			try {
+				return Double.parseDouble(this.stringValue);
+			} catch (final NumberFormatException ex) {
+				throw new ExpressionError("Type Mismatch: can't convert "
+						+ this.stringValue + " to floating point.");
+			}
+		default:
+			throw new ExpressionError("Unknown type: " + this.currentType);
 		}
 	}
-	
-	public String toStringValue() {
-		switch(currentType) {
-			case intType:
-				return ""+this.intValue;
-			case floatingType:
-				return ""+this.floatValue;
-			case booleanType:
-				return ""+this.boolValue;
-			case stringType:
-				return this.stringValue;
-			default:
-				throw(new ExpressionError("Unknown type: " + this.currentType));
-		}
+
+	public long toIntValue() {
+		return (long) toFloatValue();
 	}
-	
-	public boolean toBooleanValue() {
-		switch(currentType) {
-			case intType:
-				throw(new ExpressionError("Type Mismatch: can't "+this.intValue+" to boolean."));
-			case floatingType:
-				throw(new ExpressionError("Type Mismatch: can't "+this.floatValue+" to boolean."));
-			case booleanType:
-				return this.boolValue;
-			case stringType:
-				throw(new ExpressionError("Type Mismatch: can't "+this.stringValue+" to boolean."));
-			default:
-				throw(new ExpressionError("Unknown type: " + this.currentType));
-		}
-	}
-	
+
 	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 		result.append("[ExpressionValue: ");
 		result.append("type: ");
-		result.append(this.getCurrentType().toString());
+		result.append(getCurrentType().toString());
 		result.append(", String Value: ");
 		result.append(toStringValue());
 		result.append("]");
 		return result.toString();
 	}
 
-	public boolean isString() {
-		return this.currentType==ValueType.stringType;
-	}
-
-	public boolean isInt() {
-		return this.currentType==ValueType.intType;
-	}
-
-	public long toIntValue() {
-		return(long)toFloatValue();
-	}
-
-	public boolean isFloat() {
-		return this.currentType==ValueType.floatingType;
+	public String toStringValue() {
+		switch (this.currentType) {
+		case intType:
+			return "" + this.intValue;
+		case floatingType:
+			return "" + this.floatValue;
+		case booleanType:
+			return "" + this.boolValue;
+		case stringType:
+			return this.stringValue;
+		default:
+			throw new ExpressionError("Unknown type: " + this.currentType);
+		}
 	}
 
 }

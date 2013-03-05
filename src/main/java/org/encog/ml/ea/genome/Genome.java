@@ -34,6 +34,14 @@ import org.encog.ml.ea.population.Population;
 public interface Genome extends MLMethod {
 
 	/**
+	 * Copy from the specified genome into this one.
+	 * 
+	 * @param source
+	 *            The source genome.
+	 */
+	void copy(Genome source);
+
+	/**
 	 * Get the adjusted score, this considers old-age penalties and youth
 	 * bonuses. If there are no such bonuses or penalties, this is the same as
 	 * the score.
@@ -41,6 +49,11 @@ public interface Genome extends MLMethod {
 	 * @return The adjusted score.
 	 */
 	double getAdjustedScore();
+
+	/**
+	 * @return The birth generation (or iteration).
+	 */
+	int getBirthGeneration();
 
 	/**
 	 * @return The population that this genome belongs to.
@@ -61,6 +74,14 @@ public interface Genome extends MLMethod {
 	void setAdjustedScore(double adjustedScore);
 
 	/**
+	 * Set the birth genertion (or iteration).
+	 * 
+	 * @param birthGeneration
+	 *            The birth generation.
+	 */
+	void setBirthGeneration(int birthGeneration);
+
+	/**
 	 * Set the population that this genome belongs to.
 	 * 
 	 * @param population
@@ -77,26 +98,8 @@ public interface Genome extends MLMethod {
 	void setScore(double score);
 
 	/**
-	 * Copy from the specified genome into this one.
-	 * 
-	 * @param source The source genome.
-	 */
-	void copy(Genome source);
-
-	/**
 	 * @return Return the size of this genome. This size is a relative number
 	 *         that indicates the complexity of the genome.
 	 */
 	int size();
-
-	/**
-	 * @return The birth generation (or iteration).
-	 */
-	int getBirthGeneration();
-
-	/**
-	 * Set the birth genertion (or iteration).
-	 * @param birthGeneration The birth generation.
-	 */
-	void setBirthGeneration(int birthGeneration);
 }

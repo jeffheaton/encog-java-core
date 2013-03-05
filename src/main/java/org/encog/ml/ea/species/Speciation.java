@@ -8,6 +8,8 @@ import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 public interface Speciation {
 
 	void init(EvolutionaryAlgorithm theOwner);
-	void performSpeciation(List<Genome> genomeList );
+
 	boolean isIterationBased();
+
+	void performSpeciation(List<Genome> genomeList);
 }

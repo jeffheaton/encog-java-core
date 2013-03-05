@@ -49,17 +49,6 @@ public class EPLTooBig extends EncogEPLError {
 	/**
 	 * Construct an exception that holds another exception.
 	 * 
-	 * @param t
-	 *            The other exception.
-	 */
-	public EPLTooBig(final Throwable t) {
-		super(t);
-		EncogLogging.log(EncogLogging.LEVEL_ERROR, t);
-	}
-
-	/**
-	 * Construct an exception that holds another exception.
-	 * 
 	 * @param msg
 	 *            A message.
 	 * @param t
@@ -68,6 +57,17 @@ public class EPLTooBig extends EncogEPLError {
 	public EPLTooBig(final String msg, final Throwable t) {
 		super(msg, t);
 		EncogLogging.log(EncogLogging.LEVEL_ERROR, msg);
+		EncogLogging.log(EncogLogging.LEVEL_ERROR, t);
+	}
+
+	/**
+	 * Construct an exception that holds another exception.
+	 * 
+	 * @param t
+	 *            The other exception.
+	 */
+	public EPLTooBig(final Throwable t) {
+		super(t);
 		EncogLogging.log(EncogLogging.LEVEL_ERROR, t);
 	}
 }

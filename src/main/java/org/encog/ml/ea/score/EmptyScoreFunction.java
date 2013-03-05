@@ -8,18 +8,18 @@ import org.encog.ml.MLMethod;
 public class EmptyScoreFunction implements CalculateScore, Serializable {
 
 	@Override
-	public double calculateScore(MLMethod phenotype) {
+	public double calculateScore(final MLMethod phenotype) {
 		return 0;
-	}
-
-	@Override
-	public boolean shouldMinimize() {
-		return true;
 	}
 
 	@Override
 	public boolean requireSingleThreaded() {
 		return false;
+	}
+
+	@Override
+	public boolean shouldMinimize() {
+		return true;
 	}
 
 }

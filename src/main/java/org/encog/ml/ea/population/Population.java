@@ -99,19 +99,24 @@ public interface Population extends Serializable {
 	 * Rewrite the specified genome. The genome will still perform the same
 	 * function, but it may be shorter.
 	 * 
-	 * @param prg The genome to rewrite.
+	 * @param prg
+	 *            The genome to rewrite.
 	 */
 	void rewrite(Genome prg);
 
 	/**
 	 * Set the best genome.
-	 * @param bestGenome The best genome.
+	 * 
+	 * @param bestGenome
+	 *            The best genome.
 	 */
 	void setBestGenome(Genome bestGenome);
 
 	/**
 	 * Set the gnome factory.
-	 * @param factory The genome factory.
+	 * 
+	 * @param factory
+	 *            The genome factory.
 	 */
 	void setGenomeFactory(GenomeFactory factory);
 

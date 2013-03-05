@@ -11,26 +11,26 @@ import org.encog.ml.prg.epl.EPLHolder;
 
 public class PrgGenomeFactory implements GenomeFactory, Serializable {
 
-	private EncogProgramContext context;
+	private final EncogProgramContext context;
 
-	public PrgGenomeFactory(EncogProgramContext theContext) {
+	public PrgGenomeFactory(final EncogProgramContext theContext) {
 		this.context = theContext;
 	}
 
 	@Override
 	public Genome factor() {
-		EPLHolder newHolder = this.context.getHolderFactory().factor(1,
+		final EPLHolder newHolder = this.context.getHolderFactory().factor(1,
 				this.context.getParams().getMaxIndividualSize());
-		EncogProgram result = new EncogProgram(this.context,
+		final EncogProgram result = new EncogProgram(this.context,
 				new EncogProgramVariables(), newHolder, 0);
 		return result;
 	}
 
 	@Override
-	public Genome factor(Genome other) {
-		EPLHolder newHolder = this.context.getHolderFactory().factor(1,
+	public Genome factor(final Genome other) {
+		final EPLHolder newHolder = this.context.getHolderFactory().factor(1,
 				this.context.getParams().getMaxIndividualSize());
-		EncogProgram result = new EncogProgram(this.context,
+		final EncogProgram result = new EncogProgram(this.context,
 				new EncogProgramVariables(), newHolder, 0);
 		result.copy(other);
 		return result;

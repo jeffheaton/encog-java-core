@@ -19,127 +19,130 @@ import org.encog.neural.neat.NEATCODEC;
 import org.encog.neural.neat.NEATLink;
 import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATPopulation;
-import org.encog.util.EngineArray;
 
 public class HyperNEATCODEC implements GeneticCODEC {
 
 	private double minWeight = 0.2;
 	private double maxWeight = 5.0;
-	
-	public MLMethod decode(NEATPopulation pop, Substrate substrate, Genome genome) {
-		// obtain the CPPN
-		NEATCODEC neatCodec = new NEATCODEC();
-		NEATNetwork cppn = (NEATNetwork) neatCodec.decode(genome);
 
-		List<NEATLink> linkList = new ArrayList<NEATLink>();
-		
-		ActivationFunction[] afs = new ActivationFunction[substrate
+	@Override
+	public MLMethod decode(final Genome genome) {
+		final NEATPopulation pop = (NEATPopulation) genome.getPopulation();
+		final Substrate substrate = pop.getSubstrate();
+		return decode(pop, substrate, genome);
+	}
+
+	public MLMethod decode(final NEATPopulation pop, final Substrate substrate,
+			final Genome genome) {
+		// obtain the CPPN
+		final NEATCODEC neatCodec = new NEATCODEC();
+		final NEATNetwork cppn = (NEATNetwork) neatCodec.decode(genome);
+
+		final List<NEATLink> linkList = new ArrayList<NEATLink>();
+
+		final ActivationFunction[] afs = new ActivationFunction[substrate
 				.getNodeCount()];
 
-		ActivationFunction af = new ActivationSteepenedSigmoid();
+		final ActivationFunction af = new ActivationSteepenedSigmoid();
 		// all activation functions are the same
 		for (int i = 0; i < afs.length; i++) {
 			afs[i] = af;
 		}
-		
-		double c = this.maxWeight / (1.0 - this.minWeight);
-		MLData input = new BasicMLData(cppn.getInputCount());
-		
+
+		final double c = this.maxWeight / (1.0 - this.minWeight);
+		final MLData input = new BasicMLData(cppn.getInputCount());
+
 		// First create all of the non-bias links.
-		for (SubstrateLink link : substrate.getLinks()) {
-			SubstrateNode source = link.getSource();
-			SubstrateNode target = link.getTarget();
-			
+		for (final SubstrateLink link : substrate.getLinks()) {
+			final SubstrateNode source = link.getSource();
+			final SubstrateNode target = link.getTarget();
+
 			int index = 0;
-			for (double d : source.getLocation()) {
+			for (final double d : source.getLocation()) {
 				input.setData(index++, d);
 			}
-			for (double d : target.getLocation()) {
+			for (final double d : target.getLocation()) {
 				input.setData(index++, d);
 			}
-			MLData output = cppn.compute(input);
-			
+			final MLData output = cppn.compute(input);
+
 			double weight = output.getData(0);
-			if(Math.abs(weight)>this.minWeight) {
-				weight = (Math.abs(weight) - this.minWeight) * c * Math.signum(weight);
-				linkList.add(new NEATLink(source.getId(), target.getId(),weight));
+			if (Math.abs(weight) > this.minWeight) {
+				weight = (Math.abs(weight) - this.minWeight) * c
+						* Math.signum(weight);
+				linkList.add(new NEATLink(source.getId(), target.getId(),
+						weight));
 			}
 		}
-		
+
 		// now create biased links
 		input.clear();
-		int d = substrate.getDimensions();
-		List<SubstrateNode> biasedNodes = substrate.getBiasedNodes();
-		for(SubstrateNode target: biasedNodes) {
-			for(int i=0;i<d;i++) {
-				input.setData(d+i, target.getLocation()[i]);
+		final int d = substrate.getDimensions();
+		final List<SubstrateNode> biasedNodes = substrate.getBiasedNodes();
+		for (final SubstrateNode target : biasedNodes) {
+			for (int i = 0; i < d; i++) {
+				input.setData(d + i, target.getLocation()[i]);
 			}
-			
-			MLData output = cppn.compute(input);
-			
+
+			final MLData output = cppn.compute(input);
+
 			double biasWeight = output.getData(1);
-			if( Math.abs(biasWeight)>this.minWeight) {
-				biasWeight = (Math.abs(biasWeight) - this.minWeight) * c * Math.signum(biasWeight);
-				linkList.add( new NEATLink(0, target.getId(), biasWeight));
+			if (Math.abs(biasWeight) > this.minWeight) {
+				biasWeight = (Math.abs(biasWeight) - this.minWeight) * c
+						* Math.signum(biasWeight);
+				linkList.add(new NEATLink(0, target.getId(), biasWeight));
 			}
 		}
-		
+
 		// check for invalid neural network
-		if( linkList.size()==0 ) {
+		if (linkList.size() == 0) {
 			return null;
 		}
-	
+
 		Collections.sort(linkList);
 
-		NEATNetwork network = new NEATNetwork(substrate.getInputCount(),
+		final NEATNetwork network = new NEATNetwork(substrate.getInputCount(),
 				substrate.getOutputCount(), linkList, afs);
 
 		network.setActivationCycles(substrate.getActivationCycles());
 		return network;
-		
-	}
-	
-	@Override
-	public MLMethod decode(Genome genome) {
-		NEATPopulation pop = (NEATPopulation) genome.getPopulation();
-		Substrate substrate = pop.getSubstrate();
-		return decode(pop, substrate, genome);
+
 	}
 
 	@Override
-	public Genome encode(MLMethod phenotype) {
+	public Genome encode(final MLMethod phenotype) {
 		throw new GeneticError(
 				"Encoding of a HyperNEAT network is not supported.");
-	}
-
-	/**
-	 * @return the minWeight
-	 */
-	public double getMinWeight() {
-		return minWeight;
-	}
-
-	/**
-	 * @param minWeight the minWeight to set
-	 */
-	public void setMinWeight(double minWeight) {
-		this.minWeight = minWeight;
 	}
 
 	/**
 	 * @return the maxWeight
 	 */
 	public double getMaxWeight() {
-		return maxWeight;
+		return this.maxWeight;
 	}
 
 	/**
-	 * @param maxWeight the maxWeight to set
+	 * @return the minWeight
 	 */
-	public void setMaxWeight(double maxWeight) {
+	public double getMinWeight() {
+		return this.minWeight;
+	}
+
+	/**
+	 * @param maxWeight
+	 *            the maxWeight to set
+	 */
+	public void setMaxWeight(final double maxWeight) {
 		this.maxWeight = maxWeight;
 	}
-	
-	
+
+	/**
+	 * @param minWeight
+	 *            the minWeight to set
+	 */
+	public void setMinWeight(final double minWeight) {
+		this.minWeight = minWeight;
+	}
 
 }

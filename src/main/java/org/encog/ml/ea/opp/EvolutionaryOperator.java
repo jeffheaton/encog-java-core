@@ -41,6 +41,24 @@ import org.encog.ml.ea.train.EvolutionaryAlgorithm;
  */
 public interface EvolutionaryOperator {
 	/**
+	 * Called to setup the evolutionary operator.
+	 * 
+	 * @param theOwner
+	 *            The evolutionary algorithm used with this operator.
+	 */
+	void init(EvolutionaryAlgorithm theOwner);
+
+	/**
+	 * @return The number of offspring produced by this type of crossover.
+	 */
+	int offspringProduced();
+
+	/**
+	 * @return The number of parents needed.
+	 */
+	int parentsNeeded();
+
+	/**
 	 * Perform the evolutionary operation.
 	 * 
 	 * @param rnd
@@ -56,20 +74,4 @@ public interface EvolutionaryOperator {
 	 */
 	void performOperation(Random rnd, Genome[] parents, int parentIndex,
 			Genome[] offspring, int offspringIndex);
-
-	/**
-	 * @return The number of offspring produced by this type of crossover.
-	 */
-	int offspringProduced();
-
-	/**
-	 * @return The number of parents needed.
-	 */
-	int parentsNeeded();
-
-	/**
-	 * Called to setup the evolutionary operator.
-	 * @param theOwner The evolutionary algorithm used with this operator.
-	 */
-	void init(EvolutionaryAlgorithm theOwner);
 }
