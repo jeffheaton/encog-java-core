@@ -27,7 +27,7 @@ import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.util.concurrency.MultiThreadable;
 
-public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
+public class TrainEA extends BasicEA implements MLTrain, MultiThreadable {
 	
 	/**
 	 * The iteration number.
@@ -50,7 +50,7 @@ public class SpeciesEA extends BasicEA implements MLTrain, MultiThreadable {
 	
 	
 
-	public SpeciesEA(Population thePopulation, CalculateScore theScoreFunction) {
+	public TrainEA(Population thePopulation, CalculateScore theScoreFunction) {
 		super(thePopulation, theScoreFunction);
 		// TODO Auto-generated constructor stub
 	}

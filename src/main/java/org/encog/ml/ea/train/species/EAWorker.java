@@ -15,9 +15,9 @@ public class EAWorker implements Runnable {
 	private Genome[] children;
 	private final Random rnd;
 	private final Population population;
-	private final SpeciesEA train;
+	private final TrainEA train;
 
-	public EAWorker(SpeciesEA theTrain, Species theSpecies) {
+	public EAWorker(TrainEA theTrain, Species theSpecies) {
 		this.train = theTrain;
 		this.species = theSpecies;
 		this.population = this.train.getPopulation();

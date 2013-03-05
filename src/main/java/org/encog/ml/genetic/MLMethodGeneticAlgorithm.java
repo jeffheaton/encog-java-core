@@ -35,7 +35,7 @@ import org.encog.ml.ea.sort.GenomeComparator;
 import org.encog.ml.ea.sort.MaximizeScoreComp;
 import org.encog.ml.ea.sort.MinimizeScoreComp;
 import org.encog.ml.ea.species.Species;
-import org.encog.ml.ea.train.species.SpeciesEA;
+import org.encog.ml.ea.train.species.TrainEA;
 import org.encog.ml.genetic.crossover.Splice;
 import org.encog.ml.genetic.mutate.MutatePerturb;
 import org.encog.ml.train.BasicTraining;
@@ -68,7 +68,7 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 	 * 
 	 * @author jheaton
 	 */
-	public class MLMethodGeneticAlgorithmHelper extends SpeciesEA {
+	public class MLMethodGeneticAlgorithmHelper extends TrainEA {
 		public MLMethodGeneticAlgorithmHelper(Population thePopulation,
 				CalculateScore theScoreFunction) {
 			super(thePopulation, theScoreFunction);
