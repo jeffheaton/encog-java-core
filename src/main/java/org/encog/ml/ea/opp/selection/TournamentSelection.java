@@ -5,11 +5,9 @@ import java.util.Random;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.Genome;
-import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.species.Species;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.ea.train.basic.BasicEA;
-import org.encog.ml.prg.train.PrgGenetic;
 
 public class TournamentSelection implements PrgSelection, Serializable {
 	private EvolutionaryAlgorithm trainer;

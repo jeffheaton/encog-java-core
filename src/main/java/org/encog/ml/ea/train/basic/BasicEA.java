@@ -62,7 +62,7 @@ import org.encog.util.concurrency.MultiThreadable;
 /**
  * Provides a basic implementation of a genetic algorithm.
  */
-public abstract class BasicEA implements EvolutionaryAlgorithm,
+public class BasicEA implements EvolutionaryAlgorithm,
 		MultiThreadable, Serializable {
 
 	public static void calculateScoreAdjustment(final Genome genome,

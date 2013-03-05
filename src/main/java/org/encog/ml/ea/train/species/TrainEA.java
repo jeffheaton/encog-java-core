@@ -12,6 +12,7 @@ import org.encog.ml.ea.train.basic.BasicEA;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.networks.training.TrainingError;
+import org.encog.neural.networks.training.TrainingSetScore;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
 public class TrainEA extends BasicEA implements MLTrain {
@@ -22,6 +23,10 @@ public class TrainEA extends BasicEA implements MLTrain {
 		// TODO Auto-generated constructor stub
 	}
 	
+	public TrainEA(Population thePopulation, MLDataSet trainingData) {
+		super(thePopulation, new TrainingSetScore(trainingData));
+	}
+
 	/**
 	 * Not used.
 	 * 

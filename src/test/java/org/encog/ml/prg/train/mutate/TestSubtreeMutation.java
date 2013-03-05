@@ -8,11 +8,11 @@ import junit.framework.TestCase;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.opp.SubtreeMutation;
+import org.encog.ml.ea.train.basic.BasicEA;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.PrgCODEC;
 import org.encog.ml.prg.extension.StandardExtensions;
-import org.encog.ml.prg.train.PrgGenetic;
 import org.encog.ml.prg.train.PrgPopulation;
 import org.encog.ml.prg.train.fitness.MultiObjectiveFitness;
 import org.encog.parse.expression.common.RenderCommonExpression;
@@ -31,7 +31,7 @@ public class TestSubtreeMutation extends TestCase {
 		
 		// create a trainer
 		PrgPopulation pop = new PrgPopulation(context,1000);
-		PrgGenetic genetic = new PrgGenetic(pop, new MultiObjectiveFitness());
+		BasicEA genetic = new BasicEA(pop, new MultiObjectiveFitness());
 		genetic.setCODEC(new PrgCODEC());
 		genetic.addOperation(1.0, mutate);
 		
