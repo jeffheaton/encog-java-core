@@ -25,9 +25,9 @@ package org.encog.neural.neat.training.opp.links;
 
 import java.util.Random;
 
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.NEATLinkGene;
-import org.encog.neural.neat.training.NEATTraining;
 
 /**
  * Mutate weight links by perturbing their weights. This will be done by adding
@@ -40,7 +40,7 @@ public class MutatePerturbLinkWeight implements MutateLinkWeight {
 	/**
 	 * The trainer being used.
 	 */
-	private NEATTraining trainer;
+	private EvolutionaryAlgorithm trainer;
 
 	/**
 	 * The sigma (standard deviation) of the Gaussian random numbers.
@@ -61,7 +61,7 @@ public class MutatePerturbLinkWeight implements MutateLinkWeight {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public NEATTraining getTrainer() {
+	public EvolutionaryAlgorithm getTrainer() {
 		return this.trainer;
 	}
 
@@ -69,7 +69,7 @@ public class MutatePerturbLinkWeight implements MutateLinkWeight {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void init(final NEATTraining theTrainer) {
+	public void init(final EvolutionaryAlgorithm theTrainer) {
 		this.trainer = theTrainer;
 	}
 

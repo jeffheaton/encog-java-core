@@ -32,9 +32,10 @@ import junit.framework.TestCase;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.neural.neat.NEATPopulation;
+import org.encog.neural.neat.NEATUtil;
 import org.encog.neural.neat.PersistNEATPopulation;
-import org.encog.neural.neat.training.NEATTraining;
 import org.encog.neural.networks.training.TrainingSetScore;
 
 public final class TestPersistPopulationNPE extends TestCase
@@ -48,25 +49,25 @@ public final class TestPersistPopulationNPE extends TestCase
 		// create a new random population and train it
 		NEATPopulation pop = new NEATPopulation(FAKE_DATA[0].length, 1, 50);
 		pop.reset();
-		final NEATTraining training1 = new NEATTraining(score, pop);
+		EvolutionaryAlgorithm training1 = NEATUtil.constructNEATTrainer(pop, score);
 		training1.iteration();
 		// enough training for now, backup current population to continue later
 		final ByteArrayOutputStream serialized1 = new ByteArrayOutputStream();
 		new PersistNEATPopulation().save(serialized1, training1.getPopulation());
 
 		// reload initial backup and continue training
-		final NEATTraining training2 = new NEATTraining(
-			score,
-			(NEATPopulation)new PersistNEATPopulation().read(new ByteArrayInputStream(serialized1.toByteArray())));
+		EvolutionaryAlgorithm training2 = NEATUtil.constructNEATTrainer(
+			(NEATPopulation)new PersistNEATPopulation().read(new ByteArrayInputStream(serialized1.toByteArray())),
+			score);
 		training2.iteration();
 		// enough training, backup the reloaded population to continue later
 		final ByteArrayOutputStream serialized2 = new ByteArrayOutputStream();
 		new PersistNEATPopulation().save(serialized2, training2.getPopulation());
 
 		// NEATTraining.init() randomly fails with a NPE in NEATGenome.getCompatibilityScore()
-		final NEATTraining training3 = new NEATTraining(
-			score,
-			(NEATPopulation)new PersistNEATPopulation().read(new ByteArrayInputStream(serialized2.toByteArray())));
+		EvolutionaryAlgorithm training3 = NEATUtil.constructNEATTrainer(
+			(NEATPopulation)new PersistNEATPopulation().read(new ByteArrayInputStream(serialized2.toByteArray())),
+			score);
 		training3.iteration();
 		final ByteArrayOutputStream serialized3 = new ByteArrayOutputStream();
 		new PersistNEATPopulation().save(serialized3, training3.getPopulation());
@@ -78,7 +79,7 @@ public final class TestPersistPopulationNPE extends TestCase
 		NEATPopulation pop = new NEATPopulation(FAKE_DATA[0].length, 1, 50);
 		pop.reset();
 		// create a new random population and train it
-		final NEATTraining training1 = new NEATTraining(score, pop);
+		EvolutionaryAlgorithm training1 = NEATUtil.constructNEATTrainer(pop, score);
 		training1.iteration();
 		// enough training for now, backup current population
 		final ByteArrayOutputStream serialized1 = new ByteArrayOutputStream();

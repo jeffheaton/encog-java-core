@@ -27,9 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATLinkGene;
-import org.encog.neural.neat.training.NEATTraining;
 
 /**
  * Select a fixed number of link genes. If the genome does not have enough links
@@ -46,7 +46,7 @@ public class SelectFixed implements SelectLinks {
 	/**
 	 * The trainer.
 	 */
-	private NEATTraining trainer;
+	private EvolutionaryAlgorithm trainer;
 
 	/**
 	 * Construct a fixed count link selector.
@@ -60,7 +60,7 @@ public class SelectFixed implements SelectLinks {
 	 * @return the trainer
 	 */
 	@Override
-	public NEATTraining getTrainer() {
+	public EvolutionaryAlgorithm getTrainer() {
 		return this.trainer;
 	}
 
@@ -68,7 +68,7 @@ public class SelectFixed implements SelectLinks {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void init(final NEATTraining theTrainer) {
+	public void init(final EvolutionaryAlgorithm theTrainer) {
 		this.trainer = theTrainer;
 	}
 

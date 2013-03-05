@@ -121,6 +121,7 @@ public class BasicEA implements EvolutionaryAlgorithm,
 	private EvolutionaryOperator champMutation;
 
 	private double eliteRate = 0.3;
+	private int maxTries = 5;
 
 	/**
 	 * The best ever network.
@@ -561,5 +562,25 @@ public class BasicEA implements EvolutionaryAlgorithm,
 	public void setValidationMode(final boolean validationMode) {
 		this.validationMode = validationMode;
 	}
+
+	@Override
+	public int getMaxTries() {
+		return this.maxTries;
+	}
+
+	/**
+	 * @param maxTries the maxTries to set
+	 */
+	public void setMaxTries(int maxTries) {
+		this.maxTries = maxTries;
+	}
+
+	@Override
+	public void finishTraining() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 
 }

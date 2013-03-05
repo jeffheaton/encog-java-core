@@ -25,8 +25,9 @@ package org.encog.neural.neat.training.opp.links;
 
 import java.util.Random;
 
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
+import org.encog.ml.ea.train.basic.BasicEA;
 import org.encog.neural.neat.training.NEATLinkGene;
-import org.encog.neural.neat.training.NEATTraining;
 
 /**
  * This interface defines various ways that a NEAT network can have its link
@@ -37,7 +38,7 @@ public interface MutateLinkWeight {
 	/**
 	 * @return The training class that this mutator is being used with.
 	 */
-	NEATTraining getTrainer();
+	EvolutionaryAlgorithm getTrainer();
 
 	/**
 	 * Setup the link mutator.
@@ -45,7 +46,7 @@ public interface MutateLinkWeight {
 	 * @param theTrainer
 	 *            The training class that this mutator is used with.
 	 */
-	void init(NEATTraining theTrainer);
+	void init(EvolutionaryAlgorithm theTrainer);
 
 	/**
 	 * Perform the weight mutation on the specified link.

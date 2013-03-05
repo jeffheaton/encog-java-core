@@ -23,17 +23,14 @@
  */
 package org.encog.ml.factory.train;
 
-import java.util.Map;
-
 import org.encog.ml.CalculateScore;
 import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.factory.parse.ArchitectureParse;
+import org.encog.ml.ea.train.basic.TrainEA;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.neat.NEATPopulation;
-import org.encog.neural.neat.training.NEATTraining;
+import org.encog.neural.neat.NEATUtil;
 import org.encog.neural.networks.training.TrainingSetScore;
-import org.encog.util.ParamsHolder;
 
 /**
  * A factory to create genetic algorithm trainers.
@@ -54,7 +51,7 @@ public class NEATGAFactory {
 			final MLDataSet training, final String argsStr) {
 
 		final CalculateScore score = new TrainingSetScore(training);		
-		final NEATTraining train = new NEATTraining(score,(NEATPopulation)method);
+		final TrainEA train = NEATUtil.constructNEATTrainer((NEATPopulation)method, score);
 
 		return train;
 	}

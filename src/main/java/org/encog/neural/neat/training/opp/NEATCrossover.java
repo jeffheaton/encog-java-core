@@ -35,7 +35,6 @@ import org.encog.neural.neat.NEATGenomeFactory;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.NEATNeuronGene;
-import org.encog.neural.neat.training.NEATTraining;
 
 /**
  * Crossover is performed by mixing the link genes between the parents to
@@ -81,7 +80,7 @@ public class NEATCrossover implements EvolutionaryOperator {
 	/**
 	 * The owning object.
 	 */
-	private NEATTraining owner;
+	private EvolutionaryAlgorithm owner;
 
 	/**
 	 * Add a neuron.
@@ -179,7 +178,7 @@ public class NEATCrossover implements EvolutionaryOperator {
 	 */
 	@Override
 	public void init(final EvolutionaryAlgorithm theOwner) {
-		this.owner = (NEATTraining) theOwner;
+		this.owner = theOwner;
 	}
 
 	/**
@@ -220,8 +219,8 @@ public class NEATCrossover implements EvolutionaryOperator {
 		NEATLinkGene selectedGene = null;
 
 		// add in the input and bias, they should always be here
-		final int alwaysCount = this.owner.getInputCount()
-				+ this.owner.getOutputCount() + 1;
+		final int alwaysCount = ((NEATGenome)parents[0]).getInputCount()
+				+ ((NEATGenome)parents[0]).getOutputCount() + 1;
 		for (int i = 0; i < alwaysCount; i++) {
 			addNeuronID(i, selectedNeurons, best, notBest);
 		}

@@ -23,7 +23,6 @@
  */
 package org.encog.neural.neat.training.opp;
 
-import org.encog.EncogError;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
@@ -34,7 +33,6 @@ import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATInnovation;
 import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.NEATNeuronGene;
-import org.encog.neural.neat.training.NEATTraining;
 
 /**
  * This class represents a NEAT mutation. NEAT supports several different types
@@ -46,7 +44,7 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 	/**
 	 * The trainer that owns this class.
 	 */
-	private NEATTraining owner;
+	private EvolutionaryAlgorithm owner;
 
 	/**
 	 * Choose a random neuron.
@@ -62,7 +60,7 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 		if (choosingFrom) {
 			start = 0;
 		} else {
-			start = this.owner.getInputCount() + 1;
+			start = target.getInputCount() + 1;
 		}
 
 		// if this network will not "cycle" then output neurons cannot be source
@@ -117,7 +115,7 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 		}
 
 		// check to see if this innovation has already been tried
-		final NEATInnovation innovation = this.owner.getInnovations()
+		final NEATInnovation innovation = ((NEATPopulation)target.getPopulation()).getInnovations()
 				.findInnovation(neuron1ID, neuron2ID);
 
 		// now create this link
@@ -149,7 +147,7 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 	/**
 	 * @return the owner
 	 */
-	public NEATTraining getOwner() {
+	public EvolutionaryAlgorithm getOwner() {
 		return this.owner;
 	}
 
@@ -158,7 +156,7 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 	 */
 	@Override
 	public void init(final EvolutionaryAlgorithm theOwner) {
-		this.owner = (NEATTraining) theOwner;
+		this.owner = theOwner;
 	}
 
 	/**

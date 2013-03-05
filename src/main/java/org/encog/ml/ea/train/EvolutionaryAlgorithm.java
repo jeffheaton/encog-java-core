@@ -32,6 +32,7 @@ import org.encog.ml.ea.opp.selection.PrgSelection;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.score.AdjustScore;
 import org.encog.ml.ea.sort.GenomeComparator;
+import org.encog.ml.ea.species.Speciation;
 import org.encog.ml.prg.train.GeneticTrainingParams;
 
 /**
@@ -72,5 +73,19 @@ public interface EvolutionaryAlgorithm {
 	CalculateScore getScoreFunction();
 
 	GeneticCODEC getCODEC();
+
+	int getIteration();
+	
+	int getMaxTries();
+
+	boolean isValidationMode();
+
+	Genome getBestGenome();
+
+	double getError();
+
+	void setSpeciation(Speciation originalNEATSpeciation);
+
+	void finishTraining();
 
 }

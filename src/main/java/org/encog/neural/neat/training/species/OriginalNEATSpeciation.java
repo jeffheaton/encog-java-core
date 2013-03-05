@@ -34,8 +34,8 @@ import org.encog.ml.ea.species.Speciation;
 import org.encog.ml.ea.species.Species;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.genetic.GeneticError;
+import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.NEATGenome;
-import org.encog.neural.neat.training.NEATTraining;
 
 /**
  * The original NEAT Speciation Strategy. This is currently the only speciation
@@ -76,7 +76,7 @@ public class OriginalNEATSpeciation implements Speciation {
 	/**
 	 * The NEAT training being used.
 	 */
-	private NEATTraining owner;
+	private EvolutionaryAlgorithm owner;
 
 	/**
 	 * THe minimum compatibility that two genes must have to be in the same
@@ -104,6 +104,8 @@ public class OriginalNEATSpeciation implements Speciation {
 	 * genomes should come first for later selection.
 	 */
 	private SortGenomesForSpecies sortGenomes;
+	
+	private NEATPopulation neatPopulation;
 
 	/**
 	 * Add a genome.
@@ -148,11 +150,11 @@ public class OriginalNEATSpeciation implements Speciation {
 
 		final double thresholdIncrement = 0.01;
 
-		if (this.owner.getNEATPopulation().getSpecies().size() > this.maxNumberOfSpecies) {
+		if (this.neatPopulation.getSpecies().size() > this.maxNumberOfSpecies) {
 			this.compatibilityThreshold += thresholdIncrement;
 		}
 
-		else if (this.owner.getNEATPopulation().getSpecies().size() < 2) {
+		else if (this.neatPopulation.getSpecies().size() < 2) {
 			this.compatibilityThreshold -= thresholdIncrement;
 		}
 	}
@@ -344,7 +346,7 @@ public class OriginalNEATSpeciation implements Speciation {
 	/**
 	 * @return the owner
 	 */
-	public NEATTraining getOwner() {
+	public EvolutionaryAlgorithm getOwner() {
 		return this.owner;
 	}
 
@@ -360,7 +362,8 @@ public class OriginalNEATSpeciation implements Speciation {
 	 */
 	@Override
 	public void init(final EvolutionaryAlgorithm theOwner) {
-		this.owner = (NEATTraining) theOwner;
+		this.owner = theOwner;
+		this.neatPopulation = (NEATPopulation) theOwner.getPopulation();
 		this.sortGenomes = new SortGenomesForSpecies(this.owner);
 	}
 
@@ -371,7 +374,7 @@ public class OriginalNEATSpeciation implements Speciation {
 	 */
 	private void levelOff() {
 		int total = 0;
-		final List<Species> list = this.owner.getNEATPopulation()
+		final List<Species> list = this.neatPopulation
 				.getSpecies();
 		Collections.sort(list, new SpeciesComparator(this.owner));
 
@@ -386,7 +389,7 @@ public class OriginalNEATSpeciation implements Speciation {
 		}
 
 		// how does the total offspring count match the target
-		int diff = this.owner.getNEATPopulation().getPopulationSize() - total;
+		int diff = this.neatPopulation.getPopulationSize() - total;
 
 		if (diff < 0) {
 			// need less offspring
@@ -425,7 +428,7 @@ public class OriginalNEATSpeciation implements Speciation {
 	 */
 	private List<NEATGenome> resetSpecies(List<Genome> inputGenomes) {
 		final List<NEATGenome> result = new ArrayList<NEATGenome>();
-		final Object[] speciesArray = this.owner.getNEATPopulation()
+		final Object[] speciesArray = this.neatPopulation
 				.getSpecies().toArray();
 
 		// Add the NEAT genomes
@@ -440,11 +443,11 @@ public class OriginalNEATSpeciation implements Speciation {
 			// did the leader die? If so, disband the species. (but don't kill
 			// the genomes)
 			if (!inputGenomes.contains(s.getLeader())) {
-				this.owner.getNEATPopulation().getSpecies().remove(s);
+				this.neatPopulation.getSpecies().remove(s);
 			} else if ((s.getGensNoImprovement() > this.numGensAllowedNoImprovement)
 					&& this.owner.getSelectionComparator().isBetterThan(
 							this.owner.getError(), s.getBestScore())) {
-				this.owner.getNEATPopulation().getSpecies().remove(s);
+				this.neatPopulation.getSpecies().remove(s);
 			}
 
 			// remove the leader from the list we return. the leader already has
@@ -521,8 +524,7 @@ public class OriginalNEATSpeciation implements Speciation {
 	private void speciateAndCalculateSpawnLevels(final List<NEATGenome> genomes) {
 		double maxScore = 0;
 
-		final List<Species> speciesCollection = this.owner
-				.getNEATPopulation().getSpecies();
+		final List<Species> speciesCollection = this.neatPopulation.getSpecies();
 
 		// calculate compatibility between genomes and species
 		adjustCompatibilityThreshold();
@@ -553,8 +555,8 @@ public class OriginalNEATSpeciation implements Speciation {
 			// new species
 			if (currentSpecies == null) {
 				currentSpecies = new BasicSpecies(
-						this.owner.getNEATPopulation(), genome);
-				this.owner.getNEATPopulation().getSpecies().add(currentSpecies);
+						this.neatPopulation, genome);
+				this.neatPopulation.getSpecies().add(currentSpecies);
 			}
 		}
 

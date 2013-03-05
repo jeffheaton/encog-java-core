@@ -59,8 +59,8 @@ public class NEATMutateAddNode extends NEATMutation {
 		// the link to split
 		NEATLinkGene splitLink = null;
 
-		final int sizeBias = getOwner().getNEATPopulation().getInputCount()
-				+ getOwner().getNEATPopulation().getOutputCount() + 10;
+		final int sizeBias = ((NEATGenome)parents[0]).getInputCount()
+				+ ((NEATGenome)parents[0]).getOutputCount() + 10;
 
 		// if there are not at least
 		int upperLimit;
@@ -97,11 +97,11 @@ public class NEATMutateAddNode extends NEATMutation {
 		final long from = splitLink.getFromNeuronID();
 		final long to = splitLink.getToNeuronID();
 
-		final NEATInnovation innovation = getOwner().getInnovations()
+		final NEATInnovation innovation = ((NEATPopulation)getOwner().getPopulation()).getInnovations()
 				.findInnovationSplit(from, to);
 
 		// add the splitting neuron
-		final ActivationFunction af = getOwner().getNEATPopulation()
+		final ActivationFunction af = ((NEATPopulation)getOwner().getPopulation())
 				.getActivationFunctions().pick(new Random());
 
 		target.getNeuronsChromosome().add(

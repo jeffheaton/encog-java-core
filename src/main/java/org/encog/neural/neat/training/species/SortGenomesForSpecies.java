@@ -3,14 +3,13 @@ package org.encog.neural.neat.training.species;
 import java.util.Comparator;
 
 import org.encog.ml.ea.genome.Genome;
-import org.encog.neural.neat.training.NEATGenome;
-import org.encog.neural.neat.training.NEATTraining;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 
 public class SortGenomesForSpecies implements Comparator<Genome> {
 
-	private final NEATTraining train;
+	private final EvolutionaryAlgorithm train;
 
-	public SortGenomesForSpecies(final NEATTraining theTrain) {
+	public SortGenomesForSpecies(final EvolutionaryAlgorithm theTrain) {
 		this.train = theTrain;
 	}
 

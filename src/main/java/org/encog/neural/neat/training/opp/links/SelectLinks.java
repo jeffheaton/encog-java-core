@@ -26,9 +26,9 @@ package org.encog.neural.neat.training.opp.links;
 import java.util.List;
 import java.util.Random;
 
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATLinkGene;
-import org.encog.neural.neat.training.NEATTraining;
 
 /**
  * This interface defines ways that NEAT links can be chosen for mutation.
@@ -38,13 +38,13 @@ public interface SelectLinks {
 	/**
 	 * @return The trainer being used.
 	 */
-	NEATTraining getTrainer();
+	EvolutionaryAlgorithm getTrainer();
 
 	/**
 	 * Setup the selector.
 	 * @param theTrainer The trainer.
 	 */
-	void init(NEATTraining theTrainer);
+	void init(EvolutionaryAlgorithm theTrainer);
 
 	/**
 	 * Select links from the specified genome.

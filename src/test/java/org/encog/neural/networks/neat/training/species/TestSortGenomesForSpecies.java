@@ -10,9 +10,10 @@ import junit.framework.TestCase;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.neural.neat.NEATPopulation;
+import org.encog.neural.neat.NEATUtil;
 import org.encog.neural.neat.training.NEATGenome;
-import org.encog.neural.neat.training.NEATTraining;
 import org.encog.neural.neat.training.species.SortGenomesForSpecies;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.training.TrainingSetScore;
@@ -27,7 +28,7 @@ public class TestSortGenomesForSpecies extends TestCase {
 		NEATPopulation pop = new NEATPopulation(2,1,100);
 		pop.reset();
 		CalculateScore score = new TrainingSetScore(trainingSet);
-		final NEATTraining train = new NEATTraining(score,pop);
+		final EvolutionaryAlgorithm train = NEATUtil.constructNEATTrainer(pop,score);
 				
 		NEATGenome genome1 = new NEATGenome();
 		genome1.setAdjustedScore(3.0);
@@ -54,7 +55,7 @@ public class TestSortGenomesForSpecies extends TestCase {
 		NEATPopulation pop = new NEATPopulation(2,1,100);
 		pop.reset();
 		CalculateScore score = new TrainingSetScore(trainingSet);
-		final NEATTraining train = new NEATTraining(score,pop);
+		final EvolutionaryAlgorithm train = NEATUtil.constructNEATTrainer(pop,score);
 				
 		NEATGenome genome1 = new NEATGenome();
 		genome1.setAdjustedScore(3.0);

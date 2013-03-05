@@ -75,7 +75,7 @@ public class NEATMutateAddLink extends NEATMutation {
 					&& (neuron2.getNeuronType() != NEATNeuronType.Bias)
 					&& (neuron2.getNeuronType() != NEATNeuronType.Input)) {
 
-				if (this.getOwner().getNEATPopulation().getActivationCycles() != 1
+				if ( ((NEATPopulation)getOwner().getPopulation()).getActivationCycles() != 1
 						|| neuron1.getNeuronType() != NEATNeuronType.Output) {
 					neuron1ID = neuron1.getId();
 					neuron2ID = neuron2.getId();

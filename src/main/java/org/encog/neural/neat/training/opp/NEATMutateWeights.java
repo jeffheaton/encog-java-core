@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.encog.ml.ea.genome.Genome;
+import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.opp.links.MutateLinkWeight;
@@ -81,8 +82,7 @@ public class NEATMutateWeights extends NEATMutation {
 			final int offspringIndex) {
 		final NEATGenome target = obtainGenome(parents, parentIndex, offspring,
 				offspringIndex);
-		final double weightRange = getOwner().getNEATPopulation()
-				.getWeightRange();
+		final double weightRange = ((NEATPopulation)getOwner().getPopulation()).getWeightRange();
 		final List<NEATLinkGene> list = this.linkSelection.selectLinks(rnd,
 				target);
 		for (final NEATLinkGene gene : list) {

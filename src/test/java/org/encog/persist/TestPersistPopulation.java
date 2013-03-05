@@ -34,8 +34,9 @@ import org.encog.ml.CalculateScore;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.neural.neat.NEATPopulation;
-import org.encog.neural.neat.training.NEATTraining;
+import org.encog.neural.neat.NEATUtil;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.training.TrainingSetScore;
 import org.encog.util.TempDir;
@@ -55,8 +56,8 @@ public class TestPersistPopulation extends TestCase {
 		// train the neural network
 		ActivationStep step = new ActivationStep();
 		step.setCenter(0.5);
-		
-		NEATTraining train = new NEATTraining(
+
+		EvolutionaryAlgorithm train = NEATUtil.constructNEATTrainer(
 				score, 2, 1, 10);
 		//train.setOutputActivationFunction(step);
 		
@@ -92,7 +93,7 @@ public class TestPersistPopulation extends TestCase {
 		// see if the population can actually be used to train
 		MLDataSet trainingSet = new BasicMLDataSet(XOR.XOR_INPUT, XOR.XOR_IDEAL);		
 		CalculateScore score = new TrainingSetScore(trainingSet);
-		NEATTraining train = new NEATTraining(score,pop);
+		EvolutionaryAlgorithm train = NEATUtil.constructNEATTrainer(pop, score);
 		train.iteration();
 
 	}

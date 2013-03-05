@@ -27,9 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATLinkGene;
-import org.encog.neural.neat.training.NEATTraining;
 
 /**
  * Select a random proportion of links to mutate.
@@ -44,7 +44,7 @@ public class SelectProportion implements SelectLinks {
 	/**
 	 * The trainer.
 	 */
-	private NEATTraining trainer;
+	private EvolutionaryAlgorithm trainer;
 	
 	/**
 	 * {@inheritDoc}
@@ -57,7 +57,7 @@ public class SelectProportion implements SelectLinks {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void init(NEATTraining theTrainer) {
+	public void init(EvolutionaryAlgorithm theTrainer) {
 		this.trainer = theTrainer;
 	}
 	
@@ -90,7 +90,7 @@ public class SelectProportion implements SelectLinks {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public NEATTraining getTrainer() {
+	public EvolutionaryAlgorithm getTrainer() {
 		return trainer;
 	}
 	

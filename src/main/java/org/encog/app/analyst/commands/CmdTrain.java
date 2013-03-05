@@ -32,10 +32,10 @@ import org.encog.ml.MLResettable;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.neat.NEATPopulation;
-import org.encog.neural.neat.training.NEATTraining;
 import org.encog.neural.networks.training.cross.CrossValidationKFold;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.util.logging.EncogLogging;
@@ -120,9 +120,17 @@ public class CmdTrain extends Cmd {
 		final File resourceFile = getAnalyst().getScript().resolveFilename(
 				resourceID);
 		
-		if( trainer instanceof NEATTraining ) {
-			method = (NEATPopulation)((NEATTraining)trainer).getPopulation();
-		} else {
+		// reload the method
+		method = null;
+		
+		if( trainer instanceof EvolutionaryAlgorithm ) {
+			EvolutionaryAlgorithm ea = (EvolutionaryAlgorithm)trainer;
+			if( ea.getPopulation() instanceof NEATPopulation ) {
+				method = (NEATPopulation)ea.getPopulation();
+			}
+		} 
+		
+		if( method==null ) {
 			method = trainer.getMethod();	
 		}
 				
