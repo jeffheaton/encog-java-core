@@ -2,53 +2,20 @@ package org.encog.ml.ea.train.species;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
-import org.encog.EncogError;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.ea.genome.Genome;
-import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.population.Population;
-import org.encog.ml.ea.score.AdjustScore;
-import org.encog.ml.ea.score.parallel.ParallelScore;
-import org.encog.ml.ea.species.SingleSpeciation;
-import org.encog.ml.ea.species.Speciation;
-import org.encog.ml.ea.species.Species;
 import org.encog.ml.ea.train.basic.BasicEA;
-import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
-import org.encog.util.concurrency.MultiThreadable;
 
-public class TrainEA extends BasicEA implements MLTrain, MultiThreadable {
-	
-	/**
-	 * The iteration number.
-	 */
-	private int iteration;
-	
-	private int threadCount;
-	private int actualThreadCount = -1;
-	private Speciation speciation = new SingleSpeciation();
-	private Throwable reportedError;
-	private Genome oldBestGenome;
-	private List<Genome> newPopulation = new ArrayList<Genome>();
-	private EvolutionaryOperator champMutation;
-	private double eliteRate = 0.3;
-	
-	/**
-	 * The best ever network.
-	 */
-	private Genome bestGenome;
-	
-	
+public class TrainEA extends BasicEA implements MLTrain {
+
 
 	public TrainEA(Population thePopulation, CalculateScore theScoreFunction) {
 		super(thePopulation, theScoreFunction);
@@ -76,16 +43,6 @@ public class TrainEA extends BasicEA implements MLTrain, MultiThreadable {
 	@Override
 	public TrainingImplementationType getImplementationType() {
 		return TrainingImplementationType.Iterative;
-	}
-
-	@Override
-	public int getIteration() {
-		return this.iteration;
-	}
-	
-	@Override
-	public void setIteration(final int iteration) {
-		this.iteration = iteration;
 	}
 	
 	/**
@@ -136,162 +93,7 @@ public class TrainEA extends BasicEA implements MLTrain, MultiThreadable {
 	 */
 	@Override
 	public void finishTraining() {
-		this.getPopulation().setBestGenome(this.bestGenome);
-	}
-
-	/**
-	 * return The error for the best genome.
-	 */
-	@Override
-	public double getError() {
-		if (this.bestGenome != null) {
-			return this.bestGenome.getScore();
-		} else {
-			if (this.getScoreFunction().shouldMinimize()) {
-				return Double.POSITIVE_INFINITY;
-			} else {
-				return Double.NEGATIVE_INFINITY;
-			}
-		}
-	}
-	
-	@Override
-	public int getThreadCount() {
-		return this.threadCount;
-	}
-
-	@Override
-	public void setThreadCount(int numThreads) {
-		this.threadCount = numThreads;
-	}
-	
-	/**
-	 * @return the speciation
-	 */
-	public Speciation getSpeciation() {
-		return speciation;
-	}
-
-	/**
-	 * @param speciation
-	 *            the speciation to set
-	 */
-	public void setSpeciation(Speciation speciation) {
-		this.speciation = speciation;
-	}
-
-	/**
-	 * @return the bestGenome
-	 */
-	public Genome getBestGenome() {
-		return bestGenome;
-	}
-
-	public void reportError(Throwable t) {
-		synchronized(this) {
-			if( this.reportedError==null ) {
-				this.reportedError = t;
-			}
-		}
-	}
-	
-	/**
-	 * Perform one training iteration.
-	 */
-	@Override
-	public void iteration() {
-		if (this.actualThreadCount == -1) {
-			preIteration();
-		}
-
-		this.iteration++;
-
-		ExecutorService taskExecutor = null;
-
-		if (this.actualThreadCount == 1) {
-			taskExecutor = Executors.newSingleThreadScheduledExecutor();
-		} else {
-			taskExecutor = Executors.newFixedThreadPool(this.actualThreadCount);
-		}
-
-		// Clear new population to just best genome.
-		newPopulation.clear();
-		this.newPopulation.add(this.bestGenome);
-		this.oldBestGenome = this.bestGenome;
-		
-		// execute species in parallel
-		for (final Species s : getPopulation().getSpecies() ) {
-			EAWorker worker = new EAWorker(this, s);
-			taskExecutor.execute(worker);
-		}
-
-		// wait for threadpool to shutdown
-		taskExecutor.shutdown();
-		try {
-			taskExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.MINUTES);
-		} catch (InterruptedException e) {
-			throw new GeneticError(e);
-		}
-		
-		if( this.reportedError!=null ) {
-			throw new GeneticError(this.reportedError);
-		}
-
-		if( isValidationMode() ) {
-			int currentPopSize = this.newPopulation.size();
-			int targetPopSize = this.getPopulation().getPopulationSize();
-			if( currentPopSize != targetPopSize) {
-				throw new EncogError("Population size of "+currentPopSize+" is outside of the target size of " + targetPopSize);
-			}
-			
-			
-			if( this.oldBestGenome!=null && 
-					!this.newPopulation.contains(this.oldBestGenome)) {
-				throw new EncogError("The top genome died, this should never happen!!");
-			}
-			
-			if (this.bestGenome != null
-					&& this.oldBestGenome != null
-					&& this.getBestComparator().isBetterThan(
-							this.oldBestGenome, this.bestGenome)) {
-				throw new EncogError(
-						"The best genome's score got worse, this should never happen!! Went from "
-								+ this.oldBestGenome.getScore() + " to "
-								+ this.bestGenome.getScore());
-			}
-		}
-
-		this.speciation.performSpeciation(newPopulation);
-	}
-
-	public boolean addChild(Genome genome) {
-		synchronized (this.newPopulation) {
-			if (this.newPopulation.size() < this.getPopulation().getPopulationSize()) {
-				// don't readd the old best genome, it was already added
-				if( genome!=this.oldBestGenome ) {
-					
-					if( isValidationMode() ) {
-						if( this.newPopulation.contains(genome) ) {
-							throw new EncogError("Genome already added to population: " + genome.toString());
-						}
-					}
-					
-					this.newPopulation.add(genome);
-				}
-				
-				if ( getBestComparator().isBetterThan(genome,this.bestGenome)) {
-					this.bestGenome = genome;
-					this.getPopulation().setBestGenome(this.bestGenome);
-					this.setError(genome.getScore());
-				}
-				return true;
-			} else {
-				if( this.isValidationMode() ) {
-					//throw new EncogError("Population overflow");
-				}
-				return false;
-			}
-		}
+		this.getPopulation().setBestGenome(this.getBestGenome());
 	}
 	
 	/**
@@ -299,51 +101,13 @@ public class TrainEA extends BasicEA implements MLTrain, MultiThreadable {
 	 */
 	@Override
 	public MLMethod getMethod() {
-		if (this.bestGenome != null) {
-			return this.getCODEC().decode(this.bestGenome);
+		if (this.getBestGenome() != null) {
+			return this.getCODEC().decode(this.getBestGenome());
 		} else {
 			return null;
 		}
 	}
-	
-	/**
-	 * @return the oldBestGenome
-	 */
-	public Genome getOldBestGenome() {
-		return oldBestGenome;
-	}
-	
-	private void preIteration() {
-
-		this.speciation.init(this);
-
-		// find out how many threads to use
-		if (this.threadCount == 0) {
-			this.actualThreadCount = Runtime.getRuntime().availableProcessors();
-		} else {
-			this.actualThreadCount = this.threadCount;
-		}
-
-		// score the initial population
-		ParallelScore pscore = new ParallelScore(getPopulation(),
-				this.getCODEC(), new ArrayList<AdjustScore>(),
-				this.getScoreFunction(), this.actualThreadCount);
-		pscore.setThreadCount(this.actualThreadCount);
-		pscore.process();
-		this.actualThreadCount = pscore.getThreadCount();
 		
-		// just pick the first genome as best, it will be updated later.
-		// also most populations are sorted this way after training finishes (for reload)
-		// if there is an empty population, the constructor would have blow
-		this.bestGenome = this.getPopulation().getSpecies().get(0).getMembers().get(0);
-		this.getPopulation().setBestGenome(this.bestGenome);
-
-		// speciate
-		List<Genome> genomes = this.getPopulation().flatten();
-		this.speciation.performSpeciation(genomes);
-
-	}
-	
 	/**
 	 * Returns null, does not use a training set, rather uses a score function.
 	 * 
@@ -362,33 +126,5 @@ public class TrainEA extends BasicEA implements MLTrain, MultiThreadable {
 	@Override
 	public List<Strategy> getStrategies() {
 		return new ArrayList<Strategy>();
-	}
-
-	/**
-	 * @return the champMutation
-	 */
-	public EvolutionaryOperator getChampMutation() {
-		return champMutation;
-	}
-
-	/**
-	 * @param champMutation the champMutation to set
-	 */
-	public void setChampMutation(EvolutionaryOperator champMutation) {
-		this.champMutation = champMutation;
-	}
-
-	/**
-	 * @return the eliteRate
-	 */
-	public double getEliteRate() {
-		return eliteRate;
-	}
-
-	/**
-	 * @param eliteRate the eliteRate to set
-	 */
-	public void setEliteRate(double eliteRate) {
-		this.eliteRate = eliteRate;
 	}
 }

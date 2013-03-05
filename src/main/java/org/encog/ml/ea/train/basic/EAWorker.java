@@ -1,4 +1,4 @@
-package org.encog.ml.ea.train.species;
+package org.encog.ml.ea.train.basic;
 
 import java.util.Random;
 
@@ -6,6 +6,7 @@ import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.species.Species;
+import org.encog.ml.ea.train.species.TrainEA;
 import org.encog.neural.neat.training.NEATGenome;
 
 public class EAWorker implements Runnable {
@@ -15,9 +16,9 @@ public class EAWorker implements Runnable {
 	private Genome[] children;
 	private final Random rnd;
 	private final Population population;
-	private final TrainEA train;
+	private final BasicEA train;
 
-	public EAWorker(TrainEA theTrain, Species theSpecies) {
+	public EAWorker(BasicEA theTrain, Species theSpecies) {
 		this.train = theTrain;
 		this.species = theSpecies;
 		this.population = this.train.getPopulation();
