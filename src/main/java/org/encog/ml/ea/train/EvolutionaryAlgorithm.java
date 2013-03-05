@@ -28,7 +28,7 @@ import java.util.List;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.ea.codec.GeneticCODEC;
 import org.encog.ml.ea.genome.Genome;
-import org.encog.ml.ea.opp.selection.PrgSelection;
+import org.encog.ml.ea.opp.selection.SelectionOperator;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.score.AdjustScore;
 import org.encog.ml.ea.sort.GenomeComparator;
@@ -54,9 +54,9 @@ public interface EvolutionaryAlgorithm {
 
 	int getMaxIndividualSize();
 
-	public PrgSelection getSelection();
+	public SelectionOperator getSelection();
 
-	public void setSelection(PrgSelection selection);
+	public void setSelection(SelectionOperator selection);
 
 	GenomeComparator getSelectionComparator();
 

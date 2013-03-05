@@ -21,23 +21,37 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.ml.ea.genome;
+package org.encog.ml.ea.opp.selection;
 
+import java.util.Random;
 
+import org.encog.ml.ea.species.Species;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 
 /**
- * Defines a factory that produces genomes.
+ * Provides the interface to a selection operator. This allows genomes to be
+ * selected for offspring production or elimination.
  */
-public interface GenomeFactory {
-	/**
-	 * @return The newly created genome.
-	 */
-	Genome factor();
+public interface SelectionOperator {
 	
 	/**
-	 * Create a clone of the other genome.
-	 * @param other The other genome.
-	 * @return The newly created clone.
+	 * Selects an fit genome.
+	 * @param rnd A random number generator.
+	 * @param species The species to select the genome from.
+	 * @return The selected genome.
 	 */
-	Genome factor(Genome other);
+	int performSelection(Random rnd, Species species);
+
+	/**
+	 * Selects an unfit genome.
+	 * @param rnd A random number generator.
+	 * @param species The species to select the genome from.
+	 * @return The selected genome.
+	 */
+	int performAntiSelection(Random rnd, Species species);
+
+	/**
+	 * @return The trainer being used.
+	 */
+	EvolutionaryAlgorithm getTrainer();
 }

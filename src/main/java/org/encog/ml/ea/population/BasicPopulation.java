@@ -35,10 +35,14 @@ import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.train.rewrite.RewriteRule;
 
 /**
- * Defines the basic functionality for a population of genomes.
+ * Defines the basic functionality for a population of genomes. The population
+ * is made up of species. These species contain the individiual genomes that
+ * make up the population. If you do not want to use species, then create one
+ * species that holds every genome.
  */
-public class BasicPopulation extends BasicML implements Population, Serializable {
-	
+public class BasicPopulation extends BasicML implements Population,
+		Serializable {
+
 	/**
 	 * The serial id.
 	 */
@@ -48,13 +52,25 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 	 * The object name.
 	 */
 	private String name;
-	
+
+	/**
+	 * The species that make up the population.
+	 */
 	private final List<Species> species = new ArrayList<Species>();
-	
+
+	/**
+	 * The best genome.
+	 */
 	private Genome bestGenome;
+
+	/**
+	 * Rewrite rules that can simplify genomes.
+	 */
+	private final List<RewriteRule> rewriteRules = new ArrayList<RewriteRule>();
 	
-	
-	private List<RewriteRule> rewriteRules = new ArrayList<RewriteRule>();
+	/**
+	 * A factory that can be used to store create genomes.
+	 */
 	private GenomeFactory genomeFactory;
 
 	/**
@@ -75,9 +91,18 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 	 * @param thePopulationSize
 	 *            The population size.
 	 */
-	public BasicPopulation(final int thePopulationSize, GenomeFactory theGenomeFactory) {
+	public BasicPopulation(final int thePopulationSize,
+			final GenomeFactory theGenomeFactory) {
 		this.populationSize = thePopulationSize;
 		this.genomeFactory = theGenomeFactory;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void addRewriteRule(final RewriteRule rule) {
+		this.rewriteRules.add(rule);
 	}
 
 	/**
@@ -87,6 +112,66 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 	public void clear() {
 		this.species.clear();
 
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Species createSpecies() {
+		final Species species = new BasicSpecies();
+		species.setPopulation(this);
+		getSpecies().add(species);
+		return species;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Species determineBestSpecies() {
+		for (final Species species : this.species) {
+			if (species.getMembers().contains(this.bestGenome)) {
+				return species;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<Genome> flatten() {
+		final List<Genome> result = new ArrayList<Genome>();
+		for (final Species species : this.species) {
+			result.addAll(species.getMembers());
+		}
+		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Genome getBestGenome() {
+		return this.bestGenome;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public GenomeFactory getGenomeFactory() {
+		return this.genomeFactory;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getMaxIndividualSize() {
+		return Integer.MAX_VALUE;
 	}
 
 	/**
@@ -105,17 +190,6 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 	}
 
 	/**
-	 * Set the name.
-	 * 
-	 * @param theName
-	 *            The new name.
-	 */
-	public void setName(final String theName) {
-		this.name = theName;
-
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -127,11 +201,57 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 	 * {@inheritDoc}
 	 */
 	@Override
+	public void rewrite(final Genome prg) {
+
+		boolean done = false;
+
+		while (!done) {
+			done = true;
+
+			for (final RewriteRule rule : this.rewriteRules) {
+				if (rule.rewrite(prg)) {
+					done = false;
+				}
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setBestGenome(final Genome genome) {
+		this.bestGenome = genome;
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setGenomeFactory(final GenomeFactory factory) {
+		this.genomeFactory = factory;
+	}
+
+	/**
+	 * Set the name.
+	 * 
+	 * @param theName
+	 *            The new name.
+	 */
+	public void setName(final String theName) {
+		this.name = theName;
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void setPopulationSize(final int thePopulationSize) {
 		this.populationSize = thePopulationSize;
 	}
 
-	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -140,82 +260,11 @@ public class BasicPopulation extends BasicML implements Population, Serializable
 		return flatten().size();
 	}
 
-	@Override
-	public GenomeFactory getGenomeFactory() {
-		return this.genomeFactory;
-	}
-
-	@Override
-	public void setGenomeFactory(GenomeFactory factory) {
-		this.genomeFactory = factory;
-	}
-
-	@Override
-	public int getMaxIndividualSize() {
-		return Integer.MAX_VALUE;
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void updateProperties() {
 
-	}
-	
-	@Override
-	public void addRewriteRule(RewriteRule rule) {
-		this.rewriteRules.add(rule);
-	}
-	
-	@Override
-	public void rewrite(Genome prg) {
-		
-		boolean done = false;
-		
-		while(!done) {
-			done = true;
-			
-			for(RewriteRule rule: this.rewriteRules) {
-				if( rule.rewrite(prg) ) {
-					done = false;
-				}
-			}
-		}
-	}
-
-	@Override
-	public List<Genome> flatten() {
-		List<Genome> result = new ArrayList<Genome>();
-		for(Species species: this.species) {
-			result.addAll(species.getMembers());
-		}
-		return result;
-	}
-	
-	@Override
-	public Species createSpecies() {
-		Species species = new BasicSpecies();
-		species.setPopulation(this);
-		this.getSpecies().add(species);
-		return species;
-	}
-
-	@Override
-	public Genome getBestGenome() {
-		return this.bestGenome;
-	}
-
-	@Override
-	public void setBestGenome(Genome genome) {
-		this.bestGenome = genome;
-		
-	}
-
-	@Override
-	public Species determineBestSpecies() {
-		for(Species species : this.species) {
-			if( species.getMembers().contains(this.bestGenome) ) {
-				return species;
-			}
-		}
-		return null;
 	}
 }

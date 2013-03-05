@@ -32,7 +32,7 @@ import org.encog.ml.ea.train.EvolutionaryAlgorithm;
  * An evolutionary operator is used to create new offspring genomes based on
  * parent genomes. There are a variety of means by which this can be done. The
  * number of parents required, as well as the number of offspring produced are
- * dependant on the operator. This interface defines key characteristics that
+ * dependent on the operator. This interface defines key characteristics that
  * all operators must share.
  * 
  * Most operators do not modify the parents. However, some mutation operators do
@@ -67,5 +67,9 @@ public interface EvolutionaryOperator {
 	 */
 	int parentsNeeded();
 
+	/**
+	 * Called to setup the evolutionary operator.
+	 * @param theOwner The evolutionary algorithm used with this operator.
+	 */
 	void init(EvolutionaryAlgorithm theOwner);
 }

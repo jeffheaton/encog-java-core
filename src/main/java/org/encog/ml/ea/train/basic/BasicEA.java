@@ -41,7 +41,7 @@ import org.encog.ml.ea.codec.GenomeAsPhenomeCODEC;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.opp.OperationList;
-import org.encog.ml.ea.opp.selection.PrgSelection;
+import org.encog.ml.ea.opp.selection.SelectionOperator;
 import org.encog.ml.ea.opp.selection.TournamentSelection;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.score.AdjustScore;
@@ -99,7 +99,7 @@ public class BasicEA implements EvolutionaryAlgorithm,
 	 */
 	private final CalculateScore scoreFunction;
 
-	private PrgSelection selection;
+	private SelectionOperator selection;
 	private final List<AdjustScore> adjusters = new ArrayList<AdjustScore>();
 
 	private final OperationList operators = new OperationList();
@@ -322,7 +322,7 @@ public class BasicEA implements EvolutionaryAlgorithm,
 	}
 
 	@Override
-	public PrgSelection getSelection() {
+	public SelectionOperator getSelection() {
 		return this.selection;
 	}
 
@@ -527,7 +527,7 @@ public class BasicEA implements EvolutionaryAlgorithm,
 	}
 
 	@Override
-	public void setSelection(final PrgSelection selection) {
+	public void setSelection(final SelectionOperator selection) {
 		this.selection = selection;
 	}
 

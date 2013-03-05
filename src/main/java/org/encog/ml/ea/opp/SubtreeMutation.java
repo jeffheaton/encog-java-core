@@ -53,8 +53,16 @@ public class SubtreeMutation implements EvolutionaryOperator, Serializable {
 	 */
 	private final PrgPopulationGenerator generator;
 	
+	/**
+	 * The owner of this operator.
+	 */
 	private EvolutionaryAlgorithm owner;
 
+	/**
+	 * Construct the mutation operator.
+	 * @param theContext The context.
+	 * @param theMaxDepth The maximum depth.
+	 */
 	public SubtreeMutation(final EncogProgramContext theContext,
 			final int theMaxDepth) {
 		this.generator = new PrgGrowGenerator(theContext, null, theMaxDepth);

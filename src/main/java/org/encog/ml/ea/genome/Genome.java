@@ -89,7 +89,14 @@ public interface Genome extends MLMethod {
 	 */
 	int size();
 
+	/**
+	 * @return The birth generation (or iteration).
+	 */
 	int getBirthGeneration();
 
+	/**
+	 * Set the birth genertion (or iteration).
+	 * @param birthGeneration The birth generation.
+	 */
 	void setBirthGeneration(int birthGeneration);
 }

@@ -48,6 +48,9 @@ public class SubtreeCrossover implements EvolutionaryOperator, Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * The owner of this operator.
+	 */
 	private EvolutionaryAlgorithm owner;
 	
 	/**

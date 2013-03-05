@@ -38,7 +38,6 @@ import org.encog.ml.ea.codec.GeneticCODEC;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.BasicPopulation;
 import org.encog.ml.ea.species.BasicSpecies;
-import org.encog.ml.ea.species.Species;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.hyperneat.FactorHyperNEATGenome;
 import org.encog.neural.hyperneat.HyperNEATCODEC;
@@ -59,15 +58,13 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	public static final double DEFAULT_SURVIVAL_RATE = 0.2;
 
 	/**
-	 * Property tag for the genomes collection.
-	 */
-	public static final String PROPERTY_GENOMES = "genomes";
-
-	/**
 	 * Property tag for the innovations collection.
 	 */
 	public static final String PROPERTY_INNOVATIONS = "innovations";
 
+	/**
+	 * The activation function to use.
+	 */
 	public static final String PROPERTY_NEAT_ACTIVATION = "neatAct";
 
 	/**

@@ -24,12 +24,10 @@
 package org.encog.ml.ea.population;
 
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.List;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
-import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.train.rewrite.RewriteRule;
 
@@ -39,19 +37,89 @@ import org.encog.ml.prg.train.rewrite.RewriteRule;
 public interface Population extends Serializable {
 
 	/**
+	 * Add a rewrite rule. Rewrite rules can be used to simplify genomes.
+	 * 
+	 * @param rule
+	 *            The rule to add.
+	 */
+	void addRewriteRule(RewriteRule rule);
+
+	/**
 	 * Clear all genomes from this population.
 	 */
 	void clear();
+
+	/**
+	 * Create a species.
+	 * 
+	 * @return The newly created species.
+	 */
+	Species createSpecies();
+
+	/**
+	 * Determine which species has the top genome.
+	 * 
+	 * @return The species with the top genome.
+	 */
+	Species determineBestSpecies();
+
+	/**
+	 * Flatten the species into a single list of genomes.
+	 * 
+	 * @return The genomes that make up all species in the population.
+	 */
+	List<Genome> flatten();
+
+	/**
+	 * @return The best genome in the population.
+	 */
+	Genome getBestGenome();
+
+	/**
+	 * @return A factory used to create genomes.
+	 */
+	GenomeFactory getGenomeFactory();
+
+	/**
+	 * @return The max size that an individual can become.
+	 */
+	int getMaxIndividualSize();
 
 	/**
 	 * @return The max population size.
 	 */
 	int getPopulationSize();
 
+	/**
+	 * @return The species that make up the population.
+	 */
+	List<Species> getSpecies();
+
+	/**
+	 * Rewrite the specified genome. The genome will still perform the same
+	 * function, but it may be shorter.
+	 * 
+	 * @param prg The genome to rewrite.
+	 */
+	void rewrite(Genome prg);
+
+	/**
+	 * Set the best genome.
+	 * @param bestGenome The best genome.
+	 */
+	void setBestGenome(Genome bestGenome);
+
+	/**
+	 * Set the gnome factory.
+	 * @param factory The genome factory.
+	 */
+	void setGenomeFactory(GenomeFactory factory);
 
 	/**
 	 * Set the max population size.
-	 * @param populationSize The max population size.
+	 * 
+	 * @param populationSize
+	 *            The max population size.
 	 */
 	void setPopulationSize(final int populationSize);
 
@@ -59,26 +127,4 @@ public interface Population extends Serializable {
 	 * @return The size of the population.
 	 */
 	int size();
-
-	void rewrite(Genome prg);
-	
-	GenomeFactory getGenomeFactory();
-
-	void setGenomeFactory(GenomeFactory factory);
-
-	int getMaxIndividualSize();
-
-	void addRewriteRule(RewriteRule rule);
-
-	List<Species> getSpecies();
-
-	List<Genome> flatten();
-
-	Species createSpecies();
-	
-	Genome getBestGenome();
-
-	void setBestGenome(Genome bestGenome);
-	
-	Species determineBestSpecies();
 }
