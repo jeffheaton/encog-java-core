@@ -39,6 +39,7 @@ public class PrgPopulation extends BasicPopulation implements MLRegression {
 
 		int index = 0;
 		for (final Species species : getSpecies()) {
+			System.out.println("** Species: " + species.toString());
 			for (final Genome obj : species.getMembers()) {
 				final EncogProgram prg = (EncogProgram) obj;
 				System.out.println(index + ": Score " + prg.getScore() + " : "
