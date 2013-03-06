@@ -7,7 +7,6 @@ import org.encog.ml.ea.genome.GenomeFactory;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.EncogProgramVariables;
-import org.encog.ml.prg.epl.EPLHolder;
 
 public class PrgGenomeFactory implements GenomeFactory, Serializable {
 
@@ -19,19 +18,15 @@ public class PrgGenomeFactory implements GenomeFactory, Serializable {
 
 	@Override
 	public Genome factor() {
-		final EPLHolder newHolder = this.context.getHolderFactory().factor(1,
-				this.context.getParams().getMaxIndividualSize());
 		final EncogProgram result = new EncogProgram(this.context,
-				new EncogProgramVariables(), newHolder, 0);
+				new EncogProgramVariables());
 		return result;
 	}
 
 	@Override
 	public Genome factor(final Genome other) {
-		final EPLHolder newHolder = this.context.getHolderFactory().factor(1,
-				this.context.getParams().getMaxIndividualSize());
 		final EncogProgram result = new EncogProgram(this.context,
-				new EncogProgramVariables(), newHolder, 0);
+				new EncogProgramVariables());
 		result.copy(other);
 		return result;
 	}

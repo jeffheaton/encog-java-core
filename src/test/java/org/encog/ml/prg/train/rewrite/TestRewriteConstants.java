@@ -16,9 +16,8 @@ public class TestRewriteConstants {
 	public void eval(String start, String expect, boolean cycle) {
 		EncogProgramContext context = new EncogProgramContext();
 		StandardExtensions.createAll(context.getFunctions());
-		EPLHolder holder = new ByteArrayHolder(10,1024);
 		// place it on the last population member to increase changes of an error
-		EncogProgram expression = new EncogProgram(context,new EncogProgramVariables(),holder,9);
+		EncogProgram expression = new EncogProgram(context,new EncogProgramVariables());
 		expression.compileExpression(start);
 		RenderCommonExpression render = new RenderCommonExpression();
 		RewriteConstants rewrite = new RewriteConstants();

@@ -94,7 +94,7 @@ public class TraverseProgram implements Serializable {
 	}
 
 	private void readCurrent() {
-		this.program.getHolder().readNodeHeader(this.program.getIndividual(),
+		this.program.getHolder().readNodeHeader(
 				this.currentIndex, this.header);
 		this.template = this.program.getContext().getFunctions()
 				.getOpCode(this.header.getOpcode());
@@ -102,7 +102,7 @@ public class TraverseProgram implements Serializable {
 
 	public double readDouble() {
 		final double result = this.holder.readDouble(
-				this.program.getIndividual(), this.currentIndex + 1);
+				this.currentIndex + 1);
 		return result;
 	}
 }

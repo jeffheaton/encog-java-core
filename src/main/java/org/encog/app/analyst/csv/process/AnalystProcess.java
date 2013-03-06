@@ -93,7 +93,7 @@ public class AnalystProcess extends BasicFile {
 		this.extension.register(this.programContext.getFunctions());
 		
 		for(ProcessField field : this.analyst.getScript().getProcess().getFields() ) {
-			EncogProgram prg = new EncogProgram(this.programContext,this.programVariables, null, 0);
+			EncogProgram prg = new EncogProgram(this.programContext,this.programVariables);
 			prg.compileExpression(field.getCommand());
 			this.expressionFields.add(prg);
 		}

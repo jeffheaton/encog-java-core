@@ -84,7 +84,6 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError,
 
 	private EPLHolder holder;
 	private final OpCodeHeader header = new OpCodeHeader();
-	private int individual;
 	private EncogProgramVariables variables = new EncogProgramVariables();
 
 	private EncogProgramContext context = new EncogProgramContext();
@@ -98,7 +97,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError,
 	private String source;
 
 	public EncogProgram() {
-		this(new EncogProgramContext(), new EncogProgramVariables(), null, 0);
+		this(new EncogProgramContext(), new EncogProgramVariables());
 		StandardExtensions.createAll(this.context.getFunctions());
 	}
 
@@ -106,30 +105,22 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError,
 		this(prg.getContext());
 		this.programCounter = prg.programCounter;
 		this.holder = prg.holder;
-		this.individual = prg.individual;
 		setProgramLength(prg.programLength);
 	}
 
 	public EncogProgram(final EncogProgramContext theContext) {
-		this(theContext, new EncogProgramVariables(), null, 0);
+		this(theContext, new EncogProgramVariables());
 	}
 
 	public EncogProgram(final EncogProgramContext theContext,
-			final EncogProgramVariables theVariables,
-			final EPLHolder theHolder, final int theIndividual) {
+			final EncogProgramVariables theVariables) {
 		this.stack = new ExpressionStack(this.context.getParams()
 				.getStackSize());
 		this.context = theContext;
 		this.variables = theVariables;
 
-		if (theHolder == null) {
-			this.holder = this.context.getHolderFactory().factor(1,
-					this.context.getParams().getMaxIndividualSize());
-			this.individual = 0;
-		} else {
-			this.holder = theHolder;
-			this.individual = theIndividual;
-		}
+		this.holder = this.context.getHolderFactory().factor(
+				this.context.getParams().getMaxIndividualSize());
 
 		// define variables
 		for (final String v : this.context.getDefinedVariables()) {
@@ -152,10 +143,8 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError,
 	public EncogProgram[] allocateOffspring(final int count) {
 		final EncogProgram[] result = new EncogProgram[count];
 		for (int i = 0; i < result.length; i++) {
-			final EPLHolder newHolder = this.context.getHolderFactory().factor(
-					1, getHolder().getMaxIndividualSize());
 			result[i] = new EncogProgram(this.context,
-					new EncogProgramVariables(), newHolder, 0);
+					new EncogProgramVariables());
 		}
 		return result;
 	}
@@ -203,7 +192,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError,
 	public void copy(final EncogProgram sourceProgram, final int sourceIndex,
 			final int targetIndex, final int size) {
 		this.holder.copy(sourceProgram.getHolder(),
-				sourceProgram.getIndividual(), sourceIndex, getIndividual(),
+				sourceIndex, 
 				targetIndex, size);
 	}
 
@@ -218,7 +207,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError,
 	}
 
 	public void deleteSubtree(final int index, final int size) {
-		this.holder.deleteSubtree(this.individual, index, size);
+		this.holder.deleteSubtree(index, size);
 		setProgramLength(this.programLength - size);
 	}
 
@@ -287,7 +276,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError,
 
 	public void fromBase64(final String str) {
 		clear();
-		setProgramLength(this.holder.fromBase64(this.individual, str));
+		setProgramLength(this.holder.fromBase64(str));
 	}
 
 	public ProgramExtensionTemplate getConstTemplate(final ExpressionValue c) {
@@ -329,13 +318,6 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError,
 	 */
 	public EPLHolder getHolder() {
 		return this.holder;
-	}
-
-	/**
-	 * @return the individual
-	 */
-	public int getIndividual() {
-		return this.individual;
 	}
 
 	/**
@@ -399,26 +381,26 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError,
 
 	public void insert(final int index, final int len) {
 		setProgramLength(this.programLength + len);
-		this.holder.insert(this.individual, index, len);
+		this.holder.insert(index, len);
 	}
 
 	public boolean isLeaf(final int index) {
 		final OpCodeHeader h = new OpCodeHeader();
-		this.holder.readNodeHeader(this.individual, index, h);
+		this.holder.readNodeHeader(index, h);
 		final ProgramExtensionTemplate temp = this.context.getFunctions()
 				.getOpCode(h.getOpcode());
 		return temp.getChildNodeCount() == 0;
 	}
 
 	public int nextIndex(final int index) {
-		this.holder.readNodeHeader(this.individual, index, this.header);
+		this.holder.readNodeHeader(index, this.header);
 		final ProgramExtensionTemplate temp = this.context.getFunctions()
 				.getOpCode(this.header.getOpcode());
 		return index + temp.getInstructionSize(this.header);
 	}
 
 	public ProgramExtensionTemplate peekTemplate() {
-		this.holder.readNodeHeader(this.individual, this.programCounter,
+		this.holder.readNodeHeader(this.programCounter,
 				this.header);
 		final int opcode = this.header.getOpcode();
 		final ProgramExtensionTemplate temp = this.context.getFunctions()
@@ -427,20 +409,19 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError,
 	}
 
 	public double readDouble() {
-		final double result = this.holder.readDouble(this.individual,
-				this.programCounter);
+		final double result = this.holder.readDouble(this.programCounter);
 		advanceProgramCounter(1, false);
 		return result;
 	}
 
 	public void readNodeHeader() {
-		this.holder.readNodeHeader(this.individual, this.programCounter,
+		this.holder.readNodeHeader(this.programCounter,
 				this.header);
 		advanceProgramCounter(1, false);
 	}
 
 	public String readString(final int encodedLength) {
-		final String result = this.holder.readString(this.individual,
+		final String result = this.holder.readString(
 				this.programCounter, encodedLength);
 		this.programCounter += EPLUtil.roundToFrame(encodedLength)
 				/ EPLHolder.FRAME_SIZE;
@@ -457,7 +438,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError,
 		deleteSubtree(targetStart, targetSize);
 		insert(targetStart, sourceSize);
 		this.holder.copy(sourceProgram.getHolder(),
-				sourceProgram.getIndividual(), sourceStart, this.individual,
+				sourceStart, 
 				targetStart, sourceSize);
 	}
 
@@ -474,14 +455,6 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError,
 	 */
 	public void setHolder(final EPLHolder holder) {
 		this.holder = holder;
-	}
-
-	/**
-	 * @param individual
-	 *            the individual to set
-	 */
-	public void setIndividual(final int individual) {
-		this.individual = individual;
 	}
 
 	/**
@@ -513,7 +486,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError,
 	}
 
 	public String toBase64() {
-		return this.holder.toBase64(this.individual, this.programLength);
+		return this.holder.toBase64(this.programLength);
 	}
 
 	@Override
@@ -602,7 +575,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError,
 
 	public void writeDouble(final double value) {
 		validateAdvance(1);
-		this.holder.writeDouble(this.individual, this.programCounter, value);
+		this.holder.writeDouble(this.programCounter, value);
 		advanceProgramCounter(1, true);
 	}
 
@@ -613,7 +586,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError,
 	public void writeNode(final short opcode, final int param1,
 			final short param2) {
 		validateAdvance(1);
-		this.holder.writeNode(this.individual, this.programCounter, opcode,
+		this.holder.writeNode(this.programCounter, opcode,
 				param1, param2);
 		advanceProgramCounter(1, true);
 	}
@@ -623,7 +596,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError,
 			final byte[] b = str.getBytes(Encog.DEFAULT_ENCODING);
 			writeNode(StandardExtensions.OPCODE_CONST_STRING, 0,
 					(short) b.length);
-			this.holder.writeByte(this.individual, this.programCounter, b);
+			this.holder.writeByte(this.programCounter, b);
 			advanceProgramCounter(EPLUtil.roundToFrame(b.length)
 					/ EPLHolder.FRAME_SIZE, true);
 		} catch (final UnsupportedEncodingException e) {

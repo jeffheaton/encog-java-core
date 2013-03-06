@@ -3,12 +3,12 @@ package org.encog.ml.prg.epl;
 public interface EPLHolder {
 	public static final int FRAME_SIZE = 8;
 
-	void copy(EPLHolder sourceHolder, int sourceIndividual, int sourceIndex,
-			int targetIndividual, int targetIndex, int size);
+	void copy(EPLHolder sourceHolder, int sourceIndex,
+			int targetIndex, int size);
 
-	void deleteSubtree(int individual, int index, int size);
+	void deleteSubtree(int index, int size);
 
-	int fromBase64(int individual, String str);
+	int fromBase64(String str);
 
 	int getMaxIndividualFrames();
 
@@ -16,20 +16,20 @@ public interface EPLHolder {
 
 	int getPopulationSize();
 
-	void insert(int individual, int index, int size);
+	void insert(int index, int size);
 
-	double readDouble(int individual, int index);
+	double readDouble(int index);
 
-	void readNodeHeader(int individual, int index, OpCodeHeader header);
+	void readNodeHeader(int index, OpCodeHeader header);
 
-	String readString(int individual, int index, int encodedLength);
+	String readString(int index, int encodedLength);
 
-	String toBase64(int individual, int programLength);
+	String toBase64(int programLength);
 
-	void writeByte(int individual, int index, byte[] b);
+	void writeByte(int index, byte[] b);
 
-	void writeDouble(int individual, int index, double value);
+	void writeDouble(int index, double value);
 
-	void writeNode(int individual, int index, short opcode, int param1,
+	void writeNode(int index, short opcode, int param1,
 			short param2);
 }

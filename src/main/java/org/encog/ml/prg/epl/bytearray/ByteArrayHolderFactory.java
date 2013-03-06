@@ -8,8 +8,8 @@ import org.encog.ml.prg.epl.EPLHolderFactory;
 public class ByteArrayHolderFactory implements EPLHolderFactory, Serializable {
 
 	@Override
-	public EPLHolder factor(int thePopulationSize, int theMaxFrameSize) {
-		return new ByteArrayHolder(thePopulationSize, theMaxFrameSize);
+	public EPLHolder factor(int theMaxFrameSize) {
+		return new ByteArrayHolder(theMaxFrameSize);
 	}
 
 }
