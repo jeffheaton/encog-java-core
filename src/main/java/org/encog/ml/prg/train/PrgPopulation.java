@@ -13,14 +13,10 @@ import org.encog.parse.expression.common.RenderCommonExpression;
 public class PrgPopulation extends BasicPopulation implements MLRegression {
 
 	private final EncogProgramContext context;
-	private final EPLHolder holder;
 
 	public PrgPopulation(final EncogProgramContext theContext,
 			final int thePopulationSize) {
 		super(thePopulationSize, new PrgGenomeFactory(theContext));
-		final GeneticTrainingParams params = theContext.getParams();
-		this.holder = theContext.getHolderFactory().factor(thePopulationSize,
-				params.getMaxIndividualSize());
 		this.context = theContext;
 	}
 
@@ -59,21 +55,10 @@ public class PrgPopulation extends BasicPopulation implements MLRegression {
 		return this.context;
 	}
 
-	/**
-	 * @return the holder
-	 */
-	public EPLHolder getHolder() {
-		return this.holder;
-	}
 
 	@Override
 	public int getInputCount() {
 		return ((EncogProgram) getSpecies().get(0).getLeader()).getInputCount();
-	}
-
-	@Override
-	public int getMaxIndividualSize() {
-		return getHolder().getMaxIndividualSize();
 	}
 
 	@Override

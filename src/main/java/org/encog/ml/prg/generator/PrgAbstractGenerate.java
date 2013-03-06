@@ -62,14 +62,13 @@ public abstract class PrgAbstractGenerate implements PrgPopulationGenerator {
 	@Override
 	public void generate(final Random rnd, final Population pop) {
 		final Set<String> populationContents = new HashSet<String>();
-		final EPLHolder holder = ((PrgPopulation) pop).getHolder();
 
 		pop.getSpecies().clear();
 		final Species defaultSpecies = pop.createSpecies();
 
 		for (int i = 0; i < pop.getPopulationSize(); i++) {
 			final EncogProgram prg = new EncogProgram(getContext(),
-					new EncogProgramVariables(), holder, i);
+					new EncogProgramVariables(), null, 0);
 			defaultSpecies.add(prg);
 			generateGenome(rnd, pop, prg, populationContents);
 		}
