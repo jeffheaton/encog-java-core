@@ -194,6 +194,11 @@ public class BasicEA implements EvolutionaryAlgorithm,
 	 */
 	@Override
 	public void calculateScore(final Genome g) {
+		
+		// try rewrite
+		this.getPopulation().rewrite(g);
+		
+		// decode
 		final MLMethod phenotype = getCODEC().decode(g);
 		double score;
 
