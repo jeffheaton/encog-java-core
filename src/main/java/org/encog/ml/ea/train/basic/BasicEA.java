@@ -76,6 +76,8 @@ public class BasicEA implements EvolutionaryAlgorithm,
 
 		genome.setAdjustedScore(score + delta);
 	}
+	
+	private boolean ignoreExceptions;
 
 	private GeneticTrainingParams params = new GeneticTrainingParams();
 
@@ -354,6 +356,7 @@ public class BasicEA implements EvolutionaryAlgorithm,
 	/**
 	 * @return the validationMode
 	 */
+	@Override
 	public boolean isValidationMode() {
 		return this.validationMode;
 	}
@@ -396,7 +399,7 @@ public class BasicEA implements EvolutionaryAlgorithm,
 			throw new GeneticError(e);
 		}
 
-		if (this.reportedError != null) {
+		if (this.reportedError != null && !this.getShouldIgnoreExceptions() ) {
 			throw new GeneticError(this.reportedError);
 		}
 
@@ -564,6 +567,7 @@ public class BasicEA implements EvolutionaryAlgorithm,
 	 * @param validationMode
 	 *            the validationMode to set
 	 */
+	@Override
 	public void setValidationMode(final boolean validationMode) {
 		this.validationMode = validationMode;
 	}
@@ -584,6 +588,16 @@ public class BasicEA implements EvolutionaryAlgorithm,
 	public void finishTraining() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean getShouldIgnoreExceptions() {
+		return this.ignoreExceptions;
+	}
+
+	@Override
+	public void setShouldIgnoreExceptions(boolean b) {
+		this.ignoreExceptions = b;
 	}
 	
 	

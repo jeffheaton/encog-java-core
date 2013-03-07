@@ -22,11 +22,11 @@ public class EAWorker implements Runnable {
 		this.species = theSpecies;
 		this.population = this.train.getPopulation();
 		this.rnd = this.train.getRandomNumberFactory().factor();
-		
+
 		this.parents = new Genome[this.train.getOperators().maxParents()];
 		this.children = new Genome[this.train.getOperators().maxOffspring()];
 	}
-	
+
 	private Genome chooseParent() {
 		int idx = this.train.getSelection().performSelection(rnd, species);
 		return this.species.getMembers().get(idx);
@@ -34,26 +34,27 @@ public class EAWorker implements Runnable {
 
 	@Override
 	public void run() {
-		try {
-			int numToSpawn = (int) Math.round(this.species.getOffspringCount());
+		int numToSpawn = (int) Math.round(this.species.getOffspringCount());
 
-			// Add elite genomes directly
-			if (this.species.getMembers().size() > 5) {
-				int idealEliteCount = (int)(species.getMembers().size() * this.train.getEliteRate());
-				int eliteCount = Math.min(numToSpawn, idealEliteCount);
-				for (int i = 0; i < eliteCount; i++) {
-					Genome eliteGenome = this.species.getMembers().get(i);
-					if (this.train.getOldBestGenome() != eliteGenome) {
-						numToSpawn--;
-						if (!this.train.addChild(eliteGenome)) {
-							return;
-						}
+		// Add elite genomes directly
+		if (this.species.getMembers().size() > 5) {
+			int idealEliteCount = (int) (species.getMembers().size() * this.train
+					.getEliteRate());
+			int eliteCount = Math.min(numToSpawn, idealEliteCount);
+			for (int i = 0; i < eliteCount; i++) {
+				Genome eliteGenome = this.species.getMembers().get(i);
+				if (this.train.getOldBestGenome() != eliteGenome) {
+					numToSpawn--;
+					if (!this.train.addChild(eliteGenome)) {
+						return;
 					}
 				}
 			}
+		}
 
-			// handle the rest of the offspring
-			while (numToSpawn > 0) {
+		// handle the rest of the offspring
+		while (numToSpawn > 0) {
+			try {
 				// choose an evolutionary operation (i.e. crossover or a type of
 				// mutation) to use
 				EvolutionaryOperator opp = this.train.getOperators()
@@ -103,10 +104,12 @@ public class EAWorker implements Runnable {
 						return;
 					}
 				}
+			} catch (Throwable t) {
+				System.out.println("error");
+				if( !this.train.getShouldIgnoreExceptions() ) {
+					this.train.reportError(t);
+				}
 			}
-		} catch (Throwable t) {
-			this.train.reportError(t);
 		}
-
 	}
 }

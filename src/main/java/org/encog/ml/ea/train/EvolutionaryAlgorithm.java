@@ -74,6 +74,8 @@ public interface EvolutionaryAlgorithm {
 
 	GenomeComparator getSelectionComparator();
 
+	boolean getShouldIgnoreExceptions();
+
 	boolean isValidationMode();
 
 	void iteration();
@@ -86,6 +88,10 @@ public interface EvolutionaryAlgorithm {
 
 	void setSelectionComparator(GenomeComparator selectionComparator);
 
+	void setShouldIgnoreExceptions(boolean b);
+
 	void setSpeciation(Speciation originalNEATSpeciation);
+
+	void setValidationMode(boolean validationMode);
 
 }
