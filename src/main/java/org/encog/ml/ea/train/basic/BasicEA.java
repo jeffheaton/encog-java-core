@@ -384,11 +384,32 @@ public class BasicEA implements EvolutionaryAlgorithm,
 		this.newPopulation.clear();
 		this.newPopulation.add(this.bestGenome);
 		this.oldBestGenome = this.bestGenome;
+		
+		
 
 		// execute species in parallel
-		for (final Species s : getPopulation().getSpecies()) {
-			final EAWorker worker = new EAWorker(this, s);
-			taskExecutor.execute(worker);
+		for (final Species species : getPopulation().getSpecies()) {
+			int numToSpawn = species.getOffspringCount();
+			
+			// Add elite genomes directly
+			if (species.getMembers().size() > 5) {
+				int idealEliteCount = (int) (species.getMembers().size() * getEliteRate());
+				int eliteCount = Math.min(numToSpawn, idealEliteCount);
+				for (int i = 0; i < eliteCount; i++) {
+					Genome eliteGenome = species.getMembers().get(i);
+					if (getOldBestGenome() != eliteGenome) {
+						numToSpawn--;
+						if (!addChild(eliteGenome)) {
+							break;
+						}
+					}
+				}
+			}
+			
+			while((numToSpawn--)>0) {
+				final EAWorker worker = new EAWorker(this, species);
+				taskExecutor.execute(worker);	
+			}
 		}
 
 		// wait for threadpool to shutdown

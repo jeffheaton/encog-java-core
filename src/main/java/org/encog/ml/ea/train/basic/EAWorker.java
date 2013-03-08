@@ -34,26 +34,8 @@ public class EAWorker implements Runnable {
 
 	@Override
 	public void run() {
-		int numToSpawn = (int) Math.round(this.species.getOffspringCount());
-
-		// Add elite genomes directly
-		if (this.species.getMembers().size() > 5) {
-			int idealEliteCount = (int) (species.getMembers().size() * this.train
-					.getEliteRate());
-			int eliteCount = Math.min(numToSpawn, idealEliteCount);
-			for (int i = 0; i < eliteCount; i++) {
-				Genome eliteGenome = this.species.getMembers().get(i);
-				if (this.train.getOldBestGenome() != eliteGenome) {
-					numToSpawn--;
-					if (!this.train.addChild(eliteGenome)) {
-						return;
-					}
-				}
-			}
-		}
-
-		// handle the rest of the offspring
-		while (numToSpawn > 0) {
+		boolean success = false;
+		do {
 			try {
 				// choose an evolutionary operation (i.e. crossover or a type of
 				// mutation) to use
@@ -96,7 +78,7 @@ public class EAWorker implements Runnable {
 
 				// process the new child
 				if (children[0] != null) {
-					numToSpawn--;
+					success = true;
 					children[0].setBirthGeneration(this.train.getIteration());
 
 					this.train.calculateScore(children[0]);
@@ -110,6 +92,7 @@ public class EAWorker implements Runnable {
 					this.train.reportError(t);
 				}
 			}
-		}
+		
+	} while(!success);
 	}
 }

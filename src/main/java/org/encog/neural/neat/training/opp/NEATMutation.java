@@ -234,7 +234,7 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 			final int parentIndex, final Genome[] offspring,
 			final int offspringIndex) {
 		offspring[offspringIndex] = this.getOwner().getPopulation().getGenomeFactory().factor(parents[0]);
-		return (NEATGenome) parents[offspringIndex];
+		return (NEATGenome) offspring[offspringIndex];
 	}
 
 	/**
