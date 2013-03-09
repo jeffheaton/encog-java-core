@@ -27,8 +27,8 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.ea.population.Population;
 
 /**
- * A genome is the basic blueprint for creating an organism in Encog. A genome
- * is made up of one or more chromosomes, which are in turn made up of genes.
+ * A genome is the basic blueprint for creating an phenome (organism) in Encog.
+ * Some genomes also function as phenomes.
  * 
  */
 public interface Genome extends MLMethod {
