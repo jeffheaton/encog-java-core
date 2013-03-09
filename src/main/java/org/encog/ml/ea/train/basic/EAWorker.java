@@ -6,18 +6,17 @@ import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.species.Species;
-import org.encog.neural.neat.training.NEATGenome;
 
 public class EAWorker implements Runnable {
 
 	private final Species species;
-	private Genome[] parents;
-	private Genome[] children;
+	private final Genome[] parents;
+	private final Genome[] children;
 	private final Random rnd;
 	private final Population population;
 	private final BasicEA train;
 
-	public EAWorker(BasicEA theTrain, Species theSpecies) {
+	public EAWorker(final BasicEA theTrain, final Species theSpecies) {
 		this.train = theTrain;
 		this.species = theSpecies;
 		this.population = this.train.getPopulation();
@@ -28,7 +27,8 @@ public class EAWorker implements Runnable {
 	}
 
 	private Genome chooseParent() {
-		int idx = this.train.getSelection().performSelection(rnd, species);
+		final int idx = this.train.getSelection().performSelection(this.rnd,
+				this.species);
 		return this.species.getMembers().get(idx);
 	}
 
@@ -39,10 +39,11 @@ public class EAWorker implements Runnable {
 			try {
 				// choose an evolutionary operation (i.e. crossover or a type of
 				// mutation) to use
-				EvolutionaryOperator opp = this.train.getOperators()
-						.pickMaxParents(this.rnd, species.getMembers().size());
+				final EvolutionaryOperator opp = this.train.getOperators()
+						.pickMaxParents(this.rnd,
+								this.species.getMembers().size());
 
-				children[0] = null;
+				this.children[0] = null;
 
 				// prepare for either sexual or asexual reproduction either way,
 				// we
@@ -52,7 +53,7 @@ public class EAWorker implements Runnable {
 				// Chose the first parent, there must be at least one genome in
 				// this
 				// species
-				parents[0] = chooseParent();
+				this.parents[0] = chooseParent();
 
 				// if the number of individuals in this species is only
 				// one then we can only clone and perhaps mutate, otherwise use
@@ -62,37 +63,41 @@ public class EAWorker implements Runnable {
 
 					int numAttempts = 5;
 
-					parents[1] = chooseParent();
-					while ((parents[0] == parents[1]) && ((numAttempts--) > 0)) {
-						parents[1] = chooseParent();
+					this.parents[1] = chooseParent();
+					while (this.parents[0] == this.parents[1]
+							&& numAttempts-- > 0) {
+						this.parents[1] = chooseParent();
 					}
 
 					// success, perform crossover
-					if (parents[0] != parents[1]) {
-						opp.performOperation(rnd, parents, 0, children, 0);
+					if (this.parents[0] != this.parents[1]) {
+						opp.performOperation(this.rnd, this.parents, 0,
+								this.children, 0);
 					}
 				} else {
 					// clone a child (asexual reproduction)
-					opp.performOperation(rnd, parents, 0, children, 0);
+					opp.performOperation(this.rnd, this.parents, 0,
+							this.children, 0);
 				}
 
 				// process the new child
-				if (children[0] != null) {
+				if (this.children[0] != null) {
 					success = true;
-					children[0].setBirthGeneration(this.train.getIteration());
+					this.children[0].setBirthGeneration(this.train
+							.getIteration());
 
-					this.train.calculateScore(children[0]);
-					if (!this.train.addChild(children[0])) {
+					this.train.calculateScore(this.children[0]);
+					if (!this.train.addChild(this.children[0])) {
 						return;
 					}
 				}
-			} catch (Throwable t) {
+			} catch (final Throwable t) {
 				System.out.println("error");
-				if( !this.train.getShouldIgnoreExceptions() ) {
+				if (!this.train.getShouldIgnoreExceptions()) {
 					this.train.reportError(t);
 				}
 			}
-		
-	} while(!success);
+
+		} while (!success);
 	}
 }

@@ -60,11 +60,20 @@ import org.encog.ml.prg.train.GeneticTrainingParams;
 import org.encog.util.concurrency.MultiThreadable;
 
 /**
- * Provides a basic implementation of a genetic algorithm.
+ * Provides a basic implementation of a multi-threaded Evolutionary Algorithm.
+ * The EA works from a score function.
  */
-public class BasicEA implements EvolutionaryAlgorithm,
-		MultiThreadable, Serializable {
+public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
+		Serializable {
 
+	/**
+	 * Calculate the score adjustment, based on adjusters.
+	 * 
+	 * @param genome
+	 *            The genome to adjust.
+	 * @param adjusters
+	 *            The score adjusters.
+	 */
 	public static void calculateScoreAdjustment(final Genome genome,
 			final List<AdjustScore> adjusters) {
 		final double score = genome.getScore();
@@ -76,9 +85,15 @@ public class BasicEA implements EvolutionaryAlgorithm,
 
 		genome.setAdjustedScore(score + delta);
 	}
-	
+
+	/**
+	 * Should exceptions be ignored.
+	 */
 	private boolean ignoreExceptions;
 
+	/**
+	 * Params.
+	 */
 	private GeneticTrainingParams params = new GeneticTrainingParams();
 
 	/**
@@ -90,46 +105,113 @@ public class BasicEA implements EvolutionaryAlgorithm,
 	 * The genome comparator.
 	 */
 	private GenomeComparator selectionComparator;
-	
+
 	/**
 	 * The population.
 	 */
 	private Population population;
-	
+
 	/**
 	 * The score calculation function.
 	 */
 	private final CalculateScore scoreFunction;
 
+	/**
+	 * The selection operator.
+	 */
 	private SelectionOperator selection;
+
+	/**
+	 * The score adjusters.
+	 */
 	private final List<AdjustScore> adjusters = new ArrayList<AdjustScore>();
 
+	/**
+	 * The operators. to use.
+	 */
 	private final OperationList operators = new OperationList();
+
+	/**
+	 * The CODEC to use to convert between genome and phenome.
+	 */
 	private GeneticCODEC codec = new GenomeAsPhenomeCODEC();
+
+	/**
+	 * Random number factory.
+	 */
 	private RandomFactory randomNumberFactory = Encog.getInstance()
 			.getRandomFactory().factorFactory();
+
+	/**
+	 * The validation mode.
+	 */
 	private boolean validationMode;
 
 	/**
 	 * The iteration number.
 	 */
 	private int iteration;
+
+	/**
+	 * The desired thread count.
+	 */
 	private int threadCount;
+
+	/**
+	 * The actual thread count.
+	 */
 	private int actualThreadCount = -1;
+
+	/**
+	 * The speciation method.
+	 */
 	private Speciation speciation = new SingleSpeciation();
+
+	/**
+	 * This property stores any error that might be reported by a thread.
+	 */
 	private Throwable reportedError;
+
+	/**
+	 * The best genome from the last iteration.
+	 */
 	private Genome oldBestGenome;
+
+	/**
+	 * The population for the next iteration.
+	 */
 	private final List<Genome> newPopulation = new ArrayList<Genome>();
+
+	/**
+	 * The mutation to be used on the top genome. We want to only modify its
+	 * weights.
+	 */
 	private EvolutionaryOperator champMutation;
 
+	/**
+	 * The percentage of a species that is "elite" and is passed on directly.
+	 */
 	private double eliteRate = 0.3;
+
+	/**
+	 * The number of times to try certian operations, so an endless loop does
+	 * not occur.
+	 */
 	private int maxTries = 5;
 
 	/**
-	 * The best ever network.
+	 * The best ever genome.
 	 */
 	private Genome bestGenome;
 
+	/**
+	 * Construct an EA.
+	 * 
+	 * @param thePopulation
+	 *            The population.
+	 * @param theScoreFunction
+	 *            The score function.
+	 */
 	public BasicEA(final Population thePopulation,
 			final CalculateScore theScoreFunction) {
 
@@ -137,6 +219,7 @@ public class BasicEA implements EvolutionaryAlgorithm,
 		this.scoreFunction = theScoreFunction;
 		this.selection = new TournamentSelection(this, 4);
 
+		// set the score compare method
 		if (theScoreFunction.shouldMinimize()) {
 			this.selectionComparator = new MinimizeAdjustedScoreComp();
 			this.bestComparator = new MinimizeScoreComp();
@@ -144,8 +227,23 @@ public class BasicEA implements EvolutionaryAlgorithm,
 			this.selectionComparator = new MaximizeAdjustedScoreComp();
 			this.bestComparator = new MaximizeScoreComp();
 		}
+
+		// set the iteration
+		for (final Species species : thePopulation.getSpecies()) {
+			for (final Genome genome : species.getMembers()) {
+				setIteration(Math.max(getIteration(),
+						genome.getBirthGeneration()));
+			}
+		}
 	}
 
+	/**
+	 * Add a child to the next iteration.
+	 * 
+	 * @param genome
+	 *            The child.
+	 * @return True, if the child was added successfully.
+	 */
 	public boolean addChild(final Genome genome) {
 		synchronized (this.newPopulation) {
 			if (this.newPopulation.size() < getPopulation().getPopulationSize()) {
@@ -177,29 +275,33 @@ public class BasicEA implements EvolutionaryAlgorithm,
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void addOperation(final double probability,
 			final EvolutionaryOperator opp) {
 		getOperators().add(probability, opp);
 		opp.init(this);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addScoreAdjuster(final AdjustScore scoreAdjust) {
 		this.adjusters.add(scoreAdjust);
 	}
 
 	/**
-	 * Calculate the score for this genome. The genome's score will be set.
-	 * 
-	 * @param g
-	 *            The genome to calculate for.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void calculateScore(final Genome g) {
-		
+
 		// try rewrite
-		this.getPopulation().rewrite(g);
-		
+		getPopulation().rewrite(g);
+
 		// decode
 		final MLMethod phenotype = getCODEC().decode(g);
 		double score;
@@ -224,7 +326,15 @@ public class BasicEA implements EvolutionaryAlgorithm,
 	}
 
 	/**
-	 * @return The comparator.
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void finishTraining() {
+
+	}
+
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
 	public GenomeComparator getBestComparator() {
@@ -234,6 +344,7 @@ public class BasicEA implements EvolutionaryAlgorithm,
 	/**
 	 * @return the bestGenome
 	 */
+	@Override
 	public Genome getBestGenome() {
 		return this.bestGenome;
 	}
@@ -245,6 +356,9 @@ public class BasicEA implements EvolutionaryAlgorithm,
 		return this.champMutation;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public GeneticCODEC getCODEC() {
 		return this.codec;
@@ -258,8 +372,9 @@ public class BasicEA implements EvolutionaryAlgorithm,
 	}
 
 	/**
-	 * return The error for the best genome.
+	 * {@inheritDoc}
 	 */
+	@Override
 	public double getError() {
 		if (this.bestGenome != null) {
 			return this.bestGenome.getScore();
@@ -272,13 +387,28 @@ public class BasicEA implements EvolutionaryAlgorithm,
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public int getIteration() {
 		return this.iteration;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getMaxIndividualSize() {
 		return this.population.getMaxIndividualSize();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getMaxTries() {
+		return this.maxTries;
 	}
 
 	/**
@@ -289,8 +419,9 @@ public class BasicEA implements EvolutionaryAlgorithm,
 	}
 
 	/**
-	 * @return the operators
+	 * {@inheritDoc}
 	 */
+	@Override
 	public OperationList getOperators() {
 		return this.operators;
 	}
@@ -318,23 +449,32 @@ public class BasicEA implements EvolutionaryAlgorithm,
 		return this.randomNumberFactory;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<AdjustScore> getScoreAdjusters() {
 		return this.adjusters;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public CalculateScore getScoreFunction() {
 		return this.scoreFunction;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public SelectionOperator getSelection() {
 		return this.selection;
 	}
 
 	/**
-	 * @return The comparator.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public GenomeComparator getSelectionComparator() {
@@ -342,19 +482,31 @@ public class BasicEA implements EvolutionaryAlgorithm,
 	}
 
 	/**
-	 * @return the speciation
+	 * {@inheritDoc}
 	 */
+	@Override
+	public boolean getShouldIgnoreExceptions() {
+		return this.ignoreExceptions;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public Speciation getSpeciation() {
 		return this.speciation;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getThreadCount() {
 		return this.threadCount;
 	}
 
 	/**
-	 * @return the validationMode
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean isValidationMode() {
@@ -362,7 +514,7 @@ public class BasicEA implements EvolutionaryAlgorithm,
 	}
 
 	/**
-	 * Perform one training iteration.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void iteration() {
@@ -384,19 +536,17 @@ public class BasicEA implements EvolutionaryAlgorithm,
 		this.newPopulation.clear();
 		this.newPopulation.add(this.bestGenome);
 		this.oldBestGenome = this.bestGenome;
-		
-		
 
 		// execute species in parallel
 		for (final Species species : getPopulation().getSpecies()) {
 			int numToSpawn = species.getOffspringCount();
-			
+
 			// Add elite genomes directly
 			if (species.getMembers().size() > 5) {
-				int idealEliteCount = (int) (species.getMembers().size() * getEliteRate());
-				int eliteCount = Math.min(numToSpawn, idealEliteCount);
+				final int idealEliteCount = (int) (species.getMembers().size() * getEliteRate());
+				final int eliteCount = Math.min(numToSpawn, idealEliteCount);
 				for (int i = 0; i < eliteCount; i++) {
-					Genome eliteGenome = species.getMembers().get(i);
+					final Genome eliteGenome = species.getMembers().get(i);
 					if (getOldBestGenome() != eliteGenome) {
 						numToSpawn--;
 						if (!addChild(eliteGenome)) {
@@ -405,10 +555,10 @@ public class BasicEA implements EvolutionaryAlgorithm,
 					}
 				}
 			}
-			
-			while((numToSpawn--)>0) {
+
+			while (numToSpawn-- > 0) {
 				final EAWorker worker = new EAWorker(this, species);
-				taskExecutor.execute(worker);	
+				taskExecutor.execute(worker);
 			}
 		}
 
@@ -420,7 +570,7 @@ public class BasicEA implements EvolutionaryAlgorithm,
 			throw new GeneticError(e);
 		}
 
-		if (this.reportedError != null && !this.getShouldIgnoreExceptions() ) {
+		if (this.reportedError != null && !getShouldIgnoreExceptions()) {
 			throw new GeneticError(this.reportedError);
 		}
 
@@ -452,6 +602,10 @@ public class BasicEA implements EvolutionaryAlgorithm,
 		this.speciation.performSpeciation(this.newPopulation);
 	}
 
+	/**
+	 * Called before the first iteration. Determine the number of threads to
+	 * use.
+	 */
 	private void preIteration() {
 
 		this.speciation.init(this);
@@ -485,6 +639,12 @@ public class BasicEA implements EvolutionaryAlgorithm,
 
 	}
 
+	/**
+	 * Called by a thread to report an error.
+	 * 
+	 * @param t
+	 *            The error reported.
+	 */
 	public void reportError(final Throwable t) {
 		synchronized (this) {
 			if (this.reportedError == null) {
@@ -512,6 +672,12 @@ public class BasicEA implements EvolutionaryAlgorithm,
 		this.champMutation = champMutation;
 	}
 
+	/**
+	 * Set the CODEC to use.
+	 * 
+	 * @param theCodec
+	 *            The CODEC to use.
+	 */
 	public void setCODEC(final GeneticCODEC theCodec) {
 		this.codec = theCodec;
 	}
@@ -524,8 +690,22 @@ public class BasicEA implements EvolutionaryAlgorithm,
 		this.eliteRate = eliteRate;
 	}
 
+	/**
+	 * Set the current iteration number.
+	 * 
+	 * @param iteration
+	 *            The iteration number.
+	 */
 	public void setIteration(final int iteration) {
 		this.iteration = iteration;
+	}
+
+	/**
+	 * @param maxTries
+	 *            the maxTries to set
+	 */
+	public void setMaxTries(final int maxTries) {
+		this.maxTries = maxTries;
 	}
 
 	/**
@@ -537,10 +717,7 @@ public class BasicEA implements EvolutionaryAlgorithm,
 	}
 
 	/**
-	 * Set the population.
-	 * 
-	 * @param thePopulation
-	 *            The population.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void setPopulation(final Population thePopulation) {
@@ -555,16 +732,16 @@ public class BasicEA implements EvolutionaryAlgorithm,
 		this.randomNumberFactory = randomNumberFactory;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setSelection(final SelectionOperator selection) {
 		this.selection = selection;
 	}
 
 	/**
-	 * Set the comparator.
-	 * 
-	 * @param theComparator
-	 *            The comparator.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void setSelectionComparator(final GenomeComparator theComparator) {
@@ -572,55 +749,35 @@ public class BasicEA implements EvolutionaryAlgorithm,
 	}
 
 	/**
-	 * @param speciation
-	 *            the speciation to set
+	 * {@inheritDoc}
 	 */
+	@Override
+	public void setShouldIgnoreExceptions(final boolean b) {
+		this.ignoreExceptions = b;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void setSpeciation(final Speciation speciation) {
 		this.speciation = speciation;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setThreadCount(final int numThreads) {
 		this.threadCount = numThreads;
 	}
 
 	/**
-	 * @param validationMode
-	 *            the validationMode to set
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void setValidationMode(final boolean validationMode) {
 		this.validationMode = validationMode;
 	}
-
-	@Override
-	public int getMaxTries() {
-		return this.maxTries;
-	}
-
-	/**
-	 * @param maxTries the maxTries to set
-	 */
-	public void setMaxTries(int maxTries) {
-		this.maxTries = maxTries;
-	}
-
-	@Override
-	public void finishTraining() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean getShouldIgnoreExceptions() {
-		return this.ignoreExceptions;
-	}
-
-	@Override
-	public void setShouldIgnoreExceptions(boolean b) {
-		this.ignoreExceptions = b;
-	}
-	
-	
 
 }

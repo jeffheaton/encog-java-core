@@ -28,6 +28,8 @@ import java.util.List;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.ea.codec.GeneticCODEC;
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.opp.EvolutionaryOperator;
+import org.encog.ml.ea.opp.OperationList;
 import org.encog.ml.ea.opp.selection.SelectionOperator;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.score.AdjustScore;
@@ -41,6 +43,16 @@ import org.encog.ml.prg.train.GeneticTrainingParams;
  * potential "solutions".
  */
 public interface EvolutionaryAlgorithm {
+
+	/**
+	 * Add an operation.
+	 * 
+	 * @param probability
+	 *            The probability of using this operator.
+	 * @param opp
+	 *            The operator to add.
+	 */
+	void addOperation(double probability, EvolutionaryOperator opp);
 
 	/**
 	 * Add a score adjuster. Score adjusters are used to adjust the adjusted
@@ -111,6 +123,11 @@ public interface EvolutionaryAlgorithm {
 	 */
 	int getMaxTries();
 
+	/**
+	 * @return The operators.
+	 */
+	OperationList getOperators();
+
 	GeneticTrainingParams getParams();
 
 	/**
@@ -148,6 +165,11 @@ public interface EvolutionaryAlgorithm {
 	 *         ignored.
 	 */
 	boolean getShouldIgnoreExceptions();
+
+	/**
+	 * @return The speciation method.
+	 */
+	Speciation getSpeciation();
 
 	/**
 	 * @return True if any genome validators should be applied.
@@ -214,7 +236,8 @@ public interface EvolutionaryAlgorithm {
 	 * Determine if the genomes should be validated. This takes more time but
 	 * can help isolate a problem.
 	 * 
-	 * @param validationMode True, if validation mode is enabled.
+	 * @param validationMode
+	 *            True, if validation mode is enabled.
 	 */
 	void setValidationMode(boolean validationMode);
 
