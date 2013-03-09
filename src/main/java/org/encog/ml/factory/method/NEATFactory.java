@@ -46,11 +46,11 @@ public class NEATFactory {
 	private MLActivationFactory factory = new MLActivationFactory();
 	
 	/**
-	 * Create a feed forward network.
+	 * Create a NEAT population.
 	 * @param architecture The architecture string to use.
 	 * @param input The input count.
 	 * @param output The output count.
-	 * @return The feedforward network.
+	 * @return The population.
 	 */
 	public MLMethod create(final String architecture, final int input,
 			final int output) {

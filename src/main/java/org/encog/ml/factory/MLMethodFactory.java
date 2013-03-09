@@ -65,9 +65,14 @@ public class MLMethodFactory {
 	public static final String TYPE_PNN = "pnn";
 	
 	/**
-	 * A probabilistic neural network. Supports both PNN & GRNN.
+	 * A NEAT neural network.
 	 */
 	public static final String TYPE_NEAT = "neat";
+	
+	/**
+	 * A Encog program.
+	 */
+	public static final String TYPE_EPL = "epl";
 	
 
 	public static final String PROPERTY_AF = "AF";

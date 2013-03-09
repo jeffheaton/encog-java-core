@@ -31,6 +31,7 @@ import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.factory.train.AnnealFactory;
 import org.encog.ml.factory.train.BackPropFactory;
 import org.encog.ml.factory.train.ClusterSOMFactory;
+import org.encog.ml.factory.train.EPLGAFactory;
 import org.encog.ml.factory.train.GeneticFactory;
 import org.encog.ml.factory.train.LMAFactory;
 import org.encog.ml.factory.train.ManhattanFactory;
@@ -137,6 +138,8 @@ public class SystemTrainingPlugin implements EncogPluginService1 {
 	
 	private final NEATGAFactory neatGAFactory = new NEATGAFactory(); 
 	
+	private final EPLGAFactory eplTrainFctory = new EPLGAFactory(); 
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -225,6 +228,8 @@ public class SystemTrainingPlugin implements EncogPluginService1 {
 			return this.psoFactory.create(method, training, args2);
 		} else if (MLTrainFactory.TYPE_NEAT_GA.equals(type) ) {
 			return this.neatGAFactory.create(method, training, args2);
+		} else if (MLTrainFactory.TYPE_EPL_GA.equals(type) ) {
+			return this.eplTrainFctory.create(method, training, args2);
 		}
 		else {
 			throw new EncogError("Unknown training type: " + type);

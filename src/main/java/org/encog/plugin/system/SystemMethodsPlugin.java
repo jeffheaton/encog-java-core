@@ -29,6 +29,7 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.ml.factory.method.BayesianFactory;
+import org.encog.ml.factory.method.EPLFactory;
 import org.encog.ml.factory.method.FeedforwardFactory;
 import org.encog.ml.factory.method.NEATFactory;
 import org.encog.ml.factory.method.PNNFactory;
@@ -80,6 +81,11 @@ public class SystemMethodsPlugin implements EncogPluginService1 {
 	 * A factory used to create NEAT populations.
 	 */
 	private final NEATFactory neatFactory = new NEATFactory();
+	
+	/**
+	 * A factory used to create NEAT populations.
+	 */
+	private final EPLFactory eplFactory = new EPLFactory();
 
 	
 	/**
@@ -138,6 +144,8 @@ public class SystemMethodsPlugin implements EncogPluginService1 {
 			return this.bayesianFactory.create(architecture, input, output);
 		} else if (MLMethodFactory.TYPE_NEAT.equals(methodType)) {
 			return this.neatFactory.create(architecture, input, output);
+		} else if (MLMethodFactory.TYPE_EPL.equals(methodType)) {
+			return this.eplFactory.create(architecture, input, output);
 		}
 		
 		throw new EncogError("Unknown method type: " + methodType);

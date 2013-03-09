@@ -580,6 +580,31 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
 	}
+	
+	/**
+	 * Generate a EPL population method.
+	 * 
+	 * @param inputColumns
+	 *            The input column count.
+	 * @param outputColumns
+	 *            The output column count.
+	 */
+	private void generateEPL(final int inputColumns,
+			final int outputColumns) {
+
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_TYPE,
+				MLMethodFactory.TYPE_EPL);
+		
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_ARCHITECTURE,
+				"cycles=" + NEATPopulation.DEFAULT_CYCLES);
+
+		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
+				MLTrainFactory.TYPE_EPL_GA);
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
+	}
 
 	/**
 	 * Generate a Bayesian network machine learning method.
@@ -815,6 +840,9 @@ public class AnalystWizard {
 			break;
 		case NEAT:
 			generateNEAT(inputColumns, idealColumns);
+			break;
+		case EPL:
+			generateEPL(inputColumns, idealColumns);
 			break;
 		default:
 			throw new AnalystError("Unknown method type");

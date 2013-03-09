@@ -73,6 +73,11 @@ public class MLTrainFactory {
 	public static final String TYPE_NEAT_GA = "neat-ga";
 	
 	/**
+	 * String constant for LMA training.
+	 */
+	public static final String TYPE_EPL_GA = "epl-ga";
+	
+	/**
 	 * String constant for SVM training.
 	 */
 	public static final String TYPE_SVM = "svm-train";
