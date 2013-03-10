@@ -3,12 +3,14 @@ package org.encog.ml.factory.train;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.ea.opp.SubtreeCrossover;
-import org.encog.ml.ea.opp.SubtreeMutation;
 import org.encog.ml.ea.score.adjust.ComplexityAdjustedScore;
 import org.encog.ml.ea.train.basic.TrainEA;
 import org.encog.ml.prg.PrgCODEC;
+import org.encog.ml.prg.opp.SubtreeCrossover;
+import org.encog.ml.prg.opp.SubtreeMutation;
 import org.encog.ml.prg.train.PrgPopulation;
+import org.encog.ml.prg.train.rewrite.RewriteConstants;
+import org.encog.ml.prg.train.rewrite.algebraic.RewriteAlgebraic;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.training.TrainingSetScore;
 
@@ -28,6 +30,9 @@ public class EPLGAFactory {
 			final MLDataSet training, final String argsStr) {
 		
 		PrgPopulation pop = (PrgPopulation)method;
+		
+		pop.addRewriteRule(new RewriteConstants());
+		pop.addRewriteRule(new RewriteAlgebraic());
 
 		final CalculateScore score = new TrainingSetScore(training);		
 		TrainEA train = new TrainEA(pop, score);

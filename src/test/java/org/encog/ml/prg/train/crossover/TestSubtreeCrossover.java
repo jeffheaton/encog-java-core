@@ -7,12 +7,12 @@ import junit.framework.TestCase;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
-import org.encog.ml.ea.opp.SubtreeCrossover;
 import org.encog.ml.ea.train.basic.BasicEA;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.PrgCODEC;
 import org.encog.ml.prg.extension.StandardExtensions;
+import org.encog.ml.prg.opp.SubtreeCrossover;
 import org.encog.ml.prg.train.PrgPopulation;
 import org.encog.ml.prg.train.fitness.MultiObjectiveFitness;
 import org.encog.parse.expression.common.RenderCommonExpression;
