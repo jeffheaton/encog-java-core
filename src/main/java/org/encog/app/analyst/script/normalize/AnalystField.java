@@ -311,7 +311,7 @@ public class AnalystField {
 			resultIndex = EngineArray.indexOfLargest(d);
 			break;
 		case SingleField:
-			resultIndex = (int) d[0];
+			resultIndex = (int)Math.round(d[0]);
 			break;
 		default:
 			throw new AnalystError("Invalid action: " + this.action);

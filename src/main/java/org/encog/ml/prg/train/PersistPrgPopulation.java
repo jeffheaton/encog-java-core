@@ -146,6 +146,14 @@ public class PersistPrgPopulation implements EncogPersistor {
 			}
 		}
 		result.setPopulationSize(count);
+
+		// set the best genome, should be the first genome in the first species
+		if (result.getSpecies().size() > 0) {
+			Species species = result.getSpecies().get(0);
+			if (species.getMembers().size() > 0) {
+				result.setBestGenome(species.getMembers().get(0));
+			}
+		}
 		return result;
 	}
 
@@ -174,26 +182,28 @@ public class PersistPrgPopulation implements EncogPersistor {
 		}
 		out.addSubSection("EPL-POPULATION");
 		for (final Species species : pop.getSpecies()) {
-			out.addColumn("s");
-			out.addColumn(species.getAge());
-			out.addColumn(species.getBestScore());
-			out.addColumn(species.getGensNoImprovement());
-			out.writeLine();
-			for (final Genome genome : species.getMembers()) {
-				final EncogProgram prg = (EncogProgram) genome;
-				out.addColumn("p");
-				if (Double.isInfinite(prg.getScore())
-						|| Double.isNaN(prg.getScore())) {
-					out.addColumn("NaN");
-					out.addColumn("NaN");
-				} else {
-
-					out.addColumn(prg.getScore());
-					out.addColumn(prg.getAdjustedScore());
-				}
-
-				out.addColumn(prg.toBase64());
+			if (species.getMembers().size() > 0) {
+				out.addColumn("s");
+				out.addColumn(species.getAge());
+				out.addColumn(species.getBestScore());
+				out.addColumn(species.getGensNoImprovement());
 				out.writeLine();
+				for (final Genome genome : species.getMembers()) {
+					final EncogProgram prg = (EncogProgram) genome;
+					out.addColumn("p");
+					if (Double.isInfinite(prg.getScore())
+							|| Double.isNaN(prg.getScore())) {
+						out.addColumn("NaN");
+						out.addColumn("NaN");
+					} else {
+
+						out.addColumn(prg.getScore());
+						out.addColumn(prg.getAdjustedScore());
+					}
+
+					out.addColumn(prg.toBase64());
+					out.writeLine();
+				}
 			}
 		}
 

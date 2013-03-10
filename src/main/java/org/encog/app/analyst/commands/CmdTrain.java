@@ -125,9 +125,7 @@ public class CmdTrain extends Cmd {
 		
 		if( trainer instanceof EvolutionaryAlgorithm ) {
 			EvolutionaryAlgorithm ea = (EvolutionaryAlgorithm)trainer;
-			if( ea.getPopulation() instanceof NEATPopulation ) {
-				method = (NEATPopulation)ea.getPopulation();
-			}
+			method = ea.getPopulation();
 		} 
 		
 		if( method==null ) {

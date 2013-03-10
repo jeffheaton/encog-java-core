@@ -26,6 +26,7 @@ package org.encog.ml.ea.population;
 import java.io.Serializable;
 import java.util.List;
 
+import org.encog.ml.MLMethod;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
 import org.encog.ml.ea.species.Species;
@@ -34,7 +35,7 @@ import org.encog.ml.prg.train.rewrite.RewriteRule;
 /**
  * Defines a population of genomes.
  */
-public interface Population extends Serializable {
+public interface Population extends Serializable, MLMethod {
 
 	/**
 	 * Add a rewrite rule. Rewrite rules can be used to simplify genomes.

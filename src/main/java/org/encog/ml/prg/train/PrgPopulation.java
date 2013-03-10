@@ -7,7 +7,6 @@ import org.encog.ml.ea.population.BasicPopulation;
 import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
-import org.encog.ml.prg.epl.EPLHolder;
 import org.encog.parse.expression.common.RenderCommonExpression;
 
 public class PrgPopulation extends BasicPopulation implements MLRegression {
@@ -29,8 +28,8 @@ public class PrgPopulation extends BasicPopulation implements MLRegression {
 	 */
 	@Override
 	public MLData compute(final MLData input) {
-		// EncogProgram best = (EncogProgram) this.getGenomes().get(0);
-		return null;// best.compute(input);
+		EncogProgram best = (EncogProgram)getBestGenome();
+		return best.compute(input);
 	}
 
 	public void dumpMembers(final int i) {
@@ -59,12 +58,11 @@ public class PrgPopulation extends BasicPopulation implements MLRegression {
 
 	@Override
 	public int getInputCount() {
-		return ((EncogProgram) getSpecies().get(0).getLeader()).getInputCount();
+		return this.getContext().getDefinedVariables().size();
 	}
 
 	@Override
 	public int getOutputCount() {
-		return ((EncogProgram) getSpecies().get(0).getLeader())
-				.getOutputCount();
+		return 1;
 	}
 }

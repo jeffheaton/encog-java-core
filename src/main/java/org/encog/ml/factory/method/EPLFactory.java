@@ -2,6 +2,7 @@ package org.encog.ml.factory.method;
 
 import java.util.Map;
 import java.util.Random;
+import java.util.StringTokenizer;
 
 import org.encog.EncogError;
 import org.encog.ml.MLMethod;
@@ -39,9 +40,13 @@ public class EPLFactory {
 		
 		final int populationSize = holder.getInt(
 				MLMethodFactory.PROPERTY_POPULATION_SIZE, false, 1000);
+		String variables = holder.getString("vars", false, "x");
 		
 		EncogProgramContext context = new EncogProgramContext();
-		context.defineVariable("x");
+		StringTokenizer tok = new StringTokenizer(variables,",");
+		while(tok.hasMoreElements()) {
+			context.defineVariable(tok.nextToken());
+		}
 
 		StandardExtensions.createNumericOperators(context.getFunctions());
 		PrgPopulation pop = new PrgPopulation(context,populationSize);

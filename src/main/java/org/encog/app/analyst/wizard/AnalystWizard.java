@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.Encog;
+import org.encog.EncogError;
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.AnalystFileFormat;
 import org.encog.app.analyst.AnalystGoal;
@@ -595,10 +596,33 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_TYPE,
 				MLMethodFactory.TYPE_EPL);
+		String vars = "";
+		
+		if( inputColumns>26 ) {
+			throw new EncogError("More than 26 input variables is not supported for EPL.");
+		} else if( inputColumns<=3 ) {
+			StringBuilder temp = new StringBuilder();
+			for(int i=0;i<inputColumns;i++) {
+				if( temp.length()>0 ) {
+					temp.append(',');
+				}
+				temp.append((char)('x'+i));
+			}
+			vars = temp.toString();
+		} else {
+			StringBuilder temp = new StringBuilder();
+			for(int i=0;i<inputColumns;i++) {
+				if( temp.length()>0 ) {
+					temp.append(',');
+				}
+				temp.append((char)('a'+i));
+			}
+			vars = temp.toString();
+		}
 		
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_ARCHITECTURE,
-				"cycles=" + NEATPopulation.DEFAULT_CYCLES);
+				"cycles=" + NEATPopulation.DEFAULT_CYCLES+",vars=\"" + vars + "\"");
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				MLTrainFactory.TYPE_EPL_GA);
@@ -864,7 +888,7 @@ public class AnalystWizard {
 			NormalizationAction action;
 			final boolean isLast = i == this.script.getFields().length - 1;
 
-			if (this.methodType == WizardMethodType.BayesianNetwork) {
+			if( (this.methodType == WizardMethodType.EPL ) || (this.methodType == WizardMethodType.BayesianNetwork) ) {
 				AnalystField af;
 				if (f.isClass()) {
 					af = new AnalystField(f.getName(),
