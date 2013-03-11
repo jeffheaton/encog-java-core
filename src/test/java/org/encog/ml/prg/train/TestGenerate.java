@@ -6,6 +6,7 @@ import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.KnownConstTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;
+import org.encog.ml.prg.generator.PrgGrowGenerator;
 import org.encog.parse.expression.common.RenderCommonExpression;
 
 public class TestGenerate extends TestCase {
@@ -17,7 +18,7 @@ public class TestGenerate extends TestCase {
 		StandardExtensions.createAll(context.getFunctions());
 		KnownConstTemplate.createAllConst(context.getFunctions());
 		
-		CreateRandom rnd = new CreateRandom(context,2);
+		PrgGrowGenerator rnd = new PrgGrowGenerator(context,2);
 		EncogProgram prg = rnd.generate();
 		RenderCommonExpression render = new RenderCommonExpression();
 		String str = render.render(prg);

@@ -28,15 +28,18 @@ import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
+import org.encog.ml.ea.genome.BasicGenome;
+import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.ml.tree.traverse.tasks.TaskGetNodeIndex;
 import org.encog.ml.tree.traverse.tasks.TaskReplaceNode;
 import org.encog.parse.expression.common.ParseCommonExpression;
+import org.encog.parse.expression.common.RenderCommonExpression;
 import org.encog.util.simple.EncogUtility;
 
-public class EncogProgram implements MLRegression, MLError {
+public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 		
 	private EncogProgramVariables variables = new EncogProgramVariables();
 	private EncogProgramContext context = new EncogProgramContext();
@@ -217,6 +220,17 @@ public class EncogProgram implements MLRegression, MLError {
 	 */
 	public void setEffectiveScore(double effectiveScore) {
 		this.effectiveScore = effectiveScore;
+	}
+
+	@Override
+	public void copy(Genome source) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public String dumpAsCommonExpression() {
+		RenderCommonExpression render = new RenderCommonExpression();
+		return render.render(this);
 	}
 	
 	

@@ -1,21 +1,27 @@
-package org.encog.ml.prg.train;
+package org.encog.ml.prg.generator;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
+import org.encog.ml.prg.EncogProgramVariables;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
+import org.encog.ml.prg.train.PrgPopulation;
 
-public class CreateRandom {
+public class PrgGrowGenerator {
 	
 	private EncogProgramContext context;
 	private int maxDepth;
 	private List<ProgramExtensionTemplate> leaves = new ArrayList<ProgramExtensionTemplate>();
 	
-	public CreateRandom(EncogProgramContext theContext, int theMaxDepth) {
+	public PrgGrowGenerator(EncogProgramContext theContext, int theMaxDepth) {
 		this.context = theContext;
 		this.maxDepth = theMaxDepth;
 		
@@ -63,5 +69,15 @@ public class CreateRandom {
 		ProgramNode result = temp.factorFunction(program, temp.getName(), children);
 		result.randomize(program, 1.0);
 		return result;
+	}
+
+	public void generate(Random rnd, PrgPopulation pop) {
+		pop.getSpecies().clear();
+		final Species defaultSpecies = pop.createSpecies();
+
+		for (int i = 0; i < pop.getPopulationSize(); i++) {
+			final EncogProgram prg = generate();
+			defaultSpecies.add(prg);
+		}
 	}
 }
