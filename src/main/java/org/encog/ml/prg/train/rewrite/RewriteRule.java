@@ -1,7 +1,7 @@
 package org.encog.ml.prg.train.rewrite;
 
-import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.prg.EncogProgram;
 
 public interface RewriteRule {
-	boolean rewrite(Genome program);
+	boolean rewrite(EncogProgram program);
 }

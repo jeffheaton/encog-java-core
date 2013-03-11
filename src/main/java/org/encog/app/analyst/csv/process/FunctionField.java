@@ -24,32 +24,24 @@
 package org.encog.app.analyst.csv.process;
 
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.epl.OpCodeHeader;
-import org.encog.ml.prg.extension.BasicTemplate;
-import org.encog.ml.prg.extension.FunctionFactory;
+import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.expvalue.ExpressionValue;
 
-public class FunctionField extends BasicTemplate {
+public class FunctionField extends ProgramNode {
 	
 	private ProcessExtension extension;
 
-	public FunctionField(ProcessExtension theExtension) {
-		super("field",2,true);
-		this.setOpcode((short)(OpCodeHeader.ENCOG_EXTRA_OPCODES_BEGIN+0));
+	public FunctionField(ProcessExtension theExtension, EncogProgram theOwner, ProgramNode[] theArgs) {
+		super(theOwner, "field", theArgs,0,0);
 		this.extension = theExtension;
 	}
 
 	@Override
-	public int getInstructionSize(OpCodeHeader header) {
-		return 1;
-	}
-
-	@Override
-	public void evaluate(EncogProgram prg) {
-		int fieldIndex = (int)prg.getStack().pop().toFloatValue()+this.extension.getBackwardWindowSize();//1
-		String fieldName = prg.getStack().pop().toStringValue();//0
-		
+	public ExpressionValue evaluate() {
+		String fieldName = getChildNode(0).evaluate().toStringValue();
+		int fieldIndex = (int)getChildNode(1).evaluate().toFloatValue()+this.extension.getBackwardWindowSize();
 		String value = this.extension.getField(fieldName,fieldIndex);
-		prg.getStack().push(value);
+		return new ExpressionValue(value);
 	}
 
 }

@@ -209,9 +209,9 @@ public class BasicPopulation extends BasicML implements Population,
 			done = true;
 
 			for (final RewriteRule rule : this.rewriteRules) {
-				if (rule.rewrite(prg)) {
+				/*if (rule.rewrite(prg)) {
 					done = false;
-				}
+				}*/
 			}
 		}
 	}

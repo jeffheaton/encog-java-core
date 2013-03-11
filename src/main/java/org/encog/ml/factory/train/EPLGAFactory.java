@@ -5,12 +5,11 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.score.adjust.ComplexityAdjustedScore;
 import org.encog.ml.ea.train.basic.TrainEA;
-import org.encog.ml.prg.PrgCODEC;
-import org.encog.ml.prg.opp.SubtreeCrossover;
-import org.encog.ml.prg.opp.SubtreeMutation;
 import org.encog.ml.prg.train.PrgPopulation;
+import org.encog.ml.prg.train.crossover.SubtreeCrossover;
+import org.encog.ml.prg.train.mutate.SubtreeMutation;
+import org.encog.ml.prg.train.rewrite.RewriteAlgebraic;
 import org.encog.ml.prg.train.rewrite.RewriteConstants;
-import org.encog.ml.prg.train.rewrite.algebraic.RewriteAlgebraic;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.training.TrainingSetScore;
 
@@ -31,7 +30,7 @@ public class EPLGAFactory {
 		
 		PrgPopulation pop = (PrgPopulation)method;
 		
-		pop.addRewriteRule(new RewriteConstants());
+		/*pop.addRewriteRule(new RewriteConstants());
 		pop.addRewriteRule(new RewriteAlgebraic());
 
 		final CalculateScore score = new TrainingSetScore(training);		
@@ -40,8 +39,8 @@ public class EPLGAFactory {
 		train.setCODEC(new PrgCODEC());
 		train.addOperation(0.95, new SubtreeCrossover());
 		train.addOperation(0.05, new SubtreeMutation(pop.getContext(),4));
-		train.addScoreAdjuster(new ComplexityAdjustedScore());
+		train.addScoreAdjuster(new ComplexityAdjustedScore());*/
 
-		return train;
+		return null;
 	}
 }

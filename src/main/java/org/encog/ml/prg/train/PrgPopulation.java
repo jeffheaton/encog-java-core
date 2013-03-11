@@ -1,68 +1,84 @@
 package org.encog.ml.prg.train;
 
-import org.encog.ml.MLRegression;
-import org.encog.ml.data.MLData;
-import org.encog.ml.ea.genome.Genome;
-import org.encog.ml.ea.population.BasicPopulation;
-import org.encog.ml.ea.species.Species;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
+import org.encog.ml.prg.train.rewrite.RewriteRule;
 import org.encog.parse.expression.common.RenderCommonExpression;
 
-public class PrgPopulation extends BasicPopulation implements MLRegression {
+public class PrgPopulation {
 
 	private final EncogProgramContext context;
-
-	public PrgPopulation(final EncogProgramContext theContext,
-			final int thePopulationSize) {
-		super(thePopulationSize, new PrgGenomeFactory(theContext));
+	private EncogProgram[] members;
+	private List<RewriteRule> rewriteRules = new ArrayList<RewriteRule>();
+	private int maxDepth = 5;
+	private int maxPopulation = 1000;
+	
+	public PrgPopulation(EncogProgramContext theContext, int theMaxPopulation) {
 		this.context = theContext;
+		this.maxPopulation = theMaxPopulation;
+		this.members = new EncogProgram[this.maxPopulation];
 	}
-
-	/**
-	 * Compute the output from the best Genome. Note: it is not safe to call
-	 * this method while training is progressing.
-	 * 
-	 * @param input
-	 *            The input to the
-	 */
-	@Override
-	public MLData compute(final MLData input) {
-		EncogProgram best = (EncogProgram)getBestGenome();
-		return best.compute(input);
-	}
-
-	public void dumpMembers(final int i) {
-
-		final RenderCommonExpression render = new RenderCommonExpression();
-
+		
+	public void dumpMembers() {
+		
+		RenderCommonExpression render = new RenderCommonExpression();
+		
 		int index = 0;
-		for (final Species species : getSpecies()) {
-			System.out.println("** Species: " + species.toString());
-			for (final Genome obj : species.getMembers()) {
-				final EncogProgram prg = (EncogProgram) obj;
-				System.out.println(index + ": Score " + prg.getScore() + " : "
-						+ render.render(prg));
-				index++;
-				if (index > i) {
-					break;
+		for(EncogProgram prg: this.members) {
+			System.out.println(index + ": Score " + prg.getScore() + " : " + render.render(prg));
+			index++;
+		}
+	}
+
+	public int getMaxDepth() {
+		return maxDepth;
+	}
+
+	public void setMaxDepth(int maxDepth) {
+		this.maxDepth = maxDepth;
+	}
+
+	public int getMaxPopulation() {
+		return maxPopulation;
+	}
+
+	public void setMaxPopulation(int maxPopulation) {
+		this.maxPopulation = maxPopulation;
+	}
+
+	public EncogProgramContext getContext() {
+		return context;
+	}
+
+	public EncogProgram[] getMembers() {
+		return members;
+	}
+	
+	public void addRewriteRule(RewriteRule rule) {
+		this.rewriteRules.add(rule);
+	}
+	
+	public void rewrite(EncogProgram prg) {
+		
+		boolean done = false;
+		
+		while(!done) {
+			done = true;
+			
+			for(RewriteRule rule: this.rewriteRules) {
+				if( rule.rewrite(prg) ) {
+					done = false;
 				}
 			}
 		}
 	}
 
-	public EncogProgramContext getContext() {
-		return this.context;
+	public int size() {
+		return this.members.length;
 	}
 
-
-	@Override
-	public int getInputCount() {
-		return this.getContext().getDefinedVariables().size();
-	}
-
-	@Override
-	public int getOutputCount() {
-		return 1;
-	}
 }

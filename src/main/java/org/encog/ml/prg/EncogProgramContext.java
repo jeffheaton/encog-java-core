@@ -1,100 +1,124 @@
 package org.encog.ml.prg;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.encog.ml.prg.epl.EPLHolderFactory;
-import org.encog.ml.prg.epl.bytearray.ByteArrayHolderFactory;
+import org.encog.EncogError;
+import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.ml.prg.extension.StandardExtensions;
-import org.encog.ml.prg.train.GeneticTrainingParams;
+import org.encog.util.EngineArray;
 import org.encog.util.csv.CSVFormat;
 
-public class EncogProgramContext implements Serializable {
+public class EncogProgramContext {
 
 	private final CSVFormat format;
 	private final FunctionFactory functions;
 	private final List<String> definedVariables = new ArrayList<String>();
-	private EPLHolderFactory holderFactory = new ByteArrayHolderFactory();
-	private GeneticTrainingParams params = new GeneticTrainingParams();
-
-	// private EPLHolderFactory holderFactory = new BufferedHolderFactory();
-
+	private final Map<String,Double> config = new HashMap<String,Double>();
+	private double constMin = -10;
+	private double constMax = 10;
+	
+	public EncogProgramContext(CSVFormat theFormat, FunctionFactory theFunctions) {
+		this.format = theFormat;
+		this.functions = theFunctions;
+	}
+	
+	public EncogProgramContext(CSVFormat format) {
+		this(format, new FunctionFactory());
+	}
+	
 	public EncogProgramContext() {
 		this(CSVFormat.EG_FORMAT, new FunctionFactory());
 	}
 
-	public EncogProgramContext(final CSVFormat format) {
-		this(format, new FunctionFactory());
+	public CSVFormat getFormat() {
+		return format;
 	}
 
-	public EncogProgramContext(final CSVFormat theFormat,
-			final FunctionFactory theFunctions) {
-		this.format = theFormat;
-		this.functions = theFunctions;
+	public FunctionFactory getFunctions() {
+		return functions;
 	}
-
-	public EncogProgram cloneProgram(final EncogProgram prg) {
-		return new EncogProgram(prg);
-	}
-
-	public EncogProgram createProgram(final String str) {
-		final EncogProgram result = new EncogProgram(this);
-		result.compileExpression(str);
-		return result;
-	}
-
-	public void defineVariable(final String v) {
-		if (!this.definedVariables.contains(v)) {
-			this.definedVariables.add(v);
+	
+	public void defineVariable(String v) {
+		if( this.definedVariables.contains(v) ) {
+			throw new ExpressionError("Variable " + v + " already defined.");
 		}
+		definedVariables.add(v);
+		
 	}
 
 	public List<String> getDefinedVariables() {
 		return this.definedVariables;
 	}
 
-	public CSVFormat getFormat() {
-		return this.format;
+	public Map<String, Double> getConfig() {
+		return config;
 	}
 
-	public FunctionFactory getFunctions() {
-		return this.functions;
+	public double getConstMin() {
+		return constMin;
 	}
 
-	/**
-	 * @return the holderFactory
-	 */
-	public EPLHolderFactory getHolderFactory() {
-		return this.holderFactory;
+	public void setConstMin(double constMin) {
+		this.constMin = constMin;
 	}
 
-	/**
-	 * @return the params
-	 */
-	public GeneticTrainingParams getParams() {
-		return this.params;
+	public double getConstMax() {
+		return constMax;
+	}
+
+	public void setConstMax(double constMax) {
+		this.constMax = constMax;
+	}
+	
+	public EncogProgram cloneProgram(EncogProgram sourceProgram) {
+		ProgramNode rootNode = sourceProgram.getRootNode();
+		EncogProgram result = new EncogProgram(this);
+		result.setRootNode(cloneBranch(result,rootNode));
+		return result;
+	}
+	
+	public ProgramNode cloneBranch(EncogProgram targetProgram, ProgramNode sourceBranch) {
+		if( sourceBranch==null ) {
+			throw new EncogError("Can't clone null branch.");
+		}
+		
+		
+		String name = sourceBranch.getName();
+	
+		// create any subnodes
+		ProgramNode[] args = new ProgramNode[sourceBranch.getChildNodes().size()];
+		for(int i=0;i<args.length;i++) {
+			args[i] = cloneBranch(targetProgram,(ProgramNode)sourceBranch.getChildNodes().get(i));
+		}
+		
+		ProgramNode result = targetProgram.getContext().getFunctions().factorFunction(name, targetProgram, args);
+		
+		// now copy the int and expression data for the node
+		EngineArray.arrayCopy(sourceBranch.getIntData(),result.getIntData());
+		
+		for(int i=0;i<sourceBranch.getExpressionData().length;i++) {
+			result.getExpressionData()[i] = new ExpressionValue(sourceBranch.getExpressionData()[i]);
+		}
+		
+		// return the new node
+		return result;
+	}
+
+	public EncogProgram createProgram(String expression) {
+		EncogProgram result = new EncogProgram(this);
+		result.compileExpression(expression);
+		return result;
 	}
 
 	public void loadAllFunctions() {
 		StandardExtensions.createAll(getFunctions());
+		KnownConstTemplate.createAllConst(getFunctions());
 	}
-
-	/**
-	 * @param holderFactory
-	 *            the holderFactory to set
-	 */
-	public void setHolderFactory(final EPLHolderFactory holderFactory) {
-		this.holderFactory = holderFactory;
-	}
-
-	/**
-	 * @param params
-	 *            the params to set
-	 */
-	public void setParams(final GeneticTrainingParams params) {
-		this.params = params;
-	}
-
+	
+	
+	
 }

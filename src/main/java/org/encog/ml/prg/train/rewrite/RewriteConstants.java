@@ -1,56 +1,63 @@
 package org.encog.ml.prg.train.rewrite;
 
-import java.io.Serializable;
-
-import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.expvalue.ExpressionValue;
-import org.encog.ml.prg.extension.ProgramExtensionTemplate;
-import org.encog.ml.prg.util.TraverseProgram;
+import org.encog.ml.prg.ProgramNode;
 
-public class RewriteConstants implements RewriteRule, Serializable {
+public class RewriteConstants implements RewriteRule {
 	
-	public RewriteConstants() {
-		
+	private boolean rewritten;
+
+	public boolean rewrite(EncogProgram program) {
+		this.rewritten = false;
+		ProgramNode rootNode = program.getRootNode();
+		ProgramNode rewrite = rewriteNode(rootNode);
+		if (rewrite != null) {
+			program.setRootNode(rewrite);
+		}
+		return this.rewritten;
 	}
-	
-	private boolean areAnyVariable(EncogProgram program, int rewriteStart, int rewriteStop) {
-		TraverseProgram trav = new TraverseProgram(program);
-		trav.begin(rewriteStart);
-		while( trav.next() && trav.getFrameIndex()<rewriteStop ) {
-			if( trav.getTemplate().isVariableValue() ) {
-				return true;
+
+	private ProgramNode rewriteNode(ProgramNode node) {
+
+		// first try to rewrite the child node
+		ProgramNode rewrite = tryNodeRewrite(node);
+		if (rewrite != null) {
+			return rewrite;
+		}
+
+		// if we could not rewrite the entire node, rewrite as many children as
+		// we can
+		for (int i = 0; i < node.getChildNodes().size(); i++) {
+			ProgramNode childNode = (ProgramNode)node.getChildNodes().get(i);
+			rewrite = rewriteNode(childNode);
+			if (rewrite != null) {
+				node.getChildNodes().remove(i);
+				node.getChildNodes().add(i, rewrite);
+				this.rewritten = true;
 			}
 		}
-		return false;
+
+		// we may have rewritten some children, but the parent was not
+		// rewritten, so return null.
+		return null;
 	}
 
-	@Override
-	public boolean rewrite(Genome genome) {
-		EncogProgram program = (EncogProgram)genome;
-		TraverseProgram trav = new TraverseProgram(program);
-		trav.begin(0);
-		while(trav.next()) {
-			if( !trav.isLeaf() ) {
-				int rewriteStop = trav.getFrameIndex();
-				int rewriteStart = program.findNodeStart(rewriteStop);
-				if( !areAnyVariable(program,rewriteStart,rewriteStop) ) {
-					rewrite(program,rewriteStart,rewriteStop);
-					return true;
-				}
-			}
+	private ProgramNode tryNodeRewrite(ProgramNode parentNode) {
+		ProgramNode result = null;
+
+		if (parentNode.isLeaf()) {
+			return null;
 		}
-		return false;
-	}
 
-	private void rewrite(EncogProgram program, int rewriteStart, int rewriteStop) {
-		int size = program.nextIndex(rewriteStop)-rewriteStart;
-		ExpressionValue c = program.evaluate(rewriteStart, rewriteStop);
-		program.deleteSubtree(rewriteStart, size);
-		ProgramExtensionTemplate temp = program.getConstTemplate(c);
-		int sz = temp.getInstructionSize(program.getHeader());
-		program.insert(rewriteStart, sz);
-		program.setProgramCounter(rewriteStart);
-		program.writeConstNode(c);
+		if (parentNode.allConstDescendants()) {
+			result = parentNode
+					.getOwner()
+					.getContext()
+					.getFunctions()
+					.factorFunction("#const", parentNode.getOwner(),
+							new ProgramNode[] {});
+			result.getExpressionData()[0] = parentNode.evaluate();
+		}
+		return result;
 	}
 }

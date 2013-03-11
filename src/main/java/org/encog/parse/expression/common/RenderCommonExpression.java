@@ -1,148 +1,108 @@
 package org.encog.parse.expression.common;
 
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.exception.EncogEPLError;
-import org.encog.ml.prg.exception.EncogProgramError;
-import org.encog.ml.prg.extension.KnownConst;
-import org.encog.ml.prg.extension.ProgramExtensionTemplate;
-import org.encog.ml.prg.extension.StandardExtensions;
-import org.encog.ml.prg.util.TraverseProgram;
+import org.encog.ml.prg.KnownConstNode;
+import org.encog.ml.prg.ProgramNode;
 import org.encog.parse.expression.ExpressionNodeType;
-import org.encog.util.datastruct.StackString;
 
 public class RenderCommonExpression {
-	private EncogProgram program;
-	private TraverseProgram trav;
-	private StackString stack = new StackString(100);
+	private EncogProgram holder;
 
 	public RenderCommonExpression() {
 	}
-	
-	public String render(final EncogProgram theProgram) {
-		this.program = theProgram;
-		this.trav = new TraverseProgram(theProgram);
-		this.trav.begin(0);
-		return renderNode();
+
+	public String render(final EncogProgram theHolder) {
+		this.holder = theHolder;
+		ProgramNode node = theHolder.getRootNode();
+		return renderNode(node);
 	}
 
-	private void handleConst() {
-		switch(this.trav.getHeader().getOpcode()) {
-			case StandardExtensions.OPCODE_CONST_INT:
-				stack.push(""+((int)trav.getHeader().getParam1()));
-				break;
-			case StandardExtensions.OPCODE_CONST_FLOAT:
-				double d = this.trav.readDouble();
-				stack.push(""+this.program.getContext().getFormat().format(d,32));
-				break;
-			default:
-				stack.push("[Unknown Constant]");
-				break;
-		}
-		
+	private String renderConst(ProgramNode node) {
+		return node.getExpressionData()[0].toStringValue();
 	}
 	
-	private void handleConstKnown() {
-		ProgramExtensionTemplate temp = this.trav.getTemplate();
-		stack.push(temp.getName());
+	private String renderConstKnown(KnownConstNode node) {
+		return node.getName();
 	}
 
-	private void handleVar() {
-		int varIndex = (int)trav.getHeader().getParam2();
-		stack.push(this.program.getVariables().getVariableName(varIndex));
+	private String renderVar(ProgramNode node) {
+		int varIndex = node.getIntData()[0];
+		return this.holder.getVariables().getVariableName(varIndex);
 	}
 	
-	private void handleFunction() {
-		int opcode = this.trav.getHeader().getOpcode();
-		ProgramExtensionTemplate temp = this.program.getContext().getFunctions().getOpCode(opcode);
-		
+	private String renderFunction(ProgramNode node) {
 		StringBuilder result = new StringBuilder();
-		result.append(temp.getName());
+		result.append(node.getName());
 		result.append('(');
-		for(int i=0;i<temp.getChildNodeCount();i++) {
+		for(int i=0;i<node.getChildNodes().size();i++) {
 			if( i>0 ) {
 				result.append(',');
 			}
-			result.append(this.stack.pop());
+			ProgramNode childNode = node.getChildNode(i);
+			result.append(renderNode(childNode));
 		}
 		result.append(')');		
-		this.stack.push(result.toString());
+		return result.toString();
 	}
 	
-	private void handleOperator() {
-		int opcode = this.trav.getHeader().getOpcode();
-		ProgramExtensionTemplate temp = this.program.getContext().getFunctions().getOpCode(opcode);
-		
+	private String renderOperator(ProgramNode node) {
 		StringBuilder result = new StringBuilder();
-		
-		if( this.trav.getTemplate().getChildNodeCount()==2 ) {
-			String a = this.stack.pop();
-			String b = this.stack.pop();
-			result.append("(");
-			result.append(b);
-			result.append(temp.getName());
-			result.append(a);
-			result.append(")");
-		} else if( this.trav.getTemplate().getChildNodeCount()==1 ) {
-			String a = this.stack.pop();
-			result.append("(");
-			result.append(temp.getName());
-			result.append(a);
-			result.append(")");
-		} else {
-			throw new EncogProgramError("An operator must have an arity of 1 or 2, probably should be made a function.");
-		}
-		
-		this.stack.push(result.toString());
+		result.append("(");
+		result.append(renderNode(node.getChildNode(0)));
+		result.append(node.getName());
+		result.append(renderNode(node.getChildNode(1)));
+		result.append(")");
+		return result.toString();
 	}
 
-	public ExpressionNodeType determineNodeType() {
-		int opcode = this.trav.getHeader().getOpcode();
-		ProgramExtensionTemplate temp = this.program.getContext().getFunctions().getOpCode(opcode);
+	public ExpressionNodeType determineNodeType(ProgramNode node) {
 		
-		if( temp instanceof KnownConst ) {
+		if( node instanceof KnownConstNode) {
 			return ExpressionNodeType.ConstKnown;
 		}
 		
-		if (opcode==StandardExtensions.OPCODE_CONST_FLOAT || opcode==StandardExtensions.OPCODE_CONST_INT) {
+		if (node.getName().equals("#const")) {
 			return ExpressionNodeType.ConstVal;
 		}  
 			
-		if (opcode==StandardExtensions.OPCODE_VAR ) {
+		if (node.getName().equals("#var")) {
 			return ExpressionNodeType.Variable;
 		} 
 		
-		if( temp.isOperator() ) {
-			return ExpressionNodeType.Operator;	
-			
-		}
-		return ExpressionNodeType.Function;
-			
-	}
-
-	private String renderNode() {		
-		while(this.trav.next()) {
-			switch (determineNodeType()) {
-			case ConstVal:
-				handleConst();
-				break;
-			case ConstKnown:
-				handleConstKnown();
-				break;
-			case Operator:
-				handleOperator();
-				break;
-			case Variable:
-				handleVar();
-				break;
-			case Function:
-				handleFunction();
-				break;
-			}
+		if( node.getChildNodes().size()!=2 ) {
+			return ExpressionNodeType.Function;
 		}
 		
-		if( stack.size()>1 ) {
-			throw new EncogEPLError("More than one value remains on stack after expression evaluation.");
+		String name = node.getName();
+		
+		if( !Character.isLetterOrDigit(name.charAt(0)) ) {
+			return ExpressionNodeType.Operator;			
 		}
-		return this.stack.pop();
+		
+		return ExpressionNodeType.Function;		
+	}
+
+	private String renderNode(ProgramNode node) {
+		StringBuilder result = new StringBuilder();
+
+		switch (determineNodeType(node)) {
+		case ConstVal:
+			result.append(renderConst(node));
+			break;
+		case ConstKnown:
+			result.append(renderConstKnown((KnownConstNode)node));
+			break;
+		case Operator:
+			result.append(renderOperator(node));
+			break;
+		case Variable:
+			result.append(renderVar(node));
+			break;
+		case Function:
+			result.append(renderFunction(node));
+			break;
+		}
+
+		return result.toString();
 	}
 }

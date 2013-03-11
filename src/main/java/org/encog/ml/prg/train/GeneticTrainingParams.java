@@ -1,96 +1,85 @@
 package org.encog.ml.prg.train;
 
-import java.io.Serializable;
+public class GeneticTrainingParams {
+	
+	/**
+	 * The starting complexity pentalty.
+	 */
+	private double complexityPenalty = .2;
+	
+	/**
+	 * The starting complexity pentalty.
+	 */
+	private double complexityFullPenalty = 2.0;
+	
+	/**
+	 * The complexity level at which a penalty begins to be applied.
+	 */
+	private int complexityPenaltyThreshold = 10;
+	
+	/**
+	 * The complexity level at which a full (100%) penalty is applied.
+	 */
+	private int complexityPentaltyFullThreshold = 50;
 
-public class GeneticTrainingParams implements Serializable {
-
-	private double constMin = -10;
-
-	private double constMax = 10;
-
-	private int stackSize = 50;
-
-	private boolean ignoreExceptions;
-
-	private int maxIndividualSize = 128;
-
-	public GeneticTrainingParams() {
-
+	/**
+	 * @return the complexityPenalty
+	 */
+	public double getComplexityPenalty() {
+		return complexityPenalty;
 	}
 
 	/**
-	 * @return the constMax
+	 * @param complexityPenalty the complexityPenalty to set
 	 */
-	public double getConstMax() {
-		return this.constMax;
+	public void setComplexityPenalty(double complexityPenalty) {
+		this.complexityPenalty = complexityPenalty;
 	}
 
 	/**
-	 * @return the constMin
+	 * @return the complexityPenaltyThreshold
 	 */
-	public double getConstMin() {
-		return this.constMin;
+	public int getComplexityPenaltyThreshold() {
+		return complexityPenaltyThreshold;
 	}
 
 	/**
-	 * @return the maxIndividualSize
+	 * @param complexityPenaltyThreshold the complexityPenaltyThreshold to set
 	 */
-	public int getMaxIndividualSize() {
-		return this.maxIndividualSize;
+	public void setComplexityPenaltyThreshold(int complexityPenaltyThreshold) {
+		this.complexityPenaltyThreshold = complexityPenaltyThreshold;
 	}
 
 	/**
-	 * @return the stackSize
+	 * @return the complexityPentaltyFullThreshold
 	 */
-	public int getStackSize() {
-		return this.stackSize;
+	public int getComplexityPentaltyFullThreshold() {
+		return complexityPentaltyFullThreshold;
 	}
 
 	/**
-	 * @return the ignoreExceptions
+	 * @param complexityPentaltyFullThreshold the complexityPentaltyFullThreshold to set
 	 */
-	public boolean isIgnoreExceptions() {
-		return this.ignoreExceptions;
+	public void setComplexityPentaltyFullThreshold(
+			int complexityPentaltyFullThreshold) {
+		this.complexityPentaltyFullThreshold = complexityPentaltyFullThreshold;
 	}
 
 	/**
-	 * @param constMax
-	 *            the constMax to set
+	 * @return the complexityFullPenalty
 	 */
-	public void setConstMax(final double constMax) {
-		this.constMax = constMax;
+	public double getComplexityFullPenalty() {
+		return complexityFullPenalty;
 	}
 
 	/**
-	 * @param constMin
-	 *            the constMin to set
+	 * @param complexityFullPenalty the complexityFullPenalty to set
 	 */
-	public void setConstMin(final double constMin) {
-		this.constMin = constMin;
+	public void setComplexityFullPenalty(double complexityFullPenalty) {
+		this.complexityFullPenalty = complexityFullPenalty;
 	}
 
-	/**
-	 * @param ignoreExceptions
-	 *            the ignoreExceptions to set
-	 */
-	public void setIgnoreExceptions(final boolean ignoreExceptions) {
-		this.ignoreExceptions = ignoreExceptions;
-	}
-
-	/**
-	 * @param maxIndividualSize
-	 *            the maxIndividualSize to set
-	 */
-	public void setMaxIndividualSize(final int maxIndividualSize) {
-		this.maxIndividualSize = maxIndividualSize;
-	}
-
-	/**
-	 * @param stackSize
-	 *            the stackSize to set
-	 */
-	public void setStackSize(final int stackSize) {
-		this.stackSize = stackSize;
-	}
-
+	
+	
+	
 }

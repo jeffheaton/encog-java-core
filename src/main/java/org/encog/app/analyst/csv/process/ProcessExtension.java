@@ -30,11 +30,16 @@ import java.util.Map;
 
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.csv.basic.LoadedRow;
+import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.extension.FunctionFactory;
+import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
 public class ProcessExtension {
+	
+
 	private Map<String,Integer> map = new HashMap<String,Integer>();
 	private int forwardWindowSize;
 	private int backwardWindowSize;
@@ -101,9 +106,92 @@ public class ProcessExtension {
 	}
 
 	public void register(FunctionFactory functions) {
-		functions.addExtension(new FunctionField(this));
-		functions.addExtension(new FunctionFieldMax(this));
-		functions.addExtension(new FunctionFieldMaxPIP(this));
+		final ProcessExtension pe = this;
+		
+		// add field
+		functions.addExtension(new ProgramExtensionTemplate() {
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			public String getName() {
+				return "field";
+			}
+
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			public int getChildNodeCount() {
+				return 2;
+			}
+
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			public ProgramNode factorFunction(EncogProgram theOwner,
+					String theName, ProgramNode[] theArgs) {
+				return new FunctionField(pe, theOwner, theArgs);
+			}
+		});
+		
+		// add fieldmax
+				functions.addExtension(new ProgramExtensionTemplate() {
+					/**
+					 * {@inheritDoc}
+					 */
+					@Override
+					public String getName() {
+						return "fieldmax";
+					}
+
+					/**
+					 * {@inheritDoc}
+					 */
+					@Override
+					public int getChildNodeCount() {
+						return 3;
+					}
+
+					/**
+					 * {@inheritDoc}
+					 */
+					@Override
+					public ProgramNode factorFunction(EncogProgram theOwner,
+							String theName, ProgramNode[] theArgs) {
+						return new FunctionFieldMax(pe, theOwner, theArgs);
+					}
+				});
+				
+				// add fieldmaxpip
+				functions.addExtension(new ProgramExtensionTemplate() {
+					/**
+					 * {@inheritDoc}
+					 */
+					@Override
+					public String getName() {
+						return "fieldmaxpip";
+					}
+
+					/**
+					 * {@inheritDoc}
+					 */
+					@Override
+					public int getChildNodeCount() {
+						return 3;
+					}
+
+					/**
+					 * {@inheritDoc}
+					 */
+					@Override
+					public ProgramNode factorFunction(EncogProgram theOwner,
+							String theName, ProgramNode[] theArgs) {
+						return new FunctionFieldMaxPIP(pe, theOwner, theArgs);
+					}
+				});
+		
 	}
 	
 	
