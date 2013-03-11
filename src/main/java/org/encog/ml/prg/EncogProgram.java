@@ -608,4 +608,8 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError,
 		writeNode(StandardExtensions.OPCODE_VAR, 0,
 				(short) this.variables.getVariableIndex(name));
 	}
+	
+	public boolean isInvalid() {
+		return this.holder.isInvalid();
+	}
 }

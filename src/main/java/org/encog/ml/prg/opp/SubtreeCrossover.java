@@ -105,8 +105,6 @@ public class SubtreeCrossover implements EvolutionaryOperator, Serializable {
 		// write to offspring
 		offspring.copy(parent1);
 		offspring.replaceNode(parent2, p2Index, p1Index);
-		offspring.evaluate();
-
 	}
 
 }

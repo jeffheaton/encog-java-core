@@ -101,7 +101,7 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 		super(TrainingImplementationType.Iterative);
 		
 		final Population population = new BasicPopulation(populationSize, null);
-		population.setGenomeFactory(new MLMethodGenomeFactory(phenotypeFactory));
+		population.setGenomeFactory(new MLMethodGenomeFactory(phenotypeFactory,population));
 		this.genetic = new MLMethodGeneticAlgorithmHelper(population, calculateScore);
 		this.genetic.setCODEC(new MLEncodableCODEC());
 		
