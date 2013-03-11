@@ -18,6 +18,8 @@ public interface EPLHolder {
 
 	void insert(int index, int size);
 
+	boolean isInvalid();
+
 	double readDouble(int index);
 
 	void readNodeHeader(int index, OpCodeHeader header);
@@ -29,7 +31,7 @@ public interface EPLHolder {
 	void writeByte(int index, byte[] b);
 
 	void writeDouble(int index, double value);
-
+	
 	void writeNode(int index, short opcode, int param1,
 			short param2);
 }
