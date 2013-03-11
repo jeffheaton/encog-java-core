@@ -261,7 +261,9 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 					this.newPopulation.add(genome);
 				}
 
-				if (getBestComparator().isBetterThan(genome, this.bestGenome)) {
+				if ( !Double.isInfinite(genome.getScore()) 
+						&& !Double.isNaN(genome.getScore()) 
+						&& getBestComparator().isBetterThan(genome, this.bestGenome)) {
 					this.bestGenome = genome;
 					getPopulation().setBestGenome(this.bestGenome);
 				}
@@ -625,12 +627,16 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 		pscore.process();
 		this.actualThreadCount = pscore.getThreadCount();
 
-		// just pick the first genome as best, it will be updated later.
-		// also most populations are sorted this way after training finishes
-		// (for reload)
+		// just pick the first genome with a valid score as best, it will be updated later.
+		// also most populations are sorted this way after training finishes (for reload)
 		// if there is an empty population, the constructor would have blow
-		this.bestGenome = getPopulation().getSpecies().get(0).getMembers()
-				.get(0);
+		List<Genome> list = getPopulation().flatten();
+		
+		int idx = 0;
+		do {
+			this.bestGenome = list.get(idx++);	
+		} while(idx<list.size() && (Double.isInfinite(this.bestGenome.getScore()) || Double.isNaN(this.bestGenome.getScore())) );
+		
 		getPopulation().setBestGenome(this.bestGenome);
 
 		// speciate

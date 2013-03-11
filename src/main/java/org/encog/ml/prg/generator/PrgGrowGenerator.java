@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.species.Species;
+import org.encog.ml.fitness.ZeroEvalScoreFunction;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.EncogProgramVariables;
@@ -32,29 +33,29 @@ public class PrgGrowGenerator {
 		}
 	}
 	
-	public EncogProgram generate() {
+	public EncogProgram generate(Random rnd) {
 		EncogProgram program = new EncogProgram(context);
-		program.setRootNode(createNode(program,0));
+		program.setRootNode(createNode(rnd, program,0));
 		return program;
 	}
 	
-	public ProgramNode generate(EncogProgram program) {
-		return createNode(program,0);
+	public ProgramNode generate(Random rnd, EncogProgram program) {
+		return createNode(rnd, program,0);
 	}
 	
-	private ProgramNode createLeafNode(EncogProgram program) {
-		int opCode = RangeRandomizer.randomInt(0, this.leaves.size()-1);
+	private ProgramNode createLeafNode(Random rnd, EncogProgram program) {
+		int opCode = rnd.nextInt(this.leaves.size());
 		ProgramExtensionTemplate temp = this.leaves.get(opCode);
 		ProgramNode result = temp.factorFunction(program, temp.getName(), new ProgramNode[] {});
 		result.randomize(program, 1.0);
 		return result;
 	}
 	
-	private ProgramNode createNode(EncogProgram program, int depth) {
+	private ProgramNode createNode(Random rnd, EncogProgram program, int depth) {
 		int maxOpCode = context.getFunctions().size();
 		
 		if( depth>=this.maxDepth ) {
-			return createLeafNode(program);
+			return createLeafNode(rnd, program);
 		}
 		
 		int opCode = RangeRandomizer.randomInt(0, maxOpCode-1);
@@ -63,20 +64,40 @@ public class PrgGrowGenerator {
 		
 		ProgramNode[] children = new ProgramNode[childNodeCount];
 		for(int i=0;i<children.length;i++) {
-			children[i] = createNode(program, depth+1);
+			children[i] = createNode(rnd, program, depth+1);
 		}
 		
 		ProgramNode result = temp.factorFunction(program, temp.getName(), children);
 		result.randomize(program, 1.0);
 		return result;
 	}
+	
+	private EncogProgram attemptCreateGenome(Random rnd, ZeroEvalScoreFunction score) {
+		boolean done = false;
+		EncogProgram result = null;
+		int tries = 0;
+		
+		while(!done) {
+			result = generate(rnd);
+			
+			double s = score.calculateScore(result);
+			
+			if( tries>100 ) {
+				done = true;
+			} else if( !Double.isNaN(s) && !Double.isInfinite(s) ) {
+				done = true;
+			}
+		}
+		
+		return result;
+	}
 
-	public void generate(Random rnd, PrgPopulation pop) {
+	public void generate(Random rnd, PrgPopulation pop, ZeroEvalScoreFunction score) {
 		pop.getSpecies().clear();
 		final Species defaultSpecies = pop.createSpecies();
 
 		for (int i = 0; i < pop.getPopulationSize(); i++) {
-			final EncogProgram prg = generate();
+			final EncogProgram prg = attemptCreateGenome(rnd,score);
 			defaultSpecies.add(prg);
 		}
 	}

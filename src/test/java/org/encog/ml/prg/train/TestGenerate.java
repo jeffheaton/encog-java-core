@@ -1,5 +1,7 @@
 package org.encog.ml.prg.train;
 
+import java.util.Random;
+
 import junit.framework.TestCase;
 
 import org.encog.ml.prg.EncogProgram;
@@ -19,7 +21,7 @@ public class TestGenerate extends TestCase {
 		KnownConstTemplate.createAllConst(context.getFunctions());
 		
 		PrgGrowGenerator rnd = new PrgGrowGenerator(context,2);
-		EncogProgram prg = rnd.generate();
+		EncogProgram prg = rnd.generate(new Random());
 		RenderCommonExpression render = new RenderCommonExpression();
 		String str = render.render(prg);
 		System.out.println(str);

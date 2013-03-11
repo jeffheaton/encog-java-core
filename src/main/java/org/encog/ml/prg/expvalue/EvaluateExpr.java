@@ -56,7 +56,11 @@ public class EvaluateExpr {
 	
 	public static ExpressionValue div(ExpressionValue a, ExpressionValue b) {
 		if( a.isInt() && b.isInt() ) {
-			return new ExpressionValue(a.toIntValue() / b.toIntValue());
+			long i = b.toIntValue();
+			if( i==0 ) {
+				return new ExpressionValue(Double.NaN);
+			}
+			return new ExpressionValue(a.toIntValue() / i);
 		}
 		return new ExpressionValue(a.toFloatValue() / b.toFloatValue());
 	}

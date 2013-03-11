@@ -49,7 +49,7 @@ public class SubtreeMutation implements EvolutionaryOperator {
 		
 		int index = rnd.nextInt(program.getRootNode().size());
 		ProgramNode node = program.findNode(index);
-		ProgramNode newInsert = this.rnd.generate(program);
+		ProgramNode newInsert = this.rnd.generate(rnd, program);
 		program.replaceNode(node,newInsert);
 		
 		offspring[0] = result;
