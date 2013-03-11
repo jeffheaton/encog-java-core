@@ -182,4 +182,9 @@ public class ByteArrayHolder implements EPLHolder, Serializable {
 			}
 		}
 	}
+
+	@Override
+	public void setInvalid(boolean b) {
+		this.invalid = b;
+	}
 }

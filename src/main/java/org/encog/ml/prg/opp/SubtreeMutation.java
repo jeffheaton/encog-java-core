@@ -139,7 +139,10 @@ public class SubtreeMutation implements EvolutionaryOperator, Serializable {
 		result.setProgramLength(result.getProgramLength() + rightSize);
 		result.copy(program, mutationEnd, t, rightSize);
 
-		result.size();
+		// Discard an invalid offspring.  This is typically from it growing too large.
+		if( result.isInvalid() ) {
+			offspring[0] = null;
+		}
 
 	}
 }

@@ -529,7 +529,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError,
 
 	private void validateAdvance(final int c) {
 		if (this.programLength + c > this.holder.getMaxIndividualFrames()) {
-			throw new EPLTooBig("Program has overrun its maximum length.");
+			this.holder.setInvalid(true);
 		}
 	}
 
@@ -538,7 +538,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError,
 			throw new EncogEPLError("Program length cannot go below zero.");
 		}
 		if (this.programLength > this.holder.getMaxIndividualFrames()) {
-			throw new EPLTooBig("Program has overrun its maximum length.");
+			this.holder.setInvalid(true);
 		}
 	}
 

@@ -105,6 +105,11 @@ public class SubtreeCrossover implements EvolutionaryOperator, Serializable {
 		// write to offspring
 		offspring.copy(parent1);
 		offspring.replaceNode(parent2, p2Index, p1Index);
+		
+		// Discard an invalid offspring.  This is typically from it growing too large.
+		if( offspring.isInvalid() ) {
+			theOffspring[0] = null;
+		}
 	}
 
 }

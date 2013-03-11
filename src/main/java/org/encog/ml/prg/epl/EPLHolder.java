@@ -34,4 +34,6 @@ public interface EPLHolder {
 	
 	void writeNode(int index, short opcode, int param1,
 			short param2);
+	
+	public void setInvalid(boolean b);
 }
