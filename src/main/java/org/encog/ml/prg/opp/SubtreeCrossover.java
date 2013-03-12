@@ -41,8 +41,10 @@ public class SubtreeCrossover implements EvolutionaryOperator {
 		
 		EncogProgramContext context = parent1.getContext();
 		EncogProgram result = context.cloneProgram(parent1);
-		int p1Index = rnd.nextInt(parent1.getRootNode().size());
-		int p2Index = rnd.nextInt(parent2.getRootNode().size());
+		int size1 = parent1.getRootNode().size();
+		int size2 = parent2.getRootNode().size();
+		int p1Index = rnd.nextInt(size1);
+		int p2Index = rnd.nextInt(size2);
 		ProgramNode resultNode = parent1.findNode(p1Index);
 		ProgramNode p2Node = parent2.findNode(p2Index);
 		ProgramNode newInsert = context.cloneBranch(result, p2Node);

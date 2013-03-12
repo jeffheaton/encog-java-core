@@ -97,6 +97,7 @@ public class TrainEA extends BasicEA implements MLTrain {
 	 */
 	@Override
 	public void finishTraining() {
+		super.finishTraining();
 		this.getPopulation().setBestGenome(this.getBestGenome());
 	}
 	
