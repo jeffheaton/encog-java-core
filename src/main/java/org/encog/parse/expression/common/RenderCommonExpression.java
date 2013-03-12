@@ -1,11 +1,10 @@
 package org.encog.parse.expression.common;
 
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.KnownConstNode;
 import org.encog.ml.prg.ProgramNode;
-import org.encog.parse.expression.ExpressionNodeType;
+import org.encog.parse.expression.CommonRender;
 
-public class RenderCommonExpression {
+public class RenderCommonExpression extends CommonRender {
 	private EncogProgram holder;
 
 	public RenderCommonExpression() {
@@ -18,15 +17,11 @@ public class RenderCommonExpression {
 	}
 
 	private String renderConst(ProgramNode node) {
-		return node.getExpressionData()[0].toStringValue();
-	}
-	
-	private String renderConstKnown(KnownConstNode node) {
-		return node.getName();
+		return node.getData()[0].toStringValue();
 	}
 
 	private String renderVar(ProgramNode node) {
-		int varIndex = node.getIntData()[0];
+		int varIndex = (int)node.getData()[0].toIntValue();
 		return this.holder.getVariables().getVariableName(varIndex);
 	}
 	
@@ -55,42 +50,12 @@ public class RenderCommonExpression {
 		return result.toString();
 	}
 
-	public ExpressionNodeType determineNodeType(ProgramNode node) {
-		
-		if( node instanceof KnownConstNode) {
-			return ExpressionNodeType.ConstKnown;
-		}
-		
-		if (node.getName().equals("#const")) {
-			return ExpressionNodeType.ConstVal;
-		}  
-			
-		if (node.getName().equals("#var")) {
-			return ExpressionNodeType.Variable;
-		} 
-		
-		if( node.getChildNodes().size()!=2 ) {
-			return ExpressionNodeType.Function;
-		}
-		
-		String name = node.getName();
-		
-		if( !Character.isLetterOrDigit(name.charAt(0)) ) {
-			return ExpressionNodeType.Operator;			
-		}
-		
-		return ExpressionNodeType.Function;		
-	}
-
 	private String renderNode(ProgramNode node) {
 		StringBuilder result = new StringBuilder();
 
 		switch (determineNodeType(node)) {
 		case ConstVal:
 			result.append(renderConst(node));
-			break;
-		case ConstKnown:
-			result.append(renderConstKnown((KnownConstNode)node));
 			break;
 		case Operator:
 			result.append(renderOperator(node));

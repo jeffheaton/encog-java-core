@@ -30,10 +30,10 @@ import java.util.Map;
 
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.csv.basic.LoadedRow;
-import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.expvalue.ExpressionValue;
+import org.encog.ml.prg.extension.BasicTemplate;
 import org.encog.ml.prg.extension.FunctionFactory;
-import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
@@ -109,86 +109,58 @@ public class ProcessExtension {
 		final ProcessExtension pe = this;
 		
 		// add field
-		functions.addExtension(new ProgramExtensionTemplate() {
-			/**
-			 * {@inheritDoc}
-			 */
+		functions.addExtension(new BasicTemplate("field",2,true,0) {
 			@Override
-			public String getName() {
-				return "field";
-			}
-
-			/**
-			 * {@inheritDoc}
-			 */
-			@Override
-			public int getChildNodeCount() {
-				return 2;
-			}
-
-			/**
-			 * {@inheritDoc}
-			 */
-			@Override
-			public ProgramNode factorFunction(EncogProgram theOwner,
-					String theName, ProgramNode[] theArgs) {
-				return new FunctionField(pe, theOwner, theArgs);
+			public ExpressionValue evaluate(ProgramNode actual) {
+				String fieldName = actual.getChildNode(0).evaluate().toStringValue();
+				int fieldIndex = (int)actual.getChildNode(1).evaluate().toFloatValue()+pe.getBackwardWindowSize();
+				String value = pe.getField(fieldName,fieldIndex);
+				return new ExpressionValue(value);
 			}
 		});
 		
 		// add fieldmax
-				functions.addExtension(new ProgramExtensionTemplate() {
-					/**
-					 * {@inheritDoc}
-					 */
+				functions.addExtension(new BasicTemplate("fieldmax",3,true,0) {
 					@Override
-					public String getName() {
-						return "fieldmax";
+					public ExpressionValue evaluate(ProgramNode actual) {
+						String fieldName = actual.getChildNode(0).evaluate().toStringValue();
+						int startIndex = (int)actual.getChildNode(1).evaluate().toIntValue();
+						int stopIndex = (int)actual.getChildNode(2).evaluate().toIntValue();
+						double value = Double.NEGATIVE_INFINITY;
+						
+						for(int i=startIndex;i<=stopIndex;i++) {
+							String str = pe.getField(fieldName,pe.getBackwardWindowSize()+i);
+							double d = pe.getFormat().parse(str);
+							value = Math.max(d, value);
+						}
+						
+						
+						return new ExpressionValue(value);
 					}
-
-					/**
-					 * {@inheritDoc}
-					 */
-					@Override
-					public int getChildNodeCount() {
-						return 3;
-					}
-
-					/**
-					 * {@inheritDoc}
-					 */
-					@Override
-					public ProgramNode factorFunction(EncogProgram theOwner,
-							String theName, ProgramNode[] theArgs) {
-						return new FunctionFieldMax(pe, theOwner, theArgs);
-					}
-				});
+					});
 				
 				// add fieldmaxpip
-				functions.addExtension(new ProgramExtensionTemplate() {
-					/**
-					 * {@inheritDoc}
-					 */
+				functions.addExtension(new BasicTemplate("fieldmaxpip",3,true,0) {
 					@Override
-					public String getName() {
-						return "fieldmaxpip";
-					}
-
-					/**
-					 * {@inheritDoc}
-					 */
-					@Override
-					public int getChildNodeCount() {
-						return 3;
-					}
-
-					/**
-					 * {@inheritDoc}
-					 */
-					@Override
-					public ProgramNode factorFunction(EncogProgram theOwner,
-							String theName, ProgramNode[] theArgs) {
-						return new FunctionFieldMaxPIP(pe, theOwner, theArgs);
+					public ExpressionValue evaluate(ProgramNode actual) {
+						String fieldName = actual.getChildNode(0).evaluate().toStringValue();
+						int startIndex = (int)actual.getChildNode(1).evaluate().toIntValue();
+						int stopIndex = (int)actual.getChildNode(2).evaluate().toIntValue();
+						int value = Integer.MIN_VALUE;
+						
+						String str = pe.getField(fieldName,pe.getBackwardWindowSize());
+						double quoteNow = pe.getFormat().parse(str);
+						
+						for(int i=startIndex;i<=stopIndex;i++) {
+							str = pe.getField(fieldName,pe.getBackwardWindowSize()+i);
+							double d = pe.getFormat().parse(str)-quoteNow;
+							d/=0.0001;
+							d=Math.round(d);
+							value = Math.max((int)d, value);
+						}
+						
+						
+						return new ExpressionValue(value);
 					}
 				});
 		

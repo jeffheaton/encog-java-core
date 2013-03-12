@@ -97,11 +97,9 @@ public class EncogProgramContext {
 		
 		ProgramNode result = targetProgram.getContext().getFunctions().factorFunction(name, targetProgram, args);
 		
-		// now copy the int and expression data for the node
-		EngineArray.arrayCopy(sourceBranch.getIntData(),result.getIntData());
-		
-		for(int i=0;i<sourceBranch.getExpressionData().length;i++) {
-			result.getExpressionData()[i] = new ExpressionValue(sourceBranch.getExpressionData()[i]);
+		// now copy the expression data for the node
+		for(int i=0;i<sourceBranch.getData().length;i++) {
+			result.getData()[i] = new ExpressionValue(sourceBranch.getData()[i]);
 		}
 		
 		// return the new node
@@ -116,7 +114,6 @@ public class EncogProgramContext {
 
 	public void loadAllFunctions() {
 		StandardExtensions.createAll(getFunctions());
-		KnownConstTemplate.createAllConst(getFunctions());
 	}
 	
 	

@@ -53,7 +53,7 @@ public class PrgGrowGenerator {
 	private ProgramNode createLeafNode(Random rnd, EncogProgram program) {
 		int opCode = rnd.nextInt(this.leaves.size());
 		ProgramExtensionTemplate temp = this.leaves.get(opCode);
-		ProgramNode result = temp.factorFunction(program, temp.getName(), new ProgramNode[] {});
+		ProgramNode result = new ProgramNode(program, temp, new ProgramNode[] {});
 		result.randomize(program, 1.0);
 		return result;
 	}
@@ -74,7 +74,7 @@ public class PrgGrowGenerator {
 			children[i] = createNode(rnd, program, depth+1);
 		}
 		
-		ProgramNode result = temp.factorFunction(program, temp.getName(), children);
+		ProgramNode result = new ProgramNode(program, temp, children);
 		result.randomize(program, 1.0);
 		return result;
 	}

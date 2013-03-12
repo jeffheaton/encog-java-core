@@ -59,7 +59,7 @@ public class RewriteConstants implements RewriteRule {
 					.getFunctions()
 					.factorFunction("#const", parentNode.getOwner(),
 							new ProgramNode[] {});
-			result.getExpressionData()[0] = parentNode.evaluate();
+			result.getData()[0] = parentNode.evaluate();
 		}
 		return result;
 	}

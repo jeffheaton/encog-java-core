@@ -24,51 +24,37 @@
 package org.encog.ml.prg;
 
 import org.encog.ml.prg.expvalue.ExpressionValue;
+import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.tree.TreeNode;
 import org.encog.ml.tree.basic.BasicTreeNode;
 
-
-
-public abstract class ProgramNode extends BasicTreeNode {
-
-	private final String name;
+public class ProgramNode extends BasicTreeNode {
+	private final ProgramExtensionTemplate template;
 	private final EncogProgram owner;
-	private final int[] intData;
-	private final ExpressionValue[] expressionData;
+	private final ExpressionValue[] data;
 
-	public ProgramNode(final EncogProgram theOwner,
-			final String theName, ProgramNode[] theArgs,int intDataSize, int expressionDataSize) {
+	public ProgramNode(final EncogProgram theOwner, ProgramExtensionTemplate theTemplate,
+			ProgramNode[] theArgs) {
 		this.owner = theOwner;
-		this.intData = new int[intDataSize];
-		this.expressionData = new ExpressionValue[expressionDataSize];
-		this.name = theName;
+		this.data = new ExpressionValue[theTemplate.getDataSize()];
+		this.template = theTemplate;
 		this.addChildNodes(theArgs);
 		
-		for(int i=0;i<this.intData.length;i++) {
-			this.intData[i] = 0;
-		}
-		
-		for(int i=0;i<this.expressionData.length;i++) {
-			this.expressionData[i] = new ExpressionValue(0);
+		for(int i=0;i<this.data.length;i++) {
+			this.data[i] = new ExpressionValue(0);
 		}
 	}
 
-	public String getName() {
-		return this.name;
+	public ExpressionValue evaluate() {
+		return this.template.evaluate(this);
 	}
-	
-	public abstract ExpressionValue evaluate();
 	
 	public EncogProgram getOwner() {
 		return owner;
 	}
 
-	public int[] getIntData() {
-		return intData;
-	}
-
-	public ExpressionValue[] getExpressionData() {
-		return expressionData;
+	public ExpressionValue[] getData() {
+		return data;
 	}
 	
 	public void randomize(EncogProgram program, double degree) {
@@ -77,21 +63,21 @@ public abstract class ProgramNode extends BasicTreeNode {
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append("[ProgramNode: name=");
-		result.append(this.getName());
+		result.append(this.template.getName());
 		result.append(", childCount=");
 		result.append(this.getChildNodes().size());
 		result.append(", childNodes=");
 		for(TreeNode tn: this.getChildNodes()) {
 			ProgramNode node = (ProgramNode)tn;
 			result.append(" ");
-			result.append(node.getName());
+			result.append(node.getTemplate().getName());
 		}
 		result.append("]");
 		return  result.toString();
 	}
 
 	public boolean isVariable() {
-		return false;
+		return this.template.isVariable();
 	}
 
 	public boolean allConstChildren() {
@@ -130,7 +116,16 @@ public abstract class ProgramNode extends BasicTreeNode {
 	public ProgramNode getChildNode(int index) {
 		return (ProgramNode)this.getChildNodes().get(index);
 	}
-	
-	
-	
+
+	/**
+	 * @return the template
+	 */
+	public ProgramExtensionTemplate getTemplate() {
+		return template;
+	}
+
+	public String getName() {
+		return this.template.getName();
+	}
+
 }

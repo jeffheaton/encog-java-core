@@ -160,14 +160,14 @@ public class ParseCommonExpression {
 					throw new EncogError("Invalid negative sign.");
 				}
 				ProgramNode v = this.holder.getFunctions().factorFunction("#const", holder, new ProgramNode[] {} );
-				v.getExpressionData()[0] = new ExpressionValue(true);
+				v.getData()[0] = new ExpressionValue(true);
 				return v;
 			} else if (varName.toString().equals("false")) {
 				if( neg ) {
 					throw new EncogError("Invalid negative sign.");
 				}
 				ProgramNode v = this.holder.getFunctions().factorFunction("#const", holder, new ProgramNode[] {} );
-				v.getExpressionData()[0] = new ExpressionValue(false);
+				v.getData()[0] = new ExpressionValue(false);
 				return v;
 			} else if (this.parser.peek() != '(') {
 				ProgramNode v;
@@ -175,9 +175,9 @@ public class ParseCommonExpression {
 				if( this.holder.getFunctions().isDefined(varName.toString(),0) ) {
 					v = this.holder.getFunctions().factorFunction(varName.toString(), holder, new ProgramNode[] {} );
 				} else {
-					this.holder.getVariables().setVariable(varName.toString(), null);
+					this.holder.getVariables().setVariable(varName.toString(), new ExpressionValue(0));
 					v = this.holder.getFunctions().factorFunction("#var", holder, new ProgramNode[] {} );
-					v.getIntData()[0] = this.holder.getVariables().getVariableIndex(varName.toString());
+					v.getData()[0].setValue( (int)this.holder.getVariables().getVariableIndex(varName.toString()));
 				}
 				
 				if (neg ) {
@@ -196,7 +196,7 @@ public class ParseCommonExpression {
 			this.parenCount++;
 			this.parser.advance();
 			target = expr();
-			if (this.parser.peek() == ')') {
+			while(this.parser.peek() == ')') {
 				this.parenCount--;
 				this.parser.advance();
 			}
@@ -221,6 +221,7 @@ public class ParseCommonExpression {
 		this.parenCount = 0;
 		this.parser = new SimpleParser(expression);
 		final ProgramNode result = expr();
+		
 		if (this.parenCount != 0) {
 			throw new ExpressionError("Unbalanced parentheses");
 		}
@@ -284,9 +285,9 @@ public class ParseCommonExpression {
 		ProgramNode v = this.holder.getFunctions().factorFunction("#const", holder, new ProgramNode[] {} );
 		
 		if (isFloat) {
-			v.getExpressionData()[0] = new ExpressionValue(value);
+			v.getData()[0] = new ExpressionValue(value);
 		} else {
-			v.getExpressionData()[0] = new ExpressionValue((int) value);
+			v.getData()[0] = new ExpressionValue((int) value);
 		}
 		
 		return v;
@@ -366,7 +367,7 @@ public class ParseCommonExpression {
 		}
 		
 		ProgramNode v = this.holder.getFunctions().factorFunction("#const", holder, new ProgramNode[] {} );
-		v.getExpressionData()[0] = new ExpressionValue(str.toString());
+		v.getData()[0] = new ExpressionValue(str.toString());
 		return v;
 	}
 

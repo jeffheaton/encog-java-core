@@ -1,8 +1,9 @@
 package org.encog.ml.prg.extension;
 
+import java.util.Random;
+
 import org.encog.Encog;
 import org.encog.mathutil.randomize.RangeRandomizer;
-import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.EvaluateExpr;
@@ -13,728 +14,223 @@ public class StandardExtensions {
 	/**
 	 * Standard unary minus operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_VAR_SUPPORT = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_VAR_SUPPORT = new BasicTemplate("#var", 0, true, 1) {
 		@Override
-		public String getName() {
-			return "#var";
+		public ExpressionValue evaluate(ProgramNode actual) {
+			int idx = (int)actual.getData()[0].toIntValue();
+			ExpressionValue result = actual.getOwner().getVariables().getVariable(idx);
+			if( result==null ) {
+				throw new ExpressionError("Variable has no value: " + actual.getOwner().getVariables().getVariableName(idx));
+			}
+			return result;
 		}
-
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
-		public int getChildNodeCount() {
-			return 0;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			final EncogProgram owner = theOwner;
-			return new ProgramNode(theOwner, theName, theArgs,1,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					int idx = this.getIntData()[0];
-					ExpressionValue result = owner.getVariables().getVariable(idx);
-					if( result==null ) {
-						throw new ExpressionError("Variable has no value: " + owner.getVariables().getVariableName(idx));
-					}
-					return result;
-				}
-				@Override
-				public boolean isVariable() {
-					return true;
-				}
-			};
+		public void randomize(Random rnd, ProgramNode actual, double degree) {
+			actual.getData()[0].setValue(rnd.nextInt(actual.getOwner().getContext().getDefinedVariables().size()));
 		}
 	};
 	
 	/**
-	 * Standard unary minus operator.
+	 * Numeric const.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_CONST_SUPPORT = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_CONST_SUPPORT = new BasicTemplate("#const",0,false, 1) {
 		@Override
-		public String getName() {
-			return "#const";
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return actual.getData()[0];
 		}
-
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
-		public int getChildNodeCount() {
-			return 0;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,1) {
-				
-				@Override
-				public void randomize(EncogProgram program, double degree) {
-					this.getExpressionData()[0] = new ExpressionValue(
-							RangeRandomizer.randomize(program.getContext().getConstMin(), program.getContext().getConstMax()));
-				}
-				
-				@Override
-				public ExpressionValue evaluate() {
-					return this.getExpressionData()[0];
-				}
-			};
+		public void randomize(Random rnd, ProgramNode actual, double degree) {
+			actual.getData()[0] = new ExpressionValue(
+					RangeRandomizer.randomize(rnd, actual.getOwner().getContext().getConstMin(), 
+							actual.getOwner().getContext().getConstMax()));
 		}
 	};
 
 	/**
 	 * Standard unary minus operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_NEG = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_NEG = new BasicTemplate("-",1,false,0) {
 		@Override
-		public String getName() {
-			return "-";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(-getChildNode(0)
-							.evaluate().toFloatValue());
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(-actual.getChildNode(0).evaluate().toFloatValue());
 		}
 	};
 
 	/**
 	 * Standard binary add operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_ADD = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_ADD = new BasicTemplate("+",2,false,0) {
 		@Override
-		public String getName() {
-			return "+";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 2;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return EvaluateExpr.add(getChildNode(0).evaluate(),
-							getChildNode(1).evaluate());
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return EvaluateExpr.add(actual.getChildNode(0).evaluate(),
+					actual.getChildNode(1).evaluate());
 		}
 	};
 
 	/**
 	 * Standard binary sub operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_SUB = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_SUB = new BasicTemplate("-",2,false,0) {
 		@Override
-		public String getName() {
-			return "-";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 2;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return EvaluateExpr.sub(getChildNode(0).evaluate(),
-							getChildNode(1).evaluate());
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return EvaluateExpr.sub(actual.getChildNode(0).evaluate(),
+					actual.getChildNode(1).evaluate());
 		}
 	};
 
 	/**
 	 * Standard binary multiply operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_MUL = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_MUL = new BasicTemplate("*",2,false,0) {
 		@Override
-		public String getName() {
-			return "*";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 2;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return EvaluateExpr.mul(getChildNode(0).evaluate(),
-							getChildNode(1).evaluate());
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return EvaluateExpr.mul(actual.getChildNode(0).evaluate(),
+					actual.getChildNode(1).evaluate());
 		}
 	};
 
 	/**
 	 * Standard binary multiply operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_DIV = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_DIV = new BasicTemplate("/",2,false,0) {
 		@Override
-		public String getName() {
-			return "/";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 2;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return EvaluateExpr.div(getChildNode(0).evaluate(),
-							getChildNode(1).evaluate());
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return EvaluateExpr.div(actual.getChildNode(0).evaluate(),
+					actual.getChildNode(1).evaluate());
 		}
 	};
 	
 	/**
 	 * Standard binary power operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_POWER = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_POWER = new BasicTemplate("^",2,false,0) {
 		@Override
-		public String getName() {
-			return "^";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 2;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return EvaluateExpr.pow(getChildNode(0).evaluate(), getChildNode(1).evaluate());
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return EvaluateExpr.pow(actual.getChildNode(0).evaluate(), actual.getChildNode(1).evaluate());
 		}
 	};
 	
 	/**
 	 * Standard boolean binary and operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_AND = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_AND = new BasicTemplate("&",2,false,0) {
 		@Override
-		public String getName() {
-			return "&";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 2;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(getChildNode(0).evaluate().toBooleanValue() && getChildNode(1).evaluate().toBooleanValue());
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(
+					actual.getChildNode(0).evaluate().toBooleanValue() 
+					&& actual.getChildNode(1).evaluate().toBooleanValue());
 		}
 	};
 	
 	/**
 	 * Standard boolean binary or operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_OR = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_OR = new BasicTemplate("|",2,false,0) {
 		@Override
-		public String getName() {
-			return "|";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 2;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(getChildNode(0).evaluate().toBooleanValue() || getChildNode(1).evaluate().toBooleanValue());
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(
+					actual.getChildNode(0).evaluate().toBooleanValue() 
+					|| actual.getChildNode(1).evaluate().toBooleanValue());
 		}
 	};
+	
 	/**
 	 * Standard boolean binary equal operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_EQUAL = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_EQUAL = new BasicTemplate("=",2,false,0) {
 		@Override
-		public String getName() {
-			return "=";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 2;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					double diff = Math.abs(getChildNode(0).evaluate().toFloatValue() - getChildNode(1).evaluate().toFloatValue());
-					return new ExpressionValue( diff<Encog.DEFAULT_DOUBLE_EQUAL);
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			double diff = Math.abs(actual.getChildNode(0).evaluate().toFloatValue() - actual.getChildNode(1).evaluate().toFloatValue());
+			return new ExpressionValue( diff<Encog.DEFAULT_DOUBLE_EQUAL);
 		}
 	};
 	/**
 	 * Standard boolean binary greater than operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_GREATER = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_GREATER = new BasicTemplate(">",2,false,0) {
 		@Override
-		public String getName() {
-			return ">";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 2;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(getChildNode(0).evaluate().toFloatValue() > getChildNode(1).evaluate().toFloatValue());
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(actual.getChildNode(0).evaluate().toFloatValue() > actual.getChildNode(1).evaluate().toFloatValue());
 		}
 	};
 	/**
 	 * Standard boolean binary less than operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_LESS = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_LESS = new BasicTemplate("<",2,false,0) {
 		@Override
-		public String getName() {
-			return "<";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 2;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(getChildNode(0).evaluate().toFloatValue() < getChildNode(1).evaluate().toFloatValue());
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(actual.getChildNode(0).evaluate().toFloatValue() < actual.getChildNode(1).evaluate().toFloatValue());
 		}
 	};
 	
 	/**
 	 * Standard numeric absolute value function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_ABS = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_ABS = new BasicTemplate("abs",1,false,0) {
 		@Override
-		public String getName() {
-			return "abs";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.abs(this.getChildNode(0)
-							.evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.abs(actual.getChildNode(0).evaluate().toFloatValue()));
 		}
 	};	
 	
 	/**
 	 * Standard numeric acos function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_ACOS = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_ACOS = new BasicTemplate("acos",1,false,0) {
 		@Override
-		public String getName() {
-			return "acos";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.acos(this.getChildNode(0)
-							.evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.abs(actual.getChildNode(0).evaluate().toFloatValue()));
 		}
 	};	
 	
 	/**
 	 * Standard numeric asin function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_ASIN = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_ASIN = new BasicTemplate("asin",1,false,0) {
 		@Override
-		public String getName() {
-			return "asin";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.asin(this.getChildNode(0)
-							.evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.asin(actual.getChildNode(0).evaluate().toFloatValue()));
 		}
 	};
 	
 	/**
 	 * Standard numeric atan function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_ATAN = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_ATAN = new BasicTemplate("atan",1,false,0) {
 		@Override
-		public String getName() {
-			return "atan";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.atan(this.getChildNode(0)
-							.evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.atan(actual.getChildNode(0).evaluate().toFloatValue()));
 		}
 	};
 	
 	/**
 	 * Standard numeric atan2 function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_ATAN2 = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_ATAN2 = new BasicTemplate("atan2",2,false,0) {
 		@Override
-		public String getName() {
-			return "atan2";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 2;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.atan2(
-							this.getChildNode(0).evaluate().toFloatValue(),
-							this.getChildNode(1).evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.atan2(actual.getChildNode(0).evaluate().toFloatValue(),
+					actual.getChildNode(1).evaluate().toFloatValue()));
 		}
 	};
 	
 	/**
 	 * Standard numeric ceil function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_CEIL = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_CEIL = new BasicTemplate("ceil",1,false,0) {
 		@Override
-		public String getName() {
-			return "ceil";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.ceil(this.getChildNode(0)
-							.evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.ceil(actual.getChildNode(0).evaluate().toFloatValue()));
 		}
 	};
 	
 	/**
 	 * Standard numeric cos function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_COS = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_COS = new BasicTemplate("cos",1,false,0) {
 		@Override
-		public String getName() {
-			return "cos";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.cos(this.getChildNode(0)
-							.evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.cos(actual.getChildNode(0).evaluate().toFloatValue()));
 		}
 	};
 	
@@ -742,506 +238,143 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric cosh function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_COSH = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_COSH = new BasicTemplate("cosh",1,false,0) {
 		@Override
-		public String getName() {
-			return "cosh";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.cosh(this.getChildNode(0)
-							.evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.cosh(actual.getChildNode(0).evaluate().toFloatValue()));
 		}
 	};
 	
 	/**
 	 * Standard numeric exp function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_EXP = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_EXP = new BasicTemplate("exp",1,false,0) {
 		@Override
-		public String getName() {
-			return "exp";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.exp(this.getChildNode(0)
-							.evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.exp(actual.getChildNode(0).evaluate().toFloatValue()));
 		}
 	};
 	
 	/**
 	 * Standard numeric floor function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_FLOOR = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_FLOOR = new BasicTemplate("floor",1,false,0) {
 		@Override
-		public String getName() {
-			return "floor";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.floor(this.getChildNode(0)
-							.evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.floor(actual.getChildNode(0).evaluate().toFloatValue()));
 		}
 	};
 	
 	/**
 	 * Standard numeric log function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_LOG = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_LOG = new BasicTemplate("log",1,false,0) {
 		@Override
-		public String getName() {
-			return "log";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.log(this.getChildNode(0)
-							.evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.log(actual.getChildNode(0).evaluate().toFloatValue()));
 		}
 	};
 	
 	/**
 	 * Standard numeric log10 function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_LOG10 = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_LOG10 = new BasicTemplate("log10",1,false,0) {
 		@Override
-		public String getName() {
-			return "log10";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.log10(this.getChildNode(0)
-							.evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.log10(actual.getChildNode(0).evaluate().toFloatValue()));
 		}
 	};
 
 	/**
 	 * Standard numeric max function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_MAX = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_MAX = new BasicTemplate("max",2,false,0) {
 		@Override
-		public String getName() {
-			return "max";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 2;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.max(
-							this.getChildNode(0).evaluate().toFloatValue(),
-							this.getChildNode(1).evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.max(actual.getChildNode(0).evaluate().toFloatValue(),
+					actual.getChildNode(1).evaluate().toFloatValue()));
 		}
 	};
 	
 	/**
 	 * Standard numeric max function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_MIN = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_MIN = new BasicTemplate("min",1,false,0) {
 		@Override
-		public String getName() {
-			return "min";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 2;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.min(
-							this.getChildNode(0).evaluate().toFloatValue(),
-							this.getChildNode(1).evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.min(actual.getChildNode(0).evaluate().toFloatValue(),
+					actual.getChildNode(1).evaluate().toFloatValue()));
 		}
 	};
 	
 	/**
 	 * Standard numeric pow function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_POW = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_POW = new BasicTemplate("pow",2,false,0) {
 		@Override
-		public String getName() {
-			return "pow";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 2;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.pow(
-							this.getChildNode(0).evaluate().toFloatValue(),
-							this.getChildNode(1).evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.pow(actual.getChildNode(0).evaluate().toFloatValue(),
+					actual.getChildNode(1).evaluate().toFloatValue()));
 		}
 	};
 	
 	/**
 	 * Standard numeric random function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_RANDOM = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_RANDOM = new BasicTemplate("rand",0,false,0) {
 		@Override
-		public String getName() {
-			return "rand";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.random());
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.random());
 		}
 	};
 	
 	/**
 	 * Standard numeric log10 function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_ROUND = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_ROUND = new BasicTemplate("round",1,false,0) {
 		@Override
-		public String getName() {
-			return "round";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.round(this.getChildNode(0)
-							.evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.round(actual.getChildNode(0).evaluate().toFloatValue()));
 		}
 	};
 	
 	/**
 	 * Standard numeric sin function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_SIN = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_SIN = new BasicTemplate("sin",1,false,0) {
 		@Override
-		public String getName() {
-			return "sin";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.sin(this.getChildNode(0)
-							.evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.sin(actual.getChildNode(0).evaluate().toFloatValue()));
 		}
 	};
 	
 	/**
 	 * Standard numeric sinh function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_SINH = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_SINH = new BasicTemplate("sinh",1,false,0) {
 		@Override
-		public String getName() {
-			return "sin";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.sinh(this.getChildNode(0)
-							.evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.sinh(actual.getChildNode(0).evaluate().toFloatValue()));
 		}
 	};
 	
 	/**
 	 * Standard numeric sqrt function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_SQRT = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_SQRT = new BasicTemplate("sqrt",1,false,0) {
 		@Override
-		public String getName() {
-			return "sqrt";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.sqrt(this.getChildNode(0)
-							.evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.sqrt(actual.getChildNode(0).evaluate().toFloatValue()));
 		}
 	};
 
 	/**
 	 * Standard numeric tan function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_TAN = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_TAN = new BasicTemplate("tan",1,false,0) {
 		@Override
-		public String getName() {
-			return "tan";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.tanh(this.getChildNode(0)
-							.evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.tan(actual.getChildNode(0).evaluate().toFloatValue()));
 		}
 	};
 	
@@ -1249,108 +382,30 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric tanh function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_TANH = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_TANH = new BasicTemplate("tanh",1,false,0) {
 		@Override
-		public String getName() {
-			return "tanh";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.tanh(this.getChildNode(0)
-							.evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.tanh(actual.getChildNode(0).evaluate().toFloatValue()));
 		}
 	};
 	
 	/**
 	 * Standard numeric toDegrees function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_TODEG = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_TODEG = new BasicTemplate("todeg",1,false,0) {
 		@Override
-		public String getName() {
-			return "toDegrees";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.toDegrees(this.getChildNode(0)
-							.evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.toDegrees(actual.getChildNode(0).evaluate().toFloatValue()));
 		}
 	};
 	
 	/**
 	 * Standard numeric toRadians function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_TORAD = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_TORAD = new BasicTemplate("torad",1,false,0) {
 		@Override
-		public String getName() {
-			return "toRadians";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(Math.toRadians(this.getChildNode(0)
-							.evaluate().toFloatValue()));
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(Math.toRadians(actual.getChildNode(0).evaluate().toFloatValue()));
 		}
 	};
 	
@@ -1358,385 +413,125 @@ public class StandardExtensions {
 	/**
 	 * Standard string length function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_LENGTH = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_LENGTH = new BasicTemplate("length",1,false,0) {
 		@Override
-		public String getName() {
-			return "length";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(this.getChildNode(0).evaluate().toStringValue().length());
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(actual.getChildNode(0).evaluate().toStringValue().length());
 		}
 	};
 	
 	/**
 	 * Numeric formatting function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_FORMAT = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_FORMAT = new BasicTemplate("format",2,false,0) {
 		@Override
-		public String getName() {
-			return "format";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 2;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue( this.getOwner().getContext().getFormat().format(
-							this.getChildNode(0).evaluate().toFloatValue(),
-							(int)this.getChildNode(1).evaluate().toFloatValue()) );
-
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue( actual.getOwner().getContext().getFormat().format(
+					actual.getChildNode(0).evaluate().toFloatValue(),
+					(int)actual.getChildNode(1).evaluate().toFloatValue()) );
 		}
 	};
 	
 	/**
 	 * String left function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_LEFT = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_LEFT = new BasicTemplate("left",2,false,0) {
 		@Override
-		public String getName() {
-			return "left";
+		public ExpressionValue evaluate(ProgramNode actual) {
+			String str = actual.getChildNode(0).evaluate().toStringValue();
+			int idx = (int)actual.getChildNode(1).evaluate().toFloatValue();					
+			String result = str.substring(0,idx);
+			
+			return new ExpressionValue( result );
 		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 2;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					String str = this.getChildNode(0).evaluate().toStringValue();
-					int idx = (int)this.getChildNode(1).evaluate().toFloatValue();					
-					String result = str.substring(0,idx);
-					
-					return new ExpressionValue( result );
-
-				}
-			};
-		}
+		
 	};
 	
 	/**
 	 * String right function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_RIGHT = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_RIGHT = new BasicTemplate("right",1,false,0) {
 		@Override
-		public String getName() {
-			return "right";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 2;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					String str = this.getChildNode(0).evaluate().toStringValue();
-					int idx = (int)this.getChildNode(1).evaluate().toFloatValue();					
-					String result = str.substring(0,idx);
-					
-					return new ExpressionValue( result );
-
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			String str = actual.getChildNode(0).evaluate().toStringValue();
+			int idx = (int)actual.getChildNode(1).evaluate().toFloatValue();					
+			String result = str.substring(idx);
+			
+			return new ExpressionValue( result );
 		}
 	};
 	
 	/**
 	 * Standard string cint function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_CINT = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_CINT = new BasicTemplate("cint",1,false,0) {
 		@Override
-		public String getName() {
-			return "cint";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					;
-					return new ExpressionValue( this.getChildNode(0).evaluate().toIntValue() );
-
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue( actual.getChildNode(0).evaluate().toIntValue() );
 		}
 	};
 
 	/**
 	 * Standard string cfloat function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_CFLOAT = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_CFLOAT = new BasicTemplate("cfloat",1,false,0) {
 		@Override
-		public String getName() {
-			return "cfloat";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					;
-					return new ExpressionValue( this.getChildNode(0).evaluate().toFloatValue() );
-
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue( actual.getChildNode(0).evaluate().toFloatValue() );
 		}
 	};
 
 	/**
 	 * Standard string cstr function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_CSTR = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_CSTR = new BasicTemplate("cstr",1,false,0) {
 		@Override
-		public String getName() {
-			return "cstr";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					;
-					return new ExpressionValue( this.getChildNode(0).evaluate().toStringValue() );
-
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue( actual.getChildNode(0).evaluate().toStringValue() );
 		}
 	};
 
 	/**
 	 * Standard string cbool function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_CBOOL = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_CBOOL = new BasicTemplate("cbool",1,false,0) {
 		@Override
-		public String getName() {
-			return "cbool";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 1;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					;
-					return new ExpressionValue( this.getChildNode(0).evaluate().toBooleanValue() );
-
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue( actual.getChildNode(0).evaluate().toBooleanValue() );
 		}
 	};
 
 	/**
 	 * Standard string iff function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_IFF = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_IFF = new BasicTemplate("iff",3,false,0) {
 		@Override
-		public String getName() {
-			return "iff";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 3;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					boolean a = this.getChildNode(0).evaluate().toBooleanValue();
-					if( a ) {
-						return this.getChildNode(1).evaluate();	
-					} else {
-						return this.getChildNode(2).evaluate();
-					}
-				}
-			};	
+		public ExpressionValue evaluate(ProgramNode actual) {
+			boolean a = actual.getChildNode(0).evaluate().toBooleanValue();
+			if( a ) {
+				return actual.getChildNode(1).evaluate();	
+			} else {
+				return actual.getChildNode(2).evaluate();
+			}
 		}
 	};
 	
 	/**
-	 * Standard string iff function.
+	 * Standard string clamp function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_CLAMP = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_CLAMP = new BasicTemplate("clamp",3,false,0) {
 		@Override
-		public String getName() {
-			return "clamp";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 3;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					double value = this.getChildNode(0).evaluate().toFloatValue();
-					double min = this.getChildNode(1).evaluate().toFloatValue();
-					double max = this.getChildNode(2).evaluate().toFloatValue();
-					if( value<min ) {
-						return new ExpressionValue(min);
-					} else if( value>max ) {
-						return new ExpressionValue(max);
-					} else {
-						return new ExpressionValue(value);
-					}
-				}
-			};		
+		public ExpressionValue evaluate(ProgramNode actual) {
+			double value = actual.getChildNode(0).evaluate().toFloatValue();
+			double min = actual.getChildNode(1).evaluate().toFloatValue();
+			double max = actual.getChildNode(2).evaluate().toFloatValue();
+			if( value<min ) {
+				return new ExpressionValue(min);
+			} else if( value>max ) {
+				return new ExpressionValue(max);
+			} else {
+				return new ExpressionValue(value);
+			}
 		}
 	};
 
@@ -1744,69 +539,20 @@ public class StandardExtensions {
 	/**
 	 * Standard boolean binary greater than operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_GREATER_EQUAL = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_GREATER_EQUAL = new BasicTemplate(">=",2,false,0) {
 		@Override
-		public String getName() {
-			return ">=";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 2;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(getChildNode(0).evaluate().toFloatValue() >= getChildNode(1).evaluate().toFloatValue());
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(actual.getChildNode(0).evaluate().toFloatValue() >= actual.getChildNode(1).evaluate().toFloatValue());
 		}
 	};
+	
 	/**
 	 * Standard boolean binary less than operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_LESS_EQUAL = new BasicTemplate() {
-		/**
-		 * {@inheritDoc}
-		 */
+	public static ProgramExtensionTemplate EXTENSION_LESS_EQUAL = new BasicTemplate("<=",2,false,0) {
 		@Override
-		public String getName() {
-			return "<=";
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodeCount() {
-			return 2;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public ProgramNode factorFunction(EncogProgram theOwner,
-				String theName, ProgramNode[] theArgs) {
-			return new ProgramNode(theOwner, theName, theArgs,0,0) {
-				@Override
-				public ExpressionValue evaluate() {
-					return new ExpressionValue(getChildNode(0).evaluate().toFloatValue() <= getChildNode(1).evaluate().toFloatValue());
-				}
-			};
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(actual.getChildNode(0).evaluate().toFloatValue() <= actual.getChildNode(1).evaluate().toFloatValue());
 		}
 	};
 	

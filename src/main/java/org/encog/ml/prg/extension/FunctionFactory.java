@@ -28,9 +28,7 @@ public class FunctionFactory {
 		}
 		
 		ProgramExtensionTemplate temp = this.templateMap.get(key);
-		fn = temp.factorFunction(program, name, args);
-		
-		return fn;
+		return new ProgramNode(program, temp, args);
 	}
 
 	public void addExtension(ProgramExtensionTemplate ext) {

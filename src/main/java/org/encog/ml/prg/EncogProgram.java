@@ -76,7 +76,6 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 	public EncogProgram() {
 		this(new EncogProgramContext(), new EncogProgramVariables());
 		StandardExtensions.createAll(this.context.getFunctions());
-		KnownConstTemplate.createAllConst(this.context.getFunctions());
 	}
 	
 	public EncogProgram(EncogProgramContext theContext) {

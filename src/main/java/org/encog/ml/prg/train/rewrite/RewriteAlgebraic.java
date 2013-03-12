@@ -40,11 +40,11 @@ public class RewriteAlgebraic implements RewriteRule {
 			ProgramNode child2 = parent.getChildNode(1);
 			
 			if( child2.getName().equals("#const") ) {
-				ExpressionValue v = child2.getExpressionData()[0];
+				ExpressionValue v = child2.getData()[0];
 				if( v.isFloat() ) {
 					double v2 = v.toFloatValue();
 					if( v2<0 ) {
-						child2.getExpressionData()[0].setValue(-v2);
+						child2.getData()[0].setValue(-v2);
 						parent = parent.getOwner().getContext().getFunctions().factorFunction("+", parent.getOwner(), new ProgramNode[] 
 								{child1,child2} );
 					}
@@ -52,7 +52,7 @@ public class RewriteAlgebraic implements RewriteRule {
 				else if( v.isInt() ) {
 					long v2 = v.toIntValue();
 					if( v2<0 ) {
-						child2.getExpressionData()[0].setValue(-v2);
+						child2.getData()[0].setValue(-v2);
 						parent = parent.getOwner().getContext().getFunctions().factorFunction("+", parent.getOwner(), new ProgramNode[] 
 								{child1,child2} );
 					}
@@ -71,11 +71,11 @@ public class RewriteAlgebraic implements RewriteRule {
 				parent = parent.getOwner().getContext().getFunctions().factorFunction("-", parent.getOwner(), new ProgramNode[] 
 						{child1,child2.getChildNode(0)} );
 			} else if( child2.getName().equals("#const") ) {
-				ExpressionValue v = child2.getExpressionData()[0];
+				ExpressionValue v = child2.getData()[0];
 				if( v.isFloat() ) {
 					double v2 = v.toFloatValue();
 					if( v2<0 ) {
-						child2.getExpressionData()[0].setValue(-v2);
+						child2.getData()[0].setValue(-v2);
 						parent = parent.getOwner().getContext().getFunctions().factorFunction("-", parent.getOwner(), new ProgramNode[] 
 								{child1,child2} );
 					}
@@ -83,7 +83,7 @@ public class RewriteAlgebraic implements RewriteRule {
 				else if( v.isInt() ) {
 					long v2 = v.toIntValue();
 					if( v2<0 ) {
-						child2.getExpressionData()[0].setValue(-v2);
+						child2.getData()[0].setValue(-v2);
 						parent = parent.getOwner().getContext().getFunctions().factorFunction("-", parent.getOwner(), new ProgramNode[] 
 								{child1,child2} );
 					}
@@ -95,7 +95,7 @@ public class RewriteAlgebraic implements RewriteRule {
 	
 	private ProgramNode createNumericConst(EncogProgram prg, double v) {
 		ProgramNode result = prg.getFunctions().factorFunction("#const", prg, new ProgramNode[] {} );
-		result.getExpressionData()[0] = new ExpressionValue(v);
+		result.getData()[0] = new ExpressionValue(v);
 		return result;
 	}
 	
@@ -105,7 +105,7 @@ public class RewriteAlgebraic implements RewriteRule {
 			ProgramNode child2 = parent.getChildNode(1);
 			
 			if( child1.getName().equals("#var") && child2.getName().equals("#var") ) {
-				if( child1.getIntData()[0]==child2.getIntData()[0]) {
+				if( child1.getData()[0].toIntValue()==child2.getData()[0].toIntValue()) {
 					switch(parent.getName().charAt(0)) {
 						case '-':
 							parent = createNumericConst(parent.getOwner(),0);

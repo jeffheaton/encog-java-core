@@ -1,11 +1,15 @@
 package org.encog.ml.prg.extension;
 
-import org.encog.ml.prg.EncogProgram;
+import java.util.Random;
+
 import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.expvalue.ExpressionValue;
 
 public interface ProgramExtensionTemplate {
 	String getName();
 	int getChildNodeCount();
-	ProgramNode factorFunction(EncogProgram theOwner,
-			String theName, ProgramNode[] theArgs);
+	ExpressionValue evaluate(ProgramNode actual);
+	boolean isVariable();
+	void randomize(Random rnd, ProgramNode actual, double degree);
+	int getDataSize();
 }

@@ -6,7 +6,6 @@ import junit.framework.TestCase;
 
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
-import org.encog.ml.prg.KnownConstTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.ml.prg.generator.PrgGrowGenerator;
 import org.encog.parse.expression.common.RenderCommonExpression;
@@ -18,7 +17,6 @@ public class TestGenerate extends TestCase {
 		context.defineVariable("x");
 		
 		StandardExtensions.createAll(context.getFunctions());
-		KnownConstTemplate.createAllConst(context.getFunctions());
 		
 		PrgGrowGenerator rnd = new PrgGrowGenerator(context,2);
 		EncogProgram prg = rnd.generate(new Random());
