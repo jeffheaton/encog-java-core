@@ -39,6 +39,13 @@ public class PrgGrowGenerator {
 		return program;
 	}
 	
+	/**
+	 * Generate a new random branch that can be used with the specified program.
+	 * Does not actually attach the new branch anywhere.
+	 * @param rnd Random number generator.
+	 * @param program The program to generate a branch for.
+	 * @return The new branch.
+	 */
 	public ProgramNode generate(Random rnd, EncogProgram program) {
 		return createNode(rnd, program,0);
 	}

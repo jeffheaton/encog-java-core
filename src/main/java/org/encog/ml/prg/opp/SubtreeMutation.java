@@ -47,10 +47,10 @@ public class SubtreeMutation implements EvolutionaryOperator {
 		EncogProgramContext context = program.getContext();
 		EncogProgram result = context.cloneProgram(program);
 		
-		int index = rnd.nextInt(program.getRootNode().size());
-		ProgramNode node = program.findNode(index);
-		ProgramNode newInsert = this.rnd.generate(rnd, program);
-		program.replaceNode(node,newInsert);
+		int index = rnd.nextInt(result.getRootNode().size());
+		ProgramNode node = result.findNode(index);
+		ProgramNode newInsert = this.rnd.generate(rnd, result);
+		result.replaceNode(node,newInsert);
 		
 		offspring[0] = result;
 	}
