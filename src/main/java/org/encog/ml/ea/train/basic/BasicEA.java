@@ -33,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.encog.Encog;
 import org.encog.EncogError;
+import org.encog.EncogShutdownTask;
 import org.encog.mathutil.randomize.factory.RandomFactory;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.MLContext;
@@ -67,7 +68,7 @@ import org.encog.util.logging.EncogLogging;
  * The EA works from a score function.
  */
 public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
-		Serializable {
+		EncogShutdownTask, Serializable {
 
 	/**
 	 * Calculate the score adjustment, based on adjusters.
@@ -211,12 +212,12 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	 * The thread pool executor.
 	 */
 	private ExecutorService taskExecutor;
-	
+
 	/**
 	 * Holds the threads used each iteration.
 	 */
 	private final List<Callable<Object>> threadList = new ArrayList<Callable<Object>>();
-	
+
 	/**
 	 * Rewrite rules that can simplify genomes.
 	 */
@@ -351,12 +352,18 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	 */
 	@Override
 	public void finishTraining() {
+
 		// wait for threadpool to shutdown
-		taskExecutor.shutdown();
-		try {
-			taskExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.MINUTES);
-		} catch (final InterruptedException e) {
-			throw new GeneticError(e);
+		if (taskExecutor != null) {
+			taskExecutor.shutdown();
+			try {
+				taskExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.MINUTES);
+			} catch (final InterruptedException e) {
+				throw new GeneticError(e);
+			} finally {
+				taskExecutor = null;
+				Encog.getInstance().removeShutdownTask(this);
+			}
 		}
 	}
 
@@ -581,7 +588,7 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 				this.threadList.add(worker);
 			}
 		}
-		
+
 		// run all threads and wait for them to finish
 		try {
 			this.taskExecutor.invokeAll(this.threadList);
@@ -650,6 +657,9 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 		} else {
 			taskExecutor = Executors.newFixedThreadPool(this.actualThreadCount);
 		}
+
+		// register for shutdown
+		Encog.getInstance().removeShutdownTask(this);
 
 		// just pick the first genome with a valid score as best, it will be
 		// updated later.
@@ -813,7 +823,7 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	public void setValidationMode(final boolean validationMode) {
 		this.validationMode = validationMode;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -839,6 +849,11 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 				}
 			}
 		}
+	}
+
+	@Override
+	public void performShutdownTask() {
+		finishTraining();
 	}
 
 }
