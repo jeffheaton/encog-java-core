@@ -26,6 +26,7 @@ package org.encog.ml.ea.train.basic;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -58,6 +59,7 @@ import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.prg.train.GeneticTrainingParams;
 import org.encog.util.concurrency.MultiThreadable;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * Provides a basic implementation of a multi-threaded Evolutionary Algorithm.
@@ -205,6 +207,17 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	private Genome bestGenome;
 
 	/**
+	 * The thread pool executor.
+	 */
+	private ExecutorService taskExecutor;
+	
+	/**
+	 * Holds the threads used each iteration.
+	 */
+	private final List<Callable<Object>> threadList = new ArrayList<Callable<Object>>();
+
+
+	/**
 	 * Construct an EA.
 	 * 
 	 * @param thePopulation
@@ -261,9 +274,10 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 					this.newPopulation.add(genome);
 				}
 
-				if ( !Double.isInfinite(genome.getScore()) 
-						&& !Double.isNaN(genome.getScore()) 
-						&& getBestComparator().isBetterThan(genome, this.bestGenome)) {
+				if (!Double.isInfinite(genome.getScore())
+						&& !Double.isNaN(genome.getScore())
+						&& getBestComparator().isBetterThan(genome,
+								this.bestGenome)) {
 					this.bestGenome = genome;
 					getPopulation().setBestGenome(this.bestGenome);
 				}
@@ -332,7 +346,13 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	 */
 	@Override
 	public void finishTraining() {
-
+		// wait for threadpool to shutdown
+		taskExecutor.shutdown();
+		try {
+			taskExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.MINUTES);
+		} catch (final InterruptedException e) {
+			throw new GeneticError(e);
+		}
 	}
 
 	/**
@@ -526,20 +546,13 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 
 		this.iteration++;
 
-		ExecutorService taskExecutor = null;
-
-		if (this.actualThreadCount == 1) {
-			taskExecutor = Executors.newSingleThreadScheduledExecutor();
-		} else {
-			taskExecutor = Executors.newFixedThreadPool(this.actualThreadCount);
-		}
-
 		// Clear new population to just best genome.
 		this.newPopulation.clear();
 		this.newPopulation.add(this.bestGenome);
 		this.oldBestGenome = this.bestGenome;
 
 		// execute species in parallel
+		this.threadList.clear();
 		for (final Species species : getPopulation().getSpecies()) {
 			int numToSpawn = species.getOffspringCount();
 
@@ -560,16 +573,15 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 
 			while (numToSpawn-- > 0) {
 				final EAWorker worker = new EAWorker(this, species);
-				taskExecutor.execute(worker);
+				this.threadList.add(worker);
 			}
 		}
-
-		// wait for threadpool to shutdown
-		taskExecutor.shutdown();
+		
+		// run all threads and wait for them to finish
 		try {
-			taskExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.MINUTES);
-		} catch (final InterruptedException e) {
-			throw new GeneticError(e);
+			this.taskExecutor.invokeAll(this.threadList);
+		} catch (InterruptedException e) {
+			EncogLogging.log(e);
 		}
 
 		if (this.reportedError != null && !getShouldIgnoreExceptions()) {
@@ -627,16 +639,27 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 		pscore.process();
 		this.actualThreadCount = pscore.getThreadCount();
 
-		// just pick the first genome with a valid score as best, it will be updated later.
-		// also most populations are sorted this way after training finishes (for reload)
+		// start up the thread pool
+		if (this.actualThreadCount == 1) {
+			taskExecutor = Executors.newSingleThreadScheduledExecutor();
+		} else {
+			taskExecutor = Executors.newFixedThreadPool(this.actualThreadCount);
+		}
+
+		// just pick the first genome with a valid score as best, it will be
+		// updated later.
+		// also most populations are sorted this way after training finishes
+		// (for reload)
 		// if there is an empty population, the constructor would have blow
 		List<Genome> list = getPopulation().flatten();
-		
+
 		int idx = 0;
 		do {
-			this.bestGenome = list.get(idx++);	
-		} while(idx<list.size() && (Double.isInfinite(this.bestGenome.getScore()) || Double.isNaN(this.bestGenome.getScore())) );
-		
+			this.bestGenome = list.get(idx++);
+		} while (idx < list.size()
+				&& (Double.isInfinite(this.bestGenome.getScore()) || Double
+						.isNaN(this.bestGenome.getScore())));
+
 		getPopulation().setBestGenome(this.bestGenome);
 
 		// speciate

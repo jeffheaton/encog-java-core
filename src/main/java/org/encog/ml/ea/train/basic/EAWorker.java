@@ -1,13 +1,14 @@
 package org.encog.ml.ea.train.basic;
 
 import java.util.Random;
+import java.util.concurrent.Callable;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.species.Species;
 
-public class EAWorker implements Runnable {
+public class EAWorker implements Callable<Object> {
 
 	private final Species species;
 	private final Genome[] parents;
@@ -33,7 +34,7 @@ public class EAWorker implements Runnable {
 	}
 
 	@Override
-	public void run() {
+	public Object call() {
 		boolean success = false;
 		do {
 			try {
@@ -88,7 +89,7 @@ public class EAWorker implements Runnable {
 
 					this.train.calculateScore(this.children[0]);
 					if (!this.train.addChild(this.children[0])) {
-						return;
+						return null;
 					}
 				}
 			} catch (final Throwable t) {
@@ -99,5 +100,6 @@ public class EAWorker implements Runnable {
 			}
 
 		} while (!success);
+		return null;
 	}
 }

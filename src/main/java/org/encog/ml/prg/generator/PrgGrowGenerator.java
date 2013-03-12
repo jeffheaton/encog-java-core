@@ -72,7 +72,7 @@ public class PrgGrowGenerator {
 		return result;
 	}
 	
-	private EncogProgram attemptCreateGenome(Random rnd, ZeroEvalScoreFunction score) {
+	private EncogProgram attemptCreateGenome(Random rnd, ZeroEvalScoreFunction score, Set<String> contents) {
 		boolean done = false;
 		EncogProgram result = null;
 		int tries = 0;
@@ -84,7 +84,7 @@ public class PrgGrowGenerator {
 			
 			if( tries>100 ) {
 				done = true;
-			} else if( !Double.isNaN(s) && !Double.isInfinite(s) ) {
+			} else if( !Double.isNaN(s) && !Double.isInfinite(s) && !contents.contains(result.dumpAsCommonExpression()) ) {
 				done = true;
 			}
 		}
@@ -93,12 +93,15 @@ public class PrgGrowGenerator {
 	}
 
 	public void generate(Random rnd, PrgPopulation pop, ZeroEvalScoreFunction score) {
+		Set<String> contents = new HashSet<String>();
+		
 		pop.getSpecies().clear();
 		final Species defaultSpecies = pop.createSpecies();
 
 		for (int i = 0; i < pop.getPopulationSize(); i++) {
-			final EncogProgram prg = attemptCreateGenome(rnd,score);
+			final EncogProgram prg = attemptCreateGenome(rnd,score,contents);
 			defaultSpecies.add(prg);
+			contents.add(prg.dumpAsCommonExpression());
 		}
 	}
 }
