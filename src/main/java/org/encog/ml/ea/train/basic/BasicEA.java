@@ -56,6 +56,7 @@ import org.encog.ml.ea.species.SingleSpeciation;
 import org.encog.ml.ea.species.Speciation;
 import org.encog.ml.ea.species.Species;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
+import org.encog.ml.ea.train.RewriteRule;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.prg.train.GeneticTrainingParams;
 import org.encog.util.concurrency.MultiThreadable;
@@ -215,7 +216,11 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	 * Holds the threads used each iteration.
 	 */
 	private final List<Callable<Object>> threadList = new ArrayList<Callable<Object>>();
-
+	
+	/**
+	 * Rewrite rules that can simplify genomes.
+	 */
+	private final List<RewriteRule> rewriteRules = new ArrayList<RewriteRule>();
 
 	/**
 	 * Construct an EA.
@@ -316,7 +321,7 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	public void calculateScore(final Genome g) {
 
 		// try rewrite
-		getPopulation().rewrite(g);
+		rewrite(g);
 
 		// decode
 		final MLMethod phenotype = getCODEC().decode(g);
@@ -807,6 +812,33 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	@Override
 	public void setValidationMode(final boolean validationMode) {
 		this.validationMode = validationMode;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void addRewriteRule(final RewriteRule rule) {
+		this.rewriteRules.add(rule);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void rewrite(final Genome prg) {
+
+		boolean done = false;
+
+		while (!done) {
+			done = true;
+
+			for (final RewriteRule rule : this.rewriteRules) {
+				if (rule.rewrite(prg)) {
+					done = false;
+				}
+			}
+		}
 	}
 
 }

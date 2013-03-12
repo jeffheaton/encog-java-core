@@ -32,7 +32,7 @@ import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
 import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.ml.ea.species.Species;
-import org.encog.ml.prg.train.rewrite.RewriteRule;
+import org.encog.ml.ea.train.RewriteRule;
 
 /**
  * Defines the basic functionality for a population of genomes. The population
@@ -64,11 +64,6 @@ public class BasicPopulation extends BasicML implements Population,
 	private Genome bestGenome;
 
 	/**
-	 * Rewrite rules that can simplify genomes.
-	 */
-	private final List<RewriteRule> rewriteRules = new ArrayList<RewriteRule>();
-
-	/**
 	 * A factory that can be used to store create genomes.
 	 */
 	private GenomeFactory genomeFactory;
@@ -95,14 +90,6 @@ public class BasicPopulation extends BasicML implements Population,
 			final GenomeFactory theGenomeFactory) {
 		this.populationSize = thePopulationSize;
 		this.genomeFactory = theGenomeFactory;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addRewriteRule(final RewriteRule rule) {
-		this.rewriteRules.add(rule);
 	}
 
 	/**
@@ -195,25 +182,6 @@ public class BasicPopulation extends BasicML implements Population,
 	@Override
 	public List<Species> getSpecies() {
 		return this.species;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void rewrite(final Genome prg) {
-
-		boolean done = false;
-
-		while (!done) {
-			done = true;
-
-			for (final RewriteRule rule : this.rewriteRules) {
-				/*if (rule.rewrite(prg)) {
-					done = false;
-				}*/
-			}
-		}
 	}
 
 	/**

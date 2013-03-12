@@ -30,20 +30,11 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
 import org.encog.ml.ea.species.Species;
-import org.encog.ml.prg.train.rewrite.RewriteRule;
 
 /**
  * Defines a population of genomes.
  */
 public interface Population extends Serializable, MLMethod {
-
-	/**
-	 * Add a rewrite rule. Rewrite rules can be used to simplify genomes.
-	 * 
-	 * @param rule
-	 *            The rule to add.
-	 */
-	void addRewriteRule(RewriteRule rule);
 
 	/**
 	 * Clear all genomes from this population.
@@ -95,15 +86,6 @@ public interface Population extends Serializable, MLMethod {
 	 * @return The species that make up the population.
 	 */
 	List<Species> getSpecies();
-
-	/**
-	 * Rewrite the specified genome. The genome will still perform the same
-	 * function, but it may be shorter.
-	 * 
-	 * @param prg
-	 *            The genome to rewrite.
-	 */
-	void rewrite(Genome prg);
 
 	/**
 	 * Set the best genome.

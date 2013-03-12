@@ -55,6 +55,14 @@ public interface EvolutionaryAlgorithm {
 	void addOperation(double probability, EvolutionaryOperator opp);
 
 	/**
+	 * Add a rewrite rule. Rewrite rules can be used to simplify genomes.
+	 * 
+	 * @param rule
+	 *            The rule to add.
+	 */
+	void addRewriteRule(RewriteRule rule);
+
+	/**
 	 * Add a score adjuster. Score adjusters are used to adjust the adjusted
 	 * score of a genome. This allows bonuses and penalties to be applied for
 	 * desirable or undesirable traits.
@@ -180,6 +188,15 @@ public interface EvolutionaryAlgorithm {
 	 * Perform a training iteration. Also called generations or epochs.
 	 */
 	void iteration();
+
+	/**
+	 * Rewrite the specified genome. The genome will still perform the same
+	 * function, but it may be shorter.
+	 * 
+	 * @param prg
+	 *            The genome to rewrite.
+	 */
+	void rewrite(Genome prg);
 
 	/**
 	 * Set the comparator that is used to choose the "true best" genome. This

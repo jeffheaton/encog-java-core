@@ -1,5 +1,7 @@
 package org.encog.ml.prg.train.rewrite;
 
+import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.train.RewriteRule;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
 
@@ -7,7 +9,8 @@ public class RewriteConstants implements RewriteRule {
 	
 	private boolean rewritten;
 
-	public boolean rewrite(EncogProgram program) {
+	public boolean rewrite(Genome g) {
+		EncogProgram program = ((EncogProgram)g);
 		this.rewritten = false;
 		ProgramNode rootNode = program.getRootNode();
 		ProgramNode rewrite = rewriteNode(rootNode);

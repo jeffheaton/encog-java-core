@@ -1,5 +1,7 @@
 package org.encog.ml.prg.train.rewrite;
 
+import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.train.RewriteRule;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
@@ -9,8 +11,9 @@ public class RewriteAlgebraic implements RewriteRule {
 	private boolean rewritten;
 	
 	@Override
-	public boolean rewrite(EncogProgram program) {
+	public boolean rewrite(Genome g) {
 		this.rewritten = false;
+		EncogProgram program = ((EncogProgram)g);
 		ProgramNode node = program.getRootNode();
 		ProgramNode rewrittenRoot = internalRewrite(node);
 		if( rewrittenRoot!=null ) {
