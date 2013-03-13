@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.parse.expression;
+package org.encog.parse.expression.common;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
