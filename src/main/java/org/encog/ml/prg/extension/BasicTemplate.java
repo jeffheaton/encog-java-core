@@ -10,14 +10,25 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 	private final int childNodeCount;
 	private final boolean varValue;
 	private final int dataSize;
+	private final NodeType nodeType;
+	private final int precedence;
 
-	public BasicTemplate(final String theName, final int childCount,
-			final boolean isVariable, int theDataSize) {
+	public BasicTemplate(final int thePrecedence, 
+			final String theName, final NodeType theType, final boolean isVariable, 
+			final int theDataSize, final int childCount) {
+		this.precedence = thePrecedence;
 		this.name = theName;
 		this.childNodeCount = childCount;
 		this.varValue = isVariable;
 		this.dataSize = theDataSize;
+		this.nodeType = theType;
 	}
+	
+	public BasicTemplate(
+			final String theName, final int childCount) {
+		this(ProgramExtensionTemplate.NO_PREC,theName,NodeType.Function,false,0,childCount);
+	}
+
 
 	/**
 	 * {@inheritDoc}
@@ -43,6 +54,14 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 	@Override
 	public int getDataSize() {
 		return this.dataSize;
+	}
+	
+	/**
+	 * @return the nodeType
+	 */
+	@Override
+	public NodeType getNodeType() {
+		return nodeType;
 	}
 
 	@Override

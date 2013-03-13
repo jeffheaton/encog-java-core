@@ -34,6 +34,8 @@ import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.BasicTemplate;
 import org.encog.ml.prg.extension.FunctionFactory;
+import org.encog.ml.prg.extension.NodeType;
+import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
@@ -109,7 +111,7 @@ public class ProcessExtension {
 		final ProcessExtension pe = this;
 		
 		// add field
-		functions.addExtension(new BasicTemplate("field",2,true,0) {
+		functions.addExtension(new BasicTemplate(ProgramExtensionTemplate.NO_PREC, "field", NodeType.Function, true, 2, 0) {
 			@Override
 			public ExpressionValue evaluate(ProgramNode actual) {
 				String fieldName = actual.getChildNode(0).evaluate().toStringValue();
@@ -120,7 +122,7 @@ public class ProcessExtension {
 		});
 		
 		// add fieldmax
-				functions.addExtension(new BasicTemplate("fieldmax",3,true,0) {
+				functions.addExtension(new BasicTemplate(ProgramExtensionTemplate.NO_PREC, "fieldmax", NodeType.Function, true, 3, 0) {
 					@Override
 					public ExpressionValue evaluate(ProgramNode actual) {
 						String fieldName = actual.getChildNode(0).evaluate().toStringValue();
@@ -140,7 +142,7 @@ public class ProcessExtension {
 					});
 				
 				// add fieldmaxpip
-				functions.addExtension(new BasicTemplate("fieldmaxpip",3,true,0) {
+				functions.addExtension(new BasicTemplate(ProgramExtensionTemplate.NO_PREC, "field", NodeType.Function, true, 3, 0) {
 					@Override
 					public ExpressionValue evaluate(ProgramNode actual) {
 						String fieldName = actual.getChildNode(0).evaluate().toStringValue();
