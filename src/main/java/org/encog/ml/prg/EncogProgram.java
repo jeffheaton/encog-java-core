@@ -37,6 +37,7 @@ import org.encog.ml.tree.traverse.tasks.TaskGetNodeIndex;
 import org.encog.ml.tree.traverse.tasks.TaskReplaceNode;
 import org.encog.parse.expression.common.ParseCommonExpression;
 import org.encog.parse.expression.common.RenderCommonExpression;
+import org.encog.parse.expression.rpn.RenderRPN;
 import org.encog.util.simple.EncogUtility;
 
 public class EncogProgram extends BasicGenome implements MLRegression, MLError {
@@ -189,11 +190,15 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 	}
 	
 	public String toString() {
+		RenderRPN render = new RenderRPN();
+		String code = render.render(this);
 		StringBuilder result = new StringBuilder();
 		result.append("[EncogProgram: size=");
 		result.append(size());
 		result.append(", score=");
 		result.append(this.score);
+		result.append(",code=");
+		result.append(code);
 		result.append("]");
 		return result.toString();
 	}
@@ -231,8 +236,4 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 		RenderCommonExpression render = new RenderCommonExpression();
 		return render.render(this);
 	}
-	
-	
-
-
 }

@@ -43,7 +43,7 @@ public class TestProgramClone extends TestCase {
 		
 		EncogProgram prg1 = context.createProgram("((a+25)^3/25)-((a*3)^4/250)");
 		EncogProgram prg2 = context.cloneProgram(prg1);
-		
+	
 		Assert.assertEquals("((((a+25)^3)/25)-(((a*3)^4)/250))", render.render(prg1));
 		Assert.assertEquals("((((a+25)^3)/25)-(((a*3)^4)/250))", render.render(prg2));
 	}

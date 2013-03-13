@@ -53,7 +53,7 @@ public class StandardExtensions {
 	/**
 	 * Standard unary minus operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_NEG = new BasicTemplate(3, "-", NodeType.OperatorRight, false, 0, 1) {
+	public static ProgramExtensionTemplate EXTENSION_NEG = new BasicTemplate(3, "-", NodeType.Unary, false, 0, 1) {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(-actual.getChildNode(0).evaluate().toFloatValue());
@@ -107,7 +107,7 @@ public class StandardExtensions {
 	/**
 	 * Standard binary power operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_POWER = new BasicTemplate(15, "^", NodeType.OperatorRight, false, 0, 2) {
+	public static ProgramExtensionTemplate EXTENSION_POWER = new BasicTemplate(1, "^", NodeType.OperatorRight, false, 0, 2) {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return EvaluateExpr.pow(actual.getChildNode(0).evaluate(), actual.getChildNode(1).evaluate());
@@ -141,7 +141,7 @@ public class StandardExtensions {
 	/**
 	 * Standard boolean binary equal operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_EQUAL = new BasicTemplate(9, "=", NodeType.OperatorLeft, false, 0, 2) {
+	public static ProgramExtensionTemplate EXTENSION_EQUAL = new BasicTemplate(9, "=", NodeType.OperatorRight, false, 0, 2) {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			double diff = Math.abs(actual.getChildNode(0).evaluate().toFloatValue() - actual.getChildNode(1).evaluate().toFloatValue());
@@ -151,7 +151,7 @@ public class StandardExtensions {
 	/**
 	 * Standard boolean binary greater than operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_GREATER = new BasicTemplate(8, ">", NodeType.OperatorLeft, false, 0, 2) {
+	public static ProgramExtensionTemplate EXTENSION_GREATER = new BasicTemplate(8, ">", NodeType.OperatorRight, false, 0, 2) {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate().toFloatValue() > actual.getChildNode(1).evaluate().toFloatValue());
@@ -160,7 +160,7 @@ public class StandardExtensions {
 	/**
 	 * Standard boolean binary less than operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_LESS = new BasicTemplate(8, "<", NodeType.OperatorLeft, false, 0, 2) {
+	public static ProgramExtensionTemplate EXTENSION_LESS = new BasicTemplate(8, "<", NodeType.OperatorRight, false, 0, 2) {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate().toFloatValue() < actual.getChildNode(1).evaluate().toFloatValue());
@@ -170,7 +170,7 @@ public class StandardExtensions {
 	/**
 	 * Standard boolean binary greater than operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_GREATER_EQUAL = new BasicTemplate(8, ">=", NodeType.OperatorLeft, false, 0, 2) {
+	public static ProgramExtensionTemplate EXTENSION_GREATER_EQUAL = new BasicTemplate(8, ">=", NodeType.OperatorRight, false, 0, 2) {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate().toFloatValue() >= actual.getChildNode(1).evaluate().toFloatValue());
@@ -180,7 +180,7 @@ public class StandardExtensions {
 	/**
 	 * Standard boolean binary less than operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_LESS_EQUAL = new BasicTemplate(8, "<=", NodeType.OperatorLeft, false, 0, 2) {
+	public static ProgramExtensionTemplate EXTENSION_LESS_EQUAL = new BasicTemplate(8, "<=", NodeType.OperatorRight, false, 0, 2) {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate().toFloatValue() <= actual.getChildNode(1).evaluate().toFloatValue());

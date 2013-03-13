@@ -4,5 +4,6 @@ public enum NodeType {
 	OperatorLeft,
 	OperatorRight,
 	Leaf,
-	Function
+	Function,
+	Unary, None
 }

@@ -93,10 +93,19 @@ public class TestExpression extends TestCase {
 		Assert.assertEquals( 8, EncogProgram.parseFloat("2^3"),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 	
-	public void testParen() {
+	public void testParen1() {
 		Assert.assertEquals( 14, EncogProgram.parseFloat("2*(3+4)"),Encog.DEFAULT_DOUBLE_EQUAL);
+	}
+	
+	public void testParen2() {
 		Assert.assertEquals( 10, EncogProgram.parseFloat("(2*3)+4"),Encog.DEFAULT_DOUBLE_EQUAL);
+	}
+	
+	public void testParen3() {
 		Assert.assertEquals( 100, EncogProgram.parseFloat("(2*3)^2+(4*2)^2"),Encog.DEFAULT_DOUBLE_EQUAL);
+	}
+	
+	public void testParen4() {
 		Assert.assertEquals( 4, EncogProgram.parseFloat("2^(1+1)"),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 	

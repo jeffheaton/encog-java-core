@@ -29,6 +29,14 @@ public class StackObject<T> {
 		return (T)this.stack[--this.head];
 	}
 	
+	@SuppressWarnings("unchecked")
+	public T peek() {
+		if( this.head==0 ) {
+			throw new EncogError("Stack is empty");
+		}
+		return (T)this.stack[this.head-1];
+	}
+	
 	public int size() {
 		return this.head;
 	}

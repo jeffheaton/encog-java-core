@@ -51,6 +51,7 @@ public class RenderRPN extends CommonRender {
 		} else if( t==ExpressionNodeType.Function || t==ExpressionNodeType.Operator) {
 			result.append('[');
 			result.append(node.getName());
+			
 			result.append(']');
 		}
 				

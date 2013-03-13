@@ -15,4 +15,5 @@ public interface ProgramExtensionTemplate {
 	void randomize(Random rnd, ProgramNode actual, double degree);
 	int getDataSize();
 	NodeType getNodeType();
+	int getPrecedence();
 }

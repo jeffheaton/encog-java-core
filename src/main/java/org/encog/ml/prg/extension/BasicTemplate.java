@@ -26,7 +26,7 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 	
 	public BasicTemplate(
 			final String theName, final int childCount) {
-		this(ProgramExtensionTemplate.NO_PREC,theName,NodeType.Function,false,0,childCount);
+		this(0,theName,NodeType.Function,false,0,childCount);
 	}
 
 
@@ -62,6 +62,24 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 	@Override
 	public NodeType getNodeType() {
 		return nodeType;
+	}
+	
+	@Override
+	public int getPrecedence() {
+		return this.precedence;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[BasicTemplate:");
+		result.append(name);
+		result.append(",type=");
+		result.append(this.nodeType.toString());
+		result.append("argCount=");
+		result.append(this.childNodeCount);
+		result.append("]");
+		return result.toString();
 	}
 
 	@Override
