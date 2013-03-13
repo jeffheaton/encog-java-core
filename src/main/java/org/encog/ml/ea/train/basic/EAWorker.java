@@ -81,6 +81,7 @@ public class EAWorker implements Callable<Object> {
 					// clone a child (asexual reproduction)
 					opp.performOperation(this.rnd, this.parents, 0,
 							this.children, 0);
+					this.children[0].setPopulation(this.parents[0].getPopulation());
 				}
 
 				// process the new child
