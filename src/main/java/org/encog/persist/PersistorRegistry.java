@@ -29,6 +29,7 @@ import java.util.Map;
 import org.encog.ca.universe.basic.PersistBasicUniverse;
 import org.encog.ml.bayesian.PersistBayes;
 import org.encog.ml.hmm.PersistHMM;
+import org.encog.ml.prg.PersistPrgPopulation;
 import org.encog.ml.svm.PersistSVM;
 import org.encog.neural.art.PersistART1;
 import org.encog.neural.bam.PersistBAM;
@@ -87,7 +88,7 @@ public final class PersistorRegistry {
 		add(new PersistBayes());
 		add(new PersistHMM());
 		add(new PersistBasicUniverse());
-		//add(new PersistPrgPopulation());
+		add(new PersistPrgPopulation());
 	}
 
 	/**
