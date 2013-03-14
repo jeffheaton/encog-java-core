@@ -34,7 +34,6 @@ import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.train.PrgPopulation;
-import org.encog.parse.expression.epl.ParseEPL;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
@@ -130,9 +129,9 @@ public class PersistPrgPopulation implements EncogPersistor {
 				for (final String line : section.getLines()) {
 					final List<String> cols = EncogFileSection
 							.splitColumns(line);
-					final String code = cols.get(0);
-					final int opcode = Integer.parseInt(code);
-					//EncogOpcodeRegistry.INSTANCE.register(context, opcode);
+					final String name = cols.get(0);
+					final int args = Integer.parseInt(cols.get(1));
+					result.getContext().getFunctions().addExtension(name,args);
 				}
 			} else if (section.getSectionName().equals("BASIC")
 					&& section.getSubSectionName().equals("EPL-SYMBOLIC")) {
@@ -168,12 +167,12 @@ public class PersistPrgPopulation implements EncogPersistor {
 		out.addSubSection("PARAMS");
 		out.addProperties(pop.getProperties());
 		out.addSubSection("EPL-OPCODES");
-		/*for (final ProgramExtensionTemplate temp : pop.getContext()
-				.getFunctions().generateOpcodeList()) {
-			out.addColumn(temp.getOpcode());
+		for (final ProgramExtensionTemplate temp : pop.getContext()
+				.getFunctions().getOpCodes()) {
 			out.addColumn(temp.getName());
+			out.addColumn(temp.getChildNodeCount());
 			out.writeLine();
-		}*/
+		}
 		out.addSubSection("EPL-SYMBOLIC");
 		for (final String name : pop.getContext().getDefinedVariables()) {
 			out.addColumn(name);

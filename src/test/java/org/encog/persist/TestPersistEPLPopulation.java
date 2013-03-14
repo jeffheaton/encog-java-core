@@ -26,6 +26,7 @@ public class TestPersistEPLPopulation {
 	private PrgPopulation create()
 	{
 		EncogProgramContext context = new EncogProgramContext();
+		context.defineVariable("x");
 		StandardExtensions.createAll(context.getFunctions());
 		PrgPopulation pop = new PrgPopulation(context,10);
 		EncogProgram prg1 = new EncogProgram(context);

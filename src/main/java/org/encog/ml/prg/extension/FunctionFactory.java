@@ -14,10 +14,6 @@ public class FunctionFactory implements Serializable {
 
 	private final Map<String, ProgramExtensionTemplate> templateMap = new HashMap<String, ProgramExtensionTemplate>();
 	private final List<ProgramExtensionTemplate> opcodes = new ArrayList<ProgramExtensionTemplate>();
-
-	public static String createKey(String functionName, int argCount) {
-		return functionName + '`' + argCount;
-	}
 	
 	public ProgramNode factorFunction(ProgramExtensionTemplate temp, EncogProgram program,
 			ProgramNode[] args) {
@@ -27,7 +23,7 @@ public class FunctionFactory implements Serializable {
 	public ProgramNode factorFunction(String name, EncogProgram program,
 			ProgramNode[] args) {
 
-		String key = FunctionFactory.createKey(name, args.length);
+		String key = EncogOpcodeRegistry.createKey(name, args.length);
 
 		if (!this.templateMap.containsKey(key)) {
 			throw new ExpressionError("Undefined function/operator: " + name
@@ -39,14 +35,14 @@ public class FunctionFactory implements Serializable {
 	}
 
 	public void addExtension(ProgramExtensionTemplate ext) {
-		String key = FunctionFactory.createKey(ext.getName(),
+		String key = EncogOpcodeRegistry.createKey(ext.getName(),
 				ext.getChildNodeCount());
 		this.templateMap.put(key, ext);
 		this.opcodes.add(ext);
 	}
 
 	public boolean isDefined(String name, int l) {
-		String key = FunctionFactory.createKey(name, l);
+		String key = EncogOpcodeRegistry.createKey(name, l);
 		return this.templateMap.containsKey(key);
 	}
 
@@ -116,5 +112,13 @@ public class FunctionFactory implements Serializable {
 			}
 		}
 		return null;
+	}
+
+	public void addExtension(String name, int args) {
+		String key = EncogOpcodeRegistry.createKey(name, args);
+		if( !this.templateMap.containsKey(key) ) {
+			this.addExtension(EncogOpcodeRegistry.INSTANCE.findOpcode(name,args));
+		}
+		
 	}
 }

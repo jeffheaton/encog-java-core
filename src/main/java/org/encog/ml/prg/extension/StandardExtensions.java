@@ -151,7 +151,7 @@ public class StandardExtensions {
 	/**
 	 * Standard boolean binary greater than operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_GREATER = new BasicTemplate(8, ">", NodeType.OperatorRight, false, 0, 2) {
+	public static ProgramExtensionTemplate EXTENSION_GT = new BasicTemplate(8, ">", NodeType.OperatorRight, false, 0, 2) {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate().toFloatValue() > actual.getChildNode(1).evaluate().toFloatValue());
@@ -160,7 +160,7 @@ public class StandardExtensions {
 	/**
 	 * Standard boolean binary less than operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_LESS = new BasicTemplate(8, "<", NodeType.OperatorRight, false, 0, 2) {
+	public static ProgramExtensionTemplate EXTENSION_LT = new BasicTemplate(8, "<", NodeType.OperatorRight, false, 0, 2) {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate().toFloatValue() < actual.getChildNode(1).evaluate().toFloatValue());
@@ -170,7 +170,7 @@ public class StandardExtensions {
 	/**
 	 * Standard boolean binary greater than operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_GREATER_EQUAL = new BasicTemplate(8, ">=", NodeType.OperatorRight, false, 0, 2) {
+	public static ProgramExtensionTemplate EXTENSION_GTE = new BasicTemplate(8, ">=", NodeType.OperatorRight, false, 0, 2) {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate().toFloatValue() >= actual.getChildNode(1).evaluate().toFloatValue());
@@ -180,7 +180,7 @@ public class StandardExtensions {
 	/**
 	 * Standard boolean binary less than operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_LESS_EQUAL = new BasicTemplate(8, "<=", NodeType.OperatorRight, false, 0, 2) {
+	public static ProgramExtensionTemplate EXTENSION_LTE = new BasicTemplate(8, "<=", NodeType.OperatorRight, false, 0, 2) {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate().toFloatValue() <= actual.getChildNode(1).evaluate().toFloatValue());
@@ -334,7 +334,7 @@ public class StandardExtensions {
 	/**
 	 * Standard numeric pow function.
 	 */
-	public static ProgramExtensionTemplate EXTENSION_POW = new BasicTemplate("pow", 2) {
+	public static ProgramExtensionTemplate EXTENSION_POWFN = new BasicTemplate("pow", 2) {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.pow(actual.getChildNode(0).evaluate().toFloatValue(),
@@ -574,10 +574,10 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_AND);
 		factory.addExtension(EXTENSION_OR);
 		factory.addExtension(EXTENSION_EQUAL);
-		factory.addExtension(EXTENSION_LESS);
-		factory.addExtension(EXTENSION_GREATER);
-		factory.addExtension(EXTENSION_LESS_EQUAL);
-		factory.addExtension(EXTENSION_GREATER_EQUAL);
+		factory.addExtension(EXTENSION_LT);
+		factory.addExtension(EXTENSION_GT);
+		factory.addExtension(EXTENSION_LTE);
+		factory.addExtension(EXTENSION_GTE);
 		factory.addExtension(EXTENSION_IFF);
 	}
 	
@@ -603,7 +603,7 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_LOG10);
 		factory.addExtension(EXTENSION_MAX);
 		factory.addExtension(EXTENSION_MIN);
-		factory.addExtension(EXTENSION_POW);
+		factory.addExtension(EXTENSION_POWFN);
 		factory.addExtension(EXTENSION_RANDOM);
 		factory.addExtension(EXTENSION_ROUND);
 		factory.addExtension(EXTENSION_SQRT);
