@@ -17,7 +17,7 @@ import org.encog.util.datastruct.StackObject;
  * 
  * One important note on definitions. I consider an operator to be simply a
  * special type of function. Really, an operator is just a shorthand for writing
- * certian types of functions. Therefore I do not distinguish between functions
+ * certain types of functions. Therefore I do not distinguish between functions
  * and operators in this implementation.
  * 
  * References:

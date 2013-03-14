@@ -236,4 +236,14 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 		RenderCommonExpression render = new RenderCommonExpression();
 		return render.render(this);
 	}
+
+	public void compileEPL(String code) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public String generateEPL() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
