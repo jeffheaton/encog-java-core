@@ -23,9 +23,11 @@
  */
 package org.encog.ml.prg.expvalue;
 
+import java.io.Serializable;
+
 import org.encog.ml.prg.ExpressionError;
 
-public class ExpressionValue {
+public class ExpressionValue implements Serializable {
 	
 	private String stringValue;
 	private double floatValue;

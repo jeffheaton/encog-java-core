@@ -33,9 +33,9 @@ public class TestPersistEPLPopulation {
 		prg1.compileExpression("x+1");
 		prg2.compileExpression("(x+5)/2");
 		
-		/*Species defaultSpecies = pop.createSpecies();
+		Species defaultSpecies = pop.createSpecies();
 		defaultSpecies.add(prg1);
-		defaultSpecies.add(prg2);*/
+		defaultSpecies.add(prg2);
 		return pop;
 	}
 	
@@ -51,16 +51,16 @@ public class TestPersistEPLPopulation {
 	@Test
 	public void testPersistSerial() throws IOException, ClassNotFoundException
 	{
-		/*PrgPopulation pop = create();
+		PrgPopulation pop = create();
 		validate(pop);
 		SerializeObject.save(SERIAL_FILENAME, pop);
 		PrgPopulation pop2 = (PrgPopulation)SerializeObject.load(SERIAL_FILENAME);
-		validate(pop2);	*/	
+		validate(pop2);		
 	}
 		
 	private void validate(PrgPopulation pop)
 	{
-		/*List<Genome> list = pop.flatten();
+		List<Genome> list = pop.flatten();
 		Assert.assertEquals(2, list.size());
 		
 		EncogProgram prg1 = (EncogProgram)list.get(0);
@@ -68,7 +68,7 @@ public class TestPersistEPLPopulation {
 		
 		RenderCommonExpression render = new RenderCommonExpression();
 		Assert.assertEquals("(x+1)", render.render(prg1));
-		Assert.assertEquals("((x+5)/2)", render.render(prg2));*/
+		Assert.assertEquals("((x+5)/2)", render.render(prg2));
 	}
 
 	@After

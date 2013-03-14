@@ -1,12 +1,13 @@
 package org.encog.ml.tree.basic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.ml.tree.TreeNode;
 import org.encog.ml.tree.traverse.tasks.TaskCountNodes;
 
-public class BasicTreeNode implements TreeNode {
+public class BasicTreeNode implements TreeNode, Serializable {
 	private final List<TreeNode> childNodes = new ArrayList<TreeNode>();
 	
 	public List<TreeNode> getChildNodes() {

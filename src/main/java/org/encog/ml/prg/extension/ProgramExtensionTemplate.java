@@ -1,11 +1,12 @@
 package org.encog.ml.prg.extension;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 
-public interface ProgramExtensionTemplate {
+public interface ProgramExtensionTemplate extends Serializable {
 	public static final int NO_PREC = 100;
 	
 	String getName();

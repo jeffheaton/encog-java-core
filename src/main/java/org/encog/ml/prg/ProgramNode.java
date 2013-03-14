@@ -23,12 +23,14 @@
  */
 package org.encog.ml.prg;
 
+import java.io.Serializable;
+
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.tree.TreeNode;
 import org.encog.ml.tree.basic.BasicTreeNode;
 
-public class ProgramNode extends BasicTreeNode {
+public class ProgramNode extends BasicTreeNode implements Serializable {
 	private final ProgramExtensionTemplate template;
 	private final EncogProgram owner;
 	private final ExpressionValue[] data;

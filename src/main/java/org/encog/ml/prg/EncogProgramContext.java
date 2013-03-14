@@ -1,5 +1,6 @@
 package org.encog.ml.prg;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,10 +10,9 @@ import org.encog.EncogError;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.ml.prg.extension.StandardExtensions;
-import org.encog.util.EngineArray;
 import org.encog.util.csv.CSVFormat;
 
-public class EncogProgramContext {
+public class EncogProgramContext implements Serializable {
 
 	private final CSVFormat format;
 	private final FunctionFactory functions;
