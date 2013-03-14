@@ -7,11 +7,11 @@ import java.util.Random;
 import java.util.Set;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.ml.CalculateScore;
 import org.encog.ml.ea.species.Species;
 import org.encog.ml.fitness.ZeroEvalScoreFunction;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
-import org.encog.ml.prg.EncogProgramVariables;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.train.PrgPopulation;
@@ -79,7 +79,7 @@ public class PrgGrowGenerator {
 		return result;
 	}
 	
-	private EncogProgram attemptCreateGenome(Random rnd, ZeroEvalScoreFunction score, Set<String> contents) {
+	private EncogProgram attemptCreateGenome(Random rnd, CalculateScore score, Set<String> contents) {
 		boolean done = false;
 		EncogProgram result = null;
 		int tries = 0;
@@ -99,7 +99,7 @@ public class PrgGrowGenerator {
 		return result;
 	}
 
-	public void generate(Random rnd, PrgPopulation pop, ZeroEvalScoreFunction score) {
+	public void generate(Random rnd, PrgPopulation pop, CalculateScore score) {
 		Set<String> contents = new HashSet<String>();
 		
 		pop.getSpecies().clear();
