@@ -12,27 +12,20 @@ public class TestRenderEPL extends TestCase {
 		EncogProgram expression = new EncogProgram("(2+6)");
 		RenderEPL render = new RenderEPL();
 		String result = render.render(expression);
-		Assert.assertEquals("2 6 [+]", result);
+		Assert.assertEquals("[#const:0:2][#const:0:6][+:2]", result);
 	}
 	
 	public void testRenderComplex() {
 		EncogProgram expression = new EncogProgram("((a+25)^3/25)-((a*3)^4/250)");
 		RenderEPL render = new RenderEPL();
 		String result = render.render(expression);
-		Assert.assertEquals("a 25 [+] 3 [^] 25 [/] a 3 [*] 4 [^] 250 [/] [-]", result);
+		Assert.assertEquals("[#var:0:0][#const:0:25][+:2][#const:0:3][^:2][#const:0:25][/:2][#var:0:0][#const:0:3][*:2][#const:0:4][^:2][#const:0:250][/:2][-:2]", result);
 	}
 	
 	public void testRenderFunction() {
 		EncogProgram expression = new EncogProgram("(sin(x)+cos(x))/2");
 		RenderEPL render = new RenderEPL();
-		String result = render.render(expression);		
-		Assert.assertEquals("x [sin] x [cos] [+] 2 [/]", result);		
-	}
-	
-	public void testKnownConst() {
-		EncogProgram expression = new EncogProgram("x*2*PI");
-		RenderEPL render = new RenderEPL();
-		String result = render.render(expression);		
-		Assert.assertEquals("x 2 [*] PI [*]", result);		
+		String result = render.render(expression);	
+		Assert.assertEquals("[#var:0:0][sin:1][#var:0:0][cos:1][+:2][#const:0:2][/:2]", result);		
 	}
 }

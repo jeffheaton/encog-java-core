@@ -1,73 +1,54 @@
 package org.encog.parse.expression.epl;
 
+import org.encog.Encog;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.expvalue.ValueType;
 import org.encog.parse.expression.CommonRender;
+import org.encog.util.csv.CSVFormat;
 
 public class RenderEPL extends CommonRender {
-	private EncogProgram holder;
+	private EncogProgram program;
 
 	public RenderEPL() {
 	}
 
-	public String render(final EncogProgram theHolder) {
-		this.holder = theHolder;
-		ProgramNode node = theHolder.getRootNode();
-		return renderNode(node);
-	}
-
-	private String renderConst(ProgramNode node) {
-		return node.getData()[0].toStringValue();
-	}
-
-	private String renderVar(ProgramNode node) {
-		int varIndex = (int)node.getData()[0].toIntValue();
-		return this.holder.getVariables().getVariableName(varIndex);
+	public String render(final EncogProgram theProgram) {
+		this.program = theProgram;
+		return renderNode(this.program.getRootNode());
 	}
 	
-	private String renderFunction(ProgramNode node) {
-		StringBuilder result = new StringBuilder();
-		result.append(node.getName());
-		result.append('(');
-		for(int i=0;i<node.getChildNodes().size();i++) {
-			if( i>0 ) {
-				result.append(',');
-			}
-			ProgramNode childNode = node.getChildNode(i);
-			result.append(renderNode(childNode));
-		}
-		result.append(')');		
-		return result.toString();
-	}
-	
-	private String renderOperator(ProgramNode node) {
-		StringBuilder result = new StringBuilder();
-		result.append("(");
-		result.append(renderNode(node.getChildNode(0)));
-		result.append(node.getName());
-		result.append(renderNode(node.getChildNode(1)));
-		result.append(")");
-		return result.toString();
-	}
-
 	private String renderNode(ProgramNode node) {
 		StringBuilder result = new StringBuilder();
 
-		switch (determineNodeType(node)) {
-		case ConstVal:
-			result.append(renderConst(node));
-			break;
-		case Operator:
-			result.append(renderOperator(node));
-			break;
-		case Variable:
-			result.append(renderVar(node));
-			break;
-		case Function:
-			result.append(renderFunction(node));
-			break;
+		for(int i=0;i<node.getChildNodes().size();i++) {
+			ProgramNode childNode = node.getChildNode(i);
+			result.append(renderNode(childNode));
 		}
-
-		return result.toString();
+		
+		result.append('[');
+		result.append(node.getName());
+		result.append(':');
+		result.append(node.getTemplate().getChildNodeCount());
+		
+		for(int i=0;i<node.getTemplate().getDataSize();i++) {
+			result.append(':');
+			ValueType t = node.getData()[i].getCurrentType();
+			if( t==ValueType.booleanType) {
+				result.append(node.getData()[i].toBooleanValue()?'t':'f');
+			} else if( t==ValueType.floatingType) {
+				result.append(CSVFormat.EG_FORMAT.format(node.getData()[i].toFloatValue(), Encog.DEFAULT_PRECISION));
+			} else if( t==ValueType.intType) {
+				result.append(node.getData()[i].toIntValue());
+			} else if( t==ValueType.stringType) {
+				result.append("\"");
+				result.append(node.getData()[i].toStringValue());
+				result.append("\"");
+			}
+		}
+		result.append(']');
+				
+		return result.toString().trim();
 	}
+	
 }
