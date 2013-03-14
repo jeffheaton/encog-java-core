@@ -37,6 +37,8 @@ import org.encog.ml.tree.traverse.tasks.TaskGetNodeIndex;
 import org.encog.ml.tree.traverse.tasks.TaskReplaceNode;
 import org.encog.parse.expression.common.ParseCommonExpression;
 import org.encog.parse.expression.common.RenderCommonExpression;
+import org.encog.parse.expression.epl.ParseEPL;
+import org.encog.parse.expression.epl.RenderEPL;
 import org.encog.parse.expression.rpn.RenderRPN;
 import org.encog.util.simple.EncogUtility;
 
@@ -237,13 +239,14 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 		return render.render(this);
 	}
 
-	public void compileEPL(String code) {
-		// TODO Auto-generated method stub
-		
+	public ProgramNode compileEPL(String code) {
+		final ParseEPL parser = new ParseEPL(this);
+		this.rootNode = parser.parse(code);
+		return this.rootNode;
 	}
 
 	public String generateEPL() {
-		// TODO Auto-generated method stub
-		return null;
+		RenderEPL render = new RenderEPL();
+		return render.render(this);
 	}
 }
