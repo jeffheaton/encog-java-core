@@ -42,6 +42,12 @@ public class TestRewriteAlgebraic extends TestCase {
 		genetic.rewrite(expression);
 		Assert.assertEquals(expect, render.render(expression));
 	}
+	
+	public void testMinusZero() {
+		eval("x-0","x");
+		eval("0-0","0");
+		eval("10-0","10");
+	}
 
 	public void testZeroMul() {
 		eval("0*0","0");

@@ -9,7 +9,6 @@ import java.util.Set;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.ea.species.Species;
-import org.encog.ml.fitness.ZeroEvalScoreFunction;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.ProgramNode;
@@ -54,7 +53,7 @@ public class PrgGrowGenerator {
 		int opCode = rnd.nextInt(this.leaves.size());
 		ProgramExtensionTemplate temp = this.leaves.get(opCode);
 		ProgramNode result = new ProgramNode(program, temp, new ProgramNode[] {});
-		result.randomize(program, 1.0);
+		temp.randomize(rnd, result, 1.0);
 		return result;
 	}
 	
@@ -75,7 +74,7 @@ public class PrgGrowGenerator {
 		}
 		
 		ProgramNode result = new ProgramNode(program, temp, children);
-		result.randomize(program, 1.0);
+		temp.randomize(rnd, result, 1.0);
 		return result;
 	}
 	

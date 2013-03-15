@@ -23,6 +23,17 @@ public class RewriteAlgebraic implements RewriteRule {
 		}
 		return this.rewritten;
 	}
+	
+	private ProgramNode tryMinusZero(ProgramNode parent) {
+		if (parent.getTemplate() == StandardExtensions.EXTENSION_SUB) {
+			ProgramNode child2 = parent.getChildNode(1);
+			if (isConstValue(child2, 0)) {
+				ProgramNode child1 = parent.getChildNode(0);
+				return child1;
+			}
+		}
+		return parent;
+	}
 
 	private ProgramNode tryZeroDiv(ProgramNode parent) {
 		if (parent.getTemplate() == StandardExtensions.EXTENSION_DIV) {
@@ -282,6 +293,7 @@ public class RewriteAlgebraic implements RewriteRule {
 		rewrittenParent = tryZeroPlus(rewrittenParent);
 		rewrittenParent = tryZeroDiv(rewrittenParent);
 		rewrittenParent = tryZeroMul(rewrittenParent);
+		rewrittenParent = tryMinusZero(rewrittenParent);
 
 		// try children
 		for (int i = 0; i < rewrittenParent.getChildNodes().size(); i++) {

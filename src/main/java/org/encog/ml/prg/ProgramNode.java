@@ -59,9 +59,6 @@ public class ProgramNode extends BasicTreeNode implements Serializable {
 		return data;
 	}
 	
-	public void randomize(EncogProgram program, double degree) {
-	}
-	
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append("[ProgramNode: name=");
