@@ -76,7 +76,7 @@ public class ParseEPL {
 				}
 				// is it an integer
 				else if( str.indexOf('.')==-1 && str.toLowerCase().indexOf('e')==-1) {
-					node.getData()[i] = new ExpressionValue(Integer.parseInt(str));
+					node.getData()[i] = new ExpressionValue(Long.parseLong(str));
 				}
 				// At this point, must be a float
 				else {

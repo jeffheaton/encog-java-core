@@ -38,7 +38,6 @@ import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.train.PrgPopulation;
 import org.encog.neural.neat.training.species.SortGenomesForSpecies;
 import org.encog.neural.neat.training.species.SpeciesComparator;
-import org.encog.util.text.LevenshteinDistance;
 
 public class PrgSpeciation implements Speciation {
 
@@ -267,7 +266,7 @@ public class PrgSpeciation implements Speciation {
 		final List<Species> list = this.population
 				.getSpecies();
 		Collections.sort(list, new SpeciesComparator(this.owner));
-
+		
 		// best species gets at least one offspring
 		if (list.get(0).getOffspringCount() == 0) {
 			list.get(0).setOffspringCount(1);
@@ -343,6 +342,10 @@ public class PrgSpeciation implements Speciation {
 			// remove the leader from the list we return. the leader already has
 			// a species
 			result.remove(s.getLeader());
+		}
+		
+		if( this.population.getSpecies().size()==0 ) {
+			System.out.println("All species died");
 		}
 
 		return result;
