@@ -18,6 +18,14 @@ public class TestRewriteAlgebraic extends TestCase {
 		Assert.assertEquals(expect, render.render(expression));
 	}
 
+	public void testPowerZero() {
+		eval("x^0","1");
+		eval("1^0","1");
+		eval("-1^0","1");
+		eval("(x+y)^0","1");
+		eval("x+(x+y)^0","(x+1)");
+	}
+	
 	public void testDoubleNegative() {
 		eval("--x","x");
 		//eval("-x","-(x)");
@@ -33,10 +41,10 @@ public class TestRewriteAlgebraic extends TestCase {
 	}
 	
 	public void testVarOpVar() {
-		eval("x-x","0.0");
-		eval("x+x","(2.0*x)");
-		eval("x*x","(x^2.0)");
-		eval("x/x","1.0");
+		eval("x-x","0");
+		eval("x+x","(2*x)");
+		eval("x*x","(x^2)");
+		eval("x/x","1");
 	}
 
 }
