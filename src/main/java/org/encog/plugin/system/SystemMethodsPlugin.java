@@ -129,7 +129,6 @@ public class SystemMethodsPlugin implements EncogPluginService1 {
 	@Override
 	public MLMethod createMethod(String methodType, String architecture,
 			int input, int output) {
-		// TODO Auto-generated method stub
 		if (MLMethodFactory.TYPE_FEEDFORWARD.equals(methodType)) {
 			return this.feedforwardFactory.create(architecture, input, output);
 		} else if (MLMethodFactory.TYPE_RBFNETWORK.equals(methodType)) {

@@ -8,8 +8,10 @@ import org.encog.EncogError;
 import org.encog.ml.MLMethod;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.ml.factory.parse.ArchitectureParse;
+import org.encog.ml.fitness.ZeroEvalScoreFunction;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.extension.StandardExtensions;
+import org.encog.ml.prg.generator.PrgGrowGenerator;
 import org.encog.ml.prg.train.PrgPopulation;
 import org.encog.util.ParamsHolder;
 
@@ -48,7 +50,7 @@ public class EPLFactory {
 
 		StandardExtensions.createNumericOperators(context.getFunctions());
 		PrgPopulation pop = new PrgPopulation(context,populationSize);
-		//(new PrgGrowGenerator(context,new ZeroEvalScoreFunction(),5)).generate(new Random(), pop);
-		return null;
+		(new PrgGrowGenerator(context,5)).generate(new Random(), pop,new ZeroEvalScoreFunction());
+		return pop;
 	}
 }
