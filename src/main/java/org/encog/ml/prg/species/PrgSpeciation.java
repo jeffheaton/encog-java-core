@@ -51,7 +51,7 @@ public class PrgSpeciation implements Speciation {
 	 * THe minimum compatibility that two genes must have to be in the same
 	 * species.
 	 */
-	private double compatibilityThreshold = 50;
+	private double compatibilityThreshold = 10;
 
 	/**
 	 * The maximum number of generations allows with no improvement. After this
@@ -206,9 +206,10 @@ public class PrgSpeciation implements Speciation {
 	 */
 	private double getCompatibilityScore(final EncogProgram genome1,
 			final EncogProgram genome2) {
-		String ident1 = determineSpeciesIdentifier(genome1);
-		String ident2 = determineSpeciesIdentifier(genome2);
-		return LevenshteinDistance.computeDistance(ident1, ident2);
+		CompareEncogProgram comp = new CompareEncogProgram();
+		double d = comp.compare(genome1, genome2);
+		//System.out.println(d);
+		return d;
 	}
 
 	private String determineSpeciesIdentifier(EncogProgram g) {
