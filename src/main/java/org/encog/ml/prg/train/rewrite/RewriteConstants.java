@@ -1,9 +1,11 @@
 package org.encog.ml.prg.train.rewrite;
 
+import org.encog.Encog;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.train.RewriteRule;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.expvalue.ExpressionValue;
 
 public class RewriteConstants implements RewriteRule {
 	
@@ -53,13 +55,27 @@ public class RewriteConstants implements RewriteRule {
 		}
 
 		if (parentNode.allConstDescendants()) {
+			ExpressionValue v = parentNode.evaluate();
+			double ck = v.toFloatValue();
+			
+			// do not rewrite if it produces a div by 0 or other bad result.
+			if( Double.isNaN(ck) || Double.isInfinite(ck) ) {
+				return result;
+			}
+			
 			result = parentNode
 					.getOwner()
 					.getContext()
 					.getFunctions()
 					.factorFunction("#const", parentNode.getOwner(),
 							new ProgramNode[] {});
-			result.getData()[0] = parentNode.evaluate();
+			
+			// is it an integer?
+			if( Math.abs( ck- ((int)ck))<Encog.DEFAULT_DOUBLE_EQUAL) {
+				result.getData()[0] = new ExpressionValue((int)ck);
+			} else {
+				result.getData()[0] = v;
+			}
 		}
 		return result;
 	}
