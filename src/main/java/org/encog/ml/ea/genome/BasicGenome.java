@@ -26,6 +26,7 @@ package org.encog.ml.ea.genome;
 import java.io.Serializable;
 
 import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.species.Species;
 
 /**
  * A basic abstract genome. Provides base functionality.
@@ -53,6 +54,10 @@ public abstract class BasicGenome implements Genome, Serializable {
 	private Population population;
 
 	private int birthGeneration;
+	
+	private Object speciesIdentifier;
+	
+	private Species species;
 
 	/**
 	 * @return The adjusted score, which considers bonuses.
@@ -137,6 +142,38 @@ public abstract class BasicGenome implements Genome, Serializable {
 		builder.append(": score=");
 		builder.append(getScore());
 		return builder.toString();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Object getSpeciesIdentifier() {
+		return this.speciesIdentifier;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setSpeciesIdentifier(Object ident) {
+		this.speciesIdentifier = ident;
+	}
+	
+	/**
+	 * @return the species
+	 */
+	@Override
+	public Species getSpecies() {
+		return species;
+	}
+
+	/**
+	 * @param s the species to set
+	 */
+	@Override
+	public void setSpecies(Species s) {
+		this.species = s;
 	}
 
 }

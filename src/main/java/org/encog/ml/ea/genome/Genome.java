@@ -25,6 +25,7 @@ package org.encog.ml.ea.genome;
 
 import org.encog.ml.MLMethod;
 import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.species.Species;
 
 /**
  * A genome is the basic blueprint for creating an phenome (organism) in Encog.
@@ -102,4 +103,12 @@ public interface Genome extends MLMethod {
 	 *         that indicates the complexity of the genome.
 	 */
 	int size();
+
+	Object getSpeciesIdentifier();
+
+	void setSpeciesIdentifier(Object ident);
+
+	Species getSpecies();
+
+	void setSpecies(Species s);
 }
