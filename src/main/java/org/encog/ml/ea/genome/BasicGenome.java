@@ -54,9 +54,7 @@ public abstract class BasicGenome implements Genome, Serializable {
 	private Population population;
 
 	private int birthGeneration;
-	
-	private Object speciesIdentifier;
-	
+
 	private Species species;
 
 	/**
@@ -142,22 +140,6 @@ public abstract class BasicGenome implements Genome, Serializable {
 		builder.append(": score=");
 		builder.append(getScore());
 		return builder.toString();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object getSpeciesIdentifier() {
-		return this.speciesIdentifier;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setSpeciesIdentifier(Object ident) {
-		this.speciesIdentifier = ident;
 	}
 	
 	/**

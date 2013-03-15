@@ -279,7 +279,7 @@ public class BasicSpecies implements Serializable, Species {
 	@Override
 	public String toString() {
 		final StringBuilder result = new StringBuilder();
-		result.append("[NEATSpecies: score=");
+		result.append("[BasicSpecies: score=");
 		result.append(Format.formatDouble(getBestScore(), 2));
 		result.append(", members=");
 		result.append(this.members.size());

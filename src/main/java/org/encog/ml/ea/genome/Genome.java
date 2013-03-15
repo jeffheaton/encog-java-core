@@ -104,9 +104,6 @@ public interface Genome extends MLMethod {
 	 */
 	int size();
 
-	Object getSpeciesIdentifier();
-
-	void setSpeciesIdentifier(Object ident);
 
 	Species getSpecies();
 

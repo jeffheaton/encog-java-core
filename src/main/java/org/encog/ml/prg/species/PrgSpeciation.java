@@ -212,16 +212,6 @@ public class PrgSpeciation implements Speciation {
 		return d;
 	}
 
-	private String determineSpeciesIdentifier(EncogProgram g) {
-		if( g.getSpeciesIdentifier()!=null) {
-			return (String)g.getSpeciesIdentifier();
-		} else {
-			RenderPrgSpeciesIdentifier render = new RenderPrgSpeciesIdentifier();
-			g.setSpeciesIdentifier(render.render(g));
-			return (String)g.getSpeciesIdentifier();
-		}
-	}
-
 	/**
 	 * @return the compatibilityThreshold
 	 */
