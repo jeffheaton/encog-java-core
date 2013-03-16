@@ -15,7 +15,7 @@ import org.encog.ml.genetic.GeneticError;
 
 public abstract class ThresholdSpeciation implements Speciation, Serializable {
 	/**
-	 * The NEAT training being used.
+	 * The training being used.
 	 */
 	private EvolutionaryAlgorithm owner;
 
@@ -46,7 +46,10 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 	 */
 	private SortGenomesForSpecies sortGenomes;
 	
-	private Population neatPopulation;
+	/**
+	 * The population.
+	 */
+	private Population population;
 
 	/**
 	 * Add a genome.
@@ -90,11 +93,11 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 
 		final double thresholdIncrement = 0.01;
 
-		if (this.neatPopulation.getSpecies().size() > this.maxNumberOfSpecies) {
+		if (this.population.getSpecies().size() > this.maxNumberOfSpecies) {
 			this.compatibilityThreshold += thresholdIncrement;
 		}
 
-		else if (this.neatPopulation.getSpecies().size() < 2) {
+		else if (this.population.getSpecies().size() < 2) {
 			this.compatibilityThreshold -= thresholdIncrement;
 		}
 	}
@@ -208,7 +211,7 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 	@Override
 	public void init(final EvolutionaryAlgorithm theOwner) {
 		this.owner = theOwner;
-		this.neatPopulation = theOwner.getPopulation();
+		this.population = theOwner.getPopulation();
 		this.sortGenomes = new SortGenomesForSpecies(this.owner);
 	}
 
@@ -219,7 +222,7 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 	 */
 	private void levelOff() {
 		int total = 0;
-		final List<Species> list = this.neatPopulation
+		final List<Species> list = this.population
 				.getSpecies();
 		Collections.sort(list, new SpeciesComparator(this.owner));
 
@@ -234,7 +237,7 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 		}
 
 		// how does the total offspring count match the target
-		int diff = this.neatPopulation.getPopulationSize() - total;
+		int diff = this.population.getPopulationSize() - total;
 
 		if (diff < 0) {
 			// need less offspring
@@ -273,10 +276,10 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 	 */
 	private List<Genome> resetSpecies(List<Genome> inputGenomes) {
 		final List<Genome> result = new ArrayList<Genome>();
-		final Object[] speciesArray = this.neatPopulation
+		final Object[] speciesArray = this.population
 				.getSpecies().toArray();
 
-		// Add the NEAT genomes
+		// Add the genomes
 		for (final Genome genome : inputGenomes) {
 			result.add(genome);
 		}
@@ -288,11 +291,11 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 			// did the leader die? If so, disband the species. (but don't kill
 			// the genomes)
 			if (!inputGenomes.contains(s.getLeader())) {
-				this.neatPopulation.getSpecies().remove(s);
+				this.population.getSpecies().remove(s);
 			} else if ((s.getGensNoImprovement() > this.numGensAllowedNoImprovement)
 					&& this.owner.getSelectionComparator().isBetterThan(
 							this.owner.getError(), s.getBestScore())) {
-				this.neatPopulation.getSpecies().remove(s);
+				this.population.getSpecies().remove(s);
 			}
 
 			// remove the leader from the list we return. the leader already has
@@ -345,7 +348,7 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 	private void speciateAndCalculateSpawnLevels(final List<Genome> genomes) {
 		double maxScore = 0;
 
-		final List<Species> speciesCollection = this.neatPopulation.getSpecies();
+		final List<Species> speciesCollection = this.population.getSpecies();
 
 		// calculate compatibility between genomes and species
 		adjustCompatibilityThreshold();
@@ -376,8 +379,8 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 			// new species
 			if (currentSpecies == null) {
 				currentSpecies = new BasicSpecies(
-						this.neatPopulation, genome);
-				this.neatPopulation.getSpecies().add(currentSpecies);
+						this.population, genome);
+				this.population.getSpecies().add(currentSpecies);
 			}
 		}
 

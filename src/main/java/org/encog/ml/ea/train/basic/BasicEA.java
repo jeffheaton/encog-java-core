@@ -555,6 +555,10 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 		if (this.actualThreadCount == -1) {
 			preIteration();
 		}
+		
+		if( this.getPopulation().getSpecies().size()==0) {
+			throw new EncogError("Population is empty, there are no species.");
+		}
 
 		this.iteration++;
 
