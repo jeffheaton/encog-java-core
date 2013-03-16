@@ -109,5 +109,7 @@ public class PrgGrowGenerator {
 			defaultSpecies.add(prg);
 			contents.add(prg.dumpAsCommonExpression());
 		}
+		
+		defaultSpecies.setLeader(defaultSpecies.getMembers().get(0));
 	}
 }

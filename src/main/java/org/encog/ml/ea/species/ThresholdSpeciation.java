@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.encog.Encog;
+import org.encog.EncogError;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.sort.SortGenomesForSpecies;
@@ -45,7 +46,7 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 	 * genomes should come first for later selection.
 	 */
 	private SortGenomesForSpecies sortGenomes;
-	
+
 	/**
 	 * The population.
 	 */
@@ -59,8 +60,7 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 	 * @param genome
 	 *            The genome to add.
 	 */
-	public void addSpeciesMember(final Species species,
-			final Genome genome) {
+	public void addSpeciesMember(final Species species, final Genome genome) {
 
 		if (this.owner.isValidationMode()) {
 			if (species.getMembers().contains(genome)) {
@@ -78,7 +78,7 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 
 		species.add(genome);
 	}
-	
+
 	/**
 	 * Adjust the species compatibility threshold. This prevents us from having
 	 * too many species. Dynamically increase or decrease the
@@ -112,15 +112,9 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 	 * @param totalSpeciesScore
 	 *            The total score over all species.
 	 */
-	private void divideByFittestSpecies(
-			final List<Species> speciesCollection,
+	private void divideByFittestSpecies(final List<Species> speciesCollection,
 			final double totalSpeciesScore) {
-		Species bestSpecies = null;
-
-		// determine the best species.
-		if (this.owner.getBestGenome() != null) {
-			bestSpecies = ((Genome)this.owner.getBestGenome()).getSpecies();
-		}
+		Species bestSpecies = findBestSpecies();
 
 		// loop over all species and calculate its share
 		final Object[] speciesArray = speciesCollection.toArray();
@@ -139,17 +133,39 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 
 			// if the share is zero, then remove the species
 			if ((species.getMembers().size() == 0) || (share == 0)) {
-				speciesCollection.remove(species);
+				removeSpecies(species);
 			}
 			// if the species has not improved over the specified number of
 			// generations, then remove it.
 			else if ((species.getGensNoImprovement() > this.numGensAllowedNoImprovement)
 					&& (species != bestSpecies)) {
-				speciesCollection.remove(species);
+				removeSpecies(species);
 			} else {
 				// otherwise assign a share and sort the members.
 				species.setOffspringCount(share);
 				Collections.sort(species.getMembers(), this.sortGenomes);
+			}
+		}
+	}
+
+	public Species findBestSpecies() {
+		if (this.owner.getBestGenome() != null) {
+			return ((Genome) this.owner.getBestGenome()).getSpecies();
+		}
+		return null;
+	}
+
+	/**
+	 * Attempt to remove a removable species. If the species is the best
+	 * species, then do not remove it. If the species is the last species, don't
+	 * remove it.
+	 * 
+	 * @param species The species to attempt to remove.
+	 */
+	public void removeSpecies(Species species) {
+		if (species != findBestSpecies()) {
+			if (population.getSpecies().size() > 1) {
+				this.population.getSpecies().remove(species);
 			}
 		}
 	}
@@ -169,14 +185,14 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 			species.setOffspringCount(share);
 		}
 	}
-	
+
 	/**
 	 * @return the compatibilityThreshold
 	 */
 	public double getCompatibilityThreshold() {
 		return this.compatibilityThreshold;
 	}
-	
+
 	/**
 	 * @return the maxNumberOfSpecies
 	 */
@@ -222,8 +238,13 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 	 */
 	private void levelOff() {
 		int total = 0;
-		final List<Species> list = this.population
-				.getSpecies();
+		final List<Species> list = this.population.getSpecies();
+
+		if (list.size() == 0) {
+			throw new EncogError(
+					"Can't speciate, next generation contains no species.");
+		}
+
 		Collections.sort(list, new SpeciesComparator(this.owner));
 
 		// best species gets at least one offspring
@@ -276,8 +297,7 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 	 */
 	private List<Genome> resetSpecies(List<Genome> inputGenomes) {
 		final List<Genome> result = new ArrayList<Genome>();
-		final Object[] speciesArray = this.population
-				.getSpecies().toArray();
+		final Object[] speciesArray = this.population.getSpecies().toArray();
 
 		// Add the genomes
 		for (final Genome genome : inputGenomes) {
@@ -291,16 +311,18 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 			// did the leader die? If so, disband the species. (but don't kill
 			// the genomes)
 			if (!inputGenomes.contains(s.getLeader())) {
-				this.population.getSpecies().remove(s);
-			} else if ((s.getGensNoImprovement() > this.numGensAllowedNoImprovement)
-					&& this.owner.getSelectionComparator().isBetterThan(
-							this.owner.getError(), s.getBestScore())) {
-				this.population.getSpecies().remove(s);
+				removeSpecies(s);
+			} else if (s.getGensNoImprovement() > this.numGensAllowedNoImprovement) {
+				removeSpecies(s);
 			}
 
 			// remove the leader from the list we return. the leader already has
 			// a species
 			result.remove(s.getLeader());
+		}
+
+		if (this.population.getSpecies().size() == 0) {
+			throw new EncogError("Can't speciate, the population is empty.");
 		}
 
 		return result;
@@ -313,7 +335,7 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 	public void setCompatibilityThreshold(final double compatibilityThreshold) {
 		this.compatibilityThreshold = compatibilityThreshold;
 	}
-	
+
 	/**
 	 * @param maxNumberOfSpecies
 	 *            the maxNumberOfSpecies to set
@@ -348,7 +370,15 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 	private void speciateAndCalculateSpawnLevels(final List<Genome> genomes) {
 		double maxScore = 0;
 
+		if (genomes.size() == 0) {
+			throw new EncogError("Can't speciate, the population is empty.");
+		}
+
 		final List<Species> speciesCollection = this.population.getSpecies();
+
+		if (speciesCollection.size() == 0) {
+			throw new EncogError("Can't speciate, there are no species.1");
+		}
 
 		// calculate compatibility between genomes and species
 		adjustCompatibilityThreshold();
@@ -365,7 +395,7 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 
 			for (final Species s : speciesCollection) {
 				final double compatibility = getCompatibilityScore(genome,
-						(Genome)s.getLeader());
+						(Genome) s.getLeader());
 
 				if (compatibility <= this.compatibilityThreshold) {
 					currentSpecies = s;
@@ -378,8 +408,7 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 			// if this genome did not fall into any existing species, create a
 			// new species
 			if (currentSpecies == null) {
-				currentSpecies = new BasicSpecies(
-						this.population, genome);
+				currentSpecies = new BasicSpecies(this.population, genome);
 				this.population.getSpecies().add(currentSpecies);
 			}
 		}
@@ -391,6 +420,9 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 					.getScoreFunction().shouldMinimize(), maxScore);
 		}
 
+		if (speciesCollection.size() == 0) {
+			throw new EncogError("Can't speciate, there are no species.2");
+		}
 		if (totalSpeciesScore < Encog.DEFAULT_DOUBLE_EQUAL) {
 			// This should not happen much, or if it does, only in the
 			// beginning.
@@ -406,7 +438,7 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 		levelOff();
 
 	}
-	
+
 	@Override
 	public boolean isIterationBased() {
 		return true;

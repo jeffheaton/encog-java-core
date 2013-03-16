@@ -32,7 +32,6 @@ import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
 import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.ml.ea.species.Species;
-import org.encog.ml.ea.train.RewriteRule;
 
 /**
  * Defines the basic functionality for a population of genomes. The population
