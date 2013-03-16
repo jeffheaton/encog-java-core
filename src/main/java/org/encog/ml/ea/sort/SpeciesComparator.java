@@ -1,4 +1,4 @@
-package org.encog.neural.neat.training.species;
+package org.encog.ml.ea.sort;
 
 import java.util.Comparator;
 

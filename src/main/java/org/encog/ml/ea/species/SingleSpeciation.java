@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.encog.EncogError;
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.sort.SortGenomesForSpecies;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
-import org.encog.neural.neat.training.species.SortGenomesForSpecies;
 
 public class SingleSpeciation implements Speciation {
 

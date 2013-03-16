@@ -8,10 +8,10 @@ import java.util.List;
 import org.encog.Encog;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.sort.SortGenomesForSpecies;
+import org.encog.ml.ea.sort.SpeciesComparator;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.genetic.GeneticError;
-import org.encog.neural.neat.training.species.SortGenomesForSpecies;
-import org.encog.neural.neat.training.species.SpeciesComparator;
 
 public abstract class ThresholdSpeciation implements Speciation, Serializable {
 	/**

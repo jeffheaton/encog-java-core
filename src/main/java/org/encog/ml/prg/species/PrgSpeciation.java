@@ -30,7 +30,7 @@ import org.encog.ml.prg.EncogProgram;
 public class PrgSpeciation extends ThresholdSpeciation {
 
 	public PrgSpeciation() {
-		this.setCompatibilityThreshold(20);
+		this.setCompatibilityThreshold(15);
 		this.setMaxNumberOfSpecies(30);
 		this.setNumGensAllowedNoImprovement(15);
 	}
