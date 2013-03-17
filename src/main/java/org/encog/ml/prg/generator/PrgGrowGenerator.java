@@ -106,6 +106,7 @@ public class PrgGrowGenerator {
 
 		for (int i = 0; i < pop.getPopulationSize(); i++) {
 			final EncogProgram prg = attemptCreateGenome(rnd,score,contents);
+			prg.setSpecies(defaultSpecies);
 			defaultSpecies.add(prg);
 			contents.add(prg.dumpAsCommonExpression());
 		}

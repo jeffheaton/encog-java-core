@@ -114,6 +114,7 @@ public class PersistPrgPopulation implements EncogPersistor {
 						final EncogProgram prg = new EncogProgram(context);
 						prg.compileEPL(code);
 						prg.setScore(score);
+						prg.setSpecies(lastSpecies);
 						prg.setAdjustedScore(adjustedScore);
 						if (lastSpecies == null) {
 							throw new EncogError(
@@ -150,6 +151,13 @@ public class PersistPrgPopulation implements EncogPersistor {
 			Species species = result.getSpecies().get(0);
 			if (species.getMembers().size() > 0) {
 				result.setBestGenome(species.getMembers().get(0));
+			}
+			
+			// set the leaders
+			for(Species sp: result.getSpecies()) {
+				if(sp.getMembers().size()>0) {
+					sp.setLeader(sp.getMembers().get(0));
+				}
 			}
 		}
 		return result;

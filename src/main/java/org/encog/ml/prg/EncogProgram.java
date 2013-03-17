@@ -46,8 +46,6 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 		
 	private EncogProgramVariables variables = new EncogProgramVariables();
 	private EncogProgramContext context = new EncogProgramContext();
-	private double score;
-	private double effectiveScore;
 
 	public static ExpressionValue parse(final String str) {
 		final EncogProgram holder = new EncogProgram(str);
@@ -169,16 +167,6 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 		this.rootNode = theRootNode;
 	}
 	
-	
-
-	public double getScore() {
-		return score;
-	}
-
-	public void setScore(double score) {
-		this.score = score;
-	}
-
 	public ProgramNode findNode(int index) {
 		return (ProgramNode)TaskGetNodeIndex.process(index, this.rootNode);
 	}
@@ -198,7 +186,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 		result.append("[EncogProgram: size=");
 		result.append(size());
 		result.append(", score=");
-		result.append(this.score);
+		result.append(this.getScore());
 		result.append(",code=");
 		result.append(code);
 		result.append("]");
@@ -212,20 +200,6 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 	@Override
 	public double calculateError(MLDataSet data) {
 		return EncogUtility.calculateRegressionError(this, data);
-	}
-
-	/**
-	 * @return the effectiveScore
-	 */
-	public double getEffectiveScore() {
-		return effectiveScore;
-	}
-
-	/**
-	 * @param effectiveScore the effectiveScore to set
-	 */
-	public void setEffectiveScore(double effectiveScore) {
-		this.effectiveScore = effectiveScore;
 	}
 
 	@Override
