@@ -106,11 +106,7 @@ public class TrainEA extends BasicEA implements MLTrain {
 	 */
 	@Override
 	public MLMethod getMethod() {
-		if (this.getBestGenome() != null) {
-			return this.getCODEC().decode(this.getBestGenome());
-		} else {
-			return null;
-		}
+		return this.getPopulation();
 	}
 		
 	/**
