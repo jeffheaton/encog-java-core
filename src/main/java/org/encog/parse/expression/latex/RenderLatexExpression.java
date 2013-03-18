@@ -3,13 +3,11 @@ package org.encog.parse.expression.latex;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
-import org.encog.ml.prg.exception.EncogProgramError;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.NodeType;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.parse.expression.ExpressionNodeType;
-import org.encog.util.datastruct.StackString;
 
 // "x=\\frac{-b \\pm \\sqrt {b^2-4ac}}{2a}";
 
@@ -49,7 +47,7 @@ public class RenderLatexExpression {
 				if (i > 0) {
 					result.append(',');
 				}
-				result.append(node.getChildNode(i));
+				result.append(renderNode(node.getChildNode(i)));
 			}
 			result.append(')');
 		}
