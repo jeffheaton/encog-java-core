@@ -50,6 +50,31 @@ import org.encog.util.simple.EncogUtility;
  * 
  * http://www.cs.ucf.edu/~kstanley/
  * 
+ * The following Journal articles were used to implement NEAT/HyperNEAT in
+ * Encog. Provided in BibTeX form.
+ * 
+ * @Article{stanley:ec02,title={Evolving Neural Networks Through Augmenting
+ *                                       Topologies}, author={Kenneth O. Stanley
+ *                                       and Risto Miikkulainen}, volume={10},
+ *                                       journal={Evolutionary Computation},
+ *                                       number={2}, pages={99-127}, url=
+ *                                       "http://nn.cs.utexas.edu/?stanley:ec02"
+ *                                       , year={2002}}
+ * 
+ * @MISC{Gauci_abstractgenerating, author = {Jason Gauci and Kenneth Stanley},
+ *                                 title = {ABSTRACT Generating Large-Scale
+ *                                 Neural Networks Through Discovering Geometric
+ *                                 Regularities}, year = {}}
+ * 
+ * @INPROCEEDINGS{Whiteson05automaticfeature, author = {Shimon Whiteson and
+ *                                            Kenneth O. Stanley and Risto
+ *                                            Miikkulainen}, title = {Automatic
+ *                                            feature selection in
+ *                                            neuroevolution}, booktitle = {In
+ *                                            Genetic and Evolutionary
+ *                                            Computation Conference}, year =
+ *                                            {2005}, pages = {1225--1232},
+ *                                            publisher = {ACM Press} }
  */
 public class NEATNetwork implements MLRegression, MLError, Serializable {
 
