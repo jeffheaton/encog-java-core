@@ -5,5 +5,10 @@ public enum NodeType {
 	OperatorRight,
 	Leaf,
 	Function,
-	Unary, None
+	Unary, 
+	None;
+	
+	public boolean isOperator() {
+		return( this==OperatorLeft || this==OperatorRight || this==Unary );
+	}
 }
