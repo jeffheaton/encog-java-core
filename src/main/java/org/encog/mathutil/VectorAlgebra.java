@@ -163,4 +163,18 @@ public class VectorAlgebra {
         }
     }
 
+    /**
+     * Take the dot product of two vectors.
+     * @param v1 The first vector.
+     * @param v2 The second vector.
+     * @return The dot product.
+     */
+	public double dotProduct(double[] v1, double[] v2) {
+		double d = 0;
+		for(int i=0;i<v1.length;i++) {
+			d+=v1[i]*v2[i];
+		}
+		return Math.sqrt(d);
+	}
+
 }

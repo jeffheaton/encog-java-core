@@ -14,13 +14,16 @@ public class MajorityVoting implements EnsembleAggregator {
 		BasicMLData acc = new BasicMLData(outputSize);
 		for (MLData out: outputs)
 		{
-			BasicMLData thresholdedOut = (BasicMLData) ((BasicMLData) out).threshold(threshold, lowValue, highValue);
+			MLData thresholdedOut = threshold(out, threshold, lowValue, highValue);
 			acc = (BasicMLData) acc.plus(thresholdedOut);
 		}
 
 		acc = (BasicMLData) acc.times(1.0 / outputs.size());
-		return acc.threshold(threshold, lowValue, highValue);
-
+		return threshold(acc, threshold, lowValue, highValue);
+	}
+	
+	private MLData threshold(MLData d, double threshold, double lowValue, double highValue) {
+		return null;
 	}
 
 	@Override
