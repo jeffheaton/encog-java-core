@@ -38,6 +38,18 @@ import org.encog.neural.neat.training.NEATNeuronGene;
  * This class represents a NEAT mutation. NEAT supports several different types
  * of mutations. This class provides common utility needed by any sort of a NEAT
  * mutation. This class is abstract and cannot be used by itself.
+ * 
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
+ * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
  */
 public abstract class NEATMutation implements EvolutionaryOperator {
 

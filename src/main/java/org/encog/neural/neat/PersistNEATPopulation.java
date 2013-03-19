@@ -47,10 +47,33 @@ import org.encog.persist.EncogWriteHelper;
 import org.encog.persist.PersistConst;
 import org.encog.util.csv.CSVFormat;
 
+/**
+ * Persist a NEAT or HyperNEAT network.
+ * 
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
+ * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
+ */
 public class PersistNEATPopulation implements EncogPersistor {
 
+	/**
+	 * Type for the Compositional pattern-producing networks used by HyperNEAT.
+	 */
 	public static final String TYPE_CPPN = "cppn";
 
+	/**
+	 * Convert a NEATNeuronType enum to a string.
+	 * @param t The type.
+	 * @return The string type.
+	 */
 	public static String neuronTypeToString(final NEATNeuronType t) {
 		switch (t) {
 		case Bias:

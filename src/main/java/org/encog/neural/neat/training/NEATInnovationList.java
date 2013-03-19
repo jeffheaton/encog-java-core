@@ -36,7 +36,17 @@ import org.encog.neural.neat.NEATPopulation;
  * generation of evolving artificial neural networks. It was developed by Ken
  * Stanley while at The University of Texas at Austin.
  * 
- * http://www.cs.ucf.edu/~kstanley/
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
+ * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
  * 
  */
 public class NEATInnovationList implements Serializable {
@@ -63,6 +73,11 @@ public class NEATInnovationList implements Serializable {
 
 	}
 
+	/**
+	 * Produce an innovation key for a neuron.
+	 * @param id The neuron id.
+	 * @return The newly created key.
+	 */
 	public static String produceKeyNeuron(long id) {
 		StringBuilder result = new StringBuilder();
 		result.append("n:");
@@ -70,6 +85,12 @@ public class NEATInnovationList implements Serializable {
 		return result.toString();
 	}
 
+	/**
+	 * Produce a key for a split neuron.
+	 * @param fromID Thf from id.
+	 * @param toID The to id.
+	 * @return The key.
+	 */
 	public static String produceKeyNeuronSplit(long fromID, long toID) {
 		StringBuilder result = new StringBuilder();
 		result.append("ns:");
@@ -79,6 +100,12 @@ public class NEATInnovationList implements Serializable {
 		return result.toString();
 	}
 
+	/**
+	 * Produce a key for a link.
+	 * @param fromID The from id.
+	 * @param toID The to id.
+	 * @return The key for the link.
+	 */
 	public static String produceKeyLink(long fromID, long toID) {
 		StringBuilder result = new StringBuilder();
 		result.append("l:");
@@ -208,6 +235,10 @@ public class NEATInnovationList implements Serializable {
 		}
 	}
 
+	/**
+	 * Set the population that this genome belongs to.
+	 * @param population The population.
+	 */
 	public void setPopulation(NEATPopulation population) {
 		this.population = population;
 	}

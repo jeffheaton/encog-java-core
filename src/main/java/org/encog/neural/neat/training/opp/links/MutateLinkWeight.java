@@ -26,12 +26,23 @@ package org.encog.neural.neat.training.opp.links;
 import java.util.Random;
 
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
-import org.encog.ml.ea.train.basic.BasicEA;
 import org.encog.neural.neat.training.NEATLinkGene;
 
 /**
  * This interface defines various ways that a NEAT network can have its link
  * weights mutated.
+ * 
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
+ * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
  */
 public interface MutateLinkWeight {
 

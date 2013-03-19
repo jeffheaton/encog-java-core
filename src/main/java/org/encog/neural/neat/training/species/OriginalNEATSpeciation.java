@@ -23,18 +23,8 @@
  */
 package org.encog.neural.neat.training.species;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.encog.Encog;
 import org.encog.ml.ea.genome.Genome;
-import org.encog.ml.ea.species.BasicSpecies;
-import org.encog.ml.ea.species.Species;
 import org.encog.ml.ea.species.ThresholdSpeciation;
-import org.encog.ml.ea.train.EvolutionaryAlgorithm;
-import org.encog.ml.genetic.GeneticError;
-import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.NEATGenome;
 
 /**
@@ -54,7 +44,17 @@ import org.encog.neural.neat.training.NEATGenome;
  * first. If not, the second genome founds a new species of its own. The
  * remaining genomes follow this same process.
  * 
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
  * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
  */
 public class OriginalNEATSpeciation extends ThresholdSpeciation {
 

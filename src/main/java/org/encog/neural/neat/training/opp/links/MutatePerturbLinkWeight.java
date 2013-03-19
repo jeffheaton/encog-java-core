@@ -34,6 +34,18 @@ import org.encog.neural.neat.training.NEATLinkGene;
  * a Gaussian random number with the specified sigma. The sigma specifies the
  * standard deviation of the random number. Because the random numbers are
  * clustered at zero, this can be either an increase or decrease.
+ * 
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
+ * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
  */
 public class MutatePerturbLinkWeight implements MutateLinkWeight {
 

@@ -16,6 +16,22 @@ import org.encog.neural.neat.training.opp.links.SelectFixed;
 import org.encog.neural.neat.training.opp.links.SelectProportion;
 import org.encog.neural.neat.training.species.OriginalNEATSpeciation;
 
+/**
+ * NEAT does not make use of a special trainer. Typically the generic TrainEA
+ * trainer is used. This utility class creates a NEAT compatible TrainEA class.
+ * 
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
+ * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
+ */
 public class NEATUtil {
 	public static TrainEA constructNEATTrainer(
 			final CalculateScore calculateScore, final int inputCount,
@@ -26,6 +42,12 @@ public class NEATUtil {
 		return constructNEATTrainer(pop, calculateScore);
 	}
 
+	/**
+	 * Construct a NEAT (or HyperNEAT trainer.
+	 * @param population The population.
+	 * @param calculateScore The score function.
+	 * @return The NEAT EA trainer.
+	 */
 	public static TrainEA constructNEATTrainer(final NEATPopulation population,
 			final CalculateScore calculateScore) {
 		final TrainEA result = new TrainEA(population, calculateScore);

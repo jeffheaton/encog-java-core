@@ -40,6 +40,18 @@ import org.encog.neural.neat.training.NEATNeuronGene;
  * a neuron is created to split this link. This removes one link and adds two
  * new links. The weights on the new link are created to minimize changes to the
  * values produced by the neuron.
+ * 
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
+ * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
  */
 public class NEATMutateAddNode extends NEATMutation {
 

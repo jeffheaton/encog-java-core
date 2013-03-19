@@ -33,6 +33,18 @@ import org.encog.neural.neat.training.NEATLinkGene;
 /**
  * Mutate a genome by removing a random link. Do not remove links from genomes
  * that have fewer than 5 links.
+ * 
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
+ * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
  */
 public class NEATMutateRemoveLink extends NEATMutation {
 

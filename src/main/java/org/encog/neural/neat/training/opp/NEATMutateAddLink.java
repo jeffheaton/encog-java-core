@@ -40,6 +40,18 @@ import org.encog.neural.neat.training.NEATNeuronGene;
  * the same direction. A neuron can have a single link to itself.
  * 
  * If the network is only one cycle, then output neurons cannot be a target.
+ * 
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
+ * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
  */
 public class NEATMutateAddLink extends NEATMutation {
 

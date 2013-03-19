@@ -50,7 +50,19 @@ import org.encog.util.identity.GenerateID;
 import org.encog.util.obj.ChooseObject;
 
 /**
+ * A population for a NEAT or HyperNEAT system. This population holds the
+ * genomes, substrate and other values for a NEAT or HyperNEAT network.
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
  * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
  */
 public class NEATPopulation extends BasicPopulation implements Serializable,
 		MLError, MLRegression {
@@ -92,8 +104,12 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 
 	/**
 	 * Change the weight, do not allow the weight to go out of the weight range.
-	 * @param w The amount to change the weight by.
-	 * @param weightRange Specify the weight range.  The range is from -weightRange to +weightRange.
+	 * 
+	 * @param w
+	 *            The amount to change the weight by.
+	 * @param weightRange
+	 *            Specify the weight range. The range is from -weightRange to
+	 *            +weightRange.
 	 * @return The new weight value.
 	 */
 	public static double clampWeight(final double w, final double weightRange) {
@@ -106,6 +122,10 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 		}
 	}
 
+	/**
+	 * The number of activation cycles that the networks produced by this
+	 * population will use.
+	 */
 	private int activationCycles = NEATPopulation.DEFAULT_CYCLES;
 
 	/**
@@ -123,8 +143,22 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	 */
 	private NEATInnovationList innovations;
 
+	/**
+	 * The weight range. Weights will be between -weight and +weight.
+	 */
 	private final double weightRange = 5;
+
+	/**
+	 * The best genome that we've currently decoded into the bestNetwork
+	 * property. If this value changes to point to a new genome reference then
+	 * the phenome will need to be recalculated.
+	 */
 	private Genome cachedBestGenome;
+
+	/**
+	 * The best network. If the population is used as an MLMethod, then this
+	 * network will represent.
+	 */
 	private NEATNetwork bestNetwork;
 
 	/**
@@ -144,25 +178,44 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	 */
 	private double survivalRate = NEATPopulation.DEFAULT_SURVIVAL_RATE;
 
-	private int maxIndividualSize = 100;
-
+	/**
+	 * The substrate, if this is a hyperneat network.
+	 */
 	private Substrate substrate;
 
+	/**
+	 * The activation functions that we can choose from.
+	 */
 	private final ChooseObject<ActivationFunction> activationFunctions = new ChooseObject<ActivationFunction>();
 
+	/**
+	 * The CODEC used to decode the NEAT genomes into networks. Different
+	 * CODEC's are used for NEAT vs HyperNEAT.
+	 */
 	private GeneticCODEC codec;
 
+	/**
+	 * The initial connection density for the initial random population of
+	 * genomes.
+	 */
 	private double initialConnectionDensity = 0.1;
 
+	/**
+	 * A factory to create random number generators.
+	 */
 	private RandomFactory randomNumberFactory = Encog.getInstance()
 			.getRandomFactory().factorFactory();
 
+	/**
+	 * An empty constructor for serialization.
+	 */
 	public NEATPopulation() {
 
 	}
 
 	/**
-	 * Construct a starting NEAT population.
+	 * Construct a starting NEAT population. This does not generate the initial
+	 * random population of genomes.
 	 * 
 	 * @param inputCount
 	 *            The input neuron count.
@@ -186,6 +239,14 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 
 	}
 
+	/**
+	 * Construct a starting HyperNEAT population. This does not generate the
+	 * initial random population of genomes.
+	 * 
+	 * @param theSubstrate
+	 *            The substrate ID.
+	 * @param populationSize
+	 */
 	public NEATPopulation(final Substrate theSubstrate, final int populationSize) {
 		super(populationSize, new FactorHyperNEATGenome());
 		this.substrate = theSubstrate;
@@ -194,26 +255,41 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 		HyperNEATGenome.buildCPPNActivationFunctions(this.activationFunctions);
 	}
 
+	/**
+	 * @return A newly generated gene id.
+	 */
 	public long assignGeneID() {
 		return this.geneIDGenerate.generate();
 	}
 
+	/**
+	 * @return A newly generated innovation id.
+	 */
 	public long assignInnovationID() {
 		return this.innovationIDGenerate.generate();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public double calculateError(final MLDataSet data) {
 		updateBestNetwork();
 		return this.bestNetwork.calculateError(data);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public MLData compute(final MLData input) {
 		updateBestNetwork();
 		return this.bestNetwork.compute(input);
 	}
 
+	/**
+	 * @return Get the activation cycles.
+	 */
 	public int getActivationCycles() {
 		return this.activationCycles;
 	}
@@ -240,7 +316,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	}
 
 	/**
-	 * @return the genomeFactory
+	 * {@inheritDoc}
 	 */
 	@Override
 	public NEATGenomeFactory getGenomeFactory() {
@@ -261,25 +337,23 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 		return this.innovationIDGenerate;
 	}
 
+	/**
+	 * @return Get the innovations.
+	 */
 	public NEATInnovationList getInnovations() {
 		return this.innovations;
 	}
 
 	/**
-	 * @return the inputCount
+	 * {@inheritDoc}
 	 */
 	@Override
 	public int getInputCount() {
 		return this.inputCount;
 	}
 
-	@Override
-	public int getMaxIndividualSize() {
-		return this.maxIndividualSize;
-	}
-
 	/**
-	 * @return the outputCount
+	 * {@inheritDoc}
 	 */
 	@Override
 	public int getOutputCount() {
@@ -293,10 +367,16 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 		return this.randomNumberFactory;
 	}
 
+	/**
+	 * @return Returns the hyper-neat substrate.
+	 */
 	public Substrate getSubstrate() {
 		return this.substrate;
 	}
 
+	/**
+	 * @return The survival rate, this is the number of genomes used to mate.
+	 */
 	public double getSurvivalRate() {
 		return this.survivalRate;
 	}
@@ -308,10 +388,16 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 		return this.weightRange;
 	}
 
+	/**
+	 * @return Returns true if this is a hyperneat population.
+	 */
 	public boolean isHyperNEAT() {
 		return this.substrate != null;
 	}
 
+	/**
+	 * Create an initial random population.
+	 */
 	public void reset() {
 		// create the genome factory
 		if (isHyperNEAT()) {
@@ -349,6 +435,10 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 		setInnovations(new NEATInnovationList(this));
 	}
 
+	/**
+	 * Set the number of activation cycles to use.
+	 * @param activationCycles The number of activatino cycles to use.
+	 */
 	public void setActivationCycles(final int activationCycles) {
 		this.activationCycles = activationCycles;
 	}
@@ -370,6 +460,10 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 		this.initialConnectionDensity = initialConnectionDensity;
 	}
 
+	/**
+	 * Set the innovation list to use.
+	 * @param theInnovations The innovation list to use.
+	 */
 	public void setInnovations(final NEATInnovationList theInnovations) {
 		this.innovations = theInnovations;
 	}
@@ -382,10 +476,12 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 		this.inputCount = inputCount;
 	}
 
-	public void setMaxIndividualSize(final int maxIndividualSize) {
-		this.maxIndividualSize = maxIndividualSize;
-	}
-
+	/**
+	 * Specify to use a single activation function. This is typically the case
+	 * for NEAT, but not for HyperNEAT.
+	 * 
+	 * @param af The activation function to use.
+	 */
 	public void setNEATActivationFunction(final ActivationFunction af) {
 		this.activationFunctions.clear();
 		this.activationFunctions.add(1.0, af);
@@ -416,10 +512,18 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 		this.substrate = substrate;
 	}
 
+	/**
+	 * Set the survival rate, this is the percent of the population allowed to mate.
+	 * @param theSurvivalRate The survival rate.
+	 */
 	public void setSurvivalRate(final double theSurvivalRate) {
 		this.survivalRate = theSurvivalRate;
 	}
 
+	/**
+	 * See if the best genome has changed, and decode a new best network, if
+	 * needed.
+	 */
 	private void updateBestNetwork() {
 		if (getBestGenome() != this.cachedBestGenome) {
 			this.cachedBestGenome = getBestGenome();

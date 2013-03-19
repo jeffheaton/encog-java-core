@@ -73,6 +73,17 @@ import org.encog.neural.neat.training.NEATNeuronGene;
  * the lower innovation gene if its parent is the most fit. Increase the parent
  * counter who contributed the gene.
  * 
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
+ * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
  * 
  */
 public class NEATCrossover implements EvolutionaryOperator {

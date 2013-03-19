@@ -35,7 +35,17 @@ import org.encog.neural.neat.NEATNeuronType;
  * generation of evolving artificial neural networks. It was developed by Ken
  * Stanley while at The University of Texas at Austin.
  * 
- * http://www.cs.ucf.edu/~kstanley/
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
+ * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
  * 
  */
 public class NEATNeuronGene extends NEATBaseGene implements Serializable {
@@ -44,8 +54,6 @@ public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	public static final String PROPERTY_ACT_RESPONSE = "aResp";
 	
 	/**
 	 * The neuron type.
@@ -83,6 +91,10 @@ public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 		this.activationFunction = theActivationFunction;
 	}
 	
+	/**
+	 * Construct this gene by comping another.
+	 * @param other The other gene to copy.
+	 */
 	public NEATNeuronGene(NEATNeuronGene other) {
 		copy(other);
 	}
@@ -132,6 +144,9 @@ public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 		this.activationFunction = activationFunction;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder();
