@@ -83,21 +83,65 @@ public class NEATNetwork implements MLRegression, MLError, Serializable {
 	 */
 	private static final long serialVersionUID = 3660295468309926508L;
 
-	public static final String PROPERTY_NETWORK_DEPTH = "depth";
-	public static final String PROPERTY_LINKS = "links";
-	public static final String PROPERTY_SNAPSHOT = "snapshot";
-
+	/**
+	 * The neuron links.
+	 */
 	private final NEATLink[] links;
+	
+	/**
+	 * The activation functions.
+	 */
 	private final ActivationFunction[] activationFunctions;
+	
+	/**
+	 * The pre-activation values, used to feed the neurons.
+	 */
 	private final double[] preActivation;
+	
+	/**
+	 * The post-activation values, used as the output from the neurons.
+	 */
 	private final double[] postActivation;
+	
+	/**
+	 * The index to the starting location of the output neurons.
+	 */
 	private final int outputIndex;
+	
+	/**
+	 * The input count.
+	 */
 	private int inputCount;
+	
+	/**
+	 * The output count.
+	 */
 	private int outputCount;
+	
+	/**
+	 * The number of activation cycles to use.
+	 */
 	private int activationCycles = NEATPopulation.DEFAULT_CYCLES;
+	
+	/**
+	 * True, if the network has relaxed and values no longer changing.  Used
+	 * when activationCycles is set to zero for auto.
+	 */
 	private boolean hasRelaxed = false;
+	
+	/**
+	 * The amount of change allowed before the network is considered to have 
+	 * relaxed.
+	 */
 	private double relaxationThreshold;
 
+	/**
+	 * Construct a NEAT network.  The links that are passed in also define the neurons.
+	 * @param inputNeuronCount The input neuron count.
+	 * @param outputNeuronCount The output neuron count.
+	 * @param connectionArray The links.
+	 * @param theActivationFunctions The activation functions.
+	 */
 	public NEATNetwork(final int inputNeuronCount, final int outputNeuronCount,
 			final List<NEATLink> connectionArray,
 			final ActivationFunction[] theActivationFunctions) {
@@ -164,44 +208,75 @@ public class NEATNetwork implements MLRegression, MLError, Serializable {
 		return result;
 	}
 
+	/**
+	 * @return The number of activation cycles to use.
+	 */
 	public int getActivationCycles() {
 		return this.activationCycles;
 	}
 
+	/**
+	 * @return The activation functions.
+	 */
 	public ActivationFunction[] getActivationFunctions() {
 		return this.activationFunctions;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getInputCount() {
 		return this.inputCount;
 	}
 
+	/**
+	 * @return The links in the neural network.
+	 */
 	public NEATLink[] getLinks() {
 		return this.links;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getOutputCount() {
 		return this.outputCount;
 	}
 
+	/**
+	 * @return The starting location of the output neurons.
+	 */
 	public int getOutputIndex() {
 		return this.outputIndex;
 	}
 
+	/**
+	 * @return The post-activation values, used as the output from the neurons.
+	 */
 	public double[] getPostActivation() {
 		return this.postActivation;
 	}
 
+	/**
+	 * @return The pre-activation values, used to feed the neurons.
+	 */
 	public double[] getPreActivation() {
 		return this.preActivation;
 	}
 
+	/**
+	 * @return The amount of change allowed before the network is considered to have 
+	 * relaxed.
+	 */
 	public double getRelaxationThreshold() {
 		return this.relaxationThreshold;
 	}
 
+	/**
+	 * Perform one activation cycle.
+	 */
 	private void internalCompute() {
 		for (int j = 0; j < this.links.length; j++) {
 			this.preActivation[this.links[j].getToNeuron()] += this.postActivation[this.links[j]
@@ -216,26 +291,36 @@ public class NEATNetwork implements MLRegression, MLError, Serializable {
 		}
 	}
 
+	/**
+	 * @return True, if the network has relaxed and values no longer changing.  Used
+	 * when activationCycles is set to zero for auto.
+	 */
 	public boolean isHasRelaxed() {
 		return this.hasRelaxed;
 	}
 
+	/**
+	 * Set the number of activation cycles to use.
+	 * @param activationCycles The number of activation cycles.
+	 */
 	public void setActivationCycles(final int activationCycles) {
 		this.activationCycles = activationCycles;
 	}
 
+	/**
+	 * Set true, if the network has relaxed and values no longer changing.  Used
+	 * when activationCycles is set to zero for auto.
+	 * @param hasRelaxed True if the network has relaxed.
+	 */
 	public void setHasRelaxed(final boolean hasRelaxed) {
 		this.hasRelaxed = hasRelaxed;
 	}
 
-	public void setInputCount(final int i) {
-		this.inputCount = i;
-	}
-
-	public void setOutputCount(final int i) {
-		this.outputCount = i;
-	}
-
+	/**
+	 * The amount of change allowed before the network is considered to have 
+	 * relaxed.
+	 * @param relaxationThreshold The relaxation threshold.
+	 */
 	public void setRelaxationThreshold(final double relaxationThreshold) {
 		this.relaxationThreshold = relaxationThreshold;
 	}

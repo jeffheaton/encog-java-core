@@ -36,6 +36,7 @@ import org.encog.neural.neat.training.NEATNeuronGene;
  * This factory is used to create NEATGenomes.
  * 
  * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/
  * Encog's NEAT implementation was drawn from the following three Journal
  * Articles. For more complete BibTeX sources, see NEATNetwork.java.
  * 

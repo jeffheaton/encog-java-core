@@ -31,6 +31,7 @@ public class NEATBaseGene implements Comparable<NEATBaseGene>, Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public int compareTo(final NEATBaseGene o) {
 		return ((int) (getInnovationId() - o.getInnovationId()));
 	}

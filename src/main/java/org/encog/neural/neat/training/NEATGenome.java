@@ -36,7 +36,6 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.BasicGenome;
 import org.encog.ml.ea.genome.Genome;
-import org.encog.ml.ea.species.Species;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.util.Format;
@@ -290,14 +289,14 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	public void validate() {
 
 		// make sure that the bias neuron is where it should be
-		NEATNeuronGene g = (NEATNeuronGene) this.neuronsChromosome.get(0);
+		NEATNeuronGene g = this.neuronsChromosome.get(0);
 		if (g.getNeuronType() != NEATNeuronType.Bias) {
 			throw new EncogError("NEAT Neuron Gene 0 should be a bias gene.");
 		}
 
 		// make sure all input neurons are at the beginning
 		for (int i = 1; i <= this.inputCount; i++) {
-			NEATNeuronGene gene = (NEATNeuronGene) this.neuronsChromosome
+			NEATNeuronGene gene = this.neuronsChromosome
 					.get(i);
 			if (gene.getNeuronType() != NEATNeuronType.Input) {
 				throw new EncogError("NEAT Neuron Gene " + i
@@ -334,6 +333,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		return null;
 	}
 
+	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append("[");

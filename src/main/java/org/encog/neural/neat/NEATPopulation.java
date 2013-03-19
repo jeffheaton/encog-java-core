@@ -49,6 +49,9 @@ import org.encog.util.identity.BasicGenerateID;
 import org.encog.util.identity.GenerateID;
 import org.encog.util.obj.ChooseObject;
 
+/**
+ * 
+ */
 public class NEATPopulation extends BasicPopulation implements Serializable,
 		MLError, MLRegression {
 
@@ -56,11 +59,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	 * The default survival rate.
 	 */
 	public static final double DEFAULT_SURVIVAL_RATE = 0.2;
-
-	/**
-	 * Property tag for the innovations collection.
-	 */
-	public static final String PROPERTY_INNOVATIONS = "innovations";
 
 	/**
 	 * The activation function to use.
@@ -73,11 +71,6 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	public static final String PROPERTY_POPULATION_SIZE = "populationSize";
 
 	/**
-	 * Property tag for the species collection.
-	 */
-	public static final String PROPERTY_SPECIES = "species";
-
-	/**
 	 * Property tag for the survival rate.
 	 */
 	public static final String PROPERTY_SURVIVAL_RATE = "survivalRate";
@@ -87,10 +80,22 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Default number of activation cycles.
+	 */
 	public static final int DEFAULT_CYCLES = 4;
 
+	/**
+	 * Property to hold the number of cycles.
+	 */
 	public static final String PROPERTY_CYCLES = "cycles";
 
+	/**
+	 * Change the weight, do not allow the weight to go out of the weight range.
+	 * @param w The amount to change the weight by.
+	 * @param weightRange Specify the weight range.  The range is from -weightRange to +weightRange.
+	 * @return The new weight value.
+	 */
 	public static double clampWeight(final double w, final double weightRange) {
 		if (w < -weightRange) {
 			return -weightRange;

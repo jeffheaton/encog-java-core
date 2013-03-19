@@ -32,8 +32,17 @@ import java.io.Serializable;
  * generation of evolving artificial neural networks. It was developed by Ken
  * Stanley while at The University of Texas at Austin.
  * 
+ * -----------------------------------------------------------------------------
  * http://www.cs.ucf.edu/~kstanley/
+ * Encog's NEAT implementation was drawn from the following three Journal
+ * Articles. For more complete BibTeX sources, see NEATNetwork.java.
  * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
  */
 public class NEATLink implements Serializable, Comparable<NEATLink> {
 
@@ -42,10 +51,27 @@ public class NEATLink implements Serializable, Comparable<NEATLink> {
 	 */
 	private static final long serialVersionUID = -4117045705080951946L;
 
+	/**
+	 * The source neuron.
+	 */
 	private int fromNeuron;
+
+	/**
+	 * The target neuron.
+	 */
 	private int toNeuron;
+
+	/**
+	 * The weight.
+	 */
 	private double weight;
 
+	/**
+	 * Construct a NEAT link.
+	 * @param theFromNeuron The from neuron.
+	 * @param theToNeuron The to neuron.
+	 * @param theWeight The weight.
+	 */
 	public NEATLink(final int theFromNeuron, final int theToNeuron,
 			final double theWeight) {
 		this.fromNeuron = theFromNeuron;
@@ -53,6 +79,9 @@ public class NEATLink implements Serializable, Comparable<NEATLink> {
 		this.weight = theWeight;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int compareTo(final NEATLink other) {
 		final int result = this.fromNeuron - other.fromNeuron;
@@ -63,6 +92,9 @@ public class NEATLink implements Serializable, Comparable<NEATLink> {
 		return this.toNeuron - other.toNeuron;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean equals(final Object other) {
 		if (other == null) {
@@ -78,30 +110,54 @@ public class NEATLink implements Serializable, Comparable<NEATLink> {
 		return compareTo(otherMyClass) == 0;
 	}
 
+	/**
+	 * @return The from neuron.
+	 */
 	public int getFromNeuron() {
 		return this.fromNeuron;
 	}
 
+	/**
+	 * @return The to neuron.
+	 */
 	public int getToNeuron() {
 		return this.toNeuron;
 	}
 
+	/**
+	 * @return The weight of the link.
+	 */
 	public double getWeight() {
 		return this.weight;
 	}
 
+	/**
+	 * Set the from neuron.
+	 * @param fromNeuron The from neuron.
+	 */
 	public void setFromNeuron(final int fromNeuron) {
 		this.fromNeuron = fromNeuron;
 	}
 
+	/**
+	 * Set the target neuron.
+	 * @param toNeuron The target neuron.
+	 */
 	public void setToNeuron(final int toNeuron) {
 		this.toNeuron = toNeuron;
 	}
 
+	/**
+	 * Set the weight of this link.
+	 * @param weight The weight.
+	 */
 	public void setWeight(final double weight) {
 		this.weight = weight;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		final StringBuilder result = new StringBuilder();

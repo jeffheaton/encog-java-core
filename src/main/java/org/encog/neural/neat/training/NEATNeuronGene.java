@@ -94,7 +94,7 @@ public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 	 *            The other gene.
 	 */
 	public void copy(final NEATNeuronGene gene) {
-		final NEATNeuronGene other = (NEATNeuronGene) gene;
+		final NEATNeuronGene other = gene;
 		setId(other.getId());
 		this.neuronType = other.neuronType;
 		this.activationFunction = other.activationFunction;
@@ -132,6 +132,7 @@ public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 		this.activationFunction = activationFunction;
 	}
 
+	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append("[NEATNeuronGene: id=");

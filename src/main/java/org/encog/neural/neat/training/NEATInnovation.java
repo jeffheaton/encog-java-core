@@ -75,6 +75,7 @@ public class NEATInnovation implements Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public String toString() {
 		final StringBuilder result = new StringBuilder();
 		result.append("[NeatInnovation:");

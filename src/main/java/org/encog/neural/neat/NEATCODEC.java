@@ -49,6 +49,7 @@ import org.encog.neural.neat.training.NEATNeuronGene;
  * encode method, please consider contributing it to the Encog project. :)
  * 
  * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/
  * Encog's NEAT implementation was drawn from the following three Journal
  * Articles. For more complete BibTeX sources, see NEATNetwork.java.
  * 

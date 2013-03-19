@@ -100,7 +100,7 @@ public class NEATLinkGene extends NEATBaseGene implements Serializable {
 	 *            The other gene.
 	 */
 	public void copy(final NEATLinkGene gene) {
-		final NEATLinkGene other = (NEATLinkGene) gene;
+		final NEATLinkGene other = gene;
 		setEnabled(other.isEnabled());
 		this.fromNeuronID = other.fromNeuronID;
 		this.toNeuronID = other.toNeuronID;

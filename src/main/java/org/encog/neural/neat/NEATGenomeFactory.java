@@ -36,6 +36,7 @@ import org.encog.neural.neat.training.NEATNeuronGene;
  * is an extension to the non-NEAT specific GenomeFactory.
  * 
  * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/
  * Encog's NEAT implementation was drawn from the following three Journal
  * Articles. For more complete BibTeX sources, see NEATNetwork.java.
  * 
