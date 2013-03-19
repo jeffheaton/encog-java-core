@@ -23,7 +23,15 @@ public class MajorityVoting implements EnsembleAggregator {
 	}
 	
 	private MLData threshold(MLData d, double threshold, double lowValue, double highValue) {
-		return null;
+		MLData result = new BasicMLData(d.size());
+		for(int i=0;i<d.size();i++) {
+			if( d.getData(i)>=threshold ) {
+				result.setData(i, highValue);
+			} else {
+				result.setData(i, lowValue);
+			}
+		}
+		return result;
 	}
 
 	@Override
