@@ -11,4 +11,3 @@ Important Links:
 http://www.heatonresearch.com/encog
 http://www.heatonresearch.com/wiki
 
-.
