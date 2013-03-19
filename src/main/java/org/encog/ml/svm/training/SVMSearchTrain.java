@@ -409,4 +409,34 @@ public class SVMSearchTrain extends BasicTraining {
 		}
 	}
 
+	/**
+	 * @return the bestConst
+	 */
+	public double getBestConst() {
+		return bestConst;
+	}
+
+	/**
+	 * @param bestConst the bestConst to set
+	 */
+	public void setBestConst(double bestConst) {
+		this.bestConst = bestConst;
+	}
+
+	/**
+	 * @return the bestGamma
+	 */
+	public double getBestGamma() {
+		return bestGamma;
+	}
+
+	/**
+	 * @param bestGamma the bestGamma to set
+	 */
+	public void setBestGamma(double bestGamma) {
+		this.bestGamma = bestGamma;
+	}
+	
+	
+
 }
