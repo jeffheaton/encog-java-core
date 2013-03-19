@@ -74,11 +74,14 @@ public class EAWorker implements Callable<Object> {
 					if (this.parents[0] != this.parents[1]) {
 						opp.performOperation(this.rnd, this.parents, 0,
 								this.children, 0);
+						for( Genome child : this.children )
+							child.setPopulation(this.parents[0].getPopulation());
 					}
 				} else {
 					// clone a child (asexual reproduction)
 					opp.performOperation(this.rnd, this.parents, 0,
 							this.children, 0);
+					this.children[0].setPopulation(this.parents[0].getPopulation());
 				}
 
 				// process the new child
