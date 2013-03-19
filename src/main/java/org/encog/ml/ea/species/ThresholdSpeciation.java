@@ -71,7 +71,7 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 
 		if (this.owner.getSelectionComparator().compare(genome,
 				species.getLeader()) < 0) {
-			species.setBestScore(genome.getScore());
+			species.setBestScore(genome.getAdjustedScore());
 			species.setGensNoImprovement(0);
 			species.setLeader(genome);
 		}
@@ -388,9 +388,9 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 			Species currentSpecies = null;
 			final Genome genome = (Genome) g;
 
-			if (!Double.isNaN(genome.getScore())
-					&& !Double.isInfinite(genome.getScore())) {
-				maxScore = Math.max(genome.getScore(), maxScore);
+			if (!Double.isNaN(genome.getAdjustedScore())
+					&& !Double.isInfinite(genome.getAdjustedScore())) {
+				maxScore = Math.max(genome.getAdjustedScore(), maxScore);
 			}
 
 			for (final Species s : speciesCollection) {

@@ -94,8 +94,8 @@ public class TournamentSelection implements SelectionOperator, Serializable {
 			final Genome competitor = species.getMembers().get(competitorIndex);
 
 			// force an invalid genome to lose
-			if (Double.isInfinite(competitor.getScore())
-					|| Double.isNaN(competitor.getScore())) {
+			if (Double.isInfinite(competitor.getAdjustedScore())
+					|| Double.isNaN(competitor.getAdjustedScore())) {
 				return competitorIndex;
 			}
 
@@ -125,8 +125,8 @@ public class TournamentSelection implements SelectionOperator, Serializable {
 			final Genome competitor = species.getMembers().get(competitorIndex);
 
 			// only evaluate valid genomes
-			if (!Double.isInfinite(competitor.getScore())
-					&& !Double.isNaN(competitor.getScore())) {
+			if (!Double.isInfinite(competitor.getAdjustedScore())
+					&& !Double.isNaN(competitor.getAdjustedScore())) {
 				BasicEA.calculateScoreAdjustment(competitor,
 						this.trainer.getScoreAdjusters());
 				if (this.trainer.getSelectionComparator().isBetterThan(

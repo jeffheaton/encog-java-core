@@ -113,13 +113,13 @@ public class BasicSpecies implements Serializable, Species {
 
 		int count = 0;
 		for (final Genome genome : this.members) {
-			if (!Double.isNaN(genome.getScore())
-					&& !Double.isInfinite(genome.getScore())) {
+			if (!Double.isNaN(genome.getAdjustedScore())
+					&& !Double.isInfinite(genome.getAdjustedScore())) {
 				double s;
 				if (shouldMinimize) {
-					s = maxScore - genome.getScore();
+					s = maxScore - genome.getAdjustedScore();
 				} else {
-					s = genome.getScore();
+					s = genome.getAdjustedScore();
 				}
 				total += s;
 				count++;
