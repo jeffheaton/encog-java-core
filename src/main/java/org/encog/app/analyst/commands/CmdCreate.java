@@ -24,13 +24,20 @@
 package org.encog.app.analyst.commands;
 
 import java.io.File;
+import java.util.Random;
 
 import org.encog.app.analyst.EncogAnalyst;
+import org.encog.app.analyst.script.ml.ScriptOpcode;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.ml.MLMethod;
 import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.data.buffer.EncogEGBFile;
 import org.encog.ml.factory.MLMethodFactory;
+import org.encog.ml.fitness.ZeroEvalScoreFunction;
+import org.encog.ml.prg.extension.EncogOpcodeRegistry;
+import org.encog.ml.prg.extension.ProgramExtensionTemplate;
+import org.encog.ml.prg.generator.PrgGrowGenerator;
+import org.encog.ml.prg.train.PrgPopulation;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.util.logging.EncogLogging;
 
@@ -48,7 +55,9 @@ public class CmdCreate extends Cmd {
 
 	/**
 	 * Construct the create command.
-	 * @param theAnalyst The analyst to use.
+	 * 
+	 * @param theAnalyst
+	 *            The analyst to use.
 	 */
 	public CmdCreate(final EncogAnalyst theAnalyst) {
 		super(theAnalyst);
@@ -72,17 +81,14 @@ public class CmdCreate extends Cmd {
 				ScriptProperties.ML_CONFIG_TYPE);
 		final String arch = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_ARCHITECTURE);
-				
-			EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
-				"Beginning create");
-			EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
-					"training file:" + trainingID);
-			EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
-					"resource file:" + resourceID);	
-			EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
-					"type:" + type);
-			EncogLogging.log(EncogLogging.LEVEL_DEBUG, 
-					"arch:" + arch);	
+
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Beginning create");
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "training file:"
+				+ trainingID);
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "resource file:"
+				+ resourceID);
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "type:" + type);
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "arch:" + arch);
 
 		final EncogEGBFile egb = new EncogEGBFile(trainingFile);
 		egb.open();
@@ -90,13 +96,31 @@ public class CmdCreate extends Cmd {
 		final int ideal = egb.getIdealCount();
 		egb.close();
 
+		if (type.equalsIgnoreCase(MLMethodFactory.TYPE_EPL)) {
+			if (this.getScript().getOpcodes().size() > 0) {
+
+			}
+		}
+
 		final MLMethodFactory factory = new MLMethodFactory();
 		final MLMethod obj = factory.create(type, arch, input, ideal);
-		
-		if( obj instanceof BayesianNetwork ) {
+
+		if (obj instanceof BayesianNetwork) {
 			final String query = getProp().getPropertyString(
 					ScriptProperties.ML_CONFIG_QUERY);
-			((BayesianNetwork)obj).defineClassificationStructure(query);			
+			((BayesianNetwork) obj).defineClassificationStructure(query);
+		} else if (obj instanceof PrgPopulation) {
+			if (this.getScript().getOpcodes().size() > 0) {
+				PrgPopulation pop = (PrgPopulation) obj;
+				for (ScriptOpcode op : this.getScript().getOpcodes()) {
+					ProgramExtensionTemplate temp = EncogOpcodeRegistry.INSTANCE
+							.findOpcode(op.getName(), op.getArgCount());
+					pop.getContext().getFunctions().addExtension(temp);
+				}
+				(new PrgGrowGenerator(pop.getContext(), 5)).generate(
+						new Random(), pop, new ZeroEvalScoreFunction());
+			}
+
 		}
 
 		EncogDirectoryPersistence.saveObject(resourceFile, obj);

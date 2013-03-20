@@ -27,11 +27,11 @@ public class EPLFactory {
 			final int output) {
 		
 		if( input<=0 ) {
-			throw new EncogError("Must have at least one input for NEAT.");
+			throw new EncogError("Must have at least one input for EPL.");
 		}
 		
 		if( output<=0 ) {
-			throw new EncogError("Must have at least one output for NEAT.");
+			throw new EncogError("Must have at least one output for EPL.");
 		}
 		
 		
@@ -41,6 +41,7 @@ public class EPLFactory {
 		final int populationSize = holder.getInt(
 				MLMethodFactory.PROPERTY_POPULATION_SIZE, false, 1000);
 		String variables = holder.getString("vars", false, "x");
+		String funct = holder.getString("funct", false, null);
 		
 		EncogProgramContext context = new EncogProgramContext();
 		StringTokenizer tok = new StringTokenizer(variables,",");
@@ -48,9 +49,15 @@ public class EPLFactory {
 			context.defineVariable(tok.nextToken());
 		}
 
-		StandardExtensions.createNumericOperators(context.getFunctions());
+		if( "numeric".equalsIgnoreCase(funct) ) {
+			StandardExtensions.createNumericOperators(context.getFunctions());
+		}
+		
 		PrgPopulation pop = new PrgPopulation(context,populationSize);
-		(new PrgGrowGenerator(context,5)).generate(new Random(), pop,new ZeroEvalScoreFunction());
+		
+		if( context.getFunctions().size()>0 ) {
+			(new PrgGrowGenerator(context,5)).generate(new Random(), pop,new ZeroEvalScoreFunction());
+		}
 		return pop;
 	}
 }

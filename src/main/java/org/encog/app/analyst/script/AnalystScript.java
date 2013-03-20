@@ -26,13 +26,16 @@ package org.encog.app.analyst.script;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.encog.Encog;
 import org.encog.app.analyst.AnalystFileFormat;
+import org.encog.app.analyst.script.ml.ScriptOpcode;
 import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.normalize.AnalystNormalize;
 import org.encog.app.analyst.script.process.AnalystProcess;
@@ -75,6 +78,9 @@ public class AnalystScript {
 	 * Tracks which files were generated.
 	 */
 	private final Set<String> generated = new HashSet<String>();
+	
+	
+	private final List<ScriptOpcode> opcodes = new ArrayList<ScriptOpcode>();
 	
 	/**
 	 * The tasks.
@@ -337,6 +343,14 @@ public class AnalystScript {
 	public AnalystProcess getProcess() {
 		return process;
 	}
+
+	/**
+	 * @return the opcodes
+	 */
+	public List<ScriptOpcode> getOpcodes() {
+		return opcodes;
+	}
+	
 	
 	
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import org.encog.EncogError;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.ea.species.Species;
@@ -22,9 +23,13 @@ public class PrgGrowGenerator {
 	private List<ProgramExtensionTemplate> leaves = new ArrayList<ProgramExtensionTemplate>();
 	
 	public PrgGrowGenerator(EncogProgramContext theContext, int theMaxDepth) {
+		if( theContext.getFunctions().size()==0 ) {
+			throw new EncogError("There are no opcodes defined");
+		}
+		
 		this.context = theContext;
 		this.maxDepth = theMaxDepth;
-		
+				
 		for(ProgramExtensionTemplate temp : this.context.getFunctions().getOpCodes() ) {
 			if( temp.getChildNodeCount()==0 ) {
 				this.leaves.add(temp);

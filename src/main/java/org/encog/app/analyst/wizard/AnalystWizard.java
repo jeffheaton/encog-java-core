@@ -39,6 +39,7 @@ import org.encog.app.analyst.missing.HandleMissingValues;
 import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
+import org.encog.app.analyst.script.ml.ScriptOpcode;
 import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.process.ProcessField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
@@ -47,6 +48,9 @@ import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.generate.TargetLanguage;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.ml.factory.MLTrainFactory;
+import org.encog.ml.prg.extension.FunctionFactory;
+import org.encog.ml.prg.extension.ProgramExtensionTemplate;
+import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.util.arrayutil.NormalizationAction;
 import org.encog.util.csv.CSVFormat;
@@ -628,6 +632,13 @@ public class AnalystWizard {
 				MLTrainFactory.TYPE_EPL_GA);
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
+		
+		// add in the opcodes
+		FunctionFactory factory = new FunctionFactory();
+		StandardExtensions.createNumericOperators(factory);
+		for(ProgramExtensionTemplate temp : factory.getOpCodes() ) {
+			this.script.getOpcodes().add(new ScriptOpcode(temp));
+		}
 	}
 
 	/**

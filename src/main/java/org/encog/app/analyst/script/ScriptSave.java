@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.encog.app.analyst.AnalystError;
+import org.encog.app.analyst.script.ml.ScriptOpcode;
 import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.process.ProcessField;
 import org.encog.app.analyst.script.prop.PropertyConstraints;
@@ -198,6 +199,16 @@ public class ScriptSave {
 	private void saveMachineLearning(final EncogWriteHelper out) {
 		saveSubSection(out, "ML", "CONFIG");
 		saveSubSection(out, "ML", "TRAIN");
+		out.addSubSection("OPCODES");
+		out.addColumn("code");
+		out.addColumn("count");
+		out.writeLine();
+		
+		for( final ScriptOpcode so: this.script.getOpcodes() ) {
+			out.addColumn(so.getName());
+			out.addColumn(so.getArgCount());
+			out.writeLine();
+		}
 
 	}
 
