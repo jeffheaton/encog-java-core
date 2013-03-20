@@ -23,6 +23,7 @@
  */
 package org.encog.ml.ea.opp.selection;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import org.encog.ml.ea.species.Species;
@@ -34,7 +35,12 @@ import org.encog.ml.ea.train.EvolutionaryAlgorithm;
  * 
  * http://en.wikipedia.org/wiki/Truncation_selection
  */
-public class TruncationSelection implements SelectionOperator {
+public class TruncationSelection implements SelectionOperator, Serializable {
+
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * The trainer.

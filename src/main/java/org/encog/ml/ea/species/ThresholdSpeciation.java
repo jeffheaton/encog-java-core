@@ -14,7 +14,16 @@ import org.encog.ml.ea.sort.SpeciesComparator;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.genetic.GeneticError;
 
+/**
+ * Speciate based on threshold. Any genomes with a compatability score below a
+ * level will be in the same species.
+ */
 public abstract class ThresholdSpeciation implements Speciation, Serializable {
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * The training being used.
 	 */
@@ -148,9 +157,14 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 		}
 	}
 
+	/**
+	 * Find the best species.
+	 * 
+	 * @return The best species.
+	 */
 	public Species findBestSpecies() {
 		if (this.owner.getBestGenome() != null) {
-			return ((Genome) this.owner.getBestGenome()).getSpecies();
+			return this.owner.getBestGenome().getSpecies();
 		}
 		return null;
 	}
@@ -160,7 +174,8 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 	 * species, then do not remove it. If the species is the last species, don't
 	 * remove it.
 	 * 
-	 * @param species The species to attempt to remove.
+	 * @param species
+	 *            The species to attempt to remove.
 	 */
 	public void removeSpecies(Species species) {
 		if (species != findBestSpecies()) {
@@ -293,7 +308,7 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 	/**
 	 * Reset for an iteration.
 	 * 
-	 * @return
+	 * @return The genomes to speciate.
 	 */
 	private List<Genome> resetSpecies(List<Genome> inputGenomes) {
 		final List<Genome> result = new ArrayList<Genome>();
@@ -386,7 +401,7 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 		// assign genomes to species (if any exist)
 		for (final Genome g : genomes) {
 			Species currentSpecies = null;
-			final Genome genome = (Genome) g;
+			final Genome genome = g;
 
 			if (!Double.isNaN(genome.getAdjustedScore())
 					&& !Double.isInfinite(genome.getAdjustedScore())) {
@@ -395,7 +410,7 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 
 			for (final Species s : speciesCollection) {
 				final double compatibility = getCompatibilityScore(genome,
-						(Genome) s.getLeader());
+						s.getLeader());
 
 				if (compatibility <= this.compatibilityThreshold) {
 					currentSpecies = s;
@@ -439,10 +454,15 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 
 	}
 
-	@Override
-	public boolean isIterationBased() {
-		return true;
-	}
-
+	/**
+	 * Determine how compatible two genomes are. More compatible genomes will be
+	 * placed into the same species. The lower the number, the more compatible.
+	 * 
+	 * @param genome1
+	 *            The first genome.
+	 * @param genome2
+	 *            The second genome.
+	 * @return The compatability level.
+	 */
 	public abstract double getCompatibilityScore(Genome genome1, Genome genome2);
 }

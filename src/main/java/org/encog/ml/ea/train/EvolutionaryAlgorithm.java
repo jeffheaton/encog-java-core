@@ -136,6 +136,9 @@ public interface EvolutionaryAlgorithm {
 	 */
 	OperationList getOperators();
 
+	/**
+	 * @return Training paramaters.
+	 */
 	GeneticTrainingParams getParams();
 
 	/**

@@ -42,6 +42,12 @@ import org.encog.ml.ea.train.basic.BasicEA;
  * 
  */
 public class TournamentSelection implements SelectionOperator, Serializable {
+	
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	/**
 	 * The trainer being used.
 	 */

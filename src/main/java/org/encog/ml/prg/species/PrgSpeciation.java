@@ -29,6 +29,12 @@ import org.encog.ml.prg.EncogProgram;
 
 public class PrgSpeciation extends ThresholdSpeciation {
 
+	/**
+	 * The serial ID.
+	 */
+	private static final long serialVersionUID = 1L;
+
+
 	public PrgSpeciation() {
 		this.setCompatibilityThreshold(15);
 		this.setMaxNumberOfSpecies(30);
@@ -49,11 +55,6 @@ public class PrgSpeciation extends ThresholdSpeciation {
 		CompareEncogProgram comp = new CompareEncogProgram();
 		double d = comp.compare((EncogProgram)genome1, (EncogProgram)genome2);
 		return d;
-	}
-
-	@Override
-	public boolean isIterationBased() {
-		return true;
 	}
 
 }

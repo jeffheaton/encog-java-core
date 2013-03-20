@@ -105,7 +105,14 @@ public interface Genome extends MLMethod {
 	int size();
 
 
+	/**
+	 * @return The species for this genome.
+	 */
 	Species getSpecies();
 
+	/**
+	 * Set the species for this genome.
+	 * @param s The species.
+	 */
 	void setSpecies(Species s);
 }

@@ -1,9 +1,36 @@
+/*
+ * Encog(tm) Core v3.2 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2012 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.ml.ea.sort;
 
 import java.util.Comparator;
 
 import org.encog.ml.ea.genome.Genome;
 
+/**
+ * Defines methods for comparing genomes. Also provides methods to apply bonuses
+ * and penalties.
+ */
 public interface GenomeComparator extends Comparator<Genome> {
 	/**
 	 * Apply a bonus, this is a simple percent that is applied in the direction
@@ -41,8 +68,20 @@ public interface GenomeComparator extends Comparator<Genome> {
 	 */
 	boolean isBetterThan(double d1, double d2);
 
-	boolean isBetterThan(Genome prg, Genome bestGenome);
+	/**
+	 * Determine if one genome is better than the other genome.
+	 * 
+	 * @param genome1
+	 *            The first genome.
+	 * @param genome2
+	 *            The second genome.
+	 * @return True, if genome1 is better than genome2.
+	 */
+	boolean isBetterThan(Genome genome1, Genome genome2);
 
+	/**
+	 * @return Returns true if the score should be minimized.
+	 */
 	boolean shouldMinimize();
 
 }

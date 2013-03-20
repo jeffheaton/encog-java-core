@@ -71,6 +71,11 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 		EncogShutdownTask, Serializable {
 
 	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Calculate the score adjustment, based on adjusters.
 	 * 
 	 * @param genome
@@ -855,6 +860,9 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void performShutdownTask() {
 		finishTraining();

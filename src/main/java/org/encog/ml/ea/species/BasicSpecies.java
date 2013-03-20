@@ -71,7 +71,14 @@ public class BasicSpecies implements Serializable, Species {
 	 */
 	private Population population;
 
+	/**
+	 * The offspring count.
+	 */
 	private transient int offspringCount;
+	
+	/**
+	 * The offpsring share (percent).
+	 */
 	private transient double offspringShare;
 
 	/**
@@ -100,12 +107,18 @@ public class BasicSpecies implements Serializable, Species {
 		this.members.add(theFirst);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void add(final Genome genome) {
 		genome.setPopulation(this.population);
 		this.members.add(genome);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public double calculateShare(final boolean shouldMinimize,
 			final double maxScore) {
@@ -136,7 +149,7 @@ public class BasicSpecies implements Serializable, Species {
 	}
 
 	/**
-	 * @return The age of this species.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public int getAge() {
@@ -144,7 +157,7 @@ public class BasicSpecies implements Serializable, Species {
 	}
 
 	/**
-	 * @return The best score for this species.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public double getBestScore() {
@@ -152,7 +165,7 @@ public class BasicSpecies implements Serializable, Species {
 	}
 
 	/**
-	 * @return The number of generations with no improvement.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public int getGensNoImprovement() {
@@ -160,7 +173,7 @@ public class BasicSpecies implements Serializable, Species {
 	}
 
 	/**
-	 * @return THe leader of this species.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public Genome getLeader() {
@@ -168,7 +181,7 @@ public class BasicSpecies implements Serializable, Species {
 	}
 
 	/**
-	 * @return The members of this species.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public List<Genome> getMembers() {
@@ -176,7 +189,7 @@ public class BasicSpecies implements Serializable, Species {
 	}
 
 	/**
-	 * @return the offspringCount
+	 * {@inheritDoc}
 	 */
 	@Override
 	public int getOffspringCount() {
@@ -184,7 +197,7 @@ public class BasicSpecies implements Serializable, Species {
 	}
 
 	/**
-	 * @return the offspringShare
+	 * {@inheritDoc}
 	 */
 	@Override
 	public double getOffspringShare() {
@@ -192,7 +205,7 @@ public class BasicSpecies implements Serializable, Species {
 	}
 
 	/**
-	 * @return The population that this species belongs to.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public Population getPopulation() {
@@ -215,10 +228,7 @@ public class BasicSpecies implements Serializable, Species {
 	}
 
 	/**
-	 * Set the age of this species.
-	 * 
-	 * @param theAge
-	 *            The age of this species.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void setAge(final int theAge) {
@@ -226,10 +236,7 @@ public class BasicSpecies implements Serializable, Species {
 	}
 
 	/**
-	 * Set the best score.
-	 * 
-	 * @param theBestScore
-	 *            The best score.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void setBestScore(final double theBestScore) {
@@ -237,10 +244,7 @@ public class BasicSpecies implements Serializable, Species {
 	}
 
 	/**
-	 * Set the number of generations with no improvement.
-	 * 
-	 * @param theGensNoImprovement
-	 *            The number of generations.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void setGensNoImprovement(final int theGensNoImprovement) {
@@ -248,10 +252,7 @@ public class BasicSpecies implements Serializable, Species {
 	}
 
 	/**
-	 * Set the leader.
-	 * 
-	 * @param theLeader
-	 *            The new leader.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void setLeader(final Genome theLeader) {
@@ -259,8 +260,7 @@ public class BasicSpecies implements Serializable, Species {
 	}
 
 	/**
-	 * @param offspringCount
-	 *            the offspringCount to set
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void setOffspringCount(final int offspringCount) {
@@ -268,14 +268,16 @@ public class BasicSpecies implements Serializable, Species {
 	}
 
 	/**
-	 * @param thePopulation
-	 *            the population to set
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void setPopulation(final Population thePopulation) {
 		this.population = thePopulation;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		final StringBuilder result = new StringBuilder();

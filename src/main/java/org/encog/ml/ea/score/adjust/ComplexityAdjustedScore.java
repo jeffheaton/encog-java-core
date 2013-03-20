@@ -72,6 +72,9 @@ public class ComplexityAdjustedScore implements AdjustScore {
 		this(10,50,0.2,2.0);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public double calculateAdjustment(Genome genome) {
 		double score = genome.getScore();

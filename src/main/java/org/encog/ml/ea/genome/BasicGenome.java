@@ -53,8 +53,14 @@ public abstract class BasicGenome implements Genome, Serializable {
 	 */
 	private Population population;
 
+	/**
+	 * The birth generation for this genome.
+	 */
 	private int birthGeneration;
 
+	/**
+	 * The species of this genome.
+	 */
 	private Species species;
 
 	/**
