@@ -64,8 +64,8 @@ public class NguyenWidrowRandomizer extends BasicRandomizer {
 		int fromCount = network.getLayerNeuronCount(fromLayer);
 		int fromCountTotalCount = network.getLayerTotalNeuronCount(fromLayer);
 		ActivationFunction af = network.getActivation(toLayer);
-		double low = calculateRange(af,Double.NEGATIVE_INFINITY);
-		double high = calculateRange(af,Double.POSITIVE_INFINITY);
+		double low = calculateRange(af,Double.MIN_VALUE);
+		double high = calculateRange(af,Double.MAX_VALUE);
 
 		double b = 0.7d * Math.pow(toCount, (1d / fromCount)) / (high-low);
 
