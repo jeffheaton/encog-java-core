@@ -26,6 +26,7 @@ package org.encog.engine.network.activation;
 import org.encog.ml.factory.MLActivationFactory;
 import org.encog.util.obj.ActivationUtil;
 
+import org.apache.commons.math3.util.FastMath;
 /**
  * The hyperbolic tangent activation function takes the curved shape of the
  * hyperbolic tangent. This activation function produces both positive and
@@ -59,7 +60,7 @@ public class ActivationTANH implements ActivationFunction {
 	public final void activationFunction(final double[] x, final int start,
 			final int size) {
 		for (int i = start; i < start + size; i++) {
-			x[i] = Math.tanh(x[i]);
+			x[i] = FastMath.tanh(x[i]);
 		}
 	}
 
