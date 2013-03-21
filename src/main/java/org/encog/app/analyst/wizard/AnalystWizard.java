@@ -635,7 +635,13 @@ public class AnalystWizard {
 		
 		// add in the opcodes
 		FunctionFactory factory = new FunctionFactory();
-		StandardExtensions.createNumericOperators(factory);
+		
+		if( this.getGoal()==AnalystGoal.Regression) {
+			StandardExtensions.createNumericOperators(factory);
+		} else {
+			StandardExtensions.createNumericOperators(factory);
+			StandardExtensions.createBooleanOperators(factory);
+		}
 		for(ProgramExtensionTemplate temp : factory.getOpCodes() ) {
 			this.script.getOpcodes().add(new ScriptOpcode(temp));
 		}

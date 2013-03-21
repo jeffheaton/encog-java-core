@@ -30,6 +30,7 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.score.AdjustScore;
 import org.encog.ml.ea.train.basic.BasicEA;
+import org.encog.ml.prg.exception.EncogEPLError;
 
 /**
  * An individual threadable task for the parallel score calculation.
@@ -77,7 +78,12 @@ public class ParallelScoreTask implements Runnable {
 	public void run() {
 		MLMethod phenotype = this.owner.getCodec().decode(this.genome);
 		if (phenotype != null) {
-			double score = this.scoreFunction.calculateScore(phenotype);
+			double score;
+			try {
+				score = this.scoreFunction.calculateScore(phenotype);
+			} catch(EncogEPLError e) {
+				score = Double.NaN;
+			}
 			genome.setScore(score);
 			genome.setAdjustedScore(score);
 			BasicEA.calculateScoreAdjustment(genome, adjusters);

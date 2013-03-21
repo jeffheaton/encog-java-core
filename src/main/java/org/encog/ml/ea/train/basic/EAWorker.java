@@ -29,6 +29,7 @@ import java.util.concurrent.Callable;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.species.Species;
+import org.encog.ml.prg.exception.EncogEPLError;
 
 /**
  * A worker thread for an Evolutionary Algorithm.
@@ -39,22 +40,22 @@ public class EAWorker implements Callable<Object> {
 	 * The species being processed.
 	 */
 	private final Species species;
-	
+
 	/**
 	 * The parent genomes.
 	 */
 	private final Genome[] parents;
-	
+
 	/**
 	 * The children genomes.
 	 */
 	private final Genome[] children;
-	
+
 	/**
 	 * Random number generator.
 	 */
 	private final Random rnd;
-	
+
 	/**
 	 * The parent object.
 	 */
@@ -62,8 +63,11 @@ public class EAWorker implements Callable<Object> {
 
 	/**
 	 * Construct the EA worker.
-	 * @param theTrain The trainer.
-	 * @param theSpecies The species.
+	 * 
+	 * @param theTrain
+	 *            The trainer.
+	 * @param theSpecies
+	 *            The species.
 	 */
 	public EAWorker(final BasicEA theTrain, final Species theSpecies) {
 		this.train = theTrain;
@@ -76,6 +80,7 @@ public class EAWorker implements Callable<Object> {
 
 	/**
 	 * Choose a parent.
+	 * 
 	 * @return The chosen parent.
 	 */
 	private Genome chooseParent() {
@@ -149,8 +154,10 @@ public class EAWorker implements Callable<Object> {
 						return null;
 					}
 				}
+			} catch(EncogEPLError e) {
+				// nothing really to do here, just don't add the child
+				// it is invalid.
 			} catch (final Throwable t) {
-				System.out.println("error");
 				if (!this.train.getShouldIgnoreExceptions()) {
 					this.train.reportError(t);
 				}

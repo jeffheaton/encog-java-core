@@ -13,6 +13,7 @@ import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.exception.EncogEPLError;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.train.PrgPopulation;
 
@@ -91,7 +92,12 @@ public class PrgGrowGenerator {
 		while(!done) {
 			result = generate(rnd);
 			
-			double s = score.calculateScore(result);
+			double s;
+			try {
+				s = score.calculateScore(result);
+			} catch(EncogEPLError e) {
+				s = Double.NaN;
+			}
 			
 			if( tries>100 ) {
 				done = true;

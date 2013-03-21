@@ -36,7 +36,6 @@ public class EPLGAFactory {
 		TrainEA train = new TrainEA(pop, score);
 		train.addRewriteRule(new RewriteConstants());
 		train.addRewriteRule(new RewriteAlgebraic());
-		train.setValidationMode(true);
 		train.setCODEC(new PrgCODEC());
 		train.addOperation(0.95, new SubtreeCrossover());
 		train.addOperation(0.05, new SubtreeMutation(pop.getContext(),4));

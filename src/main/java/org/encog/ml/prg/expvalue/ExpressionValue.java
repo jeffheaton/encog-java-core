@@ -26,6 +26,7 @@ package org.encog.ml.prg.expvalue;
 import java.io.Serializable;
 
 import org.encog.ml.prg.ExpressionError;
+import org.encog.ml.prg.exception.EncogEPLError;
 
 public class ExpressionValue implements Serializable {
 	
@@ -105,15 +106,15 @@ public class ExpressionValue implements Serializable {
 			case floatingType:
 				return this.floatValue;
 			case booleanType:
-				throw(new ExpressionError("Type Mismatch: can't convert float to boolean."));
+				throw(new EncogEPLError("Type Mismatch: can't convert float to boolean."));
 			case stringType:
 				try {
 					return Double.parseDouble(this.stringValue);
 				} catch(NumberFormatException ex) {
-					throw(new ExpressionError("Type Mismatch: can't convert "+this.stringValue+" to floating point."));
+					throw(new EncogEPLError("Type Mismatch: can't convert "+this.stringValue+" to floating point."));
 				}
 			default:
-				throw(new ExpressionError("Unknown type: " + this.currentType));
+				throw(new EncogEPLError("Unknown type: " + this.currentType));
 		}
 	}
 	
@@ -128,22 +129,22 @@ public class ExpressionValue implements Serializable {
 			case stringType:
 				return this.stringValue;
 			default:
-				throw(new ExpressionError("Unknown type: " + this.currentType));
+				throw(new EncogEPLError("Unknown type: " + this.currentType));
 		}
 	}
 	
 	public boolean toBooleanValue() {
 		switch(currentType) {
 			case intType:
-				throw(new ExpressionError("Type Mismatch: can't "+this.intValue+" to boolean."));
+				throw(new EncogEPLError("Type Mismatch: can't "+this.intValue+" to boolean."));
 			case floatingType:
-				throw(new ExpressionError("Type Mismatch: can't "+this.floatValue+" to boolean."));
+				throw(new EncogEPLError("Type Mismatch: can't "+this.floatValue+" to boolean."));
 			case booleanType:
 				return this.boolValue;
 			case stringType:
-				throw(new ExpressionError("Type Mismatch: can't "+this.stringValue+" to boolean."));
+				throw(new EncogEPLError("Type Mismatch: can't "+this.stringValue+" to boolean."));
 			default:
-				throw(new ExpressionError("Unknown type: " + this.currentType));
+				throw(new EncogEPLError("Unknown type: " + this.currentType));
 		}
 	}
 	
