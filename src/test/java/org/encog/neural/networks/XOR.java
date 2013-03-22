@@ -25,6 +25,7 @@ package org.encog.neural.networks;
 
 import junit.framework.TestCase;
 
+import org.encog.ensemble.data.EnsembleDataSet;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;

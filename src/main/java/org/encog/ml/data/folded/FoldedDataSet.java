@@ -157,7 +157,8 @@ public class FoldedDataSet implements MLDataSet {
 				this.underlying.getRecordCount());
 		this.foldSize = (int) (this.underlying.getRecordCount() 
 					/ this.numFolds);
-		this.lastFoldSize = (int) (this.underlying.getRecordCount() 
+		this.lastFoldSize = (int) this.foldSize;
+		this.lastFoldSize += (int) (this.underlying.getRecordCount() 
 					- (this.foldSize * this.numFolds));
 		setCurrentFold(0);
 	}
@@ -288,7 +289,7 @@ public class FoldedDataSet implements MLDataSet {
 					"Can't set the fold on a non-top-level set.");
 		}
 
-		if (currentFold >= this.numFolds) {
+		if (theCurrentFold >= this.numFolds) {
 			throw new TrainingError(
 		"Can't set the current fold to be greater than " 
 					+ "the number of folds.");

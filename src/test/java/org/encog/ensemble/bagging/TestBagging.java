@@ -24,6 +24,7 @@ public class TestBagging extends TestCase {
 	public void testBagging() {
 		trainingData = XOR.createXORDataSet();
 		XOR.testXORDataSet(trainingData);
+		trainingData = new EnsembleDataSet(trainingData);
 		assertEquals(1,trainingData.getIdealSize());
 		assertEquals(2,trainingData.getInputSize());
 		EnsembleTrainFactory trainingStrategy = new ResilientPropagationFactory();
