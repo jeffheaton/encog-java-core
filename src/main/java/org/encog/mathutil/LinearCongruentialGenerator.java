@@ -117,7 +117,7 @@ public class LinearCongruentialGenerator {
 		this.modulus = theModulus;
 		this.multiplier = theMultiplier;
 		this.increment = theIncrement;
-		this.seed = theSeed;
+		this.seed = theSeed%MAX_RAND;
 	}
 
 	/**
@@ -188,7 +188,7 @@ public class LinearCongruentialGenerator {
 	 *            The seed value.
 	 */
 	public final void setSeed(final long theSeed) {
-		this.seed = theSeed;
+		this.seed = theSeed%MAX_RAND;
 	}
 
 }

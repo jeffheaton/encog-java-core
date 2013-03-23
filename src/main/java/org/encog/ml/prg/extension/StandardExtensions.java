@@ -127,6 +127,17 @@ public class StandardExtensions {
 	};
 	
 	/**
+	 * Standard boolean binary and operator.
+	 */
+	public static ProgramExtensionTemplate EXTENSION_NOT = new BasicTemplate(3, "!", NodeType.Unary, false, 0, 1) {
+		@Override
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return new ExpressionValue(
+					!actual.getChildNode(0).evaluate().toBooleanValue());
+		}
+	};
+	
+	/**
 	 * Standard boolean binary or operator.
 	 */
 	public static ProgramExtensionTemplate EXTENSION_OR = new BasicTemplate(12, "|", NodeType.OperatorLeft, false, 0, 2) {
@@ -148,6 +159,19 @@ public class StandardExtensions {
 			return new ExpressionValue( diff<Encog.DEFAULT_DOUBLE_EQUAL);
 		}
 	};
+	
+	/**
+	 * Standard boolean binary equal operator.
+	 */
+	public static ProgramExtensionTemplate EXTENSION__NOT_EQUAL = new BasicTemplate(9, "<>", NodeType.OperatorRight, false, 0, 2) {
+		@Override
+		public ExpressionValue evaluate(ProgramNode actual) {
+			double diff = Math.abs(actual.getChildNode(0).evaluate().toFloatValue() - actual.getChildNode(1).evaluate().toFloatValue());
+			return new ExpressionValue( diff>Encog.DEFAULT_DOUBLE_EQUAL);
+		}
+	};
+	
+	
 	/**
 	 * Standard boolean binary greater than operator.
 	 */
