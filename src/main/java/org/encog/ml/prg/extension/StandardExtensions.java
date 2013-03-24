@@ -30,7 +30,7 @@ public class StandardExtensions {
 		}
 		@Override
 		public void randomize(Random rnd, ProgramNode actual, double minValue, double maxValue) {
-			actual.getData()[0].setValue(rnd.nextInt(actual.getOwner().getContext().getDefinedVariables().size()));
+			actual.getData()[0] = new ExpressionValue(rnd.nextInt(actual.getOwner().getContext().getDefinedVariables().size()));
 		}
 	};
 	

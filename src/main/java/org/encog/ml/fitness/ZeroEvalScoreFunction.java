@@ -12,7 +12,7 @@ public class ZeroEvalScoreFunction implements CalculateScore, Serializable {
 	public double calculateScore(final MLMethod genome) {
 		final EncogProgram prg = (EncogProgram) genome;
 		for (int i = 0; i < prg.getVariables().size(); i++) {
-			prg.getVariables().getVariable(i).setValue(0);
+			prg.getVariables().setVariable(i,0);
 		}
 		prg.evaluate();
 

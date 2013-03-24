@@ -147,7 +147,7 @@ public class RewriteAlgebraic implements RewriteRule {
 				if (v.isFloat()) {
 					double v2 = v.toFloatValue();
 					if (v2 < 0) {
-						child2.getData()[0].setValue(-v2);
+						child2.getData()[0] = new ExpressionValue(-v2);
 						parent = parent
 								.getOwner()
 								.getContext()
@@ -158,7 +158,7 @@ public class RewriteAlgebraic implements RewriteRule {
 				} else if (v.isInt()) {
 					long v2 = v.toIntValue();
 					if (v2 < 0) {
-						child2.getData()[0].setValue(-v2);
+						child2.getData()[0] = new ExpressionValue(-v2);
 						parent = parent
 								.getOwner()
 								.getContext()
@@ -193,7 +193,7 @@ public class RewriteAlgebraic implements RewriteRule {
 				if (v.isFloat()) {
 					double v2 = v.toFloatValue();
 					if (v2 < 0) {
-						child2.getData()[0].setValue(-v2);
+						child2.getData()[0]  = new ExpressionValue(-v2);
 						parent = parent
 								.getOwner()
 								.getContext()
@@ -204,7 +204,7 @@ public class RewriteAlgebraic implements RewriteRule {
 				} else if (v.isInt()) {
 					long v2 = v.toIntValue();
 					if (v2 < 0) {
-						child2.getData()[0].setValue(-v2);
+						child2.getData()[0] = new ExpressionValue(-v2);
 						parent = parent
 								.getOwner()
 								.getContext()

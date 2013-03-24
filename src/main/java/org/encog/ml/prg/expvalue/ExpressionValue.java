@@ -30,25 +30,37 @@ import org.encog.ml.prg.exception.EncogEPLError;
 
 public class ExpressionValue implements Serializable {
 	
-	private String stringValue;
-	private double floatValue;
-	private boolean boolValue;
-	private ValueType currentType;
-	private long intValue;
+	private final String stringValue;
+	private final double floatValue;
+	private final boolean boolValue;
+	private final ValueType currentType;
+	private final long intValue;
 	
 	public ExpressionValue(ExpressionValue other) {
 		switch(this.currentType = other.currentType) {
 		case booleanType:
 			this.boolValue = other.boolValue;
+			this.floatValue = 0;
+			this.stringValue = null;
+			this.intValue = 0;
 			break;
 		case floatingType:
 			this.floatValue = other.floatValue;
+			this.boolValue = false;
+			this.stringValue = null;
+			this.intValue = 0;
 			break;
 		case intType:
 			this.intValue = other.intValue;
+			this.boolValue = false;
+			this.floatValue = 0;
+			this.stringValue = null;
 			break;
 		case stringType:
 			this.stringValue = other.stringValue;
+			this.boolValue = false;
+			this.floatValue = 0;
+			this.intValue = 0;
 			break;
 		default:
 			throw new ExpressionError("Unsupported type.");
@@ -57,46 +69,39 @@ public class ExpressionValue implements Serializable {
 	}
 	
 	public ExpressionValue(String theValue) {
-		setValue( theValue );
+		this.stringValue = theValue;
+		this.currentType = ValueType.stringType;
+		this.boolValue = false;
+		this.floatValue = 0;
+		this.intValue = 0;
 	}
 	
 	public ExpressionValue(double theValue) {
-		setValue( theValue );
+		this.floatValue = theValue;
+		this.currentType = ValueType.floatingType;
+		this.boolValue = false;
+		this.stringValue = null;
+		this.intValue = 0;
 	}
 	
 	public ExpressionValue(boolean theValue) {
-		setValue( theValue );
+		this.boolValue = theValue;
+		this.currentType = ValueType.booleanType;
+		this.floatValue = 0;
+		this.stringValue = null;
+		this.intValue = 0;
 	}
 	
 	public ExpressionValue(long theValue) {
-		setValue( theValue );
+		this.intValue = theValue;
+		this.currentType = ValueType.intType;
+		this.boolValue = false;
+		this.floatValue = 0;
+		this.stringValue = null;
 	}
 	
 	public ValueType getCurrentType() {
 		return currentType;
-	}
-	public void setCurrentType(ValueType currentType) {
-		this.currentType = currentType;
-	}
-
-	public void setValue(String stringValue) {
-		this.stringValue = stringValue;
-		this.currentType = ValueType.stringType;
-	}
-	
-	public void setValue(double floatValue) {
-		this.floatValue = floatValue;
-		this.currentType = ValueType.floatingType;
-	}
-	
-	public void setValue(long intValue) {
-		this.intValue = intValue;
-		this.currentType = ValueType.intType;
-	}
-	
-	public void setValue(boolean boolValue) {
-		this.boolValue = boolValue;
-		this.currentType = ValueType.booleanType;
 	}
 
 	public double toFloatValue() {

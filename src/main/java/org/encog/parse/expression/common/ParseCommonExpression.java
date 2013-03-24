@@ -204,7 +204,7 @@ public class ParseCommonExpression {
 						new ExpressionValue(0));
 				v = this.holder.getFunctions().factorFunction("#var", holder,
 						new ProgramNode[] {});
-				v.getData()[0].setValue((int) this.holder.getVariables()
+				v.getData()[0] = new ExpressionValue((int) this.holder.getVariables()
 						.getVariableIndex(varName.toString()));
 			}
 

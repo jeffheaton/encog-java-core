@@ -152,7 +152,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 		}
 		
 		for(int i=0;i<input.size();i++) {
-			this.variables.getVariable(i).setValue(input.getData(i));
+			this.variables.setVariable(i, input.getData(i));
 		}
 		
 		double d = this.rootNode.evaluate().toFloatValue();

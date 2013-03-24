@@ -76,4 +76,9 @@ public class EncogProgramVariables implements Serializable {
 			this.variables.add(new ExpressionValue(0));
 		}
 	}
+
+	public void setVariable(int index, double value) {
+		this.variables.set(index, new ExpressionValue(value));
+		
+	}
 }
