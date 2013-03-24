@@ -59,7 +59,6 @@ import org.encog.ml.ea.species.Species;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.ea.train.RewriteRule;
 import org.encog.ml.genetic.GeneticError;
-import org.encog.ml.prg.train.GeneticTrainingParams;
 import org.encog.util.concurrency.MultiThreadable;
 import org.encog.util.logging.EncogLogging;
 
@@ -99,11 +98,6 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	 * Should exceptions be ignored.
 	 */
 	private boolean ignoreExceptions;
-
-	/**
-	 * Params.
-	 */
-	private GeneticTrainingParams params = new GeneticTrainingParams();
 
 	/**
 	 * The genome comparator.
@@ -466,14 +460,6 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	}
 
 	/**
-	 * @return the params
-	 */
-	@Override
-	public GeneticTrainingParams getParams() {
-		return this.params;
-	}
-
-	/**
 	 * @return The population.
 	 */
 	@Override
@@ -759,14 +745,6 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	 */
 	public void setMaxTries(final int maxTries) {
 		this.maxTries = maxTries;
-	}
-
-	/**
-	 * @param params
-	 *            the params to set
-	 */
-	public void setParams(final GeneticTrainingParams params) {
-		this.params = params;
 	}
 
 	/**

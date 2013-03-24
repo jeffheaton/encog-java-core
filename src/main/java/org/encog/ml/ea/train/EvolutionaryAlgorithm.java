@@ -35,7 +35,6 @@ import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.score.AdjustScore;
 import org.encog.ml.ea.sort.GenomeComparator;
 import org.encog.ml.ea.species.Speciation;
-import org.encog.ml.prg.train.GeneticTrainingParams;
 
 /**
  * This interface defines the basic functionality of an Evolutionary Algorithm.
@@ -135,11 +134,6 @@ public interface EvolutionaryAlgorithm {
 	 * @return The operators.
 	 */
 	OperationList getOperators();
-
-	/**
-	 * @return Training paramaters.
-	 */
-	GeneticTrainingParams getParams();
 
 	/**
 	 * @return The population.

@@ -29,7 +29,7 @@ public class StandardExtensions {
 			return result;
 		}
 		@Override
-		public void randomize(Random rnd, ProgramNode actual, double degree) {
+		public void randomize(Random rnd, ProgramNode actual, double minValue, double maxValue) {
 			actual.getData()[0].setValue(rnd.nextInt(actual.getOwner().getContext().getDefinedVariables().size()));
 		}
 	};
@@ -43,10 +43,9 @@ public class StandardExtensions {
 			return actual.getData()[0];
 		}
 		@Override
-		public void randomize(Random rnd, ProgramNode actual, double degree) {
+		public void randomize(Random rnd, ProgramNode actual, double minValue, double maxValue) {
 			actual.getData()[0] = new ExpressionValue(
-					RangeRandomizer.randomize(rnd, actual.getOwner().getContext().getConstMin(), 
-							actual.getOwner().getContext().getConstMax()));
+					RangeRandomizer.randomize(rnd, minValue, maxValue));
 		}
 	};
 

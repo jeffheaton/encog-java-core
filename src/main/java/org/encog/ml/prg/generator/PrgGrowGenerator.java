@@ -22,6 +22,8 @@ public class PrgGrowGenerator {
 	private EncogProgramContext context;
 	private int maxDepth;
 	private List<ProgramExtensionTemplate> leaves = new ArrayList<ProgramExtensionTemplate>();
+	private double minConst = -10;
+	private double maxConst = 10;
 	
 	public PrgGrowGenerator(EncogProgramContext theContext, int theMaxDepth) {
 		if( theContext.getFunctions().size()==0 ) {
@@ -59,7 +61,7 @@ public class PrgGrowGenerator {
 		int opCode = rnd.nextInt(this.leaves.size());
 		ProgramExtensionTemplate temp = this.leaves.get(opCode);
 		ProgramNode result = new ProgramNode(program, temp, new ProgramNode[] {});
-		temp.randomize(rnd, result, 1.0);
+		temp.randomize(rnd, result, this.minConst, this.maxConst);
 		return result;
 	}
 	
@@ -80,7 +82,7 @@ public class PrgGrowGenerator {
 		}
 		
 		ProgramNode result = new ProgramNode(program, temp, children);
-		temp.randomize(rnd, result, 1.0);
+		temp.randomize(rnd, result, this.minConst, this.maxConst);
 		return result;
 	}
 	
