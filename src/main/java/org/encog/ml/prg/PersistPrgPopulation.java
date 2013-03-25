@@ -32,6 +32,7 @@ import org.encog.EncogError;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.ml.ea.species.Species;
+import org.encog.ml.prg.expvalue.ValueType;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.train.PrgPopulation;
 import org.encog.persist.EncogFileSection;
@@ -132,15 +133,36 @@ public class PersistPrgPopulation implements EncogPersistor {
 							.splitColumns(line);
 					final String name = cols.get(0);
 					final int args = Integer.parseInt(cols.get(1));
-					result.getContext().getFunctions().addExtension(name,args);
+					result.getContext().getFunctions().addExtension(name, args);
 				}
 			} else if (section.getSectionName().equals("BASIC")
 					&& section.getSubSectionName().equals("EPL-SYMBOLIC")) {
+				boolean first = true;
 				for (final String line : section.getLines()) {
-					final List<String> cols = EncogFileSection
-							.splitColumns(line);
-					final String name = cols.get(0);
-					context.defineVariable(name);
+					if (!first) {
+						final List<String> cols = EncogFileSection
+								.splitColumns(line);
+						final String name = cols.get(0);
+						final String t = cols.get(1);
+						ValueType vt = null;
+						
+						if( t.equalsIgnoreCase("f")) {
+							vt = ValueType.floatingType;
+						} else if( t.equalsIgnoreCase("b")) {
+							vt = ValueType.booleanType;
+						} else if( t.equalsIgnoreCase("i")) {
+							vt = ValueType.intType;
+						} else if( t.equalsIgnoreCase("s")) {
+							vt = ValueType.stringType;
+						}
+						
+						final boolean isEnum = Integer.parseInt(cols.get(2))>0;
+						final int enumType = Integer.parseInt(cols.get(3));
+						final int enumCount = Integer.parseInt(cols.get(4));						
+						context.defineVariable(name,vt, isEnum, enumType, enumCount);
+					} else {
+						first = false;
+					}
 				}
 			}
 		}
@@ -152,10 +174,10 @@ public class PersistPrgPopulation implements EncogPersistor {
 			if (species.getMembers().size() > 0) {
 				result.setBestGenome(species.getMembers().get(0));
 			}
-			
+
 			// set the leaders
-			for(Species sp: result.getSpecies()) {
-				if(sp.getMembers().size()>0) {
+			for (Species sp : result.getSpecies()) {
+				if (sp.getMembers().size() > 0) {
 					sp.setLeader(sp.getMembers().get(0));
 				}
 			}
@@ -182,8 +204,33 @@ public class PersistPrgPopulation implements EncogPersistor {
 			out.writeLine();
 		}
 		out.addSubSection("EPL-SYMBOLIC");
-		for (final VariableMapping mapping : pop.getContext().getDefinedVariables()) {
+		out.addColumn("name");
+		out.addColumn("type");
+		out.addColumn("enum");
+		out.addColumn("enum_type");
+		out.addColumn("enum_count");
+		out.writeLine();
+
+		for (final VariableMapping mapping : pop.getContext()
+				.getDefinedVariables()) {
 			out.addColumn(mapping.getName());
+			switch (mapping.getVariableType()) {
+			case floatingType:
+				out.addColumn("f");
+				break;
+			case stringType:
+				out.addColumn("s");
+				break;
+			case booleanType:
+				out.addColumn("b");
+				break;
+			case intType:
+				out.addColumn("i");
+				break;
+			}
+			out.addColumn(mapping.isEnum());
+			out.addColumn(mapping.getEnumType());
+			out.addColumn(mapping.getEnumValueCount());
 			out.writeLine();
 		}
 		out.addSubSection("EPL-POPULATION");
