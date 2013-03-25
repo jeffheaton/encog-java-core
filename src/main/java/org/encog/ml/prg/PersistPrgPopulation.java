@@ -182,8 +182,8 @@ public class PersistPrgPopulation implements EncogPersistor {
 			out.writeLine();
 		}
 		out.addSubSection("EPL-SYMBOLIC");
-		for (final String name : pop.getContext().getDefinedVariables()) {
-			out.addColumn(name);
+		for (final VariableMapping mapping : pop.getContext().getDefinedVariables()) {
+			out.addColumn(mapping.getName());
 			out.writeLine();
 		}
 		out.addSubSection("EPL-POPULATION");

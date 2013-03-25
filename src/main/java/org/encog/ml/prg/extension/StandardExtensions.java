@@ -48,6 +48,21 @@ public class StandardExtensions {
 					RangeRandomizer.randomize(rnd, minValue, maxValue));
 		}
 	};
+	
+	/**
+	 * Numeric const.
+	 */
+	public static ProgramExtensionTemplate EXTENSION_CONST_ENUM_SUPPORT = new BasicTemplate(ProgramExtensionTemplate.NO_PREC, "#enum", NodeType.Leaf, false, 2, 0) {
+		@Override
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return actual.getData()[1];
+		}
+		@Override
+		public void randomize(Random rnd, ProgramNode actual, double minValue, double maxValue) {
+			actual.getData()[0] = new ExpressionValue(
+					RangeRandomizer.randomize(rnd, minValue, maxValue));
+		}
+	};
 
 	/**
 	 * Standard unary minus operator.
@@ -162,7 +177,7 @@ public class StandardExtensions {
 	/**
 	 * Standard boolean binary equal operator.
 	 */
-	public static ProgramExtensionTemplate EXTENSION__NOT_EQUAL = new BasicTemplate(9, "<>", NodeType.OperatorRight, false, 0, 2) {
+	public static ProgramExtensionTemplate EXTENSION_NOT_EQUAL = new BasicTemplate(9, "<>", NodeType.OperatorRight, false, 0, 2) {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			double diff = Math.abs(actual.getChildNode(0).evaluate().toFloatValue() - actual.getChildNode(1).evaluate().toFloatValue());
@@ -585,6 +600,7 @@ public class StandardExtensions {
 	public static void createNumericOperators(FunctionFactory factory) {
 		factory.addExtension(EXTENSION_VAR_SUPPORT);
 		factory.addExtension(EXTENSION_CONST_SUPPORT);
+		factory.addExtension(EXTENSION_CONST_ENUM_SUPPORT);
 		factory.addExtension(EXTENSION_NEG);
 		factory.addExtension(EXTENSION_ADD);
 		factory.addExtension(EXTENSION_SUB);
@@ -602,6 +618,8 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_LTE);
 		factory.addExtension(EXTENSION_GTE);
 		factory.addExtension(EXTENSION_IFF);
+		factory.addExtension(EXTENSION_NOT_EQUAL);
+		factory.addExtension(EXTENSION_NOT);
 	}
 	
 	public static void createTrigFunctions(FunctionFactory factory) {

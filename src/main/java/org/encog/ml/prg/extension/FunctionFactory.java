@@ -9,6 +9,7 @@ import java.util.Map;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.exception.EncogEPLError;
 
 public class FunctionFactory implements Serializable {
 
@@ -117,7 +118,11 @@ public class FunctionFactory implements Serializable {
 	public void addExtension(String name, int args) {
 		String key = EncogOpcodeRegistry.createKey(name, args);
 		if( !this.templateMap.containsKey(key) ) {
-			this.addExtension(EncogOpcodeRegistry.INSTANCE.findOpcode(name,args));
+			ProgramExtensionTemplate temp = EncogOpcodeRegistry.INSTANCE.findOpcode(name,args);
+			if( temp==null ) {
+				throw new EncogEPLError("Unknown extension " + name + " with " + args + " arguments.");
+			}
+			this.addExtension(temp);
 		}
 		
 	}

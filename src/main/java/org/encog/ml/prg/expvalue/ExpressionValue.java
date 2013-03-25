@@ -100,6 +100,14 @@ public class ExpressionValue implements Serializable {
 		this.stringValue = null;
 	}
 	
+	public ExpressionValue(ValueType theType) {
+		this.currentType = theType;
+		this.intValue = 0;
+		this.boolValue = false;
+		this.floatValue = 0;
+		this.stringValue = null;
+	}
+
 	public ValueType getCurrentType() {
 		return currentType;
 	}

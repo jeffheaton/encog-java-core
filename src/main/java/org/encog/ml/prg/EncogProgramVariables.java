@@ -68,12 +68,12 @@ public class EncogProgramVariables implements Serializable {
 		return this.varMap.size();
 	}
 
-	public void defineVariable(String name) {
-		if( this.varMap.containsKey(name)) {
-			throw new ExpressionError("Variable " + name + " already defined, simply set its value, do not redefine.");
+	public void defineVariable(VariableMapping mapping) {
+		if( this.varMap.containsKey(mapping.getName())) {
+			throw new ExpressionError("Variable " + mapping.getName() + " already defined, simply set its value, do not redefine.");
 		} else {
-			this.varMap.put(name, this.variables.size());
-			this.variables.add(new ExpressionValue(0));
+			this.varMap.put(mapping.getName(), this.variables.size());
+			this.variables.add(new ExpressionValue(mapping.getVariableType()));
 		}
 	}
 

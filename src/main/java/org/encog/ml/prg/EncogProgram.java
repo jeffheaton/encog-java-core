@@ -88,7 +88,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 		this.variables = theVariables;
 		
 		// define variables
-		for(String v:this.context.getDefinedVariables()) {
+		for(VariableMapping v:this.context.getDefinedVariables()) {
 			this.variables.defineVariable(v);
 		}
 	}

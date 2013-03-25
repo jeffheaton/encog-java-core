@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.encog.EncogError;
 import org.encog.ml.prg.expvalue.ExpressionValue;
+import org.encog.ml.prg.expvalue.ValueType;
 import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.util.csv.CSVFormat;
@@ -16,8 +17,8 @@ public class EncogProgramContext implements Serializable {
 
 	private final CSVFormat format;
 	private final FunctionFactory functions;
-	private final List<String> definedVariables = new ArrayList<String>();
-	private final Map<String,Double> config = new HashMap<String,Double>();
+	private final List<VariableMapping> definedVariables = new ArrayList<VariableMapping>();
+	private final Map<String,VariableMapping> map = new HashMap<String,VariableMapping>();
 	
 	public EncogProgramContext(CSVFormat theFormat, FunctionFactory theFunctions) {
 		this.format = theFormat;
@@ -40,20 +41,28 @@ public class EncogProgramContext implements Serializable {
 		return functions;
 	}
 	
-	public void defineVariable(String v) {
-		if( this.definedVariables.contains(v) ) {
-			throw new ExpressionError("Variable " + v + " already defined.");
+	public void defineVariable(String theName) {
+		defineVariable(theName, ValueType.floatingType, false, 0, 0);
+	}
+	
+	public void defineVariable(String theName, ValueType theVariableType) {
+		defineVariable(theName, theVariableType, false, 0, 0);
+	}
+	
+	public void defineVariable(String theName, ValueType theVariableType, boolean theIsEnum,
+				int theEnumType, int theEnumValueCount) {
+		if( this.map.containsKey(theName) ) {
+			throw new ExpressionError("Variable " + theName + " already defined.");
 		}
-		definedVariables.add(v);
+		VariableMapping mapping = new VariableMapping(theName, theVariableType, theIsEnum,
+				theEnumType, theEnumValueCount);
+		this.map.put(theName, mapping);
+		definedVariables.add(mapping);
 		
 	}
 
-	public List<String> getDefinedVariables() {
+	public List<VariableMapping> getDefinedVariables() {
 		return this.definedVariables;
-	}
-
-	public Map<String, Double> getConfig() {
-		return config;
 	}
 	
 	public EncogProgram cloneProgram(EncogProgram sourceProgram) {
