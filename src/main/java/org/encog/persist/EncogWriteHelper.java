@@ -40,7 +40,7 @@ import org.encog.util.csv.NumberList;
  * 
  */
 public class EncogWriteHelper {
-	
+
 	/**
 	 * The current large array that we are on.
 	 */
@@ -50,7 +50,7 @@ public class EncogWriteHelper {
 	 * A quote char.
 	 */
 	public static final char QUOTE = '\"';
-	
+
 	/**
 	 * A comma char.
 	 */
@@ -60,12 +60,12 @@ public class EncogWriteHelper {
 	 * The file to write to.
 	 */
 	private final PrintWriter out;
-	
+
 	/**
 	 * The current line.
 	 */
 	private final StringBuilder line = new StringBuilder();
-	
+
 	/**
 	 * The current section.
 	 */
@@ -73,15 +73,19 @@ public class EncogWriteHelper {
 
 	/**
 	 * Construct the object.
-	 * @param stream The stream to write to.
+	 * 
+	 * @param stream
+	 *            The stream to write to.
 	 */
 	public EncogWriteHelper(final OutputStream stream) {
 		this.out = new PrintWriter(stream);
 	}
 
 	/**
-	 * Add a boolean value as a column.  
-	 * @param b The boolean value.
+	 * Add a boolean value as a column.
+	 * 
+	 * @param b
+	 *            The boolean value.
 	 */
 	public final void addColumn(final boolean b) {
 		if (this.line.length() > 0) {
@@ -93,7 +97,9 @@ public class EncogWriteHelper {
 
 	/**
 	 * Add a column as a double.
-	 * @param d The double to add.
+	 * 
+	 * @param d
+	 *            The double to add.
 	 */
 	public final void addColumn(final double d) {
 		if (this.line.length() > 0) {
@@ -105,7 +111,9 @@ public class EncogWriteHelper {
 
 	/**
 	 * Add a column as an integer.
-	 * @param i The integer to add.
+	 * 
+	 * @param i
+	 *            The integer to add.
 	 */
 	public final void addColumn(final int i) {
 		if (this.line.length() > 0) {
@@ -117,30 +125,32 @@ public class EncogWriteHelper {
 
 	/**
 	 * Add a column as a string.
-	 * @param str The string to add.
+	 * 
+	 * @param str
+	 *            The string to add.
 	 */
 	public final void addColumn(final String str) {
 		if (this.line.length() > 0) {
 			this.line.append(EncogWriteHelper.COMMA);
 		}
-		
-		if( str.length()>0 ) {
-			this.line.append(EncogWriteHelper.QUOTE);
-			for(int i=0;i<str.length();i++) {
-				char ch = str.charAt(i);
-				if( ch=='\"' ) {
-					this.line.append("\"\"");
-				} else {
-					this.line.append(ch);
-				}
+
+		this.line.append(EncogWriteHelper.QUOTE);
+		for (int i = 0; i < str.length(); i++) {
+			char ch = str.charAt(i);
+			if (ch == '\"') {
+				this.line.append("\"\"");
+			} else {
+				this.line.append(ch);
 			}
-			this.line.append(EncogWriteHelper.QUOTE);
-		}		
+		}
+		this.line.append(EncogWriteHelper.QUOTE);
 	}
 
 	/**
 	 * Add a list of string columns.
-	 * @param cols The columns to add.
+	 * 
+	 * @param cols
+	 *            The columns to add.
 	 */
 	public final void addColumns(final List<String> cols) {
 		for (final String str : cols) {
@@ -151,7 +161,9 @@ public class EncogWriteHelper {
 
 	/**
 	 * Add a line.
-	 * @param l The line to add.
+	 * 
+	 * @param l
+	 *            The line to add.
 	 */
 	public final void addLine(final String l) {
 		if (this.line.length() > 0) {
@@ -162,7 +174,9 @@ public class EncogWriteHelper {
 
 	/**
 	 * Add the specified properties.
-	 * @param properties The properties.
+	 * 
+	 * @param properties
+	 *            The properties.
 	 */
 	public final void addProperties(final Map<String, String> properties) {
 		for (final String key : properties.keySet()) {
@@ -173,7 +187,9 @@ public class EncogWriteHelper {
 
 	/**
 	 * Add a new section.
-	 * @param str The section to add.
+	 * 
+	 * @param str
+	 *            The section to add.
 	 */
 	public final void addSection(final String str) {
 		this.currentSection = str;
@@ -182,7 +198,9 @@ public class EncogWriteHelper {
 
 	/**
 	 * Add a new subsection.
-	 * @param str The subsection.
+	 * 
+	 * @param str
+	 *            The subsection.
 	 */
 	public final void addSubSection(final String str) {
 		this.out.println("[" + this.currentSection + ":" + str + "]");
@@ -192,7 +210,7 @@ public class EncogWriteHelper {
 	/**
 	 * Flush the file.
 	 */
-	public final  void flush() {
+	public final void flush() {
 		this.out.flush();
 	}
 
@@ -205,7 +223,9 @@ public class EncogWriteHelper {
 
 	/**
 	 * Write the specified string.
-	 * @param str The string to write.
+	 * 
+	 * @param str
+	 *            The string to write.
 	 */
 	public final void write(final String str) {
 		this.out.print(str);
@@ -218,7 +238,7 @@ public class EncogWriteHelper {
 		this.out.println(this.line.toString());
 		this.line.setLength(0);
 	}
-	
+
 	private String makeActivationFunctionString(ActivationFunction act) {
 		final StringBuilder result = new StringBuilder();
 		result.append(act.getClass().getSimpleName());
@@ -233,18 +253,24 @@ public class EncogWriteHelper {
 
 	/**
 	 * Write a property as an activation function.
-	 * @param name The name of the property.
-	 * @param act The activation function.
+	 * 
+	 * @param name
+	 *            The name of the property.
+	 * @param act
+	 *            The activation function.
 	 */
-	public final void writeProperty(final String name, 
+	public final void writeProperty(final String name,
 			final ActivationFunction act) {
 		writeProperty(name, makeActivationFunctionString(act));
 	}
 
 	/**
 	 * Write the property as a boolean.
-	 * @param name The name of the property.
-	 * @param value The boolean value.
+	 * 
+	 * @param name
+	 *            The name of the property.
+	 * @param value
+	 *            The boolean value.
 	 */
 	public final void writeProperty(final String name, final boolean value) {
 		this.out.println(name + "=" + (value ? 't' : 'f'));
@@ -252,11 +278,13 @@ public class EncogWriteHelper {
 
 	/**
 	 * Write a property as a CSV format.
-	 * @param name The name of the property.
-	 * @param csvFormat The format.
+	 * 
+	 * @param name
+	 *            The name of the property.
+	 * @param csvFormat
+	 *            The format.
 	 */
-	public final void writeProperty(final String name, 
-				final CSVFormat csvFormat) {
+	public final void writeProperty(final String name, final CSVFormat csvFormat) {
 		String fmt;
 		if ((csvFormat == CSVFormat.ENGLISH)
 				|| (csvFormat == CSVFormat.DECIMAL_POINT)) {
@@ -271,8 +299,11 @@ public class EncogWriteHelper {
 
 	/**
 	 * Write the property as a double.
-	 * @param name The name of the property.
-	 * @param value The value.
+	 * 
+	 * @param name
+	 *            The name of the property.
+	 * @param value
+	 *            The value.
 	 */
 	public final void writeProperty(final String name, final double value) {
 		this.out.println(name + "="
@@ -281,12 +312,15 @@ public class EncogWriteHelper {
 
 	/**
 	 * Write the property as a double array.
-	 * @param name The name of the property.
-	 * @param d The double value.
+	 * 
+	 * @param name
+	 *            The name of the property.
+	 * @param d
+	 *            The double value.
 	 */
 	public final void writeProperty(final String name, final double[] d) {
-		
-		if( d.length<2048 ) {
+
+		if (d.length < 2048) {
 			this.out.print(name);
 			this.out.print("=");
 			boolean first = true;
@@ -305,12 +339,12 @@ public class EncogWriteHelper {
 			this.out.println(largeArrayNumber++);
 			this.out.print("##double#");
 			this.out.println(d.length);
-			
+
 			int index = 0;
-			
-			while(index<d.length) {
+
+			while (index < d.length) {
 				boolean first = true;
-				for (int i = 0; (i < 2048) && (index<d.length); i++) {
+				for (int i = 0; (i < 2048) && (index < d.length); i++) {
 					if (!first) {
 						this.out.print(",");
 					} else {
@@ -329,8 +363,11 @@ public class EncogWriteHelper {
 
 	/**
 	 * Write a property as an int value.
-	 * @param name The name of the property.
-	 * @param value The int value.
+	 * 
+	 * @param name
+	 *            The name of the property.
+	 * @param value
+	 *            The int value.
 	 */
 	public final void writeProperty(final String name, final int value) {
 		this.out.println(name + "=" + value);
@@ -338,8 +375,11 @@ public class EncogWriteHelper {
 
 	/**
 	 * Write a property as an int array.
-	 * @param name The name of the property.
-	 * @param array The array.
+	 * 
+	 * @param name
+	 *            The name of the property.
+	 * @param array
+	 *            The array.
 	 */
 	public final void writeProperty(final String name, final int[] array) {
 		final StringBuilder result = new StringBuilder();
@@ -350,8 +390,11 @@ public class EncogWriteHelper {
 
 	/**
 	 * Write a matrix as a property.
-	 * @param name The property name.
-	 * @param matrix The matrix.
+	 * 
+	 * @param name
+	 *            The property name.
+	 * @param matrix
+	 *            The matrix.
 	 */
 	public final void writeProperty(final String name, final Matrix matrix) {
 		final StringBuilder result = new StringBuilder();
@@ -372,8 +415,11 @@ public class EncogWriteHelper {
 
 	/**
 	 * Write the property a s string.
-	 * @param name The name of the property.
-	 * @param value The value.
+	 * 
+	 * @param name
+	 *            The name of the property.
+	 * @param value
+	 *            The value.
 	 */
 	public final void writeProperty(final String name, final String value) {
 		this.out.println(name + "=" + value);
@@ -382,6 +428,6 @@ public class EncogWriteHelper {
 
 	public void addColumn(ActivationFunction act) {
 		addColumn(makeActivationFunctionString(act));
-		
+
 	}
 }

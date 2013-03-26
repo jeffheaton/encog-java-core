@@ -21,6 +21,12 @@ public class VariableMapping implements Serializable {
 		this.enumType = theEnumType;
 		this.enumValueCount = theEnumValueCount;
 	}
+	
+	public VariableMapping(String theName, ValueType theVariableType) {
+		this(theName, theVariableType, false, 0, 0);
+	}
+	
+	
 	/**
 	 * @return the variableType
 	 */

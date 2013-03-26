@@ -18,17 +18,18 @@ public class EncogProgramContext implements Serializable {
 	private final CSVFormat format;
 	private final FunctionFactory functions;
 	private final List<VariableMapping> definedVariables = new ArrayList<VariableMapping>();
-	private final Map<String,VariableMapping> map = new HashMap<String,VariableMapping>();
-	
+	private final Map<String, VariableMapping> map = new HashMap<String, VariableMapping>();
+	private VariableMapping result = new VariableMapping(null,ValueType.floatingType);
+
 	public EncogProgramContext(CSVFormat theFormat, FunctionFactory theFunctions) {
 		this.format = theFormat;
 		this.functions = theFunctions;
 	}
-	
+
 	public EncogProgramContext(CSVFormat format) {
 		this(format, new FunctionFactory());
 	}
-	
+
 	public EncogProgramContext() {
 		this(CSVFormat.EG_FORMAT, new FunctionFactory());
 	}
@@ -40,59 +41,67 @@ public class EncogProgramContext implements Serializable {
 	public FunctionFactory getFunctions() {
 		return functions;
 	}
-	
+
 	public void defineVariable(String theName) {
 		defineVariable(theName, ValueType.floatingType, false, 0, 0);
 	}
-	
+
 	public void defineVariable(String theName, ValueType theVariableType) {
 		defineVariable(theName, theVariableType, false, 0, 0);
 	}
-	
-	public void defineVariable(String theName, ValueType theVariableType, boolean theIsEnum,
-				int theEnumType, int theEnumValueCount) {
-		if( this.map.containsKey(theName) ) {
-			throw new ExpressionError("Variable " + theName + " already defined.");
+
+	public void defineVariable(String theName, ValueType theVariableType,
+			boolean theIsEnum, int theEnumType, int theEnumValueCount) {
+		VariableMapping mapping = new VariableMapping(theName, theVariableType,
+				theIsEnum, theEnumType, theEnumValueCount);
+		defineVariable(mapping);
+
+	}
+
+	public void defineVariable(VariableMapping mapping) {
+		if (this.map.containsKey(mapping.getName())) {
+			throw new ExpressionError("Variable " + mapping.getName()
+					+ " already defined.");
 		}
-		VariableMapping mapping = new VariableMapping(theName, theVariableType, theIsEnum,
-				theEnumType, theEnumValueCount);
-		this.map.put(theName, mapping);
+		this.map.put(mapping.getName(), mapping);
 		definedVariables.add(mapping);
-		
 	}
 
 	public List<VariableMapping> getDefinedVariables() {
 		return this.definedVariables;
 	}
-	
+
 	public EncogProgram cloneProgram(EncogProgram sourceProgram) {
 		ProgramNode rootNode = sourceProgram.getRootNode();
 		EncogProgram result = new EncogProgram(this);
-		result.setRootNode(cloneBranch(result,rootNode));
+		result.setRootNode(cloneBranch(result, rootNode));
 		return result;
 	}
-	
-	public ProgramNode cloneBranch(EncogProgram targetProgram, ProgramNode sourceBranch) {
-		if( sourceBranch==null ) {
+
+	public ProgramNode cloneBranch(EncogProgram targetProgram,
+			ProgramNode sourceBranch) {
+		if (sourceBranch == null) {
 			throw new EncogError("Can't clone null branch.");
 		}
-		
-		
+
 		String name = sourceBranch.getName();
-	
+
 		// create any subnodes
-		ProgramNode[] args = new ProgramNode[sourceBranch.getChildNodes().size()];
-		for(int i=0;i<args.length;i++) {
-			args[i] = cloneBranch(targetProgram,(ProgramNode)sourceBranch.getChildNodes().get(i));
+		ProgramNode[] args = new ProgramNode[sourceBranch.getChildNodes()
+				.size()];
+		for (int i = 0; i < args.length; i++) {
+			args[i] = cloneBranch(targetProgram, (ProgramNode) sourceBranch
+					.getChildNodes().get(i));
 		}
-		
-		ProgramNode result = targetProgram.getContext().getFunctions().factorFunction(name, targetProgram, args);
-		
+
+		ProgramNode result = targetProgram.getContext().getFunctions()
+				.factorFunction(name, targetProgram, args);
+
 		// now copy the expression data for the node
-		for(int i=0;i<sourceBranch.getData().length;i++) {
+		for (int i = 0; i < sourceBranch.getData().length; i++) {
 			result.getData()[i] = new ExpressionValue(sourceBranch.getData()[i]);
 		}
-		
+
 		// return the new node
 		return result;
 	}
@@ -106,7 +115,26 @@ public class EncogProgramContext implements Serializable {
 	public void loadAllFunctions() {
 		StandardExtensions.createAll(getFunctions());
 	}
+
+	public void clearDefinedVariables() {
+		this.definedVariables.clear();
+		this.map.clear();
+	}
+
+	/**
+	 * @return the result
+	 */
+	public VariableMapping getResult() {
+		return result;
+	}
+
+	/**
+	 * @param result the result to set
+	 */
+	public void setResult(VariableMapping result) {
+		this.result = result;
+	}
 	
 	
-	
+
 }

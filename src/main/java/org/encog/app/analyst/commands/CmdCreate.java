@@ -26,14 +26,19 @@ package org.encog.app.analyst.commands;
 import java.io.File;
 import java.util.Random;
 
+import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.EncogAnalyst;
+import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.ml.ScriptOpcode;
+import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.ml.MLMethod;
 import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.data.buffer.EncogEGBFile;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.ml.fitness.ZeroEvalScoreFunction;
+import org.encog.ml.prg.VariableMapping;
+import org.encog.ml.prg.expvalue.ValueType;
 import org.encog.ml.prg.extension.EncogOpcodeRegistry;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.generator.PrgGrowGenerator;
@@ -96,12 +101,6 @@ public class CmdCreate extends Cmd {
 		final int ideal = egb.getIdealCount();
 		egb.close();
 
-		if (type.equalsIgnoreCase(MLMethodFactory.TYPE_EPL)) {
-			if (this.getScript().getOpcodes().size() > 0) {
-
-			}
-		}
-
 		final MLMethodFactory factory = new MLMethodFactory();
 		final MLMethod obj = factory.create(type, arch, input, ideal);
 
@@ -110,22 +109,72 @@ public class CmdCreate extends Cmd {
 					ScriptProperties.ML_CONFIG_QUERY);
 			((BayesianNetwork) obj).defineClassificationStructure(query);
 		} else if (obj instanceof PrgPopulation) {
-			if (this.getScript().getOpcodes().size() > 0) {
-				PrgPopulation pop = (PrgPopulation) obj;
-				for (ScriptOpcode op : this.getScript().getOpcodes()) {
-					ProgramExtensionTemplate temp = EncogOpcodeRegistry.INSTANCE
-							.findOpcode(op.getName(), op.getArgCount());
-					pop.getContext().getFunctions().addExtension(temp);
-				}
-				(new PrgGrowGenerator(pop.getContext(), 5)).generate(
-						new Random(), pop, new ZeroEvalScoreFunction());
-			}
+			handlePrgPopulation((PrgPopulation) obj);
 
 		}
 
 		EncogDirectoryPersistence.saveObject(resourceFile, obj);
 
 		return false;
+	}
+
+	private void handlePrgPopulation(PrgPopulation pop) {
+		
+		// create the variables
+		int classType = 0;
+		pop.getContext().clearDefinedVariables();
+		for(AnalystField field : getScript().getNormalize().getNormalizedFields() ) {
+			DataField df = getScript().findDataField(field.getName());
+			String varName = field.getName();
+			
+			VariableMapping mapping;
+			
+			switch( field.getAction() ) {
+				case Ignore:
+					mapping = null;
+					break;
+				case PassThrough:
+					mapping = new VariableMapping(varName, ValueType.stringType);
+					break;
+				case Equilateral:
+				case OneOf:
+				case Normalize:
+					mapping = new VariableMapping(varName, ValueType.floatingType);
+					break;
+				case SingleField:
+					if( df.isClass() ) {
+						mapping = new VariableMapping(varName, ValueType.intType, true, classType++, df.getClassMembers().size() );
+					} else if( df.isInteger() ) {
+						mapping = new VariableMapping(varName, ValueType.intType );
+					} else {
+						mapping = new VariableMapping(varName, ValueType.floatingType);
+					}
+					break;
+				default:
+					throw new AnalystError("Unknown normalization action: " + field.getAction().toString());
+			}
+			
+			if( field.isOutput() ) {
+				pop.getContext().setResult(mapping);
+			} else {
+				pop.getContext().defineVariable(mapping);
+			}
+		}
+		
+		
+		
+		// populate the opcodes
+		if (this.getScript().getOpcodes().size() > 0) {
+			for (ScriptOpcode op : this.getScript().getOpcodes()) {
+				ProgramExtensionTemplate temp = EncogOpcodeRegistry.INSTANCE
+						.findOpcode(op.getName(), op.getArgCount());
+				pop.getContext().getFunctions().addExtension(temp);
+			}
+		}
+		
+		// generate initial population
+		(new PrgGrowGenerator(pop.getContext(), 5)).generate(
+				new Random(), pop, new ZeroEvalScoreFunction());
 	}
 
 	/**

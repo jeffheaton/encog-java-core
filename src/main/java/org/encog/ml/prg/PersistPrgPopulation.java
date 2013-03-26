@@ -158,8 +158,13 @@ public class PersistPrgPopulation implements EncogPersistor {
 						
 						final boolean isEnum = Integer.parseInt(cols.get(2))>0;
 						final int enumType = Integer.parseInt(cols.get(3));
-						final int enumCount = Integer.parseInt(cols.get(4));						
-						context.defineVariable(name,vt, isEnum, enumType, enumCount);
+						final int enumCount = Integer.parseInt(cols.get(4));	
+						VariableMapping mapping = new VariableMapping(name,vt, isEnum, enumType, enumCount);
+						if( mapping.getName().length()>0) {
+							result.getContext().defineVariable(mapping);
+						} else {
+							result.getContext().setResult(mapping);
+						}
 					} else {
 						first = false;
 					}
@@ -183,6 +188,20 @@ public class PersistPrgPopulation implements EncogPersistor {
 			}
 		}
 		return result;
+	}
+	
+	private String getType(VariableMapping mapping) {
+		switch (mapping.getVariableType()) {
+		case floatingType:
+			return("f");
+		case stringType:
+			return("s");
+		case booleanType:
+			return("b");
+		case intType:
+			return("i");
+		}
+		throw new EncogError("Unknown type: " + mapping.getVariableType().toString());
 	}
 
 	/**
@@ -210,24 +229,20 @@ public class PersistPrgPopulation implements EncogPersistor {
 		out.addColumn("enum_type");
 		out.addColumn("enum_count");
 		out.writeLine();
-
+		
+		// write the first line, the result
+		out.addColumn("");
+		out.addColumn(getType(pop.getContext().getResult()));
+		out.addColumn(pop.getContext().getResult().isEnum());
+		out.addColumn(pop.getContext().getResult().getEnumType());
+		out.addColumn(pop.getContext().getResult().getEnumValueCount());
+		out.writeLine();
+		
+		// write the next lines, the variables
 		for (final VariableMapping mapping : pop.getContext()
 				.getDefinedVariables()) {
 			out.addColumn(mapping.getName());
-			switch (mapping.getVariableType()) {
-			case floatingType:
-				out.addColumn("f");
-				break;
-			case stringType:
-				out.addColumn("s");
-				break;
-			case booleanType:
-				out.addColumn("b");
-				break;
-			case intType:
-				out.addColumn("i");
-				break;
-			}
+			out.addColumn(getType(mapping));
 			out.addColumn(mapping.isEnum());
 			out.addColumn(mapping.getEnumType());
 			out.addColumn(mapping.getEnumValueCount());
