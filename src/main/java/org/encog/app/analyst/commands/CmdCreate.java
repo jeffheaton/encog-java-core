@@ -41,6 +41,7 @@ import org.encog.ml.prg.VariableMapping;
 import org.encog.ml.prg.expvalue.ValueType;
 import org.encog.ml.prg.extension.EncogOpcodeRegistry;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
+import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.ml.prg.generator.PrgGrowGenerator;
 import org.encog.ml.prg.train.PrgPopulation;
 import org.encog.persist.EncogDirectoryPersistence;
@@ -170,6 +171,11 @@ public class CmdCreate extends Cmd {
 						.findOpcode(op.getName(), op.getArgCount());
 				pop.getContext().getFunctions().addExtension(temp);
 			}
+		}
+		
+		// if there are enums (classes) present, then add an opcode to handle those
+		if( this.getScript().hasClasses() ) {
+			StandardExtensions.createEnum(pop.getContext().getFunctions());
 		}
 		
 		// generate initial population

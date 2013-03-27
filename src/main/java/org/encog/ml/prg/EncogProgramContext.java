@@ -134,6 +134,46 @@ public class EncogProgramContext implements Serializable {
 	public void setResult(VariableMapping result) {
 		this.result = result;
 	}
+
+	public int getMaxEnumType() {
+		int r = -1;
+		
+		// make sure we consider the result
+		if( this.result.isEnum() ) {
+			r = this.result.getEnumType();
+		}
+		
+		// loop over all mappings and find the max enum type
+		for(VariableMapping mapping: this.definedVariables) {
+			if( mapping.isEnum()  ) {
+				r = Math.max(r, mapping.getEnumType());
+			}
+		}
+		
+		// if we did not find one then there are no enum types
+		if( r==-1) {
+			throw new ExpressionError("No enum types defined in context.");
+		}
+		
+		return r;
+	}
+
+	public int getEnumCount(int enumType) {
+		
+		// make sure we consider the result
+		if( this.result.isEnum() && this.result.getEnumType()==enumType ) {
+			return this.result.getEnumValueCount();
+		}
+		
+		for(VariableMapping mapping: this.definedVariables) {
+			if( mapping.isEnum() ) {
+				if( mapping.getEnumType()==enumType ) {
+					return mapping.getEnumValueCount();
+				}
+			}
+		}
+		throw new ExpressionError("Undefined enum type: " + enumType);
+	}
 	
 	
 

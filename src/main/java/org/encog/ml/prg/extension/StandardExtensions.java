@@ -59,8 +59,10 @@ public class StandardExtensions {
 		}
 		@Override
 		public void randomize(Random rnd, ProgramNode actual, double minValue, double maxValue) {
-			actual.getData()[0] = new ExpressionValue(
-					RangeRandomizer.randomize(rnd, minValue, maxValue));
+			int enumType = actual.getOwner().getContext().getMaxEnumType();
+			int enumCount = actual.getOwner().getContext().getEnumCount(enumType);
+			actual.getData()[0] = new ExpressionValue(rnd.nextInt(enumType+1));
+			actual.getData()[1] = new ExpressionValue(rnd.nextInt(enumCount));
 		}
 	};
 
@@ -672,8 +674,13 @@ public class StandardExtensions {
 		createBasicFunctions(factory);
 		createConversionFunctions(factory);
 		createStringFunctions(factory);
+		createEnum(factory);
 		
 		factory.addExtension(EXTENSION_TODEG);
 		factory.addExtension(EXTENSION_TORAD);
+	}
+	
+	public static void createEnum(FunctionFactory factory) {
+		factory.addExtension(EXTENSION_CONST_ENUM_SUPPORT);
 	}
 }

@@ -42,13 +42,14 @@ import org.encog.app.analyst.script.process.AnalystProcess;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregate;
 import org.encog.app.analyst.script.task.AnalystTask;
+import org.encog.util.arrayutil.NormalizationAction;
 import org.encog.util.csv.CSVFormat;
 
 /**
  * Holds a script for the Encog Analyst.
  */
 public class AnalystScript {
-	
+
 	/**
 	 * The default MAX size for a class.
 	 */
@@ -58,41 +59,39 @@ public class AnalystScript {
 	 * The data fields, these are the raw data from the CSV file.
 	 */
 	private DataField[] fields;
-	
+
 	/**
 	 * Information about how to normalize.
 	 */
 	private final AnalystNormalize normalize = new AnalystNormalize(this);
-	
+
 	/**
 	 * Information about how to segregate.
 	 */
 	private final AnalystSegregate segregate = new AnalystSegregate();
-	
+
 	/**
 	 * Information about the process command.
 	 */
 	private final AnalystProcess process = new AnalystProcess();
-	
+
 	/**
 	 * Tracks which files were generated.
 	 */
 	private final Set<String> generated = new HashSet<String>();
-	
-	
+
 	private final List<ScriptOpcode> opcodes = new ArrayList<ScriptOpcode>();
-	
+
 	/**
 	 * The tasks.
 	 */
-	private final Map<String, AnalystTask> tasks 
-		= new HashMap<String, AnalystTask>();
-	
+	private final Map<String, AnalystTask> tasks = new HashMap<String, AnalystTask>();
+
 	/**
 	 * The properties.
 	 */
 	private final ScriptProperties properties = new ScriptProperties();
-	
+
 	/**
 	 * The base path.
 	 */
@@ -105,7 +104,7 @@ public class AnalystScript {
 		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_CSV_FORMAT,
 				AnalystFileFormat.DECPNT_COMMA);
 		this.properties.setProperty(
-				ScriptProperties.SETUP_CONFIG_MAX_CLASS_COUNT, 
+				ScriptProperties.SETUP_CONFIG_MAX_CLASS_COUNT,
 				DEFAULT_MAX_CLASS);
 		this.properties
 				.setProperty(ScriptProperties.SETUP_CONFIG_ALLOWED_CLASSES,
@@ -114,7 +113,9 @@ public class AnalystScript {
 
 	/**
 	 * Add a task.
-	 * @param task The task to add.
+	 * 
+	 * @param task
+	 *            The task to add.
 	 */
 	public void addTask(final AnalystTask task) {
 		this.tasks.put(task.getName(), task);
@@ -129,6 +130,7 @@ public class AnalystScript {
 
 	/**
 	 * Determine the output format.
+	 * 
 	 * @return The output format.
 	 */
 	public CSVFormat determineFormat() {
@@ -138,21 +140,25 @@ public class AnalystScript {
 
 	/**
 	 * Determine if input headers are expected.
-	 * @param filename The filename.
+	 * 
+	 * @param filename
+	 *            The filename.
 	 * @return True if headers are expected.
 	 */
 	public boolean expectInputHeaders(final String filename) {
 		if (isGenerated(filename)) {
 			return true;
 		} else {
-			return this.properties.getPropertyBoolean(
-						ScriptProperties.SETUP_CONFIG_INPUT_HEADERS);
+			return this.properties
+					.getPropertyBoolean(ScriptProperties.SETUP_CONFIG_INPUT_HEADERS);
 		}
 	}
 
 	/**
-	 * Find the specified data field.  Use name to find, and ignore case.
-	 * @param name The name to search for.
+	 * Find the specified data field. Use name to find, and ignore case.
+	 * 
+	 * @param name
+	 *            The name to search for.
 	 * @return The specified data field.
 	 */
 	public DataField findDataField(final String name) {
@@ -167,7 +173,9 @@ public class AnalystScript {
 
 	/**
 	 * Find the specified data field and return its index.
-	 * @param df The data field to search for.
+	 * 
+	 * @param df
+	 *            The data field to search for.
 	 * @return The index of the specified data field, or -1 if not found.
 	 */
 	public int findDataFieldIndex(final DataField df) {
@@ -180,13 +188,15 @@ public class AnalystScript {
 	}
 
 	/**
-	 * Find the specified normalized field.  Search without case.
-	 * @param name The name of the field we are searching for.
-	 * @param slice The timeslice.
+	 * Find the specified normalized field. Search without case.
+	 * 
+	 * @param name
+	 *            The name of the field we are searching for.
+	 * @param slice
+	 *            The timeslice.
 	 * @return The analyst field that was found.
 	 */
-	public AnalystField findNormalizedField(final String name, 
-			final int slice) {
+	public AnalystField findNormalizedField(final String name, final int slice) {
 		for (final AnalystField field : getNormalize().getNormalizedFields()) {
 			if (field.getName().equalsIgnoreCase(name)
 					&& (field.getTimeSlice() == slice)) {
@@ -241,7 +251,9 @@ public class AnalystScript {
 
 	/**
 	 * Get the specified task.
-	 * @param name The name of the testk.
+	 * 
+	 * @param name
+	 *            The name of the testk.
 	 * @return The analyst task.
 	 */
 	public AnalystTask getTask(final String name) {
@@ -267,7 +279,9 @@ public class AnalystScript {
 
 	/**
 	 * Determine if the specified file was generated.
-	 * @param filename The filename to check.
+	 * 
+	 * @param filename
+	 *            The filename to check.
 	 * @return True, if the specified file was generated.
 	 */
 	public boolean isGenerated(final String filename) {
@@ -276,7 +290,9 @@ public class AnalystScript {
 
 	/**
 	 * Load the script.
-	 * @param stream The stream to load from.
+	 * 
+	 * @param stream
+	 *            The stream to load from.
 	 */
 	public void load(final InputStream stream) {
 		final ScriptLoad s = new ScriptLoad(this);
@@ -285,7 +301,9 @@ public class AnalystScript {
 
 	/**
 	 * Mark the sepcified filename as generated.
-	 * @param filename The filename.
+	 * 
+	 * @param filename
+	 *            The filename.
 	 */
 	public void markGenerated(final String filename) {
 		this.generated.add(filename);
@@ -293,22 +311,26 @@ public class AnalystScript {
 
 	/**
 	 * Resolve the specified filename.
-	 * @param sourceID The filename to resolve.
+	 * 
+	 * @param sourceID
+	 *            The filename to resolve.
 	 * @return The file path.
 	 */
 	public File resolveFilename(final String sourceID) {
 		final String name = getProperties().getFilename(sourceID);
 
-		if( new File(name).getParent()==null && this.basePath!=null ) {
+		if (new File(name).getParent() == null && this.basePath != null) {
 			return new File(this.basePath, name);
 		} else {
 			return new File(name);
 		}
 	}
-	
+
 	/**
 	 * Save to the specified output stream.
-	 * @param stream The output stream.
+	 * 
+	 * @param stream
+	 *            The output stream.
 	 */
 	public void save(final OutputStream stream) {
 		final ScriptSave s = new ScriptSave(this);
@@ -317,7 +339,9 @@ public class AnalystScript {
 
 	/**
 	 * Set the base path.
-	 * @param theBasePath The base path.
+	 * 
+	 * @param theBasePath
+	 *            The base path.
 	 */
 	public void setBasePath(final String theBasePath) {
 		this.basePath = theBasePath;
@@ -332,8 +356,8 @@ public class AnalystScript {
 	}
 
 	public AnalystField findAnalystField(String fieldName) {
-		for(AnalystField field : this.normalize.getNormalizedFields() ) {
-			if( field.getName().equalsIgnoreCase(fieldName) ) {
+		for (AnalystField field : this.normalize.getNormalizedFields()) {
+			if (field.getName().equalsIgnoreCase(fieldName)) {
 				return field;
 			}
 		}
@@ -350,7 +374,17 @@ public class AnalystScript {
 	public List<ScriptOpcode> getOpcodes() {
 		return opcodes;
 	}
-	
-	
-	
+
+	public boolean hasClasses() {
+		for (AnalystField field : this.getNormalize().getNormalizedFields()) {
+			if (field.getAction() != NormalizationAction.Ignore) {
+				DataField df = this.findDataField(field.getName());
+				if (df.isClass()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 }

@@ -57,5 +57,25 @@ public class VariableMapping implements Serializable {
 	public String getName() {
 		return name;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[VariableMapping: name=");
+		result.append(this.name);
+		result.append(",type=");
+		result.append(this.variableType.toString());
+		result.append(",enum=");
+		result.append(this.isEnum);
+		result.append(",enumType=");
+		result.append(this.enumType);
+		result.append(",enumCount=");
+		result.append(this.enumValueCount);
+		result.append("]");
+		return result.toString();
+	}
 
 }
