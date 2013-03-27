@@ -125,12 +125,10 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 * Create a NEAT gnome. Neuron genes will be added by reference, links will
 	 * be copied.
 	 * 
-	 * @param genomeID
-	 *            The genome id.
 	 * @param neurons
-	 *            The neurons.
+	 *            The neurons to create.
 	 * @param links
-	 *            The links.
+	 *            The links to create.
 	 * @param inputCount
 	 *            The input count.
 	 * @param outputCount
@@ -153,15 +151,13 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	/**
 	 * Create a new genome with the specified connection density. This
 	 * constructor is typically used to create the initial population.
-	 * 
-	 * @param id
-	 *            The genome id.
-	 * @param inputCount
-	 *            The input count.
-	 * @param outputCount
-	 *            The output count.
+	 * @param rnd Random number generator.
+	 * @param pop The population.
+	 * @param inputCount The input count.
+	 * @param outputCount The output count.
+	 * @param connectionDensity The connection density.
 	 */
-	public NEATGenome(final Random rnd, final NEATPopulation pop, 
+	public NEATGenome(final Random rnd, final NEATPopulation pop,
 			final int inputCount, final int outputCount,
 			double connectionDensity) {
 		setAdjustedScore(0);
@@ -197,12 +193,13 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		for (int i = 0; i < inputCount + 1; i++) {
 			for (int j = 0; j < outputCount; j++) {
 				// make sure we have at least one connection
-				if ( this.linksList.size()<1 || rnd.nextDouble() < connectionDensity) {
+				if (this.linksList.size() < 1
+						|| rnd.nextDouble() < connectionDensity) {
 					long fromID = this.neuronsList.get(i).getId();
 					long toID = this.neuronsList.get(inputCount + j + 1)
 							.getId();
-					double w = RangeRandomizer.randomize(rnd, -pop.getWeightRange(),
-							pop.getWeightRange());
+					double w = RangeRandomizer.randomize(rnd,
+							-pop.getWeightRange(), pop.getWeightRange());
 					NEATLinkGene gene = new NEATLinkGene(fromID, toID, true,
 							innovationID++, w);
 					this.linksList.add(gene);
@@ -305,8 +302,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 
 		// make sure all input neurons are at the beginning
 		for (int i = 1; i <= this.inputCount; i++) {
-			NEATNeuronGene gene = this.neuronsList
-					.get(i);
+			NEATNeuronGene gene = this.neuronsList.get(i);
 			if (gene.getNeuronType() != NEATNeuronType.Input) {
 				throw new EncogError("NEAT Neuron Gene " + i
 						+ " should be an input gene.");
@@ -325,7 +321,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	}
 
 	/**
-	 *{@inheritDoc}
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void copy(Genome source) {
@@ -342,7 +338,9 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 
 	/**
 	 * Find the neuron with the specified nodeID.
-	 * @param nodeID The nodeID to look for.
+	 * 
+	 * @param nodeID
+	 *            The nodeID to look for.
 	 * @return The neuron, if found, otherwise null.
 	 */
 	public NEATNeuronGene findNeuron(long nodeID) {
@@ -370,5 +368,5 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		result.append(this.linksList.size());
 		result.append("]");
 		return result.toString();
-	}	
+	}
 }

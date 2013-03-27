@@ -117,13 +117,7 @@ public class NEATInnovationList implements Serializable {
 
 	/**
 	 * Construct an innovation list, that includes the initial innovations.
-	 * 
-	 * @param population
-	 *            The population.
-	 * @param links
-	 *            The links.
-	 * @param neurons
-	 *            THe neurons.
+	 * @param population The population to base this innovation list on.
 	 */
 	public NEATInnovationList(final NEATPopulation population) {
 
@@ -156,7 +150,7 @@ public class NEATInnovationList implements Serializable {
 	 * Find an innovation for a hidden neuron that split a existing link. This
 	 * is the means by which hidden neurons are introduced in NEAT.
 	 * 
-	 * @param neuronID
+	 * @param fromID
 	 *            The source neuron ID in the link.
 	 * @param toID
 	 *            The target neuron ID in the link.

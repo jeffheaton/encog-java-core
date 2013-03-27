@@ -87,7 +87,6 @@ public class NEATLinkGene extends NEATBaseGene implements Serializable {
 	 * @param enabled Is this link enabled.
 	 * @param innovationID The innovation id.
 	 * @param weight The weight.
-	 * @param recurrent Is this a recurrent link?
 	 */
 	public NEATLinkGene(final long fromNeuronID, final long toNeuronID,
 			final boolean enabled, final long innovationID,

@@ -61,8 +61,12 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 	/**
 	 * Choose a random neuron.
 	 * 
-	 * @param includeInput
-	 *            Should the input and bias neurons be included.
+	 * @param target
+	 *            The target genome. Should the input and bias neurons be
+	 *            included.
+	 * @param choosingFrom
+	 *            True if we are chosing from all neurons, false if we exclude
+	 *            the input and bias.
 	 * @return The random neuron.
 	 */
 	public NEATNeuronGene chooseRandomNeuron(final NEATGenome target,
@@ -114,10 +118,11 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 	 */
 	public void createLink(final NEATGenome target, final long neuron1ID,
 			final long neuron2ID, final double weight) {
-		
-		// first, does this link exist? (and if so, hopefully disabled, otherwise we have a problem)
+
+		// first, does this link exist? (and if so, hopefully disabled,
+		// otherwise we have a problem)
 		for (final NEATLinkGene linkGene : target.getLinksChromosome()) {
-			if ( (linkGene.getFromNeuronID() == neuron1ID)
+			if ((linkGene.getFromNeuronID() == neuron1ID)
 					&& (linkGene.getToNeuronID() == neuron2ID)) {
 				// bring the link back, at the new weight
 				linkGene.setEnabled(true);
@@ -127,8 +132,9 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 		}
 
 		// check to see if this innovation has already been tried
-		final NEATInnovation innovation = ((NEATPopulation)target.getPopulation()).getInnovations()
-				.findInnovation(neuron1ID, neuron2ID);
+		final NEATInnovation innovation = ((NEATPopulation) target
+				.getPopulation()).getInnovations().findInnovation(neuron1ID,
+				neuron2ID);
 
 		// now create this link
 		final NEATLinkGene linkGene = new NEATLinkGene(neuron1ID, neuron2ID,
@@ -183,7 +189,7 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 	public boolean isDuplicateLink(final NEATGenome target,
 			final long fromNeuronID, final long toNeuronID) {
 		for (final NEATLinkGene linkGene : target.getLinksChromosome()) {
-			if ( (linkGene.isEnabled())
+			if ((linkGene.isEnabled())
 					&& (linkGene.getFromNeuronID() == fromNeuronID)
 					&& (linkGene.getToNeuronID() == toNeuronID)) {
 				return true;
@@ -236,16 +242,21 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 	 * place. So the parent and child genome must be the same literal object.
 	 * Throw an exception, if this is not the case.
 	 * 
-	 * @param parents The parents.
-	 * @param parentIndex The parent index.
-	 * @param offspring The offspring.
-	 * @param offspringIndex The offspring index.
+	 * @param parents
+	 *            The parents.
+	 * @param parentIndex
+	 *            The parent index.
+	 * @param offspring
+	 *            The offspring.
+	 * @param offspringIndex
+	 *            The offspring index.
 	 * @return The genome that we will mutate.
 	 */
 	public NEATGenome obtainGenome(final Genome[] parents,
 			final int parentIndex, final Genome[] offspring,
 			final int offspringIndex) {
-		offspring[offspringIndex] = this.getOwner().getPopulation().getGenomeFactory().factor(parents[0]);
+		offspring[offspringIndex] = this.getOwner().getPopulation()
+				.getGenomeFactory().factor(parents[0]);
 		return (NEATGenome) offspring[offspringIndex];
 	}
 
@@ -258,7 +269,8 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 	}
 
 	/**
-	 * @return Returns 1, as mutations typically are asexual and only require a single parent.
+	 * @return Returns 1, as mutations typically are asexual and only require a
+	 *         single parent.
 	 */
 	@Override
 	public int parentsNeeded() {
@@ -267,8 +279,11 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 
 	/**
 	 * Remove the specified neuron.
-	 * @param target The target genome.
-	 * @param neuronID The neuron to remove.
+	 * 
+	 * @param target
+	 *            The target genome.
+	 * @param neuronID
+	 *            The neuron to remove.
 	 */
 	public void removeNeuron(final NEATGenome target, final long neuronID) {
 		for (final NEATNeuronGene gene : target.getNeuronsChromosome()) {

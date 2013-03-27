@@ -74,15 +74,10 @@ public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 
 	/**
 	 * Construct a neuron gene.
-	 * 
-	 * @param type
-	 *            The type of neuron.
-	 * @param id
-	 *            The id of this gene.
-	 * @param splitY
-	 *            The split y.
-	 * @param splitX
-	 *            The split x.
+	 * @param type The neuron type.
+	 * @param theActivationFunction The activation function.
+	 * @param id The neuron id.
+	 * @param innovationID The innovation id.
 	 */
 	public NEATNeuronGene(final NEATNeuronType type, ActivationFunction theActivationFunction, final long id, final long innovationID) {
 		this.neuronType = type;

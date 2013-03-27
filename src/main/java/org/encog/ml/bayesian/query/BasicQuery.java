@@ -29,13 +29,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.EncogError;
 import org.encog.ml.bayesian.BayesianError;
 import org.encog.ml.bayesian.BayesianEvent;
 import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.bayesian.EventType;
 import org.encog.ml.bayesian.query.sample.EventState;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Provides basic functionality for a Bayesian query. This class is abstract,
@@ -255,7 +254,7 @@ public abstract class BasicQuery implements BayesianQuery, Serializable {
 	}
 
 	public BayesianQuery clone() {
-		throw new NotImplementedException();
+		throw new EncogError("Clone is not implemented");
 	}
 
 }

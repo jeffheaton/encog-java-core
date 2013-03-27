@@ -47,8 +47,8 @@ public class EncogDirectoryPersistence {
 
 	/**
 	 * Load an EG object as a reousrce.
-	 * @param res
-	 * @return
+	 * @param res The resource name.
+	 * @return The loaded object.
 	 */
 	public static Object loadResourceObject(final String res) {
 		InputStream is = null;

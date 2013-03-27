@@ -111,11 +111,11 @@ public class QuickPropagation extends Propagation implements
 	 *            take higher learning rates.
 	 */
 	public QuickPropagation(final ContainsFlat network,
-			final MLDataSet training, final double learnRate) {
+			final MLDataSet training, final double theLearningRate) {
 		super(network, training);
 		ValidateNetwork.validateMethodToData(network, training);
 		
-		this.learningRate = learnRate;
+		this.learningRate = theLearningRate;
 		this.lastDelta = new double[this.network.getFlat().getWeights().length];
 	}
 

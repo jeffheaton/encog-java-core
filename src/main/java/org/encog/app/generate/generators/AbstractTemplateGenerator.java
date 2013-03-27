@@ -173,9 +173,9 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 	}
 
 	/**
-	 * 
-	 * @param flat
-	 * @return
+	 * Create an array of doubles to hold the specified flat network.
+	 * @param flat The flat network to use as a model.
+	 * @return The new array.
 	 */
 	public double[] createParams(final FlatNetwork flat) {
 		final double[] result = new double[flat.getActivationFunctions().length];

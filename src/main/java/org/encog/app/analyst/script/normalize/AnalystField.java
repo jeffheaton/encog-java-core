@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.Encog;
-import org.encog.EncogError;
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.csv.basic.BasicFile;

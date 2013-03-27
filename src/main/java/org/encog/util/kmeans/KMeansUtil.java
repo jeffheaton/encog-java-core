@@ -184,7 +184,7 @@ public class KMeansUtil<K extends CentroidFactory<? super K>> {
 
 	/**
 	 * Get a cluster by index.
-	 * @param index The index to get.
+	 * @param i The index to get.
 	 * @return The cluster.
 	 */
 	public Cluster<K> getCluster(int i) {

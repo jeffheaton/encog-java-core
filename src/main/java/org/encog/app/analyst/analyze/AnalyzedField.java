@@ -83,7 +83,7 @@ public class AnalyzedField extends DataField {
 
 	/**
 	 * Perform a pass one analysis of this field.
-	 * @param str The current value.
+	 * @param v The current value.
 	 */
 	public void analyze1(final String v) {
 

@@ -59,7 +59,8 @@ public class SelectProportion implements SelectLinks {
 	private EvolutionaryAlgorithm trainer;
 	
 	/**
-	 * {@inheritDoc}
+	 * Select based on proportion.
+	 * @param theProportion The proportion to select from.
 	 */
 	public SelectProportion(double theProportion) {
 		this.proportion = theProportion;

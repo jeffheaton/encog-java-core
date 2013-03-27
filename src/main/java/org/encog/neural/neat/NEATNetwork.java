@@ -53,28 +53,20 @@ import org.encog.util.simple.EncogUtility;
  * The following Journal articles were used to implement NEAT/HyperNEAT in
  * Encog. Provided in BibTeX form.
  * 
- * @Article{stanley:ec02,title={Evolving Neural Networks Through Augmenting
- *                                       Topologies}, author={Kenneth O. Stanley
- *                                       and Risto Miikkulainen}, volume={10},
- *                                       journal={Evolutionary Computation},
- *                                       number={2}, pages={99-127}, url=
- *                                       "http://nn.cs.utexas.edu/?stanley:ec02"
- *                                       , year={2002}}
+ * Article{stanley:ec02,title={Evolving Neural Networks Through Augmenting
+ * Topologies}, author={Kenneth O. Stanley and Risto Miikkulainen}, volume={10},
+ * journal={Evolutionary Computation}, number={2}, pages={99-127}, url=
+ * "http://nn.cs.utexas.edu/?stanley:ec02" , year={2002}}
  * 
- * @MISC{Gauci_abstractgenerating, author = {Jason Gauci and Kenneth Stanley},
- *                                 title = {ABSTRACT Generating Large-Scale
- *                                 Neural Networks Through Discovering Geometric
- *                                 Regularities}, year = {}}
+ * MISC{Gauci_abstractgenerating, author = {Jason Gauci and Kenneth Stanley},
+ * title = {ABSTRACT Generating Large-Scale Neural Networks Through Discovering
+ * Geometric Regularities}, year = {}}
  * 
- * @INPROCEEDINGS{Whiteson05automaticfeature, author = {Shimon Whiteson and
- *                                            Kenneth O. Stanley and Risto
- *                                            Miikkulainen}, title = {Automatic
- *                                            feature selection in
- *                                            neuroevolution}, booktitle = {In
- *                                            Genetic and Evolutionary
- *                                            Computation Conference}, year =
- *                                            {2005}, pages = {1225--1232},
- *                                            publisher = {ACM Press} }
+ * INPROCEEDINGS{Whiteson05automaticfeature, author = {Shimon Whiteson and
+ * Kenneth O. Stanley and Risto Miikkulainen}, title = {Automatic feature
+ * selection in neuroevolution}, booktitle = {In Genetic and Evolutionary
+ * Computation Conference}, year = {2005}, pages = {1225--1232}, publisher =
+ * {ACM Press} }
  */
 public class NEATNetwork implements MLRegression, MLError, Serializable {
 
@@ -87,60 +79,66 @@ public class NEATNetwork implements MLRegression, MLError, Serializable {
 	 * The neuron links.
 	 */
 	private final NEATLink[] links;
-	
+
 	/**
 	 * The activation functions.
 	 */
 	private final ActivationFunction[] activationFunctions;
-	
+
 	/**
 	 * The pre-activation values, used to feed the neurons.
 	 */
 	private final double[] preActivation;
-	
+
 	/**
 	 * The post-activation values, used as the output from the neurons.
 	 */
 	private final double[] postActivation;
-	
+
 	/**
 	 * The index to the starting location of the output neurons.
 	 */
 	private final int outputIndex;
-	
+
 	/**
 	 * The input count.
 	 */
 	private int inputCount;
-	
+
 	/**
 	 * The output count.
 	 */
 	private int outputCount;
-	
+
 	/**
 	 * The number of activation cycles to use.
 	 */
 	private int activationCycles = NEATPopulation.DEFAULT_CYCLES;
-	
+
 	/**
-	 * True, if the network has relaxed and values no longer changing.  Used
-	 * when activationCycles is set to zero for auto.
+	 * True, if the network has relaxed and values no longer changing. Used when
+	 * activationCycles is set to zero for auto.
 	 */
 	private boolean hasRelaxed = false;
-	
+
 	/**
-	 * The amount of change allowed before the network is considered to have 
+	 * The amount of change allowed before the network is considered to have
 	 * relaxed.
 	 */
 	private double relaxationThreshold;
 
 	/**
-	 * Construct a NEAT network.  The links that are passed in also define the neurons.
-	 * @param inputNeuronCount The input neuron count.
-	 * @param outputNeuronCount The output neuron count.
-	 * @param connectionArray The links.
-	 * @param theActivationFunctions The activation functions.
+	 * Construct a NEAT network. The links that are passed in also define the
+	 * neurons.
+	 * 
+	 * @param inputNeuronCount
+	 *            The input neuron count.
+	 * @param outputNeuronCount
+	 *            The output neuron count.
+	 * @param connectionArray
+	 *            The links.
+	 * @param theActivationFunctions
+	 *            The activation functions.
 	 */
 	public NEATNetwork(final int inputNeuronCount, final int outputNeuronCount,
 			final List<NEATLink> connectionArray,
@@ -267,8 +265,8 @@ public class NEATNetwork implements MLRegression, MLError, Serializable {
 	}
 
 	/**
-	 * @return The amount of change allowed before the network is considered to have 
-	 * relaxed.
+	 * @return The amount of change allowed before the network is considered to
+	 *         have relaxed.
 	 */
 	public double getRelaxationThreshold() {
 		return this.relaxationThreshold;
@@ -292,8 +290,8 @@ public class NEATNetwork implements MLRegression, MLError, Serializable {
 	}
 
 	/**
-	 * @return True, if the network has relaxed and values no longer changing.  Used
-	 * when activationCycles is set to zero for auto.
+	 * @return True, if the network has relaxed and values no longer changing.
+	 *         Used when activationCycles is set to zero for auto.
 	 */
 	public boolean isHasRelaxed() {
 		return this.hasRelaxed;
@@ -301,25 +299,31 @@ public class NEATNetwork implements MLRegression, MLError, Serializable {
 
 	/**
 	 * Set the number of activation cycles to use.
-	 * @param activationCycles The number of activation cycles.
+	 * 
+	 * @param activationCycles
+	 *            The number of activation cycles.
 	 */
 	public void setActivationCycles(final int activationCycles) {
 		this.activationCycles = activationCycles;
 	}
 
 	/**
-	 * Set true, if the network has relaxed and values no longer changing.  Used
+	 * Set true, if the network has relaxed and values no longer changing. Used
 	 * when activationCycles is set to zero for auto.
-	 * @param hasRelaxed True if the network has relaxed.
+	 * 
+	 * @param hasRelaxed
+	 *            True if the network has relaxed.
 	 */
 	public void setHasRelaxed(final boolean hasRelaxed) {
 		this.hasRelaxed = hasRelaxed;
 	}
 
 	/**
-	 * The amount of change allowed before the network is considered to have 
+	 * The amount of change allowed before the network is considered to have
 	 * relaxed.
-	 * @param relaxationThreshold The relaxation threshold.
+	 * 
+	 * @param relaxationThreshold
+	 *            The relaxation threshold.
 	 */
 	public void setRelaxationThreshold(final double relaxationThreshold) {
 		this.relaxationThreshold = relaxationThreshold;
