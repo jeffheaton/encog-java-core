@@ -15,6 +15,7 @@ import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.exception.EncogEPLError;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
+import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.ml.prg.train.PrgPopulation;
 
 public class PrgGrowGenerator {
@@ -24,6 +25,7 @@ public class PrgGrowGenerator {
 	private List<ProgramExtensionTemplate> leaves = new ArrayList<ProgramExtensionTemplate>();
 	private double minConst = -10;
 	private double maxConst = 10;
+	private boolean hasEnum;
 	
 	public PrgGrowGenerator(EncogProgramContext theContext, int theMaxDepth) {
 		if( theContext.getFunctions().size()==0 ) {
@@ -32,6 +34,7 @@ public class PrgGrowGenerator {
 		
 		this.context = theContext;
 		this.maxDepth = theMaxDepth;
+		this.hasEnum = this.context.hasEnum();
 				
 		for(ProgramExtensionTemplate temp : this.context.getFunctions().getOpCodes() ) {
 			if( temp.getChildNodeCount()==0 ) {
@@ -58,22 +61,39 @@ public class PrgGrowGenerator {
 	}
 	
 	private ProgramNode createLeafNode(Random rnd, EncogProgram program) {
-		int opCode = rnd.nextInt(this.leaves.size());
-		ProgramExtensionTemplate temp = this.leaves.get(opCode);
+		ProgramExtensionTemplate temp = generateRandomOpcode(rnd, this.leaves);
 		ProgramNode result = new ProgramNode(program, temp, new ProgramNode[] {});
 		temp.randomize(rnd, result, this.minConst, this.maxConst);
 		return result;
 	}
 	
-	private ProgramNode createNode(Random rnd, EncogProgram program, int depth) {
-		int maxOpCode = context.getFunctions().size();
+	private ProgramExtensionTemplate generateRandomOpcode(Random rnd, List<ProgramExtensionTemplate> opcodes) {
+		int maxOpCode = opcodes.size();
+		int tries = 10000;
 		
+		ProgramExtensionTemplate result = null;
+		
+		while(result==null) {
+			int opcode = rnd.nextInt(maxOpCode);
+			result = opcodes.get(opcode);
+			if( !this.hasEnum && result==StandardExtensions.EXTENSION_CONST_ENUM_SUPPORT ) {
+				result=null;
+			}
+			tries--;
+			if( tries<0) {
+				throw new EncogEPLError("Could not generate an opcode.  Make sure you have valid opcodes defined.");
+			}
+		}
+		return result;
+	}
+	
+	private ProgramNode createNode(Random rnd, EncogProgram program, int depth) {
+				
 		if( depth>=this.maxDepth ) {
 			return createLeafNode(rnd, program);
 		}
 		
-		int opCode = RangeRandomizer.randomInt(0, maxOpCode-1);
-		ProgramExtensionTemplate temp = context.getFunctions().getOpCode(opCode);
+		ProgramExtensionTemplate temp = generateRandomOpcode(rnd, context.getFunctions().getOpCodes());
 		int childNodeCount = temp.getChildNodeCount();
 		
 		ProgramNode[] children = new ProgramNode[childNodeCount];

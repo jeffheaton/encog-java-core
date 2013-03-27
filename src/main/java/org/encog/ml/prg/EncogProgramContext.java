@@ -175,6 +175,18 @@ public class EncogProgramContext implements Serializable {
 		throw new ExpressionError("Undefined enum type: " + enumType);
 	}
 	
-	
+	public boolean hasEnum() {
+		if( this.result.isEnum() ) {
+			return true;
+		}
+		
+		for(VariableMapping mapping: this.definedVariables) {
+			if( mapping.isEnum() ) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 
 }
