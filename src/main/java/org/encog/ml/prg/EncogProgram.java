@@ -44,6 +44,10 @@ import org.encog.util.simple.EncogUtility;
 
 public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 		
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
 	private EncogProgramVariables variables = new EncogProgramVariables();
 	private EncogProgramContext context = new EncogProgramContext();
 

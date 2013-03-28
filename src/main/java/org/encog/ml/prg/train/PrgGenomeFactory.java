@@ -10,6 +10,11 @@ import org.encog.ml.prg.EncogProgramVariables;
 
 public class PrgGenomeFactory implements GenomeFactory, Serializable {
 
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private final EncogProgramContext context;
 
 	public PrgGenomeFactory(final EncogProgramContext theContext) {

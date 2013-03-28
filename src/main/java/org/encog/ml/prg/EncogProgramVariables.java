@@ -10,7 +10,10 @@ import java.util.Map.Entry;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 
 public class EncogProgramVariables implements Serializable {
-	
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
 	private final Map<String, Integer> varMap = new HashMap<String, Integer>();	
 	private final List<ExpressionValue> variables = new ArrayList<ExpressionValue>();
 	

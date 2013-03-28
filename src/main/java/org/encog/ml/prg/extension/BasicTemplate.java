@@ -5,7 +5,11 @@ import java.util.Random;
 import org.encog.ml.prg.ProgramNode;
 
 public abstract class BasicTemplate implements ProgramExtensionTemplate {
-
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private final String name;
 	private final int childNodeCount;
 	private final boolean varValue;

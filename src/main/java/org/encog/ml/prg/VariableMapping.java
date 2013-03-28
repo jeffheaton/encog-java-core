@@ -5,6 +5,10 @@ import java.io.Serializable;
 import org.encog.ml.prg.expvalue.ValueType;
 
 public class VariableMapping implements Serializable {
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
 	private final String name;
 	private final ValueType variableType;
 	private final boolean isEnum;

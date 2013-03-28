@@ -14,7 +14,10 @@ import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.util.csv.CSVFormat;
 
 public class EncogProgramContext implements Serializable {
-
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
 	private final CSVFormat format;
 	private final FunctionFactory functions;
 	private final List<VariableMapping> definedVariables = new ArrayList<VariableMapping>();

@@ -10,7 +10,11 @@ import org.encog.ml.prg.EncogProgramContext;
 import org.encog.parse.expression.common.RenderCommonExpression;
 
 public class PrgPopulation extends BasicPopulation implements MLRegression {
-
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private final EncogProgramContext context;
 
 	public PrgPopulation(final EncogProgramContext theContext,

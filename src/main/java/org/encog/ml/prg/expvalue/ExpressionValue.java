@@ -29,6 +29,10 @@ import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.exception.EncogEPLError;
 
 public class ExpressionValue implements Serializable {
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	private final String stringValue;
 	private final double floatValue;

@@ -31,6 +31,10 @@ import org.encog.ml.tree.TreeNode;
 import org.encog.ml.tree.basic.BasicTreeNode;
 
 public class ProgramNode extends BasicTreeNode implements Serializable {
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
 	private final ProgramExtensionTemplate template;
 	private final EncogProgram owner;
 	private final ExpressionValue[] data;

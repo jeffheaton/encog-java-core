@@ -7,7 +7,6 @@ import java.util.Random;
 import java.util.Set;
 
 import org.encog.EncogError;
-import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.EncogProgram;

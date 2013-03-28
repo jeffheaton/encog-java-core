@@ -12,6 +12,10 @@ import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.exception.EncogEPLError;
 
 public class FunctionFactory implements Serializable {
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private final Map<String, ProgramExtensionTemplate> templateMap = new HashMap<String, ProgramExtensionTemplate>();
 	private final List<ProgramExtensionTemplate> opcodes = new ArrayList<ProgramExtensionTemplate>();
