@@ -183,6 +183,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 		}
 	}
 	
+	@Override
 	public String toString() {
 		RenderRPN render = new RenderRPN();
 		String code = render.render(this);
@@ -197,6 +198,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 		return result.toString();
 	}
 
+	@Override
 	public int size() {
 		return this.rootNode.size();
 	}
