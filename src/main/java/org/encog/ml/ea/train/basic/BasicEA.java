@@ -46,6 +46,8 @@ import org.encog.ml.ea.opp.OperationList;
 import org.encog.ml.ea.opp.selection.SelectionOperator;
 import org.encog.ml.ea.opp.selection.TournamentSelection;
 import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.rules.BasicRuleHolder;
+import org.encog.ml.ea.rules.RuleHolder;
 import org.encog.ml.ea.score.AdjustScore;
 import org.encog.ml.ea.score.parallel.ParallelScore;
 import org.encog.ml.ea.sort.GenomeComparator;
@@ -57,7 +59,6 @@ import org.encog.ml.ea.species.SingleSpeciation;
 import org.encog.ml.ea.species.Speciation;
 import org.encog.ml.ea.species.Species;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
-import org.encog.ml.ea.train.RewriteRule;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.util.concurrency.MultiThreadable;
 import org.encog.util.logging.EncogLogging;
@@ -218,9 +219,9 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	private final List<Callable<Object>> threadList = new ArrayList<Callable<Object>>();
 
 	/**
-	 * Rewrite rules that can simplify genomes.
+	 * Holds rewrite and constraint rules.
 	 */
-	private final List<RewriteRule> rewriteRules = new ArrayList<RewriteRule>();
+	private RuleHolder rules;
 
 	/**
 	 * Construct an EA.
@@ -236,6 +237,7 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 		this.population = thePopulation;
 		this.scoreFunction = theScoreFunction;
 		this.selection = new TournamentSelection(this, 4);
+		this.rules = new BasicRuleHolder();
 
 		// set the score compare method
 		if (theScoreFunction.shouldMinimize()) {
@@ -321,7 +323,7 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	public void calculateScore(final Genome g) {
 
 		// try rewrite
-		rewrite(g);
+		this.rules.rewrite(g);
 
 		// decode
 		final MLMethod phenotype = getCODEC().decode(g);
@@ -353,14 +355,15 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	public void finishTraining() {
 
 		// wait for threadpool to shutdown
-		if (taskExecutor != null) {
-			taskExecutor.shutdown();
+		if (this.taskExecutor != null) {
+			this.taskExecutor.shutdown();
 			try {
-				taskExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.MINUTES);
+				this.taskExecutor.awaitTermination(Long.MAX_VALUE,
+						TimeUnit.MINUTES);
 			} catch (final InterruptedException e) {
 				throw new GeneticError(e);
 			} finally {
-				taskExecutor = null;
+				this.taskExecutor = null;
 				Encog.getInstance().removeShutdownTask(this);
 			}
 		}
@@ -475,6 +478,14 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	}
 
 	/**
+	 * @return the rules
+	 */
+	@Override
+	public RuleHolder getRules() {
+		return this.rules;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -546,8 +557,8 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 		if (this.actualThreadCount == -1) {
 			preIteration();
 		}
-		
-		if( this.getPopulation().getSpecies().size()==0) {
+
+		if (getPopulation().getSpecies().size() == 0) {
 			throw new EncogError("Population is empty, there are no species.");
 		}
 
@@ -587,7 +598,7 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 		// run all threads and wait for them to finish
 		try {
 			this.taskExecutor.invokeAll(this.threadList);
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			EncogLogging.log(e);
 		}
 
@@ -624,6 +635,14 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void performShutdownTask() {
+		finishTraining();
+	}
+
+	/**
 	 * Called before the first iteration. Determine the number of threads to
 	 * use.
 	 */
@@ -648,9 +667,10 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 
 		// start up the thread pool
 		if (this.actualThreadCount == 1) {
-			taskExecutor = Executors.newSingleThreadScheduledExecutor();
+			this.taskExecutor = Executors.newSingleThreadScheduledExecutor();
 		} else {
-			taskExecutor = Executors.newFixedThreadPool(this.actualThreadCount);
+			this.taskExecutor = Executors
+					.newFixedThreadPool(this.actualThreadCount);
 		}
 
 		// register for shutdown
@@ -661,7 +681,7 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 		// also most populations are sorted this way after training finishes
 		// (for reload)
 		// if there is an empty population, the constructor would have blow
-		List<Genome> list = getPopulation().flatten();
+		final List<Genome> list = getPopulation().flatten();
 
 		int idx = 0;
 		do {
@@ -764,6 +784,15 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	}
 
 	/**
+	 * @param rules
+	 *            the rules to set
+	 */
+	@Override
+	public void setRules(final RuleHolder rules) {
+		this.rules = rules;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -809,41 +838,6 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	@Override
 	public void setValidationMode(final boolean validationMode) {
 		this.validationMode = validationMode;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addRewriteRule(final RewriteRule rule) {
-		this.rewriteRules.add(rule);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void rewrite(final Genome prg) {
-
-		boolean done = false;
-
-		while (!done) {
-			done = true;
-
-			for (final RewriteRule rule : this.rewriteRules) {
-				if (rule.rewrite(prg)) {
-					done = false;
-				}
-			}
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void performShutdownTask() {
-		finishTraining();
 	}
 
 }

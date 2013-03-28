@@ -33,13 +33,13 @@ public class TestRewriteAlgebraic extends TestCase {
 		genetic.addOperation(0.95, new SubtreeCrossover());
 		genetic.addOperation(0.05, new SubtreeMutation(context,4));
 		genetic.addScoreAdjuster(new ComplexityAdjustedScore());
-		genetic.addRewriteRule(new RewriteConstants());
-		genetic.addRewriteRule(new RewriteAlgebraic());
+		genetic.getRules().addRewriteRule(new RewriteConstants());
+		genetic.getRules().addRewriteRule(new RewriteAlgebraic());
 
 		EncogProgram expression = new EncogProgram(context);
 		expression.compileExpression(start);
 		RenderCommonExpression render = new RenderCommonExpression();
-		genetic.rewrite(expression);
+		genetic.getRules().rewrite(expression);
 		Assert.assertEquals(expect, render.render(expression));
 	}
 	

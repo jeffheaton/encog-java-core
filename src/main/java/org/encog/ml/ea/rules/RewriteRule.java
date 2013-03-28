@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.ml.ea.train;
+package org.encog.ml.ea.rules;
 
 import org.encog.ml.ea.genome.Genome;
 

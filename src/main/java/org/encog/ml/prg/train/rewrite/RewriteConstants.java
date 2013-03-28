@@ -2,7 +2,7 @@ package org.encog.ml.prg.train.rewrite;
 
 import org.encog.Encog;
 import org.encog.ml.ea.genome.Genome;
-import org.encog.ml.ea.train.RewriteRule;
+import org.encog.ml.ea.rules.RewriteRule;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;

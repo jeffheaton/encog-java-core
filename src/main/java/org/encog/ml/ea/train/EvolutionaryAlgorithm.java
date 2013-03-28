@@ -32,6 +32,7 @@ import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.opp.OperationList;
 import org.encog.ml.ea.opp.selection.SelectionOperator;
 import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.rules.RuleHolder;
 import org.encog.ml.ea.score.AdjustScore;
 import org.encog.ml.ea.sort.GenomeComparator;
 import org.encog.ml.ea.species.Speciation;
@@ -52,14 +53,6 @@ public interface EvolutionaryAlgorithm {
 	 *            The operator to add.
 	 */
 	void addOperation(double probability, EvolutionaryOperator opp);
-
-	/**
-	 * Add a rewrite rule. Rewrite rules can be used to simplify genomes.
-	 * 
-	 * @param rule
-	 *            The rule to add.
-	 */
-	void addRewriteRule(RewriteRule rule);
 
 	/**
 	 * Add a score adjuster. Score adjusters are used to adjust the adjusted
@@ -141,6 +134,11 @@ public interface EvolutionaryAlgorithm {
 	Population getPopulation();
 
 	/**
+	 * @return The rules holder, contains rewrite and constraint rules.
+	 */
+	RuleHolder getRules();
+
+	/**
 	 * @return The score adjusters. This allows bonuses and penalties to be
 	 *         applied for desirable or undesirable traits.
 	 */
@@ -187,15 +185,6 @@ public interface EvolutionaryAlgorithm {
 	void iteration();
 
 	/**
-	 * Rewrite the specified genome. The genome will still perform the same
-	 * function, but it may be shorter.
-	 * 
-	 * @param prg
-	 *            The genome to rewrite.
-	 */
-	void rewrite(Genome prg);
-
-	/**
 	 * Set the comparator that is used to choose the "true best" genome. This
 	 * uses the real score, and not the adjusted score.
 	 * 
@@ -211,6 +200,14 @@ public interface EvolutionaryAlgorithm {
 	 *            The population.
 	 */
 	void setPopulation(Population thePopulation);
+
+	/**
+	 * Set the rules holder to use.
+	 * 
+	 * @param rules
+	 *            The rules holder.
+	 */
+	void setRules(RuleHolder rules);
 
 	/**
 	 * Set the selection operator.
