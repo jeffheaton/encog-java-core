@@ -33,83 +33,109 @@ public class ExpressionValue implements Serializable {
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private final String stringValue;
 	private final double floatValue;
 	private final boolean boolValue;
 	private final ValueType currentType;
 	private final long intValue;
-	
+	private final int enumType;
+
 	public ExpressionValue(ExpressionValue other) {
-		switch(this.currentType = other.currentType) {
+		switch (this.currentType = other.currentType) {
 		case booleanType:
 			this.boolValue = other.boolValue;
 			this.floatValue = 0;
 			this.stringValue = null;
 			this.intValue = 0;
+			this.enumType = -1;
 			break;
 		case floatingType:
 			this.floatValue = other.floatValue;
 			this.boolValue = false;
 			this.stringValue = null;
 			this.intValue = 0;
+			this.enumType = -1;
 			break;
 		case intType:
 			this.intValue = other.intValue;
 			this.boolValue = false;
 			this.floatValue = 0;
 			this.stringValue = null;
+			this.enumType = -1;
 			break;
 		case stringType:
 			this.stringValue = other.stringValue;
 			this.boolValue = false;
 			this.floatValue = 0;
 			this.intValue = 0;
+			this.enumType = -1;
+			break;
+		case enumType:
+			this.intValue = other.intValue;
+			this.boolValue = false;
+			this.floatValue = 0;
+			this.stringValue = null;
+			this.enumType = other.enumType;
 			break;
 		default:
 			throw new ExpressionError("Unsupported type.");
-		
+
 		}
 	}
-	
+
 	public ExpressionValue(String theValue) {
 		this.stringValue = theValue;
 		this.currentType = ValueType.stringType;
 		this.boolValue = false;
 		this.floatValue = 0;
 		this.intValue = 0;
+		this.enumType = -1;
 	}
-	
+
 	public ExpressionValue(double theValue) {
 		this.floatValue = theValue;
 		this.currentType = ValueType.floatingType;
 		this.boolValue = false;
 		this.stringValue = null;
 		this.intValue = 0;
+		this.enumType = -1;
 	}
-	
+
 	public ExpressionValue(boolean theValue) {
 		this.boolValue = theValue;
 		this.currentType = ValueType.booleanType;
 		this.floatValue = 0;
 		this.stringValue = null;
 		this.intValue = 0;
+		this.enumType = -1;
 	}
-	
+
 	public ExpressionValue(long theValue) {
 		this.intValue = theValue;
 		this.currentType = ValueType.intType;
 		this.boolValue = false;
 		this.floatValue = 0;
 		this.stringValue = null;
+		this.enumType = -1;
 	}
-	
+
+	public ExpressionValue(int enumType, long theValue) {
+		this.intValue = theValue;
+		this.currentType = ValueType.enumType;
+		this.boolValue = false;
+		this.floatValue = 0;
+		this.stringValue = null;
+		this.enumType = enumType;
+	}
+
 	public ExpressionValue(ValueType theType) {
 		this.currentType = theType;
 		this.intValue = 0;
 		this.boolValue = false;
 		this.floatValue = 0;
 		this.stringValue = null;
+		this.enumType = -1;
 	}
 
 	public ValueType getCurrentType() {
@@ -117,54 +143,68 @@ public class ExpressionValue implements Serializable {
 	}
 
 	public double toFloatValue() {
-		switch(currentType) {
-			case intType:
-				return this.intValue;
-			case floatingType:
-				return this.floatValue;
-			case booleanType:
-				throw(new EncogEPLError("Type Mismatch: can't convert float to boolean."));
-			case stringType:
-				try {
-					return Double.parseDouble(this.stringValue);
-				} catch(NumberFormatException ex) {
-					throw(new EncogEPLError("Type Mismatch: can't convert "+this.stringValue+" to floating point."));
-				}
-			default:
-				throw(new EncogEPLError("Unknown type: " + this.currentType));
+		switch (currentType) {
+		case intType:
+			return this.intValue;
+		case floatingType:
+			return this.floatValue;
+		case booleanType:
+			throw (new EncogEPLError(
+					"Type Mismatch: can't convert float to boolean."));
+		case stringType:
+			try {
+				return Double.parseDouble(this.stringValue);
+			} catch (NumberFormatException ex) {
+				throw (new EncogEPLError("Type Mismatch: can't convert "
+						+ this.stringValue + " to floating point."));
+			}
+		case enumType:
+			throw (new EncogEPLError(
+					"Type Mismatch: can't convert enum to float."));
+		default:
+			throw (new EncogEPLError("Unknown type: " + this.currentType));
 		}
 	}
-	
+
 	public String toStringValue() {
-		switch(currentType) {
-			case intType:
-				return ""+this.intValue;
-			case floatingType:
-				return ""+this.floatValue;
-			case booleanType:
-				return ""+this.boolValue;
-			case stringType:
-				return this.stringValue;
-			default:
-				throw(new EncogEPLError("Unknown type: " + this.currentType));
+		switch (currentType) {
+		case intType:
+			return "" + this.intValue;
+		case floatingType:
+			return "" + this.floatValue;
+		case booleanType:
+			return "" + this.boolValue;
+		case stringType:
+			return this.stringValue;
+		case enumType:
+			throw (new EncogEPLError(
+					"Type Mismatch: can't convert enum to string."));
+		default:
+			throw (new EncogEPLError("Unknown type: " + this.currentType));
 		}
 	}
-	
+
 	public boolean toBooleanValue() {
-		switch(currentType) {
-			case intType:
-				throw(new EncogEPLError("Type Mismatch: can't "+this.intValue+" to boolean."));
-			case floatingType:
-				throw(new EncogEPLError("Type Mismatch: can't "+this.floatValue+" to boolean."));
-			case booleanType:
-				return this.boolValue;
-			case stringType:
-				throw(new EncogEPLError("Type Mismatch: can't "+this.stringValue+" to boolean."));
-			default:
-				throw(new EncogEPLError("Unknown type: " + this.currentType));
+		switch (currentType) {
+		case intType:
+			throw (new EncogEPLError("Type Mismatch: can't " + this.intValue
+					+ " to boolean."));
+		case floatingType:
+			throw (new EncogEPLError("Type Mismatch: can't " + this.floatValue
+					+ " to boolean."));
+		case booleanType:
+			return this.boolValue;
+		case stringType:
+			throw (new EncogEPLError("Type Mismatch: can't " + this.stringValue
+					+ " to boolean."));
+		case enumType:
+			throw (new EncogEPLError(
+					"Type Mismatch: can't convert enum to boolean."));
+		default:
+			throw (new EncogEPLError("Unknown type: " + this.currentType));
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder();
@@ -178,19 +218,49 @@ public class ExpressionValue implements Serializable {
 	}
 
 	public boolean isString() {
-		return this.currentType==ValueType.stringType;
+		return this.currentType == ValueType.stringType;
 	}
 
 	public boolean isInt() {
-		return this.currentType==ValueType.intType;
+		return this.currentType == ValueType.intType;
 	}
 
 	public long toIntValue() {
-		return(long)toFloatValue();
+		switch (currentType) {
+		case intType:
+			return this.intValue;
+		case floatingType:
+			return this.intValue;
+		case booleanType:
+			throw (new EncogEPLError(
+					"Type Mismatch: can't convert int to boolean."));
+		case stringType:
+			try {
+				return Integer.parseInt(this.stringValue);
+			} catch (NumberFormatException ex) {
+				throw (new EncogEPLError("Type Mismatch: can't convert "
+						+ this.stringValue + " to int."));
+			}
+		case enumType:
+			return this.intValue;
+		default:
+			throw (new EncogEPLError("Unknown type: " + this.currentType));
+		}
 	}
 
 	public boolean isFloat() {
-		return this.currentType==ValueType.floatingType;
+		return this.currentType == ValueType.floatingType;
+	}
+
+	public boolean isEnum() {
+		return this.currentType == ValueType.enumType;
+	}
+
+	/**
+	 * @return the enumType
+	 */
+	public int getEnumType() {
+		return enumType;
 	}
 
 }

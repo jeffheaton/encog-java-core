@@ -154,12 +154,13 @@ public class PersistPrgPopulation implements EncogPersistor {
 							vt = ValueType.intType;
 						} else if( t.equalsIgnoreCase("s")) {
 							vt = ValueType.stringType;
+						} else if( t.equalsIgnoreCase("e")) {
+							vt = ValueType.enumType;
 						}
 						
-						final boolean isEnum = Integer.parseInt(cols.get(2))>0;
-						final int enumType = Integer.parseInt(cols.get(3));
-						final int enumCount = Integer.parseInt(cols.get(4));	
-						VariableMapping mapping = new VariableMapping(name,vt, isEnum, enumType, enumCount);
+						final int enumType = Integer.parseInt(cols.get(2));
+						final int enumCount = Integer.parseInt(cols.get(3));	
+						VariableMapping mapping = new VariableMapping(name,vt, enumType, enumCount);
 						if( mapping.getName().length()>0) {
 							result.getContext().defineVariable(mapping);
 						} else {
@@ -200,6 +201,8 @@ public class PersistPrgPopulation implements EncogPersistor {
 			return("b");
 		case intType:
 			return("i");
+		case enumType:
+			return("e");
 		}
 		throw new EncogError("Unknown type: " + mapping.getVariableType().toString());
 	}
@@ -233,7 +236,6 @@ public class PersistPrgPopulation implements EncogPersistor {
 		// write the first line, the result
 		out.addColumn("");
 		out.addColumn(getType(pop.getContext().getResult()));
-		out.addColumn(pop.getContext().getResult().isEnum());
 		out.addColumn(pop.getContext().getResult().getEnumType());
 		out.addColumn(pop.getContext().getResult().getEnumValueCount());
 		out.writeLine();
@@ -243,7 +245,6 @@ public class PersistPrgPopulation implements EncogPersistor {
 				.getDefinedVariables()) {
 			out.addColumn(mapping.getName());
 			out.addColumn(getType(mapping));
-			out.addColumn(mapping.isEnum());
 			out.addColumn(mapping.getEnumType());
 			out.addColumn(mapping.getEnumValueCount());
 			out.writeLine();

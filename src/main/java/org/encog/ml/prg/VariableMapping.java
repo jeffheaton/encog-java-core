@@ -11,23 +11,21 @@ public class VariableMapping implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private final String name;
 	private final ValueType variableType;
-	private final boolean isEnum;
 	private final int enumType;
 	private final int enumValueCount;
 	
 	
-	public VariableMapping(String theName, ValueType theVariableType, boolean theIsEnum,
+	public VariableMapping(String theName, ValueType theVariableType, 
 			int theEnumType, int theEnumValueCount) {
 		super();
 		this.name = theName;
 		this.variableType = theVariableType;
-		this.isEnum = theIsEnum;
 		this.enumType = theEnumType;
 		this.enumValueCount = theEnumValueCount;
 	}
 	
 	public VariableMapping(String theName, ValueType theVariableType) {
-		this(theName, theVariableType, false, 0, 0);
+		this(theName, theVariableType, 0, 0);
 	}
 	
 	
@@ -37,12 +35,7 @@ public class VariableMapping implements Serializable {
 	public ValueType getVariableType() {
 		return variableType;
 	}
-	/**
-	 * @return the isEnum
-	 */
-	public boolean isEnum() {
-		return isEnum;
-	}
+
 	/**
 	 * @return the enumType
 	 */
@@ -72,8 +65,6 @@ public class VariableMapping implements Serializable {
 		result.append(this.name);
 		result.append(",type=");
 		result.append(this.variableType.toString());
-		result.append(",enum=");
-		result.append(this.isEnum);
 		result.append(",enumType=");
 		result.append(this.enumType);
 		result.append(",enumCount=");

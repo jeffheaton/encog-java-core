@@ -27,5 +27,6 @@ public enum ValueType {
 	floatingType,
 	stringType,
 	booleanType,
-	intType
+	intType,
+	enumType
 }

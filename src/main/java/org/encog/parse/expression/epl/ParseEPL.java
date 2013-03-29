@@ -66,8 +66,15 @@ public class ParseEPL {
 			// add any needed data to the node
 			for(int i=0;i<temp.getDataSize();i++) {
 				String str = tok.nextToken().trim();
+				int idx = str.indexOf('#');
+				if( idx!=-1) {
+					int enumType = Integer.parseInt(str.substring(0,idx));
+					int enumVal = Integer.parseInt(str.substring(idx+1));
+					node.getData()[0] = new ExpressionValue(enumType,enumVal);
+					
+				}
 				// is it boolean?
-				if( str.length()==1 && "tf".indexOf(Character.toLowerCase(str.charAt(0)))!=-1 ) {
+				else if( str.length()==1 && "tf".indexOf(Character.toLowerCase(str.charAt(0)))!=-1 ) {
 					node.getData()[i] = new ExpressionValue(str.equalsIgnoreCase("t"));
 				} 
 				// is it a string?

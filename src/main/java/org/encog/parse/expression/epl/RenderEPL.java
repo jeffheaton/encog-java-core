@@ -40,6 +40,10 @@ public class RenderEPL extends CommonRender {
 				result.append(CSVFormat.EG_FORMAT.format(node.getData()[i].toFloatValue(), Encog.DEFAULT_PRECISION));
 			} else if( t==ValueType.intType) {
 				result.append(node.getData()[i].toIntValue());
+			} else if( t==ValueType.enumType) {
+				result.append(node.getData()[i].getEnumType());
+				result.append("#");
+				result.append(node.getData()[i].toIntValue());
 			} else if( t==ValueType.stringType) {
 				result.append("\"");
 				result.append(node.getData()[i].toStringValue());

@@ -144,7 +144,7 @@ public class CmdCreate extends Cmd {
 					break;
 				case SingleField:
 					if( df.isClass() ) {
-						mapping = new VariableMapping(varName, ValueType.intType, true, classType++, df.getClassMembers().size() );
+						mapping = new VariableMapping(varName, ValueType.enumType, classType++, df.getClassMembers().size() );
 					} else if( df.isInteger() ) {
 						mapping = new VariableMapping(varName, ValueType.intType );
 					} else {

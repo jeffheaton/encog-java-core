@@ -91,11 +91,11 @@ public class StandardExtensions {
 	 * Numeric const.
 	 */
 	public static ProgramExtensionTemplate EXTENSION_CONST_ENUM_SUPPORT = new BasicTemplate(
-			ProgramExtensionTemplate.NO_PREC, "#enum", NodeType.Leaf, false, 2,
+			ProgramExtensionTemplate.NO_PREC, "#enum", NodeType.Leaf, false, 1,
 			0) {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
-			return actual.getData()[1];
+			return actual.getData()[0];
 		}
 
 		@Override
@@ -104,12 +104,11 @@ public class StandardExtensions {
 			int enumType = actual.getOwner().getContext().getMaxEnumType();
 			int enumCount = actual.getOwner().getContext()
 					.getEnumCount(enumType);
-			actual.getData()[0] = new ExpressionValue(rnd.nextInt(enumType + 1));
-			actual.getData()[1] = new ExpressionValue(rnd.nextInt(enumCount));
+			actual.getData()[0] = new ExpressionValue(rnd.nextInt(enumType + 1),rnd.nextInt(enumCount));
 		}
 		@Override
 		public boolean returnsType(ProgramNode actual, ValueType t) {
-			return t==ValueType.intType;
+			return t==ValueType.enumType;
 		}
 	};
 

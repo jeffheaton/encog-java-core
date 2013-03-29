@@ -46,17 +46,17 @@ public class EncogProgramContext implements Serializable {
 	}
 
 	public void defineVariable(String theName) {
-		defineVariable(theName, ValueType.floatingType, false, 0, 0);
+		defineVariable(theName, ValueType.floatingType, 0, 0);
 	}
 
 	public void defineVariable(String theName, ValueType theVariableType) {
-		defineVariable(theName, theVariableType, false, 0, 0);
+		defineVariable(theName, theVariableType, 0, 0);
 	}
 
 	public void defineVariable(String theName, ValueType theVariableType,
-			boolean theIsEnum, int theEnumType, int theEnumValueCount) {
+			int theEnumType, int theEnumValueCount) {
 		VariableMapping mapping = new VariableMapping(theName, theVariableType,
-				theIsEnum, theEnumType, theEnumValueCount);
+				theEnumType, theEnumValueCount);
 		defineVariable(mapping);
 
 	}
@@ -142,13 +142,13 @@ public class EncogProgramContext implements Serializable {
 		int r = -1;
 		
 		// make sure we consider the result
-		if( this.result.isEnum() ) {
+		if( this.result.getVariableType() == ValueType.enumType ) {
 			r = this.result.getEnumType();
 		}
 		
 		// loop over all mappings and find the max enum type
 		for(VariableMapping mapping: this.definedVariables) {
-			if( mapping.isEnum()  ) {
+			if( mapping.getVariableType() == ValueType.enumType  ) {
 				r = Math.max(r, mapping.getEnumType());
 			}
 		}
@@ -164,12 +164,12 @@ public class EncogProgramContext implements Serializable {
 	public int getEnumCount(int enumType) {
 		
 		// make sure we consider the result
-		if( this.result.isEnum() && this.result.getEnumType()==enumType ) {
+		if( this.result.getVariableType() == ValueType.enumType && this.result.getEnumType()==enumType ) {
 			return this.result.getEnumValueCount();
 		}
 		
 		for(VariableMapping mapping: this.definedVariables) {
-			if( mapping.isEnum() ) {
+			if( mapping.getVariableType() == ValueType.enumType ) {
 				if( mapping.getEnumType()==enumType ) {
 					return mapping.getEnumValueCount();
 				}
@@ -179,12 +179,12 @@ public class EncogProgramContext implements Serializable {
 	}
 	
 	public boolean hasEnum() {
-		if( this.result.isEnum() ) {
+		if( this.result.getVariableType() == ValueType.enumType ) {
 			return true;
 		}
 		
 		for(VariableMapping mapping: this.definedVariables) {
-			if( mapping.isEnum() ) {
+			if( mapping.getVariableType() == ValueType.enumType ) {
 				return true;
 			}
 		}
