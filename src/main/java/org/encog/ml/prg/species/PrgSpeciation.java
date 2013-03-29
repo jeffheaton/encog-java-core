@@ -50,6 +50,7 @@ public class PrgSpeciation extends ThresholdSpeciation {
 	 *            The other genome.
 	 * @return The score.
 	 */
+	@Override
 	public double getCompatibilityScore(final Genome genome1,
 			final Genome genome2) {
 		CompareEncogProgram comp = new CompareEncogProgram();
