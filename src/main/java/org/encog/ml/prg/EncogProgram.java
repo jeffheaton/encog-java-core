@@ -31,8 +31,10 @@ import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.ea.genome.BasicGenome;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.prg.expvalue.ExpressionValue;
+import org.encog.ml.prg.expvalue.ValueType;
 import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.ml.prg.extension.StandardExtensions;
+import org.encog.ml.prg.train.PrgPopulation;
 import org.encog.ml.tree.traverse.tasks.TaskGetNodeIndex;
 import org.encog.ml.tree.traverse.tasks.TaskReplaceNode;
 import org.encog.parse.expression.common.ParseCommonExpression;
@@ -226,5 +228,9 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 	public String generateEPL() {
 		RenderEPL render = new RenderEPL();
 		return render.render(this);
+	}
+
+	public ValueType getReturnType() {
+		return ((PrgPopulation)this.getPopulation()).getContext().getResult().getVariableType();
 	}
 }

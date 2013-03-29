@@ -3,6 +3,7 @@ package org.encog.ml.prg.extension;
 import java.util.Random;
 
 import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.expvalue.ValueType;
 
 public abstract class BasicTemplate implements ProgramExtensionTemplate {
 	/**
@@ -84,6 +85,22 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 		result.append(this.childNodeCount);
 		result.append("]");
 		return result.toString();
+	}
+	
+	@Override
+	public boolean returnsType(ProgramNode actual, ValueType t) {
+		
+		if( this.getChildNodeCount()==0 ) {
+			if( t==ValueType.floatingType || t==ValueType.intType ) {
+				return true;
+			}	
+			return false;
+		} else if( this.getChildNodeCount()==1 ) {
+			ProgramNode child = actual.getChildNode(0);
+			return child.getTemplate().returnsType(child, t);
+		} else {
+			return true;
+		}
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.util.Random;
 
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
+import org.encog.ml.prg.expvalue.ValueType;
 
 public interface ProgramExtensionTemplate extends Serializable {
 	public static final int NO_PREC = 100;
@@ -17,4 +18,5 @@ public interface ProgramExtensionTemplate extends Serializable {
 	int getDataSize();
 	NodeType getNodeType();
 	int getPrecedence();
+	boolean returnsType(ProgramNode actual, ValueType t);
 }
