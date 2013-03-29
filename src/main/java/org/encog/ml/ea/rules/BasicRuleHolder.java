@@ -10,6 +10,11 @@ public class BasicRuleHolder implements RuleHolder {
 	 * Rewrite rules that can simplify genomes.
 	 */
 	private final List<RewriteRule> rewriteRules = new ArrayList<RewriteRule>();
+	
+	/**
+	 * Rewrite rules that can simplify genomes.
+	 */
+	private final List<ConstraintRule> constraintRules = new ArrayList<ConstraintRule>();
 
 	/**
 	 * {@inheritDoc}
@@ -36,6 +41,45 @@ public class BasicRuleHolder implements RuleHolder {
 				}
 			}
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void addConstraintRule(ConstraintRule rule) {
+		this.constraintRules.add(rule);
+		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isValid(Genome genome) {
+		for(ConstraintRule rule: this.constraintRules) {
+			if(!rule.isValid(genome)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<ConstraintRule> getConstraintRules() {
+		return this.constraintRules;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<RewriteRule> getRewriteRules() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
