@@ -26,10 +26,10 @@ package org.encog.ml.ea.train.basic;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
+import org.encog.ml.ea.exception.EARuntimeError;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.species.Species;
-import org.encog.ml.prg.exception.EncogEPLError;
 
 /**
  * A worker thread for an Evolutionary Algorithm.
@@ -157,9 +157,9 @@ public class EAWorker implements Callable<Object> {
 						}
 					}
 				}
-			} catch (EncogEPLError e) {
-				// nothing really to do here, just don't add the child
-				// it is invalid.
+			} catch (EARuntimeError e) {
+				// mark as invalid
+				success = false;
 			} catch (final Throwable t) {
 				if (!this.train.getShouldIgnoreExceptions()) {
 					this.train.reportError(t);

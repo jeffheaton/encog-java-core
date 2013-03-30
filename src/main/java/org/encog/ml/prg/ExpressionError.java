@@ -23,13 +23,13 @@
  */
 package org.encog.ml.prg;
 
-import org.encog.EncogError;
+import org.encog.ml.ea.exception.EACompileError;
 import org.encog.util.logging.EncogLogging;
 
 /**
  * An error has occured either evaluating or executing an expression.
  */
-public class ExpressionError extends EncogError {
+public class ExpressionError extends EACompileError {
 
 	/**
 	 * 

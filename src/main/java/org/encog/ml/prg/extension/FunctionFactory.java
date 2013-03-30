@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.ml.ea.exception.EACompileError;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
-import org.encog.ml.prg.exception.EncogEPLError;
 
 public class FunctionFactory implements Serializable {
 	/**
@@ -124,7 +124,7 @@ public class FunctionFactory implements Serializable {
 		if( !this.templateMap.containsKey(key) ) {
 			ProgramExtensionTemplate temp = EncogOpcodeRegistry.INSTANCE.findOpcode(name,args);
 			if( temp==null ) {
-				throw new EncogEPLError("Unknown extension " + name + " with " + args + " arguments.");
+				throw new EACompileError("Unknown extension " + name + " with " + args + " arguments.");
 			}
 			this.addExtension(temp);
 		}

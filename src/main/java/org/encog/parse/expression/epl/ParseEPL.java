@@ -2,10 +2,10 @@ package org.encog.parse.expression.epl;
 
 import java.util.StringTokenizer;
 
+import org.encog.ml.ea.exception.EACompileError;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
-import org.encog.ml.prg.exception.EncogEPLError;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.EncogOpcodeRegistry;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
@@ -50,7 +50,7 @@ public class ParseEPL {
 			int childCount = Integer.parseInt(tok.nextToken());
 			ProgramExtensionTemplate temp = EncogOpcodeRegistry.INSTANCE.findOpcode(name, childCount);
 			if( temp==null ) { 
-				throw new EncogEPLError("Invalid instruction: " + name);
+				throw new EACompileError("Invalid instruction: " + name);
 			}
 			
 			// build the arguments

@@ -8,11 +8,12 @@ import java.util.Set;
 
 import org.encog.EncogError;
 import org.encog.ml.CalculateScore;
+import org.encog.ml.ea.exception.EACompileError;
+import org.encog.ml.ea.exception.EARuntimeError;
 import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.ProgramNode;
-import org.encog.ml.prg.exception.EncogEPLError;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.ml.prg.train.PrgPopulation;
@@ -80,7 +81,7 @@ public class PrgGrowGenerator {
 			}
 			tries--;
 			if( tries<0) {
-				throw new EncogEPLError("Could not generate an opcode.  Make sure you have valid opcodes defined.");
+				throw new EACompileError("Could not generate an opcode.  Make sure you have valid opcodes defined.");
 			}
 		}
 		return result;
@@ -116,7 +117,7 @@ public class PrgGrowGenerator {
 			double s;
 			try {
 				s = score.calculateScore(result);
-			} catch(EncogEPLError e) {
+			} catch(EARuntimeError e) {
 				s = Double.NaN;
 			}
 			

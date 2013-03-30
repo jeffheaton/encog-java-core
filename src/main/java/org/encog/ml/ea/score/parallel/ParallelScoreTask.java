@@ -27,10 +27,10 @@ import java.util.List;
 
 import org.encog.ml.CalculateScore;
 import org.encog.ml.MLMethod;
+import org.encog.ml.ea.exception.EARuntimeError;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.score.AdjustScore;
 import org.encog.ml.ea.train.basic.BasicEA;
-import org.encog.ml.prg.exception.EncogEPLError;
 
 /**
  * An individual threadable task for the parallel score calculation.
@@ -81,7 +81,7 @@ public class ParallelScoreTask implements Runnable {
 			double score;
 			try {
 				score = this.scoreFunction.calculateScore(phenotype);
-			} catch(EncogEPLError e) {
+			} catch(EARuntimeError e) {
 				score = Double.NaN;
 			}
 			genome.setScore(score);

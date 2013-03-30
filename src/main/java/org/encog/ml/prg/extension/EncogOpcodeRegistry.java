@@ -3,8 +3,8 @@ package org.encog.ml.prg.extension;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.encog.ml.ea.exception.EACompileError;
 import org.encog.ml.prg.EncogProgramContext;
-import org.encog.ml.prg.exception.EncogEPLError;
 
 public enum EncogOpcodeRegistry {
 	INSTANCE;
@@ -76,7 +76,7 @@ public enum EncogOpcodeRegistry {
 
 	public void register(final EncogProgramContext context, final int opcode) {
 		if (!this.registry.containsKey(opcode)) {
-			throw new EncogEPLError("Unknown opcode: " + opcode);
+			throw new EACompileError("Unknown opcode: " + opcode);
 		}
 		final ProgramExtensionTemplate temp = this.registry.get(opcode);
 		context.getFunctions().addExtension(temp);
