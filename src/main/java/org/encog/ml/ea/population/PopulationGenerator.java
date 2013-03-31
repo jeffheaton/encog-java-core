@@ -33,13 +33,10 @@ import org.encog.ml.ea.genome.Genome;
 public interface PopulationGenerator {
 	/**
 	 * Generate a random genome.
-	 * 
-	 * @param rnd
-	 *            A random number generator.
-	 * @param genome
-	 *            The genome to generate into.
+	 * @param rnd A random number generator.
+	 * @return A random genome.
 	 */
-	void generate(Random rnd, Genome genome);
+	Genome generate(Random rnd);
 
 	/**
 	 * Generate a random population.

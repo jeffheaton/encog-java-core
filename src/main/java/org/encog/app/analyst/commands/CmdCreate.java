@@ -180,7 +180,7 @@ public class CmdCreate extends Cmd {
 		
 		// generate initial population
 		(new PrgGrowGenerator(pop.getContext(), 5)).generate(
-				new Random(), pop, new ZeroEvalScoreFunction());
+				new Random(), pop);
 	}
 
 	/**

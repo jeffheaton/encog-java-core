@@ -56,7 +56,7 @@ public class EPLFactory {
 		PrgPopulation pop = new PrgPopulation(context,populationSize);
 		
 		if( context.getFunctions().size()>0 ) {
-			(new PrgGrowGenerator(context,5)).generate(new Random(), pop,new ZeroEvalScoreFunction());
+			(new PrgGrowGenerator(context,5)).generate(new Random(), pop);
 		}
 		return pop;
 	}
