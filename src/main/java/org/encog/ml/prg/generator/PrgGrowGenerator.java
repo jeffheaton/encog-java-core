@@ -10,6 +10,7 @@ import org.encog.EncogError;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.ea.exception.EACompileError;
 import org.encog.ml.ea.exception.EARuntimeError;
+import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
@@ -106,18 +107,20 @@ public class PrgGrowGenerator {
 		return result;
 	}
 	
-	private EncogProgram attemptCreateGenome(Random rnd, CalculateScore score, Set<String> contents) {
+	private EncogProgram attemptCreateGenome(Random rnd, Population pop, CalculateScore score, Set<String> contents) {
 		boolean done = false;
 		EncogProgram result = null;
 		int tries = 0;
 		
 		while(!done) {
 			result = generate(rnd);
+			result.setPopulation(pop);
 			
 			double s;
 			try {
 				s = score.calculateScore(result);
 			} catch(EARuntimeError e) {
+				System.out.println(e.toString());
 				s = Double.NaN;
 			}
 			
@@ -138,7 +141,8 @@ public class PrgGrowGenerator {
 		final Species defaultSpecies = pop.createSpecies();
 
 		for (int i = 0; i < pop.getPopulationSize(); i++) {
-			final EncogProgram prg = attemptCreateGenome(rnd,score,contents);
+			final EncogProgram prg = attemptCreateGenome(rnd,pop,score,contents);
+			System.out.println(prg.toString());
 			prg.setSpecies(defaultSpecies);
 			defaultSpecies.add(prg);
 			contents.add(prg.dumpAsCommonExpression());

@@ -1,21 +1,22 @@
-package org.encog.ml.fitness;
+package org.encog.ml.prg.train;
 
 import java.io.Serializable;
 
 import org.encog.ml.CalculateScore;
 import org.encog.ml.MLMethod;
+import org.encog.ml.data.MLData;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.prg.train.PrgPopulation;
 
 public class ZeroEvalScoreFunction implements CalculateScore, Serializable {
 
 	@Override
 	public double calculateScore(final MLMethod genome) {
 		final EncogProgram prg = (EncogProgram) genome;
-		for (int i = 0; i < prg.getVariables().size(); i++) {
-			prg.getVariables().setVariable(i,0);
-		}
-		prg.evaluate();
-
+		final PrgPopulation pop = (PrgPopulation)prg.getPopulation();
+		MLData inputData = new BasicMLData(pop.getContext().getDefinedVariables().size());
+		prg.compute(inputData);
 		return 0;
 	}
 

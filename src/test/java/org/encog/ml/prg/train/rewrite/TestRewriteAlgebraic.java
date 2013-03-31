@@ -1,22 +1,19 @@
 package org.encog.ml.prg.train.rewrite;
 
-import java.util.Random;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.ml.CalculateScore;
 import org.encog.ml.ea.score.adjust.ComplexityAdjustedScore;
 import org.encog.ml.ea.train.basic.TrainEA;
-import org.encog.ml.fitness.ZeroEvalScoreFunction;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.PrgCODEC;
 import org.encog.ml.prg.extension.StandardExtensions;
-import org.encog.ml.prg.generator.PrgGrowGenerator;
 import org.encog.ml.prg.opp.SubtreeCrossover;
 import org.encog.ml.prg.opp.SubtreeMutation;
 import org.encog.ml.prg.train.PrgPopulation;
+import org.encog.ml.prg.train.ZeroEvalScoreFunction;
 import org.encog.parse.expression.common.RenderCommonExpression;
 
 public class TestRewriteAlgebraic extends TestCase {

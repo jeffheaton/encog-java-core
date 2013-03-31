@@ -28,6 +28,8 @@ import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
+import org.encog.ml.ea.exception.EACompileError;
+import org.encog.ml.ea.exception.EARuntimeError;
 import org.encog.ml.ea.genome.BasicGenome;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.prg.expvalue.ExpressionValue;
@@ -45,7 +47,7 @@ import org.encog.parse.expression.rpn.RenderRPN;
 import org.encog.util.simple.EncogUtility;
 
 public class EncogProgram extends BasicGenome implements MLRegression, MLError {
-		
+
 	/**
 	 * The serial id.
 	 */
@@ -78,23 +80,24 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 		return holder.evaluate().toStringValue();
 	}
 
-	private ProgramNode rootNode;	
+	private ProgramNode rootNode;
 
 	public EncogProgram() {
 		this(new EncogProgramContext(), new EncogProgramVariables());
 		StandardExtensions.createAll(this.context.getFunctions());
 	}
-	
+
 	public EncogProgram(EncogProgramContext theContext) {
-		this(theContext,new EncogProgramVariables());
+		this(theContext, new EncogProgramVariables());
 	}
-	
-	public EncogProgram(EncogProgramContext theContext, EncogProgramVariables theVariables) {
+
+	public EncogProgram(EncogProgramContext theContext,
+			EncogProgramVariables theVariables) {
 		this.context = theContext;
 		this.variables = theVariables;
-		
+
 		// define variables
-		for(VariableMapping v:this.context.getDefinedVariables()) {
+		for (VariableMapping v : this.context.getDefinedVariables()) {
 			this.variables.defineVariable(v);
 		}
 	}
@@ -113,7 +116,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 	public ExpressionValue evaluate() {
 		return this.rootNode.evaluate();
 	}
-		
+
 	public FunctionFactory getFunctions() {
 		return this.context.getFunctions();
 	}
@@ -133,16 +136,14 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 	public int getOutputCount() {
 		return 1;
 	}
-	
+
 	public ProgramNode getRootNode() {
 		return rootNode;
 	}
-	
+
 	public EncogProgramVariables getVariables() {
 		return variables;
 	}
-	
-	
 
 	public EncogProgramContext getContext() {
 		return context;
@@ -153,38 +154,79 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 	 */
 	@Override
 	public MLData compute(MLData input) {
-		if( input.size()!=getInputCount() ) {
-			throw new ExpressionError("Invalid input count.");
+		if (input.size() != getInputCount()) {
+			throw new EACompileError("Invalid input count.");
 		}
-		
-		for(int i=0;i<input.size();i++) {
+
+		for (int i = 0; i < input.size(); i++) {
 			this.variables.setVariable(i, input.getData(i));
 		}
-		
-		double d = this.rootNode.evaluate().toFloatValue();
-		
+
+		ExpressionValue v = this.rootNode.evaluate();
+		VariableMapping resultMapping = getResultType();
+
 		MLData result = new BasicMLData(1);
-		result.setData(0, d);
+		boolean success = false;
 		
+		switch (resultMapping.getVariableType()) {
+			case floatingType:
+				if( v.isNumeric() ) {
+					result.setData(0, v.toFloatValue());
+					success = true;
+				}
+				break;
+			case stringType:
+				result.setData(0,v.toFloatValue());
+				success = true;
+				break;
+			case booleanType:
+				if( v.isBoolean() ) {
+					result.setData(0,v.toBooleanValue()?1.0:0.0);
+					success = true;
+				}
+				break;
+			case intType:
+				if( v.isNumeric() ) { 
+					result.setData(0,v.toIntValue());
+					success = true;
+				}
+				break;
+			case enumType:
+				if( v.isEnum() ) {
+					result.setData(0,v.toFloatValue());
+					success = true;
+				}
+				break;
+		}
+		
+		if(!success) {
+			throw new EARuntimeError("EncogProgram produced " + v.getCurrentType().toString() + " but " + resultMapping.getVariableType().toString() + " was expected.");
+		}
+
 		return result;
+	}
+
+	private VariableMapping getResultType() {
+		return ((PrgPopulation) getPopulation()).getContext().getResult();
 	}
 
 	public void setRootNode(ProgramNode theRootNode) {
 		this.rootNode = theRootNode;
 	}
-	
+
 	public ProgramNode findNode(int index) {
-		return (ProgramNode)TaskGetNodeIndex.process(index, this.rootNode);
+		return (ProgramNode) TaskGetNodeIndex.process(index, this.rootNode);
 	}
 
 	public void replaceNode(ProgramNode replaceThisNode, ProgramNode replaceWith) {
-		if( replaceThisNode==this.rootNode ) {
+		if (replaceThisNode == this.rootNode) {
 			this.rootNode = replaceWith;
 		} else {
-			TaskReplaceNode.process(this.rootNode, replaceThisNode, replaceWith);
+			TaskReplaceNode
+					.process(this.rootNode, replaceThisNode, replaceWith);
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		RenderRPN render = new RenderRPN();
@@ -213,7 +255,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 	@Override
 	public void copy(Genome source) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public String dumpAsCommonExpression() {
@@ -233,6 +275,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 	}
 
 	public ValueType getReturnType() {
-		return ((PrgPopulation)this.getPopulation()).getContext().getResult().getVariableType();
+		return ((PrgPopulation) this.getPopulation()).getContext().getResult()
+				.getVariableType();
 	}
 }

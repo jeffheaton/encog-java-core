@@ -8,11 +8,11 @@ import org.encog.EncogError;
 import org.encog.ml.MLMethod;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.ml.factory.parse.ArchitectureParse;
-import org.encog.ml.fitness.ZeroEvalScoreFunction;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.ml.prg.generator.PrgGrowGenerator;
 import org.encog.ml.prg.train.PrgPopulation;
+import org.encog.ml.prg.train.ZeroEvalScoreFunction;
 import org.encog.util.ParamsHolder;
 
 public class EPLFactory {

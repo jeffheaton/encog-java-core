@@ -263,4 +263,15 @@ public class ExpressionValue implements Serializable {
 		return enumType;
 	}
 
+	/**
+	 * @return True, if the value is either int or float.
+	 */
+	public boolean isNumeric() {
+		return isFloat() || isInt();
+	}
+
+	public boolean isBoolean() {
+		return this.currentType == ValueType.booleanType;
+	}
+
 }
