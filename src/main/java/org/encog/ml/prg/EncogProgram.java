@@ -193,7 +193,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 				break;
 			case enumType:
 				if( v.isEnum() ) {
-					result.setData(0,v.toFloatValue());
+					result.setData(0,v.toIntValue());
 					success = true;
 				}
 				break;

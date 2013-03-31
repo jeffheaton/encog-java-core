@@ -118,9 +118,9 @@ public class PrgGrowGenerator {
 			
 			double s;
 			try {
+				//tries++;
 				s = score.calculateScore(result);
 			} catch(EARuntimeError e) {
-				System.out.println(e.toString());
 				s = Double.NaN;
 			}
 			
@@ -142,7 +142,6 @@ public class PrgGrowGenerator {
 
 		for (int i = 0; i < pop.getPopulationSize(); i++) {
 			final EncogProgram prg = attemptCreateGenome(rnd,pop,score,contents);
-			System.out.println(prg.toString());
 			prg.setSpecies(defaultSpecies);
 			defaultSpecies.add(prg);
 			contents.add(prg.dumpAsCommonExpression());
