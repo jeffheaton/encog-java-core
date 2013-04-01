@@ -32,6 +32,7 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	private CalculateScore score = new ZeroEvalScoreFunction();
 	private final EncogProgramContext context;
 	private final int maxDepth;
+	private final List<ProgramExtensionTemplate> functions = new ArrayList<ProgramExtensionTemplate>();
 	private final List<ProgramExtensionTemplate> leaves = new ArrayList<ProgramExtensionTemplate>();
 	private double minConst = -10;
 	private double maxConst = 10;
@@ -55,6 +56,8 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 				.getOpCodes()) {
 			if (temp.getChildNodeCount() == 0) {
 				this.leaves.add(temp);
+			} else {
+				this.functions.add(temp);
 			}
 		}
 	}
@@ -282,4 +285,10 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	public void setThreadCount(final int numThreads) {
 		this.threads = numThreads;
 	}
+
+	public List<ProgramExtensionTemplate> getFunctions() {
+		return functions;
+	}
+	
+	
 }
