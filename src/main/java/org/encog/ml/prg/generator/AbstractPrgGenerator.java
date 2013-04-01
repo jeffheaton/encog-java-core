@@ -114,7 +114,7 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	@Override
 	public EncogProgram generate(final Random rnd) {
 		final EncogProgram program = new EncogProgram(this.context);
-		program.setRootNode(createNode(rnd, program, this.maxDepth));
+		program.setRootNode(createNode(rnd, program, determineMaxDepth(rnd)));
 		return program;
 	}
 
@@ -288,6 +288,10 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 
 	public List<ProgramExtensionTemplate> getFunctions() {
 		return functions;
+	}
+	
+	public int determineMaxDepth(Random rnd) {
+		return this.maxDepth;
 	}
 	
 	

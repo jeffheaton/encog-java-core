@@ -15,9 +15,11 @@ import org.encog.ml.prg.generator.PrgGrowGenerator;
 public class SubtreeMutation implements EvolutionaryOperator {
 
 	private PrgGenerator generator;
+	private final int maxDepth;
 	
 	public SubtreeMutation(EncogProgramContext theContext, int theMaxDepth) {
 		this.generator = new PrgGrowGenerator(theContext, theMaxDepth);
+		this.maxDepth = theMaxDepth;
 	}
 
 	@Override
@@ -51,7 +53,7 @@ public class SubtreeMutation implements EvolutionaryOperator {
 		
 		int index = rnd.nextInt(result.getRootNode().size());
 		ProgramNode node = result.findNode(index);
-		ProgramNode newInsert = this.generator.createNode(rnd, result, 0);
+		ProgramNode newInsert = this.generator.createNode(rnd, result, this.maxDepth);
 		result.replaceNode(node,newInsert);
 		
 		offspring[0] = result;

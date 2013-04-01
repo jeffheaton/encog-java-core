@@ -41,9 +41,8 @@ import org.encog.ml.prg.expvalue.ValueType;
 import org.encog.ml.prg.extension.EncogOpcodeRegistry;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;
-import org.encog.ml.prg.generator.PrgGrowGenerator;
+import org.encog.ml.prg.generator.RampedHalfAndHalf;
 import org.encog.ml.prg.train.PrgPopulation;
-import org.encog.ml.prg.train.ZeroEvalScoreFunction;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.util.logging.EncogLogging;
 
@@ -179,7 +178,7 @@ public class CmdCreate extends Cmd {
 		}
 		
 		// generate initial population
-		(new PrgGrowGenerator(pop.getContext(), 5)).generate(
+		(new RampedHalfAndHalf(pop.getContext(), 1, 6)).generate(
 				new Random(), pop);
 	}
 

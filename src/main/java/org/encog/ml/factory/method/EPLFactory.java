@@ -10,9 +10,8 @@ import org.encog.ml.factory.MLMethodFactory;
 import org.encog.ml.factory.parse.ArchitectureParse;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.extension.StandardExtensions;
-import org.encog.ml.prg.generator.PrgGrowGenerator;
+import org.encog.ml.prg.generator.RampedHalfAndHalf;
 import org.encog.ml.prg.train.PrgPopulation;
-import org.encog.ml.prg.train.ZeroEvalScoreFunction;
 import org.encog.util.ParamsHolder;
 
 public class EPLFactory {
@@ -56,7 +55,7 @@ public class EPLFactory {
 		PrgPopulation pop = new PrgPopulation(context,populationSize);
 		
 		if( context.getFunctions().size()>0 ) {
-			(new PrgGrowGenerator(context,5)).generate(new Random(), pop);
+			(new RampedHalfAndHalf(context,2,6)).generate(new Random(), pop);
 		}
 		return pop;
 	}
