@@ -147,7 +147,6 @@ public class EAWorker implements Callable<Object> {
 				// process the new child
 				if (this.children[0] != null) {
 					if (this.train.getRules().isValid(this.children[0])) {
-						success = true;
 						this.children[0].setBirthGeneration(this.train
 								.getIteration());
 
@@ -155,11 +154,10 @@ public class EAWorker implements Callable<Object> {
 						if (!this.train.addChild(this.children[0])) {
 							return null;
 						}
+						success = true;
 					}
 				}
 			} catch (EARuntimeError e) {
-				// mark as invalid
-				success = false;
 			} catch (final Throwable t) {
 				if (!this.train.getShouldIgnoreExceptions()) {
 					this.train.reportError(t);

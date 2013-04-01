@@ -589,6 +589,7 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 				}
 			}
 
+			// now add one task for each offspring that each species is allowed
 			while (numToSpawn-- > 0) {
 				final EAWorker worker = new EAWorker(this, species);
 				this.threadList.add(worker);
@@ -602,10 +603,12 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 			EncogLogging.log(e);
 		}
 
+		// handle any errors that might have happened in the threads
 		if (this.reportedError != null && !getShouldIgnoreExceptions()) {
 			throw new GeneticError(this.reportedError);
 		}
 
+		// validate, if requested
 		if (isValidationMode()) {
 			final int currentPopSize = this.newPopulation.size();
 			final int targetPopSize = getPopulation().getPopulationSize();
