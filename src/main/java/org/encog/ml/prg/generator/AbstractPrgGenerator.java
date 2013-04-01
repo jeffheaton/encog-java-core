@@ -114,7 +114,7 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	@Override
 	public EncogProgram generate(final Random rnd) {
 		final EncogProgram program = new EncogProgram(this.context);
-		program.setRootNode(createNode(rnd, program, 0));
+		program.setRootNode(createNode(rnd, program, this.maxDepth));
 		return program;
 	}
 

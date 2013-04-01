@@ -13,9 +13,9 @@ public class PrgGrowGenerator extends AbstractPrgGenerator {
 		super(theContext, theMaxDepth);
 	}
 
-	public ProgramNode createNode(Random rnd, EncogProgram program, int depth) {
+	public ProgramNode createNode(Random rnd, EncogProgram program, int depthRemaining) {
 				
-		if( depth>=getMaxDepth() ) {
+		if( depthRemaining==0 ) {
 			return createLeafNode(rnd, program);
 		}
 		
@@ -24,7 +24,7 @@ public class PrgGrowGenerator extends AbstractPrgGenerator {
 		
 		ProgramNode[] children = new ProgramNode[childNodeCount];
 		for(int i=0;i<children.length;i++) {
-			children[i] = createNode(rnd, program, depth+1);
+			children[i] = createNode(rnd, program, depthRemaining-1);
 		}
 		
 		ProgramNode result = new ProgramNode(program, temp, children);
