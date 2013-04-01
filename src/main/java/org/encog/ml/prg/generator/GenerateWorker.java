@@ -7,11 +7,11 @@ import org.encog.ml.prg.train.PrgPopulation;
 
 public class GenerateWorker implements Runnable {
 
-	private AbstractGenerator owner;
+	private AbstractPrgGenerator owner;
 	private final Random rnd;
 	private PrgPopulation population;
 	
-	public GenerateWorker(AbstractGenerator theOwner, PrgPopulation thePopulation) {
+	public GenerateWorker(AbstractPrgGenerator theOwner, PrgPopulation thePopulation) {
 		this.owner = theOwner;
 		this.population = thePopulation;
 		this.rnd = this.owner.getRandomFactory().factor();

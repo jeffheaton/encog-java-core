@@ -1,25 +1,13 @@
 package org.encog.ml.prg.generator;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
-import org.encog.EncogError;
-import org.encog.ml.CalculateScore;
-import org.encog.ml.ea.exception.EACompileError;
-import org.encog.ml.ea.exception.EARuntimeError;
-import org.encog.ml.ea.population.Population;
-import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
-import org.encog.ml.prg.extension.StandardExtensions;
-import org.encog.ml.prg.train.ZeroEvalScoreFunction;
 
-public class PrgGrowGenerator extends AbstractGenerator {
+public class PrgGrowGenerator extends AbstractPrgGenerator {
 		
 	public PrgGrowGenerator(EncogProgramContext theContext, int theMaxDepth) {
 		super(theContext, theMaxDepth);

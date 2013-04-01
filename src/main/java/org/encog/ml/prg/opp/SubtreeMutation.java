@@ -8,14 +8,16 @@ import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.generator.AbstractPrgGenerator;
+import org.encog.ml.prg.generator.PrgGenerator;
 import org.encog.ml.prg.generator.PrgGrowGenerator;
 
 public class SubtreeMutation implements EvolutionaryOperator {
 
-	private PrgGrowGenerator rnd;
+	private PrgGenerator generator;
 	
 	public SubtreeMutation(EncogProgramContext theContext, int theMaxDepth) {
-		this.rnd = new PrgGrowGenerator(theContext, theMaxDepth);
+		this.generator = new PrgGrowGenerator(theContext, theMaxDepth);
 	}
 
 	@Override
@@ -49,9 +51,19 @@ public class SubtreeMutation implements EvolutionaryOperator {
 		
 		int index = rnd.nextInt(result.getRootNode().size());
 		ProgramNode node = result.findNode(index);
-		ProgramNode newInsert = this.rnd.generate(rnd, result);
+		ProgramNode newInsert = this.generator.createNode(rnd, result, 0);
 		result.replaceNode(node,newInsert);
 		
 		offspring[0] = result;
 	}
+
+	public PrgGenerator getGenerator() {
+		return generator;
+	}
+
+	public void setGenerator(PrgGenerator generator) {
+		this.generator = generator;
+	}
+	
+	
 }

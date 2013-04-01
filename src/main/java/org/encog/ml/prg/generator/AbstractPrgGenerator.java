@@ -16,7 +16,6 @@ import org.encog.ml.CalculateScore;
 import org.encog.ml.ea.exception.EACompileError;
 import org.encog.ml.ea.exception.EARuntimeError;
 import org.encog.ml.ea.population.Population;
-import org.encog.ml.ea.population.PopulationGenerator;
 import org.encog.ml.ea.species.Species;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.prg.EncogProgram;
@@ -28,7 +27,7 @@ import org.encog.ml.prg.train.PrgPopulation;
 import org.encog.ml.prg.train.ZeroEvalScoreFunction;
 import org.encog.util.concurrency.MultiThreadable;
 
-public abstract class AbstractGenerator implements PopulationGenerator,
+public abstract class AbstractPrgGenerator implements PrgGenerator,
 		MultiThreadable {
 	private CalculateScore score = new ZeroEvalScoreFunction();
 	private final EncogProgramContext context;
@@ -42,7 +41,7 @@ public abstract class AbstractGenerator implements PopulationGenerator,
 	private final Set<String> contents = new HashSet<String>();
 	private RandomFactory randomFactory = new BasicRandomFactory();
 
-	public AbstractGenerator(final EncogProgramContext theContext,
+	public AbstractPrgGenerator(final EncogProgramContext theContext,
 			final int theMaxDepth) {
 		if (theContext.getFunctions().size() == 0) {
 			throw new EncogError("There are no opcodes defined");
@@ -109,28 +108,11 @@ public abstract class AbstractGenerator implements PopulationGenerator,
 		return result;
 	}
 
-	public abstract ProgramNode createNode(Random rnd, EncogProgram program,
-			int depth);
-
 	@Override
 	public EncogProgram generate(final Random rnd) {
 		final EncogProgram program = new EncogProgram(this.context);
 		program.setRootNode(createNode(rnd, program, 0));
 		return program;
-	}
-
-	/**
-	 * Generate a new random branch that can be used with the specified program.
-	 * Does not actually attach the new branch anywhere.
-	 * 
-	 * @param rnd
-	 *            Random number generator.
-	 * @param program
-	 *            The program to generate a branch for.
-	 * @return The new branch.
-	 */
-	public ProgramNode generate(final Random rnd, final EncogProgram program) {
-		return createNode(rnd, program, 0);
 	}
 
 	@Override
