@@ -173,23 +173,7 @@ public class CmdCreate extends Cmd {
 		}
 		
 		// generate initial population
-		RampedHalfAndHalf generate = new RampedHalfAndHalf(pop.getContext(), 1, 6);
-		
-		if( this.getScript().hasClasses() ) {
-			generate.getConstTypes().clear();
-			generate.getConstTypes().add(0.25, ValueType.booleanType);
-			generate.getConstTypes().add(0.25, ValueType.intType);
-			generate.getConstTypes().add(0.25, ValueType.floatingType);
-			generate.getConstTypes().add(0.25,  ValueType.enumType);
-			generate.getConstTypes().finalizeStructure();
-		} else {
-			generate.getConstTypes().clear();
-			generate.getConstTypes().add(0.33, ValueType.booleanType);
-			generate.getConstTypes().add(0.33, ValueType.intType);
-			generate.getConstTypes().add(0.34, ValueType.floatingType);
-			generate.getConstTypes().finalizeStructure();
-		}
-		
+		RampedHalfAndHalf generate = new RampedHalfAndHalf(pop.getContext(), 1, 6);		
 		generate.generate(new Random(), pop);
 	}
 

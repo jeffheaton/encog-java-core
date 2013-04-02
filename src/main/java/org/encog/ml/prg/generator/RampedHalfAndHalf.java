@@ -18,8 +18,6 @@ public class RampedHalfAndHalf extends AbstractPrgGenerator {
 		
 		this.fullGenerator = new PrgFullGenerator(theContext, theMaxDepth);
 		this.growGenerator = new PrgGrowGenerator(theContext, theMaxDepth);
-		this.fullGenerator.setConstTypes(getConstTypes());
-		this.growGenerator.setConstTypes(getConstTypes());
 	}
 
 	@Override

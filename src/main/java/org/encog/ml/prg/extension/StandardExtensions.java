@@ -4,6 +4,7 @@ import java.util.Random;
 
 import org.encog.Encog;
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.EvaluateExpr;
@@ -69,8 +70,21 @@ public class StandardExtensions {
 		@Override
 		public void randomize(Random rnd, ProgramNode actual, double minValue,
 				double maxValue) {
-			actual.getData()[0] = new ExpressionValue(
-					RangeRandomizer.randomize(rnd, minValue, maxValue));
+			boolean assignEnum = false;
+			EncogProgramContext context = actual.getOwner().getContext();
+			if( context.hasEnum() ) {
+				assignEnum = rnd.nextBoolean();
+			} 
+			
+			if( assignEnum ) {
+				int enumType = rnd.nextInt(context.getMaxEnumType()+1);
+				int enumCount = context.getEnumCount(enumType);
+				int enumIndex = rnd.nextInt(enumCount);
+				actual.getData()[0] = new ExpressionValue(enumType,enumIndex);
+			} else {
+				actual.getData()[0] = new ExpressionValue(
+						RangeRandomizer.randomize(rnd, minValue, maxValue));	
+			}
 		}
 		@Override
 		public boolean returnsType(ProgramNode actual, ValueType t) {
