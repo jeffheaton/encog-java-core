@@ -172,14 +172,25 @@ public class CmdCreate extends Cmd {
 			}
 		}
 		
-		// if there are enums (classes) present, then add an opcode to handle those
+		// generate initial population
+		RampedHalfAndHalf generate = new RampedHalfAndHalf(pop.getContext(), 1, 6);
+		
 		if( this.getScript().hasClasses() ) {
-			StandardExtensions.createEnum(pop.getContext().getFunctions());
+			generate.getConstTypes().clear();
+			generate.getConstTypes().add(0.25, ValueType.booleanType);
+			generate.getConstTypes().add(0.25, ValueType.intType);
+			generate.getConstTypes().add(0.25, ValueType.floatingType);
+			generate.getConstTypes().add(0.25,  ValueType.enumType);
+			generate.getConstTypes().finalizeStructure();
+		} else {
+			generate.getConstTypes().clear();
+			generate.getConstTypes().add(0.33, ValueType.booleanType);
+			generate.getConstTypes().add(0.33, ValueType.intType);
+			generate.getConstTypes().add(0.34, ValueType.floatingType);
+			generate.getConstTypes().finalizeStructure();
 		}
 		
-		// generate initial population
-		(new RampedHalfAndHalf(pop.getContext(), 1, 6)).generate(
-				new Random(), pop);
+		generate.generate(new Random(), pop);
 	}
 
 	/**

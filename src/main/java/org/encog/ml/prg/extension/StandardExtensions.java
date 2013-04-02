@@ -88,31 +88,6 @@ public class StandardExtensions {
 	};
 
 	/**
-	 * Numeric const.
-	 */
-	public static ProgramExtensionTemplate EXTENSION_CONST_ENUM_SUPPORT = new BasicTemplate(
-			ProgramExtensionTemplate.NO_PREC, "#enum", NodeType.Leaf, false, 1,
-			0) {
-		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
-			return actual.getData()[0];
-		}
-
-		@Override
-		public void randomize(Random rnd, ProgramNode actual, double minValue,
-				double maxValue) {
-			int enumType = actual.getOwner().getContext().getMaxEnumType();
-			int enumCount = actual.getOwner().getContext()
-					.getEnumCount(enumType);
-			actual.getData()[0] = new ExpressionValue(rnd.nextInt(enumType + 1),rnd.nextInt(enumCount));
-		}
-		@Override
-		public boolean returnsType(ProgramNode actual, ValueType t) {
-			return t==ValueType.enumType;
-		}
-	};
-
-	/**
 	 * Standard unary minus operator.
 	 */
 	public static ProgramExtensionTemplate EXTENSION_NEG = new BasicTemplate(3,
@@ -739,7 +714,6 @@ public class StandardExtensions {
 	public static void createNumericOperators(FunctionFactory factory) {
 		factory.addExtension(EXTENSION_VAR_SUPPORT);
 		factory.addExtension(EXTENSION_CONST_SUPPORT);
-		factory.addExtension(EXTENSION_CONST_ENUM_SUPPORT);
 		factory.addExtension(EXTENSION_NEG);
 		factory.addExtension(EXTENSION_ADD);
 		factory.addExtension(EXTENSION_SUB);
@@ -811,13 +785,8 @@ public class StandardExtensions {
 		createBasicFunctions(factory);
 		createConversionFunctions(factory);
 		createStringFunctions(factory);
-		createEnum(factory);
 
 		factory.addExtension(EXTENSION_TODEG);
 		factory.addExtension(EXTENSION_TORAD);
-	}
-
-	public static void createEnum(FunctionFactory factory) {
-		factory.addExtension(EXTENSION_CONST_ENUM_SUPPORT);
 	}
 }

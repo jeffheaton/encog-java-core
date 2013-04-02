@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.encog.EncogError;
+import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.mathutil.randomize.factory.BasicRandomFactory;
 import org.encog.mathutil.randomize.factory.RandomFactory;
 import org.encog.ml.CalculateScore;
@@ -21,11 +22,14 @@ import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.expvalue.ExpressionValue;
+import org.encog.ml.prg.expvalue.ValueType;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.ml.prg.train.PrgPopulation;
 import org.encog.ml.prg.train.ZeroEvalScoreFunction;
 import org.encog.util.concurrency.MultiThreadable;
+import org.encog.util.obj.ChooseObject;
 
 public abstract class AbstractPrgGenerator implements PrgGenerator,
 		MultiThreadable {
@@ -41,6 +45,7 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	private int threads;
 	private final Set<String> contents = new HashSet<String>();
 	private RandomFactory randomFactory = new BasicRandomFactory();
+	private ChooseObject<ValueType> constTypes = new ChooseObject<ValueType>();
 
 	public AbstractPrgGenerator(final EncogProgramContext theContext,
 			final int theMaxDepth) {
@@ -60,6 +65,9 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 				this.functions.add(temp);
 			}
 		}
+		
+		constTypes.add(1.0, ValueType.floatingType );
+		constTypes.finalizeStructure();
 	}
 
 	public void addPopulationMember(final PrgPopulation population,
@@ -107,7 +115,32 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 				this.leaves);
 		final ProgramNode result = new ProgramNode(program, temp,
 				new ProgramNode[] {});
-		temp.randomize(rnd, result, this.minConst, this.maxConst);
+		
+		if( temp == StandardExtensions.EXTENSION_CONST_SUPPORT ) {
+			switch(this.getConstTypes().pick(rnd)) {
+			case floatingType:
+				result.getData()[0] = new ExpressionValue(
+						RangeRandomizer.randomize(rnd, this.minConst, this.maxConst));
+				break;
+			case stringType:
+				result.getData()[0] = new ExpressionValue("");
+				break;
+			case booleanType:
+				result.getData()[0] = new ExpressionValue(rnd.nextBoolean());
+				break;
+			case intType:
+				result.getData()[0] = new ExpressionValue((int)
+						RangeRandomizer.randomize(rnd, this.minConst, this.maxConst));
+				break;
+			case enumType:
+				int t = rnd.nextInt(this.context.getMaxEnumType()+1);
+				result.getData()[0] = new ExpressionValue(t,rnd.nextInt(this.context.getEnumCount(t)));
+				break;
+			}
+			
+		} else {
+			temp.randomize(rnd, result, this.minConst, this.maxConst);
+		}
 		return result;
 	}
 
@@ -168,10 +201,6 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 		while (result == null) {
 			final int opcode = rnd.nextInt(maxOpCode);
 			result = opcodes.get(opcode);
-			if (!this.hasEnum
-					&& result == StandardExtensions.EXTENSION_CONST_ENUM_SUPPORT) {
-				result = null;
-			}
 			tries--;
 			if (tries < 0) {
 				throw new EACompileError(
@@ -293,6 +322,19 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	public int determineMaxDepth(Random rnd) {
 		return this.maxDepth;
 	}
-	
+
+	/**
+	 * @return the constTypes
+	 */
+	public ChooseObject<ValueType> getConstTypes() {
+		return constTypes;
+	}
+
+	/**
+	 * @param constTypes the constTypes to set
+	 */
+	public void setConstTypes(ChooseObject<ValueType> constTypes) {
+		this.constTypes = constTypes;
+	}
 	
 }

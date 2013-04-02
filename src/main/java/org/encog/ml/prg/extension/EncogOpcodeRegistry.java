@@ -16,7 +16,6 @@ public enum EncogOpcodeRegistry {
 	private final Map<String, ProgramExtensionTemplate> registry = new HashMap<String, ProgramExtensionTemplate>();
 
 	private EncogOpcodeRegistry() {
-		add(StandardExtensions.EXTENSION_CONST_ENUM_SUPPORT);
 		add(StandardExtensions.EXTENSION_NOT_EQUAL);
 		add(StandardExtensions.EXTENSION_NOT);
 		add(StandardExtensions.EXTENSION_VAR_SUPPORT);

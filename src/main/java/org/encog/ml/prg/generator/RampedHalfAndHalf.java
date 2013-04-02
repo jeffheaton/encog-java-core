@@ -9,8 +9,8 @@ import org.encog.ml.prg.ProgramNode;
 public class RampedHalfAndHalf extends AbstractPrgGenerator {
 	
 	private final int minDepth;
-	private final PrgGenerator fullGenerator;
-	private final PrgGenerator growGenerator;
+	private final PrgFullGenerator fullGenerator;
+	private final PrgGrowGenerator growGenerator;
 		
 	public RampedHalfAndHalf(EncogProgramContext theContext, int theMinDepth, int theMaxDepth) {
 		super(theContext, theMaxDepth);
@@ -18,6 +18,8 @@ public class RampedHalfAndHalf extends AbstractPrgGenerator {
 		
 		this.fullGenerator = new PrgFullGenerator(theContext, theMaxDepth);
 		this.growGenerator = new PrgGrowGenerator(theContext, theMaxDepth);
+		this.fullGenerator.setConstTypes(getConstTypes());
+		this.growGenerator.setConstTypes(getConstTypes());
 	}
 
 	@Override

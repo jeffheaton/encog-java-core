@@ -177,7 +177,7 @@ public class ExpressionValue implements Serializable {
 		case stringType:
 			return this.stringValue;
 		case enumType:
-			return "" + this.intValue;
+			return "[" + this.enumType + ":" + this.intValue + "]";
 		default:
 			throw (new EARuntimeError("Unknown type: " + this.currentType));
 		}
