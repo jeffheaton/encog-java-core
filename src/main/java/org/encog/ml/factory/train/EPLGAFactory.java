@@ -6,7 +6,6 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.score.adjust.ComplexityAdjustedScore;
 import org.encog.ml.ea.train.basic.TrainEA;
 import org.encog.ml.prg.PrgCODEC;
-import org.encog.ml.prg.constraint.SimpleTypeConstraint;
 import org.encog.ml.prg.opp.SubtreeCrossover;
 import org.encog.ml.prg.opp.SubtreeMutation;
 import org.encog.ml.prg.species.PrgSpeciation;
@@ -42,8 +41,6 @@ public class EPLGAFactory {
 		train.addOperation(0.05, new SubtreeMutation(pop.getContext(),4));
 		train.addScoreAdjuster(new ComplexityAdjustedScore());
 		train.setSpeciation(new PrgSpeciation());
-		train.getRules().addConstraintRule(new SimpleTypeConstraint());
-
 		return train;
 	}
 }

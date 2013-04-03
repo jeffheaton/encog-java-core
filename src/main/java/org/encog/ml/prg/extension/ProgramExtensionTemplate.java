@@ -18,5 +18,4 @@ public interface ProgramExtensionTemplate extends Serializable {
 	int getDataSize();
 	NodeType getNodeType();
 	int getPrecedence();
-	boolean returnsType(ProgramNode actual, ValueType t);
 }

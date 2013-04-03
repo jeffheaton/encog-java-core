@@ -41,19 +41,6 @@ public class StandardExtensions {
 					.getOwner().getContext().getDefinedVariables().size()));
 		}
 
-		@Override
-		public boolean returnsType(ProgramNode actual, ValueType t) {
-			ExpressionValue v = evaluate(actual);
-
-			if (v.getCurrentType() == ValueType.floatingType
-					|| v.getCurrentType() == ValueType.intType) {
-				if (t == ValueType.floatingType || t == ValueType.intType) {
-					return true;
-				}
-			}
-
-			return v.getCurrentType()==t;
-		}
 	};
 
 	/**
@@ -85,19 +72,6 @@ public class StandardExtensions {
 				actual.getData()[0] = new ExpressionValue(
 						RangeRandomizer.randomize(rnd, minValue, maxValue));	
 			}
-		}
-		@Override
-		public boolean returnsType(ProgramNode actual, ValueType t) {
-			ExpressionValue v = evaluate(actual);
-
-			if (v.getCurrentType() == ValueType.floatingType
-					|| v.getCurrentType() == ValueType.intType) {
-				if (t == ValueType.floatingType || t == ValueType.intType) {
-					return true;
-				}
-			}
-
-			return v.getCurrentType()==t;
 		}
 	};
 

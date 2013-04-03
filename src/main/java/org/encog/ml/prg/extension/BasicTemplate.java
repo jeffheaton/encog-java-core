@@ -86,22 +86,6 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 		result.append("]");
 		return result.toString();
 	}
-	
-	@Override
-	public boolean returnsType(ProgramNode actual, ValueType t) {
-		
-		if( this.getChildNodeCount()==0 ) {
-			if( t==ValueType.floatingType || t==ValueType.intType ) {
-				return true;
-			}	
-			return false;
-		} else if( this.getChildNodeCount()==1 ) {
-			ProgramNode child = actual.getChildNode(0);
-			return child.getTemplate().returnsType(child, t);
-		} else {
-			return true;
-		}
-	}
 
 	@Override
 	public void randomize(final Random rnd, final ProgramNode actual, final double minValue, final double maxValue) {
