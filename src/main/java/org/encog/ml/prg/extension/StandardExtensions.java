@@ -21,7 +21,7 @@ public class StandardExtensions {
 	 * Standard unary minus operator.
 	 */
 	public static ProgramExtensionTemplate EXTENSION_VAR_SUPPORT = new BasicTemplate(
-			ProgramExtensionTemplate.NO_PREC, "#var():*", NodeType.Leaf, true, 1) {
+			ProgramExtensionTemplate.NO_PREC, "#var():{*}", NodeType.Leaf, true, 1) {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			int idx = (int) actual.getData()[0].toIntValue();
@@ -47,7 +47,7 @@ public class StandardExtensions {
 	 * Numeric const.
 	 */
 	public static ProgramExtensionTemplate EXTENSION_CONST_SUPPORT = new BasicTemplate(
-			ProgramExtensionTemplate.NO_PREC, "#const():*", NodeType.Leaf, false,
+			ProgramExtensionTemplate.NO_PREC, "#const():{*}", NodeType.Leaf, false,
 			1) {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {

@@ -10,6 +10,7 @@ import org.encog.ml.ea.exception.EACompileError;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.expvalue.ValueType;
 
 public class FunctionFactory implements Serializable {
 	/**
@@ -19,8 +20,20 @@ public class FunctionFactory implements Serializable {
 
 	private final Map<String, ProgramExtensionTemplate> templateMap = new HashMap<String, ProgramExtensionTemplate>();
 	private final List<ProgramExtensionTemplate> opcodes = new ArrayList<ProgramExtensionTemplate>();
-	private final List<ProgramExtensionTemplate> functionSet = new ArrayList<ProgramExtensionTemplate>();
-	private final List<ProgramExtensionTemplate> terminalSet = new ArrayList<ProgramExtensionTemplate>();
+	private final Map<ValueType,List<ProgramExtensionTemplate>> functionSet = new HashMap<ValueType,List<ProgramExtensionTemplate>>();
+	private final Map<ValueType,List<ProgramExtensionTemplate>> terminalSet = new HashMap<ValueType,List<ProgramExtensionTemplate>>();
+	
+	public FunctionFactory() {
+		clearStructure();
+	}
+	
+	public void clearStructure() {
+		for(ValueType t : ValueType.values()) {
+			this.functionSet.put(t, new ArrayList<ProgramExtensionTemplate>());
+			this.terminalSet.put(t, new ArrayList<ProgramExtensionTemplate>());
+		}
+	}
+	
 	
 	public ProgramNode factorFunction(ProgramExtensionTemplate temp, EncogProgram program,
 			ProgramNode[] args) {
@@ -143,22 +156,21 @@ public class FunctionFactory implements Serializable {
 	/**
 	 * @return the terminalSet
 	 */
-	public List<ProgramExtensionTemplate> getTerminalSet() {
-		return terminalSet;
+	public List<ProgramExtensionTemplate> getTerminalSet(ValueType t) {
+		return terminalSet.get(t);
 	}
 	
 	public void finalizeStructure() {
-		this.terminalSet.clear();
-		this.functionSet.clear();
+		clearStructure();
 		
 		for (final ProgramExtensionTemplate temp : this.opcodes) {
-			if (temp.getChildNodeCount() == 0) {
-				this.terminalSet.add(temp);
-			} else {
-				this.functionSet.add(temp);
+			for( ValueType rtn: temp.getReturnValue().getPossibleTypes() ) {
+				if (temp.getChildNodeCount() == 0) {
+					this.terminalSet.get(rtn).add(temp);
+				} else {
+					this.functionSet.get(rtn).add(temp);
+				}
 			}
 		}
 	}
-	
-	
 }

@@ -5,6 +5,7 @@ import java.util.Random;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.expvalue.ValueType;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 
 public class PrgGrowGenerator extends AbstractPrgGenerator {
@@ -13,10 +14,11 @@ public class PrgGrowGenerator extends AbstractPrgGenerator {
 		super(theContext, theMaxDepth);
 	}
 
-	public ProgramNode createNode(Random rnd, EncogProgram program, int depthRemaining) {
+	@Override
+	public ProgramNode createNode(Random rnd, EncogProgram program, int depthRemaining, ValueType t) {
 				
 		if( depthRemaining==0 ) {
-			return createLeafNode(rnd, program);
+			return createTerminalNode(rnd, program, t);
 		}
 		
 		ProgramExtensionTemplate temp = generateRandomOpcode(rnd, getContext().getFunctions().getOpCodes());
@@ -24,7 +26,8 @@ public class PrgGrowGenerator extends AbstractPrgGenerator {
 		
 		ProgramNode[] children = new ProgramNode[childNodeCount];
 		for(int i=0;i<children.length;i++) {
-			children[i] = createNode(rnd, program, depthRemaining-1);
+			ValueType childType = determineArgumentType(temp.getParams().get(0));
+			children[i] = createNode(rnd, program, depthRemaining-1, childType);
 		}
 		
 		ProgramNode result = new ProgramNode(program, temp, children);

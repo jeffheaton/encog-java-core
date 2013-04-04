@@ -163,6 +163,7 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 	/**
 	 * @return the params
 	 */
+	@Override
 	public List<ParamTemplate> getParams() {
 		return params;
 	}
@@ -182,6 +183,7 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 	/**
 	 * @return the returnValue
 	 */
+	@Override
 	public ParamTemplate getReturnValue() {
 		return returnValue;
 	}

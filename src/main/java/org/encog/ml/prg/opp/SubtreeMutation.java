@@ -8,7 +8,7 @@ import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.ProgramNode;
-import org.encog.ml.prg.generator.AbstractPrgGenerator;
+import org.encog.ml.prg.expvalue.ValueType;
 import org.encog.ml.prg.generator.PrgGenerator;
 import org.encog.ml.prg.generator.PrgGrowGenerator;
 
@@ -43,6 +43,11 @@ public class SubtreeMutation implements EvolutionaryOperator {
 	public int parentsNeeded() {
 		return 1;
 	}
+	
+	private ValueType determineValueType(ProgramNode node) {
+		// total hack, will come up with something better soon.
+		return node.getTemplate().getReturnValue().getPossibleTypes().iterator().next();
+	}
 
 	@Override
 	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
@@ -53,7 +58,8 @@ public class SubtreeMutation implements EvolutionaryOperator {
 		
 		int index = rnd.nextInt(result.getRootNode().size());
 		ProgramNode node = result.findNode(index);
-		ProgramNode newInsert = this.generator.createNode(rnd, result, this.maxDepth);
+		ValueType resultType = determineValueType(node);
+		ProgramNode newInsert = this.generator.createNode(rnd, result, this.maxDepth, resultType);
 		result.replaceNode(node,newInsert);
 		
 		offspring[0] = result;

@@ -1,6 +1,5 @@
 package org.encog.ml.prg.generator;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -21,6 +20,8 @@ import org.encog.ml.genetic.GeneticError;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.expvalue.ValueType;
+import org.encog.ml.prg.extension.ParamTemplate;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.train.PrgPopulation;
 import org.encog.ml.prg.train.ZeroEvalScoreFunction;
@@ -89,10 +90,10 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 		return result;
 	}
 
-	public ProgramNode createLeafNode(final Random rnd,
-			final EncogProgram program) {
+	public ProgramNode createTerminalNode(final Random rnd,
+			final EncogProgram program, ValueType t) {
 		final ProgramExtensionTemplate temp = generateRandomOpcode(rnd,
-				this.getContext().getFunctions().getTerminalSet());
+				this.getContext().getFunctions().getTerminalSet(t));
 		final ProgramNode result = new ProgramNode(program, temp,
 				new ProgramNode[] {});
 		
@@ -103,7 +104,7 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	@Override
 	public EncogProgram generate(final Random rnd) {
 		final EncogProgram program = new EncogProgram(this.context);
-		program.setRootNode(createNode(rnd, program, determineMaxDepth(rnd)));
+		program.setRootNode(createNode(rnd, program, determineMaxDepth(rnd), this.context.getResult().getVariableType()));
 		return program;
 	}
 
@@ -266,5 +267,18 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 
 	public int determineMaxDepth(Random rnd) {
 		return this.maxDepth;
+	}
+	
+	public ValueType determineArgumentType(ParamTemplate param) {
+		ValueType result = null;
+		for(ValueType t: param.getPossibleTypes()) {
+			if( result==null ) {
+				result = t;
+			} if( result==ValueType.intType && t==ValueType.floatingType) {
+				result = ValueType.floatingType; // widening 
+			}
+		}
+				
+		return result;
 	}
 }

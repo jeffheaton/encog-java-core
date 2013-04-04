@@ -1,6 +1,7 @@
 package org.encog.ml.prg.extension;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Random;
 
 import org.encog.ml.prg.ProgramNode;
@@ -18,4 +19,6 @@ public interface ProgramExtensionTemplate extends Serializable {
 	int getDataSize();
 	NodeType getNodeType();
 	int getPrecedence();
+	ParamTemplate getReturnValue();
+	List<ParamTemplate> getParams();
 }
