@@ -19,6 +19,8 @@ public class FunctionFactory implements Serializable {
 
 	private final Map<String, ProgramExtensionTemplate> templateMap = new HashMap<String, ProgramExtensionTemplate>();
 	private final List<ProgramExtensionTemplate> opcodes = new ArrayList<ProgramExtensionTemplate>();
+	private final List<ProgramExtensionTemplate> functionSet = new ArrayList<ProgramExtensionTemplate>();
+	private final List<ProgramExtensionTemplate> terminalSet = new ArrayList<ProgramExtensionTemplate>();
 	
 	public ProgramNode factorFunction(ProgramExtensionTemplate temp, EncogProgram program,
 			ProgramNode[] args) {
@@ -130,4 +132,33 @@ public class FunctionFactory implements Serializable {
 		}
 		
 	}
+
+	/**
+	 * @return the templateMap
+	 */
+	public Map<String, ProgramExtensionTemplate> getTemplateMap() {
+		return templateMap;
+	}
+
+	/**
+	 * @return the terminalSet
+	 */
+	public List<ProgramExtensionTemplate> getTerminalSet() {
+		return terminalSet;
+	}
+	
+	public void finalizeStructure() {
+		this.terminalSet.clear();
+		this.functionSet.clear();
+		
+		for (final ProgramExtensionTemplate temp : this.opcodes) {
+			if (temp.getChildNodeCount() == 0) {
+				this.terminalSet.add(temp);
+			} else {
+				this.functionSet.add(temp);
+			}
+		}
+	}
+	
+	
 }

@@ -31,8 +31,6 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	private CalculateScore score = new ZeroEvalScoreFunction();
 	private final EncogProgramContext context;
 	private final int maxDepth;
-	private final List<ProgramExtensionTemplate> functions = new ArrayList<ProgramExtensionTemplate>();
-	private final List<ProgramExtensionTemplate> leaves = new ArrayList<ProgramExtensionTemplate>();
 	private double minConst = -10;
 	private double maxConst = 10;
 	private final boolean hasEnum;
@@ -50,15 +48,6 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 		this.context = theContext;
 		this.maxDepth = theMaxDepth;
 		this.hasEnum = this.context.hasEnum();
-
-		for (final ProgramExtensionTemplate temp : this.context.getFunctions()
-				.getOpCodes()) {
-			if (temp.getChildNodeCount() == 0) {
-				this.leaves.add(temp);
-			} else {
-				this.functions.add(temp);
-			}
-		}
 	}
 
 	public void addPopulationMember(final PrgPopulation population,
@@ -103,7 +92,7 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	public ProgramNode createLeafNode(final Random rnd,
 			final EncogProgram program) {
 		final ProgramExtensionTemplate temp = generateRandomOpcode(rnd,
-				this.leaves);
+				this.getContext().getFunctions().getTerminalSet());
 		final ProgramNode result = new ProgramNode(program, temp,
 				new ProgramNode[] {});
 		
@@ -182,13 +171,6 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	 */
 	public EncogProgramContext getContext() {
 		return this.context;
-	}
-
-	/**
-	 * @return the leaves
-	 */
-	public List<ProgramExtensionTemplate> getLeaves() {
-		return this.leaves;
 	}
 
 	/**
@@ -282,10 +264,6 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 		this.threads = numThreads;
 	}
 
-	public List<ProgramExtensionTemplate> getFunctions() {
-		return functions;
-	}
-	
 	public int determineMaxDepth(Random rnd) {
 		return this.maxDepth;
 	}

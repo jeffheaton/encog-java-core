@@ -20,7 +20,7 @@ public class PrgFullGenerator extends AbstractPrgGenerator {
 			return createLeafNode(rnd, program);
 		}
 		
-		ProgramExtensionTemplate temp = generateRandomOpcode(rnd, getFunctions());
+		ProgramExtensionTemplate temp = generateRandomOpcode(rnd, this.getContext().getFunctions().getTerminalSet());
 		int childNodeCount = temp.getChildNodeCount();
 		
 		ProgramNode[] children = new ProgramNode[childNodeCount];

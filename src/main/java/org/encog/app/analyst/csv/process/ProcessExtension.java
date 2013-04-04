@@ -111,7 +111,7 @@ public class ProcessExtension {
 		final ProcessExtension pe = this;
 		
 		// add field
-		functions.addExtension(new BasicTemplate(ProgramExtensionTemplate.NO_PREC, "field", NodeType.Function, true, 2, 0) {
+		functions.addExtension(new BasicTemplate(ProgramExtensionTemplate.NO_PREC, "field({s}{i}):{s}", NodeType.Function, true, 0) {
 			@Override
 			public ExpressionValue evaluate(ProgramNode actual) {
 				String fieldName = actual.getChildNode(0).evaluate().toStringValue();
@@ -122,7 +122,7 @@ public class ProcessExtension {
 		});
 		
 		// add fieldmax
-				functions.addExtension(new BasicTemplate(ProgramExtensionTemplate.NO_PREC, "fieldmax", NodeType.Function, true, 3, 0) {
+				functions.addExtension(new BasicTemplate(ProgramExtensionTemplate.NO_PREC, "fieldmax({s}{i}{i}):{f}", NodeType.Function, true, 0) {
 					@Override
 					public ExpressionValue evaluate(ProgramNode actual) {
 						String fieldName = actual.getChildNode(0).evaluate().toStringValue();
@@ -142,7 +142,7 @@ public class ProcessExtension {
 					});
 				
 				// add fieldmaxpip
-				functions.addExtension(new BasicTemplate(ProgramExtensionTemplate.NO_PREC, "field", NodeType.Function, true, 3, 0) {
+				functions.addExtension(new BasicTemplate(ProgramExtensionTemplate.NO_PREC, "field{{s}{i}{i}):{f}", NodeType.Function, true, 0) {
 					@Override
 					public ExpressionValue evaluate(ProgramNode actual) {
 						String fieldName = actual.getChildNode(0).evaluate().toStringValue();
