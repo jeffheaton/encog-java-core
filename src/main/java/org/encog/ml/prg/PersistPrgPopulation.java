@@ -188,6 +188,7 @@ public class PersistPrgPopulation implements EncogPersistor {
 				}
 			}
 		}
+		result.getContext().getFunctions().finalizeStructure(context);
 		return result;
 	}
 	

@@ -115,4 +115,6 @@ public interface Population extends Serializable, MLMethod {
 	 * @return The size of the population.
 	 */
 	int size();
+
+	void beginTraining();
 }

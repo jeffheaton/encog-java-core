@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.expvalue.ValueType;
 import org.encog.util.SimpleParser;
 
 public abstract class BasicTemplate implements ProgramExtensionTemplate {
@@ -176,7 +178,7 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 	}
 
 	@Override
-	public void randomize(final Random rnd, final ProgramNode actual,
+	public void randomize(final Random rnd, final ValueType desiredType, final ProgramNode actual,
 			final double minValue, final double maxValue) {
 	}
 
@@ -188,5 +190,9 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 		return returnValue;
 	}
 	
+	@Override
+	public boolean isPossibleReturnType(EncogProgramContext context, ValueType rtn) {
+		return this.returnValue.getPossibleTypes().contains(rtn);
+	}
 	
 }

@@ -1,12 +1,15 @@
 package org.encog.ml.prg.extension;
 
+import java.util.List;
 import java.util.Random;
 
 import org.encog.Encog;
+import org.encog.EncogError;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.VariableMapping;
 import org.encog.ml.prg.expvalue.EvaluateExpr;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.expvalue.ValueType;
@@ -33,12 +36,29 @@ public class StandardExtensions {
 			}
 			return result;
 		}
+		
+		@Override
+		public boolean isPossibleReturnType(EncogProgramContext context, ValueType rtn) {
+			if( !super.isPossibleReturnType(context, rtn) ) {
+				return false;
+			}
+			for(VariableMapping mapping: context.getDefinedVariables()) {
+				if( mapping.getVariableType()==rtn) {
+					return true;
+				}
+			}
+			return false;
+		}
 
 		@Override
-		public void randomize(Random rnd, ProgramNode actual, double minValue,
+		public void randomize(Random rnd, ValueType desiredType, ProgramNode actual, double minValue,
 				double maxValue) {
-			actual.getData()[0] = new ExpressionValue(rnd.nextInt(actual
-					.getOwner().getContext().getDefinedVariables().size()));
+			
+			int variableIndex = actual.getOwner().selectRandomVariable(rnd,desiredType);
+			if( variableIndex==-1 ) {
+				throw new EncogError("Can't find any variables of type " + desiredType.toString() + " to generate.");
+			}
+			actual.getData()[0] = new ExpressionValue(variableIndex);
 		}
 
 	};
@@ -55,22 +75,29 @@ public class StandardExtensions {
 		}
 
 		@Override
-		public void randomize(Random rnd, ProgramNode actual, double minValue,
+		public void randomize(Random rnd, ValueType desiredType, ProgramNode actual, double minValue,
 				double maxValue) {
-			boolean assignEnum = false;
 			EncogProgramContext context = actual.getOwner().getContext();
-			if( context.hasEnum() ) {
-				assignEnum = rnd.nextBoolean();
-			} 
-			
-			if( assignEnum ) {
-				int enumType = rnd.nextInt(context.getMaxEnumType()+1);
-				int enumCount = context.getEnumCount(enumType);
-				int enumIndex = rnd.nextInt(enumCount);
-				actual.getData()[0] = new ExpressionValue(enumType,enumIndex);
-			} else {
-				actual.getData()[0] = new ExpressionValue(
-						RangeRandomizer.randomize(rnd, minValue, maxValue));	
+			switch( desiredType ) {
+				case floatingType:
+					actual.getData()[0] = new ExpressionValue(
+							RangeRandomizer.randomize(rnd, minValue, maxValue));
+					break;
+				case stringType:
+					// this will be added later
+					break;
+				case booleanType:
+					break;
+				case intType:
+					actual.getData()[0] = new ExpressionValue((int)
+							RangeRandomizer.randomize(rnd, minValue, maxValue));
+					break;
+				case enumType:
+					int enumType = rnd.nextInt(context.getMaxEnumType()+1);
+					int enumCount = context.getEnumCount(enumType);
+					int enumIndex = rnd.nextInt(enumCount);
+					actual.getData()[0] = new ExpressionValue(enumType,enumIndex);
+					break;
 			}
 		}
 	};
@@ -699,7 +726,8 @@ public class StandardExtensions {
 		}
 	};
 
-	public static void createNumericOperators(FunctionFactory factory) {
+	public static void createNumericOperators(EncogProgramContext context) {
+		FunctionFactory factory = context.getFunctions();
 		factory.addExtension(EXTENSION_VAR_SUPPORT);
 		factory.addExtension(EXTENSION_CONST_SUPPORT);
 		factory.addExtension(EXTENSION_NEG);
@@ -708,10 +736,11 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_MUL);
 		factory.addExtension(EXTENSION_DIV);
 		factory.addExtension(EXTENSION_POWER);
-		factory.finalizeStructure();
+		factory.finalizeStructure(context);
 	}
 
-	public static void createBooleanOperators(FunctionFactory factory) {
+	public static void createBooleanOperators(EncogProgramContext context) {
+		FunctionFactory factory = context.getFunctions();
 		factory.addExtension(EXTENSION_AND);
 		factory.addExtension(EXTENSION_OR);
 		factory.addExtension(EXTENSION_EQUAL);
@@ -722,10 +751,11 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_IFF);
 		factory.addExtension(EXTENSION_NOT_EQUAL);
 		factory.addExtension(EXTENSION_NOT);
-		factory.finalizeStructure();
+		factory.finalizeStructure(context);
 	}
 
-	public static void createTrigFunctions(FunctionFactory factory) {
+	public static void createTrigFunctions(EncogProgramContext context) {
+		FunctionFactory factory = context.getFunctions();
 		factory.addExtension(EXTENSION_ACOS);
 		factory.addExtension(EXTENSION_ASIN);
 		factory.addExtension(EXTENSION_ATAN);
@@ -736,10 +766,11 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_SINH);
 		factory.addExtension(EXTENSION_TAN);
 		factory.addExtension(EXTENSION_TANH);
-		factory.finalizeStructure();
+		factory.finalizeStructure(context);
 	}
 
-	public static void createBasicFunctions(FunctionFactory factory) {
+	public static void createBasicFunctions(EncogProgramContext context) {
+		FunctionFactory factory = context.getFunctions();
 		factory.addExtension(EXTENSION_ABS);
 		factory.addExtension(EXTENSION_CEIL);
 		factory.addExtension(EXTENSION_EXP);
@@ -753,33 +784,36 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_ROUND);
 		factory.addExtension(EXTENSION_SQRT);
 		factory.addExtension(EXTENSION_CLAMP);
-		factory.finalizeStructure();
+		factory.finalizeStructure(context);
 	}
 
-	public static void createConversionFunctions(FunctionFactory factory) {
+	public static void createConversionFunctions(EncogProgramContext context) {
+		FunctionFactory factory = context.getFunctions();
 		factory.addExtension(EXTENSION_CINT);
 		factory.addExtension(EXTENSION_CFLOAT);
 		factory.addExtension(EXTENSION_CSTR);
 		factory.addExtension(EXTENSION_CBOOL);
-		factory.finalizeStructure();
+		factory.finalizeStructure(context);
 	}
 
-	public static void createStringFunctions(FunctionFactory factory) {
+	public static void createStringFunctions(EncogProgramContext context) {
+		FunctionFactory factory = context.getFunctions();
 		factory.addExtension(EXTENSION_LENGTH);
 		factory.addExtension(EXTENSION_FORMAT);
 		factory.addExtension(EXTENSION_LEFT);
 		factory.addExtension(EXTENSION_RIGHT);
-		factory.finalizeStructure();
+		factory.finalizeStructure(context);
 	}
 
-	public static void createAll(FunctionFactory factory) {
+	public static void createAll(EncogProgramContext context) {
+		FunctionFactory factory = context.getFunctions();
 		factory.addExtension(EXTENSION_TODEG);
 		factory.addExtension(EXTENSION_TORAD);
-		createNumericOperators(factory);
-		createBooleanOperators(factory);
-		createTrigFunctions(factory);
-		createBasicFunctions(factory);
-		createConversionFunctions(factory);
-		createStringFunctions(factory);
+		createNumericOperators(context);
+		createBooleanOperators(context);
+		createTrigFunctions(context);
+		createBasicFunctions(context);
+		createConversionFunctions(context);
+		createStringFunctions(context);
 	}
 }

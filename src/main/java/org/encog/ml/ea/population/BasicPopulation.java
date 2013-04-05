@@ -234,4 +234,10 @@ public class BasicPopulation extends BasicML implements Population,
 	public void updateProperties() {
 
 	}
+
+	@Override
+	public void beginTraining() {
+		// TODO Auto-generated method stub
+		
+	}
 }

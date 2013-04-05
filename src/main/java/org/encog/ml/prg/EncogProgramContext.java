@@ -116,7 +116,7 @@ public class EncogProgramContext implements Serializable {
 	}
 
 	public void loadAllFunctions() {
-		StandardExtensions.createAll(getFunctions());
+		StandardExtensions.createAll(this);
 	}
 
 	public void clearDefinedVariables() {
@@ -190,6 +190,18 @@ public class EncogProgramContext implements Serializable {
 		}
 		
 		return false;
+	}
+
+	public List<VariableMapping> findVariablesByType(ValueType desiredType) {
+		List<VariableMapping> result = new ArrayList<VariableMapping>();
+		
+		for(VariableMapping mapping: this.definedVariables) {
+			if(mapping.getVariableType()==desiredType) {
+				result.add(mapping);
+			}
+		}
+		
+		return result;
 	}
 
 }

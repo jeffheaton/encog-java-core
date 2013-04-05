@@ -16,7 +16,7 @@ public class TestGenerate extends TestCase {
 		EncogProgramContext context = new EncogProgramContext();
 		context.defineVariable("x");
 		
-		StandardExtensions.createAll(context.getFunctions());
+		StandardExtensions.createAll(context);
 		
 		PrgGrowGenerator rnd = new PrgGrowGenerator(context,2);
 		EncogProgram prg = rnd.generate(new Random());

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
+import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.expvalue.ValueType;
@@ -15,10 +16,11 @@ public interface ProgramExtensionTemplate extends Serializable {
 	int getChildNodeCount();
 	ExpressionValue evaluate(ProgramNode actual);
 	boolean isVariable();
-	void randomize(Random rnd, ProgramNode actual, double minValue, double maxValue);
+	void randomize(Random rnd, ValueType desiredType, ProgramNode actual, double minValue, double maxValue);
 	int getDataSize();
 	NodeType getNodeType();
 	int getPrecedence();
 	ParamTemplate getReturnValue();
 	List<ParamTemplate> getParams();
+	boolean isPossibleReturnType(EncogProgramContext context, ValueType rtn);
 }

@@ -49,7 +49,7 @@ public class EPLFactory {
 		}
 
 		if( "numeric".equalsIgnoreCase(funct) ) {
-			StandardExtensions.createNumericOperators(context.getFunctions());
+			StandardExtensions.createNumericOperators(context);
 		}
 		
 		PrgPopulation pop = new PrgPopulation(context,populationSize);

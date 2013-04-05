@@ -23,6 +23,10 @@
  */
 package org.encog.ml.prg;
 
+import java.util.List;
+import java.util.Random;
+
+import org.encog.EncogError;
 import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
@@ -84,7 +88,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 
 	public EncogProgram() {
 		this(new EncogProgramContext(), new EncogProgramVariables());
-		StandardExtensions.createAll(this.context.getFunctions());
+		StandardExtensions.createAll(this.context);
 	}
 
 	public EncogProgram(EncogProgramContext theContext) {
@@ -277,5 +281,19 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 	public ValueType getReturnType() {
 		return ((PrgPopulation) this.getPopulation()).getContext().getResult()
 				.getVariableType();
+	}
+
+	public int selectRandomVariable(Random rnd, ValueType desiredType) {
+		List<VariableMapping> selectionSet = this.context.findVariablesByType(desiredType);
+		if( selectionSet.size()==0 && desiredType==ValueType.intType ) {
+			selectionSet = this.context.findVariablesByType(ValueType.floatingType);	
+		}
+		
+		if( selectionSet.size()==0) {
+			return -1;
+		}
+		
+		VariableMapping selected = selectionSet.get(rnd.nextInt(selectionSet.size()));
+		return this.getContext().getDefinedVariables().indexOf(selected);
 	}
 }

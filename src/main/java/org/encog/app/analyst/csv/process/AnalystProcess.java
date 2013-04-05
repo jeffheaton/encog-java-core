@@ -65,7 +65,7 @@ public class AnalystProcess extends BasicFile {
 		
 		this.backwardWindowSize = theBackwardWindowSize;
 		this.forwardWindowSize = theForwardWindowSize;
-		StandardExtensions.createAll(this.programContext.getFunctions());
+		StandardExtensions.createAll(this.programContext);
 	}
 
 	/**

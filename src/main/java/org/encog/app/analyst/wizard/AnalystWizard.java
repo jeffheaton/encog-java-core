@@ -48,6 +48,7 @@ import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.generate.TargetLanguage;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.ml.factory.MLTrainFactory;
+import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;
@@ -634,15 +635,15 @@ public class AnalystWizard {
 				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
 		
 		// add in the opcodes
-		FunctionFactory factory = new FunctionFactory();
+		EncogProgramContext context = new EncogProgramContext();
 		
 		if( this.getGoal()==AnalystGoal.Regression) {
-			StandardExtensions.createNumericOperators(factory);
+			StandardExtensions.createNumericOperators(context);
 		} else {
-			StandardExtensions.createNumericOperators(factory);
-			StandardExtensions.createBooleanOperators(factory);
+			StandardExtensions.createNumericOperators(context);
+			StandardExtensions.createBooleanOperators(context);
 		}
-		for(ProgramExtensionTemplate temp : factory.getOpCodes() ) {
+		for(ProgramExtensionTemplate temp : context.getFunctions().getOpCodes() ) {
 			this.script.getOpcodes().add(new ScriptOpcode(temp));
 		}
 	}

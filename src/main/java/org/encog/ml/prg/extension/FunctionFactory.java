@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.encog.ml.ea.exception.EACompileError;
 import org.encog.ml.prg.EncogProgram;
+import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ValueType;
@@ -20,23 +21,24 @@ public class FunctionFactory implements Serializable {
 
 	private final Map<String, ProgramExtensionTemplate> templateMap = new HashMap<String, ProgramExtensionTemplate>();
 	private final List<ProgramExtensionTemplate> opcodes = new ArrayList<ProgramExtensionTemplate>();
-	private final Map<ValueType,List<ProgramExtensionTemplate>> functionSet = new HashMap<ValueType,List<ProgramExtensionTemplate>>();
-	private final Map<ValueType,List<ProgramExtensionTemplate>> terminalSet = new HashMap<ValueType,List<ProgramExtensionTemplate>>();
-	
+	private final Map<ValueType, List<ProgramExtensionTemplate>> functionSet = new HashMap<ValueType, List<ProgramExtensionTemplate>>();
+	private final Map<ValueType, List<ProgramExtensionTemplate>> terminalSet = new HashMap<ValueType, List<ProgramExtensionTemplate>>();
+	private final Map<ValueType, List<ProgramExtensionTemplate>> completeSet = new HashMap<ValueType, List<ProgramExtensionTemplate>>();
+
 	public FunctionFactory() {
 		clearStructure();
 	}
-	
+
 	public void clearStructure() {
-		for(ValueType t : ValueType.values()) {
+		for (ValueType t : ValueType.values()) {
 			this.functionSet.put(t, new ArrayList<ProgramExtensionTemplate>());
 			this.terminalSet.put(t, new ArrayList<ProgramExtensionTemplate>());
+			this.completeSet.put(t, new ArrayList<ProgramExtensionTemplate>());
 		}
 	}
-	
-	
-	public ProgramNode factorFunction(ProgramExtensionTemplate temp, EncogProgram program,
-			ProgramNode[] args) {
+
+	public ProgramNode factorFunction(ProgramExtensionTemplate temp,
+			EncogProgram program, ProgramNode[] args) {
 		return new ProgramNode(program, temp, args);
 	}
 
@@ -96,8 +98,10 @@ public class FunctionFactory implements Serializable {
 	 * first sees the > symbol. But it must also consider the =. So we first
 	 * look for a 2-char operator, in this case there is one.
 	 * 
-	 * @param ch1 The first character of the potential operator.
-	 * @param ch2 The second character of the potential operator.  Zero if none.
+	 * @param ch1
+	 *            The first character of the potential operator.
+	 * @param ch2
+	 *            The second character of the potential operator. Zero if none.
 	 * @return The expression template for the operator found.
 	 */
 	public ProgramExtensionTemplate findOperator(char ch1, char ch2) {
@@ -125,7 +129,7 @@ public class FunctionFactory implements Serializable {
 	public ProgramExtensionTemplate findFunction(String name) {
 		for (ProgramExtensionTemplate opcode : opcodes) {
 			// only consider functions
-			if (opcode.getNodeType() == NodeType.Function ) {
+			if (opcode.getNodeType() == NodeType.Function) {
 				if (opcode.getName().equals(name)) {
 					return opcode;
 				}
@@ -136,14 +140,16 @@ public class FunctionFactory implements Serializable {
 
 	public void addExtension(String name, int args) {
 		String key = EncogOpcodeRegistry.createKey(name, args);
-		if( !this.templateMap.containsKey(key) ) {
-			ProgramExtensionTemplate temp = EncogOpcodeRegistry.INSTANCE.findOpcode(name,args);
-			if( temp==null ) {
-				throw new EACompileError("Unknown extension " + name + " with " + args + " arguments.");
+		if (!this.templateMap.containsKey(key)) {
+			ProgramExtensionTemplate temp = EncogOpcodeRegistry.INSTANCE
+					.findOpcode(name, args);
+			if (temp == null) {
+				throw new EACompileError("Unknown extension " + name + " with "
+						+ args + " arguments.");
 			}
 			this.addExtension(temp);
 		}
-		
+
 	}
 
 	/**
@@ -159,17 +165,26 @@ public class FunctionFactory implements Serializable {
 	public List<ProgramExtensionTemplate> getTerminalSet(ValueType t) {
 		return terminalSet.get(t);
 	}
-	
-	public void finalizeStructure() {
+
+	public List<ProgramExtensionTemplate> getCompleteSet(ValueType t) {
+		return completeSet.get(t);
+	}
+
+	public void finalizeStructure(EncogProgramContext context) {
 		clearStructure();
-		
+
 		for (final ProgramExtensionTemplate temp : this.opcodes) {
-			for( ValueType rtn: temp.getReturnValue().getPossibleTypes() ) {
-				if (temp.getChildNodeCount() == 0) {
-					this.terminalSet.get(rtn).add(temp);
-				} else {
-					this.functionSet.get(rtn).add(temp);
+			for (ValueType rtn : temp.getReturnValue().getPossibleTypes()) {
+				// it is a possible return type, but given our variables, is it
+				// possible
+				if (temp.isPossibleReturnType(context,rtn)) {
+					if (temp.getChildNodeCount() == 0) {
+						this.terminalSet.get(rtn).add(temp);
+					} else {
+						this.functionSet.get(rtn).add(temp);
+					}
 				}
+				this.completeSet.get(rtn).add(temp);
 			}
 		}
 	}

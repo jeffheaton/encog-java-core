@@ -1,7 +1,9 @@
 package org.encog.ml.prg.generator;
 
+import java.util.List;
 import java.util.Random;
 
+import org.encog.ml.ea.exception.EACompileError;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.ProgramNode;
@@ -21,17 +23,21 @@ public class PrgGrowGenerator extends AbstractPrgGenerator {
 			return createTerminalNode(rnd, program, t);
 		}
 		
-		ProgramExtensionTemplate temp = generateRandomOpcode(rnd, getContext().getFunctions().getOpCodes());
+		List<ProgramExtensionTemplate> opcodeSet = getContext().getFunctions().getCompleteSet(t);
+		ProgramExtensionTemplate temp = generateRandomOpcode(rnd, opcodeSet);
+		if( temp==null ) {
+			throw new EACompileError("Trying to generate a random opcode when no opcodes exist.");
+		}
 		int childNodeCount = temp.getChildNodeCount();
 		
 		ProgramNode[] children = new ProgramNode[childNodeCount];
 		for(int i=0;i<children.length;i++) {
-			ValueType childType = determineArgumentType(temp.getParams().get(0));
+			ValueType childType = determineArgumentType(temp.getParams().get(0),t);
 			children[i] = createNode(rnd, program, depthRemaining-1, childType);
 		}
 		
 		ProgramNode result = new ProgramNode(program, temp, children);
-		temp.randomize(rnd, result, getMinConst(), getMaxConst());
+		temp.randomize(rnd, t, result, getMinConst(), getMaxConst());
 		return result;
 	}
 	

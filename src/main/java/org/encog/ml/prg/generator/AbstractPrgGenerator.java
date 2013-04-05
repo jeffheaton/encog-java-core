@@ -94,10 +94,13 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 			final EncogProgram program, ValueType t) {
 		final ProgramExtensionTemplate temp = generateRandomOpcode(rnd,
 				this.getContext().getFunctions().getTerminalSet(t));
+		if( temp==null ) {
+			throw new EACompileError("No opcodes exist for the type: " + t.toString());
+		}
 		final ProgramNode result = new ProgramNode(program, temp,
 				new ProgramNode[] {});
 		
-		temp.randomize(rnd, result, this.minConst, this.maxConst);
+		temp.randomize(rnd, t,result, this.minConst, this.maxConst);
 		return result;
 	}
 
@@ -151,6 +154,11 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	public ProgramExtensionTemplate generateRandomOpcode(final Random rnd,
 			final List<ProgramExtensionTemplate> opcodes) {
 		final int maxOpCode = opcodes.size();
+		
+		if( maxOpCode==0 ) {
+			return null;
+		}
+		
 		int tries = 10000;
 
 		ProgramExtensionTemplate result = null;
@@ -269,12 +277,14 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 		return this.maxDepth;
 	}
 	
-	public ValueType determineArgumentType(ParamTemplate param) {
+	public ValueType determineArgumentType(ParamTemplate param, ValueType parentType) {
 		ValueType result = null;
 		for(ValueType t: param.getPossibleTypes()) {
 			if( result==null ) {
 				result = t;
-			} if( result==ValueType.intType && t==ValueType.floatingType) {
+			} else if( t==parentType) { 
+				result = t;
+			} else if( result==ValueType.intType && t==ValueType.floatingType) {
 				result = ValueType.floatingType; // widening 
 			}
 		}

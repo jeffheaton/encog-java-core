@@ -20,7 +20,7 @@ public class TestRewriteAlgebraic extends TestCase {
 	
 	public void eval(String start, String expect) {
 		EncogProgramContext context = new EncogProgramContext();
-		StandardExtensions.createNumericOperators(context.getFunctions());
+		StandardExtensions.createNumericOperators(context);
 		PrgPopulation pop = new PrgPopulation(context,1);
 		CalculateScore score = new ZeroEvalScoreFunction();
 
