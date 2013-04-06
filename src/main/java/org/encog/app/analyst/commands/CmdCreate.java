@@ -134,7 +134,13 @@ public class CmdCreate extends Cmd {
 					mapping = null;
 					break;
 				case PassThrough:
-					mapping = new VariableMapping(varName, ValueType.stringType);
+					if( df.isInteger() ) {
+						mapping = new VariableMapping(varName, ValueType.intType);
+					} else if( df.isReal() ) {
+						mapping = new VariableMapping(varName, ValueType.floatingType);
+					} else {
+						mapping = new VariableMapping(varName, ValueType.stringType);
+					}
 					break;
 				case Equilateral:
 				case OneOf:

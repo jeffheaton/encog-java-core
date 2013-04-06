@@ -24,7 +24,7 @@ public class PrgFullGenerator extends AbstractPrgGenerator {
 			return createTerminalNode(rnd, program, t);
 		}
 		
-		List<ProgramExtensionTemplate> opcodeSet = getContext().getFunctions().getCompleteSet(t);
+		List<ProgramExtensionTemplate> opcodeSet = getContext().getFunctions().getFunctionSet(t);
 		ProgramExtensionTemplate temp = generateRandomOpcode(rnd, opcodeSet);
 		if( temp==null ) {
 			throw new EACompileError("Trying to generate a random opcode when no opcodes exist.");

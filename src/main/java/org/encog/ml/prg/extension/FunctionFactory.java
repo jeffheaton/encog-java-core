@@ -30,6 +30,9 @@ public class FunctionFactory implements Serializable {
 	}
 
 	public void clearStructure() {
+		this.functionSet.clear();
+		this.completeSet.clear();
+		this.terminalSet.clear();
 		for (ValueType t : ValueType.values()) {
 			this.functionSet.put(t, new ArrayList<ProgramExtensionTemplate>());
 			this.terminalSet.put(t, new ArrayList<ProgramExtensionTemplate>());
@@ -59,8 +62,10 @@ public class FunctionFactory implements Serializable {
 	public void addExtension(ProgramExtensionTemplate ext) {
 		String key = EncogOpcodeRegistry.createKey(ext.getName(),
 				ext.getChildNodeCount());
-		this.templateMap.put(key, ext);
-		this.opcodes.add(ext);
+		if( !this.templateMap.containsKey(key) ) {
+			this.templateMap.put(key, ext);
+			this.opcodes.add(ext);
+		}
 	}
 
 	public boolean isDefined(String name, int l) {
@@ -183,9 +188,13 @@ public class FunctionFactory implements Serializable {
 					} else {
 						this.functionSet.get(rtn).add(temp);
 					}
+					this.completeSet.get(rtn).add(temp);
 				}
-				this.completeSet.get(rtn).add(temp);
 			}
 		}
+	}
+
+	public List<ProgramExtensionTemplate> getFunctionSet(ValueType t) {
+		return this.functionSet.get(t);
 	}
 }
