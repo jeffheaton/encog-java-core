@@ -34,7 +34,7 @@ public class PrgFullGenerator extends AbstractPrgGenerator {
 		
 		ProgramNode[] children = new ProgramNode[childNodeCount];
 		for(int i=0;i<children.length;i++) {
-			ValueType childType = determineArgumentType(temp.getParams().get(0),t);
+			ValueType childType = determineArgumentType(temp.getParams().get(i),t);
 			children[i] = createNode(rnd, program, depthRemaining-1, childType);
 		}
 		

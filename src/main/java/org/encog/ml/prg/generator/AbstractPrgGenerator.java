@@ -278,6 +278,10 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	}
 	
 	public ValueType determineArgumentType(ParamTemplate param, ValueType parentType) {
+		if( param.isPassThrough() ) {
+			return parentType;
+		}
+		
 		ValueType result = null;
 		for(ValueType t: param.getPossibleTypes()) {
 			if( result==null ) {

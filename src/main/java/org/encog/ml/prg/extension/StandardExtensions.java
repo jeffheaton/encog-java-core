@@ -1,6 +1,5 @@
 package org.encog.ml.prg.extension;
 
-import java.util.List;
 import java.util.Random;
 
 import org.encog.Encog;
@@ -694,7 +693,7 @@ public class StandardExtensions {
 	 * Standard string iff function.
 	 */
 	public static ProgramExtensionTemplate EXTENSION_IFF = new BasicTemplate(
-			"iff({b}{*}{*}):{*}") {
+			"iff({b}:{*}:{*}):{*}") {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			boolean a = actual.getChildNode(0).evaluate().toBooleanValue();

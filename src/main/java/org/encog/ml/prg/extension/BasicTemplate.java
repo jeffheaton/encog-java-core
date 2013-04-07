@@ -41,6 +41,8 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 		} else {
 			// non-special case, find the name of the function/operator
 			SimpleParser parser = new SimpleParser(theSignature);
+			boolean pass = false;
+			
 			parser.eatWhiteSpace();
 			this.name = parser.readToChars("(").trim();
 			parser.advance();
@@ -50,8 +52,14 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 				if (parser.peek() == ')') {
 					parser.advance();
 					done = true;
+				} else if( parser.peek()==':') {
+					parser.advance();
+					pass = true;
 				} else if (parser.peek() == '{') {
-					this.params.add( readParam(parser) );
+					ParamTemplate temp = readParam(parser);
+					temp.setPassThrough(pass);
+					pass = false;
+					this.params.add( temp );
 				} else {
 					parser.advance();
 				}
