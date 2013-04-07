@@ -186,15 +186,15 @@ public class ExpressionValue implements Serializable {
 	public boolean toBooleanValue() {
 		switch (currentType) {
 		case intType:
-			throw (new EARuntimeError("Type Mismatch: can't " + this.intValue
+			throw (new EARuntimeError("Type Mismatch: can't convert " + this.intValue
 					+ " to boolean."));
 		case floatingType:
-			throw (new EARuntimeError("Type Mismatch: can't " + this.floatValue
+			throw (new EARuntimeError("Type Mismatch: can't convert " + this.floatValue
 					+ " to boolean."));
 		case booleanType:
 			return this.boolValue;
 		case stringType:
-			throw (new EARuntimeError("Type Mismatch: can't " + this.stringValue
+			throw (new EARuntimeError("Type Mismatch: can't convert " + this.stringValue
 					+ " to boolean."));
 		case enumType:
 			throw (new EARuntimeError(

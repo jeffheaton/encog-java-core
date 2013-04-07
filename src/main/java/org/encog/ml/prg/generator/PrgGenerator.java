@@ -11,4 +11,8 @@ public interface PrgGenerator extends PopulationGenerator {
 	ProgramNode createNode(Random rnd, EncogProgram program,
 			int depth, ValueType t);
 
+	int getMaxGenerationErrors();
+
+	void setMaxGenerationErrors(int maxGenerationErrors);
+
 }

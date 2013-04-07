@@ -39,6 +39,7 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	private int threads;
 	private final Set<String> contents = new HashSet<String>();
 	private RandomFactory randomFactory = new BasicRandomFactory();
+	private int maxGenerationErrors = 500;
 
 	public AbstractPrgGenerator(final EncogProgramContext theContext,
 			final int theMaxDepth) {
@@ -65,7 +66,7 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 			final Population pop) {
 		boolean done = false;
 		EncogProgram result = null;
-		final int tries = 0;
+		int tries = this.maxGenerationErrors;
 
 		while (!done) {
 			result = generate(rnd);
@@ -73,14 +74,16 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 
 			double s;
 			try {
-				// tries++;
+				tries--;
 				s = this.score.calculateScore(result);
 			} catch (final EARuntimeError e) {
+				e.printStackTrace();
 				s = Double.NaN;
 			}
 
-			if (tries > 100) {
-				done = true;
+			if (tries < 0) {
+				throw new EncogError("Could not generate a valid genome after "
+						+ this.maxGenerationErrors + " tries.");
 			} else if (!Double.isNaN(s) && !Double.isInfinite(s)
 					&& !this.contents.contains(result.dumpAsCommonExpression())) {
 				done = true;
@@ -92,22 +95,24 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 
 	public ProgramNode createTerminalNode(final Random rnd,
 			final EncogProgram program, ValueType t) {
-		final ProgramExtensionTemplate temp = generateRandomOpcode(rnd,
-				this.getContext().getFunctions().getTerminalSet(t));
-		if( temp==null ) {
-			throw new EACompileError("No opcodes exist for the type: " + t.toString());
+		final ProgramExtensionTemplate temp = generateRandomOpcode(rnd, this
+				.getContext().getFunctions().getTerminalSet(t));
+		if (temp == null) {
+			throw new EACompileError("No opcodes exist for the type: "
+					+ t.toString());
 		}
 		final ProgramNode result = new ProgramNode(program, temp,
 				new ProgramNode[] {});
-		
-		temp.randomize(rnd, t,result, this.minConst, this.maxConst);
+
+		temp.randomize(rnd, t, result, this.minConst, this.maxConst);
 		return result;
 	}
 
 	@Override
 	public EncogProgram generate(final Random rnd) {
 		final EncogProgram program = new EncogProgram(this.context);
-		program.setRootNode(createNode(rnd, program, determineMaxDepth(rnd), this.context.getResult().getVariableType()));
+		program.setRootNode(createNode(rnd, program, determineMaxDepth(rnd),
+				this.context.getResult().getVariableType()));
 		return program;
 	}
 
@@ -154,11 +159,11 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	public ProgramExtensionTemplate generateRandomOpcode(final Random rnd,
 			final List<ProgramExtensionTemplate> opcodes) {
 		final int maxOpCode = opcodes.size();
-		
-		if( maxOpCode==0 ) {
+
+		if (maxOpCode == 0) {
 			return null;
 		}
-		
+
 		int tries = 10000;
 
 		ProgramExtensionTemplate result = null;
@@ -276,21 +281,41 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	public int determineMaxDepth(Random rnd) {
 		return this.maxDepth;
 	}
-	
-	public ValueType determineArgumentType(ParamTemplate param, ValueType parentType) {
-		if( param.isPassThrough() ) {
+
+	public ValueType determineArgumentType(ParamTemplate param,
+			ValueType parentType) {
+		if (param.isPassThrough()) {
 			return parentType;
 		}
-		
+
 		ValueType result = null;
-		for(ValueType t: param.getPossibleTypes()) {
-			if( result==null ) {
+		for (ValueType t : param.getPossibleTypes()) {
+			if (result == null) {
 				result = t;
-			} else if( result==ValueType.intType && t==ValueType.floatingType) {
-				result = ValueType.floatingType; // widening 
+			} else if (result == ValueType.intType
+					&& t == ValueType.floatingType) {
+				result = ValueType.floatingType; // widening
 			}
 		}
-				
+
 		return result;
 	}
+
+	/**
+	 * @return the maxGenerationErrors
+	 */
+	@Override
+	public int getMaxGenerationErrors() {
+		return maxGenerationErrors;
+	}
+
+	/**
+	 * @param maxGenerationErrors
+	 *            the maxGenerationErrors to set
+	 */
+	@Override
+	public void setMaxGenerationErrors(int maxGenerationErrors) {
+		this.maxGenerationErrors = maxGenerationErrors;
+	}
+
 }
