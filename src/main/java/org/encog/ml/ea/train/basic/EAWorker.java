@@ -26,6 +26,7 @@ package org.encog.ml.ea.train.basic;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
+import org.encog.EncogError;
 import org.encog.ml.ea.exception.EARuntimeError;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
@@ -95,6 +96,7 @@ public class EAWorker implements Callable<Object> {
 	@Override
 	public Object call() {
 		boolean success = false;
+		int tries = this.train.getMaxOperationErrors();
 		do {
 			try {
 				// choose an evolutionary operation (i.e. crossover or a type of
@@ -158,6 +160,13 @@ public class EAWorker implements Callable<Object> {
 					}
 				}
 			} catch (EARuntimeError e) {
+				tries--;
+				if (tries < 0) {
+					throw new EncogError(
+							"Could not perform a successful genetic operaton after "
+									+ this.train.getMaxOperationErrors()
+									+ " tries.");
+				}
 			} catch (final Throwable t) {
 				if (!this.train.getShouldIgnoreExceptions()) {
 					this.train.reportError(t);

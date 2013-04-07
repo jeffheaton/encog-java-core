@@ -223,6 +223,8 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	 * Holds rewrite and constraint rules.
 	 */
 	private RuleHolder rules;
+	
+	private int maxOperationErrors = 500;
 
 	/**
 	 * Construct an EA.
@@ -844,5 +846,21 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	public void setValidationMode(final boolean validationMode) {
 		this.validationMode = validationMode;
 	}
+
+	/**
+	 * @return the maxOperationErrors
+	 */
+	public int getMaxOperationErrors() {
+		return maxOperationErrors;
+	}
+
+	/**
+	 * @param maxOperationErrors the maxOperationErrors to set
+	 */
+	public void setMaxOperationErrors(int maxOperationErrors) {
+		this.maxOperationErrors = maxOperationErrors;
+	}
+	
+	
 
 }

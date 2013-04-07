@@ -286,8 +286,6 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 		for(ValueType t: param.getPossibleTypes()) {
 			if( result==null ) {
 				result = t;
-			} else if( t==parentType) { 
-				result = t;
 			} else if( result==ValueType.intType && t==ValueType.floatingType) {
 				result = ValueType.floatingType; // widening 
 			}
