@@ -197,4 +197,24 @@ public class FunctionFactory implements Serializable {
 	public List<ProgramExtensionTemplate> getFunctionSet(ValueType t) {
 		return this.functionSet.get(t);
 	}
+	
+	public List<ProgramExtensionTemplate> findOpcodes(List<ValueType> types, EncogProgramContext context, boolean includeTerminal, boolean includeFunction) {
+		List<ProgramExtensionTemplate> result = new ArrayList<ProgramExtensionTemplate>();
+		
+		for (final ProgramExtensionTemplate temp : this.opcodes) {
+			for (ValueType rtn : types ) {
+				// it is a possible return type, but given our variables, is it
+				// possible
+				if (temp.isPossibleReturnType(context,rtn)) {
+					if (temp.getChildNodeCount() == 0 && includeTerminal ) {
+						result.add(temp);
+					} else if( includeFunction ){
+						result.add(temp);
+					}
+				}
+			}
+		}
+		
+		return result;
+	}
 }

@@ -23,10 +23,10 @@
  */
 package org.encog.ml.prg;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.encog.EncogError;
 import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
@@ -258,8 +258,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 
 	@Override
 	public void copy(Genome source) {
-		// TODO Auto-generated method stub
-
+		// not needed, already a genome
 	}
 
 	public String dumpAsCommonExpression() {
@@ -283,10 +282,12 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 				.getVariableType();
 	}
 
-	public int selectRandomVariable(Random rnd, ValueType desiredType) {
-		List<VariableMapping> selectionSet = this.context.findVariablesByType(desiredType);
-		if( selectionSet.size()==0 && desiredType==ValueType.intType ) {
-			selectionSet = this.context.findVariablesByType(ValueType.floatingType);	
+	public int selectRandomVariable(Random rnd, List<ValueType> desiredTypes) {
+		List<VariableMapping> selectionSet = this.context.findVariablesByTypes(desiredTypes);
+		if( selectionSet.size()==0 && desiredTypes.contains(ValueType.intType) ) {
+			List<ValueType> floatList = new ArrayList<ValueType>();
+			floatList.add(ValueType.floatingType);
+			selectionSet = this.context.findVariablesByTypes(floatList);	
 		}
 		
 		if( selectionSet.size()==0) {

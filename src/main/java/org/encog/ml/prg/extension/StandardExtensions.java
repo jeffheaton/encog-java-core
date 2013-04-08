@@ -1,5 +1,6 @@
 package org.encog.ml.prg.extension;
 
+import java.util.List;
 import java.util.Random;
 
 import org.encog.Encog;
@@ -50,12 +51,12 @@ public class StandardExtensions {
 		}
 
 		@Override
-		public void randomize(Random rnd, ValueType desiredType, ProgramNode actual, double minValue,
+		public void randomize(Random rnd, List<ValueType> desiredTypes, ProgramNode actual, double minValue,
 				double maxValue) {
 			
-			int variableIndex = actual.getOwner().selectRandomVariable(rnd,desiredType);
+			int variableIndex = actual.getOwner().selectRandomVariable(rnd,desiredTypes);
 			if( variableIndex==-1 ) {
-				throw new EncogError("Can't find any variables of type " + desiredType.toString() + " to generate.");
+				throw new EncogError("Can't find any variables of type " + desiredTypes.toString() + " to generate.");
 			}
 			actual.getData()[0] = new ExpressionValue(variableIndex);
 		}
@@ -74,10 +75,11 @@ public class StandardExtensions {
 		}
 
 		@Override
-		public void randomize(Random rnd, ValueType desiredType, ProgramNode actual, double minValue,
+		public void randomize(Random rnd, List<ValueType> desiredType, ProgramNode actual, double minValue,
 				double maxValue) {
+			ValueType pickedType = desiredType.get(rnd.nextInt(desiredType.size()));
 			EncogProgramContext context = actual.getOwner().getContext();
-			switch( desiredType ) {
+			switch( pickedType ) {
 				case floatingType:
 					actual.getData()[0] = new ExpressionValue(
 							RangeRandomizer.randomize(rnd, minValue, maxValue));
@@ -86,6 +88,7 @@ public class StandardExtensions {
 					// this will be added later
 					break;
 				case booleanType:
+					actual.getData()[0] = new ExpressionValue(rnd.nextBoolean());
 					break;
 				case intType:
 					actual.getData()[0] = new ExpressionValue((int)

@@ -17,13 +17,13 @@ public class PrgGrowGenerator extends AbstractPrgGenerator {
 	}
 
 	@Override
-	public ProgramNode createNode(Random rnd, EncogProgram program, int depthRemaining, ValueType t) {
+	public ProgramNode createNode(Random rnd, EncogProgram program, int depthRemaining, List<ValueType> types) {
 				
 		if( depthRemaining==0 ) {
-			return createTerminalNode(rnd, program, t);
+			return createTerminalNode(rnd, program, types);
 		}
 		
-		List<ProgramExtensionTemplate> opcodeSet = getContext().getFunctions().getCompleteSet(t);
+		List<ProgramExtensionTemplate> opcodeSet = getContext().getFunctions().findOpcodes(types, program.getContext(), true,true);
 		ProgramExtensionTemplate temp = generateRandomOpcode(rnd, opcodeSet);
 		if( temp==null ) {
 			throw new EACompileError("Trying to generate a random opcode when no opcodes exist.");
@@ -32,12 +32,12 @@ public class PrgGrowGenerator extends AbstractPrgGenerator {
 		
 		ProgramNode[] children = new ProgramNode[childNodeCount];
 		for(int i=0;i<children.length;i++) {
-			ValueType childType = determineArgumentType(temp.getParams().get(i),t);
+			List<ValueType> childType = temp.getParams().get(i).determineArgumentTypes(types);
 			children[i] = createNode(rnd, program, depthRemaining-1, childType);
 		}
 		
 		ProgramNode result = new ProgramNode(program, temp, children);
-		temp.randomize(rnd, t, result, getMinConst(), getMaxConst());
+		temp.randomize(rnd, types, result, getMinConst(), getMaxConst());
 		return result;
 	}
 	

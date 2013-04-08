@@ -186,7 +186,7 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 	}
 
 	@Override
-	public void randomize(final Random rnd, final ValueType desiredType, final ProgramNode actual,
+	public void randomize(final Random rnd, final List<ValueType> desiredTypes, final ProgramNode actual,
 			final double minValue, final double maxValue) {
 	}
 

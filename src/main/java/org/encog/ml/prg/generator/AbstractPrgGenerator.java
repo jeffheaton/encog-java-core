@@ -1,5 +1,6 @@
 package org.encog.ml.prg.generator;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -94,25 +95,26 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	}
 
 	public ProgramNode createTerminalNode(final Random rnd,
-			final EncogProgram program, ValueType t) {
+			final EncogProgram program, List<ValueType> types) {
 		final ProgramExtensionTemplate temp = generateRandomOpcode(rnd, this
-				.getContext().getFunctions().getTerminalSet(t));
+				.getContext().getFunctions().findOpcodes(types, context, true, false));
 		if (temp == null) {
 			throw new EACompileError("No opcodes exist for the type: "
-					+ t.toString());
+					+ types.toString());
 		}
 		final ProgramNode result = new ProgramNode(program, temp,
 				new ProgramNode[] {});
 
-		temp.randomize(rnd, t, result, this.minConst, this.maxConst);
+		temp.randomize(rnd, types, result, this.minConst, this.maxConst);
 		return result;
 	}
 
 	@Override
 	public EncogProgram generate(final Random rnd) {
 		final EncogProgram program = new EncogProgram(this.context);
-		program.setRootNode(createNode(rnd, program, determineMaxDepth(rnd),
-				this.context.getResult().getVariableType()));
+		List<ValueType> types = new ArrayList<ValueType>();
+		types.add(this.context.getResult().getVariableType());
+		program.setRootNode(createNode(rnd, program, determineMaxDepth(rnd),types));
 		return program;
 	}
 
@@ -280,25 +282,6 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 
 	public int determineMaxDepth(Random rnd) {
 		return this.maxDepth;
-	}
-
-	public ValueType determineArgumentType(ParamTemplate param,
-			ValueType parentType) {
-		if (param.isPassThrough()) {
-			return parentType;
-		}
-
-		ValueType result = null;
-		for (ValueType t : param.getPossibleTypes()) {
-			if (result == null) {
-				result = t;
-			} else if (result == ValueType.intType
-					&& t == ValueType.floatingType) {
-				result = ValueType.floatingType; // widening
-			}
-		}
-
-		return result;
 	}
 
 	/**

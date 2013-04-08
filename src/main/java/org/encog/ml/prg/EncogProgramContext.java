@@ -192,11 +192,11 @@ public class EncogProgramContext implements Serializable {
 		return false;
 	}
 
-	public List<VariableMapping> findVariablesByType(ValueType desiredType) {
+	public List<VariableMapping> findVariablesByTypes(List<ValueType> desiredTypes) {
 		List<VariableMapping> result = new ArrayList<VariableMapping>();
 		
 		for(VariableMapping mapping: this.definedVariables) {
-			if(mapping.getVariableType()==desiredType) {
+			if(desiredTypes.contains(mapping.getVariableType()) ) {
 				result.add(mapping);
 			}
 		}

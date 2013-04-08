@@ -1,5 +1,6 @@
 package org.encog.ml.prg.generator;
 
+import java.util.List;
 import java.util.Random;
 
 import org.encog.ml.prg.EncogProgram;
@@ -22,13 +23,13 @@ public class RampedHalfAndHalf extends AbstractPrgGenerator {
 	}
 
 	@Override
-	public ProgramNode createNode(Random rnd, EncogProgram program, int depthRemaining, ValueType t) {
+	public ProgramNode createNode(Random rnd, EncogProgram program, int depthRemaining, List<ValueType> types) {
 		int actualDepthRemaining = depthRemaining;
 				
 		if( rnd.nextBoolean() ) {
-			return this.fullGenerator.createNode(rnd, program, actualDepthRemaining, t);
+			return this.fullGenerator.createNode(rnd, program, actualDepthRemaining, types);
 		} else {
-			return this.growGenerator.createNode(rnd, program, actualDepthRemaining, t);
+			return this.growGenerator.createNode(rnd, program, actualDepthRemaining, types);
 		}
 	}
 

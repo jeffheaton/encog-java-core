@@ -16,7 +16,7 @@ public interface ProgramExtensionTemplate extends Serializable {
 	int getChildNodeCount();
 	ExpressionValue evaluate(ProgramNode actual);
 	boolean isVariable();
-	void randomize(Random rnd, ValueType desiredType, ProgramNode actual, double minValue, double maxValue);
+	void randomize(Random rnd, List<ValueType> desiredType, ProgramNode actual, double minValue, double maxValue);
 	int getDataSize();
 	NodeType getNodeType();
 	int getPrecedence();

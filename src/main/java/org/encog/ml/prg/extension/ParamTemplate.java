@@ -1,7 +1,9 @@
 package org.encog.ml.prg.extension;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.encog.ml.prg.ExpressionError;
@@ -63,6 +65,14 @@ public class ParamTemplate implements Serializable {
 		this.passThrough = passThrough;
 	}
 	
-	
+	public List<ValueType> determineArgumentTypes(List<ValueType> parentTypes) {
+		if (isPassThrough()) {
+			return parentTypes;
+		}
+
+		List<ValueType> result = new ArrayList<ValueType>();
+		result.addAll(getPossibleTypes());
+		return result;
+	}
 	
 }
