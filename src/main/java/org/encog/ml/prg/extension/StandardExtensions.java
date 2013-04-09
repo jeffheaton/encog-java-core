@@ -734,7 +734,6 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_MUL);
 		factory.addExtension(EXTENSION_DIV);
 		factory.addExtension(EXTENSION_POWER);
-		factory.finalizeStructure(context);
 	}
 
 	public static void createBooleanOperators(EncogProgramContext context) {
@@ -749,7 +748,6 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_IFF);
 		factory.addExtension(EXTENSION_NOT_EQUAL);
 		factory.addExtension(EXTENSION_NOT);
-		factory.finalizeStructure(context);
 	}
 
 	public static void createTrigFunctions(EncogProgramContext context) {
@@ -764,7 +762,6 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_SINH);
 		factory.addExtension(EXTENSION_TAN);
 		factory.addExtension(EXTENSION_TANH);
-		factory.finalizeStructure(context);
 	}
 
 	public static void createBasicFunctions(EncogProgramContext context) {
@@ -782,7 +779,6 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_ROUND);
 		factory.addExtension(EXTENSION_SQRT);
 		factory.addExtension(EXTENSION_CLAMP);
-		factory.finalizeStructure(context);
 	}
 
 	public static void createConversionFunctions(EncogProgramContext context) {
@@ -791,7 +787,6 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_CFLOAT);
 		factory.addExtension(EXTENSION_CSTR);
 		factory.addExtension(EXTENSION_CBOOL);
-		factory.finalizeStructure(context);
 	}
 
 	public static void createStringFunctions(EncogProgramContext context) {
@@ -800,7 +795,6 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_FORMAT);
 		factory.addExtension(EXTENSION_LEFT);
 		factory.addExtension(EXTENSION_RIGHT);
-		factory.finalizeStructure(context);
 	}
 
 	public static void createAll(EncogProgramContext context) {

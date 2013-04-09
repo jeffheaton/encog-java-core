@@ -21,23 +21,8 @@ public class FunctionFactory implements Serializable {
 
 	private final Map<String, ProgramExtensionTemplate> templateMap = new HashMap<String, ProgramExtensionTemplate>();
 	private final List<ProgramExtensionTemplate> opcodes = new ArrayList<ProgramExtensionTemplate>();
-	private final Map<ValueType, List<ProgramExtensionTemplate>> functionSet = new HashMap<ValueType, List<ProgramExtensionTemplate>>();
-	private final Map<ValueType, List<ProgramExtensionTemplate>> terminalSet = new HashMap<ValueType, List<ProgramExtensionTemplate>>();
-	private final Map<ValueType, List<ProgramExtensionTemplate>> completeSet = new HashMap<ValueType, List<ProgramExtensionTemplate>>();
 
 	public FunctionFactory() {
-		clearStructure();
-	}
-
-	public void clearStructure() {
-		this.functionSet.clear();
-		this.completeSet.clear();
-		this.terminalSet.clear();
-		for (ValueType t : ValueType.values()) {
-			this.functionSet.put(t, new ArrayList<ProgramExtensionTemplate>());
-			this.terminalSet.put(t, new ArrayList<ProgramExtensionTemplate>());
-			this.completeSet.put(t, new ArrayList<ProgramExtensionTemplate>());
-		}
 	}
 
 	public ProgramNode factorFunction(ProgramExtensionTemplate temp,
@@ -162,40 +147,6 @@ public class FunctionFactory implements Serializable {
 	 */
 	public Map<String, ProgramExtensionTemplate> getTemplateMap() {
 		return templateMap;
-	}
-
-	/**
-	 * @return the terminalSet
-	 */
-	public List<ProgramExtensionTemplate> getTerminalSet(ValueType t) {
-		return terminalSet.get(t);
-	}
-
-	public List<ProgramExtensionTemplate> getCompleteSet(ValueType t) {
-		return completeSet.get(t);
-	}
-
-	public void finalizeStructure(EncogProgramContext context) {
-		clearStructure();
-
-		for (final ProgramExtensionTemplate temp : this.opcodes) {
-			for (ValueType rtn : temp.getReturnValue().getPossibleTypes()) {
-				// it is a possible return type, but given our variables, is it
-				// possible
-				if (temp.isPossibleReturnType(context,rtn)) {
-					if (temp.getChildNodeCount() == 0) {
-						this.terminalSet.get(rtn).add(temp);
-					} else {
-						this.functionSet.get(rtn).add(temp);
-					}
-					this.completeSet.get(rtn).add(temp);
-				}
-			}
-		}
-	}
-
-	public List<ProgramExtensionTemplate> getFunctionSet(ValueType t) {
-		return this.functionSet.get(t);
 	}
 	
 	public List<ProgramExtensionTemplate> findOpcodes(List<ValueType> types, EncogProgramContext context, boolean includeTerminal, boolean includeFunction) {

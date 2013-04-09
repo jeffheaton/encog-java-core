@@ -177,7 +177,6 @@ public class CmdCreate extends Cmd {
 				pop.getContext().getFunctions().addExtension(temp);
 			}
 		}
-		pop.getContext().getFunctions().finalizeStructure(pop.getContext());
 		
 		// generate initial population
 		RampedHalfAndHalf generate = new RampedHalfAndHalf(pop.getContext(), 1, 6);		

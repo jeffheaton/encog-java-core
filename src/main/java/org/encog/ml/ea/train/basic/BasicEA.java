@@ -60,7 +60,6 @@ import org.encog.ml.ea.species.Speciation;
 import org.encog.ml.ea.species.Species;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.genetic.GeneticError;
-import org.encog.ml.prg.train.PrgPopulation;
 import org.encog.util.concurrency.MultiThreadable;
 import org.encog.util.logging.EncogLogging;
 
@@ -655,7 +654,6 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	private void preIteration() {
 
 		this.speciation.init(this);
-		this.population.beginTraining();
 
 		// find out how many threads to use
 		if (this.threadCount == 0) {

@@ -69,9 +69,4 @@ public class PrgPopulation extends BasicPopulation implements MLRegression {
 	public int getOutputCount() {
 		return 1;
 	}
-	
-	@Override
-	public void beginTraining() {
-		this.context.getFunctions().finalizeStructure(this.getContext());
-	}
 }

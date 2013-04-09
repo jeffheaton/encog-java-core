@@ -83,7 +83,16 @@ public class ParseEPL {
 				}
 				// is it an integer
 				else if( str.indexOf('.')==-1 && str.toLowerCase().indexOf('e')==-1) {
-					node.getData()[i] = new ExpressionValue(Long.parseLong(str));
+					long l;
+					try {
+						l = Long.parseLong(str);
+					} catch(NumberFormatException ex) {
+						// sometimes Java will output a long value that is larger than can be parsed
+						// this is very likely not a useful genome and we just set it to zero so that
+						// the population load does not fail.
+						l=0;
+					}
+					node.getData()[i] = new ExpressionValue(l);
 				}
 				// At this point, must be a float
 				else {
