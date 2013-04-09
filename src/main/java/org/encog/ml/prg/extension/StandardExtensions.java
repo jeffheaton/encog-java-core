@@ -221,10 +221,8 @@ public class StandardExtensions {
 			9, "=({*}{*}):{b}", NodeType.OperatorRight, false, 0) {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
-			double diff = Math.abs(actual.getChildNode(0).evaluate()
-					.toFloatValue()
-					- actual.getChildNode(1).evaluate().toFloatValue());
-			return new ExpressionValue(diff < Encog.DEFAULT_DOUBLE_EQUAL);
+			return EvaluateExpr.equ(actual.getChildNode(0).evaluate(), actual
+					.getChildNode(1).evaluate());
 		}
 	};
 
@@ -235,10 +233,8 @@ public class StandardExtensions {
 			9, "<>({*}{*}):{b}", NodeType.OperatorRight, false, 0) {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
-			double diff = Math.abs(actual.getChildNode(0).evaluate()
-					.toFloatValue()
-					- actual.getChildNode(1).evaluate().toFloatValue());
-			return new ExpressionValue(diff > Encog.DEFAULT_DOUBLE_EQUAL);
+			return EvaluateExpr.notequ(actual.getChildNode(0).evaluate(), actual
+					.getChildNode(1).evaluate());
 		}
 	};
 

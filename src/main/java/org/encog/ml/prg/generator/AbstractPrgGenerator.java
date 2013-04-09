@@ -22,7 +22,6 @@ import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ValueType;
-import org.encog.ml.prg.extension.ParamTemplate;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.train.PrgPopulation;
 import org.encog.ml.prg.train.ZeroEvalScoreFunction;
@@ -78,7 +77,6 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 				tries--;
 				s = this.score.calculateScore(result);
 			} catch (final EARuntimeError e) {
-				e.printStackTrace();
 				s = Double.NaN;
 			}
 
@@ -179,6 +177,54 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 						"Could not generate an opcode.  Make sure you have valid opcodes defined.");
 			}
 		}
+		return result;
+	}
+
+	public ProgramNode createRandomNode(Random rnd, EncogProgram program, 
+			int depthRemaining, List<ValueType> types, boolean includeTerminal, boolean includeFunction ) {
+				
+		// if we've hit the max depth, then create a terminal nodes, so it stops here
+		if( depthRemaining==0 ) {
+			return createTerminalNode(rnd, program, types);
+		}
+		
+		// choose which opcode set we might create the node from
+		List<ProgramExtensionTemplate> opcodeSet = getContext().getFunctions().findOpcodes(types, getContext(), includeTerminal, includeFunction);
+		
+		// choose a random opcode
+		ProgramExtensionTemplate temp = generateRandomOpcode(rnd, opcodeSet);
+		if( temp==null ) {
+			throw new EACompileError("Trying to generate a random opcode when no opcodes exist.");
+		}
+
+		// create the child nodes
+		int childNodeCount = temp.getChildNodeCount();
+		ProgramNode[] children = new ProgramNode[childNodeCount];
+		
+		if( temp.getNodeType().isOperator() && children.length>=2 ) {
+			
+			// for an operator of size 2 or greater make sure all children are the same time
+			List<ValueType> childTypes = temp.getParams().get(0).determineArgumentTypes(types);
+			ValueType selectedType = childTypes.get(rnd.nextInt(childTypes.size()));
+			childTypes.clear();
+			childTypes.add(selectedType);
+			
+			// now create the children of a common type
+			for(int i=0;i<children.length;i++) {
+				children[i] = createNode(rnd, program, depthRemaining-1, childTypes);
+			}
+		} else {
+			
+			// otherwise, let the children have their own types
+			for(int i=0;i<children.length;i++) {
+				List<ValueType> childTypes = temp.getParams().get(i).determineArgumentTypes(types);
+				children[i] = createNode(rnd, program, depthRemaining-1, childTypes);
+			}
+		}
+		
+		// now actually create the node
+		ProgramNode result = new ProgramNode(program, temp, children);
+		temp.randomize(rnd, types, result, getMinConst(), getMaxConst());
 		return result;
 	}
 

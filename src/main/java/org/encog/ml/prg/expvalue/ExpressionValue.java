@@ -210,7 +210,7 @@ public class ExpressionValue implements Serializable {
 		result.append("[ExpressionValue: ");
 		result.append("type: ");
 		result.append(this.getCurrentType().toString());
-		result.append("String Value: ");
+		result.append(", String Value: ");
 		result.append(toStringValue());
 		result.append("]");
 		return result.toString();

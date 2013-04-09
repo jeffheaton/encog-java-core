@@ -23,6 +23,8 @@
  */
 package org.encog.ml.prg.expvalue;
 
+import org.encog.Encog;
+
 
 public class EvaluateExpr {
 	private EvaluateExpr() {
@@ -70,5 +72,34 @@ public class EvaluateExpr {
 			return new ExpressionValue(Math.pow(a.toIntValue(),b.toIntValue()));
 		}
 		return new ExpressionValue(Math.pow(a.toFloatValue(), b.toFloatValue()));
+	}
+
+	public static ExpressionValue equ(ExpressionValue a,
+			ExpressionValue b) {
+		
+		if( a.getCurrentType()==ValueType.booleanType ) {
+			return new ExpressionValue(a.toBooleanValue()==b.toBooleanValue());
+		} else if( a.getCurrentType()==ValueType.enumType) {
+			return new ExpressionValue((a.toIntValue()==b.toIntValue())&&a.getEnumType()==b.getEnumType());
+		} else if( a.getCurrentType()==ValueType.stringType) {
+			return new ExpressionValue(a.toStringValue().equals(b.toStringValue()));
+		} else {
+			double diff = a.toFloatValue() - b.toFloatValue();
+			return new ExpressionValue(diff < Encog.DEFAULT_DOUBLE_EQUAL);
+		}
+	}
+
+	public static ExpressionValue notequ(ExpressionValue a,
+			ExpressionValue b) {
+		if( a.getCurrentType()==ValueType.booleanType ) {
+			return new ExpressionValue(a.toBooleanValue()!=b.toBooleanValue());
+		} else if( a.getCurrentType()==ValueType.enumType) {
+			return new ExpressionValue((a.toIntValue()!=b.toIntValue())&&a.getEnumType()==b.getEnumType());
+		} else if( a.getCurrentType()==ValueType.stringType) {
+			return new ExpressionValue(!a.toStringValue().equals(b.toStringValue()));
+		} else {
+			double diff = a.toFloatValue() - b.toFloatValue();
+			return new ExpressionValue(diff > Encog.DEFAULT_DOUBLE_EQUAL);
+		}
 	}	
 }
