@@ -84,7 +84,7 @@ public class EvaluateExpr {
 		} else if( a.getCurrentType()==ValueType.stringType) {
 			return new ExpressionValue(a.toStringValue().equals(b.toStringValue()));
 		} else {
-			double diff = a.toFloatValue() - b.toFloatValue();
+			double diff = Math.abs(a.toFloatValue() - b.toFloatValue());
 			return new ExpressionValue(diff < Encog.DEFAULT_DOUBLE_EQUAL);
 		}
 	}
@@ -98,7 +98,7 @@ public class EvaluateExpr {
 		} else if( a.getCurrentType()==ValueType.stringType) {
 			return new ExpressionValue(!a.toStringValue().equals(b.toStringValue()));
 		} else {
-			double diff = a.toFloatValue() - b.toFloatValue();
+			double diff = Math.abs(a.toFloatValue() - b.toFloatValue());
 			return new ExpressionValue(diff > Encog.DEFAULT_DOUBLE_EQUAL);
 		}
 	}	

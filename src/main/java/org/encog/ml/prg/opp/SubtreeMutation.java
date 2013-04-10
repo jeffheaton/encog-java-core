@@ -72,7 +72,7 @@ public class SubtreeMutation implements EvolutionaryOperator {
 			ProgramNode parentNode, List<ValueType> types, int[] globalIndex) {
 		if (globalIndex[0] == 0) {
 			globalIndex[0]--;
-			List<ValueType> resultTypes = determineValueType(parentNode);
+
 			ProgramNode newInsert = this.generator.createNode(rnd, result,
 					this.maxDepth, types);
 			result.replaceNode(parentNode, newInsert);
