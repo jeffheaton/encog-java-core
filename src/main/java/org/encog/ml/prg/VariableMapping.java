@@ -13,54 +13,55 @@ public class VariableMapping implements Serializable {
 	private final ValueType variableType;
 	private final int enumType;
 	private final int enumValueCount;
-	
-	
-	public VariableMapping(String theName, ValueType theVariableType, 
-			int theEnumType, int theEnumValueCount) {
+
+	public VariableMapping(final String theName, final ValueType theVariableType) {
+		this(theName, theVariableType, 0, 0);
+	}
+
+	public VariableMapping(final String theName,
+			final ValueType theVariableType, final int theEnumType,
+			final int theEnumValueCount) {
 		super();
 		this.name = theName;
 		this.variableType = theVariableType;
 		this.enumType = theEnumType;
 		this.enumValueCount = theEnumValueCount;
 	}
-	
-	public VariableMapping(String theName, ValueType theVariableType) {
-		this(theName, theVariableType, 0, 0);
-	}
-	
-	
-	/**
-	 * @return the variableType
-	 */
-	public ValueType getVariableType() {
-		return variableType;
-	}
 
 	/**
 	 * @return the enumType
 	 */
 	public int getEnumType() {
-		return enumType;
+		return this.enumType;
 	}
+
 	/**
 	 * @return the enumValueCount
 	 */
 	public int getEnumValueCount() {
-		return enumValueCount;
+		return this.enumValueCount;
 	}
+
 	/**
 	 * @return the name
 	 */
 	public String getName() {
-		return name;
+		return this.name;
 	}
-	
+
+	/**
+	 * @return the variableType
+	 */
+	public ValueType getVariableType() {
+		return this.variableType;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 		result.append("[VariableMapping: name=");
 		result.append(this.name);
 		result.append(",type=");

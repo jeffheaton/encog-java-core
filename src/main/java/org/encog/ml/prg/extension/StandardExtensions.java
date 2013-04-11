@@ -3,7 +3,6 @@ package org.encog.ml.prg.extension;
 import java.util.List;
 import java.util.Random;
 
-import org.encog.Encog;
 import org.encog.EncogError;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.prg.EncogProgramContext;

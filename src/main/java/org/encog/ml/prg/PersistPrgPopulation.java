@@ -63,6 +63,23 @@ public class PersistPrgPopulation implements EncogPersistor {
 		return "PrgPopulation";
 	}
 
+	private String getType(final VariableMapping mapping) {
+		switch (mapping.getVariableType()) {
+		case floatingType:
+			return "f";
+		case stringType:
+			return "s";
+		case booleanType:
+			return "b";
+		case intType:
+			return "i";
+		case enumType:
+			return "e";
+		}
+		throw new EncogError("Unknown type: "
+				+ mapping.getVariableType().toString());
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -145,23 +162,24 @@ public class PersistPrgPopulation implements EncogPersistor {
 						final String name = cols.get(0);
 						final String t = cols.get(1);
 						ValueType vt = null;
-						
-						if( t.equalsIgnoreCase("f")) {
+
+						if (t.equalsIgnoreCase("f")) {
 							vt = ValueType.floatingType;
-						} else if( t.equalsIgnoreCase("b")) {
+						} else if (t.equalsIgnoreCase("b")) {
 							vt = ValueType.booleanType;
-						} else if( t.equalsIgnoreCase("i")) {
+						} else if (t.equalsIgnoreCase("i")) {
 							vt = ValueType.intType;
-						} else if( t.equalsIgnoreCase("s")) {
+						} else if (t.equalsIgnoreCase("s")) {
 							vt = ValueType.stringType;
-						} else if( t.equalsIgnoreCase("e")) {
+						} else if (t.equalsIgnoreCase("e")) {
 							vt = ValueType.enumType;
 						}
-						
+
 						final int enumType = Integer.parseInt(cols.get(2));
-						final int enumCount = Integer.parseInt(cols.get(3));	
-						VariableMapping mapping = new VariableMapping(name,vt, enumType, enumCount);
-						if( mapping.getName().length()>0) {
+						final int enumCount = Integer.parseInt(cols.get(3));
+						final VariableMapping mapping = new VariableMapping(
+								name, vt, enumType, enumCount);
+						if (mapping.getName().length() > 0) {
 							result.getContext().defineVariable(mapping);
 						} else {
 							result.getContext().setResult(mapping);
@@ -176,35 +194,19 @@ public class PersistPrgPopulation implements EncogPersistor {
 
 		// set the best genome, should be the first genome in the first species
 		if (result.getSpecies().size() > 0) {
-			Species species = result.getSpecies().get(0);
+			final Species species = result.getSpecies().get(0);
 			if (species.getMembers().size() > 0) {
 				result.setBestGenome(species.getMembers().get(0));
 			}
 
 			// set the leaders
-			for (Species sp : result.getSpecies()) {
+			for (final Species sp : result.getSpecies()) {
 				if (sp.getMembers().size() > 0) {
 					sp.setLeader(sp.getMembers().get(0));
 				}
 			}
 		}
 		return result;
-	}
-	
-	private String getType(VariableMapping mapping) {
-		switch (mapping.getVariableType()) {
-		case floatingType:
-			return("f");
-		case stringType:
-			return("s");
-		case booleanType:
-			return("b");
-		case intType:
-			return("i");
-		case enumType:
-			return("e");
-		}
-		throw new EncogError("Unknown type: " + mapping.getVariableType().toString());
 	}
 
 	/**
@@ -232,14 +234,14 @@ public class PersistPrgPopulation implements EncogPersistor {
 		out.addColumn("enum_type");
 		out.addColumn("enum_count");
 		out.writeLine();
-		
+
 		// write the first line, the result
 		out.addColumn("");
 		out.addColumn(getType(pop.getContext().getResult()));
 		out.addColumn(pop.getContext().getResult().getEnumType());
 		out.addColumn(pop.getContext().getResult().getEnumValueCount());
 		out.writeLine();
-		
+
 		// write the next lines, the variables
 		for (final VariableMapping mapping : pop.getContext()
 				.getDefinedVariables()) {

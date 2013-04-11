@@ -39,97 +39,98 @@ public class ProgramNode extends BasicTreeNode implements Serializable {
 	private final EncogProgram owner;
 	private final ExpressionValue[] data;
 
-	public ProgramNode(final EncogProgram theOwner, ProgramExtensionTemplate theTemplate,
-			ProgramNode[] theArgs) {
+	public ProgramNode(final EncogProgram theOwner,
+			final ProgramExtensionTemplate theTemplate,
+			final ProgramNode[] theArgs) {
 		this.owner = theOwner;
 		this.data = new ExpressionValue[theTemplate.getDataSize()];
 		this.template = theTemplate;
-		this.addChildNodes(theArgs);
-		
-		for(int i=0;i<this.data.length;i++) {
+		addChildNodes(theArgs);
+
+		for (int i = 0; i < this.data.length; i++) {
 			this.data[i] = new ExpressionValue(0);
 		}
+	}
+
+	public boolean allConstChildren() {
+		boolean result = true;
+
+		for (final TreeNode tn : getChildNodes()) {
+			final ProgramNode node = (ProgramNode) tn;
+			if (node.isVariable()) {
+				result = false;
+				break;
+			}
+		}
+
+		return result;
+	}
+
+	public boolean allConstDescendants() {
+		if (isVariable()) {
+			return false;
+		}
+
+		if (isLeaf()) {
+			return true;
+		}
+
+		for (final TreeNode tn : getChildNodes()) {
+			final ProgramNode childNode = (ProgramNode) tn;
+			if (!childNode.allConstDescendants()) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	public ExpressionValue evaluate() {
 		return this.template.evaluate(this);
 	}
-	
-	public EncogProgram getOwner() {
-		return owner;
+
+	public ProgramNode getChildNode(final int index) {
+		return (ProgramNode) getChildNodes().get(index);
 	}
 
 	public ExpressionValue[] getData() {
-		return data;
-	}
-	
-	@Override
-	public String toString() {
-		StringBuilder result = new StringBuilder();
-		result.append("[ProgramNode: name=");
-		result.append(this.template.getName());
-		result.append(", childCount=");
-		result.append(this.getChildNodes().size());
-		result.append(", childNodes=");
-		for(TreeNode tn: this.getChildNodes()) {
-			ProgramNode node = (ProgramNode)tn;
-			result.append(" ");
-			result.append(node.getTemplate().getName());
-		}
-		result.append("]");
-		return  result.toString();
+		return this.data;
 	}
 
-	public boolean isVariable() {
-		return this.template.isVariable();
+	public String getName() {
+		return this.template.getName();
 	}
 
-	public boolean allConstChildren() {
-		boolean result = true;
-		
-		for(TreeNode tn: this.getChildNodes()) {
-			ProgramNode node = (ProgramNode)tn;
-			if( node.isVariable() ) {
-				result = false;
-				break;
-			}
-		}
-		
-		return result;
-	}
-
-	public boolean allConstDescendants() {
-		if( this.isVariable() ) {
-			return false;
-		}
-		
-		if( this.isLeaf() ) {
-			return true;
-		}
-		
-		for(TreeNode tn : this.getChildNodes()) {
-			ProgramNode childNode = (ProgramNode)tn;
-			if( !childNode.allConstDescendants() ) {
-				return false;
-			}
-		}
-		
-		return true;
-	}
-	
-	public ProgramNode getChildNode(int index) {
-		return (ProgramNode)this.getChildNodes().get(index);
+	public EncogProgram getOwner() {
+		return this.owner;
 	}
 
 	/**
 	 * @return the template
 	 */
 	public ProgramExtensionTemplate getTemplate() {
-		return template;
+		return this.template;
 	}
 
-	public String getName() {
-		return this.template.getName();
+	public boolean isVariable() {
+		return this.template.isVariable();
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder result = new StringBuilder();
+		result.append("[ProgramNode: name=");
+		result.append(this.template.getName());
+		result.append(", childCount=");
+		result.append(getChildNodes().size());
+		result.append(", childNodes=");
+		for (final TreeNode tn : getChildNodes()) {
+			final ProgramNode node = (ProgramNode) tn;
+			result.append(" ");
+			result.append(node.getTemplate().getName());
+		}
+		result.append("]");
+		return result.toString();
 	}
 
 }
