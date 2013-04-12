@@ -24,6 +24,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_VAR_SUPPORT = new BasicTemplate(
 			ProgramExtensionTemplate.NO_PREC, "#var():{*}", NodeType.Leaf, true, 1) {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			int idx = (int) actual.getData()[0].toIntValue();
@@ -36,6 +44,9 @@ public class StandardExtensions {
 			return result;
 		}
 		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public boolean isPossibleReturnType(EncogProgramContext context, ValueType rtn) {
 			if( !super.isPossibleReturnType(context, rtn) ) {
@@ -49,6 +60,9 @@ public class StandardExtensions {
 			return false;
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public void randomize(Random rnd, List<ValueType> desiredTypes, ProgramNode actual, double minValue,
 				double maxValue) {
@@ -68,11 +82,22 @@ public class StandardExtensions {
 	public static ProgramExtensionTemplate EXTENSION_CONST_SUPPORT = new BasicTemplate(
 			ProgramExtensionTemplate.NO_PREC, "#const():{*}", NodeType.Leaf, false,
 			1) {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return actual.getData()[0];
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public void randomize(Random rnd, List<ValueType> desiredType, ProgramNode actual, double minValue,
 				double maxValue) {
@@ -108,6 +133,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_NEG = new BasicTemplate(3,
 			"-({f,i}):{f,i}", NodeType.Unary, false, 0) {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(-actual.getChildNode(0).evaluate()
@@ -120,6 +153,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_ADD = new BasicTemplate(6,
 			"+({f,i,s}{f,i,s}):{f,i,s}", NodeType.OperatorLeft, false, 0) {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return EvaluateExpr.add(actual.getChildNode(0).evaluate(), actual
@@ -132,6 +173,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_SUB = new BasicTemplate(6,
 			"-({f,i}{f,i}):{f,i}", NodeType.OperatorLeft, false, 0) {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return EvaluateExpr.sub(actual.getChildNode(0).evaluate(), actual
@@ -144,6 +193,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_MUL = new BasicTemplate(5,
 			"*({f,i}{f,i}):{f,i}", NodeType.OperatorLeft, false, 0) {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return EvaluateExpr.mul(actual.getChildNode(0).evaluate(), actual
@@ -156,6 +213,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_DIV = new BasicTemplate(5,
 			"/({f,i}{f,i}):{f,i}", NodeType.OperatorLeft, false, 0) {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return EvaluateExpr.div(actual.getChildNode(0).evaluate(), actual
@@ -168,6 +233,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_POWER = new BasicTemplate(
 			1, "^({f,i}{f,i}):{f,i}", NodeType.OperatorRight, false, 0) {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return EvaluateExpr.pow(actual.getChildNode(0).evaluate(), actual
@@ -180,6 +253,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_AND = new BasicTemplate(
 			10, "&({b}{b}):{b}", NodeType.OperatorLeft, false, 0) {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
@@ -193,6 +274,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_NOT = new BasicTemplate(3,
 			"!({b}):{b}", NodeType.Unary, false, 0) {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(!actual.getChildNode(0).evaluate()
@@ -205,6 +294,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_OR = new BasicTemplate(12,
 			"|({b}{b}):{b}", NodeType.OperatorLeft, false, 0) {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
@@ -218,6 +315,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_EQUAL = new BasicTemplate(
 			9, "=({*}{*}):{b}", NodeType.OperatorRight, false, 0) {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return EvaluateExpr.equ(actual.getChildNode(0).evaluate(), actual
@@ -230,6 +335,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_NOT_EQUAL = new BasicTemplate(
 			9, "<>({*}{*}):{b}", NodeType.OperatorRight, false, 0) {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return EvaluateExpr.notequ(actual.getChildNode(0).evaluate(), actual
@@ -242,6 +355,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_GT = new BasicTemplate(8,
 			">({i,f}{i,f}):{b}", NodeType.OperatorRight, false, 0) {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
@@ -254,6 +375,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_LT = new BasicTemplate(8,
 			"<({i,f}{i,f}):{b}", NodeType.OperatorRight, false, 0) {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
@@ -267,6 +396,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_GTE = new BasicTemplate(8,
 			">=({i,f}{i,f}):{b}", NodeType.OperatorRight, false, 0) {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
@@ -280,6 +417,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_LTE = new BasicTemplate(8,
 			"<=({i,f}{i,f}):{b}", NodeType.OperatorRight, false, 0) {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
@@ -293,6 +438,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_ABS = new BasicTemplate(
 			"abs({f,i}):{f,i}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.abs(actual.getChildNode(0)
@@ -305,6 +458,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_ACOS = new BasicTemplate(
 			"acos({f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.abs(actual.getChildNode(0)
@@ -317,6 +478,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_ASIN = new BasicTemplate(
 			"asin({f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.asin(actual.getChildNode(0)
@@ -329,6 +498,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_ATAN = new BasicTemplate(
 			"atan({f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.atan(actual.getChildNode(0)
@@ -341,6 +518,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_ATAN2 = new BasicTemplate(
 			"atan2({f}{f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.atan2(actual.getChildNode(0)
@@ -354,6 +539,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_CEIL = new BasicTemplate(
 			"ceil({f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.ceil(actual.getChildNode(0)
@@ -366,6 +559,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_COS = new BasicTemplate(
 			"cos({f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.cos(actual.getChildNode(0)
@@ -378,6 +579,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_COSH = new BasicTemplate(
 			"cosh({f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.cosh(actual.getChildNode(0)
@@ -390,6 +599,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_EXP = new BasicTemplate(
 			"exp({f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.exp(actual.getChildNode(0)
@@ -402,6 +619,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_FLOOR = new BasicTemplate(
 			"floor({f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.floor(actual.getChildNode(0)
@@ -414,6 +639,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_LOG = new BasicTemplate(
 			"log({f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.log(actual.getChildNode(0)
@@ -426,6 +659,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_LOG10 = new BasicTemplate(
 			"log10({f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.log10(actual.getChildNode(0)
@@ -438,6 +679,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_MAX = new BasicTemplate(
 			"max({f,s,i}({f,s,i}):{f,s,i}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.max(actual.getChildNode(0)
@@ -451,6 +700,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_MIN = new BasicTemplate(
 			"min({f,s,i}({f,s,i}):{f,s,i}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.min(actual.getChildNode(0)
@@ -464,6 +721,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_POWFN = new BasicTemplate(
 			"pow({f}{f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.pow(actual.getChildNode(0)
@@ -477,6 +742,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_RANDOM = new BasicTemplate(
 			"rand():{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.random());
@@ -488,6 +761,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_ROUND = new BasicTemplate(
 			"round({f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.round(actual.getChildNode(0)
@@ -500,6 +781,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_SIN = new BasicTemplate(
 			"sin({f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.sin(actual.getChildNode(0)
@@ -512,6 +801,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_SINH = new BasicTemplate(
 			"sinh({f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.sinh(actual.getChildNode(0)
@@ -524,6 +821,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_SQRT = new BasicTemplate(
 			"sqrt({f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.sqrt(actual.getChildNode(0)
@@ -536,6 +841,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_TAN = new BasicTemplate(
 			"tan({f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.tan(actual.getChildNode(0)
@@ -548,6 +861,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_TANH = new BasicTemplate(
 			"tanh({f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.tanh(actual.getChildNode(0)
@@ -560,6 +881,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_TODEG = new BasicTemplate(
 			"todeg({f}):{f}" ) {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.toDegrees(actual.getChildNode(0)
@@ -572,6 +901,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_TORAD = new BasicTemplate(
 			"torad({f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(Math.toRadians(actual.getChildNode(0)
@@ -584,6 +921,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_LENGTH = new BasicTemplate(
 			"length({s}):{i}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
@@ -596,6 +941,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_FORMAT = new BasicTemplate(
 			"format({f}{i}):{s}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual
@@ -613,6 +966,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_LEFT = new BasicTemplate(
 			"left({s}{i}):{s}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			String str = actual.getChildNode(0).evaluate().toStringValue();
@@ -629,6 +990,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_RIGHT = new BasicTemplate(
 			"right({s}{i}):{s}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			String str = actual.getChildNode(0).evaluate().toStringValue();
@@ -644,6 +1013,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_CINT = new BasicTemplate(
 			"cint({f}):{i}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
@@ -656,6 +1033,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_CFLOAT = new BasicTemplate(
 			"cfloat({i}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
@@ -668,6 +1053,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_CSTR = new BasicTemplate(
 			"cstr({*}):{s}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
@@ -680,6 +1073,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_CBOOL = new BasicTemplate(
 			"cbool({i,f}):{b}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
@@ -692,6 +1093,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_IFF = new BasicTemplate(
 			"iff({b}:{*}:{*}):{*}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			boolean a = actual.getChildNode(0).evaluate().toBooleanValue();
@@ -708,6 +1117,14 @@ public class StandardExtensions {
 	 */
 	public static ProgramExtensionTemplate EXTENSION_CLAMP = new BasicTemplate(
 			"clamp({f}{f}{f}):{f}") {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			double value = actual.getChildNode(0).evaluate().toFloatValue();
@@ -723,6 +1140,10 @@ public class StandardExtensions {
 		}
 	};
 
+	/**
+	 * Add the opcodes for numeric operations to a context.
+	 * @param context The context to add the opcodes to.
+	 */
 	public static void createNumericOperators(EncogProgramContext context) {
 		FunctionFactory factory = context.getFunctions();
 		factory.addExtension(EXTENSION_VAR_SUPPORT);
@@ -735,6 +1156,10 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_POWER);
 	}
 
+	/**
+	 * Add the opcodes for boolean operations to a context.
+	 * @param context The context to add the opcodes to.
+	 */
 	public static void createBooleanOperators(EncogProgramContext context) {
 		FunctionFactory factory = context.getFunctions();
 		factory.addExtension(EXTENSION_AND);
@@ -749,6 +1174,10 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_NOT);
 	}
 
+	/**
+	 * Add the opcodes for trig functions operations to a context.
+	 * @param context The context to add the opcodes to.
+	 */
 	public static void createTrigFunctions(EncogProgramContext context) {
 		FunctionFactory factory = context.getFunctions();
 		factory.addExtension(EXTENSION_ACOS);
@@ -763,6 +1192,10 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_TANH);
 	}
 
+	/**
+	 * Add the opcodes for basic operations to a context.
+	 * @param context The context to add the opcodes to.
+	 */
 	public static void createBasicFunctions(EncogProgramContext context) {
 		FunctionFactory factory = context.getFunctions();
 		factory.addExtension(EXTENSION_ABS);
@@ -780,6 +1213,10 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_CLAMP);
 	}
 
+	/**
+	 * Add the opcodes for type conversion operations to a context.
+	 * @param context The context to add the opcodes to.
+	 */
 	public static void createConversionFunctions(EncogProgramContext context) {
 		FunctionFactory factory = context.getFunctions();
 		factory.addExtension(EXTENSION_CINT);
@@ -788,6 +1225,10 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_CBOOL);
 	}
 
+	/**
+	 * Add the opcodes for string operations to a context.
+	 * @param context The context to add the opcodes to.
+	 */
 	public static void createStringFunctions(EncogProgramContext context) {
 		FunctionFactory factory = context.getFunctions();
 		factory.addExtension(EXTENSION_LENGTH);
@@ -796,15 +1237,14 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_RIGHT);
 	}
 
+	/**
+	 * Add all known opcodes to a context.
+	 * @param context The context to add the opcodes to.
+	 */
 	public static void createAll(EncogProgramContext context) {
 		FunctionFactory factory = context.getFunctions();
-		factory.addExtension(EXTENSION_TODEG);
-		factory.addExtension(EXTENSION_TORAD);
-		createNumericOperators(context);
-		createBooleanOperators(context);
-		createTrigFunctions(context);
-		createBasicFunctions(context);
-		createConversionFunctions(context);
-		createStringFunctions(context);
+		for(ProgramExtensionTemplate temp : EncogOpcodeRegistry.INSTANCE.findAllOpcodes() ) {
+			factory.addExtension(temp);
+		}
 	}
 }

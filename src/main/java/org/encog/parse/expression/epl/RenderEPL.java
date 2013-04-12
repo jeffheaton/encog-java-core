@@ -33,7 +33,7 @@ public class RenderEPL extends CommonRender {
 		
 		for(int i=0;i<node.getTemplate().getDataSize();i++) {
 			result.append(':');
-			ValueType t = node.getData()[i].getCurrentType();
+			ValueType t = node.getData()[i].getExpressionType();
 			if( t==ValueType.booleanType) {
 				result.append(node.getData()[i].toBooleanValue()?'t':'f');
 			} else if( t==ValueType.floatingType) {

@@ -23,10 +23,28 @@
  */
 package org.encog.ml.prg.expvalue;
 
+/**
+ * The type of value.
+ */
 public enum ValueType {
-	floatingType,
+	/**
+	 * Floating point.
+	 */
+	floatingType, 
+	/**
+	 * String
+	 */
 	stringType,
+	/**
+	 * boolean
+	 */
 	booleanType,
-	intType,
+	/**
+	 * Integer.
+	 */
+	intType, 
+	/**
+	 * Enumeration
+	 */
 	enumType
 }

@@ -290,7 +290,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 
 		if (!success) {
 			throw new EARuntimeError("EncogProgram produced "
-					+ v.getCurrentType().toString() + " but "
+					+ v.getExpressionType().toString() + " but "
 					+ resultMapping.getVariableType().toString()
 					+ " was expected.");
 		}

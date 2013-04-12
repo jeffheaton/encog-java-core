@@ -1,5 +1,6 @@
 package org.encog.ml.prg.extension;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -88,6 +89,10 @@ public enum EncogOpcodeRegistry {
 		} else {
 			return null;
 		}
+	}
+	
+	public Collection<ProgramExtensionTemplate> findAllOpcodes() {
+		return this.registry.values();
 	}
 
 }
