@@ -9,14 +9,36 @@ import java.util.Map.Entry;
 
 import org.encog.ml.prg.expvalue.ExpressionValue;
 
+/**
+ * This class stores the actual variable values for an Encog Program. The
+ * definitions for the variables are stored in the context.
+ */
 public class EncogProgramVariables implements Serializable {
 	/**
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * A map to the index values of each variable name.
+	 */
 	private final Map<String, Integer> varMap = new HashMap<String, Integer>();
+
+	/**
+	 * The values of each variable. The order lines up to the order defined in
+	 * the context.
+	 */
 	private final List<ExpressionValue> variables = new ArrayList<ExpressionValue>();
 
+	/**
+	 * Define the specified variable mapping. This is to be used by the context
+	 * to setup the variable definitions. Do not call it directly. You will have
+	 * unexpected results if you have a variable defined in this class, but not
+	 * in the context.
+	 * 
+	 * @param mapping
+	 *            The variable mapping.
+	 */
 	public void defineVariable(final VariableMapping mapping) {
 		if (this.varMap.containsKey(mapping.getName())) {
 			throw new ExpressionError(
@@ -29,10 +51,20 @@ public class EncogProgramVariables implements Serializable {
 		}
 	}
 
+	/**
+	 * Get a variable value by index.
+	 * @param i The index of the variable we are using.
+	 * @return The variable at the specified index.
+	 */
 	public ExpressionValue getVariable(final int i) {
 		return this.variables.get(i);
 	}
 
+	/**
+	 * Get a variable value by name.
+	 * @param i The name of the variable we are using.
+	 * @return The variable at the specified index.
+	 */
 	public ExpressionValue getVariable(final String name) {
 		if (this.varMap.containsKey(name)) {
 			final int index = this.varMap.get(name);
@@ -42,6 +74,11 @@ public class EncogProgramVariables implements Serializable {
 		}
 	}
 
+	/**
+	 * Get a variable index by name.
+	 * @param varName The variable name.
+	 * @return The index of the specified variable.
+	 */
 	public int getVariableIndex(final String varName) {
 		if (!variableExists(varName)) {
 			throw new ExpressionError("Undefined variable: " + varName);
@@ -50,6 +87,11 @@ public class EncogProgramVariables implements Serializable {
 		return this.varMap.get(varName);
 	}
 
+	/**
+	 * Get a variable name by index.
+	 * @param idx The variable index.
+	 * @return The variable name.
+	 */
 	public String getVariableName(final int idx) {
 		for (final Entry<String, Integer> entry : this.varMap.entrySet()) {
 			if (entry.getValue() == idx) {
@@ -60,16 +102,30 @@ public class EncogProgramVariables implements Serializable {
 		throw new ExpressionError("No variable defined for index " + idx);
 	}
 
+	/**
+	 * Set a variable floating point value by index.
+	 * @param index The index.
+	 * @param value The value.
+	 */
 	public void setVariable(final int index, final double value) {
 		this.variables.set(index, new ExpressionValue(value));
 
 	}
 
+	/**
+	 * Set a floating point variable value by name.
+	 * @param name The name.
+	 * @param d The value.
+	 */
 	public void setVariable(final String name, final double d) {
 		setVariable(name, new ExpressionValue(d));
-
 	}
 
+	/**
+	 * Set a variable value by name.
+	 * @param name The variable name.
+	 * @param value The value.
+	 */
 	public synchronized void setVariable(final String name,
 			final ExpressionValue value) {
 		if (this.varMap.containsKey(name)) {
@@ -81,10 +137,18 @@ public class EncogProgramVariables implements Serializable {
 		}
 	}
 
+	/**
+	 * @return Get the number of variables defined.
+	 */
 	public int size() {
 		return this.varMap.size();
 	}
 
+	/**
+	 * Determine if the specified variable name 
+	 * @param name
+	 * @return
+	 */
 	public boolean variableExists(final String name) {
 		return this.varMap.containsKey(name);
 	}

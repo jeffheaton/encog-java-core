@@ -42,8 +42,7 @@ import org.encog.persist.EncogWriteHelper;
 import org.encog.util.csv.CSVFormat;
 
 /**
- * Persist a basic network.
- * 
+ * Persist the Encog population.
  */
 public class PersistPrgPopulation implements EncogPersistor {
 
@@ -63,6 +62,11 @@ public class PersistPrgPopulation implements EncogPersistor {
 		return "PrgPopulation";
 	}
 
+	/**
+	 * Get the type string for the specified variable mapping.
+	 * @param mapping The mapping.
+	 * @return The value.
+	 */
 	private String getType(final VariableMapping mapping) {
 		switch (mapping.getVariableType()) {
 		case floatingType:

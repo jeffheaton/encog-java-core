@@ -135,8 +135,6 @@ public class EAWorker implements Callable<Object> {
 					if (this.parents[0] != this.parents[1]) {
 						opp.performOperation(this.rnd, this.parents, 0,
 								this.children, 0);
-						for (Genome child : this.children)
-							child.setPopulation(this.parents[0].getPopulation());
 					}
 				} else {
 					// clone a child (asexual reproduction)
@@ -147,16 +145,18 @@ public class EAWorker implements Callable<Object> {
 				}
 
 				// process the new child
-				if (this.children[0] != null) {
-					if (this.train.getRules().isValid(this.children[0])) {
-						this.children[0].setBirthGeneration(this.train
-								.getIteration());
+				for (Genome child : this.children) {
+					if (child != null) {
+						child.setPopulation(this.parents[0].getPopulation());
+						if (this.train.getRules().isValid(child)) {
+							child.setBirthGeneration(this.train.getIteration());
 
-						this.train.calculateScore(this.children[0]);
-						if (!this.train.addChild(this.children[0])) {
-							return null;
+							this.train.calculateScore(child);
+							if (!this.train.addChild(child)) {
+								return null;
+							}
+							success = true;
 						}
-						success = true;
 					}
 				}
 			} catch (EARuntimeError e) {
