@@ -7,34 +7,57 @@ import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.StandardExtensions;
 
+/**
+ * Basic rewrite rules for boolean expressions.
+ */
 public class RewriteBoolean implements RewriteRule {
-	
+
+	/**
+	 * True, if the value has been rewritten.
+	 */
 	private boolean rewritten;
-	
+
+	/**
+	 * Returns true, if the specified constant value is a true const. Returns
+	 * false in any other case.
+	 * 
+	 * @param node The node to check.
+	 * @return True if the value is a true const.
+	 */
 	private boolean isTrue(ProgramNode node) {
-		if( node.getTemplate()==StandardExtensions.EXTENSION_CONST_SUPPORT ) {
+		if (node.getTemplate() == StandardExtensions.EXTENSION_CONST_SUPPORT) {
 			ExpressionValue v = node.evaluate();
-			if( v.isBoolean() ) {
-				if( v.toBooleanValue() ) {
+			if (v.isBoolean()) {
+				if (v.toBooleanValue()) {
 					return true;
 				}
 			}
 		}
 		return false;
 	}
-	
+
+	/**
+	 * Returns true, if the specified constant value is a false const. Returns
+	 * false in any other case.
+	 * 
+	 * @param node The node to check.
+	 * @return True if the value is a false const.
+	 */
 	private boolean isFalse(ProgramNode node) {
-		if( node.getTemplate()==StandardExtensions.EXTENSION_CONST_SUPPORT ) {
+		if (node.getTemplate() == StandardExtensions.EXTENSION_CONST_SUPPORT) {
 			ExpressionValue v = node.evaluate();
-			if( v.isBoolean() ) {
-				if( !v.toBooleanValue() ) {
+			if (v.isBoolean()) {
+				if (!v.toBooleanValue()) {
 					return true;
 				}
 			}
 		}
 		return false;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean rewrite(final Genome g) {
 		this.rewritten = false;
@@ -46,7 +69,12 @@ public class RewriteBoolean implements RewriteRule {
 		}
 		return this.rewritten;
 	}
-	
+
+	/**
+	 * Attempt to rewrite the specified node.
+	 * @param parent The node to attempt to rewrite.
+	 * @return The rewritten node, or the original node, if no change was made.
+	 */
 	private ProgramNode internalRewrite(final ProgramNode parent) {
 		ProgramNode rewrittenParent = parent;
 
@@ -66,18 +94,25 @@ public class RewriteBoolean implements RewriteRule {
 
 		return rewrittenParent;
 	}
-	
+
+	/**
+	 * Try to rewrite true and true, false and false.
+	 * @param parent The node to attempt to rewrite.
+	 * @return The rewritten node, or the original node if not rewritten.
+	 */
 	private ProgramNode tryAnd(final ProgramNode parent) {
-		if (parent.getTemplate()==StandardExtensions.EXTENSION_AND ) {
+		if (parent.getTemplate() == StandardExtensions.EXTENSION_AND) {
 			final ProgramNode child1 = parent.getChildNode(0);
 			final ProgramNode child2 = parent.getChildNode(1);
-			
-			if ( isTrue(child1) && child2.getTemplate()!=StandardExtensions.EXTENSION_CONST_SUPPORT) {
+
+			if (isTrue(child1)
+					&& child2.getTemplate() != StandardExtensions.EXTENSION_CONST_SUPPORT) {
 				this.rewritten = true;
 				return child2;
 			}
-			
-			if ( isTrue(child2) && child1.getTemplate()!=StandardExtensions.EXTENSION_CONST_SUPPORT) {
+
+			if (isTrue(child2)
+					&& child1.getTemplate() != StandardExtensions.EXTENSION_CONST_SUPPORT) {
 				this.rewritten = true;
 				return child1;
 			}

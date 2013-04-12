@@ -7,10 +7,20 @@ import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 
+/**
+ * Rewrite any parts of the tree that are constant with a simple constant value.
+ */
 public class RewriteConstants implements RewriteRule {
 	
+	/**
+	 * True if the expression was rewritten.
+	 */
 	private boolean rewritten;
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public boolean rewrite(Genome g) {
 		EncogProgram program = ((EncogProgram)g);
 		this.rewritten = false;
@@ -22,6 +32,11 @@ public class RewriteConstants implements RewriteRule {
 		return this.rewritten;
 	}
 
+	/**
+	 * Attempt to rewrite the specified node.
+	 * @param node The node to attempt to rewrite.
+	 * @return The rewritten node, the original node, if no rewrite occured.
+	 */
 	private ProgramNode rewriteNode(ProgramNode node) {
 
 		// first try to rewrite the child node
@@ -47,6 +62,11 @@ public class RewriteConstants implements RewriteRule {
 		return null;
 	}
 
+	/**
+	 * Try to rewrite the specified node.
+	 * @param parentNode The node to attempt rewrite.
+	 * @return The rewritten node, or original node, if no rewrite could happen.
+	 */
 	private ProgramNode tryNodeRewrite(ProgramNode parentNode) {
 		ProgramNode result = null;
 
