@@ -7,7 +7,6 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.train.PrgPopulation;
 
 /**
  * This is a very simple evaluation function that simply passes in all zeros for
@@ -32,7 +31,7 @@ public class ZeroEvalScoreFunction implements CalculateScore, Serializable {
 	public double calculateScore(final MLMethod genome) {
 		final EncogProgram prg = (EncogProgram) genome;
 		final PrgPopulation pop = (PrgPopulation) prg.getPopulation();
-		MLData inputData = new BasicMLData(pop.getContext()
+		final MLData inputData = new BasicMLData(pop.getContext()
 				.getDefinedVariables().size());
 		prg.compute(inputData);
 		return 0;

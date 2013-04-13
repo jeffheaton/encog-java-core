@@ -53,7 +53,9 @@ public class EncogProgramVariables implements Serializable {
 
 	/**
 	 * Get a variable value by index.
-	 * @param i The index of the variable we are using.
+	 * 
+	 * @param i
+	 *            The index of the variable we are using.
 	 * @return The variable at the specified index.
 	 */
 	public ExpressionValue getVariable(final int i) {
@@ -62,7 +64,9 @@ public class EncogProgramVariables implements Serializable {
 
 	/**
 	 * Get a variable value by name.
-	 * @param i The name of the variable we are using.
+	 * 
+	 * @param i
+	 *            The name of the variable we are using.
 	 * @return The variable at the specified index.
 	 */
 	public ExpressionValue getVariable(final String name) {
@@ -76,7 +80,9 @@ public class EncogProgramVariables implements Serializable {
 
 	/**
 	 * Get a variable index by name.
-	 * @param varName The variable name.
+	 * 
+	 * @param varName
+	 *            The variable name.
 	 * @return The index of the specified variable.
 	 */
 	public int getVariableIndex(final String varName) {
@@ -89,7 +95,9 @@ public class EncogProgramVariables implements Serializable {
 
 	/**
 	 * Get a variable name by index.
-	 * @param idx The variable index.
+	 * 
+	 * @param idx
+	 *            The variable index.
 	 * @return The variable name.
 	 */
 	public String getVariableName(final int idx) {
@@ -104,8 +112,11 @@ public class EncogProgramVariables implements Serializable {
 
 	/**
 	 * Set a variable floating point value by index.
-	 * @param index The index.
-	 * @param value The value.
+	 * 
+	 * @param index
+	 *            The index.
+	 * @param value
+	 *            The value.
 	 */
 	public void setVariable(final int index, final double value) {
 		this.variables.set(index, new ExpressionValue(value));
@@ -114,8 +125,11 @@ public class EncogProgramVariables implements Serializable {
 
 	/**
 	 * Set a floating point variable value by name.
-	 * @param name The name.
-	 * @param d The value.
+	 * 
+	 * @param name
+	 *            The name.
+	 * @param d
+	 *            The value.
 	 */
 	public void setVariable(final String name, final double d) {
 		setVariable(name, new ExpressionValue(d));
@@ -123,8 +137,11 @@ public class EncogProgramVariables implements Serializable {
 
 	/**
 	 * Set a variable value by name.
-	 * @param name The variable name.
-	 * @param value The value.
+	 * 
+	 * @param name
+	 *            The variable name.
+	 * @param value
+	 *            The value.
 	 */
 	public synchronized void setVariable(final String name,
 			final ExpressionValue value) {
@@ -145,7 +162,8 @@ public class EncogProgramVariables implements Serializable {
 	}
 
 	/**
-	 * Determine if the specified variable name 
+	 * Determine if the specified variable name
+	 * 
 	 * @param name
 	 * @return
 	 */

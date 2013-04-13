@@ -13,8 +13,8 @@ import org.encog.parse.expression.common.RenderCommonExpression;
  * A population that contains EncogProgram's. The primary difference between
  * this class and BasicPopulation is that a "compute" method is provided that
  * automatically uses the "best" genome to provide a MLRegression compute
- * method.  This population type also holds the common context that all
- * of the EncogProgram genomes make use of.
+ * method. This population type also holds the common context that all of the
+ * EncogProgram genomes make use of.
  */
 public class PrgPopulation extends BasicPopulation implements MLRegression {
 	/**
@@ -29,8 +29,11 @@ public class PrgPopulation extends BasicPopulation implements MLRegression {
 
 	/**
 	 * Construct the population.
-	 * @param theContext The context.
-	 * @param thePopulationSize The population size.
+	 * 
+	 * @param theContext
+	 *            The context.
+	 * @param thePopulationSize
+	 *            The population size.
 	 */
 	public PrgPopulation(final EncogProgramContext theContext,
 			final int thePopulationSize) {
@@ -47,13 +50,15 @@ public class PrgPopulation extends BasicPopulation implements MLRegression {
 	 */
 	@Override
 	public MLData compute(final MLData input) {
-		EncogProgram best = (EncogProgram) getBestGenome();
+		final EncogProgram best = (EncogProgram) getBestGenome();
 		return best.compute(input);
 	}
 
 	/**
 	 * Dump the specified number of genomes.
-	 * @param i The specified number of genomes.
+	 * 
+	 * @param i
+	 *            The specified number of genomes.
 	 */
 	public void dumpMembers(final int i) {
 
@@ -86,7 +91,7 @@ public class PrgPopulation extends BasicPopulation implements MLRegression {
 	 */
 	@Override
 	public int getInputCount() {
-		return this.getContext().getDefinedVariables().size();
+		return getContext().getDefinedVariables().size();
 	}
 
 	/**

@@ -92,10 +92,73 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 		return result;
 	}
 
+	public ProgramNode createRandomNode(final Random rnd,
+			final EncogProgram program, final int depthRemaining,
+			final List<ValueType> types, final boolean includeTerminal,
+			final boolean includeFunction) {
+
+		// if we've hit the max depth, then create a terminal nodes, so it stops
+		// here
+		if (depthRemaining == 0) {
+			return createTerminalNode(rnd, program, types);
+		}
+
+		// choose which opcode set we might create the node from
+		final List<ProgramExtensionTemplate> opcodeSet = getContext()
+				.getFunctions().findOpcodes(types, getContext(),
+						includeTerminal, includeFunction);
+
+		// choose a random opcode
+		final ProgramExtensionTemplate temp = generateRandomOpcode(rnd,
+				opcodeSet);
+		if (temp == null) {
+			throw new EACompileError(
+					"Trying to generate a random opcode when no opcodes exist.");
+		}
+
+		// create the child nodes
+		final int childNodeCount = temp.getChildNodeCount();
+		final ProgramNode[] children = new ProgramNode[childNodeCount];
+
+		if (temp.getNodeType().isOperator() && children.length >= 2) {
+
+			// for an operator of size 2 or greater make sure all children are
+			// the same time
+			final List<ValueType> childTypes = temp.getParams().get(0)
+					.determineArgumentTypes(types);
+			final ValueType selectedType = childTypes.get(rnd
+					.nextInt(childTypes.size()));
+			childTypes.clear();
+			childTypes.add(selectedType);
+
+			// now create the children of a common type
+			for (int i = 0; i < children.length; i++) {
+				children[i] = createNode(rnd, program, depthRemaining - 1,
+						childTypes);
+			}
+		} else {
+
+			// otherwise, let the children have their own types
+			for (int i = 0; i < children.length; i++) {
+				final List<ValueType> childTypes = temp.getParams().get(i)
+						.determineArgumentTypes(types);
+				children[i] = createNode(rnd, program, depthRemaining - 1,
+						childTypes);
+			}
+		}
+
+		// now actually create the node
+		final ProgramNode result = new ProgramNode(program, temp, children);
+		temp.randomize(rnd, types, result, getMinConst(), getMaxConst());
+		return result;
+	}
+
 	public ProgramNode createTerminalNode(final Random rnd,
-			final EncogProgram program, List<ValueType> types) {
-		final ProgramExtensionTemplate temp = generateRandomOpcode(rnd, this
-				.getContext().getFunctions().findOpcodes(types, context, true, false));
+			final EncogProgram program, final List<ValueType> types) {
+		final ProgramExtensionTemplate temp = generateRandomOpcode(
+				rnd,
+				getContext().getFunctions().findOpcodes(types, this.context,
+						true, false));
 		if (temp == null) {
 			throw new EACompileError("No opcodes exist for the type: "
 					+ types.toString());
@@ -107,12 +170,17 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 		return result;
 	}
 
+	public int determineMaxDepth(final Random rnd) {
+		return this.maxDepth;
+	}
+
 	@Override
 	public EncogProgram generate(final Random rnd) {
 		final EncogProgram program = new EncogProgram(this.context);
-		List<ValueType> types = new ArrayList<ValueType>();
+		final List<ValueType> types = new ArrayList<ValueType>();
 		types.add(this.context.getResult().getVariableType());
-		program.setRootNode(createNode(rnd, program, determineMaxDepth(rnd),types));
+		program.setRootNode(createNode(rnd, program, determineMaxDepth(rnd),
+				types));
 		return program;
 	}
 
@@ -180,54 +248,6 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 		return result;
 	}
 
-	public ProgramNode createRandomNode(Random rnd, EncogProgram program, 
-			int depthRemaining, List<ValueType> types, boolean includeTerminal, boolean includeFunction ) {
-				
-		// if we've hit the max depth, then create a terminal nodes, so it stops here
-		if( depthRemaining==0 ) {
-			return createTerminalNode(rnd, program, types);
-		}
-		
-		// choose which opcode set we might create the node from
-		List<ProgramExtensionTemplate> opcodeSet = getContext().getFunctions().findOpcodes(types, getContext(), includeTerminal, includeFunction);
-		
-		// choose a random opcode
-		ProgramExtensionTemplate temp = generateRandomOpcode(rnd, opcodeSet);
-		if( temp==null ) {
-			throw new EACompileError("Trying to generate a random opcode when no opcodes exist.");
-		}
-
-		// create the child nodes
-		int childNodeCount = temp.getChildNodeCount();
-		ProgramNode[] children = new ProgramNode[childNodeCount];
-		
-		if( temp.getNodeType().isOperator() && children.length>=2 ) {
-			
-			// for an operator of size 2 or greater make sure all children are the same time
-			List<ValueType> childTypes = temp.getParams().get(0).determineArgumentTypes(types);
-			ValueType selectedType = childTypes.get(rnd.nextInt(childTypes.size()));
-			childTypes.clear();
-			childTypes.add(selectedType);
-			
-			// now create the children of a common type
-			for(int i=0;i<children.length;i++) {
-				children[i] = createNode(rnd, program, depthRemaining-1, childTypes);
-			}
-		} else {
-			
-			// otherwise, let the children have their own types
-			for(int i=0;i<children.length;i++) {
-				List<ValueType> childTypes = temp.getParams().get(i).determineArgumentTypes(types);
-				children[i] = createNode(rnd, program, depthRemaining-1, childTypes);
-			}
-		}
-		
-		// now actually create the node
-		ProgramNode result = new ProgramNode(program, temp, children);
-		temp.randomize(rnd, types, result, getMinConst(), getMaxConst());
-		return result;
-	}
-
 	/**
 	 * @return the context
 	 */
@@ -247,6 +267,14 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	 */
 	public int getMaxDepth() {
 		return this.maxDepth;
+	}
+
+	/**
+	 * @return the maxGenerationErrors
+	 */
+	@Override
+	public int getMaxGenerationErrors() {
+		return this.maxGenerationErrors;
 	}
 
 	/**
@@ -294,6 +322,15 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	}
 
 	/**
+	 * @param maxGenerationErrors
+	 *            the maxGenerationErrors to set
+	 */
+	@Override
+	public void setMaxGenerationErrors(final int maxGenerationErrors) {
+		this.maxGenerationErrors = maxGenerationErrors;
+	}
+
+	/**
 	 * @param minConst
 	 *            the minConst to set
 	 */
@@ -324,27 +361,6 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	@Override
 	public void setThreadCount(final int numThreads) {
 		this.threads = numThreads;
-	}
-
-	public int determineMaxDepth(Random rnd) {
-		return this.maxDepth;
-	}
-
-	/**
-	 * @return the maxGenerationErrors
-	 */
-	@Override
-	public int getMaxGenerationErrors() {
-		return maxGenerationErrors;
-	}
-
-	/**
-	 * @param maxGenerationErrors
-	 *            the maxGenerationErrors to set
-	 */
-	@Override
-	public void setMaxGenerationErrors(int maxGenerationErrors) {
-		this.maxGenerationErrors = maxGenerationErrors;
 	}
 
 }

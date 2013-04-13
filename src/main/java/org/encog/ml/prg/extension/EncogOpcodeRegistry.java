@@ -28,7 +28,7 @@ public enum EncogOpcodeRegistry {
 	 *            The number of parameters this opcode accepts.
 	 * @return
 	 */
-	public static String createKey(String functionName, int argCount) {
+	public static String createKey(final String functionName, final int argCount) {
 		return functionName + '`' + argCount;
 	}
 
@@ -96,8 +96,10 @@ public enum EncogOpcodeRegistry {
 	}
 
 	/**
-	 * Add an opcode.  User programs should add opcodes here.
-	 * @param ext The opcode to add.
+	 * Add an opcode. User programs should add opcodes here.
+	 * 
+	 * @param ext
+	 *            The opcode to add.
 	 */
 	public void add(final ProgramExtensionTemplate ext) {
 		this.registry.put(
@@ -105,27 +107,21 @@ public enum EncogOpcodeRegistry {
 						ext.getChildNodeCount()), ext);
 	}
 
-	/**
-	 * Register an opcode from the opcode registry into an Encog Program context.
-	 * @param context The context to register the opcode in.
-	 * @param opcode The opcode.
-	 */
-	public void register(final EncogProgramContext context, final int opcode) {
-		if (!this.registry.containsKey(opcode)) {
-			throw new EACompileError("Unknown opcode: " + opcode);
-		}
-		final ProgramExtensionTemplate temp = this.registry.get(opcode);
-		context.getFunctions().addExtension(temp);
+	public Collection<ProgramExtensionTemplate> findAllOpcodes() {
+		return this.registry.values();
 	}
 
 	/**
 	 * Find the specified opcode.
-	 * @param name The name of the opcode.
-	 * @param args The number of arguments.
+	 * 
+	 * @param name
+	 *            The name of the opcode.
+	 * @param args
+	 *            The number of arguments.
 	 * @return The opcode if found, null otherwise.
 	 */
-	public ProgramExtensionTemplate findOpcode(String name, int args) {
-		String key = EncogOpcodeRegistry.createKey(name, args);
+	public ProgramExtensionTemplate findOpcode(final String name, final int args) {
+		final String key = EncogOpcodeRegistry.createKey(name, args);
 		if (this.registry.containsKey(key)) {
 			return this.registry.get(key);
 		} else {
@@ -133,8 +129,21 @@ public enum EncogOpcodeRegistry {
 		}
 	}
 
-	public Collection<ProgramExtensionTemplate> findAllOpcodes() {
-		return this.registry.values();
+	/**
+	 * Register an opcode from the opcode registry into an Encog Program
+	 * context.
+	 * 
+	 * @param context
+	 *            The context to register the opcode in.
+	 * @param opcode
+	 *            The opcode.
+	 */
+	public void register(final EncogProgramContext context, final int opcode) {
+		if (!this.registry.containsKey(opcode)) {
+			throw new EACompileError("Unknown opcode: " + opcode);
+		}
+		final ProgramExtensionTemplate temp = this.registry.get(opcode);
+		context.getFunctions().addExtension(temp);
 	}
 
 }

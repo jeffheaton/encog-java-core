@@ -5,38 +5,43 @@ import java.io.Serializable;
 import org.encog.ml.prg.expvalue.ValueType;
 
 /**
- * A variable mapping defines the type for each of the variables in an Encog program.
+ * A variable mapping defines the type for each of the variables in an Encog
+ * program.
  */
 public class VariableMapping implements Serializable {
 	/**
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * The name of the variable.
 	 */
 	private final String name;
-	
+
 	/**
 	 * The variable type.
 	 */
 	private final ValueType variableType;
-	
+
 	/**
 	 * If this is an enum, what is the type.
 	 */
 	private final int enumType;
-	
+
 	/**
-	 * The count for this given enum.  If this is not an enum, then value is not used.
+	 * The count for this given enum. If this is not an enum, then value is not
+	 * used.
 	 */
 	private final int enumValueCount;
 
 	/**
 	 * Construct a variable mapping for a non-enum type.
-	 * @param theName The variable name.
-	 * @param theVariableType The variable type.
+	 * 
+	 * @param theName
+	 *            The variable name.
+	 * @param theVariableType
+	 *            The variable type.
 	 */
 	public VariableMapping(final String theName, final ValueType theVariableType) {
 		this(theName, theVariableType, 0, 0);
@@ -44,10 +49,15 @@ public class VariableMapping implements Serializable {
 
 	/**
 	 * Construct a variable mapping.
-	 * @param theName The name of the variable.
-	 * @param theVariableType The type of the variable.
-	 * @param theEnumType The enum type.
-	 * @param theEnumValueCount The number of values for an enum.
+	 * 
+	 * @param theName
+	 *            The name of the variable.
+	 * @param theVariableType
+	 *            The type of the variable.
+	 * @param theEnumType
+	 *            The enum type.
+	 * @param theEnumValueCount
+	 *            The number of values for an enum.
 	 */
 	public VariableMapping(final String theName,
 			final ValueType theVariableType, final int theEnumType,

@@ -208,17 +208,17 @@ public class ExpressionValue implements Serializable {
 	}
 
 	/**
-	 * @return The expression type.
-	 */
-	public ValueType getExpressionType() {
-		return this.expressionType;
-	}
-
-	/**
 	 * @return the enumType
 	 */
 	public int getEnumType() {
 		return this.enumType;
+	}
+
+	/**
+	 * @return The expression type.
+	 */
+	public ValueType getExpressionType() {
+		return this.expressionType;
 	}
 
 	/**

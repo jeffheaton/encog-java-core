@@ -38,9 +38,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
-			int idx = (int) actual.getData()[0].toIntValue();
-			ExpressionValue result = actual.getOwner().getVariables()
+		public ExpressionValue evaluate(final ProgramNode actual) {
+			final int idx = (int) actual.getData()[0].toIntValue();
+			final ExpressionValue result = actual.getOwner().getVariables()
 					.getVariable(idx);
 			if (result == null) {
 				throw new ExpressionError("Variable has no value: "
@@ -53,12 +53,12 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public boolean isPossibleReturnType(EncogProgramContext context,
-				ValueType rtn) {
+		public boolean isPossibleReturnType(final EncogProgramContext context,
+				final ValueType rtn) {
 			if (!super.isPossibleReturnType(context, rtn)) {
 				return false;
 			}
-			for (VariableMapping mapping : context.getDefinedVariables()) {
+			for (final VariableMapping mapping : context.getDefinedVariables()) {
 				if (mapping.getVariableType() == rtn) {
 					return true;
 				}
@@ -70,11 +70,12 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void randomize(Random rnd, List<ValueType> desiredTypes,
-				ProgramNode actual, double minValue, double maxValue) {
+		public void randomize(final Random rnd,
+				final List<ValueType> desiredTypes, final ProgramNode actual,
+				final double minValue, final double maxValue) {
 
-			int variableIndex = actual.getOwner().selectRandomVariable(rnd,
-					desiredTypes);
+			final int variableIndex = actual.getOwner().selectRandomVariable(
+					rnd, desiredTypes);
 			if (variableIndex == -1) {
 				throw new EncogError("Can't find any variables of type "
 						+ desiredTypes.toString() + " to generate.");
@@ -99,7 +100,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return actual.getData()[0];
 		}
 
@@ -107,11 +108,12 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void randomize(Random rnd, List<ValueType> desiredType,
-				ProgramNode actual, double minValue, double maxValue) {
-			ValueType pickedType = desiredType.get(rnd.nextInt(desiredType
-					.size()));
-			EncogProgramContext context = actual.getOwner().getContext();
+		public void randomize(final Random rnd,
+				final List<ValueType> desiredType, final ProgramNode actual,
+				final double minValue, final double maxValue) {
+			final ValueType pickedType = desiredType.get(rnd
+					.nextInt(desiredType.size()));
+			final EncogProgramContext context = actual.getOwner().getContext();
 			switch (pickedType) {
 			case floatingType:
 				actual.getData()[0] = new ExpressionValue(
@@ -129,9 +131,9 @@ public class StandardExtensions {
 								.randomize(rnd, minValue, maxValue));
 				break;
 			case enumType:
-				int enumType = rnd.nextInt(context.getMaxEnumType() + 1);
-				int enumCount = context.getEnumCount(enumType);
-				int enumIndex = rnd.nextInt(enumCount);
+				final int enumType = rnd.nextInt(context.getMaxEnumType() + 1);
+				final int enumCount = context.getEnumCount(enumType);
+				final int enumIndex = rnd.nextInt(enumCount);
 				actual.getData()[0] = new ExpressionValue(enumType, enumIndex);
 				break;
 			}
@@ -152,7 +154,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(-actual.getChildNode(0).evaluate()
 					.toFloatValue());
 		}
@@ -172,7 +174,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return EvaluateExpr.add(actual.getChildNode(0).evaluate(), actual
 					.getChildNode(1).evaluate());
 		}
@@ -192,7 +194,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return EvaluateExpr.sub(actual.getChildNode(0).evaluate(), actual
 					.getChildNode(1).evaluate());
 		}
@@ -212,7 +214,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return EvaluateExpr.mul(actual.getChildNode(0).evaluate(), actual
 					.getChildNode(1).evaluate());
 		}
@@ -232,7 +234,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return EvaluateExpr.div(actual.getChildNode(0).evaluate(), actual
 					.getChildNode(1).evaluate());
 		}
@@ -252,7 +254,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return EvaluateExpr.protectedDiv(actual.getChildNode(0).evaluate(),
 					actual.getChildNode(1).evaluate());
 		}
@@ -272,7 +274,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return EvaluateExpr.pow(actual.getChildNode(0).evaluate(), actual
 					.getChildNode(1).evaluate());
 		}
@@ -292,7 +294,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
 					.toBooleanValue()
 					&& actual.getChildNode(1).evaluate().toBooleanValue());
@@ -313,7 +315,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(!actual.getChildNode(0).evaluate()
 					.toBooleanValue());
 		}
@@ -333,7 +335,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
 					.toBooleanValue()
 					|| actual.getChildNode(1).evaluate().toBooleanValue());
@@ -354,7 +356,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return EvaluateExpr.equ(actual.getChildNode(0).evaluate(), actual
 					.getChildNode(1).evaluate());
 		}
@@ -374,7 +376,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return EvaluateExpr.notequ(actual.getChildNode(0).evaluate(),
 					actual.getChildNode(1).evaluate());
 		}
@@ -394,7 +396,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
 					.toFloatValue() > actual.getChildNode(1).evaluate()
 					.toFloatValue());
@@ -414,7 +416,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
 					.toFloatValue() < actual.getChildNode(1).evaluate()
 					.toFloatValue());
@@ -435,7 +437,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
 					.toFloatValue() >= actual.getChildNode(1).evaluate()
 					.toFloatValue());
@@ -456,7 +458,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
 					.toFloatValue() <= actual.getChildNode(1).evaluate()
 					.toFloatValue());
@@ -477,7 +479,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.abs(actual.getChildNode(0)
 					.evaluate().toFloatValue()));
 		}
@@ -497,7 +499,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.abs(actual.getChildNode(0)
 					.evaluate().toFloatValue()));
 		}
@@ -517,7 +519,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.asin(actual.getChildNode(0)
 					.evaluate().toFloatValue()));
 		}
@@ -537,7 +539,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.atan(actual.getChildNode(0)
 					.evaluate().toFloatValue()));
 		}
@@ -557,7 +559,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.atan2(actual.getChildNode(0)
 					.evaluate().toFloatValue(), actual.getChildNode(1)
 					.evaluate().toFloatValue()));
@@ -578,7 +580,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.ceil(actual.getChildNode(0)
 					.evaluate().toFloatValue()));
 		}
@@ -598,7 +600,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.cos(actual.getChildNode(0)
 					.evaluate().toFloatValue()));
 		}
@@ -618,7 +620,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.cosh(actual.getChildNode(0)
 					.evaluate().toFloatValue()));
 		}
@@ -638,7 +640,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.exp(actual.getChildNode(0)
 					.evaluate().toFloatValue()));
 		}
@@ -658,7 +660,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.floor(actual.getChildNode(0)
 					.evaluate().toFloatValue()));
 		}
@@ -678,7 +680,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.log(actual.getChildNode(0)
 					.evaluate().toFloatValue()));
 		}
@@ -698,7 +700,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.log10(actual.getChildNode(0)
 					.evaluate().toFloatValue()));
 		}
@@ -718,7 +720,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.max(actual.getChildNode(0)
 					.evaluate().toFloatValue(), actual.getChildNode(1)
 					.evaluate().toFloatValue()));
@@ -739,7 +741,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.min(actual.getChildNode(0)
 					.evaluate().toFloatValue(), actual.getChildNode(1)
 					.evaluate().toFloatValue()));
@@ -760,7 +762,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.pow(actual.getChildNode(0)
 					.evaluate().toFloatValue(), actual.getChildNode(1)
 					.evaluate().toFloatValue()));
@@ -781,7 +783,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.random());
 		}
 	};
@@ -800,7 +802,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.round(actual.getChildNode(0)
 					.evaluate().toFloatValue()));
 		}
@@ -820,7 +822,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.sin(actual.getChildNode(0)
 					.evaluate().toFloatValue()));
 		}
@@ -840,7 +842,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.sinh(actual.getChildNode(0)
 					.evaluate().toFloatValue()));
 		}
@@ -860,7 +862,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.sqrt(actual.getChildNode(0)
 					.evaluate().toFloatValue()));
 		}
@@ -880,7 +882,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.tan(actual.getChildNode(0)
 					.evaluate().toFloatValue()));
 		}
@@ -900,7 +902,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.tanh(actual.getChildNode(0)
 					.evaluate().toFloatValue()));
 		}
@@ -920,7 +922,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.toDegrees(actual.getChildNode(0)
 					.evaluate().toFloatValue()));
 		}
@@ -940,7 +942,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(Math.toRadians(actual.getChildNode(0)
 					.evaluate().toFloatValue()));
 		}
@@ -960,7 +962,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
 					.toStringValue().length());
 		}
@@ -980,7 +982,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(actual
 					.getOwner()
 					.getContext()
@@ -1005,10 +1007,12 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
-			String str = actual.getChildNode(0).evaluate().toStringValue();
-			int idx = (int) actual.getChildNode(1).evaluate().toFloatValue();
-			String result = str.substring(0, idx);
+		public ExpressionValue evaluate(final ProgramNode actual) {
+			final String str = actual.getChildNode(0).evaluate()
+					.toStringValue();
+			final int idx = (int) actual.getChildNode(1).evaluate()
+					.toFloatValue();
+			final String result = str.substring(0, idx);
 
 			return new ExpressionValue(result);
 		}
@@ -1029,10 +1033,12 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
-			String str = actual.getChildNode(0).evaluate().toStringValue();
-			int idx = (int) actual.getChildNode(1).evaluate().toFloatValue();
-			String result = str.substring(idx);
+		public ExpressionValue evaluate(final ProgramNode actual) {
+			final String str = actual.getChildNode(0).evaluate()
+					.toStringValue();
+			final int idx = (int) actual.getChildNode(1).evaluate()
+					.toFloatValue();
+			final String result = str.substring(idx);
 
 			return new ExpressionValue(result);
 		}
@@ -1052,7 +1058,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
 					.toIntValue());
 		}
@@ -1072,7 +1078,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
 					.toFloatValue());
 		}
@@ -1092,7 +1098,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
 					.toStringValue());
 		}
@@ -1112,7 +1118,7 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
+		public ExpressionValue evaluate(final ProgramNode actual) {
 			return new ExpressionValue(actual.getChildNode(0).evaluate()
 					.toBooleanValue());
 		}
@@ -1132,8 +1138,9 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
-			boolean a = actual.getChildNode(0).evaluate().toBooleanValue();
+		public ExpressionValue evaluate(final ProgramNode actual) {
+			final boolean a = actual.getChildNode(0).evaluate()
+					.toBooleanValue();
 			if (a) {
 				return actual.getChildNode(1).evaluate();
 			} else {
@@ -1156,10 +1163,11 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public ExpressionValue evaluate(ProgramNode actual) {
-			double value = actual.getChildNode(0).evaluate().toFloatValue();
-			double min = actual.getChildNode(1).evaluate().toFloatValue();
-			double max = actual.getChildNode(2).evaluate().toFloatValue();
+		public ExpressionValue evaluate(final ProgramNode actual) {
+			final double value = actual.getChildNode(0).evaluate()
+					.toFloatValue();
+			final double min = actual.getChildNode(1).evaluate().toFloatValue();
+			final double max = actual.getChildNode(2).evaluate().toFloatValue();
 			if (value < min) {
 				return new ExpressionValue(min);
 			} else if (value > max) {
@@ -1171,81 +1179,17 @@ public class StandardExtensions {
 	};
 
 	/**
-	 * Add the opcodes for numeric operations to a context, do not use protected
-	 * division.
+	 * Add all known opcodes to a context.
 	 * 
 	 * @param context
 	 *            The context to add the opcodes to.
-	 * @param protectedDiv
-	 *            Should protected division be used.
 	 */
-	public static void createNumericOperators(EncogProgramContext context) {
-		createNumericOperators(context,false);
-	}
-
-	/**
-	 * Add the opcodes for numeric operations to a context.
-	 * 
-	 * @param context
-	 *            The context to add the opcodes to.
-	 * @param protectedDiv
-	 *            Should protected division be used.
-	 */
-	public static void createNumericOperators(EncogProgramContext context,
-			boolean protectedDiv) {
-		FunctionFactory factory = context.getFunctions();
-		factory.addExtension(EXTENSION_VAR_SUPPORT);
-		factory.addExtension(EXTENSION_CONST_SUPPORT);
-		factory.addExtension(EXTENSION_NEG);
-		factory.addExtension(EXTENSION_ADD);
-		factory.addExtension(EXTENSION_SUB);
-		factory.addExtension(EXTENSION_MUL);
-		if (protectedDiv) {
-			factory.addExtension(EXTENSION_PDIV);
-		} else {
-			factory.addExtension(EXTENSION_DIV);
+	public static void createAll(final EncogProgramContext context) {
+		final FunctionFactory factory = context.getFunctions();
+		for (final ProgramExtensionTemplate temp : EncogOpcodeRegistry.INSTANCE
+				.findAllOpcodes()) {
+			factory.addExtension(temp);
 		}
-		factory.addExtension(EXTENSION_POWER);
-	}
-
-	/**
-	 * Add the opcodes for boolean operations to a context.
-	 * 
-	 * @param context
-	 *            The context to add the opcodes to.
-	 */
-	public static void createBooleanOperators(EncogProgramContext context) {
-		FunctionFactory factory = context.getFunctions();
-		factory.addExtension(EXTENSION_AND);
-		factory.addExtension(EXTENSION_OR);
-		factory.addExtension(EXTENSION_EQUAL);
-		factory.addExtension(EXTENSION_LT);
-		factory.addExtension(EXTENSION_GT);
-		factory.addExtension(EXTENSION_LTE);
-		factory.addExtension(EXTENSION_GTE);
-		factory.addExtension(EXTENSION_IFF);
-		factory.addExtension(EXTENSION_NOT_EQUAL);
-		factory.addExtension(EXTENSION_NOT);
-	}
-
-	/**
-	 * Add the opcodes for trig functions operations to a context.
-	 * 
-	 * @param context
-	 *            The context to add the opcodes to.
-	 */
-	public static void createTrigFunctions(EncogProgramContext context) {
-		FunctionFactory factory = context.getFunctions();
-		factory.addExtension(EXTENSION_ACOS);
-		factory.addExtension(EXTENSION_ASIN);
-		factory.addExtension(EXTENSION_ATAN);
-		factory.addExtension(EXTENSION_ATAN2);
-		factory.addExtension(EXTENSION_COS);
-		factory.addExtension(EXTENSION_COSH);
-		factory.addExtension(EXTENSION_SIN);
-		factory.addExtension(EXTENSION_SINH);
-		factory.addExtension(EXTENSION_TAN);
-		factory.addExtension(EXTENSION_TANH);
 	}
 
 	/**
@@ -1254,8 +1198,8 @@ public class StandardExtensions {
 	 * @param context
 	 *            The context to add the opcodes to.
 	 */
-	public static void createBasicFunctions(EncogProgramContext context) {
-		FunctionFactory factory = context.getFunctions();
+	public static void createBasicFunctions(final EncogProgramContext context) {
+		final FunctionFactory factory = context.getFunctions();
 		factory.addExtension(EXTENSION_ABS);
 		factory.addExtension(EXTENSION_CEIL);
 		factory.addExtension(EXTENSION_EXP);
@@ -1272,17 +1216,76 @@ public class StandardExtensions {
 	}
 
 	/**
+	 * Add the opcodes for boolean operations to a context.
+	 * 
+	 * @param context
+	 *            The context to add the opcodes to.
+	 */
+	public static void createBooleanOperators(final EncogProgramContext context) {
+		final FunctionFactory factory = context.getFunctions();
+		factory.addExtension(EXTENSION_AND);
+		factory.addExtension(EXTENSION_OR);
+		factory.addExtension(EXTENSION_EQUAL);
+		factory.addExtension(EXTENSION_LT);
+		factory.addExtension(EXTENSION_GT);
+		factory.addExtension(EXTENSION_LTE);
+		factory.addExtension(EXTENSION_GTE);
+		factory.addExtension(EXTENSION_IFF);
+		factory.addExtension(EXTENSION_NOT_EQUAL);
+		factory.addExtension(EXTENSION_NOT);
+	}
+
+	/**
 	 * Add the opcodes for type conversion operations to a context.
 	 * 
 	 * @param context
 	 *            The context to add the opcodes to.
 	 */
-	public static void createConversionFunctions(EncogProgramContext context) {
-		FunctionFactory factory = context.getFunctions();
+	public static void createConversionFunctions(
+			final EncogProgramContext context) {
+		final FunctionFactory factory = context.getFunctions();
 		factory.addExtension(EXTENSION_CINT);
 		factory.addExtension(EXTENSION_CFLOAT);
 		factory.addExtension(EXTENSION_CSTR);
 		factory.addExtension(EXTENSION_CBOOL);
+	}
+
+	/**
+	 * Add the opcodes for numeric operations to a context, do not use protected
+	 * division.
+	 * 
+	 * @param context
+	 *            The context to add the opcodes to.
+	 * @param protectedDiv
+	 *            Should protected division be used.
+	 */
+	public static void createNumericOperators(final EncogProgramContext context) {
+		createNumericOperators(context, false);
+	}
+
+	/**
+	 * Add the opcodes for numeric operations to a context.
+	 * 
+	 * @param context
+	 *            The context to add the opcodes to.
+	 * @param protectedDiv
+	 *            Should protected division be used.
+	 */
+	public static void createNumericOperators(
+			final EncogProgramContext context, final boolean protectedDiv) {
+		final FunctionFactory factory = context.getFunctions();
+		factory.addExtension(EXTENSION_VAR_SUPPORT);
+		factory.addExtension(EXTENSION_CONST_SUPPORT);
+		factory.addExtension(EXTENSION_NEG);
+		factory.addExtension(EXTENSION_ADD);
+		factory.addExtension(EXTENSION_SUB);
+		factory.addExtension(EXTENSION_MUL);
+		if (protectedDiv) {
+			factory.addExtension(EXTENSION_PDIV);
+		} else {
+			factory.addExtension(EXTENSION_DIV);
+		}
+		factory.addExtension(EXTENSION_POWER);
 	}
 
 	/**
@@ -1291,8 +1294,8 @@ public class StandardExtensions {
 	 * @param context
 	 *            The context to add the opcodes to.
 	 */
-	public static void createStringFunctions(EncogProgramContext context) {
-		FunctionFactory factory = context.getFunctions();
+	public static void createStringFunctions(final EncogProgramContext context) {
+		final FunctionFactory factory = context.getFunctions();
 		factory.addExtension(EXTENSION_LENGTH);
 		factory.addExtension(EXTENSION_FORMAT);
 		factory.addExtension(EXTENSION_LEFT);
@@ -1300,16 +1303,22 @@ public class StandardExtensions {
 	}
 
 	/**
-	 * Add all known opcodes to a context.
+	 * Add the opcodes for trig functions operations to a context.
 	 * 
 	 * @param context
 	 *            The context to add the opcodes to.
 	 */
-	public static void createAll(EncogProgramContext context) {
-		FunctionFactory factory = context.getFunctions();
-		for (ProgramExtensionTemplate temp : EncogOpcodeRegistry.INSTANCE
-				.findAllOpcodes()) {
-			factory.addExtension(temp);
-		}
+	public static void createTrigFunctions(final EncogProgramContext context) {
+		final FunctionFactory factory = context.getFunctions();
+		factory.addExtension(EXTENSION_ACOS);
+		factory.addExtension(EXTENSION_ASIN);
+		factory.addExtension(EXTENSION_ATAN);
+		factory.addExtension(EXTENSION_ATAN2);
+		factory.addExtension(EXTENSION_COS);
+		factory.addExtension(EXTENSION_COSH);
+		factory.addExtension(EXTENSION_SIN);
+		factory.addExtension(EXTENSION_SINH);
+		factory.addExtension(EXTENSION_TAN);
+		factory.addExtension(EXTENSION_TANH);
 	}
 }

@@ -14,22 +14,41 @@ import org.encog.ml.tree.TreeNode;
 
 public class ConstMutation implements EvolutionaryOperator {
 
-	private double frequency;
-	private double sigma;
-	
-	public ConstMutation(EncogProgramContext theContext, double theFrequency, double theSigma) {
+	private final double frequency;
+	private final double sigma;
+
+	public ConstMutation(final EncogProgramContext theContext,
+			final double theFrequency, final double theSigma) {
 		this.frequency = theFrequency;
 		this.sigma = theSigma;
 	}
 
 	@Override
-	public void init(EvolutionaryAlgorithm theOwner) {
+	public void init(final EvolutionaryAlgorithm theOwner) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	private void mutateNode(final Random rnd, final ProgramNode node) {
+		if (node.getTemplate() == StandardExtensions.EXTENSION_CONST_SUPPORT) {
+			if (rnd.nextDouble() < this.frequency) {
+				final ExpressionValue v = node.getData()[0];
+				if (v.isFloat()) {
+					final double adj = rnd.nextGaussian() * this.sigma;
+					node.getData()[0] = new ExpressionValue(v.toFloatValue()
+							+ adj);
+				}
+			}
+		}
+
+		for (final TreeNode n : node.getChildNodes()) {
+			final ProgramNode childNode = (ProgramNode) n;
+			mutateNode(rnd, childNode);
+		}
 	}
 
 	/**
-	 * @return Returns the number of offspring produced.  In this case, one.
+	 * @return Returns the number of offspring produced. In this case, one.
 	 */
 	@Override
 	public int offspringProduced() {
@@ -37,7 +56,7 @@ public class ConstMutation implements EvolutionaryOperator {
 	}
 
 	/**
-	 * @return Returns the number of parents needed.  In this case, one.
+	 * @return Returns the number of parents needed. In this case, one.
 	 */
 	@Override
 	public int parentsNeeded() {
@@ -45,29 +64,13 @@ public class ConstMutation implements EvolutionaryOperator {
 	}
 
 	@Override
-	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
-			Genome[] offspring, int offspringIndex) {
-		EncogProgram program = (EncogProgram)parents[0];
-		EncogProgramContext context = program.getContext();
-		EncogProgram result = context.cloneProgram(program);
-		mutateNode(rnd,result.getRootNode());
+	public void performOperation(final Random rnd, final Genome[] parents,
+			final int parentIndex, final Genome[] offspring,
+			final int offspringIndex) {
+		final EncogProgram program = (EncogProgram) parents[0];
+		final EncogProgramContext context = program.getContext();
+		final EncogProgram result = context.cloneProgram(program);
+		mutateNode(rnd, result.getRootNode());
 		offspring[0] = result;
-	}
-	
-	private void mutateNode(Random rnd, ProgramNode node) {
-		if( node.getTemplate()==StandardExtensions.EXTENSION_CONST_SUPPORT) {
-			if( rnd.nextDouble()<this.frequency ) {
-				ExpressionValue v = node.getData()[0];
-				if( v.isFloat() ) {
-					double adj = rnd.nextGaussian()*this.sigma;
-					node.getData()[0] = new ExpressionValue(v.toFloatValue()+adj);
-				}
-			}
-		}
-		
-		for(TreeNode n: node.getChildNodes()) {
-			ProgramNode childNode = (ProgramNode)n;
-			mutateNode(rnd, childNode);
-		}
 	}
 }

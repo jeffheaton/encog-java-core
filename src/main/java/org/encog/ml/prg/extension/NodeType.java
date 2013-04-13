@@ -38,6 +38,6 @@ public enum NodeType {
 	 * @return True, if this is an operator.
 	 */
 	public boolean isOperator() {
-		return (this == OperatorLeft || this == OperatorRight || this == Unary);
+		return this == OperatorLeft || this == OperatorRight || this == Unary;
 	}
 }

@@ -19,13 +19,44 @@ public class SubtreeMutation implements EvolutionaryOperator {
 	private PrgGenerator generator;
 	private final int maxDepth;
 
-	public SubtreeMutation(EncogProgramContext theContext, int theMaxDepth) {
+	public SubtreeMutation(final EncogProgramContext theContext,
+			final int theMaxDepth) {
 		this.generator = new PrgGrowGenerator(theContext, theMaxDepth);
 		this.maxDepth = theMaxDepth;
 	}
 
+	private List<ValueType> determineValueType(final ProgramNode node) {
+		final List<ValueType> result = new ArrayList<ValueType>();
+		result.addAll(node.getTemplate().getReturnValue().getPossibleTypes());
+		return result;
+	}
+
+	private void findNode(final Random rnd, final EncogProgram result,
+			final ProgramNode parentNode, final List<ValueType> types,
+			final int[] globalIndex) {
+		if (globalIndex[0] == 0) {
+			globalIndex[0]--;
+
+			final ProgramNode newInsert = this.generator.createNode(rnd,
+					result, this.maxDepth, types);
+			result.replaceNode(parentNode, newInsert);
+		} else {
+			globalIndex[0]--;
+			for (int i = 0; i < parentNode.getTemplate().getChildNodeCount(); i++) {
+				final ProgramNode childNode = parentNode.getChildNode(i);
+				final List<ValueType> childTypes = parentNode.getTemplate()
+						.getParams().get(i).determineArgumentTypes(types);
+				findNode(rnd, result, childNode, childTypes, globalIndex);
+			}
+		}
+	}
+
+	public PrgGenerator getGenerator() {
+		return this.generator;
+	}
+
 	@Override
-	public void init(EvolutionaryAlgorithm theOwner) {
+	public void init(final EvolutionaryAlgorithm theOwner) {
 		// TODO Auto-generated method stub
 
 	}
@@ -46,51 +77,24 @@ public class SubtreeMutation implements EvolutionaryOperator {
 		return 1;
 	}
 
-	private List<ValueType> determineValueType(ProgramNode node) {
-		List<ValueType> result = new ArrayList<ValueType>();
-		result.addAll(node.getTemplate().getReturnValue().getPossibleTypes());
-		return result;
-	}
-
 	@Override
-	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
-			Genome[] offspring, int offspringIndex) {
-		EncogProgram program = (EncogProgram) parents[0];
-		EncogProgramContext context = program.getContext();
-		EncogProgram result = context.cloneProgram(program);
+	public void performOperation(final Random rnd, final Genome[] parents,
+			final int parentIndex, final Genome[] offspring,
+			final int offspringIndex) {
+		final EncogProgram program = (EncogProgram) parents[0];
+		final EncogProgramContext context = program.getContext();
+		final EncogProgram result = context.cloneProgram(program);
 
-		List<ValueType> types = new ArrayList<ValueType>();
+		final List<ValueType> types = new ArrayList<ValueType>();
 		types.add(context.getResult().getVariableType());
-		int[] globalIndex = new int[1];
+		final int[] globalIndex = new int[1];
 		globalIndex[0] = rnd.nextInt(result.getRootNode().size());
 		findNode(rnd, result, result.getRootNode(), types, globalIndex);
 
 		offspring[0] = result;
 	}
 
-	private void findNode(Random rnd, EncogProgram result,
-			ProgramNode parentNode, List<ValueType> types, int[] globalIndex) {
-		if (globalIndex[0] == 0) {
-			globalIndex[0]--;
-
-			ProgramNode newInsert = this.generator.createNode(rnd, result,
-					this.maxDepth, types);
-			result.replaceNode(parentNode, newInsert);
-		} else {
-			globalIndex[0]--;
-			for(int i=0; i<parentNode.getTemplate().getChildNodeCount();i++) {
-				ProgramNode childNode = parentNode.getChildNode(i);
-				List<ValueType> childTypes = parentNode.getTemplate().getParams().get(i).determineArgumentTypes(types);
-				findNode(rnd,result,childNode,childTypes,globalIndex);
-			}
-		}
-	}
-
-	public PrgGenerator getGenerator() {
-		return generator;
-	}
-
-	public void setGenerator(PrgGenerator generator) {
+	public void setGenerator(final PrgGenerator generator) {
 		this.generator = generator;
 	}
 

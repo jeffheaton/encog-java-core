@@ -42,19 +42,23 @@ public class FunctionFactory implements Serializable {
 	}
 
 	/**
-	 * Add an opcode to the function factory. The opcode must exist in the opcode registry.
+	 * Add an opcode to the function factory. The opcode must exist in the
+	 * opcode registry.
 	 * 
 	 * @param ext
 	 *            The opcode to add.
 	 */
 	public void addExtension(final ProgramExtensionTemplate ext) {
-		addExtension(ext.getName(),ext.getChildNodeCount());
+		addExtension(ext.getName(), ext.getChildNodeCount());
 	}
 
 	/**
 	 * Add an opcode to the function factory from the opcode registry.
-	 * @param name The name of the opcode.
-	 * @param args The number of arguments.
+	 * 
+	 * @param name
+	 *            The name of the opcode.
+	 * @param args
+	 *            The number of arguments.
 	 */
 	public void addExtension(final String name, final int args) {
 		final String key = EncogOpcodeRegistry.createKey(name, args);
@@ -113,7 +117,9 @@ public class FunctionFactory implements Serializable {
 
 	/**
 	 * Find a function with the specified name.
-	 * @param name The name of the function.
+	 * 
+	 * @param name
+	 *            The name of the function.
 	 * @return The function opcode.
 	 */
 	public ProgramExtensionTemplate findFunction(final String name) {
@@ -130,10 +136,15 @@ public class FunctionFactory implements Serializable {
 
 	/**
 	 * Find all opcodes that match the search criteria.
-	 * @param types The return types to consider.
-	 * @param context The program context.
-	 * @param includeTerminal True, to include the terminals.
-	 * @param includeFunction True, to include the functions.
+	 * 
+	 * @param types
+	 *            The return types to consider.
+	 * @param context
+	 *            The program context.
+	 * @param includeTerminal
+	 *            True, to include the terminals.
+	 * @param includeFunction
+	 *            True, to include the functions.
 	 * @return The opcodes found.
 	 */
 	public List<ProgramExtensionTemplate> findOpcodes(

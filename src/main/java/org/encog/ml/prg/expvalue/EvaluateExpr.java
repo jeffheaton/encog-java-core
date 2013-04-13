@@ -32,13 +32,6 @@ import org.encog.Encog;
 public final class EvaluateExpr {
 
 	/**
-	 * Private constructor.
-	 */
-	private EvaluateExpr() {
-
-	}
-
-	/**
 	 * Perform an add on two expression values. a+b
 	 * 
 	 * @param a
@@ -46,10 +39,11 @@ public final class EvaluateExpr {
 	 * @param b
 	 *            The second argument.
 	 * @return The result of adding two numbers. Concat for strings. If one is a
-	 *         string, the other is converted to string. If no string, then if one is float, both
-	 *         are converted to int.
+	 *         string, the other is converted to string. If no string, then if
+	 *         one is float, both are converted to int.
 	 */
-	public static ExpressionValue add(ExpressionValue a, ExpressionValue b) {
+	public static ExpressionValue add(final ExpressionValue a,
+			final ExpressionValue b) {
 		if (a.isString() || b.isString()) {
 			return new ExpressionValue(a.toStringValue() + b.toStringValue());
 		}
@@ -61,27 +55,75 @@ public final class EvaluateExpr {
 	}
 
 	/**
-	 * Perform a subtract on two expression values. a-b
-	 * If one param is a float, the other is converted to a float.
-	 * @param a The first argument, must be numeric.
-	 * @param b The second argument, must be numeric.
+	 * Perform a division on two expression values. a/b An Encog division by
+	 * zero exception can occur. If one param is a float, the other is converted
+	 * to a float.
+	 * 
+	 * @param a
+	 *            The first argument, must be numeric.
+	 * @param b
+	 *            The second argument, must be numeric.
 	 * @return The result of the operation.
 	 */
-	public static ExpressionValue sub(ExpressionValue a, ExpressionValue b) {
+	public static ExpressionValue div(final ExpressionValue a,
+			final ExpressionValue b) {
 		if (a.isInt() && b.isInt()) {
-			return new ExpressionValue(a.toIntValue() - b.toIntValue());
-		} else
-			return new ExpressionValue(a.toFloatValue() - b.toFloatValue());
+			final long i = b.toIntValue();
+			if (i == 0) {
+				throw new DivisionByZeroError();
+			}
+			return new ExpressionValue(a.toIntValue() / i);
+		}
+
+		final double denom = b.toFloatValue();
+
+		if (Math.abs(denom) < Encog.DEFAULT_DOUBLE_EQUAL) {
+			throw new DivisionByZeroError();
+		}
+
+		return new ExpressionValue(a.toFloatValue() / denom);
 	}
 
 	/**
-	 * Perform a multiply on two expression values. a*b
-	 * If one param is a float, the other is converted to a float.
-	 * @param a The first argument, must be numeric.
-	 * @param b The second argument, must be numeric.
+	 * Perform an equal on two expressions. Booleans, ints and strings must
+	 * exactly equal. Floating point must be equal within the default Encog
+	 * tolerance.
+	 * 
+	 * @param a
+	 *            The first parameter to check.
+	 * @param b
+	 *            The second parameter to check.
+	 * @return True/false.
+	 */
+	public static ExpressionValue equ(final ExpressionValue a,
+			final ExpressionValue b) {
+
+		if (a.getExpressionType() == ValueType.booleanType) {
+			return new ExpressionValue(a.toBooleanValue() == b.toBooleanValue());
+		} else if (a.getExpressionType() == ValueType.enumType) {
+			return new ExpressionValue(a.toIntValue() == b.toIntValue()
+					&& a.getEnumType() == b.getEnumType());
+		} else if (a.getExpressionType() == ValueType.stringType) {
+			return new ExpressionValue(a.toStringValue().equals(
+					b.toStringValue()));
+		} else {
+			final double diff = Math.abs(a.toFloatValue() - b.toFloatValue());
+			return new ExpressionValue(diff < Encog.DEFAULT_DOUBLE_EQUAL);
+		}
+	}
+
+	/**
+	 * Perform a multiply on two expression values. a*b If one param is a float,
+	 * the other is converted to a float.
+	 * 
+	 * @param a
+	 *            The first argument, must be numeric.
+	 * @param b
+	 *            The second argument, must be numeric.
 	 * @return The result of the operation.
 	 */
-	public static ExpressionValue mul(ExpressionValue a, ExpressionValue b) {
+	public static ExpressionValue mul(final ExpressionValue a,
+			final ExpressionValue b) {
 		if (a.isInt() && b.isInt()) {
 			return new ExpressionValue(a.toIntValue() * b.toIntValue());
 		}
@@ -89,64 +131,44 @@ public final class EvaluateExpr {
 	}
 
 	/**
-	 * Perform a division on two expression values. a/b
-	 * An Encog division by zero exception can occur.
-	 * If one param is a float, the other is converted to a float.
-	 * @param a The first argument, must be numeric.
-	 * @param b The second argument, must be numeric.
-	 * @return The result of the operation.
+	 * Perform a non-equal on two expressions. Booleans, ints and strings must
+	 * exactly non-equal. Floating point must be non-equal within the default
+	 * Encog tolerance.
+	 * 
+	 * @param a
+	 *            The first parameter to check.
+	 * @param b
+	 *            The second parameter to check.
+	 * @return True/false.
 	 */
-	public static ExpressionValue div(ExpressionValue a, ExpressionValue b) {
-		if (a.isInt() && b.isInt()) {
-			long i = b.toIntValue();
-			if (i == 0) {
-				throw new DivisionByZeroError();
-			}
-			return new ExpressionValue(a.toIntValue() / i);
+	public static ExpressionValue notequ(final ExpressionValue a,
+			final ExpressionValue b) {
+		if (a.getExpressionType() == ValueType.booleanType) {
+			return new ExpressionValue(a.toBooleanValue() != b.toBooleanValue());
+		} else if (a.getExpressionType() == ValueType.enumType) {
+			return new ExpressionValue(a.toIntValue() != b.toIntValue()
+					&& a.getEnumType() == b.getEnumType());
+		} else if (a.getExpressionType() == ValueType.stringType) {
+			return new ExpressionValue(!a.toStringValue().equals(
+					b.toStringValue()));
+		} else {
+			final double diff = Math.abs(a.toFloatValue() - b.toFloatValue());
+			return new ExpressionValue(diff > Encog.DEFAULT_DOUBLE_EQUAL);
 		}
-		
-		double denom = b.toFloatValue();
-		
-		if( Math.abs(denom) < Encog.DEFAULT_DOUBLE_EQUAL ) {
-			throw new DivisionByZeroError();
-		}
-		
-		return new ExpressionValue(a.toFloatValue() / denom);
-	}
-	
-	/**
-	 * Perform a protected div on two expression values. a/b
-	 * Division by zero results in 1.
-	 * @param a The first argument, must be numeric.
-	 * @param b The second argument, must be numeric.
-	 * @return The result of the operation.
-	 */
-	public static ExpressionValue protectedDiv(ExpressionValue a, ExpressionValue b) {
-		if (a.isInt() && b.isInt()) {
-			long i = b.toIntValue();
-			if (i == 0) {
-				return new ExpressionValue(1);
-			}
-			return new ExpressionValue(a.toIntValue() / i);
-		}
-		
-		double denom = b.toFloatValue();
-		
-		if( Math.abs(denom) < Encog.DEFAULT_DOUBLE_EQUAL ) {
-			return new ExpressionValue(1);
-		}
-		
-		return new ExpressionValue(a.toFloatValue() / denom);
 	}
 
 	/**
-	 * Perform a protected div on two expression values. a/b
-	 * If one param is a float, the other is converted to a float.
-	 * @param a The first argument, must be numeric.
-	 * @param b The second argument, must be numeric.
+	 * Perform a protected div on two expression values. a/b If one param is a
+	 * float, the other is converted to a float.
+	 * 
+	 * @param a
+	 *            The first argument, must be numeric.
+	 * @param b
+	 *            The second argument, must be numeric.
 	 * @return The result of the operation.
 	 */
-	public static ExpressionValue pow(ExpressionValue a, ExpressionValue b) {
+	public static ExpressionValue pow(final ExpressionValue a,
+			final ExpressionValue b) {
 		if (a.isInt() && b.isInt()) {
 			return new ExpressionValue(Math.pow(a.toIntValue(), b.toIntValue()));
 		}
@@ -154,47 +176,57 @@ public final class EvaluateExpr {
 	}
 
 	/**
-	 * Perform an equal on two expressions.  Booleans, ints and strings must exactly equal.
-	 * Floating point must be equal within the default Encog tolerance.
-	 * @param a The first parameter to check.
-	 * @param b The second parameter to check.
-	 * @return True/false.
+	 * Perform a protected div on two expression values. a/b Division by zero
+	 * results in 1.
+	 * 
+	 * @param a
+	 *            The first argument, must be numeric.
+	 * @param b
+	 *            The second argument, must be numeric.
+	 * @return The result of the operation.
 	 */
-	public static ExpressionValue equ(ExpressionValue a, ExpressionValue b) {
+	public static ExpressionValue protectedDiv(final ExpressionValue a,
+			final ExpressionValue b) {
+		if (a.isInt() && b.isInt()) {
+			final long i = b.toIntValue();
+			if (i == 0) {
+				return new ExpressionValue(1);
+			}
+			return new ExpressionValue(a.toIntValue() / i);
+		}
 
-		if (a.getExpressionType() == ValueType.booleanType) {
-			return new ExpressionValue(a.toBooleanValue() == b.toBooleanValue());
-		} else if (a.getExpressionType() == ValueType.enumType) {
-			return new ExpressionValue((a.toIntValue() == b.toIntValue())
-					&& a.getEnumType() == b.getEnumType());
-		} else if (a.getExpressionType() == ValueType.stringType) {
-			return new ExpressionValue(a.toStringValue().equals(
-					b.toStringValue()));
+		final double denom = b.toFloatValue();
+
+		if (Math.abs(denom) < Encog.DEFAULT_DOUBLE_EQUAL) {
+			return new ExpressionValue(1);
+		}
+
+		return new ExpressionValue(a.toFloatValue() / denom);
+	}
+
+	/**
+	 * Perform a subtract on two expression values. a-b If one param is a float,
+	 * the other is converted to a float.
+	 * 
+	 * @param a
+	 *            The first argument, must be numeric.
+	 * @param b
+	 *            The second argument, must be numeric.
+	 * @return The result of the operation.
+	 */
+	public static ExpressionValue sub(final ExpressionValue a,
+			final ExpressionValue b) {
+		if (a.isInt() && b.isInt()) {
+			return new ExpressionValue(a.toIntValue() - b.toIntValue());
 		} else {
-			double diff = Math.abs(a.toFloatValue() - b.toFloatValue());
-			return new ExpressionValue(diff < Encog.DEFAULT_DOUBLE_EQUAL);
+			return new ExpressionValue(a.toFloatValue() - b.toFloatValue());
 		}
 	}
 
 	/**
-	 * Perform a non-equal on two expressions.  Booleans, ints and strings must exactly non-equal.
-	 * Floating point must be non-equal within the default Encog tolerance.
-	 * @param a The first parameter to check.
-	 * @param b The second parameter to check.
-	 * @return True/false.
+	 * Private constructor.
 	 */
-	public static ExpressionValue notequ(ExpressionValue a, ExpressionValue b) {
-		if (a.getExpressionType() == ValueType.booleanType) {
-			return new ExpressionValue(a.toBooleanValue() != b.toBooleanValue());
-		} else if (a.getExpressionType() == ValueType.enumType) {
-			return new ExpressionValue((a.toIntValue() != b.toIntValue())
-					&& a.getEnumType() == b.getEnumType());
-		} else if (a.getExpressionType() == ValueType.stringType) {
-			return new ExpressionValue(!a.toStringValue().equals(
-					b.toStringValue()));
-		} else {
-			double diff = Math.abs(a.toFloatValue() - b.toFloatValue());
-			return new ExpressionValue(diff > Encog.DEFAULT_DOUBLE_EQUAL);
-		}
+	private EvaluateExpr() {
+
 	}
 }

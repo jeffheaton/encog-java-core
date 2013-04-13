@@ -57,9 +57,13 @@ public class ProgramNode extends BasicTreeNode implements Serializable {
 
 	/**
 	 * Construct the program node.
-	 * @param theOwner The owner of the node.
-	 * @param theTemplate The opcode that this node is based on.
-	 * @param theArgs The child nodes to this node.
+	 * 
+	 * @param theOwner
+	 *            The owner of the node.
+	 * @param theTemplate
+	 *            The opcode that this node is based on.
+	 * @param theArgs
+	 *            The child nodes to this node.
 	 */
 	public ProgramNode(final EncogProgram theOwner,
 			final ProgramExtensionTemplate theTemplate,
@@ -122,7 +126,9 @@ public class ProgramNode extends BasicTreeNode implements Serializable {
 
 	/**
 	 * Get the specified child node.
-	 * @param index The index of this node.
+	 * 
+	 * @param index
+	 *            The index of this node.
 	 * @return The child node requested.
 	 */
 	public ProgramNode getChildNode(final int index) {

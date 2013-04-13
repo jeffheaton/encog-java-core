@@ -30,7 +30,7 @@ public enum ValueType {
 	/**
 	 * Floating point.
 	 */
-	floatingType, 
+	floatingType,
 	/**
 	 * String
 	 */
@@ -42,7 +42,7 @@ public enum ValueType {
 	/**
 	 * Integer.
 	 */
-	intType, 
+	intType,
 	/**
 	 * Enumeration
 	 */

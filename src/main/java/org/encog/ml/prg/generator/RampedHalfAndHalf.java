@@ -9,38 +9,42 @@ import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ValueType;
 
 public class RampedHalfAndHalf extends AbstractPrgGenerator {
-	
+
 	private final int minDepth;
 	private final PrgFullGenerator fullGenerator;
 	private final PrgGrowGenerator growGenerator;
-		
-	public RampedHalfAndHalf(EncogProgramContext theContext, int theMinDepth, int theMaxDepth) {
+
+	public RampedHalfAndHalf(final EncogProgramContext theContext,
+			final int theMinDepth, final int theMaxDepth) {
 		super(theContext, theMaxDepth);
 		this.minDepth = theMinDepth;
-		
+
 		this.fullGenerator = new PrgFullGenerator(theContext, theMaxDepth);
 		this.growGenerator = new PrgGrowGenerator(theContext, theMaxDepth);
 	}
 
 	@Override
-	public ProgramNode createNode(Random rnd, EncogProgram program, int depthRemaining, List<ValueType> types) {
-		int actualDepthRemaining = depthRemaining;
-				
-		if( rnd.nextBoolean() ) {
-			return this.fullGenerator.createNode(rnd, program, actualDepthRemaining, types);
+	public ProgramNode createNode(final Random rnd, final EncogProgram program,
+			final int depthRemaining, final List<ValueType> types) {
+		final int actualDepthRemaining = depthRemaining;
+
+		if (rnd.nextBoolean()) {
+			return this.fullGenerator.createNode(rnd, program,
+					actualDepthRemaining, types);
 		} else {
-			return this.growGenerator.createNode(rnd, program, actualDepthRemaining, types);
+			return this.growGenerator.createNode(rnd, program,
+					actualDepthRemaining, types);
 		}
 	}
 
-	public int getMinDepth() {
-		return minDepth;
-	}
-	
-	public int determineMaxDepth(Random rnd) {
-		int range = getMaxDepth() - this.minDepth;
+	@Override
+	public int determineMaxDepth(final Random rnd) {
+		final int range = getMaxDepth() - this.minDepth;
 		return rnd.nextInt(range) + this.minDepth;
 	}
-	
-	
+
+	public int getMinDepth() {
+		return this.minDepth;
+	}
+
 }

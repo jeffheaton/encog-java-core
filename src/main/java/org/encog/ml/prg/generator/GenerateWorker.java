@@ -7,11 +7,12 @@ import org.encog.ml.prg.train.PrgPopulation;
 
 public class GenerateWorker implements Runnable {
 
-	private AbstractPrgGenerator owner;
+	private final AbstractPrgGenerator owner;
 	private final Random rnd;
-	private PrgPopulation population;
-	
-	public GenerateWorker(AbstractPrgGenerator theOwner, PrgPopulation thePopulation) {
+	private final PrgPopulation population;
+
+	public GenerateWorker(final AbstractPrgGenerator theOwner,
+			final PrgPopulation thePopulation) {
 		this.owner = theOwner;
 		this.population = thePopulation;
 		this.rnd = this.owner.getRandomFactory().factor();
@@ -19,8 +20,9 @@ public class GenerateWorker implements Runnable {
 
 	@Override
 	public void run() {
-		final EncogProgram prg = owner.attemptCreateGenome(rnd, this.population);
-		this.owner.addPopulationMember(this.population,prg);
+		final EncogProgram prg = this.owner.attemptCreateGenome(this.rnd,
+				this.population);
+		this.owner.addPopulationMember(this.population, prg);
 	}
 
 }

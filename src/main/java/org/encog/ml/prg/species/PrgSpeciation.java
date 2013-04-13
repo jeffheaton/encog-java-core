@@ -34,14 +34,12 @@ public class PrgSpeciation extends ThresholdSpeciation {
 	 */
 	private static final long serialVersionUID = 1L;
 
-
 	public PrgSpeciation() {
-		this.setCompatibilityThreshold(15);
-		this.setMaxNumberOfSpecies(30);
-		this.setNumGensAllowedNoImprovement(15);
+		setCompatibilityThreshold(15);
+		setMaxNumberOfSpecies(30);
+		setNumGensAllowedNoImprovement(15);
 	}
-	
-	
+
 	/**
 	 * Get the compatibility score with another genome. Used to determine
 	 * species.
@@ -53,8 +51,9 @@ public class PrgSpeciation extends ThresholdSpeciation {
 	@Override
 	public double getCompatibilityScore(final Genome genome1,
 			final Genome genome2) {
-		CompareEncogProgram comp = new CompareEncogProgram();
-		double d = comp.compare((EncogProgram)genome1, (EncogProgram)genome2);
+		final CompareEncogProgram comp = new CompareEncogProgram();
+		final double d = comp.compare((EncogProgram) genome1,
+				(EncogProgram) genome2);
 		return d;
 	}
 

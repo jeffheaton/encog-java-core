@@ -9,14 +9,17 @@ import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ValueType;
 
 public class PrgFullGenerator extends AbstractPrgGenerator {
-		
-	public PrgFullGenerator(EncogProgramContext theContext, int theMaxDepth) {
+
+	public PrgFullGenerator(final EncogProgramContext theContext,
+			final int theMaxDepth) {
 		super(theContext, theMaxDepth);
 	}
 
 	@Override
-	public ProgramNode createNode(Random rnd, EncogProgram program, int depthRemaining, List<ValueType> types) {
-		return createRandomNode(rnd,program,depthRemaining,types,false,true);		
+	public ProgramNode createNode(final Random rnd, final EncogProgram program,
+			final int depthRemaining, final List<ValueType> types) {
+		return createRandomNode(rnd, program, depthRemaining, types, false,
+				true);
 	}
-	
+
 }

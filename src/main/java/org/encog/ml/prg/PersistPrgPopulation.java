@@ -64,7 +64,9 @@ public class PersistPrgPopulation implements EncogPersistor {
 
 	/**
 	 * Get the type string for the specified variable mapping.
-	 * @param mapping The mapping.
+	 * 
+	 * @param mapping
+	 *            The mapping.
 	 * @return The value.
 	 */
 	private String getType(final VariableMapping mapping) {

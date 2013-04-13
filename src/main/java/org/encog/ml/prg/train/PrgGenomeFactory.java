@@ -9,7 +9,7 @@ import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.EncogProgramVariables;
 
 /**
- * A GenomeFactory that creates EncogProgram genomes.  
+ * A GenomeFactory that creates EncogProgram genomes.
  */
 public class PrgGenomeFactory implements GenomeFactory, Serializable {
 
@@ -17,7 +17,7 @@ public class PrgGenomeFactory implements GenomeFactory, Serializable {
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * The context.
 	 */
@@ -25,7 +25,9 @@ public class PrgGenomeFactory implements GenomeFactory, Serializable {
 
 	/**
 	 * Construct a factory.
-	 * @param theContext The context to use.
+	 * 
+	 * @param theContext
+	 *            The context to use.
 	 */
 	public PrgGenomeFactory(final EncogProgramContext theContext) {
 		this.context = theContext;

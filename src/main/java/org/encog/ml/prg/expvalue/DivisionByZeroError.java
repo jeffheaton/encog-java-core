@@ -14,29 +14,36 @@ public class DivisionByZeroError extends EARuntimeError {
 	public DivisionByZeroError() {
 		this("Division by zero");
 	}
-	
+
+	/**
+	 * Just a message.
+	 * 
+	 * @param msg
+	 *            The message.
+	 */
+	public DivisionByZeroError(final String msg) {
+		super(msg);
+	}
+
 	/**
 	 * Message with a throwable.
-	 * @param msg The message.
-	 * @param t The throwable.
+	 * 
+	 * @param msg
+	 *            The message.
+	 * @param t
+	 *            The throwable.
 	 */
-	public DivisionByZeroError(String msg, Throwable t) {
+	public DivisionByZeroError(final String msg, final Throwable t) {
 		super(msg, t);
 	}
 
 	/**
 	 * Just a throwable.
-	 * @param t The throwable.
+	 * 
+	 * @param t
+	 *            The throwable.
 	 */
-	public DivisionByZeroError(Throwable t) {
+	public DivisionByZeroError(final Throwable t) {
 		super(t);
-	}
-
-	/**
-	 * Just a message.
-	 * @param msg The message.
-	 */
-	public DivisionByZeroError(String msg) {
-		super(msg);
 	}
 }

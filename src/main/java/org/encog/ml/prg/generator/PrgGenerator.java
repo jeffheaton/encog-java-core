@@ -9,8 +9,8 @@ import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ValueType;
 
 public interface PrgGenerator extends PopulationGenerator {
-	ProgramNode createNode(Random rnd, EncogProgram program,
-			int depth, List<ValueType> types);
+	ProgramNode createNode(Random rnd, EncogProgram program, int depth,
+			List<ValueType> types);
 
 	int getMaxGenerationErrors();
 
