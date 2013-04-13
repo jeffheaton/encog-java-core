@@ -9,19 +9,46 @@ import java.util.Set;
 import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.expvalue.ValueType;
 
+/**
+ * Provides a template for parameters to the opcodes. This defines the accepted
+ * types and if type of a given parameter passes through to the return type.
+ */
 public class ParamTemplate implements Serializable {
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Possible types for this parameter.
+	 */
 	private final Set<ValueType> possibleTypes = new HashSet<ValueType>();
+
+	/**
+	 * Is this a pass through argument. If so, then the return type of the
+	 * parent opcode will depend on the actual type of this parameter.
+	 */
 	private boolean passThrough;
 
+	/**
+	 * Default constructor.
+	 */
 	public ParamTemplate() {
 	}
 
+	/**
+	 * Add all known types.
+	 */
 	public void addAllTypes() {
 		for (final ValueType t : ValueType.values()) {
 			addType(t);
 		}
 	}
 
+	/**
+	 * Add the specified type.
+	 * @param theType The type to add.
+	 */
 	public void addType(final String theType) {
 		if (theType.equals("b")) {
 			addType(ValueType.booleanType);
@@ -40,10 +67,19 @@ public class ParamTemplate implements Serializable {
 		}
 	}
 
+	/**
+	 * Add a type using a type enum.
+	 * @param theType The type to add.
+	 */
 	public void addType(final ValueType theType) {
 		this.possibleTypes.add(theType);
 	}
 
+	/**
+	 * Determine the possable argument types, given the parent types.
+	 * @param parentTypes The parent types.
+	 * @return The possable types.
+	 */
 	public List<ValueType> determineArgumentTypes(
 			final List<ValueType> parentTypes) {
 		if (isPassThrough()) {

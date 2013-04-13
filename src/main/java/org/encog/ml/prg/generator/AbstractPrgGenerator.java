@@ -27,20 +27,75 @@ import org.encog.ml.prg.train.PrgPopulation;
 import org.encog.ml.prg.train.ZeroEvalScoreFunction;
 import org.encog.util.concurrency.MultiThreadable;
 
+/**
+ * The abstract base for Full and Grow program generation.
+ */
 public abstract class AbstractPrgGenerator implements PrgGenerator,
 		MultiThreadable {
+	/**
+	 * An optional scoring function.
+	 */
 	private CalculateScore score = new ZeroEvalScoreFunction();
+
+	/**
+	 * The program context to use.
+	 */
 	private final EncogProgramContext context;
+
+	/**
+	 * The maximum depth to generate to.
+	 */
 	private final int maxDepth;
+
+	/**
+	 * The minimum const to generate.
+	 */
 	private double minConst = -10;
+
+	/**
+	 * The maximum const to generate.
+	 */
 	private double maxConst = 10;
+
+	/**
+	 * True, if the program has enums.
+	 */
 	private final boolean hasEnum;
+
+	/**
+	 * The actual number of threads to use.
+	 */
 	private int actualThreads;
+
+	/**
+	 * The number of threads to use.
+	 */
 	private int threads;
+
+	/**
+	 * The contents of this population, stored in rendered form. This prevents
+	 * duplicates.
+	 */
 	private final Set<String> contents = new HashSet<String>();
+
+	/**
+	 * A random number generator factory.
+	 */
 	private RandomFactory randomFactory = new BasicRandomFactory();
+
+	/**
+	 * The maximum number of allowed generation errors.
+	 */
 	private int maxGenerationErrors = 500;
 
+	/**
+	 * Construct the generator.
+	 * 
+	 * @param theContext
+	 *            The context that is to be used for generation.
+	 * @param theMaxDepth
+	 *            The maximum depth to generate to.
+	 */
 	public AbstractPrgGenerator(final EncogProgramContext theContext,
 			final int theMaxDepth) {
 		if (theContext.getFunctions().size() == 0) {
@@ -52,6 +107,14 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 		this.hasEnum = this.context.hasEnum();
 	}
 
+	/**
+	 * Add a population member from one of the threads.
+	 * 
+	 * @param population
+	 *            The population to add to.
+	 * @param prg
+	 *            The program to add.
+	 */
 	public void addPopulationMember(final PrgPopulation population,
 			final EncogProgram prg) {
 		synchronized (this) {
@@ -62,6 +125,14 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 		}
 	}
 
+	/**
+	 * Attempt to create a genome. Cycle the specified number of times if an
+	 * error occurs.
+	 * 
+	 * @param rnd The random number generator.
+	 * @param pop The population.
+	 * @return The generated genome.
+	 */
 	public EncogProgram attemptCreateGenome(final Random rnd,
 			final Population pop) {
 		boolean done = false;
@@ -92,6 +163,16 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 		return result;
 	}
 
+	/**
+	 * Create a random note according to the specified paramaters.
+	 * @param rnd A random number generator.
+	 * @param program The program to generate for.
+	 * @param depthRemaining The depth remaining to generate.
+	 * @param types The types to generate.
+	 * @param includeTerminal Should we include terminal nodes.
+	 * @param includeFunction Should we include function nodes.
+	 * @return The generated program node.
+	 */
 	public ProgramNode createRandomNode(final Random rnd,
 			final EncogProgram program, final int depthRemaining,
 			final List<ValueType> types, final boolean includeTerminal,
@@ -153,6 +234,13 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 		return result;
 	}
 
+	/**
+	 * Create a terminal node.
+	 * @param rnd A random number generator.
+	 * @param program The program to generate for.
+	 * @param types The types that we might generate.
+	 * @return The terminal program node.
+	 */
 	public ProgramNode createTerminalNode(final Random rnd,
 			final EncogProgram program, final List<ValueType> types) {
 		final ProgramExtensionTemplate temp = generateRandomOpcode(
@@ -174,6 +262,9 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 		return this.maxDepth;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public EncogProgram generate(final Random rnd) {
 		final EncogProgram program = new EncogProgram(this.context);
@@ -184,6 +275,9 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 		return program;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void generate(final Random rnd, final Population pop) {
 		// prepare population
@@ -224,6 +318,9 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 		defaultSpecies.setLeader(defaultSpecies.getMembers().get(0));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public ProgramExtensionTemplate generateRandomOpcode(final Random rnd,
 			final List<ProgramExtensionTemplate> opcodes) {
 		final int maxOpCode = opcodes.size();
