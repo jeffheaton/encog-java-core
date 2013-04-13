@@ -7,6 +7,11 @@ import java.util.Map;
 import org.encog.ml.ea.exception.EACompileError;
 import org.encog.ml.prg.EncogProgramContext;
 
+/**
+ * Holds all known EPL opcodes.  Extension programs should add new opcodes here.
+ * The FunctionFactory selects a subset of opcodes from here that will be run.
+ *
+ */
 public enum EncogOpcodeRegistry {
 	INSTANCE;
 	

@@ -14,6 +14,10 @@ import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.expvalue.ValueType;
 
 /**
+ * This class defines the standard opcodes for Encog programs.
+ * 
+ * The operator precedence is based on the following article.
+ * 
  * http://en.wikipedia.org/wiki/Operators_in_C_and_C%2B%2B#Operator_precedence
  * 
  */
@@ -23,7 +27,8 @@ public class StandardExtensions {
 	 * Standard unary minus operator.
 	 */
 	public static ProgramExtensionTemplate EXTENSION_VAR_SUPPORT = new BasicTemplate(
-			ProgramExtensionTemplate.NO_PREC, "#var():{*}", NodeType.Leaf, true, 1) {
+			ProgramExtensionTemplate.NO_PREC, "#var():{*}", NodeType.Leaf,
+			true, 1) {
 		/**
 		 * The serial id.
 		 */
@@ -43,17 +48,18 @@ public class StandardExtensions {
 			}
 			return result;
 		}
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public boolean isPossibleReturnType(EncogProgramContext context, ValueType rtn) {
-			if( !super.isPossibleReturnType(context, rtn) ) {
+		public boolean isPossibleReturnType(EncogProgramContext context,
+				ValueType rtn) {
+			if (!super.isPossibleReturnType(context, rtn)) {
 				return false;
 			}
-			for(VariableMapping mapping: context.getDefinedVariables()) {
-				if( mapping.getVariableType()==rtn) {
+			for (VariableMapping mapping : context.getDefinedVariables()) {
+				if (mapping.getVariableType() == rtn) {
 					return true;
 				}
 			}
@@ -64,12 +70,14 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void randomize(Random rnd, List<ValueType> desiredTypes, ProgramNode actual, double minValue,
-				double maxValue) {
-			
-			int variableIndex = actual.getOwner().selectRandomVariable(rnd,desiredTypes);
-			if( variableIndex==-1 ) {
-				throw new EncogError("Can't find any variables of type " + desiredTypes.toString() + " to generate.");
+		public void randomize(Random rnd, List<ValueType> desiredTypes,
+				ProgramNode actual, double minValue, double maxValue) {
+
+			int variableIndex = actual.getOwner().selectRandomVariable(rnd,
+					desiredTypes);
+			if (variableIndex == -1) {
+				throw new EncogError("Can't find any variables of type "
+						+ desiredTypes.toString() + " to generate.");
 			}
 			actual.getData()[0] = new ExpressionValue(variableIndex);
 		}
@@ -80,13 +88,13 @@ public class StandardExtensions {
 	 * Numeric const.
 	 */
 	public static ProgramExtensionTemplate EXTENSION_CONST_SUPPORT = new BasicTemplate(
-			ProgramExtensionTemplate.NO_PREC, "#const():{*}", NodeType.Leaf, false,
-			1) {
+			ProgramExtensionTemplate.NO_PREC, "#const():{*}", NodeType.Leaf,
+			false, 1) {
 		/**
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -99,31 +107,33 @@ public class StandardExtensions {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void randomize(Random rnd, List<ValueType> desiredType, ProgramNode actual, double minValue,
-				double maxValue) {
-			ValueType pickedType = desiredType.get(rnd.nextInt(desiredType.size()));
+		public void randomize(Random rnd, List<ValueType> desiredType,
+				ProgramNode actual, double minValue, double maxValue) {
+			ValueType pickedType = desiredType.get(rnd.nextInt(desiredType
+					.size()));
 			EncogProgramContext context = actual.getOwner().getContext();
-			switch( pickedType ) {
-				case floatingType:
-					actual.getData()[0] = new ExpressionValue(
-							RangeRandomizer.randomize(rnd, minValue, maxValue));
-					break;
-				case stringType:
-					// this will be added later
-					break;
-				case booleanType:
-					actual.getData()[0] = new ExpressionValue(rnd.nextBoolean());
-					break;
-				case intType:
-					actual.getData()[0] = new ExpressionValue((int)
-							RangeRandomizer.randomize(rnd, minValue, maxValue));
-					break;
-				case enumType:
-					int enumType = rnd.nextInt(context.getMaxEnumType()+1);
-					int enumCount = context.getEnumCount(enumType);
-					int enumIndex = rnd.nextInt(enumCount);
-					actual.getData()[0] = new ExpressionValue(enumType,enumIndex);
-					break;
+			switch (pickedType) {
+			case floatingType:
+				actual.getData()[0] = new ExpressionValue(
+						RangeRandomizer.randomize(rnd, minValue, maxValue));
+				break;
+			case stringType:
+				// this will be added later
+				break;
+			case booleanType:
+				actual.getData()[0] = new ExpressionValue(rnd.nextBoolean());
+				break;
+			case intType:
+				actual.getData()[0] = new ExpressionValue(
+						(int) RangeRandomizer
+								.randomize(rnd, minValue, maxValue));
+				break;
+			case enumType:
+				int enumType = rnd.nextInt(context.getMaxEnumType() + 1);
+				int enumCount = context.getEnumCount(enumType);
+				int enumIndex = rnd.nextInt(enumCount);
+				actual.getData()[0] = new ExpressionValue(enumType, enumIndex);
+				break;
 			}
 		}
 	};
@@ -137,7 +147,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -157,7 +167,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -177,7 +187,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -197,7 +207,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -209,7 +219,7 @@ public class StandardExtensions {
 	};
 
 	/**
-	 * Standard binary multiply operator.
+	 * Standard binary div operator.
 	 */
 	public static ProgramExtensionTemplate EXTENSION_DIV = new BasicTemplate(5,
 			"/({f,i}{f,i}):{f,i}", NodeType.OperatorLeft, false, 0) {
@@ -217,7 +227,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -225,6 +235,26 @@ public class StandardExtensions {
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return EvaluateExpr.div(actual.getChildNode(0).evaluate(), actual
 					.getChildNode(1).evaluate());
+		}
+	};
+
+	/**
+	 * Standard binary protected div operator.
+	 */
+	public static ProgramExtensionTemplate EXTENSION_PDIV = new BasicTemplate(
+			5, "%({f,i}{f,i}):{f,i}", NodeType.OperatorLeft, false, 0) {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public ExpressionValue evaluate(ProgramNode actual) {
+			return EvaluateExpr.protectedDiv(actual.getChildNode(0).evaluate(),
+					actual.getChildNode(1).evaluate());
 		}
 	};
 
@@ -237,7 +267,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -257,7 +287,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -278,7 +308,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -298,7 +328,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -319,7 +349,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -339,14 +369,14 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
-			return EvaluateExpr.notequ(actual.getChildNode(0).evaluate(), actual
-					.getChildNode(1).evaluate());
+			return EvaluateExpr.notequ(actual.getChildNode(0).evaluate(),
+					actual.getChildNode(1).evaluate());
 		}
 	};
 
@@ -359,7 +389,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -379,7 +409,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -400,7 +430,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -421,7 +451,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -442,7 +472,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -462,7 +492,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -482,7 +512,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -502,7 +532,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -522,7 +552,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -543,7 +573,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -563,7 +593,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -583,7 +613,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -603,7 +633,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -623,7 +653,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -643,7 +673,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -663,7 +693,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -683,7 +713,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -704,7 +734,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -725,7 +755,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -746,7 +776,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -765,7 +795,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -785,7 +815,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -805,7 +835,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -825,7 +855,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -845,7 +875,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -865,7 +895,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -880,12 +910,12 @@ public class StandardExtensions {
 	 * Standard numeric toDegrees function.
 	 */
 	public static ProgramExtensionTemplate EXTENSION_TODEG = new BasicTemplate(
-			"todeg({f}):{f}" ) {
+			"todeg({f}):{f}") {
 		/**
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -905,7 +935,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -925,7 +955,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -945,7 +975,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -970,7 +1000,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -994,7 +1024,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1017,7 +1047,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1037,7 +1067,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1057,7 +1087,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1077,7 +1107,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1097,7 +1127,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1121,7 +1151,7 @@ public class StandardExtensions {
 		 * The serial id.
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1141,10 +1171,28 @@ public class StandardExtensions {
 	};
 
 	/**
-	 * Add the opcodes for numeric operations to a context.
-	 * @param context The context to add the opcodes to.
+	 * Add the opcodes for numeric operations to a context, do not use protected
+	 * division.
+	 * 
+	 * @param context
+	 *            The context to add the opcodes to.
+	 * @param protectedDiv
+	 *            Should protected division be used.
 	 */
 	public static void createNumericOperators(EncogProgramContext context) {
+		createNumericOperators(context,false);
+	}
+
+	/**
+	 * Add the opcodes for numeric operations to a context.
+	 * 
+	 * @param context
+	 *            The context to add the opcodes to.
+	 * @param protectedDiv
+	 *            Should protected division be used.
+	 */
+	public static void createNumericOperators(EncogProgramContext context,
+			boolean protectedDiv) {
 		FunctionFactory factory = context.getFunctions();
 		factory.addExtension(EXTENSION_VAR_SUPPORT);
 		factory.addExtension(EXTENSION_CONST_SUPPORT);
@@ -1152,13 +1200,19 @@ public class StandardExtensions {
 		factory.addExtension(EXTENSION_ADD);
 		factory.addExtension(EXTENSION_SUB);
 		factory.addExtension(EXTENSION_MUL);
-		factory.addExtension(EXTENSION_DIV);
+		if (protectedDiv) {
+			factory.addExtension(EXTENSION_PDIV);
+		} else {
+			factory.addExtension(EXTENSION_DIV);
+		}
 		factory.addExtension(EXTENSION_POWER);
 	}
 
 	/**
 	 * Add the opcodes for boolean operations to a context.
-	 * @param context The context to add the opcodes to.
+	 * 
+	 * @param context
+	 *            The context to add the opcodes to.
 	 */
 	public static void createBooleanOperators(EncogProgramContext context) {
 		FunctionFactory factory = context.getFunctions();
@@ -1176,7 +1230,9 @@ public class StandardExtensions {
 
 	/**
 	 * Add the opcodes for trig functions operations to a context.
-	 * @param context The context to add the opcodes to.
+	 * 
+	 * @param context
+	 *            The context to add the opcodes to.
 	 */
 	public static void createTrigFunctions(EncogProgramContext context) {
 		FunctionFactory factory = context.getFunctions();
@@ -1194,7 +1250,9 @@ public class StandardExtensions {
 
 	/**
 	 * Add the opcodes for basic operations to a context.
-	 * @param context The context to add the opcodes to.
+	 * 
+	 * @param context
+	 *            The context to add the opcodes to.
 	 */
 	public static void createBasicFunctions(EncogProgramContext context) {
 		FunctionFactory factory = context.getFunctions();
@@ -1215,7 +1273,9 @@ public class StandardExtensions {
 
 	/**
 	 * Add the opcodes for type conversion operations to a context.
-	 * @param context The context to add the opcodes to.
+	 * 
+	 * @param context
+	 *            The context to add the opcodes to.
 	 */
 	public static void createConversionFunctions(EncogProgramContext context) {
 		FunctionFactory factory = context.getFunctions();
@@ -1227,7 +1287,9 @@ public class StandardExtensions {
 
 	/**
 	 * Add the opcodes for string operations to a context.
-	 * @param context The context to add the opcodes to.
+	 * 
+	 * @param context
+	 *            The context to add the opcodes to.
 	 */
 	public static void createStringFunctions(EncogProgramContext context) {
 		FunctionFactory factory = context.getFunctions();
@@ -1239,11 +1301,14 @@ public class StandardExtensions {
 
 	/**
 	 * Add all known opcodes to a context.
-	 * @param context The context to add the opcodes to.
+	 * 
+	 * @param context
+	 *            The context to add the opcodes to.
 	 */
 	public static void createAll(EncogProgramContext context) {
 		FunctionFactory factory = context.getFunctions();
-		for(ProgramExtensionTemplate temp : EncogOpcodeRegistry.INSTANCE.findAllOpcodes() ) {
+		for (ProgramExtensionTemplate temp : EncogOpcodeRegistry.INSTANCE
+				.findAllOpcodes()) {
 			factory.addExtension(temp);
 		}
 	}

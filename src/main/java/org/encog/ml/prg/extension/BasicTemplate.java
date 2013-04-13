@@ -16,15 +16,54 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * The name of this opcode.
+	 */
 	private final String name;
+	
+	/**
+	 * True if this opcode has a variable value, other than variance of its child nodes.
+	 */
 	private final boolean varValue;
+	
+	/**
+	 * The amount of data that is stored with this node.
+	 */
 	private final int dataSize;
+	
+	/**
+	 * The node type.
+	 */
 	private final NodeType nodeType;
+	
+	/**
+	 * The precedence.
+	 */
 	private final int precedence;
+	
+	/**
+	 * The opcode signature.
+	 */
 	private final String signature;
+	
+	/**
+	 * The parameters.
+	 */
 	private final List<ParamTemplate> params = new ArrayList<ParamTemplate>();
+	
+	/**
+	 * The return value.
+	 */
 	private final ParamTemplate returnValue;
 
+	/**
+	 * Construct a basic template object.
+	 * @param thePrecedence The precedence.
+	 * @param theSignature The opcode signature.
+	 * @param theType The opcode type.
+	 * @param isVariable True, if this opcode is a variable.
+	 * @param theDataSize The data size kept for this opcode.
+	 */
 	public BasicTemplate(final int thePrecedence, final String theSignature,
 			final NodeType theType, final boolean isVariable,
 			final int theDataSize) {
@@ -76,10 +115,19 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 		}
 	}
 
+	/**
+	 * Construct a function based on the provided signature.
+	 * @param theSignature The signature.
+	 */
 	public BasicTemplate(final String theSignature) {
 		this(0, theSignature, NodeType.Function, false, 0);
 	}
 
+	/**
+	 * Read the specified parameter.
+	 * @param parser The parser to use.
+	 * @return The parsed parameter.
+	 */
 	private ParamTemplate readParam(SimpleParser parser) {
 		ParamTemplate result = new ParamTemplate();
 
@@ -134,29 +182,41 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 		return this.name;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isVariable() {
 		return this.varValue;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getDataSize() {
 		return this.dataSize;
 	}
 
 	/**
-	 * @return the nodeType
+	 * {@inheritDoc}
 	 */
 	@Override
 	public NodeType getNodeType() {
 		return nodeType;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getPrecedence() {
 		return this.precedence;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder();
@@ -171,7 +231,7 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 	}
 
 	/**
-	 * @return the params
+	 * {@inheritDoc}
 	 */
 	@Override
 	public List<ParamTemplate> getParams() {
@@ -185,19 +245,25 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 		return signature;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void randomize(final Random rnd, final List<ValueType> desiredTypes, final ProgramNode actual,
 			final double minValue, final double maxValue) {
 	}
 
 	/**
-	 * @return the returnValue
+	 * {@inheritDoc}
 	 */
 	@Override
 	public ParamTemplate getReturnValue() {
 		return returnValue;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isPossibleReturnType(EncogProgramContext context, ValueType rtn) {
 		return this.returnValue.getPossibleTypes().contains(rtn);
