@@ -8,19 +8,39 @@ import org.encog.ml.ea.exception.EACompileError;
 import org.encog.ml.prg.EncogProgramContext;
 
 /**
- * Holds all known EPL opcodes.  Extension programs should add new opcodes here.
+ * Holds all known EPL opcodes. Extension programs should add new opcodes here.
  * The FunctionFactory selects a subset of opcodes from here that will be run.
- *
+ * 
+ * An opcode is identified by its name, and the number of parameters it accepts.
+ * It is okay to add an opcode multiple times, the new opcode replaces the
+ * previous.
+ * 
  */
 public enum EncogOpcodeRegistry {
 	INSTANCE;
-	
+
+	/**
+	 * Construct a lookup key for the hash map.
+	 * 
+	 * @param functionName
+	 *            The name of the opcode.
+	 * @param argCount
+	 *            The number of parameters this opcode accepts.
+	 * @return
+	 */
 	public static String createKey(String functionName, int argCount) {
 		return functionName + '`' + argCount;
 	}
 
+	/**
+	 * A lookup for all of the opcodes.
+	 */
 	private final Map<String, ProgramExtensionTemplate> registry = new HashMap<String, ProgramExtensionTemplate>();
 
+	/**
+	 * Construct the opcode registry with all known opcodes. User programs can
+	 * always add additional opcodes later.
+	 */
 	private EncogOpcodeRegistry() {
 		add(StandardExtensions.EXTENSION_NOT_EQUAL);
 		add(StandardExtensions.EXTENSION_NOT);
@@ -75,10 +95,21 @@ public enum EncogOpcodeRegistry {
 		add(StandardExtensions.EXTENSION_CLAMP);
 	}
 
+	/**
+	 * Add an opcode.  User programs should add opcodes here.
+	 * @param ext The opcode to add.
+	 */
 	public void add(final ProgramExtensionTemplate ext) {
-		this.registry.put(EncogOpcodeRegistry.createKey(ext.getName(), ext.getChildNodeCount()), ext);
+		this.registry.put(
+				EncogOpcodeRegistry.createKey(ext.getName(),
+						ext.getChildNodeCount()), ext);
 	}
 
+	/**
+	 * Register an opcode from the opcode registry into an Encog Program context.
+	 * @param context The context to register the opcode in.
+	 * @param opcode The opcode.
+	 */
 	public void register(final EncogProgramContext context, final int opcode) {
 		if (!this.registry.containsKey(opcode)) {
 			throw new EACompileError("Unknown opcode: " + opcode);
@@ -87,15 +118,21 @@ public enum EncogOpcodeRegistry {
 		context.getFunctions().addExtension(temp);
 	}
 
+	/**
+	 * Find the specified opcode.
+	 * @param name The name of the opcode.
+	 * @param args The number of arguments.
+	 * @return The opcode if found, null otherwise.
+	 */
 	public ProgramExtensionTemplate findOpcode(String name, int args) {
 		String key = EncogOpcodeRegistry.createKey(name, args);
-		if( this.registry.containsKey(key) ) {
+		if (this.registry.containsKey(key)) {
 			return this.registry.get(key);
 		} else {
 			return null;
 		}
 	}
-	
+
 	public Collection<ProgramExtensionTemplate> findAllOpcodes() {
 		return this.registry.values();
 	}

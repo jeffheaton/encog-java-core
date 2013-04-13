@@ -13,74 +13,149 @@ import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ValueType;
 
+/**
+ * A function factory maps the opcodes contained in the EncogOpcodeRegistry into
+ * an EncogProgram. You rarely want to train with every available opcode. For
+ * example, if you are only looking to produce an equation, you should not make
+ * use of the if-statement and logical operators.
+ */
 public class FunctionFactory implements Serializable {
 	/**
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * A map for quick lookup.
+	 */
 	private final Map<String, ProgramExtensionTemplate> templateMap = new HashMap<String, ProgramExtensionTemplate>();
+
+	/**
+	 * The opcodes.
+	 */
 	private final List<ProgramExtensionTemplate> opcodes = new ArrayList<ProgramExtensionTemplate>();
 
+	/**
+	 * Default constructor.
+	 */
 	public FunctionFactory() {
 	}
 
-	public ProgramNode factorFunction(ProgramExtensionTemplate temp,
-			EncogProgram program, ProgramNode[] args) {
+	/**
+	 * Add an opcode to the function factory. The opcode must exist in the opcode registry.
+	 * 
+	 * @param ext
+	 *            The opcode to add.
+	 */
+	public void addExtension(final ProgramExtensionTemplate ext) {
+		addExtension(ext.getName(),ext.getChildNodeCount());
+	}
+
+	/**
+	 * Add an opcode to the function factory from the opcode registry.
+	 * @param name The name of the opcode.
+	 * @param args The number of arguments.
+	 */
+	public void addExtension(final String name, final int args) {
+		final String key = EncogOpcodeRegistry.createKey(name, args);
+		if (!this.templateMap.containsKey(key)) {
+			final ProgramExtensionTemplate temp = EncogOpcodeRegistry.INSTANCE
+					.findOpcode(name, args);
+			if (temp == null) {
+				throw new EACompileError("Unknown extension " + name + " with "
+						+ args + " arguments.");
+			}
+			this.addExtension(temp);
+		}
+
+	}
+
+	/**
+	 * Factor a new program node, based in a template object.
+	 * 
+	 * @param temp
+	 *            The opcode.
+	 * @param program
+	 *            The program.
+	 * @param args
+	 *            The arguments for this node.
+	 * @return The newly created ProgramNode.
+	 */
+	public ProgramNode factorProgramNode(final ProgramExtensionTemplate temp,
+			final EncogProgram program, final ProgramNode[] args) {
 		return new ProgramNode(program, temp, args);
 	}
 
-	public ProgramNode factorFunction(String name, EncogProgram program,
-			ProgramNode[] args) {
+	/**
+	 * Factor a new program node, based on an opcode name and arguments.
+	 * 
+	 * @param name
+	 *            The name of the opcode.
+	 * @param program
+	 *            The program to factor for.
+	 * @param args
+	 *            The arguements.
+	 * @return The newly created ProgramNode.
+	 */
+	public ProgramNode factorProgramNode(final String name,
+			final EncogProgram program, final ProgramNode[] args) {
 
-		String key = EncogOpcodeRegistry.createKey(name, args.length);
+		final String key = EncogOpcodeRegistry.createKey(name, args.length);
 
 		if (!this.templateMap.containsKey(key)) {
 			throw new ExpressionError("Undefined function/operator: " + name
 					+ " with " + args.length + " args.");
 		}
 
-		ProgramExtensionTemplate temp = this.templateMap.get(key);
+		final ProgramExtensionTemplate temp = this.templateMap.get(key);
 		return new ProgramNode(program, temp, args);
 	}
 
-	public void addExtension(ProgramExtensionTemplate ext) {
-		String key = EncogOpcodeRegistry.createKey(ext.getName(),
-				ext.getChildNodeCount());
-		if( !this.templateMap.containsKey(key) ) {
-			this.templateMap.put(key, ext);
-			this.opcodes.add(ext);
-		}
-	}
-
-	public boolean isDefined(String name, int l) {
-		String key = EncogOpcodeRegistry.createKey(name, l);
-		return this.templateMap.containsKey(key);
-	}
-
-	public int size() {
-		return this.opcodes.size();
-	}
-
-	public ProgramExtensionTemplate getOpCode(int theOpCode) {
-		return this.opcodes.get(theOpCode);
-	}
-
-	public List<ProgramExtensionTemplate> getOpCodes() {
-		return this.opcodes;
-	}
-
-	private ProgramExtensionTemplate findOperatorExact(String str) {
-		for (ProgramExtensionTemplate opcode : opcodes) {
-			// only consider operators
-			if (opcode.getNodeType() == NodeType.OperatorLeft
-					|| opcode.getNodeType() == NodeType.OperatorRight) {
-				if (opcode.getName().equals(str)) {
+	/**
+	 * Find a function with the specified name.
+	 * @param name The name of the function.
+	 * @return The function opcode.
+	 */
+	public ProgramExtensionTemplate findFunction(final String name) {
+		for (final ProgramExtensionTemplate opcode : this.opcodes) {
+			// only consider functions
+			if (opcode.getNodeType() == NodeType.Function) {
+				if (opcode.getName().equals(name)) {
 					return opcode;
 				}
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Find all opcodes that match the search criteria.
+	 * @param types The return types to consider.
+	 * @param context The program context.
+	 * @param includeTerminal True, to include the terminals.
+	 * @param includeFunction True, to include the functions.
+	 * @return The opcodes found.
+	 */
+	public List<ProgramExtensionTemplate> findOpcodes(
+			final List<ValueType> types, final EncogProgramContext context,
+			final boolean includeTerminal, final boolean includeFunction) {
+		final List<ProgramExtensionTemplate> result = new ArrayList<ProgramExtensionTemplate>();
+
+		for (final ProgramExtensionTemplate temp : this.opcodes) {
+			for (final ValueType rtn : types) {
+				// it is a possible return type, but given our variables, is it
+				// possible
+				if (temp.isPossibleReturnType(context, rtn)) {
+					if (temp.getChildNodeCount() == 0 && includeTerminal) {
+						result.add(temp);
+					} else if (includeFunction) {
+						result.add(temp);
+					}
+				}
+			}
+		}
+
+		return result;
 	}
 
 	/**
@@ -94,7 +169,7 @@ public class FunctionFactory implements Serializable {
 	 *            The second character of the potential operator. Zero if none.
 	 * @return The expression template for the operator found.
 	 */
-	public ProgramExtensionTemplate findOperator(char ch1, char ch2) {
+	public ProgramExtensionTemplate findOperator(final char ch1, final char ch2) {
 		ProgramExtensionTemplate result = null;
 
 		// if ch2==0 then we are only looking for a single char operator.
@@ -116,11 +191,18 @@ public class FunctionFactory implements Serializable {
 		return result;
 	}
 
-	public ProgramExtensionTemplate findFunction(String name) {
-		for (ProgramExtensionTemplate opcode : opcodes) {
-			// only consider functions
-			if (opcode.getNodeType() == NodeType.Function) {
-				if (opcode.getName().equals(name)) {
+	/**
+	 * Find an exact match on opcode.
+	 * 
+	 * @param str
+	 *            The string to match.
+	 * @return The opcode found.
+	 */
+	private ProgramExtensionTemplate findOperatorExact(final String str) {
+		for (final ProgramExtensionTemplate opcode : this.opcodes) {
+			// only consider operators
+			if (opcode.getNodeType().isOperator()) {
+				if (opcode.getName().equals(str)) {
 					return opcode;
 				}
 			}
@@ -128,44 +210,49 @@ public class FunctionFactory implements Serializable {
 		return null;
 	}
 
-	public void addExtension(String name, int args) {
-		String key = EncogOpcodeRegistry.createKey(name, args);
-		if (!this.templateMap.containsKey(key)) {
-			ProgramExtensionTemplate temp = EncogOpcodeRegistry.INSTANCE
-					.findOpcode(name, args);
-			if (temp == null) {
-				throw new EACompileError("Unknown extension " + name + " with "
-						+ args + " arguments.");
-			}
-			this.addExtension(temp);
-		}
+	/**
+	 * Get the specified opcode.
+	 * 
+	 * @param theOpCode
+	 *            The opcode index.
+	 * @return The opcode.
+	 */
+	public ProgramExtensionTemplate getOpCode(final int theOpCode) {
+		return this.opcodes.get(theOpCode);
+	}
 
+	/**
+	 * @return The opcode list.
+	 */
+	public List<ProgramExtensionTemplate> getOpCodes() {
+		return this.opcodes;
 	}
 
 	/**
 	 * @return the templateMap
 	 */
 	public Map<String, ProgramExtensionTemplate> getTemplateMap() {
-		return templateMap;
+		return this.templateMap;
 	}
-	
-	public List<ProgramExtensionTemplate> findOpcodes(List<ValueType> types, EncogProgramContext context, boolean includeTerminal, boolean includeFunction) {
-		List<ProgramExtensionTemplate> result = new ArrayList<ProgramExtensionTemplate>();
-		
-		for (final ProgramExtensionTemplate temp : this.opcodes) {
-			for (ValueType rtn : types ) {
-				// it is a possible return type, but given our variables, is it
-				// possible
-				if (temp.isPossibleReturnType(context,rtn)) {
-					if (temp.getChildNodeCount() == 0 && includeTerminal ) {
-						result.add(temp);
-					} else if( includeFunction ){
-						result.add(temp);
-					}
-				}
-			}
-		}
-		
-		return result;
+
+	/**
+	 * Determine if an opcode is in the function factory.
+	 * 
+	 * @param name
+	 *            The name of the opcode.
+	 * @param l
+	 *            The argument count for the opcode.
+	 * @return True if the opcode exists.
+	 */
+	public boolean isDefined(final String name, final int l) {
+		final String key = EncogOpcodeRegistry.createKey(name, l);
+		return this.templateMap.containsKey(key);
+	}
+
+	/**
+	 * @return The number of opcodes.
+	 */
+	public int size() {
+		return this.opcodes.size();
 	}
 }

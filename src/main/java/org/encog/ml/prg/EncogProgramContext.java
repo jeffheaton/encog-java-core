@@ -138,7 +138,7 @@ public class EncogProgramContext implements Serializable {
 		}
 
 		final ProgramNode result = targetProgram.getContext().getFunctions()
-				.factorFunction(name, targetProgram, args);
+				.factorProgramNode(name, targetProgram, args);
 
 		// now copy the expression data for the node
 		for (int i = 0; i < sourceBranch.getData().length; i++) {

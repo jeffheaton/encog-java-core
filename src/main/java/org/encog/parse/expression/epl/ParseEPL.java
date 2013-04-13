@@ -60,7 +60,7 @@ public class ParseEPL {
 			}
 			
 			// factor the node
-			ProgramNode node = this.holder.getFunctions().factorFunction(name, this.holder, args);
+			ProgramNode node = this.holder.getFunctions().factorProgramNode(name, this.holder, args);
 			this.nodeStack.push(node);
 			
 			// add any needed data to the node

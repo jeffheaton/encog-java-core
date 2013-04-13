@@ -28,7 +28,7 @@ public class RewriteAlgebraic implements RewriteRule {
 	 */
 	private ProgramNode createNumericConst(final EncogProgram prg,
 			final double v) {
-		final ProgramNode result = prg.getFunctions().factorFunction("#const",
+		final ProgramNode result = prg.getFunctions().factorProgramNode("#const",
 				prg, new ProgramNode[] {});
 		result.getData()[0] = new ExpressionValue(v);
 		return result;
@@ -41,7 +41,7 @@ public class RewriteAlgebraic implements RewriteRule {
 	 * @return The newly created node.
 	 */
 	private ProgramNode createNumericConst(final EncogProgram prg, final int v) {
-		final ProgramNode result = prg.getFunctions().factorFunction("#const",
+		final ProgramNode result = prg.getFunctions().factorProgramNode("#const",
 				prg, new ProgramNode[] {});
 		result.getData()[0] = new ExpressionValue(v);
 		return result;
@@ -148,7 +148,7 @@ public class RewriteAlgebraic implements RewriteRule {
 								.getOwner()
 								.getContext()
 								.getFunctions()
-								.factorFunction("+", parent.getOwner(),
+								.factorProgramNode("+", parent.getOwner(),
 										new ProgramNode[] { child1, child2 });
 					}
 				} else if (v.isInt()) {
@@ -159,7 +159,7 @@ public class RewriteAlgebraic implements RewriteRule {
 								.getOwner()
 								.getContext()
 								.getFunctions()
-								.factorFunction("+", parent.getOwner(),
+								.factorProgramNode("+", parent.getOwner(),
 										new ProgramNode[] { child1, child2 });
 					}
 				}
@@ -220,7 +220,7 @@ public class RewriteAlgebraic implements RewriteRule {
 						.getOwner()
 						.getContext()
 						.getFunctions()
-						.factorFunction(
+						.factorProgramNode(
 								"-",
 								parent.getOwner(),
 								new ProgramNode[] { child1,
@@ -235,7 +235,7 @@ public class RewriteAlgebraic implements RewriteRule {
 								.getOwner()
 								.getContext()
 								.getFunctions()
-								.factorFunction("-", parent.getOwner(),
+								.factorProgramNode("-", parent.getOwner(),
 										new ProgramNode[] { child1, child2 });
 					}
 				} else if (v.isInt()) {
@@ -246,7 +246,7 @@ public class RewriteAlgebraic implements RewriteRule {
 								.getOwner()
 								.getContext()
 								.getFunctions()
-								.factorFunction("-", parent.getOwner(),
+								.factorProgramNode("-", parent.getOwner(),
 										new ProgramNode[] { child1, child2 });
 					}
 				}
@@ -300,7 +300,7 @@ public class RewriteAlgebraic implements RewriteRule {
 						parent = parent
 								.getOwner()
 								.getFunctions()
-								.factorFunction(
+								.factorProgramNode(
 										"*",
 										parent.getOwner(),
 										new ProgramNode[] {
@@ -312,7 +312,7 @@ public class RewriteAlgebraic implements RewriteRule {
 						parent = parent
 								.getOwner()
 								.getFunctions()
-								.factorFunction(
+								.factorProgramNode(
 										"^",
 										parent.getOwner(),
 										new ProgramNode[] {

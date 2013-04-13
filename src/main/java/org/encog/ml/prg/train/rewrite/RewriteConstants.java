@@ -87,7 +87,7 @@ public class RewriteConstants implements RewriteRule {
 					.getOwner()
 					.getContext()
 					.getFunctions()
-					.factorFunction("#const", parentNode.getOwner(),
+					.factorProgramNode("#const", parentNode.getOwner(),
 							new ProgramNode[] {});
 			
 			// is it an integer?

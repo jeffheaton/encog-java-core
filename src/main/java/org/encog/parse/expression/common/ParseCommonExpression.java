@@ -71,7 +71,7 @@ public class ParseCommonExpression {
 			args[i] = this.outputStack.pop();
 		}
 
-		this.rootNode = this.holder.getFunctions().factorFunction(opp,
+		this.rootNode = this.holder.getFunctions().factorProgramNode(opp,
 				this.holder, args);
 		outputStack.push(rootNode);
 	}
@@ -157,7 +157,7 @@ public class ParseCommonExpression {
 			value = -value;
 		}
 
-		ProgramNode v = this.holder.getFunctions().factorFunction("#const",
+		ProgramNode v = this.holder.getFunctions().factorProgramNode("#const",
 				holder, new ProgramNode[] {});
 
 		if (isFloat) {
@@ -181,7 +181,7 @@ public class ParseCommonExpression {
 			if (neg) {
 				throw new ExpressionError("Invalid negative sign.");
 			}
-			ProgramNode v = this.holder.getFunctions().factorFunction("#const",
+			ProgramNode v = this.holder.getFunctions().factorProgramNode("#const",
 					holder, new ProgramNode[] {});
 			v.getData()[0] = new ExpressionValue(true);
 			outputQueue(v);
@@ -189,7 +189,7 @@ public class ParseCommonExpression {
 			if (neg) {
 				throw new ExpressionError("Invalid negative sign.");
 			}
-			ProgramNode v = this.holder.getFunctions().factorFunction("#const",
+			ProgramNode v = this.holder.getFunctions().factorProgramNode("#const",
 					holder, new ProgramNode[] {});
 			v.getData()[0] = new ExpressionValue(false);
 			outputQueue(v);
@@ -197,19 +197,19 @@ public class ParseCommonExpression {
 			ProgramNode v;
 			// either a variable or a const, see which
 			if (this.holder.getFunctions().isDefined(varName.toString(), 0)) {
-				v = this.holder.getFunctions().factorFunction(
+				v = this.holder.getFunctions().factorProgramNode(
 						varName.toString(), holder, new ProgramNode[] {});
 			} else {
 				this.holder.getVariables().setVariable(varName.toString(),
 						new ExpressionValue(0));
-				v = this.holder.getFunctions().factorFunction("#var", holder,
+				v = this.holder.getFunctions().factorProgramNode("#var", holder,
 						new ProgramNode[] {});
 				v.getData()[0] = new ExpressionValue((int) this.holder.getVariables()
 						.getVariableIndex(varName.toString()));
 			}
 
 			if (neg) {
-				v = this.holder.getFunctions().factorFunction("-", holder,
+				v = this.holder.getFunctions().factorProgramNode("-", holder,
 						new ProgramNode[] { v });
 			}
 			outputQueue(v);
@@ -286,7 +286,7 @@ public class ParseCommonExpression {
 			throw (new ExpressionError("Unterminated string"));
 		}
 
-		ProgramNode v = this.holder.getFunctions().factorFunction("#const",
+		ProgramNode v = this.holder.getFunctions().factorProgramNode("#const",
 				holder, new ProgramNode[] {});
 		v.getData()[0] = new ExpressionValue(str.toString());
 		outputQueue(v);
