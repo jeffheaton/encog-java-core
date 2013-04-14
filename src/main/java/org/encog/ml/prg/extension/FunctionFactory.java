@@ -212,8 +212,8 @@ public class FunctionFactory implements Serializable {
 	 */
 	private ProgramExtensionTemplate findOperatorExact(final String str) {
 		for (final ProgramExtensionTemplate opcode : this.opcodes) {
-			// only consider operators
-			if (opcode.getNodeType().isOperator()) {
+			// only consider non-unary operators
+			if (opcode.getNodeType()==NodeType.OperatorLeft || opcode.getNodeType()==NodeType.OperatorRight) {
 				if (opcode.getName().equals(str)) {
 					return opcode;
 				}

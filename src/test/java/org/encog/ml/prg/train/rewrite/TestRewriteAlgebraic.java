@@ -9,6 +9,7 @@ import org.encog.ml.ea.train.basic.TrainEA;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.PrgCODEC;
+import org.encog.ml.prg.expvalue.DivisionByZeroError;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.ml.prg.opp.SubtreeCrossover;
 import org.encog.ml.prg.opp.SubtreeMutation;
@@ -53,7 +54,12 @@ public class TestRewriteAlgebraic extends TestCase {
 	}
 	
 	public void testZeroDiv() {
-		eval("0/0","(0/0)");
+		try {
+			eval("0/0","(0/0)");
+			Assert.assertFalse(true);
+		} catch(DivisionByZeroError ex) {
+			// expected
+		}
 		eval("0/5","0");
 		eval("0/x","0");
 	}

@@ -275,7 +275,7 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 		result.append(this.signature);
 		result.append(",type=");
 		result.append(this.nodeType.toString());
-		result.append("argCount=");
+		result.append(",argCount=");
 		result.append(getChildNodeCount());
 		result.append("]");
 		return result.toString();
