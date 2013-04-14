@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.encog.EncogError;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
@@ -108,6 +109,9 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 					this.params.add(temp);
 				} else {
 					parser.advance();
+					if( parser.eol() ) {
+						throw new EncogError("Invalid opcode template.");
+					}
 				}
 			}
 

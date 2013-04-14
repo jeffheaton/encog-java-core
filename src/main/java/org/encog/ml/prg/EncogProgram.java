@@ -24,7 +24,9 @@
 package org.encog.ml.prg;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.encog.ml.MLError;
@@ -143,6 +145,11 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 	 * The root node of the program.
 	 */
 	private ProgramNode rootNode;
+	
+	/**
+	 * Holds extra data that might be needed by user extended opcodes.
+	 */
+	private Map<String,Object> extraData = new HashMap<String,Object>();
 
 	/**
 	 * Construct the Encog program and create a default context and variable
@@ -485,5 +492,23 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 		result.append(code);
 		result.append("]");
 		return result.toString();
+	}
+
+	/**
+	 * Get extra data that might be needed by user extended opcodes.
+	 * @param name The name the data was stored under.
+	 * @return The extra data.
+	 */
+	public Object getExtraData(final String name) {
+		return this.extraData.get(name);
+	}
+	
+	/**
+	 * Set extra data that might be needed by extensions.
+	 * @param name The name of the data stored.
+	 * @param value The data.
+	 */
+	public void setExtraData(final String name, final Object value) {
+		this.extraData.put(name, value);
 	}
 }

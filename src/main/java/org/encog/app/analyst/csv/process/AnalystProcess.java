@@ -89,11 +89,12 @@ public class AnalystProcess extends BasicFile {
 		performBasicCounts();
 		
 		this.expressionFields.clear();
-		extension = new ProcessExtension(this.getFormat());
+		this.extension = new ProcessExtension(this.getFormat());
 		this.extension.register(this.programContext.getFunctions());
 		
 		for(ProcessField field : this.analyst.getScript().getProcess().getFields() ) {
 			EncogProgram prg = new EncogProgram(this.programContext,this.programVariables);
+			prg.setExtraData(ProcessExtension.EXTENSION_DATA_NAME, this.extension);
 			prg.compileExpression(field.getCommand());
 			this.expressionFields.add(prg);
 		}

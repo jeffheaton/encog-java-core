@@ -331,7 +331,7 @@ public class ExpressionValue implements Serializable {
 					"Type Mismatch: can't convert int to boolean.");
 		case stringType:
 			try {
-				return Integer.parseInt(this.stringValue);
+				return Long.parseLong(this.stringValue);
 			} catch (final NumberFormatException ex) {
 				throw new EARuntimeError("Type Mismatch: can't convert "
 						+ this.stringValue + " to int.");
