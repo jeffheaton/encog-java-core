@@ -69,7 +69,8 @@ public class FunctionFactory implements Serializable {
 				throw new EACompileError("Unknown extension " + name + " with "
 						+ args + " arguments.");
 			}
-			this.addExtension(temp);
+			this.opcodes.add(temp);
+			this.templateMap.put(key, temp);
 		}
 
 	}
