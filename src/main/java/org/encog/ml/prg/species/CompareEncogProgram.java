@@ -3,12 +3,28 @@ package org.encog.ml.prg.species;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
 
+/**
+ * Compare two Encog programs for speciation. Count the nodes that are the same.
+ */
 public class CompareEncogProgram {
 
+	/**
+	 * Compare program 1 and 2 node for node.
+	 * @param prg1
+	 * @param prg2
+	 * @return
+	 */
 	public double compare(final EncogProgram prg1, final EncogProgram prg2) {
 		return compareNode(0, prg1.getRootNode(), prg2.getRootNode());
 	}
 
+	/**
+	 * Compare two nodes.
+	 * @param result
+	 * @param node1
+	 * @param node2
+	 * @return
+	 */
 	private double compareNode(final double result, final ProgramNode node1,
 			final ProgramNode node2) {
 		double newResult = result;
