@@ -14,23 +14,47 @@ import org.encog.ml.prg.expvalue.ValueType;
 import org.encog.ml.prg.generator.PrgGenerator;
 import org.encog.ml.prg.generator.PrgGrowGenerator;
 
+/**
+ * Perform a type-safe subtree mutation. The mutation point is chosen randomly,
+ * but the new tree will be generated with compatible types to the parent.
+ */
 public class SubtreeMutation implements EvolutionaryOperator {
 
+	/**
+	 * A random generator.
+	 */
 	private PrgGenerator generator;
+	
+	/**
+	 * The maximum depth.
+	 */
 	private final int maxDepth;
 
+	/**
+	 * Construct the subtree mutation object.
+	 * @param theContext The program context.
+	 * @param theMaxDepth The maximum depth.
+	 */
 	public SubtreeMutation(final EncogProgramContext theContext,
 			final int theMaxDepth) {
 		this.generator = new PrgGrowGenerator(theContext, theMaxDepth);
 		this.maxDepth = theMaxDepth;
 	}
 
-	private List<ValueType> determineValueType(final ProgramNode node) {
-		final List<ValueType> result = new ArrayList<ValueType>();
-		result.addAll(node.getTemplate().getReturnValue().getPossibleTypes());
-		return result;
-	}
-
+	/**
+	 * This method is called reflexivly as we iterate downward. Once we reach
+	 * the desired point (when current level drops to zero), the operation is
+	 * performed.
+	 * 
+	 * @param rnd
+	 *            A random number generator.
+	 * @param parentNode
+	 *            The parent node.
+	 * @param types
+	 *            The desired node
+	 * @param holder
+	 *            The level holder.
+	 */
 	private void findNode(final Random rnd, final EncogProgram result,
 			final ProgramNode parentNode, final List<ValueType> types,
 			final int[] globalIndex) {
@@ -51,10 +75,16 @@ public class SubtreeMutation implements EvolutionaryOperator {
 		}
 	}
 
+	/**
+	 * @return The random tree generator to use.
+	 */
 	public PrgGenerator getGenerator() {
 		return this.generator;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void init(final EvolutionaryAlgorithm theOwner) {
 		// TODO Auto-generated method stub
@@ -77,6 +107,9 @@ public class SubtreeMutation implements EvolutionaryOperator {
 		return 1;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void performOperation(final Random rnd, final Genome[] parents,
 			final int parentIndex, final Genome[] offspring,
@@ -94,6 +127,10 @@ public class SubtreeMutation implements EvolutionaryOperator {
 		offspring[0] = result;
 	}
 
+	/**
+	 * Set the random tree generator to use.
+	 * @param generator The random tree generator.
+	 */
 	public void setGenerator(final PrgGenerator generator) {
 		this.generator = generator;
 	}

@@ -29,19 +29,19 @@ import java.util.List;
 
 /**
  * A node that holds a program.
- *
+ * 
  */
 public class EncogProgramNode extends EncogTreeNode {
 	/**
 	 * The argements to the program.
 	 */
 	private final List<EncogProgramArg> args = new ArrayList<EncogProgramArg>();
-	
+
 	/**
 	 * The type of node that this is.
 	 */
 	private final NodeType type;
-	
+
 	/**
 	 * The name od this node.
 	 */
@@ -49,10 +49,15 @@ public class EncogProgramNode extends EncogTreeNode {
 
 	/**
 	 * Construct the program node.
-	 * @param theProgram THe program.
-	 * @param theParent The parent.
-	 * @param theNodeType The node type.
-	 * @param theName The name of the node.
+	 * 
+	 * @param theProgram
+	 *            THe program.
+	 * @param theParent
+	 *            The parent.
+	 * @param theNodeType
+	 *            The node type.
+	 * @param theName
+	 *            The name of the node.
 	 */
 	public EncogProgramNode(final EncogGenProgram theProgram,
 			final EncogTreeNode theParent, final NodeType theNodeType,
@@ -64,7 +69,9 @@ public class EncogProgramNode extends EncogTreeNode {
 
 	/**
 	 * Add a double argument.
-	 * @param argValue The argument value.
+	 * 
+	 * @param argValue
+	 *            The argument value.
 	 */
 	public void addArg(final double argValue) {
 		final EncogProgramArg arg = new EncogProgramArg(argValue);
@@ -73,7 +80,9 @@ public class EncogProgramNode extends EncogTreeNode {
 
 	/**
 	 * Add an int argument.
-	 * @param argValue The argument value.
+	 * 
+	 * @param argValue
+	 *            The argument value.
 	 */
 	public void addArg(final int argValue) {
 		final EncogProgramArg arg = new EncogProgramArg(argValue);
@@ -82,7 +91,9 @@ public class EncogProgramNode extends EncogTreeNode {
 
 	/**
 	 * Add an object argument.
-	 * @param argValue The argument value.
+	 * 
+	 * @param argValue
+	 *            The argument value.
 	 */
 	public void addArg(final Object argValue) {
 		final EncogProgramArg arg = new EncogProgramArg(argValue);
@@ -91,7 +102,9 @@ public class EncogProgramNode extends EncogTreeNode {
 
 	/**
 	 * Add a string argument.
-	 * @param argValue The argument value.
+	 * 
+	 * @param argValue
+	 *            The argument value.
 	 */
 	public void addArg(final String argValue) {
 		final EncogProgramArg arg = new EncogProgramArg(argValue);
@@ -100,8 +113,11 @@ public class EncogProgramNode extends EncogTreeNode {
 
 	/**
 	 * Create an array.
-	 * @param name THe name of the array.
-	 * @param a The value to init the array to.
+	 * 
+	 * @param name
+	 *            THe name of the array.
+	 * @param a
+	 *            The value to init the array to.
 	 * @return The newly creatred array.
 	 */
 	public EncogProgramNode createArray(final String name, final double[] a) {
@@ -114,7 +130,9 @@ public class EncogProgramNode extends EncogTreeNode {
 
 	/**
 	 * Create a function.
-	 * @param theName The name of the function.
+	 * 
+	 * @param theName
+	 *            The name of the function.
 	 * @return The newly created function.
 	 */
 	public EncogProgramNode createFunction(final String theName) {
@@ -126,9 +144,13 @@ public class EncogProgramNode extends EncogTreeNode {
 
 	/**
 	 * Create a function call.
-	 * @param funct The function to call.
-	 * @param returnType The type returned.
-	 * @param returnVariable The value to assigne the function call to.
+	 * 
+	 * @param funct
+	 *            The function to call.
+	 * @param returnType
+	 *            The type returned.
+	 * @param returnVariable
+	 *            The value to assigne the function call to.
 	 * @return The newly created function call.
 	 */
 	public EncogProgramNode createFunctionCall(final EncogProgramNode funct,
@@ -144,9 +166,13 @@ public class EncogProgramNode extends EncogTreeNode {
 
 	/**
 	 * Create a function call.
-	 * @param name The name of the function to call.
-	 * @param returnType The return type.
-	 * @param returnVariable The variable to assign the function to.
+	 * 
+	 * @param name
+	 *            The name of the function to call.
+	 * @param returnType
+	 *            The return type.
+	 * @param returnVariable
+	 *            The variable to assign the function to.
 	 * @return The newly created function call.
 	 */
 	public EncogProgramNode createFunctionCall(final String name,
@@ -163,6 +189,7 @@ public class EncogProgramNode extends EncogTreeNode {
 
 	/**
 	 * Create a new main function.
+	 * 
 	 * @return The newly created main function.
 	 */
 	public EncogProgramNode createMainFunction() {
@@ -174,8 +201,11 @@ public class EncogProgramNode extends EncogTreeNode {
 
 	/**
 	 * Create a new network function.
-	 * @param name The name of the network function.
-	 * @param method The method to call.
+	 * 
+	 * @param name
+	 *            The name of the network function.
+	 * @param method
+	 *            The method to call.
 	 * @return The newly created network function.
 	 */
 	public EncogProgramNode createNetworkFunction(final String name,
@@ -189,9 +219,13 @@ public class EncogProgramNode extends EncogTreeNode {
 
 	/**
 	 * Define a const.
-	 * @param type The type of const.
-	 * @param name The name of the const.
-	 * @param value The value of the const.
+	 * 
+	 * @param type
+	 *            The type of const.
+	 * @param name
+	 *            The name of the const.
+	 * @param value
+	 *            The value of the const.
 	 */
 	public void defineConst(final EncogArgType type, final String name,
 			final String value) {
@@ -204,7 +238,9 @@ public class EncogProgramNode extends EncogTreeNode {
 
 	/**
 	 * Embed training data.
-	 * @param data The training data to embed.
+	 * 
+	 * @param data
+	 *            The training data to embed.
 	 * @return The newly created embeded training data.
 	 */
 	public EncogProgramNode embedTraining(final File data) {
@@ -217,7 +253,9 @@ public class EncogProgramNode extends EncogTreeNode {
 
 	/**
 	 * Load the training data.
-	 * @param data The data.
+	 * 
+	 * @param data
+	 *            The data.
 	 * @return The newly created data load.
 	 */
 	public EncogProgramNode generateLoadTraining(final File data) {

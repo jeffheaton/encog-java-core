@@ -30,51 +30,51 @@ public enum NodeType {
 	/**
 	 * A comment.
 	 */
-	Comment, 
+	Comment,
 	/**
 	 * The main function.
 	 */
-	MainFunction, 	
+	MainFunction,
 	/**
 	 * A function declaration.
 	 */
-	Function, 
+	Function,
 	/**
 	 * A class declaration.
 	 */
-	Class, 
+	Class,
 	/**
 	 * A for loop.
 	 */
-	ForLoop, 
+	ForLoop,
 	/**
 	 * A while loop.
 	 */
-	WhileLoop, 
+	WhileLoop,
 	/**
 	 * A const value.
 	 */
-	Const, 
+	Const,
 	/**
 	 * A static function.
 	 */
-	StaticFunction, 
+	StaticFunction,
 	/**
 	 * A function call.
 	 */
-	FunctionCall, 
+	FunctionCall,
 	/**
 	 * A network creation.
 	 */
-	CreateNetwork, 
+	CreateNetwork,
 	/**
 	 * Init an array.
 	 */
-	InitArray, 
+	InitArray,
 	/**
 	 * Embedded training.
 	 */
-	EmbedTraining, 
+	EmbedTraining,
 	/**
 	 * Load training.
 	 */

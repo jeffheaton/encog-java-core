@@ -30,15 +30,15 @@ public enum TargetLanguage {
 	/**
 	 * No code generation.
 	 */
-	NoGeneration, 
+	NoGeneration,
 	/**
 	 * Generate using Java.
 	 */
-	Java, 
+	Java,
 	/**
 	 * Generate using Javascript.
 	 */
-	JavaScript, 
+	JavaScript,
 	/**
 	 * Generate using C#.
 	 */

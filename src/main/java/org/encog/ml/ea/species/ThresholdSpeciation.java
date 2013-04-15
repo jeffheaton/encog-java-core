@@ -30,7 +30,7 @@ public abstract class ThresholdSpeciation implements Speciation, Serializable {
 	private EvolutionaryAlgorithm owner;
 
 	/**
-	 * THe minimum compatibility that two genes must have to be in the same
+	 * The minimum compatibility that two genes must have to be in the same
 	 * species.
 	 */
 	private double compatibilityThreshold = 1.0;

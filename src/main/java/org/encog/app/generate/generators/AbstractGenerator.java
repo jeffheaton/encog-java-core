@@ -31,8 +31,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Abstract class that forms the foundation of most code generators.
- * This class allows for includes and code indentation.
+ * Abstract class that forms the foundation of most code generators. This class
+ * allows for includes and code indentation.
  */
 public abstract class AbstractGenerator implements ProgramGenerator {
 	/**
@@ -44,12 +44,12 @@ public abstract class AbstractGenerator implements ProgramGenerator {
 	 * The contents of this file.
 	 */
 	private final StringBuilder contents = new StringBuilder();
-	
+
 	/**
 	 * The current indent level.
 	 */
 	private int currentIndent = 0;
-	
+
 	/**
 	 * The includes.
 	 */
@@ -64,7 +64,9 @@ public abstract class AbstractGenerator implements ProgramGenerator {
 
 	/**
 	 * Add an include.
-	 * @param str The include to add.
+	 * 
+	 * @param str
+	 *            The include to add.
 	 */
 	public void addInclude(final String str) {
 		this.includes.add(str);
@@ -72,7 +74,9 @@ public abstract class AbstractGenerator implements ProgramGenerator {
 
 	/**
 	 * Add a line of code, indent proper.
-	 * @param line The line of code to add.
+	 * 
+	 * @param line
+	 *            The line of code to add.
 	 */
 	public void addLine(final String line) {
 		for (int i = 0; i < this.currentIndent; i++) {
@@ -84,6 +88,7 @@ public abstract class AbstractGenerator implements ProgramGenerator {
 
 	/**
 	 * Add to the beginning of the file. This is good for includes.
+	 * 
 	 * @param str
 	 */
 	public void addToBeginning(final String str) {
@@ -92,6 +97,7 @@ public abstract class AbstractGenerator implements ProgramGenerator {
 
 	/**
 	 * Get the contents.
+	 * 
 	 * @return The contents.
 	 */
 	@Override
@@ -108,7 +114,9 @@ public abstract class AbstractGenerator implements ProgramGenerator {
 
 	/**
 	 * Indent a line. The line after dis one will be indented.
-	 * @param line The line to indent.
+	 * 
+	 * @param line
+	 *            The line to indent.
 	 */
 	public void indentLine(final String line) {
 		addLine(line);
@@ -117,14 +125,15 @@ public abstract class AbstractGenerator implements ProgramGenerator {
 
 	/**
 	 * Unindent and then add this line.
-	 * @param line The line to add.
+	 * 
+	 * @param line
+	 *            The line to add.
 	 */
 	public void unIndentLine(final String line) {
 		this.currentIndent -= AbstractGenerator.INDENT_SPACES;
 		addLine(line);
 	}
 
-	
 	/**
 	 * Write the contents to the specified file.
 	 */

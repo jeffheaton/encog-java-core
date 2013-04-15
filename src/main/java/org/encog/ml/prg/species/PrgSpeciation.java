@@ -27,6 +27,11 @@ import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.species.ThresholdSpeciation;
 import org.encog.ml.prg.EncogProgram;
 
+/**
+ * Perform speciation for two Encog programs. This is a threshold based
+ * speciation, similar to that used for NEAT. Any genomes with a compatibility
+ * score below a specified threshold will be in the same species.
+ */
 public class PrgSpeciation extends ThresholdSpeciation {
 
 	/**
@@ -41,12 +46,7 @@ public class PrgSpeciation extends ThresholdSpeciation {
 	}
 
 	/**
-	 * Get the compatibility score with another genome. Used to determine
-	 * species.
-	 * 
-	 * @param genome
-	 *            The other genome.
-	 * @return The score.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public double getCompatibilityScore(final Genome genome1,

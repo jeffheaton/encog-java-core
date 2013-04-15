@@ -30,11 +30,11 @@ public enum EncogArgType {
 	/**
 	 * A string type.
 	 */
-	String, 
+	String,
 	/**
 	 * A floating point type.
 	 */
-	Float, 
+	Float,
 	/**
 	 * An int type.
 	 */

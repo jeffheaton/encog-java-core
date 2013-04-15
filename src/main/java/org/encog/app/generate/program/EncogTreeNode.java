@@ -28,20 +28,20 @@ import java.util.List;
 
 /**
  * A tree node that represents code to be generated.
- *
+ * 
  */
 public class EncogTreeNode {
-	
+
 	/**
 	 * The child nodes.
 	 */
 	private final List<EncogProgramNode> children = new ArrayList<EncogProgramNode>();
-	
+
 	/**
 	 * The parent node.
 	 */
 	private final EncogTreeNode parent;
-	
+
 	/**
 	 * The program that this node belogs to.
 	 */
@@ -49,8 +49,11 @@ public class EncogTreeNode {
 
 	/**
 	 * Construct a tree node.
-	 * @param theProgram The program.
-	 * @param theParent The parent.
+	 * 
+	 * @param theProgram
+	 *            The program.
+	 * @param theParent
+	 *            The parent.
 	 */
 	public EncogTreeNode(final EncogGenProgram theProgram,
 			final EncogTreeNode theParent) {
@@ -60,7 +63,9 @@ public class EncogTreeNode {
 
 	/**
 	 * Add a comment.
-	 * @param str The comment.
+	 * 
+	 * @param str
+	 *            The comment.
 	 */
 	public void addComment(final String str) {
 		final EncogProgramNode node = new EncogProgramNode(this.program, this,
@@ -91,7 +96,9 @@ public class EncogTreeNode {
 
 	/**
 	 * Set the program.
-	 * @param program The program.
+	 * 
+	 * @param program
+	 *            The program.
 	 */
 	public void setProgram(final EncogGenProgram program) {
 		this.program = program;

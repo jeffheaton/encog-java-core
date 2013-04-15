@@ -12,8 +12,28 @@ import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ValueType;
 
+/**
+ * Perform a type-safe subtree crossover. The crossover points will be chosen
+ * randomly but must be type-safe. The first parent will be cloned to produce
+ * the child. The tree formed from the crossover point of the second child will
+ * be copied and grafted into the parent's clone and its crossover point.
+ */
 public class SubtreeCrossover implements EvolutionaryOperator {
 
+	/**
+	 * This method is called reflexivly as we iterate downward. Once we reach
+	 * the desired point (when current level drops to zero), the operation is
+	 * performed.
+	 * 
+	 * @param rnd
+	 *            A random number generator.
+	 * @param parentNode
+	 *            The parent node.
+	 * @param types
+	 *            The desired node
+	 * @param holder
+	 *            The level holder.
+	 */
 	private void findNode(final Random rnd, final ProgramNode parentNode,
 			final List<ValueType> types, final LevelHolder holder) {
 		if (holder.getCurrentLevel() == 0) {
@@ -31,6 +51,9 @@ public class SubtreeCrossover implements EvolutionaryOperator {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void init(final EvolutionaryAlgorithm theOwner) {
 		// TODO Auto-generated method stub
@@ -53,6 +76,9 @@ public class SubtreeCrossover implements EvolutionaryOperator {
 		return 2;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void performOperation(final Random rnd, final Genome[] parents,
 			final int parentIndex, final Genome[] offspring,

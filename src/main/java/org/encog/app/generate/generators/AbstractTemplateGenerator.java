@@ -48,8 +48,9 @@ import org.encog.util.logging.EncogLogging;
 
 /**
  * Provides a basic implementation of a template generator.
+ * 
  * @author jheaton
- *
+ * 
  */
 public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 
@@ -57,12 +58,12 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 	 * The contents of the generated file.
 	 */
 	private final StringBuilder contents = new StringBuilder();
-	
+
 	/**
 	 * The Encog analyst that is being used.
 	 */
 	private EncogAnalyst analyst;
-	
+
 	/**
 	 * The current indention level.
 	 */
@@ -70,7 +71,9 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 
 	/**
 	 * Add a line, with proper indention.
-	 * @param line The line to add.
+	 * 
+	 * @param line
+	 *            The line to add.
 	 */
 	public void addLine(final String line) {
 		for (int i = 0; i < this.indentLevel; i++) {
@@ -82,8 +85,11 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 
 	/**
 	 * Add a name value definition, as a double array.
-	 * @param name The name.
-	 * @param data THe data.
+	 * 
+	 * @param name
+	 *            The name.
+	 * @param data
+	 *            THe data.
 	 */
 	public void addNameValue(final String name, final double[] data) {
 		final StringBuilder value = new StringBuilder();
@@ -99,8 +105,11 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 
 	/**
 	 * Add a name-value as an int.
-	 * @param name The name.
-	 * @param value THe value.
+	 * 
+	 * @param name
+	 *            The name.
+	 * @param value
+	 *            THe value.
 	 */
 	public void addNameValue(final String name, final int value) {
 		addNameValue(name, "" + value);
@@ -108,8 +117,11 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 
 	/**
 	 * Add a name-value array where the value is an int array.
-	 * @param name The name.
-	 * @param data THe value.
+	 * 
+	 * @param name
+	 *            The name.
+	 * @param data
+	 *            THe value.
 	 */
 	public void addNameValue(final String name, final int[] data) {
 		final StringBuilder value = new StringBuilder();
@@ -125,8 +137,11 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 
 	/**
 	 * Add a name-value where a string is the value.
-	 * @param name The name.
-	 * @param value The value.
+	 * 
+	 * @param name
+	 *            The name.
+	 * @param value
+	 *            The value.
 	 */
 	public void addNameValue(final String name, final String value) {
 		final StringBuilder line = new StringBuilder();
@@ -145,7 +160,9 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 
 	/**
 	 * Create an array of activations based on a flat network.
-	 * @param flat The flat network.
+	 * 
+	 * @param flat
+	 *            The flat network.
 	 * @return The array of flat activations.
 	 */
 	public int[] createActivations(final FlatNetwork flat) {
@@ -174,7 +191,9 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 
 	/**
 	 * Create an array of doubles to hold the specified flat network.
-	 * @param flat The flat network to use as a model.
+	 * 
+	 * @param flat
+	 *            The flat network to use as a model.
 	 * @return The new array.
 	 */
 	public double[] createParams(final FlatNetwork flat) {
@@ -185,7 +204,9 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 
 	/**
 	 * Generate based on the provided Encog Analyst.
-	 * @param theAnalyst The Encog analyst to base this on.
+	 * 
+	 * @param theAnalyst
+	 *            The Encog analyst to base this on.
 	 */
 	@Override
 	public void generate(final EncogAnalyst theAnalyst) {
@@ -278,7 +299,9 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 
 	/**
 	 * Process the specified token.
-	 * @param command The token to process.
+	 * 
+	 * @param command
+	 *            The token to process.
 	 */
 	public abstract void processToken(String command);
 
@@ -287,10 +310,13 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 	}
 
 	/**
-	 * Create an array list broken into 10 columns.  This prevents a very large array
-	 * from creating a very long single line.
-	 * @param result The string builder to add to.
-	 * @param data The data to convert.
+	 * Create an array list broken into 10 columns. This prevents a very large
+	 * array from creating a very long single line.
+	 * 
+	 * @param result
+	 *            The string builder to add to.
+	 * @param data
+	 *            The data to convert.
 	 */
 	public void toBrokenList(final StringBuilder result, final double[] data) {
 		int lineCount = 0;
@@ -312,10 +338,13 @@ public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 	}
 
 	/**
-	 * Create an array list broken into 10 columns.  This prevents a very large array
-	 * from creating a very long single line.
-	 * @param result The string builder to add to.
-	 * @param data The data to convert.
+	 * Create an array list broken into 10 columns. This prevents a very large
+	 * array from creating a very long single line.
+	 * 
+	 * @param result
+	 *            The string builder to add to.
+	 * @param data
+	 *            The data to convert.
 	 */
 	public void toBrokenList(final StringBuilder result, final int[] data) {
 		int lineCount = 0;

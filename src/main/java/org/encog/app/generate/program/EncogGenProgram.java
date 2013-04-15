@@ -39,7 +39,9 @@ public class EncogGenProgram extends EncogTreeNode {
 
 	/**
 	 * Create a new class.
-	 * @param className The class name.
+	 * 
+	 * @param className
+	 *            The class name.
 	 * @return The newly created class.
 	 */
 	public EncogProgramNode createClass(final String className) {

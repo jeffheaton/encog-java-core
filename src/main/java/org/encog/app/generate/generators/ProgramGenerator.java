@@ -26,8 +26,8 @@ package org.encog.app.generate.generators;
 import org.encog.app.generate.program.EncogGenProgram;
 
 /**
- * This interface defines a generator that works from program blocks, rather than
- * a template.  Encog uses this generator for Java, C# and Javascript.
+ * This interface defines a generator that works from program blocks, rather
+ * than a template. Encog uses this generator for Java, C# and Javascript.
  */
 public interface ProgramGenerator extends LanguageSpecificGenerator {
 	void generate(EncogGenProgram program, boolean embed);

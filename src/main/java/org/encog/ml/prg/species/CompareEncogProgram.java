@@ -4,15 +4,20 @@ import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
 
 /**
- * Compare two Encog programs for speciation. Count the nodes that are the same.
+ * Compare two Encog programs for speciation. Count the nodes that are the
+ * different, the higher the compare value, the more different two genomes are.
+ * Only the opcodes are compared, the actual values are not. This causes the
+ * comparison to be more about structure than actual values. Two genomes with
+ * the same structure, and different values, can be identical.
  */
 public class CompareEncogProgram {
 
 	/**
-	 * Compare program 1 and 2 node for node.
-	 * @param prg1
-	 * @param prg2
-	 * @return
+	 * Compare program 1 and 2 node for node. Lower values mean more similar genomes.
+	 * 
+	 * @param prg1 The first program.
+	 * @param prg2 The second program.
+	 * @return The result of the compare.
 	 */
 	public double compare(final EncogProgram prg1, final EncogProgram prg2) {
 		return compareNode(0, prg1.getRootNode(), prg2.getRootNode());
@@ -20,10 +25,11 @@ public class CompareEncogProgram {
 
 	/**
 	 * Compare two nodes.
-	 * @param result
-	 * @param node1
-	 * @param node2
-	 * @return
+	 * 
+	 * @param result The result of previous comparisons.
+	 * @param node1 The first node to compare.
+	 * @param node2 The second node to compare.
+	 * @return The result.
 	 */
 	private double compareNode(final double result, final ProgramNode node1,
 			final ProgramNode node2) {

@@ -31,7 +31,7 @@ import org.encog.app.analyst.AnalystError;
 public class AnalystCodeGenerationError extends AnalystError {
 
 	/**
-	 * 
+	 * The serial id.
 	 */
 	private static final long serialVersionUID = 0L;
 
@@ -48,16 +48,6 @@ public class AnalystCodeGenerationError extends AnalystError {
 	/**
 	 * Construct an exception that holds another exception.
 	 * 
-	 * @param t
-	 *            The other exception.
-	 */
-	public AnalystCodeGenerationError(final Throwable t) {
-		super(t);
-	}
-
-	/**
-	 * Construct an exception that holds another exception.
-	 * 
 	 * @param msg
 	 *            A message.
 	 * @param t
@@ -65,5 +55,15 @@ public class AnalystCodeGenerationError extends AnalystError {
 	 */
 	public AnalystCodeGenerationError(final String msg, final Throwable t) {
 		super(msg, t);
+	}
+
+	/**
+	 * Construct an exception that holds another exception.
+	 * 
+	 * @param t
+	 *            The other exception.
+	 */
+	public AnalystCodeGenerationError(final Throwable t) {
+		super(t);
 	}
 }

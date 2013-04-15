@@ -12,23 +12,54 @@ import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.ml.tree.TreeNode;
 
+/**
+ * Mutate the constant nodes of an Encog program. This mutation only changes
+ * values and does not alter the structure.
+ */
 public class ConstMutation implements EvolutionaryOperator {
 
+	/**
+	 * The frequency that constant nodes are mutated with.
+	 */
 	private final double frequency;
+
+	/**
+	 * The sigma value used to generate gaussian random numbers.
+	 */
 	private final double sigma;
 
+	/**
+	 * Construct a const mutator.
+	 * 
+	 * @param theContext
+	 *            The program context.
+	 * @param theFrequency
+	 *            The frequency of mutation.
+	 * @param theSigma
+	 *            The sigma to use for mutation.
+	 */
 	public ConstMutation(final EncogProgramContext theContext,
 			final double theFrequency, final double theSigma) {
 		this.frequency = theFrequency;
 		this.sigma = theSigma;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void init(final EvolutionaryAlgorithm theOwner) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/**
+	 * Called for each node in the progrmam. If this is a const node, then
+	 * mutate it according to the frequency and sigma specified.
+	 * 
+	 * @param rnd Random number generator.
+	 * @param node The node to mutate.
+	 */
 	private void mutateNode(final Random rnd, final ProgramNode node) {
 		if (node.getTemplate() == StandardExtensions.EXTENSION_CONST_SUPPORT) {
 			if (rnd.nextDouble() < this.frequency) {
@@ -48,7 +79,7 @@ public class ConstMutation implements EvolutionaryOperator {
 	}
 
 	/**
-	 * @return Returns the number of offspring produced. In this case, one.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public int offspringProduced() {
@@ -56,13 +87,16 @@ public class ConstMutation implements EvolutionaryOperator {
 	}
 
 	/**
-	 * @return Returns the number of parents needed. In this case, one.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public int parentsNeeded() {
 		return 1;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void performOperation(final Random rnd, final Genome[] parents,
 			final int parentIndex, final Genome[] offspring,
