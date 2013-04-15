@@ -36,11 +36,13 @@ import org.encog.ml.genetic.genome.ArrayGenome;
  */
 public class MutateShuffle implements EvolutionaryOperator {
 
+	/**
+	 * The owner.
+	 */
 	private EvolutionaryAlgorithm owner;
 	
 	/**
-	 * Perform a shuffle mutation.
-	 * @param chromosome The chromosome to mutate.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
@@ -85,11 +87,17 @@ public class MutateShuffle implements EvolutionaryOperator {
 		return 1;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int parentsNeeded() {
 		return 1;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void init(EvolutionaryAlgorithm theOwner) {
 		this.owner = theOwner;

@@ -65,7 +65,7 @@ public class EncogProgramVariables implements Serializable {
 	/**
 	 * Get a variable value by name.
 	 * 
-	 * @param i
+	 * @param name
 	 *            The name of the variable we are using.
 	 * @return The variable at the specified index.
 	 */

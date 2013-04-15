@@ -39,7 +39,7 @@ public interface DataSetCODEC {
 	 *            The input data array.
 	 * @param ideal
 	 *            The ideal data array.
-	 * @param signidicance
+	 * @param significance
 	 * 			 The significance.  The first element will be modified 
 	 * to hold the significance.
 	 * @return True, if there is more data to be read.

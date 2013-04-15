@@ -31,7 +31,6 @@ import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.opp.EvolutionaryOperator;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.genetic.GeneticError;
-import org.encog.ml.genetic.genome.ArrayGenome;
 import org.encog.ml.genetic.genome.IntegerArrayGenome;
 
 /**
@@ -82,16 +81,7 @@ public class SpliceNoRepeat implements EvolutionaryOperator {
 	}
 
 	/**
-	 * Assuming this chromosome is the "mother" mate with the passed in
-	 * "father".
-	 * @param mother
-	 * 		The mother.
-	 * @param father
-	 *            The father.
-	 * @param offspring1
-	 *            Returns the first offspring
-	 * @param offspring2
-	 *            Returns the second offspring.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
@@ -146,11 +136,17 @@ public class SpliceNoRepeat implements EvolutionaryOperator {
 		return 2;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int parentsNeeded() {
 		return 2;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void init(EvolutionaryAlgorithm theOwner) {
 		this.owner = theOwner;	

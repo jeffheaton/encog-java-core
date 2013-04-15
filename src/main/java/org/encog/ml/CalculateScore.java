@@ -35,7 +35,7 @@ public interface CalculateScore {
 	
 	/**
 	 * Calculate this network's score.
-	 * @param network The network.
+	 * @param method The ML method.
 	 * @return The score.
 	 */
 	double calculateScore(MLMethod method);

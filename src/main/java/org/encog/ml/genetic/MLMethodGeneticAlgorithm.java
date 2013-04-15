@@ -69,6 +69,16 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 	 * @author jheaton
 	 */
 	public class MLMethodGeneticAlgorithmHelper extends TrainEA {
+		/**
+		 * The serial id.
+		 */
+		private static final long serialVersionUID = 1L;
+
+		/**
+		 * Construct the helper.
+		 * @param thePopulation The population.
+		 * @param theScoreFunction The score function.
+		 */
 		public MLMethodGeneticAlgorithmHelper(Population thePopulation,
 				CalculateScore theScoreFunction) {
 			super(thePopulation, theScoreFunction);
@@ -83,17 +93,9 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 
 	/**
 	 * Construct a method genetic algorithm.
-	 * 
-	 * @param network
-	 *            The network to base this on.
-	 * @param factory
-	 * 				This is used to create the initial population.
-	 * @param populationSize
-	 *            The population size.
-	 * @param mutationPercent
-	 *            The percent of offspring to mutate.
-	 * @param percentToMate
-	 *            The percent of the population allowed to mate.
+	 * @param phenotypeFactory The phenotype factory.
+	 * @param calculateScore The score calculation object.
+	 * @param populationSize The population size.
 	 */
 	public MLMethodGeneticAlgorithm(final MethodFactory phenotypeFactory,
 			final CalculateScore calculateScore,

@@ -95,8 +95,6 @@ public class BasicSpecies implements Serializable, Species {
 	 *            The population the species belongs to.
 	 * @param theFirst
 	 *            The first genome in the species.
-	 * @param theSpeciesID
-	 *            The species id.
 	 */
 	public BasicSpecies(final Population thePopulation, final Genome theFirst) {
 		this.population = thePopulation;

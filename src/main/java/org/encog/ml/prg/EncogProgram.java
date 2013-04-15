@@ -215,8 +215,8 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 	 * Compile the specified EPL into an actual program node structure, for
 	 * later execution.
 	 * 
-	 * @param code
-	 * @return
+	 * @param code The code to compile.
+	 * @return The root node.
 	 */
 	public ProgramNode compileEPL(final String code) {
 		final ParseEPL parser = new ParseEPL(this);

@@ -41,6 +41,9 @@ public class Splice implements EvolutionaryOperator {
 	 */
 	private final int cutLength;
 	
+	/**
+	 * The owner.
+	 */
 	private EvolutionaryAlgorithm owner;
 
 	/**
@@ -52,16 +55,7 @@ public class Splice implements EvolutionaryOperator {
 	}
 
 	/**
-	 * Assuming this chromosome is the "mother" mate with the passed in
-	 * "father".
-	 * @param mother
-	 * 			The mother.
-	 * @param father
-	 *            The father.
-	 * @param offspring1
-	 *            Returns the first offspring
-	 * @param offspring2
-	 *            Returns the second offspring.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
@@ -107,11 +101,17 @@ public class Splice implements EvolutionaryOperator {
 		return 2;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int parentsNeeded() {
 		return 2;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void init(EvolutionaryAlgorithm theOwner) {
 		this.owner = theOwner;

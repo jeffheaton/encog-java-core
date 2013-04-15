@@ -760,8 +760,8 @@ public class AnalystField {
 
 	/**
 	 * Determine the mode, this is the class item that has the most instances.
-	 * @param analyst
-	 * @return
+	 * @param analyst The Encog analyst.
+	 * @return The mode.
 	 */
 	public int determineMode(EncogAnalyst analyst) {
 		if( !this.isClassify() ) {

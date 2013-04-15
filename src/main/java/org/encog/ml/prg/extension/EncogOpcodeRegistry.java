@@ -26,7 +26,7 @@ public enum EncogOpcodeRegistry {
 	 *            The name of the opcode.
 	 * @param argCount
 	 *            The number of parameters this opcode accepts.
-	 * @return
+	 * @return Return the string key.
 	 */
 	public static String createKey(final String functionName, final int argCount) {
 		return functionName + '`' + argCount;

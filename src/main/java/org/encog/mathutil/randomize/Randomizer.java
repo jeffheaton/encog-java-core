@@ -100,8 +100,7 @@ public interface Randomizer {
 	 */
 	void setRandom(Random theRandom);
 	/**
-	 * Retrieve the Random source
-	 * @return
+	 * @return Retrieve the Random generator.
 	 */
 	Random getRandom();
 

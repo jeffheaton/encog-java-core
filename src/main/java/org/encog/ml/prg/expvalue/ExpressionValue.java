@@ -101,7 +101,7 @@ public class ExpressionValue implements Serializable {
 	/**
 	 * Construct a expression based on an expression.
 	 * 
-	 * @param theValue
+	 * @param other
 	 *            The value to construct.
 	 */
 	public ExpressionValue(final ExpressionValue other) {
@@ -195,7 +195,7 @@ public class ExpressionValue implements Serializable {
 	/**
 	 * Construct a value of the specified type.
 	 * 
-	 * @param theValue
+	 * @param theType
 	 *            The value to construct.
 	 */
 	public ExpressionValue(final ValueType theType) {

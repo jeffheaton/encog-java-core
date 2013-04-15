@@ -56,7 +56,7 @@ public class BIFDefinition {
 		return table;
 	}
 	/**
-	 * @param probability the probability to set
+	 * @param s the probability to set
 	 */
 	public void setTable(String s) {
 		

@@ -91,7 +91,7 @@ public class CSVNeuralDataSet extends BasicMLDataSet {
 	 *            True if headers are present on the first line.
 	 * @param theFormat
 	 *            What CSV format to use.
-	 * @param theFormat
+	 * @param significance
 	 *            True, if there is a significance column.
 	 */
 	public CSVNeuralDataSet(

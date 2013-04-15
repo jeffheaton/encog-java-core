@@ -319,7 +319,10 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Generate a random opcode.
+	 * @param rnd Random number generator.
+	 * @param opcodes The opcodes to choose from.
+	 * @return The selected opcode.
 	 */
 	public ProgramExtensionTemplate generateRandomOpcode(final Random rnd,
 			final List<ProgramExtensionTemplate> opcodes) {

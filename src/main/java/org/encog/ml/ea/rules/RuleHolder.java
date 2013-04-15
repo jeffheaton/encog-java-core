@@ -19,7 +19,7 @@ public interface RuleHolder {
 	 * Rewrite the specified genome. The genome will still perform the same
 	 * function, but it may be shorter.
 	 * 
-	 * @param prg
+	 * @param genome
 	 *            The genome to rewrite.
 	 */
 	void rewrite(Genome genome);

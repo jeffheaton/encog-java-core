@@ -53,7 +53,7 @@ public abstract class Ensemble {
 
 	/**
 	 * Set the training method to use for this ensemble
-	 * @param newTrain The training factory.
+	 * @param newTrainFactory The training factory.
 	 */
 	public void setTrainingMethod(EnsembleTrainFactory newTrainFactory) {
 		this.trainFactory = newTrainFactory;
@@ -62,7 +62,7 @@ public abstract class Ensemble {
 
 	/**
 	 * Set which training data to base the training on
-	 * @param trainingData
+	 * @param trainingData The training data.
 	 */
 	public void setTrainingData(MLDataSet data) {
 		dataSetFactory.setInputData(data);
@@ -80,9 +80,10 @@ public abstract class Ensemble {
 
 	/**
 	 * Train the ensemble to a target accuracy
-	 * @param targetAccuracy
-	 * @param verbose
-	 * @param testset
+	 * @param targetError The target error.
+	 * @param selectionError The selection error.
+	 * @param testset The test set.
+	 * @param verbose Verbose mode?
 	 */
 	public void train(double targetError, double selectionError, EnsembleDataSet testset, boolean verbose) {
 
@@ -113,7 +114,9 @@ public abstract class Ensemble {
 
 	/**
 	 * Train the ensemble to a target accuracy
-	 * @param targetAccuracy
+	 * @param targetError The target error.
+	 * @param selectionError The selection error.
+	 * @param testset The test set.
 	 */
 	public void train(double targetError, double selectionError, EnsembleDataSet testset) {
 		train(targetError, selectionError, testset, false);

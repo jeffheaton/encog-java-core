@@ -77,15 +77,7 @@ public class ActivationBiPolar implements ActivationFunction {
 	}
 
 	/**
-	 * Implements the activation function derivative. The array is modified
-	 * according derivative of the activation function being used. See the class
-	 * description for more specific information on this type of activation
-	 * function. Propagation training requires the derivative. Some activation
-	 * functions do not support a derivative and will throw an error.
-	 * 
-	 * @param d
-	 *            The input array to the activation function.
-	 * @return The derivative.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public final double derivativeFunction(double b, double a) {

@@ -119,13 +119,7 @@ public class ActivationCompetitive implements ActivationFunction {
 	}
 
 	/**
-	 * Implements the activation function. The array is modified according to
-	 * the activation function being used. See the class description for more
-	 * specific information on this type of activation function.
-	 * 
-	 * @param d
-	 *            The input array to the activation function.
-	 * @return The derivative.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public final double derivativeFunction(final double b, final double a) {

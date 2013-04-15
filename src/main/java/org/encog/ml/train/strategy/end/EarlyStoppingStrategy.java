@@ -32,7 +32,7 @@ import org.encog.ml.train.MLTrain;
  * 
  * Based on the following paper:
  * 
- * @techreport{Prechelt94c,
+ * techreport{Prechelt94c,
  * author    = {Lutz Prechelt},
  * title     = {{PROBEN1} --- {A} Set of Benchmarks and Benchmarking
  *              Rules for Neural Network Training Algorithms},

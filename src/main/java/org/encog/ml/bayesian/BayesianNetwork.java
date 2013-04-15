@@ -603,8 +603,8 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 
 	/**
 	 * Require the specified event, thrown an error if it does not exist.
-	 * @param label
-	 * @return
+	 * @param label The label.
+	 * @return The event.
 	 */
 	public BayesianEvent requireEvent(String label) {
 		BayesianEvent result = getEvent(label);

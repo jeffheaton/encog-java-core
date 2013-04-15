@@ -17,7 +17,7 @@ public interface PrgGenerator extends PopulationGenerator {
 	 * Create a random node for an Encog Program.
 	 * @param rnd Random number generator.
 	 * @param program The program that the node should be generated for.
-	 * @param depth The depth remaining to generate.
+	 * @param depthRemaining The depth remaining to generate.
 	 * @param types The types to generate.
 	 * @return The newly created node.
 	 */

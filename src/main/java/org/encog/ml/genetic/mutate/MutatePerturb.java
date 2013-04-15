@@ -49,9 +49,9 @@ public class MutatePerturb implements EvolutionaryOperator {
 	}
 
 	/**
-	 * Perform a perturb mutation on the specified chromosome.
-	 * @param chromosome The chromosome to mutate.
+	 * {@inheritDoc}
 	 */
+	@Override
 	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
 			Genome[] offspring, int offspringIndex) {
 		DoubleArrayGenome parent = (DoubleArrayGenome)parents[parentIndex];
@@ -73,14 +73,19 @@ public class MutatePerturb implements EvolutionaryOperator {
 		return 1;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int parentsNeeded() {
 		return 1;
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void init(EvolutionaryAlgorithm theOwner) {
-		// TODO Auto-generated method stub
-		
+		// not needed
 	}
 }

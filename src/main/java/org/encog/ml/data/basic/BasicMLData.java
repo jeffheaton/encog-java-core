@@ -193,7 +193,7 @@ public class BasicMLData implements MLData,
 	
 	/**
 	 * Multiply one data element with another.  This does not modify the object.
-	 * @param o The other data element
+	 * @param d The other data element
 	 * @return The result.
 	 */
 	public MLData times(double d)

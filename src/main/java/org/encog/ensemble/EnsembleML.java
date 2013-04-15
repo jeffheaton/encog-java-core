@@ -23,7 +23,7 @@ public interface EnsembleML extends MLMethod, MLClassification, MLRegression {
 
 	/**
 	 * Set the training for this member
-	 * @param dataSet The data set.
+	 * @param train The trainer.
 	 */
 	public void setTraining(MLTrain train);
 
@@ -57,7 +57,7 @@ public interface EnsembleML extends MLMethod, MLClassification, MLRegression {
 
 	/**
 	 * Set the MLMethod to run
-	 * @param newMlMethod
+	 * @param newMl The new ML.
 	 */
 	public void setMl(MLMethod newMl);
 

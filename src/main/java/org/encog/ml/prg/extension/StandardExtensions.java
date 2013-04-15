@@ -1256,8 +1256,6 @@ public class StandardExtensions {
 	 * 
 	 * @param context
 	 *            The context to add the opcodes to.
-	 * @param protectedDiv
-	 *            Should protected division be used.
 	 */
 	public static void createNumericOperators(final EncogProgramContext context) {
 		createNumericOperators(context, false);

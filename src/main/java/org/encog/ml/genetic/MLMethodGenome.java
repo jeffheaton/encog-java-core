@@ -38,6 +38,9 @@ public class MLMethodGenome extends DoubleArrayGenome {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * The phenome.
+	 */
 	private MLEncodable phenotype;
 
 
@@ -69,6 +72,9 @@ public class MLMethodGenome extends DoubleArrayGenome {
 	}
 
 
+	/**
+	 * Decode the phenotype.
+	 */
 	public void decode() {
 		this.phenotype.decodeFromArray(getData());
 	}

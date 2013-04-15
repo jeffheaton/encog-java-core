@@ -52,12 +52,16 @@ public class KMeansClustering implements MLClustering {
 	 * The clusters
 	 */
 	private MLCluster[] clusters;
+	
+	/**
+	 * Number of clusters.
+	 */
 	private int k;
 
 	/**
 	 * Construct the K-Means object.
 	 * 
-	 * @param k
+	 * @param theK
 	 *            The number of clusters to use.
 	 * @param theSet
 	 *            The dataset to cluster.
