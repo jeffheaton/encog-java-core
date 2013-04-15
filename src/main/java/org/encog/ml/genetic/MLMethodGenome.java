@@ -46,7 +46,7 @@ public class MLMethodGenome extends DoubleArrayGenome {
 
 	/**
 	 * Construct a neural genome.
-	 * @param network The network to use.
+	 * @param thePhenotype The phenotype to use.
 	 */
 	public MLMethodGenome(
 			final MLEncodable thePhenotype) {

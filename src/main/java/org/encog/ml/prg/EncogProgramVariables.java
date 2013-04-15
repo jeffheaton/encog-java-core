@@ -162,10 +162,10 @@ public class EncogProgramVariables implements Serializable {
 	}
 
 	/**
-	 * Determine if the specified variable name
+	 * Determine if the specified variable name exists.
 	 * 
-	 * @param name
-	 * @return
+	 * @param name The name of the variable.
+	 * @return True if the name already exists.
 	 */
 	public boolean variableExists(final String name) {
 		return this.varMap.containsKey(name);

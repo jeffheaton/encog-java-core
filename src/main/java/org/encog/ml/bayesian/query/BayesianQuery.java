@@ -108,8 +108,7 @@ public interface BayesianQuery extends Cloneable {
 	void setEventValue(BayesianEvent event, int d);
 
 	/**
-	 * Return a string that represents this query as a probability "problem".
-	 * @return
+	 * @return Return a string that represents this query as a probability "problem".
 	 */
 	String getProblem();
 

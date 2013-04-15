@@ -62,7 +62,7 @@ public abstract class Ensemble {
 
 	/**
 	 * Set which training data to base the training on
-	 * @param trainingData The training data.
+	 * @param data The training data.
 	 */
 	public void setTrainingData(MLDataSet data) {
 		dataSetFactory.setInputData(data);
