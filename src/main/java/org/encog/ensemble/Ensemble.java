@@ -53,7 +53,7 @@ public abstract class Ensemble {
 
 	/**
 	 * Set the training method to use for this ensemble
-	 * @param newTrain
+	 * @param newTrain The training factory.
 	 */
 	public void setTrainingMethod(EnsembleTrainFactory newTrainFactory) {
 		this.trainFactory = newTrainFactory;
@@ -71,7 +71,7 @@ public abstract class Ensemble {
 
 	/**
 	 * Set which dataSetFactory to use to create the correct tranining sets
-	 * @param dataSetFactory
+	 * @param dataSetFactory The data set factory.
 	 */
 	public void setTrainingDataFactory(EnsembleDataSetFactory dataSetFactory) {
 		this.dataSetFactory = dataSetFactory;
@@ -83,7 +83,6 @@ public abstract class Ensemble {
 	 * @param targetAccuracy
 	 * @param verbose
 	 * @param testset
-	 * @return
 	 */
 	public void train(double targetError, double selectionError, EnsembleDataSet testset, boolean verbose) {
 
@@ -115,7 +114,6 @@ public abstract class Ensemble {
 	/**
 	 * Train the ensemble to a target accuracy
 	 * @param targetAccuracy
-	 * @return
 	 */
 	public void train(double targetError, double selectionError, EnsembleDataSet testset) {
 		train(targetError, selectionError, testset, false);
@@ -124,7 +122,7 @@ public abstract class Ensemble {
 	/**
 	 * Extract a specific training set from the Ensemble
 	 * @param setNumber
-	 * @return
+	 * @return The training set.
 	 */
 	public MLDataSet getTrainingSet(int setNumber) {
 		return members.get(setNumber).getTrainingSet();
@@ -133,7 +131,7 @@ public abstract class Ensemble {
 	/**
 	 * Extract a specific MLMethod
 	 * @param memberNumber
-	 * @return
+	 * @return The MLMethod.
 	 */
 	public EnsembleML getMember(int memberNumber) {
 		return members.get(memberNumber);
@@ -142,7 +140,6 @@ public abstract class Ensemble {
 	/**
 	 * Add a member to the ensemble
 	 * @param newMember
-	 * @return
 	 * @throws NotPossibleInThisMethod
 	 */
 	public void addMember(EnsembleML newMember) throws NotPossibleInThisMethod {
@@ -152,7 +149,7 @@ public abstract class Ensemble {
 	/**
 	 * Compute the output for a specific input
 	 * @param input
-	 * @return
+	 * @return The data.
 	 */
 	public MLData compute(MLData input) {
 		ArrayList<MLData> outputs = new ArrayList<MLData>();
@@ -165,8 +162,7 @@ public abstract class Ensemble {
 	}
 
 	/**
-	 * Returns the ensemble aggregation method
-	 * @return
+	 * @return Returns the ensemble aggregation method
 	 */
 	public EnsembleAggregator getAggregator() {
 		return aggregator;
@@ -182,7 +178,7 @@ public abstract class Ensemble {
 
 	/**
 	 * Return what type of problem this Ensemble is solving
-	 * @return
+	 * @return The problem type.
 	 */
 	abstract public EnsembleTypes.ProblemType getProblemType();
 

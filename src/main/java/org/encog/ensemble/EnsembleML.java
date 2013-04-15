@@ -17,40 +17,36 @@ public interface EnsembleML extends MLMethod, MLClassification, MLRegression {
 
 	/**
 	 * Set the dataset for this member
-	 * @param dataSet
+	 * @param dataSet The data set.
 	 */
 	public void setTrainingSet(EnsembleDataSet dataSet);
 
 	/**
 	 * Set the training for this member
-	 * @param dataSet
+	 * @param dataSet The data set.
 	 */
 	public void setTraining(MLTrain train);
 
 	/**
-	 * Get the dataset for this member
-	 * @return
+	 * @return Get the dataset for this member
 	 */
 	public EnsembleDataSet getTrainingSet();
 
 	/**
-	 * Get the dataset for this member
-	 * @return
+	 * @return Get the dataset for this member.
 	 */
 	public MLTrain getTraining();
 
 	/**
-	 * Train the ML to a certain accuracy
-	 * @param train
-	 * @param targetAccuracy
+	 * Train the ML to a certain accuracy.
+	 * @param targetError The target error.
 	 */
 	public void train(double targetError);
 
 	/**
-	 * Train the ML to a certain accuracy
-	 * @param train
-	 * @param targetAccuracy
-	 * @param verbose
+	 * Train the ML to a certain accuracy.
+	 * @param targetError Target error.
+	 * @param verbose Verbose mode.
 	 */
 	public void train(double targetError, boolean verbose);
 
@@ -66,20 +62,11 @@ public interface EnsembleML extends MLMethod, MLClassification, MLRegression {
 	public void setMl(MLMethod newMl);
 
 	/**
-	 * Returns the current MLMethod
-	 * @return
+	 * @return Returns the current MLMethod
 	 */
 	public MLMethod getMl();
 
 	public void trainStep();
 
 	public String getLabel();
-
-	/**
-	 * Calculates the error in classification as 1 - accuracy
-	 * @param testData
-	 *
-	 */
-	//public double classificationError(MLDataSet testData);
-
 }
