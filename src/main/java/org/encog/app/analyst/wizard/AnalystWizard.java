@@ -49,7 +49,6 @@ import org.encog.app.generate.TargetLanguage;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.prg.EncogProgramContext;
-import org.encog.ml.prg.extension.FunctionFactory;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.neural.neat.NEATPopulation;

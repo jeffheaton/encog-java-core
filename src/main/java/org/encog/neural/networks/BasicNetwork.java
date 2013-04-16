@@ -25,7 +25,6 @@ package org.encog.neural.networks;
 
 import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.randomize.ConsistentRandomizer;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;

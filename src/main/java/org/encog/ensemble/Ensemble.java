@@ -25,7 +25,6 @@ package org.encog.ensemble;
 
 import java.util.ArrayList;
 
-
 import org.encog.ensemble.data.EnsembleDataSet;
 import org.encog.ensemble.data.factories.EnsembleDataSetFactory;
 import org.encog.ml.data.MLData;

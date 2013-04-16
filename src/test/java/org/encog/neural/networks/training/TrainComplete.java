@@ -26,8 +26,6 @@ package org.encog.neural.networks.training;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.encog.mathutil.randomize.ConsistentRandomizer;
-import org.encog.mathutil.randomize.Randomizer;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.train.MLTrain;

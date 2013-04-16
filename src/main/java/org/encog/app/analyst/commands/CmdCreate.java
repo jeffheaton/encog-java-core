@@ -40,7 +40,6 @@ import org.encog.ml.prg.VariableMapping;
 import org.encog.ml.prg.expvalue.ValueType;
 import org.encog.ml.prg.extension.EncogOpcodeRegistry;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
-import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.ml.prg.generator.RampedHalfAndHalf;
 import org.encog.ml.prg.train.PrgPopulation;
 import org.encog.persist.EncogDirectoryPersistence;

@@ -35,7 +35,6 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.train.MLTrain;
-import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.networks.training.cross.CrossValidationKFold;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.util.logging.EncogLogging;

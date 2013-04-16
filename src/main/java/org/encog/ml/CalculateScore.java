@@ -23,7 +23,6 @@
  */
 package org.encog.ml;
 
-import org.encog.ml.MLMethod;
 
 /**
  * Used by simulated annealing and genetic algorithms to calculate the score

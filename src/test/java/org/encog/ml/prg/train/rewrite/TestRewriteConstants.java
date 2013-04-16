@@ -23,11 +23,11 @@
  */
 package org.encog.ml.prg.train.rewrite;
 
-import org.encog.ml.prg.EncogProgram;
-import org.encog.parse.expression.common.RenderCommonExpression;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.encog.ml.prg.EncogProgram;
+import org.encog.parse.expression.common.RenderCommonExpression;
 
 public class TestRewriteConstants extends TestCase {
 	

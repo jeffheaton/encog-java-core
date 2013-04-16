@@ -25,6 +25,8 @@ package org.encog.ensemble.bagging;
 
 import java.util.ArrayList;
 
+import junit.framework.TestCase;
+
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.aggregator.MajorityVoting;
@@ -34,8 +36,6 @@ import org.encog.ensemble.training.ResilientPropagationFactory;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.XOR;
-
-import junit.framework.TestCase;
 
 public class TestBagging extends TestCase {
 

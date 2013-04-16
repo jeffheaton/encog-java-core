@@ -23,7 +23,6 @@
  */
 package org.encog.ml.data.market;
 
-import org.encog.mathutil.matrices.Matrix;
 import org.encog.util.obj.ReflectionUtil;
 
 /**

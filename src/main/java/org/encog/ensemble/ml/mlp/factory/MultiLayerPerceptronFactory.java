@@ -24,6 +24,7 @@
 package org.encog.ensemble.ml.mlp.factory;
 
 import java.util.Collection;
+
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ml.MLMethod;

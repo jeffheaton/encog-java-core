@@ -23,6 +23,8 @@
  */
 package org.encog.ensemble.adaboost;
 
+import java.util.ArrayList;
+
 import org.encog.ensemble.Ensemble;
 import org.encog.ensemble.EnsembleAggregator;
 import org.encog.ensemble.EnsembleML;
@@ -37,8 +39,6 @@ import org.encog.mathutil.VectorAlgebra;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
-
-import java.util.ArrayList;
 
 public class AdaBoost extends Ensemble {
 

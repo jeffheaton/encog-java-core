@@ -23,10 +23,10 @@
  */
 package org.encog.ml.prg;
 
-import org.encog.parse.expression.common.RenderCommonExpression;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.encog.parse.expression.common.RenderCommonExpression;
 
 public class TestProgramClone extends TestCase {
 	
