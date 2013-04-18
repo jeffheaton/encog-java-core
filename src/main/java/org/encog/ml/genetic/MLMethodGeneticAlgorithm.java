@@ -153,7 +153,7 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 	 */
 	@Override
 	public MLMethod getMethod() {
-		Genome best = (Genome)genetic.getPopulation().getGenomeFactory().factor();
+		Genome best = genetic.getBestGenome();		
 		return this.genetic.getCODEC().decode(best);
 	}
 
