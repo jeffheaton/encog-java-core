@@ -68,15 +68,18 @@ public class BufferedDataSetIterator implements Iterator<MLDataPair> {
 	 */
 	@Override
 	public MLDataPair next() {
+		// Make sure that only ONE iterator is using the underlying dataset at a time.
+		// This can be improved for better disk-based performance.
+		synchronized (this.data) {
+			if (!hasNext()) {
+				return null;
+			}
 
-		if (!hasNext()) {
-			return null;
+			final MLDataPair pair = BasicMLDataPair.createPair(
+					this.data.getInputSize(), this.data.getIdealSize());
+			this.data.getRecord(this.current++, pair);
+			return pair;
 		}
-
-		final MLDataPair pair = BasicMLDataPair.createPair(
-				this.data.getInputSize(), this.data.getIdealSize());
-		this.data.getRecord(this.current++, pair);
-		return pair;
 	}
 
 	/**
