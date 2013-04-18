@@ -28,6 +28,7 @@ import junit.framework.Assert;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.mathutil.randomize.ConsistentRandomizer;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
+import org.encog.ml.MLError;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.freeform.FreeformLayer;
 import org.encog.neural.freeform.FreeformNetwork;
@@ -75,6 +76,13 @@ public class NetworkUtil {
 			train.iteration();
 		
 		double error2 = train.getError();
+		
+		if( train.getMethod() instanceof MLError ) {
+			double error3 = ((MLError)train.getMethod()).calculateError(train.getTraining());
+			double improve = (error1-error3)/error1;
+			Assert.assertTrue("Improve rate too low for " + train.getClass().getSimpleName() + 
+					",Improve="+improve+",Needed="+requiredImprove, improve>=requiredImprove);
+		}
 		
 		double improve = (error1-error2)/error1;
 		Assert.assertTrue("Improve rate too low for " + train.getClass().getSimpleName() + 
