@@ -679,7 +679,7 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 		}
 
 		// register for shutdown
-		Encog.getInstance().removeShutdownTask(this);
+		Encog.getInstance().addShutdownTask(this);
 
 		// just pick the first genome with a valid score as best, it will be
 		// updated later.
