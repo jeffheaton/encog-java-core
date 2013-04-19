@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.util.normalize.input.InputField;
+import org.encog.util.normalize.input.InputFieldCSVText;
 import org.encog.util.normalize.output.BasicOutputField;
 
 /**
@@ -73,6 +74,22 @@ public class OutputOneOf extends BasicOutputField {
 	public OutputOneOf(final double trueValue, final double falseValue) {
 		this.trueValue = trueValue;
 		this.falseValue = falseValue;
+	}
+	
+	/**
+	 * Base the field on a csv text field.
+	 * @param csv The field.
+	 * @param trueValue
+	 *            The true value.
+	 * @param falseValue
+	 *            The false value.
+	 */
+	public OutputOneOf(InputFieldCSVText csv, final double trueValue, final double falseValue) {
+		this.trueValue = trueValue;
+		this.falseValue = falseValue;
+		for(String s: csv.getMappings().keySet() ) {
+			addItem(csv,csv.getMappings().get(s));
+		}
 	}
 
 	/**
