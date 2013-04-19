@@ -96,9 +96,9 @@ public class TestBiasActivation extends TestCase {
 		MLTrain rprop2 = new ResilientPropagation(network2, trainingData);
 		MLTrain rprop3 = new ResilientPropagation(network3, trainingData);
 
-		NetworkUtil.testTraining(rprop1,0.03);
-		NetworkUtil.testTraining(rprop2,0.01);
-		NetworkUtil.testTraining(rprop3,0.01);
+		NetworkUtil.testTraining(trainingData,rprop1,0.03);
+		NetworkUtil.testTraining(trainingData,rprop2,0.01);
+		NetworkUtil.testTraining(trainingData,rprop3,0.01);
 		
 		double[] w1 = NetworkCODEC.networkToArray(network1);
 		double[] w2 = NetworkCODEC.networkToArray(network2);

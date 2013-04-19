@@ -46,7 +46,7 @@ public class TestADALINE extends TestCase {
 		// train it
 		MLDataSet training = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		MLTrain train = new TrainAdaline(network,training,0.01);
-		NetworkUtil.testTraining(train,0.01);
+		NetworkUtil.testTraining(training,train,0.01);
 	}
 	
 }

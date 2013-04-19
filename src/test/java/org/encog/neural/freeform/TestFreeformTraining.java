@@ -50,7 +50,7 @@ public class TestFreeformTraining extends TestCase {
 		FreeformNetwork network = NetworkUtil.createXORFreeformNetworkUntrained();
 
 		MLTrain bprop = new FreeformBackPropagation(network, trainingData, 0.7, 0.9);
-		NetworkUtil.testTraining(bprop,0.01);
+		NetworkUtil.testTraining(trainingData,bprop,0.01);
 	}
 	
 	@Test
@@ -61,7 +61,7 @@ public class TestFreeformTraining extends TestCase {
 		FreeformNetwork network = NetworkUtil.createXORFreeformNetworkUntrained();
 
 		MLTrain bprop = new FreeformResilientPropagation(network, trainingData);
-		NetworkUtil.testTraining(bprop,0.01);
+		NetworkUtil.testTraining(trainingData,bprop,0.01);
 	}
 	
 	@Test
@@ -71,7 +71,7 @@ public class TestFreeformTraining extends TestCase {
 		FreeformNetwork network = NetworkUtil.createXORFreeformNetworkUntrained();
 		CalculateScore score = new TrainingSetScore(trainingData);
 		NeuralSimulatedAnnealing anneal = new NeuralSimulatedAnnealing(network,score,10,2,100);
-		NetworkUtil.testTraining(anneal,0.01);
+		NetworkUtil.testTraining(trainingData,anneal,0.01);
 	}
 	
 	@Test
@@ -86,6 +86,6 @@ public class TestFreeformTraining extends TestCase {
 				network.reset();
 				return network;
 			}}, score, 500);
-		NetworkUtil.testTraining(genetic,0.00001);
+		NetworkUtil.testTraining(trainingData,genetic,0.00001);
 	}
 }

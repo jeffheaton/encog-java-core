@@ -63,7 +63,7 @@ public class TestFreeform extends TestCase {
 		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);		
 		FreeformNetwork trainedNetwork = NetworkUtil.createXORFreeformNetworkUntrained();
 		MLTrain bprop = new FreeformResilientPropagation(trainedNetwork, trainingData);
-		NetworkUtil.testTraining(bprop,0.01);
+		NetworkUtil.testTraining(trainingData,bprop,0.01);
 		
 		trainedNetwork = (FreeformNetwork) bprop.getMethod();
 		

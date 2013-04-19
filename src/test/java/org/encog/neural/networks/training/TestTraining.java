@@ -57,7 +57,7 @@ public class TestTraining extends TestCase   {
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		MLTrain rprop = new ResilientPropagation(network, trainingData);
-		NetworkUtil.testTraining(rprop,0.03);
+		NetworkUtil.testTraining(trainingData,rprop,0.03);
 	}
 	
 	@Test
@@ -67,7 +67,7 @@ public class TestTraining extends TestCase   {
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		MLTrain rprop = new LevenbergMarquardtTraining(network, trainingData);
-		NetworkUtil.testTraining(rprop,0.03);
+		NetworkUtil.testTraining(trainingData,rprop,0.03);
 	}
 	
 	@Test
@@ -78,7 +78,7 @@ public class TestTraining extends TestCase   {
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 
 		MLTrain bprop = new Backpropagation(network, trainingData, 0.7, 0.9);
-		NetworkUtil.testTraining(bprop,0.01);
+		NetworkUtil.testTraining(trainingData,bprop,0.01);
 	}
 	
 	@Test
@@ -88,7 +88,7 @@ public class TestTraining extends TestCase   {
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		MLTrain bprop = new ManhattanPropagation(network, trainingData, 0.01);
-		NetworkUtil.testTraining(bprop,0.01);
+		NetworkUtil.testTraining(trainingData,bprop,0.01);
 	}
 	
 	@Test
@@ -98,7 +98,7 @@ public class TestTraining extends TestCase   {
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		MLTrain bprop = new ScaledConjugateGradient(network, trainingData);
-		NetworkUtil.testTraining(bprop,0.04);
+		NetworkUtil.testTraining(trainingData,bprop,0.04);
 	}
 	
 	@Test
@@ -108,7 +108,7 @@ public class TestTraining extends TestCase   {
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		CalculateScore score = new TrainingSetScore(trainingData);
 		NeuralSimulatedAnnealing anneal = new NeuralSimulatedAnnealing(network,score,10,2,100);
-		NetworkUtil.testTraining(anneal,0.01);
+		NetworkUtil.testTraining(trainingData,anneal,0.01);
 	}
 	
 	@Test
@@ -123,7 +123,7 @@ public class TestTraining extends TestCase   {
 				network.reset();
 				return network;
 			}}, score, 500);
-		NetworkUtil.testTraining(genetic,0.00001);
+		NetworkUtil.testTraining(trainingData,genetic,0.00001);
 	}
 	
 	@Test
