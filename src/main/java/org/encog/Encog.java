@@ -253,10 +253,18 @@ public final class Encog {
 		this.randomFactory = randomFactory;
 	}
 	
+	/**
+	 * Add a shutdown task.
+	 * @param task The shutdown task.
+	 */
 	public void addShutdownTask(EncogShutdownTask task) {
 		this.shutdownTasks.add(task);
 	}
 	
+	/**
+	 * Remove a shutdown task.
+	 * @param task The shutdown task.
+	 */
 	public void removeShutdownTask(EncogShutdownTask task) {
 		this.shutdownTasks.remove(task);
 	}
