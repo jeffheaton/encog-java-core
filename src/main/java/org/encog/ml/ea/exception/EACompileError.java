@@ -23,21 +23,37 @@
  */
 package org.encog.ml.ea.exception;
 
+/**
+ * The genome has generated a compile error and is invalid.
+ */
 public class EACompileError extends EAError {
 	/**
 	 * The serial ID.
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Construct the error.
+	 * @param msg
+	 */
+	public EACompileError(final String msg) {
+		super(msg);
+	}
+
+	/**
+	 * Construct the error.
+	 * @param msg The message.
+	 * @param t The error.
+	 */
 	public EACompileError(String msg, Throwable t) {
 		super(msg, t);
 	}
 
+	/**
+	 * Construct the error.
+	 * @param t An error.
+	 */
 	public EACompileError(Throwable t) {
 		super(t);
-	}
-
-	public EACompileError(String msg) {
-		super(msg);
 	}
 }

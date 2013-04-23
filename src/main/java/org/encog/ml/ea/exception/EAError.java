@@ -25,6 +25,9 @@ package org.encog.ml.ea.exception;
 
 import org.encog.EncogError;
 
+/**
+ * A general evolutionary algorithm error.
+ */
 public class EAError extends EncogError {
 
 	/**
@@ -32,16 +35,29 @@ public class EAError extends EncogError {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public EAError(String msg, Throwable t) {
+	/**
+	 * Construct the exception.
+	 * @param msg The message.
+	 */
+	public EAError(final String msg) {
+		super(msg);
+	}
+
+	/**
+	 * Construct the exception.
+	 * @param msg The message.
+	 * @param t A throwable error.
+	 */
+	public EAError(final String msg, final Throwable t) {
 		super(msg, t);
 	}
 
-	public EAError(Throwable t) {
+	/**
+	 * Construct the exception.
+	 * @param t A throwable error.
+	 */
+	public EAError(final Throwable t) {
 		super(t);
-	}
-
-	public EAError(String msg) {
-		super(msg);
 	}
 
 }
