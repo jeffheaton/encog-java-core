@@ -28,6 +28,9 @@ import java.util.List;
 
 import org.encog.ml.ea.genome.Genome;
 
+/**
+ * Basic implementation of a rule holder.
+ */
 public class BasicRuleHolder implements RuleHolder {
 	/**
 	 * Rewrite rules that can simplify genomes.

@@ -27,7 +27,7 @@ import org.encog.ml.ea.genome.Genome;
 
 /**
  * Defines a rewrite rule. Rewrite rules are used to rewrite a genome into a
- * more simple, yet equivilant, form.
+ * more simple, yet equivalent, form.
  */
 public interface RewriteRule {
 	/**

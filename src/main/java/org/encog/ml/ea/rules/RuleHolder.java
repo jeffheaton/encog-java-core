@@ -27,6 +27,9 @@ import java.util.List;
 
 import org.encog.ml.ea.genome.Genome;
 
+/**
+ * Holds a set of rules for an EA.
+ */
 public interface RuleHolder {
 	/**
 	 * Add a rewrite rule. Rewrite rules can be used to simplify genomes.

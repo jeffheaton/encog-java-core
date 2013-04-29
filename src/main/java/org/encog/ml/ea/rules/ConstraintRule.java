@@ -25,6 +25,14 @@ package org.encog.ml.ea.rules;
 
 import org.encog.ml.ea.genome.Genome;
 
+/**
+ * Defines a constraint.  A constraint specifies if a genome is invalid.
+ */
 public interface ConstraintRule {
+	/**
+	 * Is this genome valid?
+	 * @param genome The genome.
+	 * @return True, if valid.
+	 */
 	boolean isValid(Genome genome);
 }
