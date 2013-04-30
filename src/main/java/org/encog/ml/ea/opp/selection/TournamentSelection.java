@@ -95,8 +95,7 @@ public class TournamentSelection implements SelectionOperator, Serializable {
 				this.trainer.getScoreAdjusters());
 
 		for (int i = 0; i < this.rounds; i++) {
-			final int competitorIndex = RangeRandomizer.randomInt(0, species
-					.getMembers().size() - 1);
+			final int competitorIndex = rnd.nextInt(species.getMembers().size());
 			final Genome competitor = species.getMembers().get(competitorIndex);
 
 			// force an invalid genome to lose
@@ -126,8 +125,7 @@ public class TournamentSelection implements SelectionOperator, Serializable {
 		BasicEA.calculateScoreAdjustment(best, this.trainer.getScoreAdjusters());
 
 		for (int i = 0; i < this.rounds; i++) {
-			final int competitorIndex = RangeRandomizer.randomInt(0, species
-					.getMembers().size() - 1);
+			final int competitorIndex = rnd.nextInt(species.getMembers().size());
 			final Genome competitor = species.getMembers().get(competitorIndex);
 
 			// only evaluate valid genomes

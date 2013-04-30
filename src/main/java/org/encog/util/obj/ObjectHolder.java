@@ -25,9 +25,22 @@ package org.encog.util.obj;
 
 import java.io.Serializable;
 
-
+/**
+ * Holds an object of the specified type.  Used with the ObjectChooser.
+ * Associates an object with a probability.
+ *
+ * @param <T> The type of object to hold.
+ */
 public class ObjectHolder<T> implements Serializable {
+	
+	/**
+	 * The object to hold.
+	 */
 	private final T obj;
+	
+	/**
+	 * The probability.
+	 */
 	private final double probability;
 	
 	public ObjectHolder(T theObj, double probability) {
