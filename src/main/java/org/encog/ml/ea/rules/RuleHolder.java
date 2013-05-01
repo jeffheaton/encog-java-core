@@ -39,6 +39,10 @@ public interface RuleHolder {
 	 */
 	void addRewriteRule(RewriteRule rule);
 	
+	/**
+	 * Add a constraint rule.
+	 * @param rule The rule to add.
+	 */
 	void addConstraintRule(ConstraintRule rule);
 
 	/**

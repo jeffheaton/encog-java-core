@@ -293,7 +293,7 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 				return true;
 			} else {
 				if (isValidationMode()) {
-					// throw new EncogError("Population overflow");
+					throw new EncogError("Population overflow");
 				}
 				return false;
 			}

@@ -26,18 +26,39 @@ package org.encog.mathutil.randomize.factory;
 import java.io.Serializable;
 import java.util.Random;
 
+/**
+ * Basic random number generator factory.  Simply returns the Random class.
+ */
 public class BasicRandomFactory implements RandomFactory, Serializable {
 
+	/**
+	 * Serial ID.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * A random generator to generate random seeds.
+	 */
 	private Random seedProducer;
 	
+	/**
+	 * Construct a random generator factory. No assigned seed.
+	 */
 	public BasicRandomFactory() {
 		this.seedProducer = new Random();
 	}
 	
+	/**
+	 * Construct a random generator factory with the specified seed.
+	 * @param theSeed The seed.
+	 */
 	public BasicRandomFactory(long theSeed) {
 		this.seedProducer = new Random(theSeed);
 	}
 	
+	/**
+	 * @return Factor a new random generator.
+	 */
 	@Override
 	public Random factor() {
 		synchronized(this) {
@@ -46,6 +67,9 @@ public class BasicRandomFactory implements RandomFactory, Serializable {
 		}
 	}
 
+	/**
+	 * @return Factor a new random generator factor.
+	 */
 	@Override
 	public RandomFactory factorFactory() {
 		return new BasicRandomFactory(this.seedProducer.nextLong());
