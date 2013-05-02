@@ -29,27 +29,50 @@ import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
 import org.encog.ml.ea.population.Population;
 
+/**
+ * A factory to create MLMethod based genomes.
+ */
 public class MLMethodGenomeFactory implements GenomeFactory {
 
-	private MethodFactory factory;
-	private Population population;
+	/**
+	 * The MLMethod factory.
+	 */
+	private final MethodFactory factory;
 	
-	public MLMethodGenomeFactory(MethodFactory theFactory, Population thePopulation) {
+	/**
+	 * The population.
+	 */
+	private final Population population;
+
+	/**
+	 * Construct the genome factory.
+	 * @param theFactory The factory.
+	 * @param thePopulation The population.
+	 */
+	public MLMethodGenomeFactory(final MethodFactory theFactory,
+			final Population thePopulation) {
 		this.factory = theFactory;
 		this.population = thePopulation;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Genome factor() {
-		Genome result = new MLMethodGenome((MLEncodable)this.factory.factor());
+		final Genome result = new MLMethodGenome(
+				(MLEncodable) this.factory.factor());
 		result.setPopulation(this.population);
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public Genome factor(Genome other) {
-		MLMethodGenome result = (MLMethodGenome)factor();
-		result.copy((MLMethodGenome)other);
+	public Genome factor(final Genome other) {
+		final MLMethodGenome result = (MLMethodGenome) factor();
+		result.copy(other);
 		result.setPopulation(this.population);
 		return result;
 	}

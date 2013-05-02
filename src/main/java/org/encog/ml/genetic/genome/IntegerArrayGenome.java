@@ -27,23 +27,50 @@ import org.encog.ml.ea.genome.BasicGenome;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.util.EngineArray;
 
+/**
+ * A genome that is an array of discrete integer values.
+ *
+ */
 public class IntegerArrayGenome extends BasicGenome implements ArrayGenome {
 	
+	
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * The genome data.
+	 */
 	private int[] data;
 	
+	/**
+	 * Construct the genome.
+	 * @param size The size of the genome.
+	 */
 	public IntegerArrayGenome(int size) {
 		this.data = new int[size];
 	}
 	
+	/**
+	 * Construct the genome by copying another.
+	 * @param other The other genome.
+	 */
 	public IntegerArrayGenome(IntegerArrayGenome other) {
 		this.data = other.getData().clone();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int size() {
 		return this.data.length;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void copy(ArrayGenome source, int sourceIndex, int targetIndex) {
 		IntegerArrayGenome sourceInt = (IntegerArrayGenome)source;
@@ -55,6 +82,9 @@ public class IntegerArrayGenome extends BasicGenome implements ArrayGenome {
 		return this.data;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void copy(Genome source) {
 		IntegerArrayGenome sourceInt = (IntegerArrayGenome)source;
@@ -64,6 +94,9 @@ public class IntegerArrayGenome extends BasicGenome implements ArrayGenome {
 		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void swap(int iswap1, int iswap2) {
 		int temp = this.data[iswap1];

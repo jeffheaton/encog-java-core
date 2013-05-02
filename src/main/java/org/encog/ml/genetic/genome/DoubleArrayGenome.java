@@ -27,23 +27,48 @@ import org.encog.ml.ea.genome.BasicGenome;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.util.EngineArray;
 
+/**
+ * A genome made up of continuous doubles.
+ */
 public class DoubleArrayGenome extends BasicGenome implements ArrayGenome {
 	
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * The data.
+	 */
 	private double[] data;
 	
+	/**
+	 * Construct a genome of a specific size.
+	 * @param size The size.
+	 */
 	public DoubleArrayGenome(int size) {
 		this.data = new double[size];
 	}
 	
+	/**
+	 * Construct a genome based on another genome.
+	 * @param other
+	 */
 	public DoubleArrayGenome(DoubleArrayGenome other) {
 		this.data = other.getData().clone();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int size() {
 		return this.data.length;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void copy(ArrayGenome source, int sourceIndex, int targetIndex) {
 		DoubleArrayGenome sourceInt = (DoubleArrayGenome)source;
@@ -51,10 +76,16 @@ public class DoubleArrayGenome extends BasicGenome implements ArrayGenome {
 		
 	}
 	
+	/**
+	 * @return The data.
+	 */
 	public double[] getData() {
 		return this.data;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void copy(Genome source) {
 		DoubleArrayGenome sourceDouble = (DoubleArrayGenome)source;
@@ -64,6 +95,9 @@ public class DoubleArrayGenome extends BasicGenome implements ArrayGenome {
 		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void swap(int iswap1, int iswap2) {
 		double temp = this.data[iswap1];

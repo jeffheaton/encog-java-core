@@ -32,50 +32,48 @@ import org.encog.ml.genetic.genome.DoubleArrayGenome;
  * is the weight and bias matrix.
  */
 public class MLMethodGenome extends DoubleArrayGenome {
-	
+
 	/**
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * The phenome.
 	 */
 	private MLEncodable phenotype;
 
-
 	/**
 	 * Construct a neural genome.
-	 * @param thePhenotype The phenotype to use.
+	 * 
+	 * @param thePhenotype
+	 *            The phenotype to use.
 	 */
-	public MLMethodGenome(
-			final MLEncodable thePhenotype) {
+	public MLMethodGenome(final MLEncodable thePhenotype) {
 		super(thePhenotype.encodedArrayLength());
 		this.phenotype = thePhenotype;
 		this.phenotype.encodeToArray(getData());
 	}
-
-
-	/**
-	 * @return the phenotype
-	 */
-	public MLEncodable getPhenotype() {
-		return phenotype;
-	}
-
-
-	/**
-	 * @param phenotype the phenotype to set
-	 */
-	public void setPhenotype(MLEncodable phenotype) {
-		this.phenotype = phenotype;
-	}
-
 
 	/**
 	 * Decode the phenotype.
 	 */
 	public void decode() {
 		this.phenotype.decodeFromArray(getData());
+	}
+
+	/**
+	 * @return the phenotype
+	 */
+	public MLEncodable getPhenotype() {
+		return this.phenotype;
+	}
+
+	/**
+	 * @param phenotype
+	 *            the phenotype to set
+	 */
+	public void setPhenotype(final MLEncodable phenotype) {
+		this.phenotype = phenotype;
 	}
 }

@@ -26,19 +26,35 @@ package org.encog.ml.genetic.genome;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
 
+/**
+ * A factory that creates DoubleArrayGenome objects of a specific size.
+ */
 public class DoubleArrayGenomeFactory implements GenomeFactory {
 	
+	/**
+	 * The size to create.
+	 */
 	private int size;
 	
+	/**
+	 * Construct the genome factory.
+	 * @param theSize The size to create genomes of.
+	 */
 	public DoubleArrayGenomeFactory(int theSize) {
 		this.size = theSize;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Genome factor() {
 		return new DoubleArrayGenome(this.size);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Genome factor(Genome other) {
 		// TODO Auto-generated method stub

@@ -23,6 +23,12 @@
  */
 package org.encog.ml;
 
+/**
+ * Factor MLMethods.
+ */
 public interface MethodFactory {
+	/**
+	 * @return Factor a MLMethod.
+	 */
 	MLMethod factor();
 }

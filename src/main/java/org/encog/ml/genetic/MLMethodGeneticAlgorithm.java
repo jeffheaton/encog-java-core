@@ -44,9 +44,9 @@ import org.encog.util.concurrency.MultiThreadable;
 import org.encog.util.logging.EncogLogging;
 
 /**
- * Implements a genetic algorithm that allows an MLMethod that is encodable (MLEncodable)
- * to be trained.  It works well with both BasicNetwork and FreeformNetwork class, as well
- * as any MLEncodable class.
+ * Implements a genetic algorithm that allows an MLMethod that is encodable
+ * (MLEncodable) to be trained. It works well with both BasicNetwork and
+ * FreeformNetwork class, as well as any MLEncodable class.
  * 
  * There are essentially two ways you can make use of this class.
  * 
@@ -61,7 +61,8 @@ import org.encog.util.logging.EncogLogging;
  * create your own implementation of the CalculateScore method. This class can
  * then score the networks any way that you like.
  */
-public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThreadable {
+public class MLMethodGeneticAlgorithm extends BasicTraining implements
+		MultiThreadable {
 
 	/**
 	 * Very simple class that implements a genetic algorithm.
@@ -76,11 +77,14 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 
 		/**
 		 * Construct the helper.
-		 * @param thePopulation The population.
-		 * @param theScoreFunction The score function.
+		 * 
+		 * @param thePopulation
+		 *            The population.
+		 * @param theScoreFunction
+		 *            The score function.
 		 */
-		public MLMethodGeneticAlgorithmHelper(Population thePopulation,
-				CalculateScore theScoreFunction) {
+		public MLMethodGeneticAlgorithmHelper(final Population thePopulation,
+				final CalculateScore theScoreFunction) {
 			super(thePopulation, theScoreFunction);
 		}
 	}
@@ -93,22 +97,27 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 
 	/**
 	 * Construct a method genetic algorithm.
-	 * @param phenotypeFactory The phenotype factory.
-	 * @param calculateScore The score calculation object.
-	 * @param populationSize The population size.
+	 * 
+	 * @param phenotypeFactory
+	 *            The phenotype factory.
+	 * @param calculateScore
+	 *            The score calculation object.
+	 * @param populationSize
+	 *            The population size.
 	 */
 	public MLMethodGeneticAlgorithm(final MethodFactory phenotypeFactory,
-			final CalculateScore calculateScore,
-			final int populationSize) {
+			final CalculateScore calculateScore, final int populationSize) {
 		super(TrainingImplementationType.Iterative);
-		
+
 		final Population population = new BasicPopulation(populationSize, null);
-		population.setGenomeFactory(new MLMethodGenomeFactory(phenotypeFactory,population));
-		this.genetic = new MLMethodGeneticAlgorithmHelper(population, calculateScore);
+		population.setGenomeFactory(new MLMethodGenomeFactory(phenotypeFactory,
+				population));
+		this.genetic = new MLMethodGeneticAlgorithmHelper(population,
+				calculateScore);
 		this.genetic.setCODEC(new MLEncodableCODEC());
-		
+
 		GenomeComparator comp = null;
-		if( calculateScore.shouldMinimize() ) {
+		if (calculateScore.shouldMinimize()) {
 			comp = new MinimizeScoreComp();
 		} else {
 			comp = new MaximizeScoreComp();
@@ -116,21 +125,23 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 		this.genetic.setBestComparator(comp);
 		this.genetic.setSelectionComparator(comp);
 
-		Species defaultSpecies = population.createSpecies();
+		final Species defaultSpecies = population.createSpecies();
 
 		for (int i = 0; i < population.getPopulationSize(); i++) {
-			final MLEncodable chromosomeNetwork = (MLEncodable)phenotypeFactory.factor();
+			final MLEncodable chromosomeNetwork = (MLEncodable) phenotypeFactory
+					.factor();
 			final MLMethodGenome genome = new MLMethodGenome(chromosomeNetwork);
 			getGenetic().calculateScore(genome);
 			defaultSpecies.add(genome);
 		}
 		defaultSpecies.setLeader(defaultSpecies.getMembers().get(0));
-		
-		int s = Math.max(defaultSpecies.getMembers().get(0).size()/5,1);
+
+		final int s = Math
+				.max(defaultSpecies.getMembers().get(0).size() / 5, 1);
 		getGenetic().setPopulation(population);
-		
-		this.genetic.addOperation(0.9,new Splice(s));
-		this.genetic.addOperation(0.1,new MutatePerturb(1.0));
+
+		this.genetic.addOperation(0.9, new Splice(s));
+		this.genetic.addOperation(0.1, new MutatePerturb(1.0));
 	}
 
 	/**
@@ -153,8 +164,13 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 	 */
 	@Override
 	public MLMethod getMethod() {
-		Genome best = genetic.getBestGenome();		
+		final Genome best = this.genetic.getBestGenome();
 		return this.genetic.getCODEC().decode(best);
+	}
+
+	@Override
+	public int getThreadCount() {
+		return this.genetic.getThreadCount();
 	}
 
 	/**
@@ -199,13 +215,8 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 	}
 
 	@Override
-	public int getThreadCount() {
-		return this.genetic.getThreadCount();
-	}
-
-	@Override
-	public void setThreadCount(int numThreads) {
+	public void setThreadCount(final int numThreads) {
 		this.genetic.setThreadCount(numThreads);
-		
+
 	}
 }

@@ -72,8 +72,7 @@ public class Splice implements EvolutionaryOperator {
 		final int geneLength = mother.size();
 
 		// the chromosome must be cut at two positions, determine them
-		final int cutpoint1 = (int) (Math.random() 
-				* (geneLength - this.cutLength));
+		final int cutpoint1 = (int) (rnd.nextInt(geneLength - this.cutLength));
 		final int cutpoint2 = cutpoint1 + this.cutLength;
 
 		// handle cut section

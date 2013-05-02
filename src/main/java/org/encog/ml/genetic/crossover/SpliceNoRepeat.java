@@ -39,12 +39,15 @@ import org.encog.ml.genetic.genome.IntegerArrayGenome;
  */
 public class SpliceNoRepeat implements EvolutionaryOperator {
 	
+	/**
+	 * The owner.
+	 */
 	private EvolutionaryAlgorithm owner;
 
 	/**
 	 * Get a list of the genes that have not been taken before. This is useful
 	 * if you do not wish the same gene to appear more than once in a
-	 * chromosome.
+	 * genome.
 	 * 
 	 * @param source
 	 *            The pool of genes to select from.
@@ -98,8 +101,7 @@ public class SpliceNoRepeat implements EvolutionaryOperator {
 		final int geneLength = mother.size();
 
 		// the chromosome must be cut at two positions, determine them
-		final int cutpoint1 = (int) (Math.random() 
-				* (geneLength - this.cutLength));
+		final int cutpoint1 = (int) (rnd.nextInt(geneLength - this.cutLength));
 		final int cutpoint2 = cutpoint1 + this.cutLength;
 
 		// keep track of which genes have been taken in each of the two

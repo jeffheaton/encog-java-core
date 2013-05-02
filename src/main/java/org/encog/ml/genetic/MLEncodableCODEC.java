@@ -30,18 +30,32 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.ea.codec.GeneticCODEC;
 import org.encog.ml.ea.genome.Genome;
 
+/**
+ * A CODEC for IMLEncodable classes.
+ */
 public class MLEncodableCODEC implements GeneticCODEC, Serializable {
 
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public MLMethod decode(Genome genome) {
-		MLMethodGenome genome2 = (MLMethodGenome)genome;
+	public MLMethod decode(final Genome genome) {
+		final MLMethodGenome genome2 = (MLMethodGenome) genome;
 		genome2.decode();
 		return genome2.getPhenotype();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public Genome encode(MLMethod phenotype) {
-		MLEncodable phenotype2 = (MLEncodable)phenotype;
+	public Genome encode(final MLMethod phenotype) {
+		final MLEncodable phenotype2 = (MLEncodable) phenotype;
 		return new MLMethodGenome(phenotype2);
 	}
 
