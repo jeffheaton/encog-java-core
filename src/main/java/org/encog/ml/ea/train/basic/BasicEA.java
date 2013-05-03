@@ -257,6 +257,12 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 						genome.getBirthGeneration()));
 			}
 		}
+		
+		// Set a best genome, just so it is not null.
+		// We won't know the true best genome until the first iteration.
+		if( this.population.getSpecies().size()>0 && this.population.getSpecies().get(0).getMembers().size()>0 ) {
+			this.bestGenome = this.population.getSpecies().get(0).getMembers().get(0);
+		}
 	}
 
 	/**

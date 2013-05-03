@@ -109,9 +109,22 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements
 			final CalculateScore calculateScore, final int populationSize) {
 		super(TrainingImplementationType.Iterative);
 
+		// Create the population
 		final Population population = new BasicPopulation(populationSize, null);
+		final Species defaultSpecies = population.createSpecies();
+
+		for (int i = 0; i < population.getPopulationSize(); i++) {
+			final MLEncodable chromosomeNetwork = (MLEncodable) phenotypeFactory
+					.factor();
+			final MLMethodGenome genome = new MLMethodGenome(chromosomeNetwork);
+			defaultSpecies.add(genome);
+		}
+		defaultSpecies.setLeader(defaultSpecies.getMembers().get(0));
+		
 		population.setGenomeFactory(new MLMethodGenomeFactory(phenotypeFactory,
 				population));
+		
+		// create the trainer
 		this.genetic = new MLMethodGeneticAlgorithmHelper(population,
 				calculateScore);
 		this.genetic.setCODEC(new MLEncodableCODEC());
@@ -125,17 +138,8 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements
 		this.genetic.setBestComparator(comp);
 		this.genetic.setSelectionComparator(comp);
 
-		final Species defaultSpecies = population.createSpecies();
-
-		for (int i = 0; i < population.getPopulationSize(); i++) {
-			final MLEncodable chromosomeNetwork = (MLEncodable) phenotypeFactory
-					.factor();
-			final MLMethodGenome genome = new MLMethodGenome(chromosomeNetwork);
-			getGenetic().calculateScore(genome);
-			defaultSpecies.add(genome);
-		}
-		defaultSpecies.setLeader(defaultSpecies.getMembers().get(0));
-
+		
+		// create the operators
 		final int s = Math
 				.max(defaultSpecies.getMembers().get(0).size() / 5, 1);
 		getGenetic().setPopulation(population);
