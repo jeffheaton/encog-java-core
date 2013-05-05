@@ -33,17 +33,30 @@ import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.NEATNeuronGene;
 
+/**
+ * Create a Genome for use with HyperNEAT.
+ */
 public class FactorHyperNEATGenome implements NEATGenomeFactory {
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public NEATGenome factor() {
 		return new HyperNEATGenome();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Genome factor(final Genome other) {
 		return new HyperNEATGenome((HyperNEATGenome) other);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public NEATGenome factor(final List<NEATNeuronGene> neurons,
 			final List<NEATLinkGene> links, final int inputCount,
@@ -51,6 +64,9 @@ public class FactorHyperNEATGenome implements NEATGenomeFactory {
 		return new HyperNEATGenome(neurons, links, inputCount, outputCount);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public NEATGenome factor(final Random rnd, final NEATPopulation pop,
 			final int inputCount, final int outputCount,

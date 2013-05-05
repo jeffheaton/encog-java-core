@@ -38,7 +38,7 @@ import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.genetic.GeneticError;
 
 /**
- * Speciate based on threshold. Any genomes with a compatability score below a
+ * Speciate based on threshold. Any genomes with a compatibility score below a
  * level will be in the same species.
  */
 public abstract class ThresholdSpeciation implements Speciation, Serializable {

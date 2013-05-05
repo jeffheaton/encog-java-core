@@ -37,8 +37,20 @@ import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.NEATNeuronGene;
 import org.encog.util.obj.ChooseObject;
 
+/**
+ * A HyperNEAT genome.
+ */
 public class HyperNEATGenome extends NEATGenome {
 
+	/**
+	 * A HyperNEAT genome.
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Build the CPPN activation functions.
+	 * @param activationFunctions The activation functions collection to add to.
+	 */
 	public static void buildCPPNActivationFunctions(
 			final ChooseObject<ActivationFunction> activationFunctions) {
 		activationFunctions.add(0.25, new ActivationClippedLinear());
@@ -48,6 +60,9 @@ public class HyperNEATGenome extends NEATGenome {
 		activationFunctions.finalizeStructure();
 	}
 
+	/**
+	 * Construct a HyperNEAT genome.
+	 */
 	public HyperNEATGenome() {
 
 	}
@@ -56,12 +71,27 @@ public class HyperNEATGenome extends NEATGenome {
 		super(other);
 	}
 
+	/**
+	 * Construct a HyperNEAT genome from a list of neurons and links.
+	 * @param neurons The neurons.
+	 * @param links The links.
+	 * @param inputCount The input count.
+	 * @param outputCount The output count.
+	 */
 	public HyperNEATGenome(final List<NEATNeuronGene> neurons,
 			final List<NEATLinkGene> links, final int inputCount,
 			final int outputCount) {
 		super(neurons, links, inputCount, outputCount);
 	}
 
+	/**
+	 * Construct a random HyperNEAT genome.
+	 * @param rnd Random number generator.
+	 * @param pop The target population.
+	 * @param inputCount The input count.
+	 * @param outputCount The output count.
+	 * @param connectionDensity The connection densitoy, 1.0 for fully connected.
+	 */
 	public HyperNEATGenome(final Random rnd, final NEATPopulation pop,
 			final int inputCount, final int outputCount,
 			final double connectionDensity) {

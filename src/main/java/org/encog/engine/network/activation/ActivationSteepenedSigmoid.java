@@ -36,12 +36,17 @@ package org.encog.engine.network.activation;
 public class ActivationSteepenedSigmoid implements ActivationFunction {
 
     /**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
      * The parameters.
      */
     private final double[] params;
 
     /**
-     * Construct a basic HTAN activation function, with a slope of 1.
+     * Construct a steepend sigmoid activation function.
      */
     public ActivationSteepenedSigmoid() {
         this.params = new double[0];

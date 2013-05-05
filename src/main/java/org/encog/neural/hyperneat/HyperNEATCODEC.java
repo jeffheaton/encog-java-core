@@ -48,6 +48,9 @@ public class HyperNEATCODEC implements GeneticCODEC {
 	private double minWeight = 0.2;
 	private double maxWeight = 5.0;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public MLMethod decode(final Genome genome) {
 		final NEATPopulation pop = (NEATPopulation) genome.getPopulation();

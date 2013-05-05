@@ -23,44 +23,70 @@
  */
 package org.encog.neural.hyperneat.substrate;
 
+/**
+ * Produce substrates for various topologies. Currently provides the sandwich
+ * topology. You can create any topology you wish, this is simply a convienance
+ * method.
+ * 
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
+ * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
+ */
 public class SubstrateFactory {
-	
-	public static Substrate factorSandwichSubstrate(int inputEdgeSize, int outputEdgeSize) {
+
+	/**
+	 * Create a sandwich substrate. A sandwich has an input layer connected
+	 * directly to an output layer, both are square.
+	 * 
+	 * @param inputEdgeSize The input edge size.
+	 * @param outputEdgeSize The output edge size.
+	 * @return The substrate.
+	 */
+	public static Substrate factorSandwichSubstrate(int inputEdgeSize,
+			int outputEdgeSize) {
 		Substrate result = new Substrate(3);
-	
+
 		double inputTick = 2.0 / inputEdgeSize;
 		double outputTick = 2.0 / inputEdgeSize;
-		double inputOrig = -1.0 + (inputTick/2.0);
-		double outputOrig = -1.0 + (inputTick/2.0);
-		
+		double inputOrig = -1.0 + (inputTick / 2.0);
+		double outputOrig = -1.0 + (inputTick / 2.0);
+
 		// create the input layer
 
-		for(int row=0;row<inputEdgeSize;row++) {
-			for(int col=0;col<inputEdgeSize;col++) {
+		for (int row = 0; row < inputEdgeSize; row++) {
+			for (int col = 0; col < inputEdgeSize; col++) {
 				SubstrateNode inputNode = result.createInputNode();
 				inputNode.getLocation()[0] = -1;
 				inputNode.getLocation()[1] = inputOrig + (row * inputTick);
 				inputNode.getLocation()[2] = inputOrig + (col * inputTick);
 			}
 		}
-		
+
 		// create the output layer (and connect to input layer)
-		
-		for(int orow=0;orow<outputEdgeSize;orow++) {
-			for(int ocol=0;ocol<outputEdgeSize;ocol++) {
+
+		for (int orow = 0; orow < outputEdgeSize; orow++) {
+			for (int ocol = 0; ocol < outputEdgeSize; ocol++) {
 				SubstrateNode outputNode = result.createOutputNode();
 				outputNode.getLocation()[0] = 1;
 				outputNode.getLocation()[1] = outputOrig + (orow * outputTick);
 				outputNode.getLocation()[2] = outputOrig + (ocol * outputTick);
-				
+
 				// link this output node to every input node
-				for(SubstrateNode inputNode : result.getInputNodes()) {
-					result.createLink(inputNode,outputNode);
+				for (SubstrateNode inputNode : result.getInputNodes()) {
+					result.createLink(inputNode, outputNode);
 				}
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 }

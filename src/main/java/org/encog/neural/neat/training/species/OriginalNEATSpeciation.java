@@ -59,6 +59,11 @@ import org.encog.neural.neat.training.NEATGenome;
 public class OriginalNEATSpeciation extends ThresholdSpeciation {
 
 	/**
+	 * The serial id
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * The adjustment factor for disjoint genes.
 	 */
 	private double constDisjoint = 1;

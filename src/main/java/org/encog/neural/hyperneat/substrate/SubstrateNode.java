@@ -23,12 +23,47 @@
  */
 package org.encog.neural.hyperneat.substrate;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class SubstrateNode {
-	private final int id;
-	private final double[] location;
+/**
+ * A substrate node. A node has a coordinate in an n-dimension space that
+ * matches the dimension count of the substrate.
+ * 
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
+ * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
+ */
+public class SubstrateNode implements Serializable {
 	
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * The ID of this node.
+	 */
+	private final int id;
+	
+	/**
+	 * The location of this node.
+	 */
+	private final double[] location;
+
+	/**
+	 * Construct this node.
+	 * @param theID The ID.
+	 * @param size The size.
+	 */
 	public SubstrateNode(int theID, int size) {
 		this.id = theID;
 		this.location = new double[size];
@@ -47,11 +82,17 @@ public class SubstrateNode {
 	public double[] getLocation() {
 		return location;
 	}
-	
+
+	/**
+	 * @return The number of dimensions in this node.
+	 */
 	public int size() {
 		return this.location.length;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append("[SubstrateNode: id=");

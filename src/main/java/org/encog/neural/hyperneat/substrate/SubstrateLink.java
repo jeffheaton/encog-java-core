@@ -23,8 +23,38 @@
  */
 package org.encog.neural.hyperneat.substrate;
 
-public class SubstrateLink {
+import java.io.Serializable;
+
+/**
+ * A substrate link.
+ * 
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
+ * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
+ */
+public class SubstrateLink implements Serializable {
+	
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * The source.
+	 */
 	private final SubstrateNode source;
+	
+	/**
+	 * The target.
+	 */
 	private final SubstrateNode target;
 	
 	public SubstrateLink(SubstrateNode source, SubstrateNode target) {
@@ -47,6 +77,9 @@ public class SubstrateLink {
 		return target;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append("[SubstrateLink: source=");

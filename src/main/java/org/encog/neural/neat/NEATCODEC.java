@@ -128,7 +128,7 @@ public class NEATCODEC implements GeneticCODEC, Serializable {
 	@Override
 	public Genome encode(final MLMethod phenotype) {
 		throw new GeneticError(
-				"Encoding of a HyperNEAT network is not supported.");
+				"Encoding of a NEAT network is not supported.");
 	}
 
 }

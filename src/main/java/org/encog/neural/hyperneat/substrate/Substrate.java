@@ -27,31 +27,89 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The substrate defines the structure of the produced HyperNEAT network.
+ * 
+ * A substrate is made up of nodes and links. A node has a location that is an
+ * n-dimensional coordinate. Nodes are grouped into input and output clusters.
+ * There can also be hidden neurons between these two.
+ * 
+ * A HyperNEAT network works by training a CPPN that produces the actual
+ * resulting NEAT network. The size of the substrate can then be adjusted to
+ * create larger networks than what the HyperNEAT network was originally trained
+ * with.
+ * 
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
+ * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
+ */
 public class Substrate implements Serializable {
 
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * The dimensions of the network.
+	 */
 	private final int dimensions;
+
+	/**
+	 * The input nodes.
+	 */
 	private final List<SubstrateNode> inputNodes = new ArrayList<SubstrateNode>();
+
+	/**
+	 * The output nodes.
+	 */
 	private final List<SubstrateNode> outputNodes = new ArrayList<SubstrateNode>();
+
+	/**
+	 * The hidden nodes.
+	 */
 	private final List<SubstrateNode> hiddenNodes = new ArrayList<SubstrateNode>();
+
+	/**
+	 * The links between nodes.
+	 */
 	private final List<SubstrateLink> links = new ArrayList<SubstrateLink>();
+
+	/**
+	 * The current neuron id.
+	 */
 	private int currentNeuronNumber;
+
+	/**
+	 * The number of activation cycles.
+	 */
 	private int activationCycles = 1;
-	
+
+	/**
+	 * Construct a substrate with the specified number of dimensions in the
+	 * input/output layers.
+	 * 
+	 * @param theDimensions
+	 */
 	public Substrate(int theDimensions) {
 		this.dimensions = theDimensions;
 		this.currentNeuronNumber = 1;
 	}
-	
-	
-	
+
 	/**
 	 * @return the hiddenNodes
 	 */
 	public List<SubstrateNode> getHiddenNodes() {
 		return hiddenNodes;
 	}
-
-
 
 	public int getDimensions() {
 		return this.dimensions;
@@ -70,32 +128,33 @@ public class Substrate implements Serializable {
 	public List<SubstrateNode> getOutputNodes() {
 		return outputNodes;
 	}
-	
+
 	public int getInputCount() {
 		return this.inputNodes.size();
 	}
-	
+
 	public int getOutputCount() {
 		return this.outputNodes.size();
 	}
-	
+
 	public SubstrateNode createNode() {
-		SubstrateNode result = new SubstrateNode(this.currentNeuronNumber++, this.dimensions);
+		SubstrateNode result = new SubstrateNode(this.currentNeuronNumber++,
+				this.dimensions);
 		return result;
 	}
-	
+
 	public SubstrateNode createInputNode() {
 		SubstrateNode result = createNode();
 		this.inputNodes.add(result);
 		return result;
 	}
-	
+
 	public SubstrateNode createOutputNode() {
 		SubstrateNode result = createNode();
 		this.outputNodes.add(result);
 		return result;
 	}
-	
+
 	public SubstrateNode createHiddenNode() {
 		SubstrateNode result = createNode();
 		this.hiddenNodes.add(result);
@@ -106,7 +165,7 @@ public class Substrate implements Serializable {
 		SubstrateLink link = new SubstrateLink(inputNode, outputNode);
 		this.links.add(link);
 	}
-	
+
 	/**
 	 * @return the links
 	 */
@@ -114,12 +173,16 @@ public class Substrate implements Serializable {
 		return links;
 	}
 
+	/**
+	 * @return The link count.
+	 */
 	public int getLinkCount() {
 		return links.size();
 	}
 
 	public int getNodeCount() {
-		return 1+this.inputNodes.size()+this.outputNodes.size()+this.hiddenNodes.size();
+		return 1 + this.inputNodes.size() + this.outputNodes.size()
+				+ this.hiddenNodes.size();
 	}
 
 	/**
@@ -129,17 +192,18 @@ public class Substrate implements Serializable {
 		return activationCycles;
 	}
 
-
-
 	/**
-	 * @param activationCycles the activationCycles to set
+	 * @param activationCycles
+	 *            the activationCycles to set
 	 */
 	public void setActivationCycles(int activationCycles) {
 		this.activationCycles = activationCycles;
 	}
 
-
-
+	/**
+	 * @return A list of all nodes that are connected to the bias neuron. This
+	 *         is typically all non-input neurons.
+	 */
 	public List<SubstrateNode> getBiasedNodes() {
 		List<SubstrateNode> result = new ArrayList<SubstrateNode>();
 		result.addAll(this.hiddenNodes);

@@ -37,6 +37,14 @@ package org.encog.engine.network.activation;
  */
 public class ActivationBipolarSteepenedSigmoid implements ActivationFunction {
 	
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void activationFunction(double[] d, int start, int size) {
 		for(int i=start;i<start+size;i++) {
