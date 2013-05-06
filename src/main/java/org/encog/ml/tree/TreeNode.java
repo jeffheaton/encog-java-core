@@ -25,12 +25,37 @@ package org.encog.ml.tree;
 
 import java.util.List;
 
+/**
+ * A node for a tree.
+ */
 public interface TreeNode {
 
-	public List<TreeNode> getChildNodes();
+	/**
+	 * Add child nodes.
+	 * 
+	 * @param args
+	 *            The child nodes to add.
+	 */
 	public void addChildNodes(TreeNode[] args);
+
+	/**
+	 * @return True, if all children are leaves.
+	 */
 	public boolean allLeafChildren();
+
+	/**
+	 * @return The child nodes.
+	 */
+	public List<TreeNode> getChildNodes();
+
+	/**
+	 * @return True, if this is a leaf.
+	 */
 	public boolean isLeaf();
+
+	/**
+	 * @return The number of nodes from this point. Do not call on cyclic tree.
+	 */
 	public int size();
-	
+
 }

@@ -27,27 +27,51 @@ import org.encog.ml.tree.TreeNode;
 import org.encog.ml.tree.traverse.DepthFirstTraversal;
 import org.encog.ml.tree.traverse.TreeTraversalTask;
 
+/**
+ * Count the nodes in an acyclic tree.
+ */
 public class TaskCountNodes implements TreeTraversalTask {
+	/**
+	 * The count so far.
+	 */
 	private int nodeCount;
 	
+	/**
+	 * Construct the task.
+	 */
 	public TaskCountNodes() {
 		this.nodeCount = 0;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean task(TreeNode node) {
 		this.nodeCount++;
 		return true;
 	}
 
+	/**
+	 * @return The current node count.
+	 */
 	public int getNodeCount() {
 		return nodeCount;
 	}
 
+	/**
+	 * Set the current node count.
+	 * @param nodeCount The node count.
+	 */
 	public void setNodeCount(int nodeCount) {
 		this.nodeCount = nodeCount;
 	}
 	
+	/**
+	 * Count the nodes from this tree node.
+	 * @param node The tree node.
+	 * @return The node count.
+	 */
 	public static int process(TreeNode node) {
 		TaskCountNodes task = new TaskCountNodes();
 		DepthFirstTraversal trav = new DepthFirstTraversal();

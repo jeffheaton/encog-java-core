@@ -28,10 +28,24 @@ import org.encog.ml.tree.TreeNode;
 import org.encog.ml.tree.traverse.DepthFirstTraversal;
 import org.encog.ml.tree.traverse.TreeTraversalTask;
 
+/**
+ * Task to replace a node.
+ */
 public class TaskReplaceNode implements TreeTraversalTask {
 	
+	/**
+	 * Node to replace.
+	 */
 	private final ProgramNode replaceThisNode; 
+	
+	/**
+	 * Node to replace with.
+	 */
 	private final ProgramNode replaceWith;
+	
+	/**
+	 * Are we done?
+	 */
 	private boolean done;
 	
 	public TaskReplaceNode(ProgramNode theReplaceThisNode, ProgramNode theReplaceWith) {
@@ -39,21 +53,25 @@ public class TaskReplaceNode implements TreeTraversalTask {
 		this.replaceWith = theReplaceWith;
 		this.done = false;
 	}
-	
-	
-	
+		
+	/**
+	 * @return The node to replace.
+	 */
 	public ProgramNode getReplaceThisNode() {
 		return replaceThisNode;
 	}
 
-
-
+	/**
+	 * @return What to replace with.
+	 */
 	public ProgramNode getReplaceWith() {
 		return replaceWith;
 	}
 
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean task(TreeNode node) {
 		if( done ) {
@@ -71,6 +89,12 @@ public class TaskReplaceNode implements TreeTraversalTask {
 		return true;
 	}
 	
+	/**
+	 * Replace one node with another.
+	 * @param rootNode The root node.
+	 * @param replaceThisNode The node to replace.
+	 * @param replaceWith What to replace with.
+	 */
 	public static void process(ProgramNode rootNode, ProgramNode replaceThisNode, ProgramNode replaceWith) {
 		TaskReplaceNode task = new TaskReplaceNode(replaceThisNode, replaceWith);
 		DepthFirstTraversal trav = new DepthFirstTraversal();

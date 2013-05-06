@@ -25,8 +25,14 @@ package org.encog.ml.tree.traverse;
 
 import org.encog.ml.tree.TreeNode;
 
+/**
+ * Performs a depth-first traversal.
+ */
 public class DepthFirstTraversal implements TreeTraversal {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void traverse(TreeNode treeNode, TreeTraversalTask task) {
 		if( !task.task(treeNode) )

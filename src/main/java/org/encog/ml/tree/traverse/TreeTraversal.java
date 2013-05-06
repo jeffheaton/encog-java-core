@@ -25,7 +25,15 @@ package org.encog.ml.tree.traverse;
 
 import org.encog.ml.tree.TreeNode;
 
+/**
+ * Defines a method for traversing a tree.
+ */
 public interface TreeTraversal {
+	/**
+	 * Traverse the tree.
+	 * @param tree The tree to traverse.
+	 * @param task The task to execute on each tree node.
+	 */
 	void traverse(TreeNode tree, TreeTraversalTask task);
 	
 }

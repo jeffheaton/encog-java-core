@@ -27,9 +27,23 @@ import org.encog.ml.tree.TreeNode;
 import org.encog.ml.tree.traverse.DepthFirstTraversal;
 import org.encog.ml.tree.traverse.TreeTraversalTask;
 
+/**
+ * Get a node by index.
+ */
 public class TaskGetNodeIndex implements TreeTraversalTask {
+	/**
+	 * The running node count.
+	 */
 	private int nodeCount;
+	
+	/**
+	 * The index that we are seeking.
+	 */
 	private int targetIndex;
+	
+	/**
+	 * The resulting node at the specified index.
+	 */
 	private TreeNode result;
 	
 	public TaskGetNodeIndex(int theIndex) {
@@ -37,6 +51,9 @@ public class TaskGetNodeIndex implements TreeTraversalTask {
 		this.nodeCount = 0;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean task(TreeNode node) {
 		if( this.nodeCount>=targetIndex) {
@@ -50,10 +67,19 @@ public class TaskGetNodeIndex implements TreeTraversalTask {
 		return true;
 	}
 	
+	/**
+	 * @return The resulting tree node.
+	 */
 	public TreeNode getResult() {
 		return result;
 	}
 
+	/**
+	 * Obtain the specified tree node for the specified index.
+	 * @param index The index.
+	 * @param node The tree node to search from.
+	 * @return The tree node for the specified index.
+	 */
 	public static TreeNode process(int index, TreeNode node) {
 		TaskGetNodeIndex task = new TaskGetNodeIndex(index);
 		DepthFirstTraversal trav = new DepthFirstTraversal();

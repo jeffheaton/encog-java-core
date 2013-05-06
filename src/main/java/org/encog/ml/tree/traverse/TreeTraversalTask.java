@@ -25,6 +25,13 @@ package org.encog.ml.tree.traverse;
 
 import org.encog.ml.tree.TreeNode;
 
+/**
+ * A task used to traverse the tree.
+ */
 public interface TreeTraversalTask {
+	/**
+	 * @param node The node visiting.
+	 * @return True, if traversal should continue.
+	 */
 	boolean task(TreeNode node);
 }
