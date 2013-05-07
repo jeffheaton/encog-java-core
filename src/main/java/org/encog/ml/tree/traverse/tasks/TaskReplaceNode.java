@@ -23,7 +23,6 @@
  */
 package org.encog.ml.tree.traverse.tasks;
 
-import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.tree.TreeNode;
 import org.encog.ml.tree.traverse.DepthFirstTraversal;
 import org.encog.ml.tree.traverse.TreeTraversalTask;
@@ -36,19 +35,19 @@ public class TaskReplaceNode implements TreeTraversalTask {
 	/**
 	 * Node to replace.
 	 */
-	private final ProgramNode replaceThisNode; 
+	private final TreeNode replaceThisNode; 
 	
 	/**
 	 * Node to replace with.
 	 */
-	private final ProgramNode replaceWith;
+	private final TreeNode replaceWith;
 	
 	/**
 	 * Are we done?
 	 */
 	private boolean done;
 	
-	public TaskReplaceNode(ProgramNode theReplaceThisNode, ProgramNode theReplaceWith) {
+	public TaskReplaceNode(TreeNode theReplaceThisNode, TreeNode theReplaceWith) {
 		this.replaceThisNode = theReplaceThisNode;
 		this.replaceWith = theReplaceWith;
 		this.done = false;
@@ -57,14 +56,14 @@ public class TaskReplaceNode implements TreeTraversalTask {
 	/**
 	 * @return The node to replace.
 	 */
-	public ProgramNode getReplaceThisNode() {
+	public TreeNode getReplaceThisNode() {
 		return replaceThisNode;
 	}
 
 	/**
 	 * @return What to replace with.
 	 */
-	public ProgramNode getReplaceWith() {
+	public TreeNode getReplaceWith() {
 		return replaceWith;
 	}
 
@@ -95,7 +94,7 @@ public class TaskReplaceNode implements TreeTraversalTask {
 	 * @param replaceThisNode The node to replace.
 	 * @param replaceWith What to replace with.
 	 */
-	public static void process(ProgramNode rootNode, ProgramNode replaceThisNode, ProgramNode replaceWith) {
+	public static void process(TreeNode rootNode, TreeNode replaceThisNode, TreeNode replaceWith) {
 		TaskReplaceNode task = new TaskReplaceNode(replaceThisNode, replaceWith);
 		DepthFirstTraversal trav = new DepthFirstTraversal();
 		trav.traverse(rootNode, task);
