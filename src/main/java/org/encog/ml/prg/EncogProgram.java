@@ -64,8 +64,8 @@ import org.encog.util.simple.EncogUtility;
  * well as the defined variables.
  * 
  * The actual values for the variables are not stored in the context. Rather
- * they are stored in a variable holder. Each program usuaully has its own
- * variable holder, though it is possable to share.
+ * they are stored in a variable holder. Each program usually has its own
+ * variable holder, though it is possible to share.
  */
 public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 
