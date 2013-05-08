@@ -27,7 +27,6 @@ import java.util.StringTokenizer;
 
 import org.encog.ml.ea.exception.EACompileError;
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.EncogOpcodeRegistry;
@@ -53,7 +52,7 @@ public class ParseEPL {
 			
 			// read in the command
 			if( this.parser.readChar()!='[' ) {
-				throw new ExpressionError("Expected [");
+				throw new EACompileError("Expected [");
 			}
 			this.parser.eatWhiteSpace();
 			StringBuilder cmd = new StringBuilder();
@@ -62,7 +61,7 @@ public class ParseEPL {
 			}
 			
 			if( this.parser.peek()!=']') {
-				throw new ExpressionError("Expected ]");
+				throw new EACompileError("Expected ]");
 			}
 			this.parser.advance();
 			

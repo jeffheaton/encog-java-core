@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.EncogError;
+import org.encog.ml.ea.exception.EARuntimeError;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.expvalue.ValueType;
 import org.encog.ml.prg.extension.FunctionFactory;
@@ -253,7 +254,7 @@ public class EncogProgramContext implements Serializable {
 	 */
 	public void defineVariable(final VariableMapping mapping) {
 		if (this.map.containsKey(mapping.getName())) {
-			throw new ExpressionError("Variable " + mapping.getName()
+			throw new EARuntimeError("Variable " + mapping.getName()
 					+ " already defined.");
 		}
 		this.map.put(mapping.getName(), mapping);
@@ -309,7 +310,7 @@ public class EncogProgramContext implements Serializable {
 				}
 			}
 		}
-		throw new ExpressionError("Undefined enum type: " + enumType);
+		throw new EARuntimeError("Undefined enum type: " + enumType);
 	}
 
 	/**
@@ -353,7 +354,7 @@ public class EncogProgramContext implements Serializable {
 
 		// if we did not find one then there are no enum types
 		if (r == -1) {
-			throw new ExpressionError("No enum types defined in context.");
+			throw new EARuntimeError("No enum types defined in context.");
 		}
 
 		return r;

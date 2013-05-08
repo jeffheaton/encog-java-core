@@ -23,8 +23,8 @@
  */
 package org.encog.parse.expression.latex;
 
+import org.encog.ml.ea.exception.EACompileError;
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.NodeType;
@@ -112,7 +112,7 @@ public class RenderLatexExpression {
 			result.append(a);
 			result.append(")");
 		} else {
-			throw new ExpressionError(
+			throw new EACompileError(
 					"An operator must have an arity of 1 or 2, probably should be made a function.");
 		}
 
@@ -143,6 +143,6 @@ public class RenderLatexExpression {
 		case Function:
 			return handleFunction(node);
 		}
-		throw new ExpressionError("Uknown node type: " + node.toString());
+		throw new EACompileError("Uknown node type: " + node.toString());
 	}
 }

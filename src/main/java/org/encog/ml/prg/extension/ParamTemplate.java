@@ -29,7 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.encog.ml.prg.ExpressionError;
+import org.encog.ml.ea.exception.EACompileError;
 import org.encog.ml.prg.expvalue.ValueType;
 
 /**
@@ -86,7 +86,7 @@ public class ParamTemplate implements Serializable {
 		} else if (theType.equals("*")) {
 			addAllTypes();
 		} else {
-			throw new ExpressionError("Unknown type: " + theType);
+			throw new EACompileError("Unknown type: " + theType);
 		}
 	}
 

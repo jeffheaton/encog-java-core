@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Random;
 
 import org.encog.EncogError;
+import org.encog.ml.ea.exception.EACompileError;
 import org.encog.ml.prg.EncogProgramContext;
-import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ValueType;
 import org.encog.util.SimpleParser;
@@ -141,7 +141,7 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 			// get the return type
 			parser.eatWhiteSpace();
 			if (!parser.lookAhead(":")) {
-				throw new ExpressionError("Return type not specified.");
+				throw new EACompileError("Return type not specified.");
 			}
 			parser.advance();
 			parser.eatWhiteSpace();
@@ -259,7 +259,7 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 		final ParamTemplate result = new ParamTemplate();
 
 		if (!parser.lookAhead("{")) {
-			throw new ExpressionError("Expected {");
+			throw new EACompileError("Expected {");
 		}
 		parser.advance();
 
@@ -271,7 +271,7 @@ public abstract class BasicTemplate implements ProgramExtensionTemplate {
 				done = true;
 				parser.advance();
 			} else if (parser.peek() == '{') {
-				throw new ExpressionError("Unexpected {");
+				throw new EACompileError("Unexpected {");
 			} else if (parser.peek() == '{') {
 				done = true;
 				parser.advance();

@@ -23,8 +23,8 @@
  */
 package org.encog.parse.expression.common;
 
+import org.encog.ml.ea.exception.EACompileError;
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.extension.BasicTemplate;
@@ -82,14 +82,14 @@ public class ParseCommonExpression {
 
 	private void outputQueue(ProgramExtensionTemplate opp) {
 		if (opp == this.LEFT_PAREN) {
-			throw new ExpressionError("Unmatched parentheses");
+			throw new EACompileError("Unmatched parentheses");
 		}
 
 		ProgramNode[] args = new ProgramNode[opp.getChildNodeCount()];
 
 		for (int i = args.length - 1; i >= 0; i--) {
 			if (this.outputStack.isEmpty()) {
-				throw new ExpressionError("Not enough arguments");
+				throw new EACompileError("Not enough arguments");
 			}
 			args[i] = this.outputStack.pop();
 		}
@@ -202,7 +202,7 @@ public class ParseCommonExpression {
 
 		if (varName.toString().equals("true")) {
 			if (neg) {
-				throw new ExpressionError("Invalid negative sign.");
+				throw new EACompileError("Invalid negative sign.");
 			}
 			ProgramNode v = this.holder.getFunctions().factorProgramNode("#const",
 					holder, new ProgramNode[] {});
@@ -210,7 +210,7 @@ public class ParseCommonExpression {
 			outputQueue(v);
 		} else if (varName.toString().equals("false")) {
 			if (neg) {
-				throw new ExpressionError("Invalid negative sign.");
+				throw new EACompileError("Invalid negative sign.");
 			}
 			ProgramNode v = this.holder.getFunctions().factorProgramNode("#const",
 					holder, new ProgramNode[] {});
@@ -240,7 +240,7 @@ public class ParseCommonExpression {
 			ProgramExtensionTemplate temp = this.holder.getFunctions()
 					.findFunction(varName.toString());
 			if (temp == null) {
-				throw new ExpressionError("Undefined function: "
+				throw new EACompileError("Undefined function: "
 						+ varName.toString());
 			}
 			functionQueue(temp);
@@ -278,7 +278,7 @@ public class ParseCommonExpression {
 			}
 			functionQueue(temp);
 		} else {
-			throw new ExpressionError("Unknown symbol: " + ch1);
+			throw new EACompileError("Unknown symbol: " + ch1);
 		}
 
 	}
@@ -306,7 +306,7 @@ public class ParseCommonExpression {
 		} while ((ch != 34) && (ch > 0));
 
 		if (ch != 34) {
-			throw (new ExpressionError("Unterminated string"));
+			throw (new EACompileError("Unterminated string"));
 		}
 
 		ProgramNode v = this.holder.getFunctions().factorProgramNode("#const",
@@ -386,7 +386,7 @@ public class ParseCommonExpression {
 				handleFunctionSeparator();
 				this.unary = true;
 			} else {
-				throw new ExpressionError("Unparsable character: " + ch);
+				throw new EACompileError("Unparsable character: " + ch);
 			}
 		}
 

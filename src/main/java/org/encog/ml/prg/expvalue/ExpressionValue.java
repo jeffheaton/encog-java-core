@@ -26,7 +26,6 @@ package org.encog.ml.prg.expvalue;
 import java.io.Serializable;
 
 import org.encog.ml.ea.exception.EARuntimeError;
-import org.encog.ml.prg.ExpressionError;
 
 /**
  * An EncogProgram expression value. These is how Encog stores variables and
@@ -142,7 +141,7 @@ public class ExpressionValue implements Serializable {
 			this.enumType = other.enumType;
 			break;
 		default:
-			throw new ExpressionError("Unsupported type.");
+			throw new EARuntimeError("Unsupported type.");
 
 		}
 	}

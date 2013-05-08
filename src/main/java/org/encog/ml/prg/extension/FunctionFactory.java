@@ -32,7 +32,6 @@ import java.util.Map;
 import org.encog.ml.ea.exception.EACompileError;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
-import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ValueType;
 
@@ -131,7 +130,7 @@ public class FunctionFactory implements Serializable {
 		final String key = EncogOpcodeRegistry.createKey(name, args.length);
 
 		if (!this.templateMap.containsKey(key)) {
-			throw new ExpressionError("Undefined function/operator: " + name
+			throw new EACompileError("Undefined function/operator: " + name
 					+ " with " + args.length + " args.");
 		}
 

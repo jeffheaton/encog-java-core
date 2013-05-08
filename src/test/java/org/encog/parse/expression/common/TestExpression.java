@@ -27,8 +27,8 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.Encog;
+import org.encog.ml.ea.exception.EAError;
 import org.encog.ml.prg.EncogProgram;
-import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 
 public class TestExpression extends TestCase {
@@ -113,14 +113,14 @@ public class TestExpression extends TestCase {
 		try {
 			Assert.assertEquals( 0, EncogProgram.parseFloat("2*(3+4"),Encog.DEFAULT_DOUBLE_EQUAL);
 			Assert.assertTrue(false);
-		} catch(ExpressionError ex) {
+		} catch(EAError ex) {
 			// good, we want an exception.
 		}
 		
 		try {
 			Assert.assertEquals( 0, EncogProgram.parseFloat("5+"),Encog.DEFAULT_DOUBLE_EQUAL);
 			Assert.assertTrue(false);
-		} catch(ExpressionError ex) {
+		} catch(EAError ex) {
 			// good, we want an exception.
 		}
 	}

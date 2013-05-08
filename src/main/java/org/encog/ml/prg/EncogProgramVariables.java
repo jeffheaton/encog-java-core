@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.encog.ml.ea.exception.EARuntimeError;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 
 /**
@@ -64,7 +65,7 @@ public class EncogProgramVariables implements Serializable {
 	 */
 	public void defineVariable(final VariableMapping mapping) {
 		if (this.varMap.containsKey(mapping.getName())) {
-			throw new ExpressionError(
+			throw new EARuntimeError(
 					"Variable "
 							+ mapping.getName()
 							+ " already defined, simply set its value, do not redefine.");
@@ -110,7 +111,7 @@ public class EncogProgramVariables implements Serializable {
 	 */
 	public int getVariableIndex(final String varName) {
 		if (!variableExists(varName)) {
-			throw new ExpressionError("Undefined variable: " + varName);
+			throw new EARuntimeError("Undefined variable: " + varName);
 		}
 
 		return this.varMap.get(varName);
@@ -130,7 +131,7 @@ public class EncogProgramVariables implements Serializable {
 			}
 		}
 
-		throw new ExpressionError("No variable defined for index " + idx);
+		throw new EARuntimeError("No variable defined for index " + idx);
 	}
 
 	/**

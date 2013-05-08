@@ -28,8 +28,8 @@ import java.util.Random;
 
 import org.encog.EncogError;
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.ml.ea.exception.EARuntimeError;
 import org.encog.ml.prg.EncogProgramContext;
-import org.encog.ml.prg.ExpressionError;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.VariableMapping;
 import org.encog.ml.prg.expvalue.EvaluateExpr;
@@ -66,7 +66,7 @@ public class StandardExtensions {
 			final ExpressionValue result = actual.getOwner().getVariables()
 					.getVariable(idx);
 			if (result == null) {
-				throw new ExpressionError("Variable has no value: "
+				throw new EARuntimeError("Variable has no value: "
 						+ actual.getOwner().getVariables().getVariableName(idx));
 			}
 			return result;
