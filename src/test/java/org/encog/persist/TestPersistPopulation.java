@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,13 +30,14 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.engine.network.activation.ActivationStep;
+import org.encog.ml.CalculateScore;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
-import org.encog.ml.genetic.population.Population;
+import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.neural.neat.NEATPopulation;
-import org.encog.neural.neat.training.NEATTraining;
+import org.encog.neural.neat.NEATUtil;
 import org.encog.neural.networks.XOR;
-import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.TrainingSetScore;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
@@ -55,8 +56,8 @@ public class TestPersistPopulation extends TestCase {
 		// train the neural network
 		ActivationStep step = new ActivationStep();
 		step.setCenter(0.5);
-		
-		NEATTraining train = new NEATTraining(
+
+		EvolutionaryAlgorithm train = NEATUtil.constructNEATTrainer(
 				score, 2, 1, 10);
 		//train.setOutputActivationFunction(step);
 		
@@ -76,6 +77,7 @@ public class TestPersistPopulation extends TestCase {
 	public void testPersistSerial() throws IOException, ClassNotFoundException
 	{
 		NEATPopulation pop = generate();
+		validate(pop);
 		
 		SerializeObject.save(SERIAL_FILENAME, pop);
 		NEATPopulation pop2 = (NEATPopulation)SerializeObject.load(SERIAL_FILENAME);
@@ -85,17 +87,13 @@ public class TestPersistPopulation extends TestCase {
 	
 	private void validate(NEATPopulation pop)
 	{
-		Assert.assertEquals(0.3,pop.getOldAgePenalty());
-		Assert.assertEquals(50,pop.getOldAgeThreshold());
 		Assert.assertEquals(10,pop.getPopulationSize());
 		Assert.assertEquals(0.2,pop.getSurvivalRate());
-		Assert.assertEquals(10,pop.getYoungBonusAgeThreshold());
-		Assert.assertEquals(0.3,pop.getYoungScoreBonus());
 		
 		// see if the population can actually be used to train
 		MLDataSet trainingSet = new BasicMLDataSet(XOR.XOR_INPUT, XOR.XOR_IDEAL);		
 		CalculateScore score = new TrainingSetScore(trainingSet);
-		NEATTraining train = new NEATTraining(score,pop);
+		EvolutionaryAlgorithm train = NEATUtil.constructNEATTrainer(pop, score);
 		train.iteration();
 
 	}

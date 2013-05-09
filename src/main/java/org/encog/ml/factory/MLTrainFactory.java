@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,6 +66,16 @@ public class MLTrainFactory {
 	 * String constant for LMA training.
 	 */
 	public static final String TYPE_LMA = "lma";
+	
+	/**
+	 * String constant for LMA training.
+	 */
+	public static final String TYPE_NEAT_GA = "neat-ga";
+	
+	/**
+	 * String constant for LMA training.
+	 */
+	public static final String TYPE_EPL_GA = "epl-ga";
 	
 	/**
 	 * String constant for SVM training.
@@ -191,16 +201,6 @@ public class MLTrainFactory {
 	 * Population size.
 	 */
 	public static final String PROPERTY_POPULATION_SIZE = "population";
-
-	/**
-	 * Percent to mutate.
-	 */
-	public static final String PROPERTY_MUTATION = "mutate";
-
-	/**
-	 * Percent to mate.
-	 */
-	public static final String PROPERTY_MATE = "mate";
 
 	/**
 	 * Genetic training.

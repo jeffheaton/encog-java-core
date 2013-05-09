@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,19 +25,18 @@ package org.encog.app.quant;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
 import org.encog.app.quant.indicators.MovingAverage;
 import org.encog.app.quant.indicators.ProcessIndicators;
 import org.encog.app.quant.indicators.predictive.BestClose;
 import org.encog.util.csv.CSVFormat;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class TestProcessIndicators extends TestCase {
 

@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,6 @@ package org.encog.neural.neat.training;
 
 import java.io.Serializable;
 
-import org.encog.ml.genetic.genes.BasicGene;
-import org.encog.ml.genetic.genes.Gene;
-
 /**
  * Implements a NEAT link gene. This describes a way in which two neurons are
  * linked.
@@ -36,10 +33,20 @@ import org.encog.ml.genetic.genes.Gene;
  * generation of evolving artificial neural networks. It was developed by Ken
  * Stanley while at The University of Texas at Austin.
  *
- * http://www.cs.ucf.edu/~kstanley/
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
+ * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
  *
  */
-public class NEATLinkGene extends BasicGene implements Serializable {
+public class NEATLinkGene extends NEATBaseGene implements Serializable {
 
 	/**
 	 * Serial id.
@@ -52,11 +59,6 @@ public class NEATLinkGene extends BasicGene implements Serializable {
 	private long fromNeuronID;
 
 	/**
-	 * Is this a recurrent connection.
-	 */
-	private boolean recurrent;
-
-	/**
 	 * The to neuron id.
 	 */	
 	private long toNeuronID;
@@ -65,6 +67,11 @@ public class NEATLinkGene extends BasicGene implements Serializable {
 	 * The weight of this link.
 	 */
 	private double weight;
+	
+	/**
+	 * Is this gene enabled?
+	 */
+	private boolean enabled = true;
 
 	/**
 	 * Default constructor, used mainly for persistence.
@@ -80,17 +87,19 @@ public class NEATLinkGene extends BasicGene implements Serializable {
 	 * @param enabled Is this link enabled.
 	 * @param innovationID The innovation id.
 	 * @param weight The weight.
-	 * @param recurrent Is this a recurrent link?
 	 */
 	public NEATLinkGene(final long fromNeuronID, final long toNeuronID,
 			final boolean enabled, final long innovationID,
-			final double weight, final boolean recurrent) {
+			final double weight) {
 		this.fromNeuronID = fromNeuronID;
 		this.toNeuronID = toNeuronID;
 		setEnabled(enabled);
 		setInnovationId(innovationID);
 		this.weight = weight;
-		this.recurrent = recurrent;
+	}
+	
+	public NEATLinkGene(NEATLinkGene other) {
+		copy(other);
 	}
 
 	/**
@@ -99,13 +108,12 @@ public class NEATLinkGene extends BasicGene implements Serializable {
 	 * @param gene
 	 *            The other gene.
 	 */
-	public void copy(final Gene gene) {
-		final NEATLinkGene other = (NEATLinkGene) gene;
+	public void copy(final NEATLinkGene gene) {
+		final NEATLinkGene other = gene;
 		setEnabled(other.isEnabled());
 		this.fromNeuronID = other.fromNeuronID;
 		this.toNeuronID = other.toNeuronID;
 		setInnovationId(other.getInnovationId());
-		this.recurrent = other.recurrent;
 		this.weight = other.weight;
 	}
 
@@ -128,13 +136,6 @@ public class NEATLinkGene extends BasicGene implements Serializable {
 	 */
 	public double getWeight() {
 		return this.weight;
-	}
-
-	/**
-	 * @return True if this is a recurrent link.
-	 */
-	public boolean isRecurrent() {
-		return this.recurrent;
 	}
 
 	/**
@@ -165,16 +166,34 @@ public class NEATLinkGene extends BasicGene implements Serializable {
 		return result.toString();
 	}
 
+	/**
+	 * Set the from neuron id.
+	 * @param i The from neuron id.
+	 */
 	public void setFromNeuronID(int i) {
 		this.fromNeuronID = i;
 	}
 	
+	/**
+	 * Set the to neuron id.
+	 * @param i The to neuron id.
+	 */
 	public void setToNeuronID(int i) {
 		this.toNeuronID = i;
 	}
-
-	public void setRecurrent(boolean b) {
-		this.recurrent = b;
+	
+	/**
+	 * @return True, if this gene is enabled.
+	 */
+	public boolean isEnabled() {
+		return enabled;
 	}
 
+	/**
+	 * @param e
+	 *            True, if this gene is enabled.
+	 */
+	public void setEnabled(final boolean e) {
+		enabled = e;
+	}
 }

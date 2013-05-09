@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,6 @@
  */
 package org.encog.engine.network.activation;
 
-import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.engine.network.activation.ActivationLinear;
-import org.encog.ml.factory.MLActivationFactory;
-import org.encog.util.obj.ActivationUtil;
 
 /**
  * Linear activation function that bounds the output to [-1,+1].  This
@@ -39,9 +35,17 @@ import org.encog.util.obj.ActivationUtil;
  */
 public class ActivationClippedLinear implements ActivationFunction {
 	
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void activationFunction(double[] d, int start, int size) {
-		for(int i=0;i<size;i++) {
+		for (int i = start; i < start + size; i++) {
             if(d[i] < -1.0) {
                 d[i] = -1.0;
             }

@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class TestActivationGaussian extends TestCase {
 	@Test
 	public void testGaussian() throws Throwable
 	{
-		ActivationGaussian activation = new ActivationGaussian(0.0,1.0);
+		ActivationGaussian activation = new ActivationGaussian();
 		Assert.assertFalse(!activation.hasDerivative());
 		
 		ActivationGaussian clone = (ActivationGaussian)activation.clone();
@@ -45,11 +45,6 @@ public class TestActivationGaussian extends TestCase {
 		activation.activationFunction(input,0,input.length);
 		
 		Assert.assertEquals(1.0,input[0],0.1);
-		
-		input[0] = activation.derivativeFunction(input[0],input[0]);
-		Assert.assertEquals(0,(int)(input[0]*100),0.1);		
-		
-		
-		
+
 	}
 }

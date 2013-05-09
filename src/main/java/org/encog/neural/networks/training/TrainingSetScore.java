@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,14 +23,17 @@
  */
 package org.encog.neural.networks.training;
 
+import org.encog.ml.CalculateScore;
+import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.data.buffer.BufferedMLDataSet;
 import org.encog.util.error.CalculateRegressionError;
 
 /**
  * Calculate a score based on a training set. This class allows simulated
  * annealing or genetic algorithms just as you would any other training set
- * based training method.
+ * based training method.  The method must support regression (MLRegression).
  */
 public class TrainingSetScore implements CalculateScore {
 
@@ -54,8 +57,8 @@ public class TrainingSetScore implements CalculateScore {
 	 * @param method The network to calculate for.
 	 * @return The score.
 	 */
-	public double calculateScore(final MLRegression method) {
-		return CalculateRegressionError.calculateError(method, this.training);
+	public double calculateScore(final MLMethod method) {
+		return CalculateRegressionError.calculateError((MLRegression)method, this.training);
 	}
 
 	/**
@@ -65,6 +68,14 @@ public class TrainingSetScore implements CalculateScore {
 	 */
 	public boolean shouldMinimize() {
 		return true;
+	}
+	
+	@Override
+	public boolean requireSingleThreaded() {
+		if( this.training instanceof BufferedMLDataSet ) {
+			return true;
+		}
+		return false;
 	}
 
 }

@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@
  */
 package org.encog;
 
-import java.io.FileNotFoundException;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -50,10 +49,5 @@ public class TestEncog extends TestCase {
 		NullStatusReportable n = new NullStatusReportable();
 		n.report(0, 1, "Test console");
 		n.report(1, 1, "Test console");
-	}
-	
-	public void testException() throws Throwable {
-		FileNotFoundException ex = new FileNotFoundException();
-		new EncogError("Error",ex);
 	}
 }

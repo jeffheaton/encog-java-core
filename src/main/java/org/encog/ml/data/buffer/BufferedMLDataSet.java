@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,8 +57,7 @@ import org.encog.ml.data.basic.BasicMLDataSet;
  * format, and can be used with any Encog platform. Encog binary files are
  * stored using "little endian" numbers.
  */
-public class BufferedMLDataSet implements
-	MLDataSet, Serializable {
+public class BufferedMLDataSet implements MLDataSet, Serializable {
 
 	/**
 	 * The version.
@@ -68,14 +67,12 @@ public class BufferedMLDataSet implements
 	/**
 	 * Error message for ADD.
 	 */
-	public static final String ERROR_ADD 
-		= "Add can only be used after calling beginLoad.";
+	public static final String ERROR_ADD = "Add can only be used after calling beginLoad.";
 
 	/**
 	 * Error message for REMOVE.
 	 */
-	public static final String ERROR_REMOVE 
-		= "Remove is not supported for BufferedNeuralDataSet.";
+	public static final String ERROR_REMOVE = "Remove is not supported for BufferedNeuralDataSet.";
 
 	/**
 	 * True, if we are in the process of loading.
@@ -95,8 +92,7 @@ public class BufferedMLDataSet implements
 	/**
 	 * Additional sets that were opened.
 	 */
-	private transient List<BufferedMLDataSet> additional 
-		= new ArrayList<BufferedMLDataSet>();
+	private transient List<BufferedMLDataSet> additional = new ArrayList<BufferedMLDataSet>();
 
 	/**
 	 * The owner.
@@ -155,16 +151,18 @@ public class BufferedMLDataSet implements
 	 */
 	@Override
 	public void getRecord(final long index, final MLDataPair pair) {
-		this.egb.setLocation((int) index);
-		double[] inputTarget = pair.getInputArray();
-		this.egb.read(inputTarget);
+		synchronized (this) {
+			this.egb.setLocation((int) index);
+			double[] inputTarget = pair.getInputArray();
+			this.egb.read(inputTarget);
 
-		if (pair.getIdealArray() != null) {
-			double[] idealTarget = pair.getIdealArray();
-			this.egb.read(idealTarget);
+			if (pair.getIdealArray() != null) {
+				double[] idealTarget = pair.getIdealArray();
+				this.egb.read(idealTarget);
+			}
+
+			this.egb.read();
 		}
-		
-		this.egb.read();
 	}
 
 	/**
@@ -172,7 +170,6 @@ public class BufferedMLDataSet implements
 	 */
 	@Override
 	public BufferedMLDataSet openAdditional() {
-
 		BufferedMLDataSet result = new BufferedMLDataSet(this.file);
 		result.setOwner(this);
 		this.additional.add(result);
@@ -210,7 +207,7 @@ public class BufferedMLDataSet implements
 
 		this.egb.write(inputData.getData());
 		this.egb.write(idealData.getData());
-		this.egb.write((double)1.0);
+		this.egb.write((double) 1.0);
 	}
 
 	/**
@@ -391,16 +388,16 @@ public class BufferedMLDataSet implements
 		}
 		endLoad();
 	}
-	
 
 	@Override
 	public int size() {
-		return (int)getRecordCount();
+		return (int) getRecordCount();
 	}
 
 	@Override
 	public MLDataPair get(int index) {
-		MLDataPair result = BasicMLDataPair.createPair(getInputSize(), getIdealSize());
+		MLDataPair result = BasicMLDataPair.createPair(getInputSize(),
+				getIdealSize());
 		this.getRecord(index, result);
 		return result;
 	}

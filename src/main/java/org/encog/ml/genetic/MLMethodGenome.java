@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,79 +24,56 @@
 package org.encog.ml.genetic;
 
 import org.encog.ml.MLEncodable;
-import org.encog.ml.genetic.genes.DoubleGene;
-import org.encog.ml.genetic.genes.Gene;
-import org.encog.ml.genetic.genome.BasicGenome;
-import org.encog.ml.genetic.genome.Chromosome;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.structure.NetworkCODEC;
+import org.encog.ml.genetic.genome.DoubleArrayGenome;
 
 /**
  * Implements a genome that allows a feedforward neural network to be trained
  * using a genetic algorithm. The chromosome for a feed forward neural network
  * is the weight and bias matrix.
  */
-public class MLMethodGenome extends BasicGenome {
-	
+public class MLMethodGenome extends DoubleArrayGenome {
+
 	/**
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * The chromosome.
+	 * The phenome.
 	 */
-	private final Chromosome networkChromosome;
+	private MLEncodable phenotype;
 
 	/**
 	 * Construct a neural genome.
-	 * @param network The network to use.
+	 * 
+	 * @param thePhenotype
+	 *            The phenotype to use.
 	 */
-	public MLMethodGenome(
-			final MLEncodable network) {
-		setOrganism(network);
-
-		this.networkChromosome = new Chromosome();
-
-		// create an array of "double genes"
-		final int size = network.encodedArrayLength();
-		for (int i = 0; i < size; i++) {
-			final Gene gene = new DoubleGene();
-			this.networkChromosome.getGenes().add(gene);
-		}
-
-		getChromosomes().add(this.networkChromosome);
-
-		encode();
+	public MLMethodGenome(final MLEncodable thePhenotype) {
+		super(thePhenotype.encodedArrayLength());
+		this.phenotype = thePhenotype;
+		this.phenotype.encodeToArray(getData());
 	}
 
 	/**
-	 * Decode the genomes into a neural network.
+	 * Decode the phenotype.
 	 */
 	public void decode() {
-		MLEncodable encodable = (MLEncodable)getOrganism();
-		double[] temp = new double[encodable.encodedArrayLength()];
-		
-		for (int i = 0; i < temp.length; i++) {
-			final DoubleGene gene = (DoubleGene) this.networkChromosome
-					.getGenes().get(i);
-			temp[i] = gene.getValue();
-
-		}
-		encodable.decodeFromArray(temp);
-
+		this.phenotype.decodeFromArray(getData());
 	}
 
 	/**
-	 * Encode the neural network into genes.
+	 * @return the phenotype
 	 */
-	public void encode() {
-		MLEncodable encodable = (MLEncodable)getOrganism();
-		double[] temp = new double[encodable.encodedArrayLength()];
-		encodable.encodeToArray(temp);
-		
-		for (int i = 0; i < temp.length; i++) {
-			((DoubleGene) this.networkChromosome.getGene(i)).setValue(temp[i]);
-		}
+	public MLEncodable getPhenotype() {
+		return this.phenotype;
+	}
+
+	/**
+	 * @param phenotype
+	 *            the phenotype to set
+	 */
+	public void setPhenotype(final MLEncodable phenotype) {
+		this.phenotype = phenotype;
 	}
 }

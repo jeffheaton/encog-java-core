@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ import org.encog.util.EngineArray;
  * network classes will make use of the GPU if you have enabled GPU processing.
  * See the Encog class for more info.
  */
-public class FlatNetwork implements Serializable {
+public class FlatNetwork implements Serializable, Cloneable {
 
 	/**
 	 * The serial ID.

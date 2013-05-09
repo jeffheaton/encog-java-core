@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@ import org.encog.util.csv.ReadCSV;
 import org.encog.util.normalize.input.HasFixedLength;
 import org.encog.util.normalize.input.InputField;
 import org.encog.util.normalize.input.InputFieldCSV;
+import org.encog.util.normalize.input.InputFieldCSVText;
 import org.encog.util.normalize.input.InputFieldMLDataSet;
 import org.encog.util.normalize.input.MLDataFieldHolder;
 import org.encog.util.normalize.output.OutputField;
@@ -347,7 +348,16 @@ public class DataNormalization implements Serializable {
 			final int index) {
 		double result = 0;
 
-		if (field instanceof InputFieldCSV) {
+		if( field instanceof InputFieldCSVText ) {
+			final InputFieldCSVText fieldCSV = (InputFieldCSVText) field;
+			final ReadCSV csv = this.csvMap.get(field);
+			String v = csv.get(fieldCSV.getOffset());
+			if( !fieldCSV.getMappings().containsKey(v) ) {
+				throw new NormalizationError("Undefined class value: " + v);
+			} else {
+				result =  fieldCSV.getMappings().get(v);
+			}
+		} else if (field instanceof InputFieldCSV) {
 			final InputFieldCSV fieldCSV = (InputFieldCSV) field;
 			final ReadCSV csv = this.csvMap.get(field);
 			result = csv.getDouble(fieldCSV.getOffset());

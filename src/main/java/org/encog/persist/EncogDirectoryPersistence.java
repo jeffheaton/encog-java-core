@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,8 +47,8 @@ public class EncogDirectoryPersistence {
 
 	/**
 	 * Load an EG object as a reousrce.
-	 * @param res
-	 * @return
+	 * @param res The resource name.
+	 * @return The loaded object.
 	 */
 	public static Object loadResourceObject(final String res) {
 		InputStream is = null;
@@ -235,6 +235,9 @@ public class EncogDirectoryPersistence {
 			final File path = new File(this.parent, name);
 			br = new BufferedReader(new FileReader(path));
 			final String header = br.readLine();
+			if( header==null ) {
+				throw new PersistError("Invalid file, can't find header");
+			}
 			final String[] params = header.split(",");
 
 			return params[1];

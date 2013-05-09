@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -408,5 +408,35 @@ public class SVMSearchTrain extends BasicTraining {
 			throw new EncogError("SVM search const step cannot use a const value less than zero.");
 		}
 	}
+
+	/**
+	 * @return the bestConst
+	 */
+	public double getBestConst() {
+		return bestConst;
+	}
+
+	/**
+	 * @param bestConst the bestConst to set
+	 */
+	public void setBestConst(double bestConst) {
+		this.bestConst = bestConst;
+	}
+
+	/**
+	 * @return the bestGamma
+	 */
+	public double getBestGamma() {
+		return bestGamma;
+	}
+
+	/**
+	 * @param bestGamma the bestGamma to set
+	 */
+	public void setBestGamma(double bestGamma) {
+		this.bestGamma = bestGamma;
+	}
+	
+	
 
 }

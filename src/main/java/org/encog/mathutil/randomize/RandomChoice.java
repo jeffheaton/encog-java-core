@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,15 +23,25 @@
  */
 package org.encog.mathutil.randomize;
 
+import java.io.Serializable;
+import java.util.Random;
+
 import org.encog.EncogError;
 import org.encog.util.EngineArray;
 
 /**
  * Generate random choices unevenly.  This class is used to select random 
  * choices from a list, with a probability weight places on each item 
- * in the list.
+ * in the list.  
+ * 
+ * This is often called a Roulette Wheel in Machine Learning texts.  How it differs from
+ * a Roulette Wheel that you might find in Las Vegas or Monte Carlo is that the
+ * areas that can be selected are not of uniform size.  However, you can be sure
+ * that one will be picked. 
+ * 
+ * http://en.wikipedia.org/wiki/Fitness_proportionate_selection
  */
-public class RandomChoice {
+public class RandomChoice implements Serializable {
 
 	/**
 	 * The probabilities of each item in the list.
@@ -72,12 +82,13 @@ public class RandomChoice {
 		}
 	}
 
-	public static boolean generate(double p) {
-		return Math.random() < p;
-	}
-
-	public int generate() {
-		double r = Math.random();
+	
+	/**
+	 * Generate a random choice, based on the probabilities provided to the constructor.
+	 * @return The random choice.
+	 */
+	public int generate(Random theGenerator) {
+		double r = theGenerator.nextDouble();
 		double sum = 0.0;
 
 		for (int i = 0; i < probabilities.length; i++) {
@@ -96,10 +107,15 @@ public class RandomChoice {
 		throw new EncogError("Invalid probabilities.");
 	}
 
-	public int generate(int skip) {
+	/**
+	 * Generate a random choice, but skip one of the choices.
+	 * @param skip The choice to skip.
+	 * @return The random choice.
+	 */
+	public int generate(Random theGenerator, int skip) {
 		double totalProb = 1.0 - probabilities[skip];
 
-		double throwValue = Math.random() * totalProb;
+		double throwValue = theGenerator.nextDouble() * totalProb;
 		double accumulator = 0.0;
 
 		for (int i = 0; i < skip; i++) {

@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,11 @@ import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.factory.train.AnnealFactory;
 import org.encog.ml.factory.train.BackPropFactory;
 import org.encog.ml.factory.train.ClusterSOMFactory;
+import org.encog.ml.factory.train.EPLGAFactory;
 import org.encog.ml.factory.train.GeneticFactory;
 import org.encog.ml.factory.train.LMAFactory;
 import org.encog.ml.factory.train.ManhattanFactory;
+import org.encog.ml.factory.train.NEATGAFactory;
 import org.encog.ml.factory.train.NeighborhoodSOMFactory;
 import org.encog.ml.factory.train.NelderMeadFactory;
 import org.encog.ml.factory.train.PNNTrainFactory;
@@ -134,6 +136,10 @@ public class SystemTrainingPlugin implements EncogPluginService1 {
 	
 	private final PSOFactory psoFactory = new PSOFactory();
 	
+	private final NEATGAFactory neatGAFactory = new NEATGAFactory(); 
+	
+	private final EPLGAFactory eplTrainFctory = new EPLGAFactory(); 
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -220,6 +226,10 @@ public class SystemTrainingPlugin implements EncogPluginService1 {
 			return this.nmFactory.create(method, training, args2);
 		} else if (MLTrainFactory.TYPE_PSO.equals(type) ) {
 			return this.psoFactory.create(method, training, args2);
+		} else if (MLTrainFactory.TYPE_NEAT_GA.equals(type) ) {
+			return this.neatGAFactory.create(method, training, args2);
+		} else if (MLTrainFactory.TYPE_EPL_GA.equals(type) ) {
+			return this.eplTrainFctory.create(method, training, args2);
 		}
 		else {
 			throw new EncogError("Unknown training type: " + type);

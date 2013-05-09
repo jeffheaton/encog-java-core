@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,7 +157,8 @@ public class FoldedDataSet implements MLDataSet {
 				this.underlying.getRecordCount());
 		this.foldSize = (int) (this.underlying.getRecordCount() 
 					/ this.numFolds);
-		this.lastFoldSize = (int) (this.underlying.getRecordCount() 
+		this.lastFoldSize = (int) this.foldSize;
+		this.lastFoldSize += (int) (this.underlying.getRecordCount() 
 					- (this.foldSize * this.numFolds));
 		setCurrentFold(0);
 	}
@@ -288,7 +289,7 @@ public class FoldedDataSet implements MLDataSet {
 					"Can't set the fold on a non-top-level set.");
 		}
 
-		if (currentFold >= this.numFolds) {
+		if (theCurrentFold >= this.numFolds) {
 			throw new TrainingError(
 		"Can't set the current fold to be greater than " 
 					+ "the number of folds.");

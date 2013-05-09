@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,7 @@ package org.encog.neural.neat.training;
 
 import java.io.Serializable;
 
-import org.encog.ml.genetic.genes.BasicGene;
-import org.encog.ml.genetic.genes.Gene;
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.neat.NEATNeuronType;
 
 /**
@@ -36,39 +35,35 @@ import org.encog.neural.neat.NEATNeuronType;
  * generation of evolving artificial neural networks. It was developed by Ken
  * Stanley while at The University of Texas at Austin.
  * 
- * http://www.cs.ucf.edu/~kstanley/
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
+ * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
  * 
  */
-public class NEATNeuronGene extends BasicGene implements Serializable {
+public class NEATNeuronGene extends NEATBaseGene implements Serializable {
 
 	/**
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public static final String PROPERTY_ACT_RESPONSE = "aResp";
-	public static final String PROPERTY_SPLIT_X = "splitX";
-	public static final String PROPERTY_SPLIT_Y = "splitY";
-	
-	/**
-	 * The activation response, the slope of the activation function.
-	 */
-	private double activationResponse;
-
 	/**
 	 * The neuron type.
 	 */
 	private NEATNeuronType neuronType;
-
+	
 	/**
-	 * The x-split.
+	 * The activation function.
 	 */
-	private double splitX;
-
-	/**
-	 * The y-split.
-	 */
-	private double splitY;
+	private ActivationFunction activationFunction;
 
 	/**
 	 * The default constructor.
@@ -78,44 +73,25 @@ public class NEATNeuronGene extends BasicGene implements Serializable {
 	}
 
 	/**
-	 * Construct a gene.
-	 * 
-	 * @param type
-	 *            The type of neuron.
-	 * @param id
-	 *            The id of this gene.
-	 * @param splitY
-	 *            The split y.
-	 * @param splitX
-	 *            The split x.
-	 */
-	public NEATNeuronGene(final NEATNeuronType type, final long id,
-			final double splitY, final double splitX) {
-		this(type, id, splitY, splitX, 1.0);
-	}
-
-	/**
 	 * Construct a neuron gene.
-	 * 
-	 * @param type
-	 *            The type of neuron.
-	 * @param id
-	 *            The id of this gene.
-	 * @param splitY
-	 *            The split y.
-	 * @param splitX
-	 *            The split x.
-	 * @param act
-	 *            The activation response.
+	 * @param type The neuron type.
+	 * @param theActivationFunction The activation function.
+	 * @param id The neuron id.
+	 * @param innovationID The innovation id.
 	 */
-	public NEATNeuronGene(final NEATNeuronType type, final long id,
-			final double splitY, final double splitX, 
-			final double act) {
+	public NEATNeuronGene(final NEATNeuronType type, ActivationFunction theActivationFunction, final long id, final long innovationID) {
 		this.neuronType = type;
+		this.setInnovationId(innovationID);
 		setId(id);
-		this.splitX = splitX;
-		this.splitY = splitY;
-		this.activationResponse = act;
+		this.activationFunction = theActivationFunction;
+	}
+	
+	/**
+	 * Construct this gene by comping another.
+	 * @param other The other gene to copy.
+	 */
+	public NEATNeuronGene(NEATNeuronGene other) {
+		copy(other);
 	}
 
 	/**
@@ -124,52 +100,19 @@ public class NEATNeuronGene extends BasicGene implements Serializable {
 	 * @param gene
 	 *            The other gene.
 	 */
-	public void copy(final Gene gene) {
-		final NEATNeuronGene other = (NEATNeuronGene) gene;
-		this.activationResponse = other.activationResponse;
+	public void copy(final NEATNeuronGene gene) {
+		final NEATNeuronGene other = gene;
 		setId(other.getId());
 		this.neuronType = other.neuronType;
-		this.splitX = other.splitX;
-		this.splitY = other.splitY;
-
+		this.activationFunction = other.activationFunction;
+		this.setInnovationId(other.getInnovationId());
 	}
-
-	/**
-	 * @return The activation response.
-	 */
-	public double getActivationResponse() {
-		return this.activationResponse;
-	}
-
+	
 	/**
 	 * @return The type for this neuron.
 	 */
 	public NEATNeuronType getNeuronType() {
 		return this.neuronType;
-	}
-
-	/**
-	 * @return The split x value.
-	 */
-	public double getSplitX() {
-		return this.splitX;
-	}
-
-	/**
-	 * @return The split y value.
-	 */
-	public double getSplitY() {
-		return this.splitY;
-	}
-
-	/**
-	 * Set the activation response.
-	 * 
-	 * @param activationResponse
-	 *            The activation response.
-	 */
-	public void setActivationResponse(final double activationResponse) {
-		this.activationResponse = activationResponse;
 	}
 
 	/**
@@ -183,25 +126,23 @@ public class NEATNeuronGene extends BasicGene implements Serializable {
 	}
 
 	/**
-	 * Set the split x.
-	 * 
-	 * @param splitX
-	 *            The split x.
+	 * @return the activationFunction
 	 */
-	public void setSplitX(final double splitX) {
-		this.splitX = splitX;
+	public ActivationFunction getActivationFunction() {
+		return activationFunction;
 	}
 
 	/**
-	 * Set the split y.
-	 * 
-	 * @param splitY
-	 *            The split y.
+	 * @param activationFunction the activationFunction to set
 	 */
-	public void setSplitY(final double splitY) {
-		this.splitY = splitY;
+	public void setActivationFunction(ActivationFunction activationFunction) {
+		this.activationFunction = activationFunction;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append("[NEATNeuronGene: id=");

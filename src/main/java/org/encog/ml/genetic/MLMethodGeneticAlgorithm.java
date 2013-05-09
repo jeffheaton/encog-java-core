@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,27 +23,30 @@
  */
 package org.encog.ml.genetic;
 
+import org.encog.ml.CalculateScore;
 import org.encog.ml.MLEncodable;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MethodFactory;
 import org.encog.ml.TrainingImplementationType;
+import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.population.BasicPopulation;
+import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.sort.GenomeComparator;
+import org.encog.ml.ea.sort.MaximizeScoreComp;
+import org.encog.ml.ea.sort.MinimizeScoreComp;
+import org.encog.ml.ea.species.Species;
+import org.encog.ml.ea.train.basic.TrainEA;
 import org.encog.ml.genetic.crossover.Splice;
-import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.mutate.MutatePerturb;
-import org.encog.ml.genetic.population.BasicPopulation;
-import org.encog.ml.genetic.population.Population;
 import org.encog.ml.train.BasicTraining;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.training.CalculateScore;
-import org.encog.neural.networks.training.genetic.GeneticScoreAdapter;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.util.concurrency.MultiThreadable;
 import org.encog.util.logging.EncogLogging;
 
 /**
- * Implements a genetic algorithm that allows an MLMethod that is encodable (MLEncodable)
- * to be trained.  It works well with both BasicNetwork and FreeformNetwork class, as well
- * as any MLEncodable class.
+ * Implements a genetic algorithm that allows an MLMethod that is encodable
+ * (MLEncodable) to be trained. It works well with both BasicNetwork and
+ * FreeformNetwork class, as well as any MLEncodable class.
  * 
  * There are essentially two ways you can make use of this class.
  * 
@@ -58,32 +61,32 @@ import org.encog.util.logging.EncogLogging;
  * create your own implementation of the CalculateScore method. This class can
  * then score the networks any way that you like.
  */
-public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThreadable {
+public class MLMethodGeneticAlgorithm extends BasicTraining implements
+		MultiThreadable {
 
 	/**
 	 * Very simple class that implements a genetic algorithm.
 	 * 
 	 * @author jheaton
 	 */
-	public class MLMethodGeneticAlgorithmHelper extends BasicGeneticAlgorithm {
+	public class MLMethodGeneticAlgorithmHelper extends TrainEA {
 		/**
-		 * @return The error from the last iteration.
+		 * The serial id.
 		 */
-		public double getError() {
-			final Genome genome = getPopulation().getBest();
-			return genome.getScore();
-		}
+		private static final long serialVersionUID = 1L;
 
 		/**
-		 * Get the current best method.
+		 * Construct the helper.
 		 * 
-		 * @return The current best method.
+		 * @param thePopulation
+		 *            The population.
+		 * @param theScoreFunction
+		 *            The score function.
 		 */
-		public MLMethod getMethod() {
-			final Genome genome = getPopulation().getBest();
-			return (BasicNetwork) genome.getOrganism();
+		public MLMethodGeneticAlgorithmHelper(final Population thePopulation,
+				final CalculateScore theScoreFunction) {
+			super(thePopulation, theScoreFunction);
 		}
-
 	}
 
 	/**
@@ -95,45 +98,54 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 	/**
 	 * Construct a method genetic algorithm.
 	 * 
-	 * @param network
-	 *            The network to base this on.
-	 * @param factory
-	 * 				This is used to create the initial population.
+	 * @param phenotypeFactory
+	 *            The phenotype factory.
+	 * @param calculateScore
+	 *            The score calculation object.
 	 * @param populationSize
 	 *            The population size.
-	 * @param mutationPercent
-	 *            The percent of offspring to mutate.
-	 * @param percentToMate
-	 *            The percent of the population allowed to mate.
 	 */
-	public MLMethodGeneticAlgorithm(final MethodFactory factory,
-			final CalculateScore calculateScore,
-			final int populationSize, final double mutationPercent,
-			final double percentToMate) {
+	public MLMethodGeneticAlgorithm(final MethodFactory phenotypeFactory,
+			final CalculateScore calculateScore, final int populationSize) {
 		super(TrainingImplementationType.Iterative);
-		this.genetic = new MLMethodGeneticAlgorithmHelper();
-		this.genetic.setCalculateScore(new GeneticScoreAdapter(calculateScore));
-		final Population population = new BasicPopulation(populationSize);
-		
-		MLEncodable last = null;
+
+		// Create the population
+		final Population population = new BasicPopulation(populationSize, null);
+		final Species defaultSpecies = population.createSpecies();
+
 		for (int i = 0; i < population.getPopulationSize(); i++) {
-			final MLEncodable chromosomeNetwork = (MLEncodable)factory.factor();
-			last = chromosomeNetwork;
+			final MLEncodable chromosomeNetwork = (MLEncodable) phenotypeFactory
+					.factor();
 			final MLMethodGenome genome = new MLMethodGenome(chromosomeNetwork);
-			genome.setGeneticAlgorithm(getGenetic());
-			getGenetic().calculateScore(genome);
-			population.add(genome);
+			defaultSpecies.add(genome);
 		}
+		defaultSpecies.setLeader(defaultSpecies.getMembers().get(0));
 		
-		getGenetic().setMutationPercent(mutationPercent);
-		getGenetic().setMatingPopulation(percentToMate * 2);
-		getGenetic().setPercentToMate(percentToMate);
-		getGenetic().setCrossover(
-				new Splice(last.encodedArrayLength() / 3));
-		getGenetic().setMutate(new MutatePerturb(4.0));
+		population.setGenomeFactory(new MLMethodGenomeFactory(phenotypeFactory,
+				population));
+		
+		// create the trainer
+		this.genetic = new MLMethodGeneticAlgorithmHelper(population,
+				calculateScore);
+		this.genetic.setCODEC(new MLEncodableCODEC());
+
+		GenomeComparator comp = null;
+		if (calculateScore.shouldMinimize()) {
+			comp = new MinimizeScoreComp();
+		} else {
+			comp = new MaximizeScoreComp();
+		}
+		this.genetic.setBestComparator(comp);
+		this.genetic.setSelectionComparator(comp);
+
+		
+		// create the operators
+		final int s = Math
+				.max(defaultSpecies.getMembers().get(0).size() / 5, 1);
 		getGenetic().setPopulation(population);
-		
-		population.sort();
+
+		this.genetic.addOperation(0.9, new Splice(s));
+		this.genetic.addOperation(0.1, new MutatePerturb(1.0));
 	}
 
 	/**
@@ -156,7 +168,13 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 	 */
 	@Override
 	public MLMethod getMethod() {
-		return getGenetic().getMethod();
+		final Genome best = this.genetic.getBestGenome();
+		return this.genetic.getCODEC().decode(best);
+	}
+
+	@Override
+	public int getThreadCount() {
+		return this.genetic.getThreadCount();
 	}
 
 	/**
@@ -168,6 +186,7 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 		EncogLogging.log(EncogLogging.LEVEL_INFO,
 				"Performing Genetic iteration.");
 		preIteration();
+		setError(getGenetic().getError());
 		getGenetic().iteration();
 		setError(getGenetic().getError());
 		postIteration();
@@ -200,13 +219,8 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements MultiThre
 	}
 
 	@Override
-	public int getThreadCount() {
-		return this.genetic.getThreadCount();
+	public void setThreadCount(final int numThreads) {
+		this.genetic.setThreadCount(numThreads);
+
 	}
-
-	@Override
-	public void setThreadCount(int numThreads) {
-		this.genetic.setThreadCount(numThreads);		
-	}	
-
 }

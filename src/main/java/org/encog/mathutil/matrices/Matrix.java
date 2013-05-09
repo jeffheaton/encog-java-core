@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -222,11 +222,13 @@ public class Matrix implements Cloneable, Serializable {
 	 */
 	@Override
 	public boolean equals(final Object other) {
-		if (other instanceof Matrix) {
-			return equals((Matrix) other, Encog.DEFAULT_PRECISION);
-		} else {
-			return false;
-		}
+	
+	    if (other == null) return false;
+	    if (other == this) return true;
+	    if (!(other instanceof Matrix))return false;
+	    Matrix otherMyClass = (Matrix)other;
+			
+	    return equals(otherMyClass, Encog.DEFAULT_PRECISION);
 	}
 
 	/**

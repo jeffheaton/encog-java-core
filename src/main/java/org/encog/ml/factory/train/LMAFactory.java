@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,16 +23,12 @@
  */
 package org.encog.ml.factory.train;
 
-import java.util.Map;
-
 import org.encog.EncogError;
 import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.factory.parse.ArchitectureParse;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.lma.LevenbergMarquardtTraining;
-import org.encog.util.ParamsHolder;
 
 /**
  * This class is a factory to create the LMA training method.
@@ -59,9 +55,6 @@ public class LMAFactory {
 					"LMA training cannot be used on a method of type: "
 							+ method.getClass().getName());
 		}
-
-		final Map<String, String> args = ArchitectureParse.parseParams(argsStr);
-		final ParamsHolder holder = new ParamsHolder(args);
 
 		final LevenbergMarquardtTraining result 
 			= new LevenbergMarquardtTraining(

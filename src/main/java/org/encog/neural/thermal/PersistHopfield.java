@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,6 @@ import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
 import org.encog.persist.EncogWriteHelper;
 import org.encog.persist.PersistConst;
-import org.encog.util.csv.CSVFormat;
-import org.encog.util.csv.NumberList;
 
 /**
  * Persist the Hopfield network.
@@ -75,10 +73,10 @@ public class PersistHopfield implements EncogPersistor {
 			if (section.getSectionName().equals("HOPFIELD")
 					&& section.getSubSectionName().equals("NETWORK")) {
 				final Map<String, String> params = section.parseParams();
-				result.setWeights(NumberList.fromList(CSVFormat.EG_FORMAT,
-						params.get(PersistConst.WEIGHTS)));
-				result.setCurrentState(NumberList.fromList(CSVFormat.EG_FORMAT,
-						params.get(PersistConst.OUTPUT)));
+				result.setWeights(section.parseDoubleArray(params,
+						PersistConst.WEIGHTS));
+				result.setCurrentState(section.parseDoubleArray(params,
+						PersistConst.OUTPUT));
 				result.setNeuronCount(EncogFileSection.parseInt(params,
 						PersistConst.NEURON_COUNT));
 			}

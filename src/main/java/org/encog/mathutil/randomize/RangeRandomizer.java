@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@
  */
 package org.encog.mathutil.randomize;
 
+import java.util.Random;
+
 /**
  * A randomizer that will create random weight and bias values that are between
  * a specified range.
@@ -32,6 +34,12 @@ package org.encog.mathutil.randomize;
  */
 public class RangeRandomizer extends BasicRandomizer {
 
+	/**
+	 * Returns a random number in the range between min and max.
+	 * @param min The minimum desired random number.
+	 * @param max The maximum desired random number.
+	 * @return The random number.
+	 */
 	public static int randomInt(final int min, final int max) {
 		return (int) RangeRandomizer.randomize(min, max + 1);
 	}
@@ -48,6 +56,11 @@ public class RangeRandomizer extends BasicRandomizer {
 	public static double randomize(final double min, final double max) {
 		final double range = max - min;
 		return (range * Math.random()) + min;
+	}
+	
+	public static double randomize(final Random r, final double min, final double max) {
+		final double range = max - min;
+		return (range * r.nextDouble()) + min;
 	}
 
 	/**

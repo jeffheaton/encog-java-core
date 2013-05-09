@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,61 +25,34 @@ package org.encog.neural.neat.training;
 
 import java.io.Serializable;
 
-import org.encog.ml.genetic.innovation.BasicInnovation;
-import org.encog.neural.neat.NEATNeuronType;
-
 /**
  * Implements a NEAT innovation. This lets NEAT track what changes it has
  * previously tried with a neural network.
  *
- * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
- * generation of evolving artificial neural networks. It was developed by Ken
- * Stanley while at The University of Texas at Austin.
- *
- * http://www.cs.ucf.edu/~kstanley/
+ * -----------------------------------------------------------------------------
+ * http://www.cs.ucf.edu/~kstanley/ Encog's NEAT implementation was drawn from
+ * the following three Journal Articles. For more complete BibTeX sources, see
+ * NEATNetwork.java.
+ * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
  *
  */
-public class NEATInnovation extends BasicInnovation implements Serializable {
+public class NEATInnovation implements Serializable {
 
 	/**
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-		
-	/**
-	 * The from neuron id.
-	 */
-	private long fromNeuronID;
-
-	/**
-	 * The type of innovation.
-	 */
-	private NEATInnovationType innovationType;
 
 	/**
 	 * The neuron id.
 	 */
 	private long neuronID;
-
-	/**
-	 * The type of neuron, or none, if this is a link innovation.
-	 */
-	private NEATNeuronType neuronType;
-
-	/**
-	 * The split x property.
-	 */
-	private double splitX;
-
-	/**
-	 * The split y property.
-	 */
-	private double splitY;
-
-	/**
-	 * The to neuron's id.
-	 */
-	private long toNeuronID;
 
 	/**
 	 * Default constructor, used mainly for persistence.
@@ -89,134 +62,10 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 	}
 
 	/**
-	 * Construct an innovation.
-	 *
-	 * @param fromNeuronID
-	 *            The from neuron.
-	 * @param toNeuronID
-	 *            The two neuron.
-	 * @param innovationType
-	 *            The innovation type.
-	 * @param innovationID
-	 *            The innovation id.
-	 */
-	public NEATInnovation(final long fromNeuronID, final long toNeuronID,
-			final NEATInnovationType innovationType, final long innovationID) {
-
-		this.fromNeuronID = fromNeuronID;
-		this.toNeuronID = toNeuronID;
-		this.innovationType = innovationType;
-		setInnovationID(innovationID);
-
-		this.neuronID = -1;
-		this.splitX = 0;
-		this.splitY = 0;
-		this.neuronType = NEATNeuronType.None;
-	}
-
-	/**
-	 * Construct an innovation.
-	 *
-	 * @param fromNeuronID
-	 *            The from neuron.
-	 * @param toNeuronID
-	 *            The to neuron.
-	 * @param innovationType
-	 *            The innovation type.
-	 * @param innovationID
-	 *            The innovation id.
-	 * @param neuronType
-	 *            The neuron type.
-	 * @param x
-	 *            The x coordinate.
-	 * @param y
-	 *            THe y coordinate.
-	 */
-	public NEATInnovation(final long fromNeuronID, final long toNeuronID,
-			final NEATInnovationType innovationType, final long innovationID,
-			final NEATNeuronType neuronType, final double x, final double y) {
-		this.fromNeuronID = fromNeuronID;
-		this.toNeuronID = toNeuronID;
-		this.innovationType = innovationType;
-		setInnovationID(innovationID);
-		this.neuronType = neuronType;
-		this.splitX = x;
-		this.splitY = y;
-
-		this.neuronID = 0;
-	}
-
-	/**
-	 * Construct an innovation.
-	 *
-	 * @param neuronGene
-	 *            The neuron gene.
-	 * @param innovationID
-	 *            The innovation id.
-	 * @param neuronID
-	 *            The neuron id.
-	 */
-	public NEATInnovation(final NEATNeuronGene neuronGene,
-			final long innovationID, final long neuronID) {
-
-		this.neuronID = neuronID;
-		setInnovationID(innovationID);
-		this.splitX = neuronGene.getSplitX();
-		this.splitY = neuronGene.getSplitY();
-
-		this.neuronType = neuronGene.getNeuronType();
-		this.innovationType = NEATInnovationType.NewNeuron;
-		this.fromNeuronID = -1;
-		this.toNeuronID = -1;
-	}
-
-	/**
-	 * @return The from neuron id.
-	 */
-	public long getFromNeuronID() {
-		return this.fromNeuronID;
-	}
-
-	/**
-	 * @return The innovation type.
-	 */
-	public NEATInnovationType getInnovationType() {
-		return this.innovationType;
-	}
-
-	/**
 	 * @return The neuron ID.
 	 */
 	public long getNeuronID() {
 		return this.neuronID;
-	}
-
-	/**
-	 * @return The neuron type.
-	 */
-	public NEATNeuronType getNeuronType() {
-		return this.neuronType;
-	}
-
-	/**
-	 * @return The split x.
-	 */
-	public double getSplitX() {
-		return this.splitX;
-	}
-
-	/**
-	 * @return The split y.
-	 */
-	public double getSplitY() {
-		return this.splitY;
-	}
-
-	/**
-	 * @return The to neuron id.
-	 */
-	public long getToNeuronID() {
-		return this.toNeuronID;
 	}
 
 	/**
@@ -232,61 +81,35 @@ public class NEATInnovation extends BasicInnovation implements Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public String toString() {
 		final StringBuilder result = new StringBuilder();
-		result.append("[NeatInnovation:type=");
-		switch (this.innovationType) {
-		case NewLink:
-			result.append("link");
-			break;
-		case NewNeuron:
-			result.append("neuron");
-			break;
-		}
-		result.append(",from=");
-		result.append(this.fromNeuronID);
-		result.append(",to=");
-		result.append(this.toNeuronID);
-		result.append(",splitX=");
-		result.append(this.splitX);
-		result.append(",splitY=");
-		result.append(this.splitY);
+		result.append("[NeatInnovation:");
+		result.append("id=");
+		result.append(this.getInnovationID());
+		result.append(",neuron=");
+		result.append(this.neuronID);
 		result.append("]");
 		return result.toString();
 	}
+	
+	/**
+	 * The innovation id.
+	 */
+	private long innovationID;
 
-	public void setInnovationType(NEATInnovationType t) {
-		this.innovationType = t;
-		
-	}
-
-	public void setNeuronType(NEATNeuronType t) {
-		this.neuronType = t;
-		
-	}
-
-	public void setSplitX(double d) {
-		this.splitX = d;
-	}
-	public void setSplitY(double d) {
-		this.splitY = d;
+	/**
+	 * @return The innovation ID.
+	 */
+	public long getInnovationID() {
+		return innovationID;
 	}
 
 	/**
-	 * @param fromNeuronID the fromNeuronID to set
+	 * Set the innovation id.
+	 * @param theInnovationID The innovation id.
 	 */
-	public void setFromNeuronID(long fromNeuronID) {
-		this.fromNeuronID = fromNeuronID;
+	public void setInnovationID(final long theInnovationID) {
+		this.innovationID = theInnovationID;
 	}
-
-	/**
-	 * @param toNeuronID the toNeuronID to set
-	 */
-	public void setToNeuronID(long toNeuronID) {
-		this.toNeuronID = toNeuronID;
-	}
-	
-	
-	
-
 }

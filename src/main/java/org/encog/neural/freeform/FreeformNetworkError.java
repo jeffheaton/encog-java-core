@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,11 @@ import org.encog.util.logging.EncogLogging;
 public class FreeformNetworkError extends RuntimeException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Construct a message exception.
 	 * 
 	 * @param msg
@@ -44,17 +49,6 @@ public class FreeformNetworkError extends RuntimeException {
 	/**
 	 * Construct an exception that holds another exception.
 	 * 
-	 * @param t
-	 *            The other exception.
-	 */
-	public FreeformNetworkError(final Throwable t) {
-		super(t);
-		EncogLogging.log(EncogLogging.LEVEL_ERROR, t);
-	}
-
-	/**
-	 * Construct an exception that holds another exception.
-	 * 
 	 * @param msg
 	 *            A message.
 	 * @param t
@@ -63,6 +57,17 @@ public class FreeformNetworkError extends RuntimeException {
 	public FreeformNetworkError(final String msg, final Throwable t) {
 		super(msg, t);
 		EncogLogging.log(EncogLogging.LEVEL_ERROR, msg);
+		EncogLogging.log(EncogLogging.LEVEL_ERROR, t);
+	}
+
+	/**
+	 * Construct an exception that holds another exception.
+	 * 
+	 * @param t
+	 *            The other exception.
+	 */
+	public FreeformNetworkError(final Throwable t) {
+		super(t);
 		EncogLogging.log(EncogLogging.LEVEL_ERROR, t);
 	}
 }

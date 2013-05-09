@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ package org.encog.app.analyst.commands;
 
 import java.io.File;
 
-import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.ml.MLMethod;
@@ -33,13 +32,12 @@ import org.encog.ml.MLResettable;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.folded.FoldedDataSet;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.training.cross.CrossValidationKFold;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.util.logging.EncogLogging;
-import org.encog.util.simple.EncogUtility;
 import org.encog.util.validate.ValidateNetwork;
 
 /**
@@ -120,7 +118,19 @@ public class CmdTrain extends Cmd {
 				ScriptProperties.ML_CONFIG_MACHINE_LEARNING_FILE);
 		final File resourceFile = getAnalyst().getScript().resolveFilename(
 				resourceID);
-		method = trainer.getMethod();
+		
+		// reload the method
+		method = null;
+		
+		if( trainer instanceof EvolutionaryAlgorithm ) {
+			EvolutionaryAlgorithm ea = (EvolutionaryAlgorithm)trainer;
+			method = ea.getPopulation();
+		} 
+		
+		if( method==null ) {
+			method = trainer.getMethod();	
+		}
+				
 		EncogDirectoryPersistence.saveObject(resourceFile, method);
 		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "save to:" + resourceID);
 		trainingSet.close();

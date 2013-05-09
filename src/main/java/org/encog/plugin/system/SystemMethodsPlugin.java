@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,9 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.ml.factory.method.BayesianFactory;
+import org.encog.ml.factory.method.EPLFactory;
 import org.encog.ml.factory.method.FeedforwardFactory;
+import org.encog.ml.factory.method.NEATFactory;
 import org.encog.ml.factory.method.PNNFactory;
 import org.encog.ml.factory.method.RBFNetworkFactory;
 import org.encog.ml.factory.method.SOMFactory;
@@ -74,6 +76,16 @@ public class SystemMethodsPlugin implements EncogPluginService1 {
 	 * A factory used to create Bayesian networks
 	 */
 	private final BayesianFactory bayesianFactory = new BayesianFactory();
+	
+	/**
+	 * A factory used to create NEAT populations.
+	 */
+	private final NEATFactory neatFactory = new NEATFactory();
+	
+	/**
+	 * A factory used to create NEAT populations.
+	 */
+	private final EPLFactory eplFactory = new EPLFactory();
 
 	
 	/**
@@ -117,7 +129,6 @@ public class SystemMethodsPlugin implements EncogPluginService1 {
 	@Override
 	public MLMethod createMethod(String methodType, String architecture,
 			int input, int output) {
-		// TODO Auto-generated method stub
 		if (MLMethodFactory.TYPE_FEEDFORWARD.equals(methodType)) {
 			return this.feedforwardFactory.create(architecture, input, output);
 		} else if (MLMethodFactory.TYPE_RBFNETWORK.equals(methodType)) {
@@ -130,7 +141,12 @@ public class SystemMethodsPlugin implements EncogPluginService1 {
 			return this.pnnFactory.create(architecture, input, output);
 		} else if (MLMethodFactory.TYPE_BAYESIAN.equals(methodType)) {
 			return this.bayesianFactory.create(architecture, input, output);
+		} else if (MLMethodFactory.TYPE_NEAT.equals(methodType)) {
+			return this.neatFactory.create(architecture, input, output);
+		} else if (MLMethodFactory.TYPE_EPL.equals(methodType)) {
+			return this.eplFactory.create(architecture, input, output);
 		}
+		
 		throw new EncogError("Unknown method type: " + methodType);
 	}
 

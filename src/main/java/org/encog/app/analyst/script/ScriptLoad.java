@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.encog.app.analyst.AnalystError;
+import org.encog.app.analyst.script.ml.ScriptOpcode;
 import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.process.ProcessField;
 import org.encog.app.analyst.script.prop.PropertyConstraints;
@@ -53,27 +54,27 @@ public class ScriptLoad {
 	 * Column 1.
 	 */
 	public static final int COLUMN_ONE = 1;
-	
+
 	/**
 	 * Column 2.
 	 */
 	public static final int COLUMN_TWO = 2;
-	
+
 	/**
 	 * Column 3.
 	 */
 	public static final int COLUMN_THREE = 3;
-	
+
 	/**
 	 * Column 4.
 	 */
 	public static final int COLUMN_FOUR = 4;
-	
+
 	/**
 	 * Column 5.
 	 */
 	public static final int COLUMN_FIVE = 5;
-	
+
 	/**
 	 * The script being loaded.
 	 */
@@ -81,7 +82,9 @@ public class ScriptLoad {
 
 	/**
 	 * Construct a script loader.
-	 * @param theScript The script to load into.
+	 * 
+	 * @param theScript
+	 *            The script to load into.
 	 */
 	public ScriptLoad(final AnalystScript theScript) {
 		this.script = theScript;
@@ -89,12 +92,13 @@ public class ScriptLoad {
 
 	/**
 	 * Handle loading the data classes.
-	 * @param section The section being loaded.
+	 * 
+	 * @param section
+	 *            The section being loaded.
 	 */
 	private void handleDataClasses(final EncogFileSection section) {
 
-		final Map<String, List<AnalystClassItem>> map 
-			= new HashMap<String, List<AnalystClassItem>>();
+		final Map<String, List<AnalystClassItem>> map = new HashMap<String, List<AnalystClassItem>>();
 
 		boolean first = true;
 		for (final String line : section.getLines()) {
@@ -114,8 +118,7 @@ public class ScriptLoad {
 
 				if (df == null) {
 					throw new AnalystError(
-							"Attempting to add class to unknown field: " 
-							+ name);
+							"Attempting to add class to unknown field: " + name);
 				}
 
 				List<AnalystClassItem> classItems;
@@ -149,33 +152,32 @@ public class ScriptLoad {
 
 	/**
 	 * Handle loading data stats.
-	 * @param section The section being loaded.
+	 * 
+	 * @param section
+	 *            The section being loaded.
 	 */
-	private void handleDataStats(final EncogFileSection section) {		
+	private void handleDataStats(final EncogFileSection section) {
 		final List<DataField> dfs = new ArrayList<DataField>();
 		boolean first = true;
 		for (final String line : section.getLines()) {
 			if (!first) {
 				final List<String> cols = EncogFileSection.splitColumns(line);
 				final String name = cols.get(0);
-				final boolean isclass = Integer.parseInt(cols.get(1)) > 0; 
+				final boolean isclass = Integer.parseInt(cols.get(1)) > 0;
 				final boolean iscomplete = Integer.parseInt(cols.get(2)) > 0;
-				final boolean isint = 
-					Integer.parseInt(cols.get(COLUMN_THREE)) > 0;
-				final boolean isreal = 
-					Integer.parseInt(cols.get(COLUMN_FOUR)) > 0;
+				final boolean isint = Integer.parseInt(cols.get(COLUMN_THREE)) > 0;
+				final boolean isreal = Integer.parseInt(cols.get(COLUMN_FOUR)) > 0;
 				final double amax = CSVFormat.EG_FORMAT.parse(cols.get(5));
 				final double amin = CSVFormat.EG_FORMAT.parse(cols.get(6));
 				final double mean = CSVFormat.EG_FORMAT.parse(cols.get(7));
 				final double sdev = CSVFormat.EG_FORMAT.parse(cols.get(8));
 				String source = "";
-				
+
 				// source was added in Encog 3.2, so it might not be there
-				if( cols.size()>9 ) {
+				if (cols.size() > 9) {
 					source = cols.get(9);
 				}
-				
-				
+
 				final DataField df = new DataField(name);
 				df.setClass(isclass);
 				df.setComplete(iscomplete);
@@ -202,7 +204,9 @@ public class ScriptLoad {
 
 	/**
 	 * Handle loading the filenames.
-	 * @param section The section being loaded.
+	 * 
+	 * @param section
+	 *            The section being loaded.
 	 */
 	private void handleFilenames(final EncogFileSection section) {
 
@@ -216,7 +220,9 @@ public class ScriptLoad {
 
 	/**
 	 * Handle normalization ranges.
-	 * @param section The section being loaded.
+	 * 
+	 * @param section
+	 *            The section being loaded.
 	 */
 	private void handleNormalizeRange(final EncogFileSection section) {
 		this.script.getNormalize().getNormalizedFields().clear();
@@ -230,15 +236,15 @@ public class ScriptLoad {
 				final String action = cols.get(3);
 				final double high = CSVFormat.EG_FORMAT.parse(cols.get(4));
 				final double low = CSVFormat.EG_FORMAT.parse(cols.get(5));
-				
+
 				boolean isOutput;
-				
-				if( io.equalsIgnoreCase("input") ) {
+
+				if (io.equalsIgnoreCase("input")) {
 					isOutput = false;
-				} else if( io.equalsIgnoreCase("output") ) {
+				} else if (io.equalsIgnoreCase("output")) {
 					isOutput = true;
 				} else {
-					throw new AnalystError("Unknown io type:" + io );
+					throw new AnalystError("Unknown io type:" + io);
 				}
 
 				NormalizationAction des = null;
@@ -255,7 +261,7 @@ public class ScriptLoad {
 				} else if (action.equals("oneof")) {
 					des = NormalizationAction.OneOf;
 				} else {
-					throw new AnalystError("Unknown field type:" + action );
+					throw new AnalystError("Unknown field type:" + action);
 				}
 
 				final AnalystField nf = new AnalystField(name, des, high, low);
@@ -271,11 +277,12 @@ public class ScriptLoad {
 
 	/**
 	 * Handle loading segregation info.
-	 * @param section The section being loaded.
+	 * 
+	 * @param section
+	 *            The section being loaded.
 	 */
 	private void handleSegregateFiles(final EncogFileSection section) {
-		final List<AnalystSegregateTarget> nfs 
-			= new ArrayList<AnalystSegregateTarget>();
+		final List<AnalystSegregateTarget> nfs = new ArrayList<AnalystSegregateTarget>();
 		boolean first = true;
 		for (final String line : section.getLines()) {
 			if (!first) {
@@ -302,7 +309,9 @@ public class ScriptLoad {
 
 	/**
 	 * Handle loading a task.
-	 * @param section The section.
+	 * 
+	 * @param section
+	 *            The section.
 	 */
 	private void handleTask(final EncogFileSection section) {
 		final AnalystTask task = new AnalystTask(section.getSubSectionName());
@@ -314,7 +323,9 @@ public class ScriptLoad {
 
 	/**
 	 * Load an Encog script.
-	 * @param stream The stream to load from.
+	 * 
+	 * @param stream
+	 *            The stream to load from.
 	 */
 	public void load(final InputStream stream) {
 		EncogReadHelper reader = null;
@@ -338,7 +349,9 @@ public class ScriptLoad {
 
 	/**
 	 * Load a generic subsection.
-	 * @param section The section to load from.
+	 * 
+	 * @param section
+	 *            The section to load from.
 	 */
 	private void loadSubSection(final EncogFileSection section) {
 		final Map<String, String> prop = section.parseParams();
@@ -358,7 +371,9 @@ public class ScriptLoad {
 
 	/**
 	 * Process one of the subsections.
-	 * @param section The section.
+	 * 
+	 * @param section
+	 *            The section.
 	 */
 	private void processSubSection(final EncogFileSection section) {
 		final String currentSection = section.getSectionName();
@@ -415,6 +430,9 @@ public class ScriptLoad {
 		} else if (currentSection.equals("ML")
 				&& currentSubsection.equalsIgnoreCase("TRAIN")) {
 			loadSubSection(section);
+		} else if (currentSection.equals("ML")
+				&& currentSubsection.equalsIgnoreCase("OPCODES")) {
+			loadOpcodes(section);
 		} else if (currentSection.equals("TASKS")
 				&& (currentSubsection.length() > 0)) {
 			handleTask(section);
@@ -435,10 +453,15 @@ public class ScriptLoad {
 
 	/**
 	 * Validate a property.
-	 * @param section The section.
-	 * @param subSection The sub section.
-	 * @param name The name of the property.
-	 * @param value The new value for the property.
+	 * 
+	 * @param section
+	 *            The section.
+	 * @param subSection
+	 *            The sub section.
+	 * @param name
+	 *            The name of the property.
+	 * @param value
+	 *            The new value for the property.
 	 */
 	private void validateProperty(final String section,
 			final String subSection, final String name, final String value) {
@@ -450,20 +473,35 @@ public class ScriptLoad {
 		}
 		entry.validate(section, subSection, name, value);
 	}
-	
-	private void handleProcessFields(final EncogFileSection section) {		
+
+	private void handleProcessFields(final EncogFileSection section) {
 		List<ProcessField> fields = this.script.getProcess().getFields();
 		boolean first = true;
-		
+
 		fields.clear();
-		
+
 		for (final String line : section.getLines()) {
 			if (!first) {
 				final List<String> cols = EncogFileSection.splitColumns(line);
 				final String name = cols.get(0);
 				final String command = cols.get(1);
-				final ProcessField pf = new ProcessField(name,command);
+				final ProcessField pf = new ProcessField(name, command);
 				fields.add(pf);
+			} else {
+				first = false;
+			}
+		}
+	}
+
+	private void loadOpcodes(EncogFileSection section) {
+		boolean first = true;
+		for (final String line : section.getLines()) {
+			if (!first) {
+				final List<String> cols = EncogFileSection.splitColumns(line);
+				final String name = cols.get(0);
+				final int childCount = Integer.parseInt(cols.get(1));
+				ScriptOpcode opcode = new ScriptOpcode(name, childCount);
+				this.script.getOpcodes().add(opcode);
 			} else {
 				first = false;
 			}

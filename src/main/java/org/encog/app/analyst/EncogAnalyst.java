@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,12 +46,12 @@ import org.encog.app.analyst.commands.CmdEvaluate;
 import org.encog.app.analyst.commands.CmdEvaluateRaw;
 import org.encog.app.analyst.commands.CmdGenerate;
 import org.encog.app.analyst.commands.CmdNormalize;
+import org.encog.app.analyst.commands.CmdProcess;
 import org.encog.app.analyst.commands.CmdRandomize;
 import org.encog.app.analyst.commands.CmdReset;
 import org.encog.app.analyst.commands.CmdSegregate;
 import org.encog.app.analyst.commands.CmdSet;
 import org.encog.app.analyst.commands.CmdTrain;
-import org.encog.app.analyst.commands.CmdProcess;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
@@ -829,6 +829,22 @@ public class EncogAnalyst {
 			if (!field.isIgnored()) {
 				result += field.getColumnsNeeded();
 			}
+		}
+		return result;
+	}
+
+	public int determineMaxTimeSlice() {
+		int result = Integer.MIN_VALUE;
+		for(AnalystField field: this.getScript().getNormalize().getNormalizedFields()) {
+			result = Math.max(result, field.getTimeSlice());
+		}
+		return result;
+	}
+	
+	public int determineMinTimeSlice() {
+		int result = Integer.MAX_VALUE;
+		for(AnalystField field: this.getScript().getNormalize().getNormalizedFields()) {
+			result = Math.min(result, field.getTimeSlice());
 		}
 		return result;
 	}

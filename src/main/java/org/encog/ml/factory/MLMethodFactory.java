@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,6 +63,26 @@ public class MLMethodFactory {
 	 * A probabilistic neural network. Supports both PNN & GRNN.
 	 */
 	public static final String TYPE_PNN = "pnn";
+	
+	/**
+	 * A NEAT neural network.
+	 */
+	public static final String TYPE_NEAT = "neat";
+	
+	/**
+	 * A Encog program.
+	 */
+	public static final String TYPE_EPL = "epl";
+	
+
+	public static final String PROPERTY_AF = "AF";
+	
+	/**
+	 * Population size.
+	 */
+	public static final String PROPERTY_POPULATION_SIZE = "population";
+	
+	public static final String PROPERTY_CYCLES = "cycles";
 
 	/**
 	 * Create a new machine learning method.

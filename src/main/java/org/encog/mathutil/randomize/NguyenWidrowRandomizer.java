@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import org.encog.neural.networks.BasicNetwork;
  * default weight initialization used by Encog, as it generally provides the
  * most train-able neural network.
  */
-public class NguyenWidrowRandomizer implements Randomizer {
+public class NguyenWidrowRandomizer extends BasicRandomizer {
 
 	public static String MSG = "This type of randomization is not supported by Nguyen-Widrow";
 	
@@ -64,18 +64,18 @@ public class NguyenWidrowRandomizer implements Randomizer {
 		int fromCount = network.getLayerNeuronCount(fromLayer);
 		int fromCountTotalCount = network.getLayerTotalNeuronCount(fromLayer);
 		ActivationFunction af = network.getActivation(toLayer);
-		double low = calculateRange(af,Double.NEGATIVE_INFINITY);
-		double high = calculateRange(af,Double.POSITIVE_INFINITY);
+		double low = calculateRange(af,Double.MIN_VALUE);
+		double high = calculateRange(af,Double.MAX_VALUE);
 
 		double b = 0.7d * Math.pow(toCount, (1d / fromCount)) / (high-low);
 
 		for(int toNeuron=0; toNeuron<toCount;toNeuron++) {
 			if( fromCount!=fromCountTotalCount ) {
-				double w = RangeRandomizer.randomize(-b, b);
+				double w = nextDouble(-b, b);
 				network.setWeight(fromLayer, fromCount, toNeuron, w);
 			}
 			for(int fromNeuron=0; fromNeuron<fromCount;fromNeuron++) {
-				double w = RangeRandomizer.randomize(0, b);
+				double w = nextDouble(0, b);
 				network.setWeight(fromLayer, fromNeuron, toNeuron, w);	
 			}
 		}

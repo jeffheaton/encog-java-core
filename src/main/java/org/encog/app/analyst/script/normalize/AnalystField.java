@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -311,13 +311,17 @@ public class AnalystField {
 			resultIndex = EngineArray.indexOfLargest(d);
 			break;
 		case SingleField:
-			resultIndex = (int) d[0];
+			resultIndex = (int)Math.round(d[0]);
 			break;
 		default:
 			throw new AnalystError("Invalid action: " + this.action);
 		}
 
 		if (resultIndex < 0) {
+			return null;
+		}
+		
+		if( resultIndex>= this.classes.size() ) {
 			return null;
 		}
 
@@ -756,8 +760,8 @@ public class AnalystField {
 
 	/**
 	 * Determine the mode, this is the class item that has the most instances.
-	 * @param analyst
-	 * @return
+	 * @param analyst The Encog analyst.
+	 * @return The mode.
 	 */
 	public int determineMode(EncogAnalyst analyst) {
 		if( !this.isClassify() ) {

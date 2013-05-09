@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,14 +23,17 @@
  */
 package org.encog.ml.genetic.mutate;
 
-import org.encog.ml.genetic.genes.DoubleGene;
-import org.encog.ml.genetic.genes.Gene;
-import org.encog.ml.genetic.genome.Chromosome;
+import java.util.Random;
+
+import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.opp.EvolutionaryOperator;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
+import org.encog.ml.genetic.genome.DoubleArrayGenome;
 
 /**
  * A simple mutation based on random numbers.
  */
-public class MutatePerturb implements Mutate {
+public class MutatePerturb implements EvolutionaryOperator {
 
 	/**
 	 * The amount to perturb by.
@@ -46,17 +49,43 @@ public class MutatePerturb implements Mutate {
 	}
 
 	/**
-	 * Perform a perturb mutation on the specified chromosome.
-	 * @param chromosome The chromosome to mutate.
+	 * {@inheritDoc}
 	 */
-	public void performMutation(final Chromosome chromosome) {
-		for (final Gene gene : chromosome.getGenes()) {
-			if (gene instanceof DoubleGene) {
-				final DoubleGene doubleGene = (DoubleGene) gene;
-				double value = doubleGene.getValue();
-				value += (perturbAmount - (Math.random() * perturbAmount * 2));
-				doubleGene.setValue(value);
-			}
+	@Override
+	public void performOperation(Random rnd, Genome[] parents, int parentIndex,
+			Genome[] offspring, int offspringIndex) {
+		DoubleArrayGenome parent = (DoubleArrayGenome)parents[parentIndex];
+		offspring[offspringIndex] = parent.getPopulation().getGenomeFactory().factor();
+		DoubleArrayGenome child = (DoubleArrayGenome)offspring[offspringIndex];
+		
+		for(int i=0;i<parent.size();i++) {
+			double value = parent.getData()[i];
+			value += (perturbAmount - (rnd.nextDouble() * perturbAmount * 2));
+			child.getData()[i] = value;
 		}
+	}
+	
+	/**
+	 * @return The number of offspring produced, which is 1 for this mutation.
+	 */
+	@Override
+	public int offspringProduced() {
+		return 1;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int parentsNeeded() {
+		return 1;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void init(EvolutionaryAlgorithm theOwner) {
+		// not needed
 	}
 }

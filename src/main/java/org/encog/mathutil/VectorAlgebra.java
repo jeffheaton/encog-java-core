@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -164,17 +164,17 @@ public class VectorAlgebra {
     }
 
     /**
-     * Return the dot product (sum of internal products) of two equally sized vectors
-     * @param v1
-     * @param v2
-     * @return
+     * Take the dot product of two vectors.
+     * @param v1 The first vector.
+     * @param v2 The second vector.
+     * @return The dot product.
      */
-    public double dotProduct(double[] v1, double[] v2) {
-    	assert(v1.length == v2.length);
-    	double sum = 0;
-    	for (int i = 0; i < v1.length; i++)
-    		sum += v1[i] * v2[i];
-    	return sum;
-    }
+	public double dotProduct(double[] v1, double[] v2) {
+		double d = 0;
+		for(int i=0;i<v1.length;i++) {
+			d+=v1[i]*v2[i];
+		}
+		return Math.sqrt(d);
+	}
 
 }

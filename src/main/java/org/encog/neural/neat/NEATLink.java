@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,75 +32,95 @@ import java.io.Serializable;
  * generation of evolving artificial neural networks. It was developed by Ken
  * Stanley while at The University of Texas at Austin.
  * 
+ * -----------------------------------------------------------------------------
  * http://www.cs.ucf.edu/~kstanley/
+ * Encog's NEAT implementation was drawn from the following three Journal
+ * Articles. For more complete BibTeX sources, see NEATNetwork.java.
  * 
+ * Evolving Neural Networks Through Augmenting Topologies
+ * 
+ * Generating Large-Scale Neural Networks Through Discovering Geometric
+ * Regularities
+ * 
+ * Automatic feature selection in neuroevolution
  */
-public class NEATLink implements Serializable {
+public class NEATLink implements Serializable, Comparable<NEATLink> {
 
 	/**
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = -4117045705080951946L;
 
-
 	/**
 	 * The source neuron.
 	 */
-	private NEATNeuron fromNeuron;
-
-	/**
-	 * Is this link recurrent.
-	 */
-	private boolean recurrent;
+	private int fromNeuron;
 
 	/**
 	 * The target neuron.
 	 */
-	private NEATNeuron toNeuron;
+	private int toNeuron;
 
 	/**
-	 * The weight between the two neurons.
+	 * The weight.
 	 */
 	private double weight;
 
 	/**
-	 * Default constructor, used mainly for persistance.
-	 */
-	public NEATLink() {
-
-	}
-
-	/**
 	 * Construct a NEAT link.
-	 * 
-	 * @param weight
-	 *            The weight between the two neurons.
-	 * @param fromNeuron
-	 *            The source neuron.
-	 * @param toNeuron
-	 *            The target neuron.
-	 * @param recurrent
-	 *            Is this a recurrent link.
+	 * @param theFromNeuron The from neuron.
+	 * @param theToNeuron The to neuron.
+	 * @param theWeight The weight.
 	 */
-	public NEATLink(final double weight, final NEATNeuron fromNeuron,
-			final NEATNeuron toNeuron, final boolean recurrent) {
-		this.weight = weight;
-		this.fromNeuron = fromNeuron;
-		this.toNeuron = toNeuron;
-		this.recurrent = recurrent;
+	public NEATLink(final int theFromNeuron, final int theToNeuron,
+			final double theWeight) {
+		this.fromNeuron = theFromNeuron;
+		this.toNeuron = theToNeuron;
+		this.weight = theWeight;
 	}
 
 	/**
-	 * @return The source neuron.
+	 * {@inheritDoc}
 	 */
-	public NEATNeuron getFromNeuron() {
+	@Override
+	public int compareTo(final NEATLink other) {
+		final int result = this.fromNeuron - other.fromNeuron;
+		if (result != 0) {
+			return result;
+		}
+
+		return this.toNeuron - other.toNeuron;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean equals(final Object other) {
+		if (other == null) {
+			return false;
+		}
+		if (other == this) {
+			return true;
+		}
+		if (!(other instanceof NEATLink)) {
+			return false;
+		}
+		final NEATLink otherMyClass = (NEATLink) other;
+		return compareTo(otherMyClass) == 0;
+	}
+
+	/**
+	 * @return The from neuron.
+	 */
+	public int getFromNeuron() {
 		return this.fromNeuron;
 	}
 
 	/**
-	 * @return The target neuron.
+	 * @return The to neuron.
 	 */
-	public NEATNeuron getToNeuron() {
+	public int getToNeuron() {
 		return this.toNeuron;
 	}
 
@@ -112,22 +132,39 @@ public class NEATLink implements Serializable {
 	}
 
 	/**
-	 * @return True if this is a recurrent link.
+	 * Set the from neuron.
+	 * @param fromNeuron The from neuron.
 	 */
-	public boolean isRecurrent() {
-		return this.recurrent;
+	public void setFromNeuron(final int fromNeuron) {
+		this.fromNeuron = fromNeuron;
 	}
 
-	public boolean supportsMapPersistence() {
-		return true;
+	/**
+	 * Set the target neuron.
+	 * @param toNeuron The target neuron.
+	 */
+	public void setToNeuron(final int toNeuron) {
+		this.toNeuron = toNeuron;
 	}
-	
+
+	/**
+	 * Set the weight of this link.
+	 * @param weight The weight.
+	 */
+	public void setWeight(final double weight) {
+		this.weight = weight;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 		result.append("[NEATLink: fromNeuron=");
-		result.append(this.getFromNeuron().getNeuronID());
+		result.append(this.fromNeuron);
 		result.append(", toNeuron=");
-		result.append(this.getToNeuron().getNeuronID());
+		result.append(this.toNeuron);
 		result.append("]");
 		return result.toString();
 	}

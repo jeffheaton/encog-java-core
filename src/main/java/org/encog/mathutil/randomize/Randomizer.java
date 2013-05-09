@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@
  * http://www.heatonresearch.com/copyright
  */
 package org.encog.mathutil.randomize;
+
+import java.util.Random;
 
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.MLMethod;
@@ -91,5 +93,21 @@ public interface Randomizer {
 	 * @param size The size of the array.
 	 */
 	void randomize(final double[] d, int begin, int size);
+	
+	/**
+	 * Explicitly set the Random source
+	 * @param theRandom
+	 */
+	void setRandom(Random theRandom);
+	/**
+	 * @return Retrieve the Random generator.
+	 */
+	Random getRandom();
 
+	/**
+	 * Explicitly set the seed used for randomization
+	 * @param seed
+	 */
+	void setSeed(long seed);
+	
 }

@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import org.encog.app.analyst.AnalystError;
 import org.encog.engine.network.activation.ActivationFunction;
@@ -46,6 +45,33 @@ public class EncogFileSection {
 	private List<double[]> largeArrays = new ArrayList<double[]>();
 	
 	/**
+	 * Parse an activation function from a value.
+	 * @param value The value.
+	 * @return The activation function.
+	 */
+	public static ActivationFunction parseActivationFunction(String value) {
+		ActivationFunction af = null;
+		final String[] cols = value.split("\\|");
+
+		final String afName = "org.encog.engine.network.activation." + cols[0];
+		try {
+			final Class<?> clazz = Class.forName(afName);
+			af = (ActivationFunction) clazz.newInstance();
+		} catch (final ClassNotFoundException e) {
+			throw new PersistError(e);
+		} catch (final InstantiationException e) {
+			throw new PersistError(e);
+		} catch (final IllegalAccessException e) {
+			throw new PersistError(e);
+		}
+
+		for (int i = 0; i < af.getParamNames().length; i++) {
+			af.setParam(i, CSVFormat.EG_FORMAT.parse(cols[i + 1]));
+		}
+		return af;
+	}
+	
+	/**
 	 * Parse an activation function from a string.
 	 * @param params The params.
 	 * @param name The name of the param to parse.
@@ -60,26 +86,7 @@ public class EncogFileSection {
 				throw new PersistError("Missing property: " + name);
 			}
 
-			ActivationFunction af = null;
-			final String[] cols = value.split("\\|");
-
-			final String afName = "org.encog.engine.network.activation." + cols[0];
-			try {
-				final Class<?> clazz = Class.forName(afName);
-				af = (ActivationFunction) clazz.newInstance();
-			} catch (final ClassNotFoundException e) {
-				throw new PersistError(e);
-			} catch (final InstantiationException e) {
-				throw new PersistError(e);
-			} catch (final IllegalAccessException e) {
-				throw new PersistError(e);
-			}
-
-			for (int i = 0; i < af.getParamNames().length; i++) {
-				af.setParam(i, CSVFormat.EG_FORMAT.parse(cols[i + 1]));
-			}
-
-			return af;
+			return parseActivationFunction(value);
 
 		} catch (final Exception ex) {
 			throw new PersistError(ex);

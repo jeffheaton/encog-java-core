@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ package org.encog.neural.networks.training;
 
 import junit.framework.TestCase;
 
-import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.ml.CalculateScore;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MethodFactory;
 import org.encog.ml.data.MLDataSet;
@@ -36,7 +36,6 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NetworkUtil;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.training.anneal.NeuralSimulatedAnnealing;
-import org.encog.neural.networks.training.genetic.NeuralGeneticAlgorithm;
 import org.encog.neural.networks.training.lma.LevenbergMarquardtTraining;
 import org.encog.neural.networks.training.pnn.TrainBasicPNN;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
@@ -58,7 +57,7 @@ public class TestTraining extends TestCase   {
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		MLTrain rprop = new ResilientPropagation(network, trainingData);
-		NetworkUtil.testTraining(rprop,0.03);
+		NetworkUtil.testTraining(trainingData,rprop,0.03);
 	}
 	
 	@Test
@@ -68,7 +67,7 @@ public class TestTraining extends TestCase   {
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		MLTrain rprop = new LevenbergMarquardtTraining(network, trainingData);
-		NetworkUtil.testTraining(rprop,0.03);
+		NetworkUtil.testTraining(trainingData,rprop,0.03);
 	}
 	
 	@Test
@@ -79,7 +78,7 @@ public class TestTraining extends TestCase   {
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 
 		MLTrain bprop = new Backpropagation(network, trainingData, 0.7, 0.9);
-		NetworkUtil.testTraining(bprop,0.01);
+		NetworkUtil.testTraining(trainingData,bprop,0.01);
 	}
 	
 	@Test
@@ -89,7 +88,7 @@ public class TestTraining extends TestCase   {
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		MLTrain bprop = new ManhattanPropagation(network, trainingData, 0.01);
-		NetworkUtil.testTraining(bprop,0.01);
+		NetworkUtil.testTraining(trainingData,bprop,0.01);
 	}
 	
 	@Test
@@ -99,7 +98,7 @@ public class TestTraining extends TestCase   {
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		MLTrain bprop = new ScaledConjugateGradient(network, trainingData);
-		NetworkUtil.testTraining(bprop,0.04);
+		NetworkUtil.testTraining(trainingData,bprop,0.04);
 	}
 	
 	@Test
@@ -109,17 +108,7 @@ public class TestTraining extends TestCase   {
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		CalculateScore score = new TrainingSetScore(trainingData);
 		NeuralSimulatedAnnealing anneal = new NeuralSimulatedAnnealing(network,score,10,2,100);
-		NetworkUtil.testTraining(anneal,0.01);
-	}
-	
-	@Test
-	public void testGenetic() throws Throwable
-	{
-		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);		
-		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
-		CalculateScore score = new TrainingSetScore(trainingData);
-		NeuralGeneticAlgorithm genetic = new NeuralGeneticAlgorithm(network, new RangeRandomizer(-1,1), score, 500,0.1,0.25);
-		NetworkUtil.testTraining(genetic,0.00001);
+		NetworkUtil.testTraining(trainingData,anneal,0.01);
 	}
 	
 	@Test
@@ -133,8 +122,8 @@ public class TestTraining extends TestCase   {
 				BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 				network.reset();
 				return network;
-			}}, score, 500,0.1,0.25);
-		NetworkUtil.testTraining(genetic,0.00001);
+			}}, score, 500);
+		NetworkUtil.testTraining(trainingData,genetic,0.00001);
 	}
 	
 	@Test

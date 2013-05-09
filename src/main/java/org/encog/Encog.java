@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,13 @@ package org.encog;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.encog.mathutil.randomize.factory.BasicRandomFactory;
+import org.encog.mathutil.randomize.factory.RandomFactory;
 import org.encog.plugin.EncogPluginBase;
 import org.encog.plugin.EncogPluginLogging1;
 import org.encog.plugin.system.SystemActivationPlugin;
@@ -45,6 +49,11 @@ import org.encog.util.concurrency.EngineConcurrency;
  */
 public final class Encog {
 
+	/**
+	 * The default encoding used by Encog.
+	 */
+	public static final String DEFAULT_ENCODING = "UTF-8";
+	
 	/**
 	 * The current engog version, this should be read from the properties.
 	 */
@@ -87,6 +96,13 @@ public final class Encog {
 	 * time the format of the encog data file changes.
 	 */
 	public static final String ENCOG_FILE_VERSION = "encog.file.version";
+	
+	/**
+	 * Used to create random number generators, by default, use Java's Random class.
+	 */
+	private RandomFactory randomFactory = new BasicRandomFactory();
+	
+	private Set<EncogShutdownTask> shutdownTasks = new HashSet<EncogShutdownTask>();
 
 	/**
 	 * The instance.
@@ -189,6 +205,14 @@ public final class Encog {
 	 * thread pool.
 	 */
 	public void shutdown() {
+		while(this.shutdownTasks.size()>0) {
+			Object[] list = this.shutdownTasks.toArray();
+			for(int i=0;i<list.length;i++) {
+				EncogShutdownTask task = (EncogShutdownTask)list[i];
+				this.shutdownTasks.remove(task);
+				task.performShutdownTask();
+			}
+		}
 		EngineConcurrency.getInstance().shutdown(10000);
 	}
 
@@ -205,6 +229,44 @@ public final class Encog {
 	 */
 	public Collection<EncogPluginBase> getPlugins() {
 		return this.plugins;
+	}
+	
+	/**
+	 * @return True, if running on OSX.
+	 */
+	public static boolean isOSX() {
+	    String osName = System.getProperty("os.name");
+	    return osName.contains("OS X");
+	}
+
+	/**
+	 * @return the randomFactory
+	 */
+	public RandomFactory getRandomFactory() {
+		return randomFactory;
+	}
+
+	/**
+	 * @param randomFactory the randomFactory to set
+	 */
+	public void setRandomFactory(RandomFactory randomFactory) {
+		this.randomFactory = randomFactory;
+	}
+	
+	/**
+	 * Add a shutdown task.
+	 * @param task The shutdown task.
+	 */
+	public void addShutdownTask(EncogShutdownTask task) {
+		this.shutdownTasks.add(task);
+	}
+	
+	/**
+	 * Remove a shutdown task.
+	 * @param task The shutdown task.
+	 */
+	public void removeShutdownTask(EncogShutdownTask task) {
+		this.shutdownTasks.remove(task);
 	}
 	
 	

@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,15 +45,6 @@ import org.encog.util.obj.ActivationUtil;
  */
 public class ActivationGaussian implements ActivationFunction {
 
-	/**
-	 * The offset to the parameter that holds the width.
-	 */
-	public static final int PARAM_GAUSSIAN_CENTER = 0;
-
-	/**
-	 * The offset to the parameter that holds the width.
-	 */
-	public static final int PARAM_GAUSSIAN_WIDTH = 1;
 
 	/**
 	 * The parameters.
@@ -65,25 +56,8 @@ public class ActivationGaussian implements ActivationFunction {
 	 */
 	private static final long serialVersionUID = -7166136514935838114L;
 
-	/**
-	 * Create a gaussian activation function.
-	 * 
-	 * @param center
-	 *            The center of the curve.
-	 * @param width
-	 *            The width of the curve.
-	 */
-	public ActivationGaussian(final double center,
-			final double width) {
-		this.params = new double[2];
-		this.params[ActivationGaussian.PARAM_GAUSSIAN_CENTER] = center;
-		this.params[ActivationGaussian.PARAM_GAUSSIAN_WIDTH] = width;
-	}
-
 	public ActivationGaussian() {
-		this.params = new double[2];
-		this.params[0] = 0.1;
-		this.params[0] = 0.1;
+		this.params = new double[0];
 	}
 
 	/**
@@ -91,22 +65,7 @@ public class ActivationGaussian implements ActivationFunction {
 	 */
 	@Override
 	public final ActivationFunction clone() {
-		return new ActivationGaussian(this.getCenter(), 
-				this.getWidth());
-	}
-
-	/**
-	 * @return The width of the function.
-	 */
-	public final double getWidth() {
-		return this.getParams()[ActivationGaussian.PARAM_GAUSSIAN_WIDTH];
-	}
-
-	/**
-	 * @return The center of the function.
-	 */
-	public final double getCenter() {
-		return this.getParams()[ActivationGaussian.PARAM_GAUSSIAN_CENTER];
+		return new ActivationGaussian();
 	}
 
 	/**
@@ -124,9 +83,7 @@ public class ActivationGaussian implements ActivationFunction {
 			final int size) {
 
 		for (int i = start; i < start + size; i++) {
-
-			double d = (x[i] - params[0]) * Math.sqrt(params[1]) * 4.0;
-			x[i] = BoundMath.exp(-(d * d));
+			x[i] = BoundMath.exp(-Math.pow(2.5*x[i], 2.0));
 		}
 
 	}
@@ -136,9 +93,7 @@ public class ActivationGaussian implements ActivationFunction {
 	 */
 	@Override
 	public final double derivativeFunction(final double b, final double a) {
-		return -(Math.exp(-(Math.pow(
-				((b - params[0]) * Math.sqrt(params[1]) * 4), 2))) * (2 * (Math
-				.sqrt(params[1]) * 4 * ((b - params[0]) * Math.sqrt(params[1]) * 4))));
+		return Math.exp( Math.pow(2.5 * b,2.0) * 12.5 * b);
 	}
 
 	/**
@@ -146,7 +101,7 @@ public class ActivationGaussian implements ActivationFunction {
 	 */
 	@Override
 	public final String[] getParamNames() {
-		final String[] result = { "center", "width" };
+		final String[] result = {  };
 		return result;
 	}
 

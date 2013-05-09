@@ -1,15 +1,15 @@
+org.encog.ml.prg.train.PrgPopulation
 org.encog.neural.pnn.BasicPNN
 org.encog.ml.hmm.HiddenMarkovModel
 org.encog.neural.cpn.CPN
 org.encog.neural.neat.NEATPopulation
-org.encog.ml.genetic.species.BasicSpecies
+org.encog.ml.ea.species.BasicSpecies
 org.encog.ml.bayesian.BayesianNetwork
 org.encog.neural.rbf.RBFNetwork
 org.encog.ml.svm.SVM
 org.encog.neural.neat.training.NEATLinkGene
 org.encog.neural.neat.training.NEATNeuronGene
 org.encog.neural.neat.training.NEATGenome
-org.encog.ml.genetic.population.BasicPopulation
 org.encog.neural.neat.NEATNetwork
 org.encog.neural.som.SOM
 org.encog.neural.bam.BAM

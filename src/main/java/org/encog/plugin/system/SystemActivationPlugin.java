@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import org.encog.engine.network.activation.ActivationRamp;
 import org.encog.engine.network.activation.ActivationSIN;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationSoftMax;
+import org.encog.engine.network.activation.ActivationSteepenedSigmoid;
 import org.encog.engine.network.activation.ActivationStep;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.ml.MLMethod;
@@ -115,6 +116,10 @@ public class SystemActivationPlugin implements EncogPluginService1 {
 
 		if (name.equalsIgnoreCase(MLActivationFactory.AF_TANH)) {
 			return new ActivationTANH();
+		}
+		
+		if( name.equalsIgnoreCase(MLActivationFactory.AF_SSIGMOID)) {
+			return new ActivationSteepenedSigmoid();
 		}
 
 		return null;

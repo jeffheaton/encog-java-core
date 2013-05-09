@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.util.normalize.input.InputField;
+import org.encog.util.normalize.input.InputFieldCSVText;
 import org.encog.util.normalize.output.BasicOutputField;
 
 /**
@@ -73,6 +74,22 @@ public class OutputOneOf extends BasicOutputField {
 	public OutputOneOf(final double trueValue, final double falseValue) {
 		this.trueValue = trueValue;
 		this.falseValue = falseValue;
+	}
+	
+	/**
+	 * Base the field on a csv text field.
+	 * @param csv The field.
+	 * @param trueValue
+	 *            The true value.
+	 * @param falseValue
+	 *            The false value.
+	 */
+	public OutputOneOf(InputFieldCSVText csv, final double trueValue, final double falseValue) {
+		this.trueValue = trueValue;
+		this.falseValue = falseValue;
+		for(String s: csv.getMappings().keySet() ) {
+			addItem(csv,csv.getMappings().get(s));
+		}
 	}
 
 	/**

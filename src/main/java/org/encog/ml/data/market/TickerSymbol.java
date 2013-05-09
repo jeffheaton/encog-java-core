@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,29 +71,28 @@ public class TickerSymbol {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean equals(final Object o) {
+	public boolean equals(final Object other) {
 
-		if (!(o instanceof TickerSymbol)) {
-			return false;
-		}
-
-		TickerSymbol other = (TickerSymbol) o;
+	    if (other == null) return false;
+	    if (other == this) return true;
+	    if (!(other instanceof TickerSymbol))return false;
+	    TickerSymbol otherMyClass = (TickerSymbol)other;		
 
 		// if the symbols do not even match then they are not equal
-		if (!other.getSymbol().equals(getSymbol())) {
+		if (!otherMyClass.getSymbol().equals(getSymbol())) {
 			return false;
 		}
 
 		// if the symbols match then we need to compare the exchanges
-		if ((other.getExchange() == null) && (other.getExchange() == null)) {
+		if ((otherMyClass.getExchange() == null) && (otherMyClass.getExchange() == null)) {
 			return true;
 		}
 
-		if ((other.getExchange() == null) || (other.getExchange() == null)) {
+		if ((otherMyClass.getExchange() == null) || (otherMyClass.getExchange() == null)) {
 			return false;
 		}
 
-		return other.getExchange().equals(getExchange());
+		return otherMyClass.getExchange().equals(getExchange());
 	}
 
 	/**

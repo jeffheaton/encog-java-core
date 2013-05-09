@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,8 @@ import junit.framework.Assert;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.mathutil.randomize.ConsistentRandomizer;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
+import org.encog.ml.MLError;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.freeform.FreeformLayer;
 import org.encog.neural.freeform.FreeformNetwork;
@@ -66,7 +68,7 @@ public class NetworkUtil {
         return network;
     }
 	
-	public static void testTraining(MLTrain train, double requiredImprove)
+	public static void testTraining(MLDataSet dataSet, MLTrain train, double requiredImprove)
 	{
 		train.iteration();
 		double error1 = train.getError();
@@ -75,6 +77,13 @@ public class NetworkUtil {
 			train.iteration();
 		
 		double error2 = train.getError();
+		
+		if( train.getMethod() instanceof MLError ) {
+			double error3 = ((MLError)train.getMethod()).calculateError(dataSet);
+			double improve = (error1-error3)/error1;
+			Assert.assertTrue("Improve rate too low for " + train.getClass().getSimpleName() + 
+					",Improve="+improve+",Needed="+requiredImprove, improve>=requiredImprove);
+		}
 		
 		double improve = (error1-error2)/error1;
 		Assert.assertTrue("Improve rate too low for " + train.getClass().getSimpleName() + 

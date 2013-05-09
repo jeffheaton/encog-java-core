@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,23 +23,65 @@
  */
 package org.encog.ml.genetic.mutate;
 
-import org.encog.ml.genetic.genes.Gene;
-import org.encog.ml.genetic.genome.Chromosome;
+import java.util.Random;
+
+import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.opp.EvolutionaryOperator;
+import org.encog.ml.ea.train.EvolutionaryAlgorithm;
+import org.encog.ml.genetic.genome.ArrayGenome;
 
 /**
- * A simple mutation where genes are shuffled.
- * This mutation will not produce repeated genes.
+ * A simple mutation where genes are shuffled. This mutation will not produce
+ * repeated genes.
  */
-public class MutateShuffle implements Mutate {
+public class MutateShuffle implements EvolutionaryOperator {
 
 	/**
-	 * Perform a shuffle mutation.
-	 * @param chromosome The chromosome to mutate.
+	 * The owner.
 	 */
-	public void performMutation(final Chromosome chromosome) {
-		final int length = chromosome.getGenes().size();
-		int iswap1 = (int) (Math.random() * length);
-		int iswap2 = (int) (Math.random() * length);
+	private EvolutionaryAlgorithm owner;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void init(final EvolutionaryAlgorithm theOwner) {
+		this.owner = theOwner;
+	}
+
+	/**
+	 * @return The number of offspring produced, which is 1 for this mutation.
+	 */
+	@Override
+	public int offspringProduced() {
+		return 1;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int parentsNeeded() {
+		return 1;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void performOperation(final Random rnd, final Genome[] parents,
+			final int parentIndex, final Genome[] offspring,
+			final int offspringIndex) {
+		final ArrayGenome parent = (ArrayGenome) parents[parentIndex];
+		offspring[offspringIndex] = this.owner.getPopulation()
+				.getGenomeFactory().factor();
+		final ArrayGenome child = (ArrayGenome) offspring[offspringIndex];
+
+		child.copy(parent);
+
+		final int length = parent.size();
+		int iswap1 = (int) (rnd.nextDouble() * length);
+		int iswap2 = (int) (rnd.nextDouble() * length);
 
 		// can't be equal
 		if (iswap1 == iswap2) {
@@ -60,16 +102,7 @@ public class MutateShuffle implements Mutate {
 			iswap2 = temp;
 		}
 
-		final Gene gene1 = chromosome.getGenes().get(iswap1);
-		final Gene gene2 = chromosome.getGenes().get(iswap2);
-
-		// remove the two genes
-		chromosome.getGenes().remove(gene1);
-		chromosome.getGenes().remove(gene2);
-
-		// insert them back in, reverse order
-		chromosome.getGenes().add(iswap1, gene2);
-		chromosome.getGenes().add(iswap2, gene1);
+		child.swap(iswap1, iswap2);
 	}
 
 }

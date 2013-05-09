@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -187,7 +187,10 @@ public class BasicNetwork extends BasicML implements ContainsFlat, MLContext,
 	}
 
 	/**
-	 * Calculate the error for this neural network.
+	 * Calculate the error for this neural network.  We always calculate the error
+	 * using the "regression" calculator.  Neural networks don't directly support
+	 * classification, rather they use one-of-encoding or similar.  So just using
+	 * the regression calculator gives a good approximation.
 	 * 
 	 * @param data
 	 *            The training set.
@@ -375,8 +378,14 @@ public class BasicNetwork extends BasicML implements ContainsFlat, MLContext,
 	 *            The other neural network.
 	 * @return True if the two networks are equal.
 	 */
-	public boolean equals(final BasicNetwork other) {
-		return equals(other, Encog.DEFAULT_PRECISION);
+	@Override
+	public boolean equals(final Object other) {
+	    if (other == null) return false;
+	    if (other == this) return true;
+	    if (!(other instanceof BasicNetwork))return false;
+	    BasicNetwork otherMyClass = (BasicNetwork)other;
+	    
+		return equals(otherMyClass, Encog.DEFAULT_PRECISION);
 	}
 
 	/**
@@ -567,13 +576,15 @@ public class BasicNetwork extends BasicML implements ContainsFlat, MLContext,
 	 */
 	public boolean isConnected(final int layer, final int fromNeuron,
 			final int toNeuron) {
-		/*
-		 * if (!this.structure.isConnectionLimited()) { return true; } final
-		 * double value = synapse.getMatrix().get(fromNeuron, toNeuron);
-		 * 
-		 * return (Math.abs(value) > this.structure.getConnectionLimit());
-		 */
-		return false;
+		
+		 if (!this.structure.isConnectionLimited()) 
+		 { 
+			 return true; 
+		 } 
+		 
+		 final double value = this.getWeight(layer, fromNeuron, toNeuron);
+		  
+		 return (Math.abs(value) > this.structure.getConnectionLimit());
 	}
 
 	/**

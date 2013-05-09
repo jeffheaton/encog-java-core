@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.1 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2012 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ import java.util.Map;
 
 import org.encog.parse.PeekableInputStream;
 import org.encog.parse.tags.Tag;
-import org.encog.parse.tags.TagConst;
 import org.encog.parse.tags.Tag.Type;
+import org.encog.parse.tags.TagConst;
 
 /**
  * Base class used to read tags. This base class is used by both the XML and
@@ -92,17 +92,19 @@ public class ReadTags {
 	 */
 	public ReadTags(final InputStream is) {
 		this.source = new PeekableInputStream(is);
-
-		if (ReadTags.charMap == null) {
-			ReadTags.charMap = new HashMap<String, Character>();
-			ReadTags.charMap.put("nbsp", ' ');
-			ReadTags.charMap.put("lt", '<');
-			ReadTags.charMap.put("gt", '>');
-			ReadTags.charMap.put("amp", '&');
-			ReadTags.charMap.put("quot", '\"');
-			ReadTags.charMap.put("bull", (char) ReadTags.CHAR_BULLET);
-			ReadTags.charMap.put("trade", (char) ReadTags.CHAR_TRADEMARK);
-		}
+		
+		synchronized(ReadTags.class) {
+			if (ReadTags.charMap == null) {
+				ReadTags.charMap = new HashMap<String, Character>();
+				ReadTags.charMap.put("nbsp", ' ');
+				ReadTags.charMap.put("lt", '<');
+				ReadTags.charMap.put("gt", '>');
+				ReadTags.charMap.put("amp", '&');
+				ReadTags.charMap.put("quot", '\"');
+				ReadTags.charMap.put("bull", (char) ReadTags.CHAR_BULLET);
+				ReadTags.charMap.put("trade", (char) ReadTags.CHAR_TRADEMARK);
+			}
+		}		
 	}
 
 	/**
