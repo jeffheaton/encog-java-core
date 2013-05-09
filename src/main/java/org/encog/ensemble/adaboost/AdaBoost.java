@@ -37,7 +37,7 @@ public class AdaBoost extends Ensemble {
 	@Override
 	public void train(double targetAccuracy, double selectionError, EnsembleDataSet testset, boolean verbose) {
 		ArrayList<Double> D = new ArrayList<Double>();
-		int dss = dataSetFactory.getInputData().size();
+		int dss = dataSetFactory.getDataSourceSize();
 		for (int k = 0; k < dss; k++)
 			D.add(1.0 / (float) dss);
 		for (int i = 0; i < T; i++) {
@@ -49,14 +49,16 @@ public class AdaBoost extends Ensemble {
 				MLTrain train = trainFactory.getTraining(newML.getMl(), thisSet);
 				newML.setTraining(train);
 				newML.train(targetAccuracy,verbose);
+				double error = newML.getError(testset);
+				System.out.println(error);
 			} while (newML.getError(testset) > selectionError);
 			double newWeight = getWeightedError(newML,thisSet);
 			members.add(newML);
 			weights.add(newWeight);
-			D = updateD(newML,thisSet,D);
+			D = updateD(newML,dataSetFactory.getDataSource(),D);
 		}
 	}
-
+	
 	private double epsilon(GenericEnsembleML ml, MLDataSet dataSet) {
 		int bad = 0;
 		for (MLDataPair data: dataSet) {
@@ -69,7 +71,7 @@ public class AdaBoost extends Ensemble {
 	private ArrayList<Double> updateD(GenericEnsembleML ml, MLDataSet dataSet, ArrayList<Double> D_t) {
 		ArrayList<Double> D_tplus1 = new ArrayList<Double>();
 		double epsilon = epsilon(ml, dataSet);
-		double alpha_t = Math.log(1 - epsilon / epsilon);
+		double alpha_t = Math.log((1 - epsilon) / epsilon);
 		for (int i = 0; i < dataSet.size(); i++) {
 			double D_tplus1_i = D_t.get(i) * Math.exp(-alpha_t * va.dotProduct(dataSet.get(i).getIdeal().getData(), ml.compute(dataSet.get(i).getInput()).getData()));
 			D_tplus1.add(D_tplus1_i);

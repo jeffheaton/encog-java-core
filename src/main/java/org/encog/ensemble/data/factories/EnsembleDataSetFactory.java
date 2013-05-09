@@ -32,6 +32,14 @@ public abstract class EnsembleDataSetFactory {
 		return dataSetSize;
 	}
 	
+	public int getDataSourceSize() {
+		return this.dataSource.size();
+	}
+	
+	public MLDataSet getDataSource() {
+		return this.dataSource;
+	}
+	
 	public void setDataSetSize(int dataSetSize) {
 		this.dataSetSize = dataSetSize;
 	}
