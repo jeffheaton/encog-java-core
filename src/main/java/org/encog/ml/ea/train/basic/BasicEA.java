@@ -420,14 +420,19 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	 */
 	@Override
 	public double getError() {
+		// do we have a best genome, and does it have an error?
 		if (this.bestGenome != null) {
-			return this.bestGenome.getScore();
-		} else {
-			if (getScoreFunction().shouldMinimize()) {
-				return Double.POSITIVE_INFINITY;
-			} else {
-				return Double.NEGATIVE_INFINITY;
+			double err = this.bestGenome.getScore();
+			if( !Double.isNaN(err) ) {
+				return err;
 			}
+		} 
+		
+		// otherwise, assume the worst!
+		if (getScoreFunction().shouldMinimize()) {
+			return Double.POSITIVE_INFINITY;
+		} else {
+			return Double.NEGATIVE_INFINITY;
 		}
 	}
 
