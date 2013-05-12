@@ -27,6 +27,9 @@ import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.parse.expression.CommonRender;
 
+/**
+ * Render a common expression.
+ */
 public class RenderCommonExpression extends CommonRender {
 	private EncogProgram holder;
 

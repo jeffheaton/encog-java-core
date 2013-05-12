@@ -25,6 +25,9 @@ package org.encog.parse.expression;
 
 import org.encog.ml.prg.ProgramNode;
 
+/**
+ * Common functions for some renders.
+ */
 public class CommonRender {
 	public ExpressionNodeType determineNodeType(ProgramNode node) {
 

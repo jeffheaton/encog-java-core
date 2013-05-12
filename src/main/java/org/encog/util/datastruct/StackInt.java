@@ -25,18 +25,39 @@ package org.encog.util.datastruct;
 
 import org.encog.EncogError;
 
+/**
+ * An integer stack.
+ */
 public class StackInt {
+	/**
+	 * The stack.
+	 */
 	private int[] stack;
+	
+	/**
+	 * The head.
+	 */
 	private int head = 0;
 	
+	/**
+	 * Construct a new stack.
+	 * @param size The size of the stack.
+	 */
 	public StackInt(int size) {
 		this.stack = new int[size];
 	}
 	
+	/**
+	 * @return True, if the stack is empty.
+	 */
 	public boolean isEmpty() {
 		return this.head == 0;
 	}
 	
+	/**
+	 * Push an int onto the stack.
+	 * @param i The value to push onto the stack.
+	 */
 	public void push(int i) {
 		if( this.head==this.stack.length) {
 			throw new EncogError("Stack overflow");

@@ -47,7 +47,7 @@ import org.encog.ml.prg.expvalue.ValueType;
 public class StandardExtensions {
 
 	/**
-	 * Standard unary minus operator.
+	 * Variable support.
 	 */
 	public static ProgramExtensionTemplate EXTENSION_VAR_SUPPORT = new BasicTemplate(
 			ProgramExtensionTemplate.NO_PREC, "#var():{*}", NodeType.Leaf,

@@ -34,6 +34,9 @@ import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ValueType;
 import org.encog.util.SimpleParser;
 
+/**
+ * A basic template.
+ */
 public abstract class BasicTemplate implements ProgramExtensionTemplate {
 	/**
 	 * The serial id.

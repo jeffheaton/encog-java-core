@@ -54,7 +54,7 @@ public class ParseCommonExpression {
 	private ProgramNode rootNode;
 	private boolean unary;
 	private ProgramExtensionTemplate LEFT_PAREN = new BasicTemplate(
-			ProgramExtensionTemplate.NO_PREC, "(", NodeType.None, unary, 0) {
+			ProgramExtensionTemplate.NO_PREC, "(", NodeType.None, false, 0) {
 		@Override
 		public ExpressionValue evaluate(ProgramNode actual) {
 			return null;

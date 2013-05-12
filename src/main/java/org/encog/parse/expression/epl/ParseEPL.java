@@ -35,6 +35,9 @@ import org.encog.util.SimpleParser;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.datastruct.StackObject;
 
+/**
+ * Parse an EPL string.
+ */
 public class ParseEPL {
 	private final EncogProgram holder;
 	private SimpleParser parser;

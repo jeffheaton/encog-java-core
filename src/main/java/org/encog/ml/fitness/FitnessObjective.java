@@ -27,10 +27,30 @@ import java.io.Serializable;
 
 import org.encog.ml.CalculateScore;
 
+/**
+ * A fitness objective.
+ */
 public class FitnessObjective implements Serializable {
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * The weight.
+	 */
 	private final double weight;
+	
+	/**
+	 * The score function.
+	 */
 	private final CalculateScore score;
 	
+	/**
+	 * Construct the fitness objective.
+	 * @param weight The weight.
+	 * @param score The score.
+	 */
 	public FitnessObjective(double weight, CalculateScore score) {
 		super();
 		this.weight = weight;
@@ -48,7 +68,4 @@ public class FitnessObjective implements Serializable {
 	public CalculateScore getScore() {
 		return score;
 	}
-	
-	
-	
 }
