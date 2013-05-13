@@ -115,4 +115,9 @@ public interface Population extends Serializable, MLMethod {
 	 * @return The size of the population.
 	 */
 	int size();
+	
+	/**
+	 * Purge any invalid genomes.
+	 */
+	void purgeInvalidGenomes();
 }

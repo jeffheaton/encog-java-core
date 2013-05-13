@@ -648,6 +648,9 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 		}
 
 		this.speciation.performSpeciation(this.newPopulation);
+		
+        // purge invalid genomes
+        this.population.purgeInvalidGenomes();
 	}
 
 	/**
@@ -711,7 +714,9 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 		// speciate
 		final List<Genome> genomes = getPopulation().flatten();
 		this.speciation.performSpeciation(genomes);
-
+		
+		// purge invalid genomes
+        this.population.purgeInvalidGenomes();
 	}
 
 	/**
