@@ -235,4 +235,41 @@ public class BasicPopulation extends BasicML implements Population,
 
 	}
 
+	/**
+	 * Purge any invalid genomes.
+	 */
+	public void purgeInvalidGenomes() {
+		// remove any invalid genomes
+		int speciesNum = 0;
+		while (speciesNum < getSpecies().size()) {
+			Species species = getSpecies().get(speciesNum);
+
+			int genomeNum = 0;
+			while (genomeNum < species.getMembers().size()) {
+				Genome genome = species.getMembers().get(genomeNum);
+				if (Double.isInfinite(genome.getScore())
+						|| Double.isInfinite(genome.getAdjustedScore())
+						|| Double.isNaN(genome.getScore())
+						|| Double.isNaN(genome.getAdjustedScore())) {
+					species.getMembers().remove(genome);
+				} else {
+					genomeNum++;
+				}
+			}
+			
+			// is the species now empty?
+			if (species.getMembers().size() == 0) {
+				getSpecies().remove(species);
+			} else {
+				// new leader needed?
+				if( !species.getMembers().contains(species.getLeader()) ) {
+					species.setLeader(species.getMembers().get(0));
+					species.setBestScore(species.getLeader().getScore());
+				}
+				
+				// onto the next one!
+				speciesNum++;
+			}
+		}
+	}
 }
