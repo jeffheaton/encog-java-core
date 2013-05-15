@@ -26,16 +26,22 @@ package org.encog.app.analyst.script.process;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Script holder for Encog Analyst preprocessing.
+ */
 public class AnalystProcess {
-	private List<ProcessField> fields = new ArrayList<ProcessField>();
+	
+	/**
+	 * The fields.
+	 */
+	private final List<ProcessField> fields = new ArrayList<ProcessField>();
 
+	/**
+	 * The fields.
+	 * @return
+	 */
 	public List<ProcessField> getFields() {
 		return fields;
 	}
-
-	public void setFields(List<ProcessField> fields) {
-		this.fields = fields;
-	}
-	
 	
 }

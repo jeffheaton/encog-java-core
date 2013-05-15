@@ -83,7 +83,7 @@ public class SystemMethodsPlugin implements EncogPluginService1 {
 	private final NEATFactory neatFactory = new NEATFactory();
 	
 	/**
-	 * A factory used to create NEAT populations.
+	 * A factory used to create EPL populations.
 	 */
 	private final EPLFactory eplFactory = new EPLFactory();
 

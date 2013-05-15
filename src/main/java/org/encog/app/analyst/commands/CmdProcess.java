@@ -33,7 +33,7 @@ import org.encog.util.csv.CSVFormat;
 import org.encog.util.logging.EncogLogging;
 
 /**
- * This command is used to a CSV file.
+ * This command is used to preprocess a CSV file.
  * 
  */
 public class CmdProcess extends Cmd {
