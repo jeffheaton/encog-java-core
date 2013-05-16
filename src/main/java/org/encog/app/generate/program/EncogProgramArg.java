@@ -24,7 +24,7 @@
 package org.encog.app.generate.program;
 
 /**
- * A function arguemnt for Encog created code.
+ * A function argument for Encog created code.
  * 
  */
 public class EncogProgramArg {
