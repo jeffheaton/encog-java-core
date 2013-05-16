@@ -48,9 +48,6 @@ import org.encog.util.logging.EncogLogging;
 
 /**
  * Provides a basic implementation of a template generator.
- * 
- * @author jheaton
- * 
  */
 public abstract class AbstractTemplateGenerator implements TemplateGenerator {
 

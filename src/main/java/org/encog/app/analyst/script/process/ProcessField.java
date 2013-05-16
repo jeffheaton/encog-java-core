@@ -23,20 +23,40 @@
  */
 package org.encog.app.analyst.script.process;
 
+/**
+ * Holds one field for Encog analyst preprocess.
+ */
 public class ProcessField {
+	/**
+	 * The name of this field.
+	 */
 	private final String name;
+	
+	/**
+	 * The command for this field.
+	 */
 	private final String command;
 	
+	/**
+	 * Construct this field.
+	 * @param name The name of this field.
+	 * @param command The command for this field.
+	 */
 	public ProcessField(String name, String command) {
-		super();
 		this.name = name;
 		this.command = command;
 	}
 
+	/**
+	 * @return The name of this field.
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @return The command for this field.
+	 */
 	public String getCommand() {
 		return command;
 	}
