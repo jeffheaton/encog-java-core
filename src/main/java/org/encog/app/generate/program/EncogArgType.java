@@ -24,7 +24,7 @@
 package org.encog.app.generate.program;
 
 /**
- * The type of arguemnt.
+ * The type of argument.
  */
 public enum EncogArgType {
 	/**
