@@ -620,9 +620,6 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 
 		// validate, if requested
 		if (isValidationMode()) {
-			final int currentPopSize = this.newPopulation.size();
-			final int targetPopSize = getPopulation().getPopulationSize();
-
 			if (this.oldBestGenome != null
 					&& !this.newPopulation.contains(this.oldBestGenome)) {
 				throw new EncogError(
