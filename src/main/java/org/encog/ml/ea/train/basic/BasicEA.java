@@ -298,9 +298,6 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 				}
 				return true;
 			} else {
-				if (isValidationMode()) {
-					throw new EncogError("Population overflow");
-				}
 				return false;
 			}
 		}
@@ -625,10 +622,6 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 		if (isValidationMode()) {
 			final int currentPopSize = this.newPopulation.size();
 			final int targetPopSize = getPopulation().getPopulationSize();
-			if (currentPopSize != targetPopSize) {
-				throw new EncogError("Population size of " + currentPopSize
-						+ " is outside of the target size of " + targetPopSize);
-			}
 
 			if (this.oldBestGenome != null
 					&& !this.newPopulation.contains(this.oldBestGenome)) {
