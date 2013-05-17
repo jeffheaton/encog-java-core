@@ -44,6 +44,7 @@ public class AdaBoost extends Ensemble {
 	private int T;
 	private VectorAlgebra va;
 	private ArrayList<Double> weights;
+	private ArrayList<Double> D;
 
 	public AdaBoost(int iterationsT, int dataSetSize, EnsembleMLMethodFactory mlFactory, EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator) {
 		this.dataSetFactory = new ResamplingDataSetFactory(dataSetSize);
@@ -54,28 +55,43 @@ public class AdaBoost extends Ensemble {
 		this.members = new ArrayList<EnsembleML>();
 		this.trainFactory = trainFactory;
 		this.aggregator = aggregator;
+		this.D = new ArrayList<Double>();
 	}
 	
+	private void createMember(double targetAccuracy, double selectionError, EnsembleDataSet testset, boolean verbose) {
+		dataSetFactory.setSignificance(D);
+		MLDataSet thisSet = dataSetFactory.getNewDataSet();
+		GenericEnsembleML newML = new GenericEnsembleML(mlFactory.createML(dataSetFactory.getInputData().getInputSize(), dataSetFactory.getInputData().getIdealSize()),mlFactory.getLabel());
+		do {
+			mlFactory.reInit(newML.getMl());
+			MLTrain train = trainFactory.getTraining(newML.getMl(), thisSet);
+			newML.setTraining(train);
+			newML.train(targetAccuracy,verbose);
+		} while (newML.getError(testset) > selectionError);
+		double newWeight = getWeightedError(newML,thisSet);
+		members.add(newML);
+		weights.add(newWeight);
+		D = updateD(newML,dataSetFactory.getDataSource(),D);		
+	}
+	
+	public void resize(int newSize, double targetAccuracy, double selectionError, EnsembleDataSet testset, boolean verbose) {
+		if (newSize > T) {
+			for (int i = T; i < newSize; i++) {
+				createMember(targetAccuracy, selectionError, testset, verbose);
+			}
+		}
+		else if (newSize < T) {
+			for (int i = T; i > newSize; i--) {
+				members.remove(i);
+			}
+		}
+		T = newSize;
+	}
+
 	@Override
 	public void train(double targetAccuracy, double selectionError, EnsembleDataSet testset, boolean verbose) {
-		ArrayList<Double> D = new ArrayList<Double>();
-		int dss = dataSetFactory.getDataSourceSize();
-		for (int k = 0; k < dss; k++)
-			D.add(1.0 / (float) dss);
 		for (int i = 0; i < T; i++) {
-			dataSetFactory.setSignificance(D);
-			MLDataSet thisSet = dataSetFactory.getNewDataSet();
-			GenericEnsembleML newML = new GenericEnsembleML(mlFactory.createML(dataSetFactory.getInputData().getInputSize(), dataSetFactory.getInputData().getIdealSize()),mlFactory.getLabel());
-			do {
-				mlFactory.reInit(newML.getMl());
-				MLTrain train = trainFactory.getTraining(newML.getMl(), thisSet);
-				newML.setTraining(train);
-				newML.train(targetAccuracy,verbose);
-			} while (newML.getError(testset) > selectionError);
-			double newWeight = getWeightedError(newML,thisSet);
-			members.add(newML);
-			weights.add(newWeight);
-			D = updateD(newML,dataSetFactory.getDataSource(),D);
+			createMember(targetAccuracy, selectionError, testset, verbose);
 		}
 	}
 
@@ -101,7 +117,9 @@ public class AdaBoost extends Ensemble {
 
 	@Override
 	public void initMembers() {
-		//This cannot do anything, as member generation is strictly linked to training!
+		int dss = dataSetFactory.getDataSourceSize();
+		for (int k = 0; k < dss; k++)
+			D.add(1.0 / (float) dss);	
 	}
 
 	private double getWeightedError(GenericEnsembleML newML, MLDataSet dataSet) {
