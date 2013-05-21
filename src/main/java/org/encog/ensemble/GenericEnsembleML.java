@@ -55,8 +55,8 @@ public class GenericEnsembleML implements EnsembleML {
 	@Override
 	public void train(double targetError, boolean verbose) {
 		double error = 0;
-		double previouserror = 0;
-		double errordelta = 0;
+		double previouserror = 1;
+		double errordelta = 1;
 		int iteration = 0;
 		do {
 			trainer.iteration();
@@ -71,9 +71,9 @@ public class GenericEnsembleML implements EnsembleML {
 			if (verbose) System.out.println(iteration + " " + error);
 		} while ((error > targetError) &&
 				 trainer.canContinue() &&
-				 errordelta > -0.1 &&
+				 //errordelta / previouserror < 2 &&
 				 //make this a parameter
-				 iteration < 2000);
+				 iteration < 1000);
 		trainer.finishTraining();
 	}
 

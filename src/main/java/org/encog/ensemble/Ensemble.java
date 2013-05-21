@@ -126,6 +126,22 @@ public abstract class Ensemble {
 		} while (current.getError(selectionSet) > selectionError);
 	}
 	
+	public void retrainAggregator() {
+		EnsembleDataSet aggTrainingSet = new EnsembleDataSet(members.size() * aggregatorDataSet.getIdealSize(),aggregatorDataSet.getIdealSize());
+		for (MLDataPair trainingInput:aggregatorDataSet) {
+			BasicMLData trainingInstance = new BasicMLData(members.size() * aggregatorDataSet.getIdealSize());
+			int index = 0;
+			for(EnsembleML member:members){
+				for(double val:member.compute(trainingInput.getInput()).getData()) {
+					trainingInstance.add(index++, val);
+				}
+			}
+			aggTrainingSet.add(trainingInstance,trainingInput.getIdeal());
+		}
+		aggregator.setTrainingSet(aggTrainingSet);
+		aggregator.train();
+	}
+	
 	/**
 	 * Train the ensemble to a target accuracy
 	 * @param targetAccuracy
@@ -140,19 +156,7 @@ public abstract class Ensemble {
 			trainMember(current, targetError, selectionError, selectionSet, verbose);
 		}
 		if(aggregator.needsTraining()) {
-			EnsembleDataSet aggTrainingSet = new EnsembleDataSet(members.size() * aggregatorDataSet.getIdealSize(),aggregatorDataSet.getIdealSize());
-			for (MLDataPair trainingInput:aggregatorDataSet) {
-				BasicMLData trainingInstance = new BasicMLData(members.size() * aggregatorDataSet.getIdealSize());
-				int index = 0;
-				for(EnsembleML member:members){
-					for(double val:member.compute(trainingInput.getInput()).getData()) {
-						trainingInstance.add(index++, val);
-					}
-				}
-				aggTrainingSet.add(trainingInstance,trainingInput.getIdeal());
-			}
-			aggregator.setTrainingSet(aggTrainingSet);
-			aggregator.train();
+			retrainAggregator();
 		}
 	}
 

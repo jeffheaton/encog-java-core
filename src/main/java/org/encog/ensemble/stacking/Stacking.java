@@ -60,7 +60,7 @@ public class Stacking extends Ensemble {
 	public ProblemType getProblemType() {
 		return EnsembleTypes.ProblemType.CLASSIFICATION;
 	}
-
+	
 	@Override
 	public EnsembleML getMember(int memberNumber) {
 		return members.get(memberNumber);
