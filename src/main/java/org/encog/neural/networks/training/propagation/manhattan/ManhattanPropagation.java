@@ -147,7 +147,7 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 			final double[] lastGradient, final int index, double dropoutRate) {
 		
 		Random r = new Random();
-		if (r.nextDouble() > dropoutRate) {
+		if (r.nextDouble() < dropoutRate) {
 			return 0;
 		};
 		

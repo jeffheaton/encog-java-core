@@ -263,7 +263,7 @@ public class ResilientPropagation extends Propagation {
 		double weightChange = 0;
 		
 		Random r = new Random();
-		if (r.nextDouble() > dropoutRate) {
+		if (r.nextDouble() < dropoutRate) {
 			return 0;
 		};
 		
