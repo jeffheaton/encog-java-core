@@ -23,6 +23,8 @@
  */
 package org.encog.neural.networks.training.propagation.scg;
 
+import java.util.Random;
+
 import org.encog.mathutil.BoundNumbers;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.ContainsFlat;
@@ -370,7 +372,7 @@ public class ScaledConjugateGradient extends Propagation {
 	 */
 	@Override
 	public double updateWeight(final double[] gradients,
-			final double[] lastGradient, final int index) {
+			final double[] lastGradient, final int index, double dropoutRate) {
 		return 0;
 	}
 

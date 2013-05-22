@@ -23,6 +23,8 @@
  */
 package org.encog.neural.networks.training.propagation.quick;
 
+import java.util.Random;
+
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.LearningRate;
@@ -259,8 +261,13 @@ public class QuickPropagation extends Propagation implements
 	 */
 	@Override
 	public double updateWeight(final double[] gradients,
-			final double[] lastGradient, final int index) {
-
+			final double[] lastGradient, final int index, double dropoutRate) {
+		
+		Random r = new Random();
+		if (r.nextDouble() > dropoutRate) {
+			return 0;
+		};
+		
 		final double w = this.network.getFlat().getWeights()[index];
 		final double d = this.lastDelta[index];
 		final double s = -this.gradients[index] + this.decay * w;

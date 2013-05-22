@@ -119,6 +119,16 @@ public abstract class Propagation extends BasicTraining implements Train,
 	 * Should we fix flat spots.
 	 */
 	private boolean shouldFixFlatSpot;
+	
+	/**
+	 * The Dropout rate, between 0 and 1
+	 */
+	private double dropoutRate = 0;
+	
+	/**
+	 * Finalized training
+	 */
+	private boolean finalized = false;
 
 	/**
 	 * The error function.
@@ -149,11 +159,35 @@ public abstract class Propagation extends BasicTraining implements Train,
 	}
 
 	/**
+	 * Change the dropout rate
+	 * @param rate
+	 * 			The dropout rate.
+	 */
+	public void setDroupoutRate(double rate) {
+		this.dropoutRate = rate;
+	}
+	
+	/**
+	 * @return the current dropout rate
+	 * 
+	 */
+	public double getDropoutRate() {
+		return this.dropoutRate;
+	}
+	
+	/**
 	 * Should be called after training has completed and the iteration method
 	 * will not be called any further.
 	 */
 	@Override
 	public void finishTraining() {
+		if(!this.finalized) {
+			final double[] weights = this.currentFlatNetwork.getWeights();
+			for (int i = 0; i < weights.length; i++) {
+				weights[i] *= (1 - this.dropoutRate);
+			}
+			this.finalized = true;
+		}
 		super.finishTraining();
 	}
 
@@ -400,7 +434,7 @@ public abstract class Propagation extends BasicTraining implements Train,
 	protected void learn() {
 		final double[] weights = this.currentFlatNetwork.getWeights();
 		for (int i = 0; i < this.gradients.length; i++) {
-			weights[i] += updateWeight(this.gradients, this.lastGradient, i);
+			weights[i] += updateWeight(this.gradients, this.lastGradient, i, this.dropoutRate);
 			this.gradients[i] = 0;
 		}
 	}
@@ -418,7 +452,7 @@ public abstract class Propagation extends BasicTraining implements Train,
 			if (Math.abs(weights[i]) < limit) {
 				weights[i] = 0;
 			} else {
-				weights[i] += updateWeight(this.gradients, this.lastGradient, i);
+				weights[i] += updateWeight(this.gradients, this.lastGradient, i, this.dropoutRate);
 			}
 			this.gradients[i] = 0;
 		}
@@ -439,7 +473,7 @@ public abstract class Propagation extends BasicTraining implements Train,
 	 * @return The update value.
 	 */
 	public abstract double updateWeight(double[] gradients,
-			double[] lastGradient, int index);
+			double[] lastGradient, int index, double dropoutRate);
 
 	/**
 	 * @return the lastGradient

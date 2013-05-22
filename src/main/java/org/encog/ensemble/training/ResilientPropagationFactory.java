@@ -32,14 +32,22 @@ import org.encog.neural.networks.training.propagation.resilient.ResilientPropaga
 
 public class ResilientPropagationFactory implements EnsembleTrainFactory {
 
+	double dropoutRate = 0.0;
+	
 	@Override
 	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData) {
-		return (MLTrain) new ResilientPropagation((BasicNetwork) mlMethod, trainingData);
+		ResilientPropagation rp = new ResilientPropagation((BasicNetwork) mlMethod, trainingData);
+		rp.setDroupoutRate(dropoutRate);
+		return (MLTrain) rp;
 	}
 
 	@Override
 	public String getLabel() {
 		return "resprop";
+	}
+
+	public void setDropoutRate(double rate) {
+		this.dropoutRate = rate;
 	}
 
 }
