@@ -52,4 +52,10 @@ public class ManhattanPropagationFactory implements EnsembleTrainFactory {
 		return "resprop";
 	}
 
+	@Override
+	public void setDropoutRate(double rate) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

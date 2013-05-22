@@ -42,4 +42,10 @@ public class ScaledConjugateGradientFactory implements EnsembleTrainFactory {
 		return "scg";
 	}
 
+	@Override
+	public void setDropoutRate(double rate) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

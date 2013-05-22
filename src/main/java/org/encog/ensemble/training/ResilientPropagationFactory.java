@@ -46,6 +46,7 @@ public class ResilientPropagationFactory implements EnsembleTrainFactory {
 		return "resprop";
 	}
 
+	@Override
 	public void setDropoutRate(double rate) {
 		this.dropoutRate = rate;
 	}

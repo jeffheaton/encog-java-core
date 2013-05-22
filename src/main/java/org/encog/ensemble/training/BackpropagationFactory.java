@@ -41,4 +41,10 @@ public class BackpropagationFactory implements EnsembleTrainFactory {
 		return "backprop";
 	}
 
+	@Override
+	public void setDropoutRate(double rate) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
