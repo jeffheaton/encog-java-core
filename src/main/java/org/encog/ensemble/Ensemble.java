@@ -50,8 +50,17 @@ public abstract class Ensemble {
 
 	}
 
+	public class TrainingAborted extends Exception {
+
+		/**
+		 * This means we tried training this ensemble and failed too many times in a row
+		 */
+		private static final long serialVersionUID = -5074472788684621859L;
+		
+	}
+	
 	/**
-	 * Initialise ensemble components
+	 * Initialize ensemble components
 	 */
 	abstract public void initMembers();
 	
@@ -118,11 +127,16 @@ public abstract class Ensemble {
 		} while (current.getError(selectionSet) > selectionError);
 	}
 
-	public void trainMember(EnsembleML current, double targetError, double selectionError, EnsembleDataSet selectionSet, boolean verbose) {
+	public void trainMember(EnsembleML current, double targetError, double selectionError, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
+		int attempt = 0;
 		do {
 			mlFactory.reInit(current.getMl());
 			current.train(targetError, verbose);
 			if (verbose) {System.out.println("test MSE: " + current.getError(selectionSet));};
+			attempt++;
+			if (attempt > 2000) {
+				throw new TrainingAborted();
+			}
 		} while (current.getError(selectionSet) > selectionError);
 	}
 	
@@ -148,8 +162,9 @@ public abstract class Ensemble {
 	 * @param verbose
 	 * @param selectionSet 
 	 * @return
+	 * @throws TrainingAborted 
 	 */
-	public void train(double targetError, double selectionError, EnsembleDataSet selectionSet, boolean verbose) {
+	public void train(double targetError, double selectionError, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
 		
 		for (EnsembleML current : members)
 		{
@@ -165,8 +180,9 @@ public abstract class Ensemble {
 	 * @param targetError The target error.
 	 * @param selectionError The selection error.
 	 * @param testset The test set.
+	 * @throws TraningAborted 
 	 */
-	public void train(double targetError, double selectionError, EnsembleDataSet testset) {
+	public void train(double targetError, double selectionError, EnsembleDataSet testset) throws TrainingAborted {
 		train(targetError, selectionError, testset, false);
 	}
 

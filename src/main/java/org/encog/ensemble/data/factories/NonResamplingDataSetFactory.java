@@ -34,11 +34,16 @@ public class NonResamplingDataSetFactory extends EnsembleDataSetFactory {
 	private ArrayList<MLDataPair> elementsLeft = new ArrayList<MLDataPair>();
 	public NonResamplingDataSetFactory(int dataSetSize) {
 		super(dataSetSize);
+	}
+	
+	@Override
+	public void reload() {
+		elementsLeft.clear();
 		for (MLDataPair dp:dataSource) {
 			elementsLeft.add(dp);
 		}
 	}
-
+	
 	@Override
 	public EnsembleDataSet getNewDataSet() {
 		Random generator = new Random();

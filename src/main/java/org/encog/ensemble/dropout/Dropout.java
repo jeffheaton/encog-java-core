@@ -41,7 +41,7 @@ public class Dropout extends Ensemble {
 	public Dropout(int splits, int dataSetSize, EnsembleMLMethodFactory mlFactory, EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator)
 	{
 		int dataSplits = aggregator.needsTraining() ? splits + 1 : splits;
-		this.dataSetFactory = new NonResamplingDataSetFactory(dataSplits);
+		this.dataSetFactory = new NonResamplingDataSetFactory(dataSetSize);
 		this.splits = splits;
 		this.mlFactory = mlFactory;
 		this.trainFactory = trainFactory;
