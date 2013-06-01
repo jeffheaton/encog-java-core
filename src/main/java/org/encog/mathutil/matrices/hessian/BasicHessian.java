@@ -66,11 +66,6 @@ public abstract class BasicHessian implements ComputeHessian {
 	protected double[][] hessian;
 	
 	/**
-	 * The derivatives.
-	 */
-	protected double[] derivative;
-	
-	/**
 	 * The flat network.
 	 */
 	protected FlatNetwork flat;
@@ -87,7 +82,6 @@ public abstract class BasicHessian implements ComputeHessian {
 		this.gradients = new double[weightCount];	
 		this.hessianMatrix = new Matrix(weightCount,weightCount);
 		this.hessian = this.hessianMatrix.getData();
-		this.derivative = new double[weightCount];
 	}
 	
 	/**
@@ -135,7 +129,7 @@ public abstract class BasicHessian implements ComputeHessian {
 		int weightCount = this.network.getFlat().getWeights().length;
 		for(int i=0;i<weightCount;i++) {
 			for(int j=0;j<weightCount;j++) {
-				this.hessian[i][j]+=2*d[i]*d[j];
+				this.hessian[i][j]+=d[i]*d[j];
 			}
 		}
 	}
