@@ -134,6 +134,11 @@ public class LevenbergMarquardtTraining extends BasicTraining implements MultiTh
 	 * The training elements.
 	 */
 	private final MLDataPair pair;
+	
+	/**
+	 * Is the init complete?
+	 */
+	private boolean initComplete;
 
 	/**
 	 * Construct the LMA object.
@@ -177,9 +182,6 @@ public class LevenbergMarquardtTraining extends BasicTraining implements MultiTh
 		this.pair = new BasicMLDataPair(input, ideal);
 		
 		this.hessian = h;
-		this.hessian.init(network, training);
-
-
 	}
 
 	private void saveDiagonal() {
@@ -229,6 +231,10 @@ public class LevenbergMarquardtTraining extends BasicTraining implements MultiTh
 	 */
 	@Override
 	public void iteration() {
+		if( !initComplete ) {
+			this.hessian.init(network, getTraining());
+			this.initComplete = true;
+		}
 
 		LUDecomposition decomposition = null;
 		preIteration();
@@ -324,7 +330,7 @@ public class LevenbergMarquardtTraining extends BasicTraining implements MultiTh
 	public void setThreadCount(int numThreads) {
 		if( this.hessian instanceof MultiThreadable ) {
 			((MultiThreadable)this.hessian).setThreadCount(numThreads);
-		} else {
+		} else if(numThreads!=1 && numThreads!=0) {
 			throw new TrainingError("The Hessian object in use("+this.hessian.getClass().toString()+") does not support multi-threaded mode.");
 		}
 	}	
