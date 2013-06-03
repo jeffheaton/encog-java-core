@@ -27,6 +27,7 @@ import org.encog.mathutil.IntRange;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.util.EngineArray;
 import org.encog.util.concurrency.DetermineWorkload;
 import org.encog.util.concurrency.EngineConcurrency;
 import org.encog.util.concurrency.MultiThreadable;
@@ -118,7 +119,7 @@ public class HessianCR extends BasicHessian implements MultiThreadable {
 				for(int i=0;i<weightCount;i++) {
 					this.gradients[i] += worker.getGradients()[i];
 				}
-				updateHessian(worker.getDerivative());
+				EngineArray.arrayAdd(this.getHessian(),worker.getHessian());
 			}
 		}
 		

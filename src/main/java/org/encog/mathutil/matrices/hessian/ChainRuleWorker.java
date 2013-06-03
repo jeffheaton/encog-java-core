@@ -88,11 +88,6 @@ public class ChainRuleWorker implements EngineTask {
 	 * The flat network.
 	 */
 	private FlatNetwork flat;
-
-	/**
-	 * The current first derivatives.
-	 */
-	private double[] derivative;
 	
 	/**
 	 * The training data.
@@ -134,6 +129,10 @@ public class ChainRuleWorker implements EngineTask {
 	 */
 	private final MLDataPair pair;
 
+	private int weightCount;
+	
+	private double[][] hessian;
+	
 	/**
 	 * Construct the chain rule worker.
 	 * @param theNetwork The network to calculate a Hessian for.
@@ -143,14 +142,14 @@ public class ChainRuleWorker implements EngineTask {
 	 */
 	public ChainRuleWorker(FlatNetwork theNetwork, MLDataSet theTraining, int theLow, int theHigh) {
 		
-		int weightCount = theNetwork.getWeights().length;
+		this.weightCount = theNetwork.getWeights().length;
+		this.hessian = new double[this.weightCount][this.weightCount];
 		
 		this.training = theTraining;
 		this.flat = theNetwork;
 		
 		this.layerDelta = new double[flat.getLayerOutput().length];	
 		this.actual = new double[flat.getOutputCount()];
-		this.derivative = new double[weightCount];
 		this.totDeriv = new double[weightCount];
 		this.gradients = new double[weightCount];
 
@@ -174,19 +173,19 @@ public class ChainRuleWorker implements EngineTask {
 	@Override
 	public void run() {
 		this.error = 0;
+		EngineArray.fill(this.hessian, 0);
 		EngineArray.fill(this.totDeriv, 0);
 		EngineArray.fill(this.gradients, 0);
 		
+		double[] derivative = new double[this.weightCount];
 		
 		// Loop over every training element
 		for (int i = this.low; i <= this.high; i++) {
 			this.training.getRecord(i, this.pair);
 		
-			EngineArray.fill(this.derivative, 0);
+			EngineArray.fill(derivative, 0);
 
-
-
-			process(outputNeuron, pair.getInputArray(), pair.getIdealArray());
+			process(outputNeuron, derivative, pair.getInputArray(), pair.getIdealArray());
 
 
 		}
@@ -201,7 +200,7 @@ public class ChainRuleWorker implements EngineTask {
 	 * @param ideal
 	 *            The ideal values.      
 	 */
-	private void process(int outputNeuron, final double[] input, final double[] ideal) {
+	private void process(int outputNeuron, double[] derivative, final double[] input, final double[] ideal) {
 				
 		this.flat.compute(input, this.actual);
 		
@@ -220,13 +219,20 @@ public class ChainRuleWorker implements EngineTask {
 		}
 
 		for (int i = this.flat.getBeginTraining(); i < this.flat.getEndTraining(); i++) {
-			processLevel(i);
+			processLevel(i,derivative);
 		}
 				
 		// calculate gradients
 		for (int j = 0; j < this.weights.length; j++) {
-			this.gradients[j] += e * this.derivative[j];
-			totDeriv[j] += this.derivative[j];
+			this.gradients[j] += e * derivative[j];
+			totDeriv[j] += derivative[j];
+		}
+		
+		// update hessian
+		for(int i=0;i<this.weightCount;i++) {
+			for(int j=0;j<this.weightCount;j++) {
+				this.hessian[i][j]+=derivative[i]*derivative[j];
+			}
 		}
 	}
 
@@ -236,7 +242,7 @@ public class ChainRuleWorker implements EngineTask {
 	 * @param currentLevel
 	 *            The level.
 	 */
-	private void processLevel(final int currentLevel) {
+	private void processLevel(final int currentLevel, double[] derivative) {
 		final int fromLayerIndex = this.layerIndex[currentLevel + 1];
 		final int toLayerIndex = this.layerIndex[currentLevel];
 		final int fromLayerSize = this.layerCounts[currentLevel + 1];
@@ -254,7 +260,7 @@ public class ChainRuleWorker implements EngineTask {
 			int xi = toLayerIndex;
 			int wi = index + y;
 			for (int x = 0; x < toLayerSize; x++) {
-				this.derivative[wi] += output * this.layerDelta[xi];
+				derivative[wi] += output * this.layerDelta[xi];
 				sum += this.weights[wi] * this.layerDelta[xi];
 				wi += fromLayerSize;
 				xi++;
@@ -309,5 +315,15 @@ public class ChainRuleWorker implements EngineTask {
 	public FlatNetwork getNetwork() {
 		return this.flat;
 	}
+
+
+	/**
+	 * @return the hessian
+	 */
+	public double[][] getHessian() {
+		return hessian;
+	}
+	
+	
 	
 }

@@ -457,4 +457,13 @@ public final class EngineArray {
 		System.arraycopy(source, sourcePos, target, targetPos, length);
 		
 	}
+
+	public static void arrayAdd(double[][] target, double[][] h) {
+		for(int row=0;row<target.length;row++) {
+			for(int col=0;col<target[row].length;col++) {
+				target[row][col]+=h[row][col];
+			}
+		}
+		
+	}
 }
