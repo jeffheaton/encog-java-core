@@ -322,7 +322,7 @@ public class LevenbergMarquardtTraining extends BasicTraining implements MultiTh
 		if( this.hessian instanceof MultiThreadable ) {
 			return ((MultiThreadable)this.hessian).getThreadCount();
 		} else {
-			throw new TrainingError("The Hessian object in use("+this.hessian.getClass().toString()+") does not support multi-threaded mode.");
+			return 1;
 		}
 	}
 

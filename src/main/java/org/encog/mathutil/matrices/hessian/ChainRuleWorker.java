@@ -129,8 +129,14 @@ public class ChainRuleWorker implements EngineTask {
 	 */
 	private final MLDataPair pair;
 
+	/**
+	 * The weight count.
+	 */
 	private int weightCount;
 	
+	/**
+	 * The hessian for this worker.
+	 */
 	private double[][] hessian;
 	
 	/**
