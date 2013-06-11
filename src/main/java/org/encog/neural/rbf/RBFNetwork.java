@@ -24,6 +24,7 @@
 package org.encog.neural.rbf;
 
 import org.encog.EncogError;
+import org.encog.mathutil.randomize.ConsistentRandomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.mathutil.rbf.GaussianFunction;
 import org.encog.mathutil.rbf.InverseMultiquadricFunction;
@@ -33,6 +34,7 @@ import org.encog.mathutil.rbf.RadialBasisFunction;
 import org.encog.ml.BasicML;
 import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
+import org.encog.ml.MLResettable;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
@@ -48,7 +50,7 @@ import org.encog.util.simple.EncogUtility;
  *
  */
 public class RBFNetwork extends BasicML implements MLError, MLRegression,
-		ContainsFlat {
+		ContainsFlat, MLResettable {
 
 	/**
 	 * Serial id.
@@ -331,5 +333,22 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 	@Override
 	public void updateProperties() {
 		// unneeded
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void reset() {
+		(new RangeRandomizer(-1, 1)).randomize(this);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void reset(int seed) {
+		ConsistentRandomizer randomizer = new ConsistentRandomizer(-1,1,seed);
+		randomizer.randomize(this);
 	}
 }
