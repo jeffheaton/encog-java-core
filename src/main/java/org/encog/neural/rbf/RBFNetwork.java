@@ -32,6 +32,7 @@ import org.encog.mathutil.rbf.MultiquadricFunction;
 import org.encog.mathutil.rbf.RBFEnum;
 import org.encog.mathutil.rbf.RadialBasisFunction;
 import org.encog.ml.BasicML;
+import org.encog.ml.MLEncodable;
 import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.MLResettable;
@@ -42,15 +43,16 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.flat.FlatNetworkRBF;
 import org.encog.neural.networks.ContainsFlat;
+import org.encog.util.EngineArray;
 import org.encog.util.Format;
 import org.encog.util.simple.EncogUtility;
 
 /**
  * RBF neural network.
- *
+ * 
  */
 public class RBFNetwork extends BasicML implements MLError, MLRegression,
-		ContainsFlat, MLResettable {
+		ContainsFlat, MLResettable, MLEncodable {
 
 	/**
 	 * Serial id.
@@ -71,10 +73,15 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 
 	/**
 	 * Construct RBF network.
-	 * @param inputCount The input count.
-	 * @param hiddenCount The hidden count.
-	 * @param outputCount The output count.
-	 * @param t The RBF type.
+	 * 
+	 * @param inputCount
+	 *            The input count.
+	 * @param hiddenCount
+	 *            The hidden count.
+	 * @param outputCount
+	 *            The output count.
+	 * @param t
+	 *            The RBF type.
 	 */
 	public RBFNetwork(final int inputCount, final int hiddenCount,
 			final int outputCount, final RBFEnum t) {
@@ -105,9 +112,13 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 
 	/**
 	 * Construct RBF network.
-	 * @param inputCount The input count.
-	 * @param outputCount The output count.
-	 * @param rbf The RBF type.
+	 * 
+	 * @param inputCount
+	 *            The input count.
+	 * @param outputCount
+	 *            The output count.
+	 * @param rbf
+	 *            The RBF type.
 	 */
 	public RBFNetwork(final int inputCount, final int outputCount,
 			final RadialBasisFunction[] rbf) {
@@ -163,6 +174,7 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 
 	/**
 	 * Get the RBF's.
+	 * 
 	 * @return The RBF's.
 	 */
 	public RadialBasisFunction[] getRBF() {
@@ -195,7 +207,9 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 
 	/**
 	 * Set the RBF's.
-	 * @param rbf The RBF's.
+	 * 
+	 * @param rbf
+	 *            The RBF's.
 	 */
 	public void setRBF(final RadialBasisFunction[] rbf) {
 		this.flat.setRBF(rbf);
@@ -348,7 +362,57 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 	 */
 	@Override
 	public void reset(int seed) {
-		ConsistentRandomizer randomizer = new ConsistentRandomizer(-1,1,seed);
+		ConsistentRandomizer randomizer = new ConsistentRandomizer(-1, 1, seed);
 		randomizer.randomize(this);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int encodedArrayLength() {
+		int result = this.getFlat().getWeights().length;
+		for (RadialBasisFunction rbf : flat.getRBF()) {
+			result += rbf.getCenters().length + 1;
+		}
+		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void encodeToArray(double[] encoded) {
+
+		EngineArray.arrayCopy(getFlat().getWeights(), 0, encoded, 0, getFlat()
+				.getWeights().length);
+
+		int index = getFlat().getWeights().length;
+
+		for (RadialBasisFunction rbf : flat.getRBF()) {
+			encoded[index++] = rbf.getWidth();
+			EngineArray.arrayCopy(rbf.getCenters(), 0, encoded, index,
+					rbf.getCenters().length);
+			index += rbf.getCenters().length;
+		}
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void decodeFromArray(double[] encoded) {
+		EngineArray.arrayCopy(encoded, 0, getFlat().getWeights(), 0, getFlat()
+				.getWeights().length);
+
+		int index = getFlat().getWeights().length;
+
+		for (RadialBasisFunction rbf : flat.getRBF()) {
+			rbf.setWidth(encoded[index++]);
+			EngineArray.arrayCopy(encoded, index, rbf.getCenters(), 0,
+					rbf.getCenters().length);
+			index += rbf.getCenters().length;
+		}
 	}
 }
