@@ -92,7 +92,7 @@ public class HessianFD extends BasicHessian {
 		this.center = this.pointsPerSide+1;
 		this.pointCount = (this.pointsPerSide*2)+1;
 		this.dCoeff = createCoefficients();
-		this.dStep = new double[theTraining.size()];
+		this.dStep = new double[this.weightCount];
 		
 		for (int i = 0; i < this.weightCount; i++) {
 			this.dStep[i] = this.INITIAL_STEP;
