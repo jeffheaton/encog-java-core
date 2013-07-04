@@ -783,4 +783,8 @@ public class AnalystField {
 		
 		return result;
 	}
+
+	public double[] encode(double d) {
+		return encode((int)d);
+	}
 }

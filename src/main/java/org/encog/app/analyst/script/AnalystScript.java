@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +35,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.encog.Encog;
+import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.AnalystFileFormat;
 import org.encog.app.analyst.script.ml.ScriptOpcode;
 import org.encog.app.analyst.script.normalize.AnalystField;
@@ -42,6 +44,8 @@ import org.encog.app.analyst.script.process.AnalystProcess;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregate;
 import org.encog.app.analyst.script.task.AnalystTask;
+import org.encog.app.analyst.util.FieldDirection;
+import org.encog.util.arrayutil.ClassItem;
 import org.encog.util.arrayutil.NormalizationAction;
 import org.encog.util.csv.CSVFormat;
 
@@ -96,6 +100,9 @@ public class AnalystScript {
 	 * The base path.
 	 */
 	private String basePath;
+
+	private transient double defaultNormalizedRangeLow = 0;
+	private transient double defaultNormalizedRangeHigh = 1;
 
 	/**
 	 * Construct an analyst script.
@@ -385,6 +392,74 @@ public class AnalystScript {
 			}
 		}
 		return false;
+	}
+
+	public void defineField(String fieldName, FieldDirection d, NormalizationAction action, 
+			double theActualHigh, double theActualLow) {
+		AnalystField field = new AnalystField();
+
+		if (action == NormalizationAction.Equilateral
+				|| action == NormalizationAction.OneOf) {
+			throw new AnalystError(
+					"Must use defineClass if you are going to use Equilateral or OneOf");
+		}
+
+		// add underlying raw field
+		DataField df = new DataField(fieldName);
+		df.setMax(theActualHigh);
+		df.setMin(theActualLow);
+		df.setReal(true);
+		df.setClass(false);
+		df.setMean(theActualLow + ((theActualHigh - theActualLow) / 2));
+
+		if (this.getFields() == null) {
+			this.setFields(new DataField[] { df });
+		} else {
+			int len = this.getFields().length;
+			DataField[] added = Arrays.copyOf(this.getFields(), len+1);
+			added[len] = df;
+			this.setFields(added);
+		}
+
+		// add a normalized field
+
+		field.setAction(action);
+		field.setNormalizedHigh(this.defaultNormalizedRangeHigh);
+		field.setNormalizedLow(this.defaultNormalizedRangeLow);
+		field.setActualHigh(theActualHigh);
+		field.setActualLow(theActualLow);
+		field.setName(fieldName);
+		field.setOutput(d==FieldDirection.Output || d==FieldDirection.InputOutput);
+
+		getNormalize().getNormalizedFields().add(field);
+
+	}
+
+	public void setDefaultNormalizedRange(double low, double high) {
+		this.defaultNormalizedRangeLow = low;
+		this.defaultNormalizedRangeHigh = high;
+	}
+
+	public void defineClass(String fieldName, FieldDirection d, NormalizationAction action, 
+			List<ClassItem> classes) {
+		AnalystField field = new AnalystField();
+
+		if (action != NormalizationAction.Equilateral
+				&& action != NormalizationAction.OneOf) {
+			throw new AnalystError(
+					"defineClass can only be used with action type of Equilateral or OneOf");
+		}
+
+		field.setAction(action);
+		field.setNormalizedHigh(this.defaultNormalizedRangeHigh);
+		field.setNormalizedLow(this.defaultNormalizedRangeLow);
+		field.setActualHigh(0);
+		field.setActualLow(0);
+		field.setName(fieldName);
+		field.setOutput(d==FieldDirection.Output || d==FieldDirection.InputOutput);
+		field.getClasses().addAll(classes);
+
+		getNormalize().getNormalizedFields().add(field);
 	}
 
 }
