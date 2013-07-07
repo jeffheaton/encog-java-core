@@ -787,4 +787,13 @@ public class AnalystField {
 	public double[] encode(double d) {
 		return encode((int)d);
 	}
+
+	public ClassItem findClass(int index) {
+		for(ClassItem itm: this.classes) {
+			if( itm.getIndex()==index) {
+				return itm;
+			}
+		}
+		return null;
+	}
 }

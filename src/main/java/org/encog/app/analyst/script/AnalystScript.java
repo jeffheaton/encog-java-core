@@ -394,7 +394,7 @@ public class AnalystScript {
 		return false;
 	}
 
-	public void defineField(String fieldName, FieldDirection d, NormalizationAction action, 
+	public AnalystField defineField(String fieldName, FieldDirection d, NormalizationAction action, 
 			double theActualHigh, double theActualLow) {
 		AnalystField field = new AnalystField();
 
@@ -432,7 +432,7 @@ public class AnalystScript {
 		field.setOutput(d==FieldDirection.Output || d==FieldDirection.InputOutput);
 
 		getNormalize().getNormalizedFields().add(field);
-
+		return field;
 	}
 
 	public void setDefaultNormalizedRange(double low, double high) {
@@ -440,7 +440,7 @@ public class AnalystScript {
 		this.defaultNormalizedRangeHigh = high;
 	}
 
-	public void defineClass(String fieldName, FieldDirection d, NormalizationAction action, 
+	public AnalystField defineClass(String fieldName, FieldDirection d, NormalizationAction action, 
 			List<ClassItem> classes) {
 		AnalystField field = new AnalystField();
 
@@ -460,6 +460,7 @@ public class AnalystScript {
 		field.getClasses().addAll(classes);
 
 		getNormalize().getNormalizedFields().add(field);
+		return field;
 	}
 
 }

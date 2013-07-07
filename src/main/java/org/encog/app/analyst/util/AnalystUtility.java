@@ -3,9 +3,12 @@ package org.encog.app.analyst.util;
 import java.io.File;
 
 import org.encog.EncogError;
+import org.encog.app.analyst.AnalystFileFormat;
 import org.encog.app.analyst.EncogAnalyst;
+import org.encog.app.analyst.analyze.PerformAnalysis;
 import org.encog.app.analyst.csv.TimeSeriesUtil;
 import org.encog.app.analyst.csv.normalize.AnalystNormalizeCSV;
+import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.ml.data.MLData;
@@ -18,41 +21,71 @@ import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 import org.encog.util.logging.EncogLogging;
 
+/**
+ * Provides an interface to the analyst usually used by other programs.
+ */
 public class AnalystUtility {
+	/**
+	 * The analyst we are using.
+	 */
 	final private EncogAnalyst analyst;
 	
+	/**
+	 * Construct the analyst utility.
+	 * @param theAnalyst The analyst that we are using.
+	 */
 	public AnalystUtility(EncogAnalyst theAnalyst) {
 		this.analyst = theAnalyst;
 	}
 	
-	public void prepareInput(double[] rawInput, MLData preparedInput) {
+	/**
+	 * Encode fields, using the analyst.
+	 * @param includeInput Should we include the input fields.
+	 * @param includeOutput Should we include the output fields.
+	 * @param rawData The raw data to encode from.
+	 * @param encodedData The data to encode to.
+	 */
+	public void encode(
+			boolean includeInput,
+			boolean includeOutput,
+			double[] rawData, 
+			MLData encodedData) {
 		int rawIndex = 0;
 		int outputIndex = 0;
 		
 		for (final AnalystField stat : analyst.getScript().getNormalize()
 				.getNormalizedFields()) {
 
-			if (stat.getAction() == NormalizationAction.Ignore) {
+			if (stat.isIgnored()) {
 				continue;
 			}
 			
-			if (stat.isOutput() ) {
+			if (stat.isOutput() && !includeOutput ) {
+				continue;
+			}
+			
+			if( stat.isInput() && !includeInput ) {
 				continue;
 			}
 			
 			if (stat.getAction() == NormalizationAction.Normalize) {
-				preparedInput.setData(outputIndex++, stat.normalize(rawInput[rawIndex++]));
+				encodedData.setData(outputIndex++, stat.normalize(rawData[rawIndex++]));
 			} else if (stat.getAction() == NormalizationAction.PassThrough) {
-				preparedInput.setData(outputIndex++, rawInput[rawIndex++]);
+				encodedData.setData(outputIndex++, rawData[rawIndex++]);
 			} else {
-				final double[] d = stat.encode(rawInput[rawIndex++]);
+				final double[] d = stat.encode(rawData[rawIndex++]);
 				for (final double element : d) {
-					preparedInput.setData(outputIndex++, element);
+					encodedData.setData(outputIndex++, element);
 				}
 			}
 		}
 	}
 	
+	/**
+	 * Load a CSV file into an MLDataSet.
+	 * @param file The file to load.
+	 * @return The loaded data set.
+	 */
 	public MLDataSet loadCSV(File file) {
 		if (this.analyst == null) {
 			throw new EncogError(
@@ -117,9 +150,67 @@ public class AnalystUtility {
 		}
 	}
 
+	/**
+	 * Load a CSV file into an MLDataSet.
+	 * @param file The file to load.
+	 * @return The loaded data set.
+	 */
 	public MLDataSet loadCSV(String filename) {
 		return loadCSV(new File(filename));
 	}
-	
-	
+
+	/**
+	 * Decode fields, using the analyst.
+	 * @param includeInput Should we include the input fields.
+	 * @param includeOutput Should we include the output fields.
+	 * @param rawData The raw data to encode to.
+	 * @param encodedData The data to encode from.
+	 */
+	public void decode(
+			boolean includeInput,
+			boolean includeOutput,
+			double[] rawData, 
+			MLData encodedData) {
+		int rawIndex = 0;
+		int outputIndex = 0;
+		
+		for (final AnalystField stat : analyst.getScript().getNormalize()
+				.getNormalizedFields()) {
+
+			if (stat.isIgnored()) {
+				continue;
+			}
+			
+			if (stat.isOutput() && !includeOutput ) {
+				continue;
+			}
+			
+			if( stat.isInput() && !includeInput ) {
+				continue;
+			}
+			
+			if (stat.getAction() == NormalizationAction.Normalize) {
+				rawData[rawIndex++] = stat.deNormalize(encodedData.getData(outputIndex++));
+			} else if (stat.getAction() == NormalizationAction.PassThrough) {
+				rawData[rawIndex++] = encodedData.getData(outputIndex++);
+			} else {
+				rawData[rawIndex++] = stat.determineClass(outputIndex, encodedData.getData()).getIndex();
+				outputIndex+=stat.getColumnsNeeded();
+			}
+		}
+	}
+
+	public void analyze(File theFilename) {
+		final boolean headers = this.analyst.getScript().getProperties().getPropertyBoolean(ScriptProperties.SETUP_CONFIG_INPUT_HEADERS);
+		final AnalystFileFormat fmt = this.analyst.getScript().getProperties().getPropertyFormat(ScriptProperties.SETUP_CONFIG_CSV_FORMAT);
+		
+		
+		PerformAnalysis analyze = new PerformAnalysis(
+				this.analyst.getScript(),
+				theFilename.toString(), 
+				headers,
+				fmt);
+		
+		analyze.process(this.analyst);
+	}
 }
