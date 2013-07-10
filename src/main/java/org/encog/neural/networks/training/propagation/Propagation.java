@@ -35,6 +35,7 @@ import org.encog.neural.error.ErrorFunction;
 import org.encog.neural.error.LinearErrorFunction;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.networks.ContainsFlat;
+import org.encog.neural.networks.training.BatchSize;
 import org.encog.neural.networks.training.Train;
 import org.encog.util.EncogValidate;
 import org.encog.util.EngineArray;
@@ -53,7 +54,7 @@ import org.encog.util.logging.EncogLogging;
  * 
  */
 public abstract class Propagation extends BasicTraining implements Train,
-		MultiThreadable {
+		MultiThreadable, BatchSize {
 
 	/**
 	 * The current flat network we are using for training, or null for none.
@@ -126,6 +127,13 @@ public abstract class Propagation extends BasicTraining implements Train,
 	private ErrorFunction ef = new LinearErrorFunction();
 
 	/**
+	 * The batch size. Specify 1 for pure online training. Specify 0 for pure
+	 * batch training (complete training set in one batch). Otherwise specify
+	 * the batch size for batch training.
+	 */
+	private int batchSize = 0;
+
+	/**
 	 * Construct a propagation object.
 	 * 
 	 * @param network
@@ -177,12 +185,56 @@ public abstract class Propagation extends BasicTraining implements Train,
 	public void iteration() {
 		iteration(1);
 	}
-	
+
 	/**
 	 * Increase the iteration by one.
 	 */
 	public void rollIteration() {
 		this.iteration++;
+	}
+
+	/**
+	 * Process as pure batch (size 0). Batch size equal to training set size.
+	 */
+	private void processPureBatch() {
+		calculateGradients();
+
+		if (this.currentFlatNetwork.isLimited()) {
+			learnLimited();
+		} else {
+			learn();
+		}
+	}
+
+	private void processBatches() {
+		if (this.workers == null) {
+			init();
+		}
+
+		if (this.currentFlatNetwork.getHasContext()) {
+			this.workers[0].getNetwork().clearContext();
+		}
+
+		this.workers[0].getErrorCalculation().reset();
+
+		int lastLearn = 0;
+
+		for (int i = 0; i < this.getTraining().size(); i++) {
+			this.workers[0].run(i);
+
+			lastLearn++;
+
+			if (lastLearn++ >= this.batchSize) {
+				if (this.currentFlatNetwork.isLimited()) {
+					learnLimited();
+				} else {
+					learn();
+				}
+			}
+		}
+
+		this.setError(this.workers[0].getErrorCalculation().calculate());
+
 	}
 
 	/**
@@ -203,12 +255,10 @@ public abstract class Propagation extends BasicTraining implements Train,
 
 				rollIteration();
 
-				calculateGradients();
-
-				if (this.currentFlatNetwork.isLimited()) {
-					learnLimited();
+				if (this.batchSize == 0) {
+					processPureBatch();
 				} else {
-					learn();
+					processBatches();
 				}
 
 				this.lastError = this.getError();
@@ -258,13 +308,14 @@ public abstract class Propagation extends BasicTraining implements Train,
 	}
 
 	/**
-	 * Default is true.  Call this with false to disable flat spot fix.
+	 * Default is true. Call this with false to disable flat spot fix.
 	 * 
 	 * For more info on flat spot:
 	 * 
 	 * http://www.heatonresearch.com/wiki/Flat_Spot
 	 * 
-	 * @param b True to fix flat spots, false otherwise.
+	 * @param b
+	 *            True to fix flat spots, false otherwise.
 	 */
 	public void fixFlatSpot(boolean b) {
 		this.shouldFixFlatSpot = b;
@@ -351,14 +402,27 @@ public abstract class Propagation extends BasicTraining implements Train,
 		}
 
 		// setup workers
+
+		// Do not use multi-threading for non-pure batch training.
+		//
+		// At some point it would be good to add multi-threading
+		// for batch-sizes that are large enough.
+		//
+		// Multi-threading cannot be added for pure (size 1)
+		// online training.
+		if (this.batchSize != 0) {
+			this.numThreads = 1;
+		}
+
 		final DetermineWorkload determine = new DetermineWorkload(
 				this.numThreads, (int) this.indexable.getRecordCount());
 
-		this.workers = new GradientWorker[determine.getThreadCount()];
+		int actualThreadCount = determine.getThreadCount();
+
+		this.workers = new GradientWorker[actualThreadCount];
 
 		int index = 0;
 
-		// handle CPU
 		for (final IntRange r : determine.calculateWorkers()) {
 			this.workers[index++] = new GradientWorker(
 					this.currentFlatNetwork.clone(), this,
@@ -446,6 +510,20 @@ public abstract class Propagation extends BasicTraining implements Train,
 	 */
 	public double[] getLastGradient() {
 		return lastGradient;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getBatchSize() {
+		return this.batchSize;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setBatchSize(int theBatchSize) {
+		this.batchSize = theBatchSize;
 	}
 
 }

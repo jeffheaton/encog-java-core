@@ -80,8 +80,8 @@ public class Backpropagation extends Propagation implements Momentum,
 	 * The last delta values.
 	 */
 	private double[] lastDelta;
-
-
+	
+	
 	/**
 	 * Create a class to train using backpropagation. Use auto learn rate and
 	 * momentum. Use the CPU to train.

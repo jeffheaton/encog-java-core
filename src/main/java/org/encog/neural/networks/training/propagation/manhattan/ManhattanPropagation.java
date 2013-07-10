@@ -23,6 +23,7 @@
  */
 package org.encog.neural.networks.training.propagation.manhattan;
 
+import org.encog.EncogError;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.LearningRate;
@@ -157,5 +158,14 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 */
 	public void initOthers() {
 		
+	}
+	
+	/**
+	 * Do not allow batch sizes other than 0, not supported.
+	 */
+	public void setBatchSize(int theBatchSize) {
+		if( theBatchSize!=0 ) {
+			throw new EncogError("Online training is not supported for:" + this.getClass().getSimpleName());
+		}
 	}
 }

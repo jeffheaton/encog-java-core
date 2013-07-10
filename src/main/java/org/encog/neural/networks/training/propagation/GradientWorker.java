@@ -272,5 +272,18 @@ public class GradientWorker implements EngineTask {
 			this.owner.report(null, 0, ex);
 		}
 	}
+	
+	public final void run(int index) {
+		this.training.getRecord(index, this.pair);
+		process(this.pair.getInputArray(), this.pair.getIdealArray(),pair.getSignificance());
+		this.owner.report(this.gradients, 0, null);
+		EngineArray.fill(this.gradients, 0);
+	}
 
+	public ErrorCalculation getErrorCalculation() {
+		return errorCalculation;
+	}
+
+	
+	
 }
