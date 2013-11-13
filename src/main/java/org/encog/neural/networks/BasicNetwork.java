@@ -27,6 +27,7 @@ import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.randomize.ConsistentRandomizer;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
+import org.encog.mathutil.randomize.Randomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.BasicML;
 import org.encog.ml.MLClassification;
@@ -610,22 +611,39 @@ public class BasicNetwork extends BasicML implements ContainsFlat, MLContext,
 	 */
 	@Override
 	public void reset() {
-
-		if (getLayerCount() < 3) {
-			(new RangeRandomizer(-1, 1)).randomize(this);
-		} else {
-			(new NguyenWidrowRandomizer()).randomize(this);
-		}
+		getRandomizer().randomize(this);
 	}
 
 	/**
-	 * Randomize between -1 and 1, use the specified seed.
+	 * Reset the weight matrix and the bias values. This will use a
+	 * Nguyen-Widrow randomizer with a range between -1 and 1. If the network
+	 * does not have an input, output or hidden layers, then Nguyen-Widrow
+	 * cannot be used and a simple range randomize between -1 and 1 will be
+	 * used. Use the specified seed.
 	 * 
 	 */
 	@Override
 	public void reset(final int seed) {
-		ConsistentRandomizer randomizer = new ConsistentRandomizer(-1,1,seed);
+		Randomizer randomizer = getRandomizer();
+		randomizer.setSeed(seed);
 		randomizer.randomize(this);
+	}
+	
+	/**
+	 * Determindes the randomizer used for resets. This will normally return a
+	 * Nguyen-Widrow randomizer with a range between -1 and 1. If the network
+	 * does not have an input, output or hidden layers, then Nguyen-Widrow
+	 * cannot be used and a simple range randomize between -1 and 1 will be
+	 * used.
+	 * 
+	 * @return the randomizer
+	 */
+	private Randomizer getRandomizer() {
+		if (getLayerCount() < 3) {
+			return new RangeRandomizer(-1,1);
+		} else {
+			return new NguyenWidrowRandomizer();
+		}
 	}
 
 	/**
