@@ -34,6 +34,7 @@ import org.encog.ml.data.basic.BasicMLData;
 
 public abstract class Ensemble {
 
+	private final int DEFAULT_MAX_ITERATIONS = 2000;
 	protected EnsembleDataSetFactory dataSetFactory;
 	protected EnsembleTrainFactory trainFactory;
 	protected EnsembleAggregator aggregator;
@@ -127,19 +128,22 @@ public abstract class Ensemble {
 		} while (current.getError(selectionSet) > selectionError);
 	}
 
-	public void trainMember(EnsembleML current, double targetError, double selectionError, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
+	public void trainMember(EnsembleML current, double targetError, double selectionError, int maxIterations, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
 		int attempt = 0;
 		do {
 			mlFactory.reInit(current.getMl());
 			current.train(targetError, verbose);
 			if (verbose) {System.out.println("test MSE: " + current.getError(selectionSet));};
 			attempt++;
-			if (attempt > 2000) {
+			if (attempt > maxIterations) {
 				throw new TrainingAborted();
 			}
 		} while (current.getError(selectionSet) > selectionError);
 	}
 	
+	public void trainMember(EnsembleML current, double targetError, double selectionError, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
+		trainMember(current, targetError, selectionError, DEFAULT_MAX_ITERATIONS, selectionSet, verbose);
+	}
 	public void retrainAggregator() {
 		EnsembleDataSet aggTrainingSet = new EnsembleDataSet(members.size() * aggregatorDataSet.getIdealSize(),aggregatorDataSet.getIdealSize());
 		for (MLDataPair trainingInput:aggregatorDataSet) {
@@ -164,15 +168,18 @@ public abstract class Ensemble {
 	 * @return
 	 * @throws TrainingAborted 
 	 */
-	public void train(double targetError, double selectionError, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
+	public void train(double targetError, double selectionError, int maxIterations, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
 		
 		for (EnsembleML current : members)
 		{
-			trainMember(current, targetError, selectionError, selectionSet, verbose);
+			trainMember(current, targetError, selectionError, maxIterations, selectionSet, verbose);
 		}
 		if(aggregator.needsTraining()) {
 			retrainAggregator();
 		}
+	}
+	public void train(double targetError, double selectionError, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
+		train(targetError, selectionError, DEFAULT_MAX_ITERATIONS, selectionSet, verbose);
 	}
 
 	/**
