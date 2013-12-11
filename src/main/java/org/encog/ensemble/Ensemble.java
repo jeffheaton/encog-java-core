@@ -203,6 +203,10 @@ public abstract class Ensemble {
 		train(targetError, selectionError, testset, false);
 	}
 
+	public void train(double targetError, double selectionError, int maxIterations, EnsembleDataSet testset) throws TrainingAborted {
+		train(targetError, selectionError, maxIterations, testset, false);
+	}
+
 	/**
 	 * Extract a specific training set from the Ensemble
 	 * @param setNumber
