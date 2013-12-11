@@ -119,12 +119,17 @@ public abstract class Ensemble {
 		initMembers();
 	}
 
-	public void trainMember(int index, double targetError, double selectionError, EnsembleDataSet selectionSet, boolean verbose) {
+	public void trainMember(int index, double targetError, double selectionError, int maxIterations, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
+		int attempt = 0;
 		EnsembleML current = members.get(index);
 		do {
 			mlFactory.reInit(current.getMl());
 			current.train(targetError, verbose);
 			if (verbose) {System.out.println("test MSE: " + current.getError(selectionSet));};
+			attempt++;
+			if (attempt > maxIterations) {
+				throw new TrainingAborted();
+			}
 		} while (current.getError(selectionSet) > selectionError);
 	}
 
@@ -144,6 +149,11 @@ public abstract class Ensemble {
 	public void trainMember(EnsembleML current, double targetError, double selectionError, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
 		trainMember(current, targetError, selectionError, DEFAULT_MAX_ITERATIONS, selectionSet, verbose);
 	}
+
+	public void trainMember(int index, double targetError, double selectionError, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
+		trainMember(index, targetError, selectionError, DEFAULT_MAX_ITERATIONS, selectionSet, verbose);
+	}
+	
 	public void retrainAggregator() {
 		EnsembleDataSet aggTrainingSet = new EnsembleDataSet(members.size() * aggregatorDataSet.getIdealSize(),aggregatorDataSet.getIdealSize());
 		for (MLDataPair trainingInput:aggregatorDataSet) {
