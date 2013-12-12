@@ -62,6 +62,7 @@ public interface EnsembleML extends MLMethod, MLClassification, MLRegression {
 	 * @param targetError The target error.
 	 */
 	public void train(double targetError);
+	public void train(int maxIteratios, double targetError);
 
 	/**
 	 * Train the ML to a certain accuracy.
@@ -69,6 +70,7 @@ public interface EnsembleML extends MLMethod, MLClassification, MLRegression {
 	 * @param verbose Verbose mode.
 	 */
 	public void train(double targetError, boolean verbose);
+	public void train(double targetError, int maxIterations, boolean verbose);
 
 	/**
 	 * Get the error for this ML on the dataset

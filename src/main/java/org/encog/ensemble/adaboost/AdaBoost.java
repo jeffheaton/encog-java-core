@@ -58,7 +58,7 @@ public class AdaBoost extends Ensemble {
 		this.D = new ArrayList<Double>();
 	}
 	
-	private void createMember(double targetAccuracy, double selectionError, EnsembleDataSet testset, boolean verbose) {
+	private void createMember(double targetAccuracy, double selectionError, int maxIterations, EnsembleDataSet testset, boolean verbose) {
 		dataSetFactory.setSignificance(D);
 		MLDataSet thisSet = dataSetFactory.getNewDataSet();
 		GenericEnsembleML newML = new GenericEnsembleML(mlFactory.createML(dataSetFactory.getInputData().getInputSize(), dataSetFactory.getInputData().getIdealSize()),mlFactory.getLabel());
@@ -66,7 +66,7 @@ public class AdaBoost extends Ensemble {
 			mlFactory.reInit(newML.getMl());
 			MLTrain train = trainFactory.getTraining(newML.getMl(), thisSet);
 			newML.setTraining(train);
-			newML.train(targetAccuracy,verbose);
+			newML.train(targetAccuracy, maxIterations, verbose);
 		} while (newML.getError(testset) > selectionError);
 		double newWeight = getWeightedError(newML,thisSet);
 		members.add(newML);
@@ -74,10 +74,10 @@ public class AdaBoost extends Ensemble {
 		D = updateD(newML,dataSetFactory.getDataSource(),D);		
 	}
 	
-	public void resize(int newSize, double targetAccuracy, double selectionError, EnsembleDataSet testset, boolean verbose) {
+	public void resize(int newSize, double targetAccuracy, double selectionError, int maxIterations, EnsembleDataSet testset, boolean verbose) {
 		if (newSize > T) {
 			for (int i = T; i < newSize; i++) {
-				createMember(targetAccuracy, selectionError, testset, verbose);
+				createMember(targetAccuracy, selectionError, maxIterations, testset, verbose);
 			}
 		}
 		else if (newSize < T) {
@@ -89,9 +89,9 @@ public class AdaBoost extends Ensemble {
 	}
 
 	@Override
-	public void train(double targetAccuracy, double selectionError, EnsembleDataSet testset, boolean verbose) {
+	public void train(double targetAccuracy, double selectionError, int maxIterations, EnsembleDataSet testset, boolean verbose) {
 		for (int i = 0; i < T; i++) {
-			createMember(targetAccuracy, selectionError, testset, verbose);
+			createMember(targetAccuracy, selectionError, maxIterations, testset, verbose);
 		}
 	}
 
