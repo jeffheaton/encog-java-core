@@ -42,7 +42,7 @@ package org.encog.ml.data;
 public interface MLDataSet extends Iterable<MLDataPair> {
 
 	/**
-	 * @return The size of the input data.
+	 * @return The size of the ideal data.
 	 */
 	int getIdealSize();
 
