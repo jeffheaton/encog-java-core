@@ -47,7 +47,7 @@ public class EngineConcurrency implements MultiThreadable {
 	/**
 	 * @return The instance to the singleton.
 	 */
-	public static EngineConcurrency getInstance() {		
+	public static EngineConcurrency getInstance() {
 		return EngineConcurrency.instance;
 	}
 
@@ -56,7 +56,7 @@ public class EngineConcurrency implements MultiThreadable {
 	 * main thread.
 	 */
 	private Throwable threadError;
-	
+
 	/**
 	 * The thread count.
 	 */
@@ -77,33 +77,34 @@ public class EngineConcurrency implements MultiThreadable {
 	 * Construct a concurrency object.
 	 */
 	public EngineConcurrency() {
-		Runtime runtime = Runtime.getRuntime();        
-        int threads = runtime.availableProcessors();
-        // NOTE: This was tested on a Intel i7 4 cores 8 threads with
-        // Encog Benchmark. Ca 15% higher performance with exactly 8 threads.
-        // if( threads>1 )
-        //	 threads++;
+		Runtime runtime = Runtime.getRuntime();
+		int threads = runtime.availableProcessors();
+		// NOTE: This was tested on a Intel i7 4 cores 8 threads with
+		// Encog Benchmark. Ca 15% higher performance with exactly 8 threads.
+		// if( threads>1 )
+		// threads++;
 		this.executor = Executors.newFixedThreadPool(threads);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void setThreadCount(int t) {
-		this.executor.shutdown();
-		int threads = t;
-		
-		if( threads==0 )
-		{
-			Runtime runtime = Runtime.getRuntime();
-			threads = runtime.availableProcessors();
-	        if( threads>1 )
-	        	threads++;	
-		}		
-        
-		this.executor = Executors.newFixedThreadPool(threads);
-		this.threadCount = threads;
+		if (this.executor != null) {
+			this.executor.shutdown();
+			int threads = t;
+
+			if (threads == 0) {
+				Runtime runtime = Runtime.getRuntime();
+				threads = runtime.availableProcessors();
+				if (threads > 1)
+					threads++;
+			}
+
+			this.executor = Executors.newFixedThreadPool(threads);
+			this.threadCount = threads;
+		}
 	}
 
 	/**
@@ -115,9 +116,10 @@ public class EngineConcurrency implements MultiThreadable {
 			throw new EncogError(this.threadError);
 		}
 	}
-	
+
 	/**
 	 * Create a new task group.
+	 * 
 	 * @return The new task group.
 	 */
 	public TaskGroup createTaskGroup() {
@@ -132,7 +134,9 @@ public class EngineConcurrency implements MultiThreadable {
 
 	/**
 	 * Process the specified task.
-	 * @param task The task to process.
+	 * 
+	 * @param task
+	 *            The task to process.
 	 */
 	public void processTask(final EngineTask task) {
 		processTask(task, null);
@@ -144,7 +148,8 @@ public class EngineConcurrency implements MultiThreadable {
 	 * 
 	 * @param task
 	 *            The task to process.
-	 * @param group The task group.
+	 * @param group
+	 *            The task group.
 	 */
 	public void processTask(final EngineTask task, final TaskGroup group) {
 		if (this.executor == null) {
