@@ -333,7 +333,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 */
 	@Override
 	public int size() {
-		throw new UnsupportedOperationException();
+		return this.linksList.size();
 	}
 
 	/**
