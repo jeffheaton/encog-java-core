@@ -79,8 +79,10 @@ public class EngineConcurrency implements MultiThreadable {
 	public EngineConcurrency() {
 		Runtime runtime = Runtime.getRuntime();        
         int threads = runtime.availableProcessors();
-        if( threads>1 )
-        	threads++;
+        // NOTE: This was tested on a Intel i7 4 cores 8 threads with
+        // Encog Benchmark. Ca 15% higher performance with exactly 8 threads.
+        // if( threads>1 )
+        //	 threads++;
 		this.executor = Executors.newFixedThreadPool(threads);
 	}
 	

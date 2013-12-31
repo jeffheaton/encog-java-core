@@ -236,21 +236,27 @@ public class GradientWorker implements EngineTask {
 		final double currentFlatSpot = this.flatSpot[currentLevel + 1];
 
 		// handle weights
+		// array references are made method local to avoid one indirection
+		final double[] layerDelta = this.layerDelta;
+		final double[] weights = this.weights;
+		final double[] gradients = this.gradients;
+		final double[] layerOutput = this.layerOutput;
+		final double[] layerSums = this.layerSums;
 		int yi = fromLayerIndex;
 		for (int y = 0; y < fromLayerSize; y++) {
-			final double output = this.layerOutput[yi];
+			final double output = layerOutput[yi];
 			double sum = 0;
-			int xi = toLayerIndex;
+
 			int wi = index + y;
-			for (int x = 0; x < toLayerSize; x++) {
-				this.gradients[wi] += output * this.layerDelta[xi];
-				sum += this.weights[wi] * this.layerDelta[xi];
-				wi += fromLayerSize;
-				xi++;
+			final int loopEnd = toLayerIndex+toLayerSize;
+			for (int xi = toLayerIndex; xi < loopEnd; xi++, wi += fromLayerSize) {
+				gradients[wi] += output * layerDelta[xi];
+				sum += weights[wi] * layerDelta[xi];
 			}
 
-			this.layerDelta[yi] = sum
-					* (activation.derivativeFunction(this.layerSums[yi],this.layerOutput[yi])+currentFlatSpot);
+			layerDelta[yi] = sum
+					* (activation.derivativeFunction(layerSums[yi], layerOutput[yi])+currentFlatSpot);
+
 			yi++;
 		}
 	}

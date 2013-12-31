@@ -72,10 +72,14 @@ public class DetermineWorkload {
 		if (threads == 0) {
 			int num = Runtime.getRuntime().availableProcessors();
 
+			// NOTE: This was tested on a Intel i7 4 cores 8 threads with
+			// Encog Benchmark. Ca 15% higher performance with exactly 8 threads.
+
 			// if there is more than one processor, use processor count +1
-			if (num != 1) {
-				num++;
-			}
+			// if (num != 1) {
+			//	num++;
+			// }
+
 			// if there is a single processor, just use one thread
 
 			// Now see how big the training sets are going to be.
