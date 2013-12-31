@@ -438,6 +438,8 @@ public class AnalystWizard {
 				final int countPer = field.getMinClassCount();
 				this.script.getProperties().setProperty(
 						ScriptProperties.BALANCE_CONFIG_COUNT_PER, countPer);
+			} else {
+				throw new AnalystError("Balance currently may only be used on a nominal/class field, not a numeric field.");
 			}
 		}
 

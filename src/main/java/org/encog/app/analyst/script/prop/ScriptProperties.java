@@ -443,7 +443,7 @@ public class ScriptProperties {
 	public final int getPropertyInt(final String name) {
 		try {
 			final String value = this.data.get(name);
-			if (value == null) {
+			if (value == null || value.length()==0) {
 				return 0;
 			}
 			return Integer.parseInt(value);
