@@ -60,7 +60,7 @@ public class MutatePerturb implements EvolutionaryOperator {
 		
 		for(int i=0;i<parent.size();i++) {
 			double value = parent.getData()[i];
-			value += (perturbAmount - (rnd.nextDouble() * perturbAmount * 2));
+			value += value * (perturbAmount - (rnd.nextDouble() * perturbAmount * 2));
 			child.getData()[i] = value;
 		}
 	}
