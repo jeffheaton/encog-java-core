@@ -159,6 +159,10 @@ public class RGBDownsample implements Downsample {
 
 		endX = Math.min(this.imageWidth, endX);
 		endY = Math.min(this.imageHeight, endY);
+		
+		// sample at least one pixel (for instance if down-sample size is the same as regular size)
+		endX = Math.max(startX+1, endX);
+		endY = Math.max(startY+1, endY);
 
 		int redTotal = 0;
 		int greenTotal = 0;
