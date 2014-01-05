@@ -23,6 +23,8 @@
  */
 package org.encog.neural.networks.training.propagation;
 
+import java.util.Random;
+
 import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationSigmoid;
@@ -134,6 +136,11 @@ public abstract class Propagation extends BasicTraining implements Train,
 	 * The error function.
 	 */
 	private ErrorFunction ef = new LinearErrorFunction();
+	
+	/**
+	 * Used to generate randomness for dropout
+	 */
+	protected Random dropoutRandomSource = new Random();
 
 	/**
 	 * Construct a propagation object.

@@ -263,8 +263,7 @@ public class QuickPropagation extends Propagation implements
 	public double updateWeight(final double[] gradients,
 			final double[] lastGradient, final int index, double dropoutRate) {
 		
-		Random r = new Random();
-		if (r.nextDouble() < dropoutRate) {
+		if (dropoutRate > 0 && dropoutRandomSource.nextDouble() < dropoutRate) {
 			return 0;
 		};
 		
