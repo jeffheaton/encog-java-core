@@ -33,7 +33,8 @@ import org.encog.neural.networks.training.propagation.manhattan.ManhattanPropaga
 public class ManhattanPropagationFactory implements EnsembleTrainFactory {
 
 	private double learningRate = 0.01;
-
+	private double dropoutRate = 0;
+	
 	public void setLearningRate(double learningRate) {
 		this.learningRate = learningRate;
 	}
@@ -44,7 +45,9 @@ public class ManhattanPropagationFactory implements EnsembleTrainFactory {
 
 	@Override
 	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData) {
-		return (MLTrain) new ManhattanPropagation((BasicNetwork) mlMethod, trainingData, 0.01);
+		ManhattanPropagation mp = new ManhattanPropagation((BasicNetwork) mlMethod, trainingData, 0.01);
+		mp.setDroupoutRate(dropoutRate);
+		return (MLTrain) mp;
 	}
 
 	@Override
@@ -54,8 +57,7 @@ public class ManhattanPropagationFactory implements EnsembleTrainFactory {
 
 	@Override
 	public void setDropoutRate(double rate) {
-		// TODO Auto-generated method stub
-		
+		dropoutRate = rate;
 	}
 
 }

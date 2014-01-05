@@ -32,9 +32,13 @@ import org.encog.neural.networks.training.propagation.scg.ScaledConjugateGradien
 
 public class ScaledConjugateGradientFactory implements EnsembleTrainFactory {
 
+	private double dropoutRate = 0;
+	
 	@Override
 	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData) {
-		return (MLTrain) new ScaledConjugateGradient((BasicNetwork) mlMethod, trainingData);
+		ScaledConjugateGradient scg = new ScaledConjugateGradient((BasicNetwork) mlMethod, trainingData);
+		scg.setDroupoutRate(dropoutRate);
+		return (MLTrain) scg;
 	}
 
 	@Override
@@ -44,8 +48,7 @@ public class ScaledConjugateGradientFactory implements EnsembleTrainFactory {
 
 	@Override
 	public void setDropoutRate(double rate) {
-		// TODO Auto-generated method stub
-		
+		dropoutRate = rate;
 	}
 
 }

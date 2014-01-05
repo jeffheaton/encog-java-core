@@ -32,9 +32,13 @@ import org.encog.neural.networks.training.propagation.back.Backpropagation;
 
 public class BackpropagationFactory implements EnsembleTrainFactory {
 
+	private double dropoutRate = 0;
+	
 	@Override
 	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData) {
-		return (MLTrain) new Backpropagation((BasicNetwork) mlMethod, trainingData);
+		Backpropagation bp = new Backpropagation((BasicNetwork) mlMethod, trainingData);
+		bp.setDroupoutRate(dropoutRate);
+		return (MLTrain) bp;
 	}
 
 	public String getLabel() {
@@ -43,8 +47,7 @@ public class BackpropagationFactory implements EnsembleTrainFactory {
 
 	@Override
 	public void setDropoutRate(double rate) {
-		// TODO Auto-generated method stub
-		
+		dropoutRate = rate;	
 	}
 
 }

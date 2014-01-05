@@ -30,6 +30,8 @@ import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.lma.LevenbergMarquardtTraining;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 public class LevenbergMarquardtFactory implements EnsembleTrainFactory {
 
 	@Override
@@ -44,8 +46,7 @@ public class LevenbergMarquardtFactory implements EnsembleTrainFactory {
 
 	@Override
 	public void setDropoutRate(double rate) {
-		// TODO Auto-generated method stub
-		
+		throw new NotImplementedException();
 	}
 
 }
