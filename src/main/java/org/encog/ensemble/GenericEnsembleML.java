@@ -36,6 +36,7 @@ public class GenericEnsembleML implements EnsembleML {
 	private BasicNetwork ml;
 	private MLTrain trainer;
 	private String label;
+	private final int DEFAULT_MAX_ITERATIONS = 2000;
 
 	public GenericEnsembleML(MLMethod fromML, String description) {
 		setMl(fromML);
@@ -53,7 +54,7 @@ public class GenericEnsembleML implements EnsembleML {
 	}
 
 	@Override
-	public void train(double targetError, boolean verbose) {
+	public void train(double targetError, int maxIterations, boolean verbose) {
 		double error = 0;
 		double previouserror = 1;
 		double errordelta = 1;
@@ -73,7 +74,7 @@ public class GenericEnsembleML implements EnsembleML {
 				 trainer.canContinue() &&
 				 //errordelta / previouserror < 2 &&
 				 //make this a parameter
-				 iteration < 1000);
+				 iteration < maxIterations);
 		trainer.finishTraining();
 	}
 
@@ -139,5 +140,16 @@ public class GenericEnsembleML implements EnsembleML {
 	@Override
 	public double getError(EnsembleDataSet testset) {
 		return ml.calculateError(testset);
+	}
+
+	@Override
+	public void train(int maxIterations, double targetError) {
+		train(targetError, maxIterations, false);
+	}
+
+	@Override
+	public void train(double targetError, boolean verbose) {
+		train(targetError, DEFAULT_MAX_ITERATIONS, verbose);
+		
 	}
 }

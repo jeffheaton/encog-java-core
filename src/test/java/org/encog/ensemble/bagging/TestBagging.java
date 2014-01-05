@@ -27,6 +27,7 @@ package org.encog.ensemble.bagging;
 import java.util.ArrayList;
 import junit.framework.TestCase;
 import org.encog.engine.network.activation.ActivationSigmoid;
+import org.encog.ensemble.Ensemble.TrainingAborted;
 import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.aggregator.MajorityVoting;
 import org.encog.ensemble.data.EnsembleDataSet;
@@ -55,7 +56,11 @@ public class TestBagging extends TestCase {
 		MajorityVoting mv = new MajorityVoting();
 		Bagging testBagging = new Bagging(numSplits, dataSetSize, mlpFactory, trainingStrategy, mv);
 		testBagging.setTrainingData(trainingData);
-		testBagging.train(1E-2,1E-2,(EnsembleDataSet) trainingData);
+		try {
+			testBagging.train(1E-2,1E-2,(EnsembleDataSet) trainingData);
+		} catch (TrainingAborted e) {
+			e.printStackTrace();
+		}
 		for (int j = 0; j < trainingData.size(); j++) {
 			MLData input = trainingData.get(j).getInput();
 			MLData result = testBagging.compute(input);

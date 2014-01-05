@@ -39,6 +39,7 @@ public abstract class EnsembleDataSetFactory {
 	
 	public void setInputData(MLDataSet dataSource) {
 		this.dataSource = dataSource;
+		this.reload();
 	}
 	
 	abstract public EnsembleDataSet getNewDataSet();
@@ -85,6 +86,9 @@ public abstract class EnsembleDataSetFactory {
 		for (int i = 0; i < dataSource.size(); i++)
 			res.add(dataSource.get(i).getSignificance());
 		return res;
+	}
+
+	public void reload() {
 	}
 
 }
