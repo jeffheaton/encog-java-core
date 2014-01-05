@@ -1188,7 +1188,15 @@ public class AnalystWizard {
 			arch.append("R");
 		}
 		arch.append("(kernel=gaussian)->");
-		arch.append(this.targetField.getClasses().size());
+		
+		// If we are using regression, then output size is output columns.
+		if( this.getGoal()==AnalystGoal.Classification) {
+			arch.append(this.targetField.getClasses().size());
+		} else if( this.getGoal()==AnalystGoal.Regression)  {
+			arch.append(outputColumns);
+		} else {
+			throw new AnalystError("Unsupported goal type for PNN: " + this.getGoal().toString() );
+		}
 
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_TYPE, MLMethodFactory.TYPE_PNN);
