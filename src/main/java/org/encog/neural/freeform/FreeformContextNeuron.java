@@ -47,6 +47,7 @@ public class FreeformContextNeuron extends BasicFreeformNeuron {
 	 */
 	public FreeformContextNeuron(final FreeformNeuron theContextSource) {
 		super(null);
+		this.contextSource = theContextSource;
 	}
 
 	/**
