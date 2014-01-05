@@ -459,8 +459,17 @@ public class AnalystWizard {
 				}
 			}
 
+			/* If we found the output field, then flip its status to output */
 			if (af != null) {
 				af.setOutput(true);
+				/* However, if we are including the target field in the input, for time series,
+				 * then we must create an input field for it.
+				 */
+				if( this.includeTargetField ) {
+					AnalystField af2 = new AnalystField(af);
+					af.setOutput(false);
+					this.script.getNormalize().getNormalizedFields().add(af2);
+				}
 			}
 		}
 
@@ -491,8 +500,7 @@ public class AnalystWizard {
 		// generate the inputs for the new list
 		for (final AnalystField field : oldList) {
 			if (!field.isIgnored()) {
-
-				if (this.includeTargetField || field.isInput()) {
+				if (field.isInput()) {
 					for (int i = 0; i < this.lagWindowSize; i++) {
 						final AnalystField newField = new AnalystField(field);
 						newField.setTimeSlice(-i);
@@ -541,7 +549,12 @@ public class AnalystWizard {
 	 */
 	private void generateFeedForward(final int inputColumns,
 			final int outputColumns) {
-		final int hidden = (int) ((inputColumns*Math.max(this.lagWindowSize,1)) * 1.5);
+		int hidden = (int) ((inputColumns*Math.max(this.lagWindowSize,1)) * 1.5);
+		if( hidden<0 ) {
+			// Usual cause of this is zero inputs, which is in turn caused by not including the predicted field in the input.
+			throw new AnalystError("Can't have zero hidden neurons, make sure you have both input fields defined.\n "
+					+ "You might need to include the predicted field in the input.");
+		}
 
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_TYPE,

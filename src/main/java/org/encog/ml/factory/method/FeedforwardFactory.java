@@ -109,7 +109,7 @@ public class FeedforwardFactory {
 				}
 
 				if (layer.getCount() == 0) {
-					throw new EncogError("Unknown architecture element: "
+					throw new EncogError("Layer can't have zero neurons, Unknown architecture element: "
 							+ architecture + ", can't parse: " + part);
 				}
 
