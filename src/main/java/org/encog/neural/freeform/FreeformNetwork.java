@@ -92,9 +92,9 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 			final int hidden1, final int output, final ActivationFunction af) {
 
 		final FreeformNetwork network = new FreeformNetwork();
-		final FreeformLayer inputLayer = network.createInputLayer(2);
-		final FreeformLayer hiddenLayer1 = network.createLayer(3);
-		final FreeformLayer outputLayer = network.createOutputLayer(1);
+		final FreeformLayer inputLayer = network.createInputLayer(input);
+		final FreeformLayer hiddenLayer1 = network.createLayer(hidden1);
+		final FreeformLayer outputLayer = network.createOutputLayer(output);
 
 		network.connectLayers(inputLayer, hiddenLayer1, af, 1.0, false);
 		network.connectLayers(hiddenLayer1, outputLayer, af, 1.0, false);

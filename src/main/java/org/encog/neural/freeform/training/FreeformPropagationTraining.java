@@ -204,12 +204,8 @@ public abstract class FreeformPropagationTraining extends BasicTraining
 	}
 
 	@Override
-	public boolean isTrainingDone() {
-		return false;
-	}
-
-	@Override
 	public void iteration() {
+		preIteration();
 		this.iterationCount++;
 		calculateGradients();
 
@@ -220,6 +216,7 @@ public abstract class FreeformPropagationTraining extends BasicTraining
 				connection.setTempTraining(0, 0);
 			}
 		});
+		postIteration();
 	}
 
 	@Override

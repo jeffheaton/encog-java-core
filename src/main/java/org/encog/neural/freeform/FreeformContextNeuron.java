@@ -69,5 +69,18 @@ public class FreeformContextNeuron extends BasicFreeformNeuron {
 	public void updateContext() {
 		setActivation(this.contextSource.getActivation());
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[FreeformContextNeuron: ");
+		result.append("outputCount=");
+		result.append(this.getOutputs().size());
+		result.append("]");
+		return result.toString();
+	}
 
 }
