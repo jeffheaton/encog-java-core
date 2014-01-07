@@ -47,7 +47,7 @@ public class GenerateCS extends AbstractGenerator {
 	
 	private String useCSName(final String str) {
 		String result = str.trim();
-		if( Character.isUpperCase(str.charAt(0))) {
+		if( Character.isLowerCase(str.charAt(0))) {
 			result = Character.toUpperCase(result.charAt(0)) + result.substring(1);
 		}
 		return result;
@@ -78,7 +78,7 @@ public class GenerateCS extends AbstractGenerator {
 
 		final StringBuilder line = new StringBuilder();
 		line.append("public static IMLMethod ");
-		line.append(node.getName());
+		line.append(useCSName(node.getName()));
 		line.append("()");
 		addLine(line.toString());
 		indentLine("{");
@@ -119,7 +119,8 @@ public class GenerateCS extends AbstractGenerator {
 
 		final File dataFile = (File) node.getArgs().get(0).getValue();
 		final MLDataSet data = EncogUtility.loadEGB2Memory(dataFile);
-
+		addInclude("Encog.ML.Data.Basic");
+		
 		// generate the input data
 
 		indentLine("public static readonly double[][] INPUT_DATA = {");
