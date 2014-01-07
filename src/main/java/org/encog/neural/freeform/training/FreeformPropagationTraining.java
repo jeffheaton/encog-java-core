@@ -40,6 +40,9 @@ import org.encog.neural.freeform.FreeformNetwork;
 import org.encog.neural.freeform.FreeformNeuron;
 import org.encog.neural.freeform.task.ConnectionTask;
 
+/**
+ * Provides basic propagation functions to other trainers.
+ */
 public abstract class FreeformPropagationTraining extends BasicTraining
 		implements Serializable {
 
@@ -55,6 +58,13 @@ public abstract class FreeformPropagationTraining extends BasicTraining
 	private double error;
 	private final Set<FreeformNeuron> visited = new HashSet<FreeformNeuron>();
 	private boolean fixFlatSopt = true;
+	
+	/**
+	 * The batch size. Specify 1 for pure online training. Specify 0 for pure
+	 * batch training (complete training set in one batch). Otherwise specify
+	 * the batch size for batch training.
+	 */
+	private int batchSize = 0;
 
 	/**
 	 * Don't use this constructor, it is for serialization only.
@@ -70,31 +80,6 @@ public abstract class FreeformPropagationTraining extends BasicTraining
 		super(TrainingImplementationType.Iterative);
 		this.network = theNetwork;
 		this.training = theTraining;
-	}
-
-	private void calculateGradients() {
-		final ErrorCalculation errorCalc = new ErrorCalculation();
-		this.visited.clear();
-
-		for (final MLDataPair pair : this.training) {
-			final MLData input = pair.getInput();
-			final MLData ideal = pair.getIdeal();
-			final MLData actual = this.network.compute(input);
-			final double sig = pair.getSignificance();
-
-			errorCalc.updateError(actual.getData(), ideal.getData(), sig);
-
-			for (int i = 0; i < this.network.getOutputCount(); i++) {
-				final double diff = (ideal.getData(i) - actual.getData(i))
-						* sig;
-				final FreeformNeuron neuron = this.network.getOutputLayer()
-						.getNeurons().get(i);
-				calculateOutputDelta(neuron, diff);
-				calculateNeuronGradient(neuron);
-			}
-		}
-
-		setError(errorCalc.calculate());
 	}
 
 	private void calculateNeuronGradient(final FreeformNeuron toNeuron) {
@@ -207,15 +192,14 @@ public abstract class FreeformPropagationTraining extends BasicTraining
 	public void iteration() {
 		preIteration();
 		this.iterationCount++;
-		calculateGradients();
-
-		this.network.performConnectionTask(new ConnectionTask() {
-			@Override
-			public void task(final FreeformConnection connection) {
-				learnConnection(connection);
-				connection.setTempTraining(0, 0);
-			}
-		});
+		this.network.clearContext();
+		
+		if (this.batchSize == 0) {
+			processPureBatch();
+		} else {
+			processBatches();
+		}
+		
 		postIteration();
 	}
 
@@ -225,6 +209,85 @@ public abstract class FreeformPropagationTraining extends BasicTraining
 			this.iteration();
 		}
 
+	}
+	
+	protected void processPureBatch() {
+		final ErrorCalculation errorCalc = new ErrorCalculation();
+		this.visited.clear();
+
+		for (final MLDataPair pair : this.training) {
+			final MLData input = pair.getInput();
+			final MLData ideal = pair.getIdeal();
+			final MLData actual = this.network.compute(input);
+			final double sig = pair.getSignificance();
+
+			errorCalc.updateError(actual.getData(), ideal.getData(), sig);
+
+			for (int i = 0; i < this.network.getOutputCount(); i++) {
+				final double diff = (ideal.getData(i) - actual.getData(i))
+						* sig;
+				final FreeformNeuron neuron = this.network.getOutputLayer()
+						.getNeurons().get(i);
+				calculateOutputDelta(neuron, diff);
+				calculateNeuronGradient(neuron);
+			}
+		}
+
+		// Set the overall error.
+		setError(errorCalc.calculate());
+		
+		// Learn for all data.
+		learn();		
+	}
+	
+	protected void processBatches() {
+		int lastLearn = 0;
+		final ErrorCalculation errorCalc = new ErrorCalculation();
+		this.visited.clear();
+
+		for (final MLDataPair pair : this.training) {
+			final MLData input = pair.getInput();
+			final MLData ideal = pair.getIdeal();
+			final MLData actual = this.network.compute(input);
+			final double sig = pair.getSignificance();
+
+			errorCalc.updateError(actual.getData(), ideal.getData(), sig);
+
+			for (int i = 0; i < this.network.getOutputCount(); i++) {
+				final double diff = (ideal.getData(i) - actual.getData(i))
+						* sig;
+				final FreeformNeuron neuron = this.network.getOutputLayer()
+						.getNeurons().get(i);
+				calculateOutputDelta(neuron, diff);
+				calculateNeuronGradient(neuron);
+			}
+			
+			// Are we at the end of a batch.
+			lastLearn++;
+			if( lastLearn>=this.batchSize ) {
+				lastLearn = 0;
+				learn();	
+			}
+		}
+		
+		// Handle any remaining data.
+		if( lastLearn>0 ) {
+			learn();
+		}
+
+		// Set the overall error.
+		setError(errorCalc.calculate());
+		
+	}
+	
+	protected void learn() {
+		this.network.performConnectionTask(new ConnectionTask() {
+			@Override
+			public void task(final FreeformConnection connection) {
+				learnConnection(connection);
+				connection.setTempTraining(0, 0);
+			}
+		});
 	}
 
 	protected abstract void learnConnection(FreeformConnection connection);
@@ -244,4 +307,12 @@ public abstract class FreeformPropagationTraining extends BasicTraining
 		this.iterationCount = iteration;
 	}
 
+	public int getBatchSize() {
+		return batchSize;
+	}
+
+	public void setBatchSize(int batchSize) {
+		this.batchSize = batchSize;
+	}
+	
 }

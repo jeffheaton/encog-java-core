@@ -49,6 +49,11 @@ import org.encog.util.EngineArray;
  * these defaults are acceptable. This makes the resilient propagation algorithm
  * one of the easiest and most efficient training algorithms available.
  * 
+ * It is also important to note that RPROP does not work well with online training.
+ * You should always use a batch size bigger than one.  Typically the larger the better.
+ * By default a batch size of zero is used, zero means to include the entire training
+ * set in the batch.
+ * 
  * The optional parameters are:
  * 
  * zeroTolerance - How close to zero can a number be to be considered zero. The
@@ -431,13 +436,4 @@ public class ResilientPropagation extends Propagation {
 		return updateValues;
 	}
 	
-	/**
-	 * Do not allow batch sizes other than 0, not supported.
-	 */
-	public void setBatchSize(int theBatchSize) {
-		if( theBatchSize!=0 ) {
-			throw new EncogError("Online training is not supported for:" + this.getClass().getSimpleName());
-		}
-	}
-
 }

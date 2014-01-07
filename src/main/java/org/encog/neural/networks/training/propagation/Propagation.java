@@ -229,8 +229,14 @@ public abstract class Propagation extends BasicTraining implements Train,
 					learnLimited();
 				} else {
 					learn();
+					lastLearn = 0;
 				}
 			}
+		}
+		
+		// handle any remaining learning
+		if( lastLearn>0 ) {
+			learn();
 		}
 
 		this.setError(this.workers[0].getErrorCalculation().calculate());
