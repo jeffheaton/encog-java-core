@@ -487,7 +487,7 @@ public class TemporalMLDataSet extends BasicNeuralDataSet implements Serializabl
 	 */
 	private double getDataRAW(final TemporalDataDescription desc,
 			final int index) {
-		final TemporalPoint point = this.points.get(index-1);
+		final TemporalPoint point = this.points.get(index);
 		return point.getData(desc.getIndex());
 	}
 
