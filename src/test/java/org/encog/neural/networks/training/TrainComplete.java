@@ -26,6 +26,7 @@ package org.encog.neural.networks.training;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.encog.mathutil.randomize.ConsistentRandomizer;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.train.MLTrain;
@@ -41,16 +42,13 @@ public class TrainComplete extends TestCase {
 		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = EncogUtility.simpleFeedForward(2, 5, 7, 1, true);
-		//randomizer.randomize(network);
-		System.out.println(network.dumpWeights());
+		(new ConsistentRandomizer(-1,1)).randomize(network);
 		MLTrain rprop = new ResilientPropagation(network, trainingData);
 		int iteration = 0;
 		do {
 			rprop.iteration();
-			System.out.println(rprop.getError());
 			iteration++;
 		} while( iteration<5000 && rprop.getError()>0.01);
-		System.out.println(iteration);
 		Assert.assertTrue(iteration<40);
 	}
 	
