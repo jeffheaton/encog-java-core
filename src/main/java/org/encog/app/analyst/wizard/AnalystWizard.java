@@ -571,7 +571,7 @@ public class AnalystWizard {
 		}
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
-				"rprop");
+				MLTrainFactory.TYPE_RPROP);
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
 	}
@@ -983,10 +983,10 @@ public class AnalystWizard {
 
 		if (outputColumns > 1) {
 			this.script.getProperties().setProperty(
-					ScriptProperties.ML_TRAIN_TYPE, "rprop");
+					ScriptProperties.ML_TRAIN_TYPE, MLTrainFactory.TYPE_RPROP);
 		} else {
 			this.script.getProperties().setProperty(
-					ScriptProperties.ML_TRAIN_TYPE, "svd");
+					ScriptProperties.ML_TRAIN_TYPE, MLTrainFactory.TYPE_SVD);
 		}
 
 		this.script.getProperties().setProperty(
