@@ -331,13 +331,6 @@ public class TemporalMLDataSet extends BasicNeuralDataSet implements Serializabl
 			final int index) {
 		final double[] result = new double[1];
 		
-		if( desc.getType()==Type.DELTA_CHANGE || desc.getType()==Type.PERCENT_CHANGE ) {
-			if (index + this.inputWindowSize > this.points.size()) {
-				throw new TemporalError("Can't generate input temporal data "
-						+ "beyond the end of provided data.");
-			}
-		}
-		
 		switch (desc.getType()) {
 		case DELTA_CHANGE:
 			result[0] = getDataDeltaChange(desc, index);
