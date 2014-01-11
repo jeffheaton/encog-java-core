@@ -46,7 +46,7 @@ public class LevenbergMarquardtFactory implements EnsembleTrainFactory {
 
 	@Override
 	public void setDropoutRate(double rate) {
-		throw new NotImplementedException();
+		throw new RuntimeException("LMQ does not support dropout rates");
 	}
 
 }
