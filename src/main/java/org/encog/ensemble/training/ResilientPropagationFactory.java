@@ -43,7 +43,12 @@ public class ResilientPropagationFactory implements EnsembleTrainFactory {
 
 	@Override
 	public String getLabel() {
-		return "resprop";
+		String l = "resprop";
+		if(dropoutRate > 0)
+		{
+			l += "=" + dropoutRate;
+		}
+		return l;
 	}
 
 	@Override

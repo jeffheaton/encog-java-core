@@ -41,7 +41,7 @@ public class LevenbergMarquardtFactory implements EnsembleTrainFactory {
 
 	@Override
 	public String getLabel() {
-		return "resprop";
+		return "LMQ";
 	}
 
 	@Override

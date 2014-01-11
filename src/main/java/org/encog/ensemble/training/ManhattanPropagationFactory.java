@@ -52,7 +52,12 @@ public class ManhattanPropagationFactory implements EnsembleTrainFactory {
 
 	@Override
 	public String getLabel() {
-		return "resprop";
+		String l = "resprop" + learningRate;
+		if(dropoutRate > 0)
+		{
+			l += "=" + dropoutRate;
+		}
+		return l;
 	}
 
 	@Override

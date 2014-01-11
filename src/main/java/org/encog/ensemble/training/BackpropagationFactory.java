@@ -42,7 +42,12 @@ public class BackpropagationFactory implements EnsembleTrainFactory {
 	}
 
 	public String getLabel() {
-		return "backprop";
+		String l = "resprop";
+		if(dropoutRate > 0)
+		{
+			l += "=" + dropoutRate;
+		}
+		return l;
 	}
 
 	@Override
