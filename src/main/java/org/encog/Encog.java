@@ -57,12 +57,12 @@ public final class Encog {
 	/**
 	 * The current engog version, this should be read from the properties.
 	 */
-	public static final String VERSION = "3.2.0";
+	public static final String VERSION = "3.3.0";
 	
 	/**
 	 * The current engog version, this should be read from the properties.
 	 */
-	public static final String COPYRIGHT = "Copyright 2012 by Heaton Research, Inc.";
+	public static final String COPYRIGHT = "Copyright 2014 by Heaton Research, Inc.";
 	
 	/**
 	 * The current engog version, this should be read from the properties.
