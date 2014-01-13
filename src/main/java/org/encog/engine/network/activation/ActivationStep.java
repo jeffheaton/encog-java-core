@@ -30,7 +30,7 @@ import org.encog.util.obj.ActivationUtil;
  * The step activation function is a very simple activation function. It is the
  * activation function that was used by the original perceptron. Using the
  * default parameters it will return 1 if the input is 0 or greater. Otherwise
- * it will return 1.
+ * it will return 0.
  * 
  * The center, low and high properties allow you to define how this activation
  * function works. If the input is equal to center or higher the high property
