@@ -46,7 +46,7 @@ public class ResilientPropagationFactory implements EnsembleTrainFactory {
 		String l = "resprop";
 		if(dropoutRate > 0)
 		{
-			l += "=" + dropoutRate;
+			l += "-" + dropoutRate;
 		}
 		return l;
 	}
