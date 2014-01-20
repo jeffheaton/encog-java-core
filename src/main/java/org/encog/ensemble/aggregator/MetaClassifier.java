@@ -60,7 +60,7 @@ public class MetaClassifier implements EnsembleAggregator {
 
 	@Override
 	public String getLabel() {
-		return "metaclassifier-" + mlFact.getLabel() + "-" + trainError + "=" + etFact.getLabel();
+		return "metaclassifier-" + mlFact.getLabel() + "-" + trainError + "-" + etFact.getLabel();
 	}
 
 	@Override
