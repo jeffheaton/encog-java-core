@@ -46,6 +46,16 @@ public class MetaClassifier implements EnsembleAggregator {
 		this.mlFact = mlFact;
 		this.etFact = etFact;
 	}
+	
+	public double getTrainingError()
+	{
+		return trainError;
+	}
+	
+	public void setTrainingError(double trainError)
+	{
+		this.trainError = trainError;
+	}
 
 	@Override
 	public MLData evaluate(ArrayList<MLData> outputs) {
