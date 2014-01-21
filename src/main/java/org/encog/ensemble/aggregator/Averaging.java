@@ -65,4 +65,8 @@ public class Averaging implements EnsembleAggregator {
 	public boolean needsTraining() {
 		return false;
 	}
+
+	@Override
+	public void setTrainingErrorDivisor(int divisor) {
+	}
 }

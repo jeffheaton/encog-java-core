@@ -35,4 +35,5 @@ public interface EnsembleAggregator {
 	void setTrainingSet(EnsembleDataSet trainingSet);
 	void train();
 	public String getLabel();
+	void setTrainingErrorDivisor(int divisor);
 }

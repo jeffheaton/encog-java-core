@@ -40,11 +40,13 @@ public class MetaClassifier implements EnsembleAggregator {
 	EnsembleMLMethodFactory mlFact;
 	EnsembleTrainFactory etFact;
 	double trainError;
+	int divisor;
 
 	public MetaClassifier(double trainError, EnsembleMLMethodFactory mlFact, EnsembleTrainFactory etFact) {
 		this.trainError = trainError;
 		this.mlFact = mlFact;
 		this.etFact = etFact;
+		divisor = 1;
 	}
 	
 	public double getTrainingError()
@@ -57,6 +59,12 @@ public class MetaClassifier implements EnsembleAggregator {
 		this.trainError = trainError;
 	}
 
+	@Override
+	public void setTrainingErrorDivisor(int divisor)
+	{
+		this.divisor = divisor;
+	}
+	
 	@Override
 	public MLData evaluate(ArrayList<MLData> outputs) {
 		BasicMLData merged_outputs = new BasicMLData(classifier.getInputCount());
@@ -76,7 +84,7 @@ public class MetaClassifier implements EnsembleAggregator {
 	@Override
 	public void train() {
 		if (classifier != null)
-			classifier.train(trainError);
+			classifier.train(trainError / divisor);
 		else
 			System.err.println("Trying to train a null classifier in MetaClassifier");
 	}

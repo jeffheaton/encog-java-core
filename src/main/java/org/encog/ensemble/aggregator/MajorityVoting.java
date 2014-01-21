@@ -71,4 +71,8 @@ public class MajorityVoting implements EnsembleAggregator {
 		return false;
 	}
 
+	@Override
+	public void setTrainingErrorDivisor(int divisor) {
+	}
+
 }
