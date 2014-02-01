@@ -30,6 +30,7 @@ import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ensemble.Ensemble.TrainingAborted;
 import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.aggregator.MajorityVoting;
+import org.encog.ensemble.aggregator.WeightedAveraging.WeightMismatchException;
 import org.encog.ensemble.data.EnsembleDataSet;
 import org.encog.ensemble.ml.mlp.factory.MultiLayerPerceptronFactory;
 import org.encog.ensemble.training.ResilientPropagationFactory;
@@ -63,10 +64,15 @@ public class TestBagging extends TestCase {
 		}
 		for (int j = 0; j < trainingData.size(); j++) {
 			MLData input = trainingData.get(j).getInput();
-			MLData result = testBagging.compute(input);
-			MLData should = trainingData.get(j).getIdeal();
-			for (int i = 0; i < trainingData.getIdealSize(); i++)
-				assertEquals(should.getData()[i],result.getData()[i]);
+			MLData result;
+			try {
+				result = testBagging.compute(input);
+				MLData should = trainingData.get(j).getIdeal();
+				for (int i = 0; i < trainingData.getIdealSize(); i++)
+					assertEquals(should.getData()[i],result.getData()[i]);
+			} catch (WeightMismatchException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

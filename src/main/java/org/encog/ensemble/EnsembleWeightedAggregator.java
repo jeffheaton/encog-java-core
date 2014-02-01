@@ -23,18 +23,10 @@
  */
 package org.encog.ensemble;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import org.encog.ensemble.aggregator.WeightedAveraging.WeightMismatchException;
-import org.encog.ensemble.data.EnsembleDataSet;
-import org.encog.ml.data.MLData;
+public interface EnsembleWeightedAggregator extends EnsembleAggregator {
 
-public interface EnsembleAggregator {
-
-	MLData evaluate(ArrayList<MLData> outputs) throws WeightMismatchException;
-	public boolean needsTraining();
-	void setTrainingSet(EnsembleDataSet trainingSet);
-	void train();
-	public String getLabel();
-	void setTrainingErrorDivisor(int divisor);
+	public void setWeights(List<Double> weights);
+	public List<Double> getWeights();
 }
