@@ -70,7 +70,8 @@ public class TestBagging extends TestCase {
 				MLData should = trainingData.get(j).getIdeal();
 				for (int i = 0; i < trainingData.getIdealSize(); i++)
 					assertEquals(should.getData()[i],result.getData()[i]);
-			} catch (WeightMismatchException e) {
+			} catch (Exception e)
+			{
 				e.printStackTrace();
 			}
 		}
