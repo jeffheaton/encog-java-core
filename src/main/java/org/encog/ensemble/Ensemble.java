@@ -25,6 +25,7 @@ package org.encog.ensemble;
 
 import java.util.ArrayList;
 
+import org.encog.ensemble.aggregator.WeightedAveraging.WeightMismatchException;
 import org.encog.ensemble.data.EnsembleDataSet;
 import org.encog.ensemble.data.factories.EnsembleDataSetFactory;
 import org.encog.ml.data.MLData;
@@ -238,8 +239,9 @@ public abstract class Ensemble {
 	 * Compute the output for a specific input
 	 * @param input
 	 * @return The data.
+	 * @throws WeightMismatchException 
 	 */
-	public MLData compute(MLData input) {
+	public MLData compute(MLData input) throws WeightMismatchException {
 		ArrayList<MLData> outputs = new ArrayList<MLData>();
 		for(EnsembleML member: members)
 		{
