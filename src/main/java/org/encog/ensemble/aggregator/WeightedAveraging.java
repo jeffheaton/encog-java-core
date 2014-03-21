@@ -108,6 +108,7 @@ public class WeightedAveraging implements EnsembleWeightedAggregator {
 	}
 
 	@Override
-	public void setTrainingErrorDivisor(int divisor) {
+	public void setNumberOfMembers(int members) {
+		//does nothing
 	}
 }

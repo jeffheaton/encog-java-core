@@ -35,6 +35,7 @@ public class MultiLayerPerceptronFactory implements EnsembleMLMethodFactory {
 
 	Collection<Integer> layers;
 	ActivationFunction activation;
+	int sizeMultiplier = 1;
 
 	public void setParameters(Collection<Integer> layers, ActivationFunction activation){
 		this.layers=layers;
@@ -44,9 +45,9 @@ public class MultiLayerPerceptronFactory implements EnsembleMLMethodFactory {
 	@Override
 	public MLMethod createML(int inputs, int outputs) {
 		BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(activation,false,inputs)); //(inputs));
+		network.addLayer(new BasicLayer(activation,false,inputs));
 		for (Integer layerSize: layers)
-			network.addLayer(new BasicLayer(activation,true,layerSize));
+			network.addLayer(new BasicLayer(activation,true,layerSize * sizeMultiplier));
 		network.addLayer(new BasicLayer(activation,true,outputs));
 		network.getStructure().finalizeStructure();
 		network.reset();
@@ -64,6 +65,11 @@ public class MultiLayerPerceptronFactory implements EnsembleMLMethodFactory {
 	@Override
 	public void reInit(MLMethod ml) {
 		((BasicNetwork) ml).reset();
+	}
+
+	@Override
+	public void setSizeMultiplier(int sizeMultiplier) {
+		this.sizeMultiplier = sizeMultiplier;
 	}
 
 }
