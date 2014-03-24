@@ -26,7 +26,7 @@ package org.encog.neural.freeform;
 import org.encog.neural.freeform.basic.BasicFreeformNeuron;
 
 /**
- * Defines a freeform contexst neuron.
+ * Defines a freeform context neuron.
  *
  */
 public class FreeformContextNeuron extends BasicFreeformNeuron {

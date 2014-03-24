@@ -51,12 +51,39 @@ public abstract class FreeformPropagationTraining extends BasicTraining
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * The constant to use to fix the flat spot problem.
+	 */
 	public static final double FLAT_SPOT_CONST = 0.1;
+	
+	/**
+	 * The network that we are training.
+	 */
 	private final FreeformNetwork network;
+	
+	/**
+	 * The training set to use.
+	 */
 	private final MLDataSet training;
+	
+	/**
+	 * The number of iterations.
+	 */
 	private int iterationCount;
+	
+	/**
+	 * The error at the beginning of the last iteration.
+	 */
 	private double error;
+	
+	/**
+	 * The neurons that have been visited.
+	 */
 	private final Set<FreeformNeuron> visited = new HashSet<FreeformNeuron>();
+	
+	/**
+	 * Are we fixing the flat spot problem?  (default = true)
+	 */
 	private boolean fixFlatSopt = true;
 	
 	/**
@@ -75,6 +102,11 @@ public abstract class FreeformPropagationTraining extends BasicTraining
 		this.training = null;
 	}
 	
+	/**
+	 * Construct the trainer.
+	 * @param theNetwork The network to train.
+	 * @param theTraining The training data.
+	 */
 	public FreeformPropagationTraining(final FreeformNetwork theNetwork,
 			final MLDataSet theTraining) {
 		super(TrainingImplementationType.Iterative);
@@ -82,6 +114,10 @@ public abstract class FreeformPropagationTraining extends BasicTraining
 		this.training = theTraining;
 	}
 
+	/**
+	 * Calculate the gradient for a neuron.
+	 * @param toNeuron The neuron to calculate for.
+	 */
 	private void calculateNeuronGradient(final FreeformNeuron toNeuron) {
 
 		// Only calculate if layer has inputs, because we've already handled the
@@ -135,6 +171,12 @@ public abstract class FreeformPropagationTraining extends BasicTraining
 
 	}
 
+	/**
+	 * Calculate the output delta for a neuron, given its difference.
+	 * Only used for output neurons.
+	 * @param neuron
+	 * @param diff
+	 */
 	private void calculateOutputDelta(final FreeformNeuron neuron,
 			final double diff) {
 		final double neuronOutput = neuron.getActivation();
@@ -149,45 +191,72 @@ public abstract class FreeformPropagationTraining extends BasicTraining
 		neuron.setTempTraining(0, layerDelta);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean canContinue() {
 		return false;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void finishTraining() {
 		this.network.tempTrainingClear();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public double getError() {
 		return this.error;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public TrainingImplementationType getImplementationType() {
 		return TrainingImplementationType.Iterative;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getIteration() {
 		return this.iterationCount;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public MLMethod getMethod() {
 		return this.network;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public MLDataSet getTraining() {
 		return this.training;
 	}
 
+	/**
+	 * @return True, if we are fixing the flat spot problem.
+	 */
 	public boolean isFixFlatSopt() {
 		return this.fixFlatSopt;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void iteration() {
 		preIteration();
@@ -203,6 +272,9 @@ public abstract class FreeformPropagationTraining extends BasicTraining
 		postIteration();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void iteration(final int count) {
 		for (int i = 0; i < count; i++) {
@@ -211,6 +283,9 @@ public abstract class FreeformPropagationTraining extends BasicTraining
 
 	}
 	
+	/**
+	 * Process training for pure batch mode (one single batch).
+	 */
 	protected void processPureBatch() {
 		final ErrorCalculation errorCalc = new ErrorCalculation();
 		this.visited.clear();
@@ -240,6 +315,9 @@ public abstract class FreeformPropagationTraining extends BasicTraining
 		learn();		
 	}
 	
+	/**
+	 * Process training batches.
+	 */
 	protected void processBatches() {
 		int lastLearn = 0;
 		final ErrorCalculation errorCalc = new ErrorCalculation();
@@ -280,6 +358,9 @@ public abstract class FreeformPropagationTraining extends BasicTraining
 		
 	}
 	
+	/**
+	 * Learn for the entire network.
+	 */
 	protected void learn() {
 		this.network.performConnectionTask(new ConnectionTask() {
 			@Override
@@ -290,27 +371,48 @@ public abstract class FreeformPropagationTraining extends BasicTraining
 		});
 	}
 
+	/**
+	 * Learn for a single connection.
+	 * @param connection The connection to learn from.
+	 */
 	protected abstract void learnConnection(FreeformConnection connection);
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setError(final double theError) {
 		this.error = theError;
 
 	}
 
+	/**
+	 * Set if we should fix the flat spot problem.
+	 * @param fixFlatSopt True, if we should fix the flat spot problem.
+	 */
 	public void setFixFlatSopt(final boolean fixFlatSopt) {
 		this.fixFlatSopt = fixFlatSopt;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setIteration(final int iteration) {
 		this.iterationCount = iteration;
 	}
 
+	/**
+	 * @return The batch size.
+	 */
 	public int getBatchSize() {
 		return batchSize;
 	}
 
+	/**
+	 * Set the batch size.
+	 * @param batchSize The batch size.
+	 */
 	public void setBatchSize(int batchSize) {
 		this.batchSize = batchSize;
 	}
