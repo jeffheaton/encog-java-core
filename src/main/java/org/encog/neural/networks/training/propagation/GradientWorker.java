@@ -199,17 +199,17 @@ public class GradientWorker implements EngineTask {
 	 *            The ideal values.      
 	 * @param s   The significance.
 	 */
-	private void process(final double[] input, final double[] ideal, double s) {
-		this.network.compute(input, this.actual);
+	private void process(final MLDataPair pair) {
+		this.network.compute(pair.getInputArray(), this.actual);
 
-		this.errorCalculation.updateError(this.actual, ideal, s);
-		this.errorFunction.calculateError(ideal, actual, this.layerDelta);
+		this.errorCalculation.updateError(this.actual, pair.getIdealArray(), pair.getSignificance());
+		this.errorFunction.calculateError(pair.getIdealArray(), actual, this.layerDelta);
 
 		for (int i = 0; i < this.actual.length; i++) {
 
 			this.layerDelta[i] = ((this.network.getActivationFunctions()[0]
 					.derivativeFunction(this.layerSums[i],this.layerOutput[i]) + this.flatSpot[0]))
-					* (this.layerDelta[i] * s);
+					* (this.layerDelta[i] * pair.getSignificance());
 		}
 
 		for (int i = this.network.getBeginTraining(); i < this.network
@@ -269,7 +269,7 @@ public class GradientWorker implements EngineTask {
 			this.errorCalculation.reset();
 			for (int i = this.low; i <= this.high; i++) {
 				this.training.getRecord(i, this.pair);
-				process(this.pair.getInputArray(), this.pair.getIdealArray(),pair.getSignificance());
+				process(pair);
 			}
 			final double error = this.errorCalculation.calculate();
 			this.owner.report(this.gradients, error, null);
@@ -281,7 +281,7 @@ public class GradientWorker implements EngineTask {
 	
 	public final void run(int index) {
 		this.training.getRecord(index, this.pair);
-		process(this.pair.getInputArray(), this.pair.getIdealArray(),pair.getSignificance());
+		process(pair);
 		this.owner.report(this.gradients, 0, null);
 		EngineArray.fill(this.gradients, 0);
 	}

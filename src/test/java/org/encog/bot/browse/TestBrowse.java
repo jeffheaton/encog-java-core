@@ -42,19 +42,5 @@ public class TestBrowse extends TestCase {
 		WebPage page = b.getCurrentPage();
 		Assert.assertTrue( page.getTitle().getTextOnly().indexOf("HTTP")!=-1 );
 	}
-	
-	@Test
-	public void testFormGET() throws Throwable
-	{
-		Browser b = new Browser();
-		b.navigate(new URL("http://www.httprecipes.com/1/7/get.php"));
-		WebPage page = b.getCurrentPage();
-		Assert.assertTrue( page.getTitle().getTextOnly().indexOf("HTTP")!=-1 );
-		Form form = (Form)page.find(Form.class, 0);
-		Input input1 = form.findType("text", 0);		
-		input1.setValue("New York");
-		b.navigate(form);
-		page = b.getCurrentPage();
-		Assert.assertTrue( page.getTitle().getTextOnly().indexOf("HTTP")!=-1 );
-	}
+
 }

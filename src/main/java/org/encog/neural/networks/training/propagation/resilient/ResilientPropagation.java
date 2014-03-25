@@ -23,7 +23,6 @@
  */
 package org.encog.neural.networks.training.propagation.resilient;
 
-import org.encog.EncogError;
 import org.encog.mathutil.EncogMath;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.ContainsFlat;
@@ -95,6 +94,13 @@ public class ResilientPropagation extends Propagation {
 	private RPROPType rpropType = RPROPType.RPROPp;
 	
 	private double[] lastWeightChange;
+	
+	/**
+	 * The value error at the beginning of the previous training iteration.  
+	 * This value is compared with the error at the beginning of the current
+	 * iteration to determine if an improvement is occuring.
+	 */
+	private double lastError = Double.POSITIVE_INFINITY;
 
 
 	/**
@@ -428,6 +434,15 @@ public class ResilientPropagation extends Propagation {
 		// apply the weight change, if any
 		return weightChange;
 	}	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void postIteration() {
+		super.postIteration();
+		this.lastError = getError();
+	}
 
 	/**
 	 * @return The RPROP update values.
@@ -435,5 +450,4 @@ public class ResilientPropagation extends Propagation {
 	public double[] getUpdateValues() {
 		return updateValues;
 	}
-	
 }

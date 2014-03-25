@@ -65,14 +65,14 @@ public class TestYahooDownload extends TestCase {
 				"date,time,open price,high price,low price,close price,volume,adjusted price",
 				tr.readLine());
 		Assert.assertEquals(
-				"20000110,0,432.5,451.25,420,436.06,61022400,109.01",
+				"20000110,0,432.5,451.25,420,436.06,61022400,109.02",
 				tr.readLine());
 		Assert.assertEquals("20000107,0,366.75,408,363,407.25,48999600,101.81",
 				tr.readLine());
 		Assert.assertEquals("20000106,0,406.25,413,361,368.19,71301200,92.05",
 				tr.readLine());
 		Assert.assertEquals(
-				"20000105,0,430.5,431.13,402,410.5,83194800,102.62",
+				"20000105,0,430.5,431.12,402,410.5,83194800,102.62",
 				tr.readLine());
 		tr.close();
 	}

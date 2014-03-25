@@ -97,11 +97,6 @@ public abstract class Propagation extends BasicTraining implements Train,
 	private double totalError;
 
 	/**
-	 * The last error.
-	 */
-	protected double lastError;
-
-	/**
 	 * Reported exception from the threads.
 	 */
 	private Throwable reportedException;
@@ -266,8 +261,6 @@ public abstract class Propagation extends BasicTraining implements Train,
 				} else {
 					processBatches();
 				}
-
-				this.lastError = this.getError();
 
 				for (final GradientWorker worker : this.workers) {
 					EngineArray.arrayCopy(this.currentFlatNetwork.getWeights(),
