@@ -190,8 +190,11 @@ public abstract class Propagation extends BasicTraining implements Train,
 	public void finishTraining() {
 		if(!this.finalized) {
 			final double[] weights = this.currentFlatNetwork.getWeights();
-			for (int i = 0; i < weights.length; i++) {
-				weights[i] *= (1 - this.dropoutRate);
+			if(dropoutRate > 0)
+			{
+				for (int i = 0; i < weights.length; i++) {
+					weights[i] *= (1 - this.dropoutRate);
+				}
 			}
 			this.finalized = true;
 		}
