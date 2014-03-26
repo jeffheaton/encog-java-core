@@ -225,6 +225,8 @@ public class ScaledConjugateGradient extends Propagation {
 			init();
 		}
 		
+		preIteration();
+		
 		rollIteration();
 		
 		final int numWeights = this.weights.length;
@@ -359,6 +361,8 @@ public class ScaledConjugateGradient extends Propagation {
 		++this.k;
 
 		EngineArray.arrayCopy(this.weights, this.network.getFlat().getWeights());
+		
+		postIteration();
 	}
 
 	/**

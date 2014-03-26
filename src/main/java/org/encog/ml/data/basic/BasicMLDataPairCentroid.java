@@ -39,12 +39,18 @@ implements Centroid<MLDataPair>, Cloneable
 	private BasicMLData value;
 	
 	/**
+	 * The number of elements.
+	 */
+	private int size;
+	
+	/**
 	 * Construct the centroid.
 	 * @param o The pair to base the centroid on.
 	 */
 	public BasicMLDataPairCentroid(BasicMLDataPair o)
 	{
 		this.value = (BasicMLData) o.getInput().clone();
+		this.size = 1;
 	} 
 	
 	/**
