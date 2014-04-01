@@ -65,7 +65,7 @@ public class WeightedAveraging implements EnsembleWeightedAggregator {
 	public MLData evaluate(ArrayList<MLData> outputs) throws WeightMismatchException {
 		int outputSize = outputs.get(0).size();
 		double weightSum = 0;
-		if (weights.size() != outputs.size())
+		if (weights == null || weights.size() != outputs.size())
 		{
 			throw new WeightMismatchException();
 		}
