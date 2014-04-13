@@ -414,7 +414,7 @@ public class AnalystWizard {
 				throw new AnalystError(
 						"Can't determine target field automatically, "
 								+ "please specify one.\nThis can also happen if you "
-								+ "specified the wrong file format.");
+								+ "specified the wrong file format.\nNote: If your file has no headers, specify \"field:1\" - \"field:n\".");
 			}
 		} else {
 			this.targetField = this.script
