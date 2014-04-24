@@ -103,7 +103,7 @@ public class BasicMLDataSet implements Serializable, MLDataSet {
 	}
 
 	/**
-	 * Construct a data set from an input and idea array.
+	 * Construct a data set from an input and ideal array.
 	 * 
 	 * @param input
 	 *            The input into the machine learning method for training.
