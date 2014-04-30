@@ -98,12 +98,13 @@ public class MexicanHatFunction extends BasicRBF {
 	public final double calculate(final double[] x) {
 
 		final double[] center = getCenters();
+		final double width = getWidth();
 
 		// calculate the "norm", but don't take square root
 		// don't square because we are just going to square it
 		double norm = 0;
 		for (int i = 0; i < center.length; i++) {
-			norm += Math.pow(x[i] - center[i], 2);
+			norm += Math.pow(x[i] - center[i], 2)/ (2.0 * width * width);
 		}
 
 		// calculate the value
