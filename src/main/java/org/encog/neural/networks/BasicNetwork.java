@@ -24,8 +24,11 @@
 package org.encog.neural.networks;
 
 import org.encog.Encog;
+import org.encog.engine.network.activation.ActivationElliott;
+import org.encog.engine.network.activation.ActivationElliottSymmetric;
 import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.mathutil.randomize.ConsistentRandomizer;
+import org.encog.engine.network.activation.ActivationSigmoid;
+import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.mathutil.randomize.Randomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
@@ -630,19 +633,36 @@ public class BasicNetwork extends BasicML implements ContainsFlat, MLContext,
 	}
 	
 	/**
-	 * Determindes the randomizer used for resets. This will normally return a
+	 * Determines the randomizer used for resets. This will normally return a
 	 * Nguyen-Widrow randomizer with a range between -1 and 1. If the network
 	 * does not have an input, output or hidden layers, then Nguyen-Widrow
 	 * cannot be used and a simple range randomize between -1 and 1 will be
-	 * used.
+	 * used. Range randomizer is also used if the activation function is not
+	 * TANH, Sigmoid, or the Elliott equivalents. 
 	 * 
 	 * @return the randomizer
 	 */
 	private Randomizer getRandomizer() {
+		boolean useNWR = true;
+		
+		for(int i=0;i<this.getLayerCount();i++) {
+			ActivationFunction af = getActivation(i);
+			if( af.getClass()!=ActivationSigmoid.class 
+					&& af.getClass()!=ActivationTANH.class
+					&& af.getClass()!=ActivationElliott.class
+					&& af.getClass()!=ActivationElliottSymmetric.class) {
+				useNWR = false;
+			}
+		}
+		
 		if (getLayerCount() < 3) {
-			return new RangeRandomizer(-1,1);
-		} else {
+			useNWR = false;
+		}
+		
+		if (useNWR) {
 			return new NguyenWidrowRandomizer();
+		} else {
+			return new RangeRandomizer(-1,1);
 		}
 	}
 
