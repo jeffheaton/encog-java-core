@@ -32,6 +32,7 @@ import org.encog.ml.data.MLDataPair;
 public class NonResamplingDataSetFactory extends EnsembleDataSetFactory {
 
 	private ArrayList<MLDataPair> elementsLeft = new ArrayList<MLDataPair>();
+	
 	public NonResamplingDataSetFactory(int dataSetSize) {
 		super(dataSetSize);
 	}
@@ -48,7 +49,7 @@ public class NonResamplingDataSetFactory extends EnsembleDataSetFactory {
 	public EnsembleDataSet getNewDataSet() {
 		Random generator = new Random();
 		EnsembleDataSet ds = new EnsembleDataSet(dataSource.getInputSize(), dataSource.getIdealSize());
-		for (int i = 0; i < dataSetSize; i++)
+		for (int i = 0; i < (int) Math.min(dataSetSize,elementsLeft.size()); i++)
 		{
 			int candidate = generator.nextInt(elementsLeft.size());
 			ds.add(elementsLeft.remove(candidate));
