@@ -73,7 +73,6 @@ public class GenericEnsembleML implements EnsembleML {
 		} while ((error > targetError) &&
 				 trainer.canContinue() &&
 				 //errordelta / previouserror < 2 &&
-				 //make this a parameter
 				 iteration < maxIterations);
 		trainer.finishTraining();
 	}
