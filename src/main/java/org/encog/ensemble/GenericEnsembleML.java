@@ -143,7 +143,7 @@ public class GenericEnsembleML implements EnsembleML {
 	}
 
 	@Override
-	public void train(int maxIterations, double targetError) {
+	public void train(double targetError, int maxIterations) {
 		train(targetError, maxIterations, false);
 	}
 
@@ -152,4 +152,5 @@ public class GenericEnsembleML implements EnsembleML {
 		train(targetError, DEFAULT_MAX_ITERATIONS, verbose);
 		
 	}
+
 }
