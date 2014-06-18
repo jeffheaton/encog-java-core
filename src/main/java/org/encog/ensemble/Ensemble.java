@@ -130,7 +130,7 @@ public abstract class Ensemble {
 		int attempt = 0;
 		do {
 			mlFactory.reInit(current.getMl());
-			current.train(targetError, verbose);
+			current.train(targetError, maxIterations, verbose);
 			if (verbose) {System.out.println("test MSE: " + current.getError(selectionSet));};
 			attempt++;
 			if (attempt > maxIterations) {

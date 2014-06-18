@@ -64,7 +64,7 @@ public interface EnsembleML extends MLMethod, MLClassification, MLRegression {
 	 * @param maxIterations Stop after this number of iterations
 	 * @throws Exception 
 	 */
-	public void train(double targetError, int maxIterations, boolean verbose) throws Exception;
+	public void train(double targetError, int maxIterations, boolean verbose);
 
 
 	/**
