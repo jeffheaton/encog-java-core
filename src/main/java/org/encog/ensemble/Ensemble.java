@@ -54,6 +54,10 @@ public abstract class Ensemble {
 
 	public class TrainingAborted extends Exception {
 
+		public TrainingAborted(String string) {
+			super(string);
+		}
+
 		/**
 		 * This means we tried training this ensemble and failed too many times in a row
 		 */
@@ -121,26 +125,25 @@ public abstract class Ensemble {
 	}
 
 	public void trainMember(int index, double targetError, double selectionError, int maxIterations, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
-		int attempt = 0;
 		EnsembleML current = members.get(index);
-		trainMember(current,targetError,selectionError,maxIterations,selectionSet,verbose);
+		trainMember(current,targetError,selectionError,maxIterations,DEFAULT_MAX_ITERATIONS,selectionSet,verbose);
 	}
 
-	public void trainMember(EnsembleML current, double targetError, double selectionError, int maxIterations, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
+	public void trainMember(EnsembleML current, double targetError, double selectionError, int maxIterations, int maxLoops, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
 		int attempt = 0;
 		do {
 			mlFactory.reInit(current.getMl());
 			current.train(targetError, maxIterations, verbose);
 			if (verbose) {System.out.println("test MSE: " + current.getError(selectionSet));};
 			attempt++;
-			if (attempt > maxIterations) {
-				throw new TrainingAborted();
+			if (attempt > maxLoops) {
+				throw new TrainingAborted("Too many attempts at training ensemble member");
 			}
 		} while (current.getError(selectionSet) > selectionError);
 	}
 	
 	public void trainMember(EnsembleML current, double targetError, double selectionError, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
-		trainMember(current, targetError, selectionError, DEFAULT_MAX_ITERATIONS, selectionSet, verbose);
+		trainMember(current, targetError, selectionError, DEFAULT_MAX_ITERATIONS, DEFAULT_MAX_ITERATIONS, selectionSet, verbose);
 	}
 
 	public void trainMember(int index, double targetError, double selectionError, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
@@ -171,18 +174,18 @@ public abstract class Ensemble {
 	 * @return
 	 * @throws TrainingAborted 
 	 */
-	public void train(double targetError, double selectionError, int maxIterations, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
+	public void train(double targetError, double selectionError, int maxIterations, int maxLoops, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
 		
 		for (EnsembleML current : members)
 		{
-			trainMember(current, targetError, selectionError, maxIterations, selectionSet, verbose);
+			trainMember(current, targetError, selectionError, maxIterations, maxLoops, selectionSet, verbose);
 		}
 		if(aggregator.needsTraining()) {
 			retrainAggregator();
 		}
 	}
 	public void train(double targetError, double selectionError, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
-		train(targetError, selectionError, DEFAULT_MAX_ITERATIONS, selectionSet, verbose);
+		train(targetError, selectionError, DEFAULT_MAX_ITERATIONS, DEFAULT_MAX_ITERATIONS, selectionSet, verbose);
 	}
 
 	/**
@@ -197,7 +200,7 @@ public abstract class Ensemble {
 	}
 
 	public void train(double targetError, double selectionError, int maxIterations, EnsembleDataSet testset) throws TrainingAborted {
-		train(targetError, selectionError, maxIterations, testset, false);
+		train(targetError, selectionError, maxIterations, DEFAULT_MAX_ITERATIONS, testset, false);
 	}
 
 	/**
