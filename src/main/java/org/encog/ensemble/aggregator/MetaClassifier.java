@@ -68,11 +68,12 @@ public class MetaClassifier implements EnsembleAggregator {
 	@Override
 	public MLData evaluate(ArrayList<MLData> outputs) {
 		BasicMLData merged_outputs = new BasicMLData(classifier.getInputCount());
-		int index = 0;
-		for(MLData output:outputs)
+		for(MLData output:outputs) {
+			int index = 0;
 			for(double val:output.getData()) {
 				merged_outputs.add(index++,val);
 			}
+		}
 		return classifier.compute(merged_outputs);
 	}
 
