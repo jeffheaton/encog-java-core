@@ -30,7 +30,6 @@ import org.encog.ensemble.data.EnsembleDataSet;
 import org.encog.ml.data.MLData;
 
 public interface EnsembleAggregator {
-
 	MLData evaluate(ArrayList<MLData> outputs) throws WeightMismatchException;
 	public boolean needsTraining();
 	void setTrainingSet(EnsembleDataSet trainingSet);

@@ -41,14 +41,22 @@ public class MetaClassifier implements EnsembleAggregator {
 	EnsembleTrainFactory etFact;
 	double trainError;
 	int members;
+	boolean adaptiveError = false;
 
-	public MetaClassifier(double trainError, EnsembleMLMethodFactory mlFact, EnsembleTrainFactory etFact) {
+	public MetaClassifier(double trainError, EnsembleMLMethodFactory mlFact, EnsembleTrainFactory etFact, boolean adaptiveError)
+	{
 		this.trainError = trainError;
 		this.mlFact = mlFact;
 		this.etFact = etFact;
+		this.adaptiveError = adaptiveError;
 		members = 1;
 	}
-	
+
+	public MetaClassifier(double trainError, EnsembleMLMethodFactory mlFact, EnsembleTrainFactory etFact)
+	{
+		this(trainError, mlFact, etFact, false);
+	}
+
 	public double getTrainingError()
 	{
 		return trainError;
@@ -66,7 +74,8 @@ public class MetaClassifier implements EnsembleAggregator {
 	}
 	
 	@Override
-	public MLData evaluate(ArrayList<MLData> outputs) {
+	public MLData evaluate(ArrayList<MLData> outputs)
+	{
 		BasicMLData merged_outputs = new BasicMLData(classifier.getInputCount());
 		for(MLData output:outputs) {
 			int index = 0;
@@ -78,20 +87,33 @@ public class MetaClassifier implements EnsembleAggregator {
 	}
 
 	@Override
-	public String getLabel() {
-		return "metaclassifier-" + mlFact.getLabel() + "-" + trainError + "-" + etFact.getLabel();
+	public String getLabel()
+	{
+		String ret = "metaclassifier-" + mlFact.getLabel() + "-" + trainError + "-" + etFact.getLabel();
+		if(adaptiveError)
+		{
+			ret += "-adaptive";
+		}
+		return ret;
 	}
 
 	@Override
-	public void train() {
+	public void train()
+	{
 		if (classifier != null)
-			classifier.train(trainError);
+		{
+			double targetError = adaptiveError ? trainError / members : trainError; 
+			classifier.train(targetError);
+		}
 		else
+		{
 			System.err.println("Trying to train a null classifier in MetaClassifier");
+		}
 	}
 
 	@Override
-	public void setTrainingSet(EnsembleDataSet trainingSet) {
+	public void setTrainingSet(EnsembleDataSet trainingSet)
+	{
 		mlFact.setSizeMultiplier(members);
 		classifier = new GenericEnsembleML(mlFact.createML(trainingSet.getInputSize(), trainingSet.getIdealSize()),mlFact.getLabel());
 		classifier.setTraining(etFact.getTraining(classifier.getMl(), trainingSet));
@@ -99,7 +121,8 @@ public class MetaClassifier implements EnsembleAggregator {
 	}
 
 	@Override
-	public boolean needsTraining() {
+	public boolean needsTraining()
+	{
 		return true;
 	}
 }
