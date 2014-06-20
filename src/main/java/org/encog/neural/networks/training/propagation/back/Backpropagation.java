@@ -260,6 +260,33 @@ public class Backpropagation extends Propagation implements Momentum,
 	}
 
 	/**
+	 * Update a weight in a GPU-safe manner.
+	 * 
+	 * @param gradients
+	 *            The gradients.
+	 * @param lastGradient
+	 *            The last gradients.
+	 * @param index
+	 *            The index.
+	 * @return The weight delta.
+	 */
+	/*
+	@Override
+	public double updateWeightOnGPU(final double[] gradients,
+			final double[] lastGradient, final int index, double dropoutRate) {
+		
+		if (dropoutRate > 0 && dropoutRandomSource.nextDouble() > dropoutRate) {
+			return 0;
+		};
+		
+		final double delta = (gradients[index] * this.learningRate)
+				+ (this.lastDelta[index] * this.momentum);
+		this.lastDelta[index] = delta;
+		return delta;
+	}
+	*/
+	
+	/**
 	 * Perform training method specific init.
 	 */
 	public void initOthers() {

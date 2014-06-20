@@ -46,6 +46,9 @@ import org.encog.util.concurrency.MultiThreadable;
 import org.encog.util.concurrency.TaskGroup;
 import org.encog.util.logging.EncogLogging;
 
+import com.amd.aparapi.Kernel;
+import com.amd.aparapi.Range;
+
 /**
  * Implements basic functionality that is needed by each of the propagation
  * methods. The specifics of each of the propagation methods is implemented
@@ -450,6 +453,31 @@ public abstract class Propagation extends BasicTraining implements Train,
 	}
 
 	/**
+	 * Apply and learn.
+	 */
+	/*
+	protected void learnOnGPU() {
+		final double[] gradients = this.gradients;
+		final double[] weights = this.currentFlatNetwork.getWeights();
+		final double[] lastGradient = this.lastGradient;
+		final double dropoutRate = this.dropoutRate;
+		final double
+		Kernel k = new Kernel()
+		{
+			@Override
+			public void run()
+			{
+				int i = getGlobalId();
+				weights[i] += updateWeightOnGPU(gradients, lastGradient, i, dropoutRate);
+				gradients[i] = 0;
+			}
+		};
+		Range r = Range.create(gradients.length);
+		k.execute(r);
+	}
+	*/
+	
+	/**
 	 * Apply and learn. This is the same as learn, but it checks to see if any
 	 * of the weights are below the limit threshold. In this case, these weights
 	 * are zeroed out. Having two methods allows the regular learn method, which
@@ -484,6 +512,23 @@ public abstract class Propagation extends BasicTraining implements Train,
 	 */
 	public abstract double updateWeight(double[] gradients,
 			double[] lastGradient, int index, double dropoutRate);
+	
+	/**
+	 * Update a weight, the means by which weights are updated vary depending on
+	 * the training, in a GPU-safe manner.
+	 * 
+	 * @param gradients
+	 *            The gradients.
+	 * @param lastGradient
+	 *            The last gradients.
+	 * @param index
+	 *            The index.
+	 * @return The update value.
+	 */
+	/*
+	public abstract double updateWeightOnGPU(double[] gradients, double[] lastGradient,
+			int index, double dropoutRate);
+	*/
 
 	/**
 	 * @return the lastGradient
@@ -491,5 +536,6 @@ public abstract class Propagation extends BasicTraining implements Train,
 	public double[] getLastGradient() {
 		return lastGradient;
 	}
+
 
 }
