@@ -4,6 +4,7 @@
 *.class
 *.o
 *.so
+!libaparapi_x86_64.so
 cache.bin
 target
 local.properties
