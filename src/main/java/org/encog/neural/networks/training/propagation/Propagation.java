@@ -46,9 +46,6 @@ import org.encog.util.concurrency.MultiThreadable;
 import org.encog.util.concurrency.TaskGroup;
 import org.encog.util.logging.EncogLogging;
 
-import com.amd.aparapi.Kernel;
-import com.amd.aparapi.Range;
-
 /**
  * Implements basic functionality that is needed by each of the propagation
  * methods. The specifics of each of the propagation methods is implemented
