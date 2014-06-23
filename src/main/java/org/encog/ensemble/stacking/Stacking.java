@@ -32,7 +32,7 @@ import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.EnsembleTypes;
 import org.encog.ensemble.EnsembleTypes.ProblemType;
-import org.encog.ensemble.data.factories.WrappingNonResamplingDataSetFactory;
+import org.encog.ensemble.data.factories.ResamplingDataSetFactory;
 
 public class Stacking extends Ensemble {
 
@@ -41,7 +41,7 @@ public class Stacking extends Ensemble {
 	public Stacking(int splits, int dataSetSize, EnsembleMLMethodFactory mlFactory, EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator)
 	{
 		int dataSplits = aggregator.needsTraining() ? splits + 1 : splits;
-		this.dataSetFactory = new WrappingNonResamplingDataSetFactory(dataSplits);
+		this.dataSetFactory = new ResamplingDataSetFactory(dataSplits);
 		this.splits = splits;
 		this.mlFactory = mlFactory;
 		this.trainFactory = trainFactory;

@@ -27,8 +27,6 @@ import org.encog.ensemble.data.EnsembleDataSet;
 
 public class WrappingNonResamplingDataSetFactory extends EnsembleDataSetFactory {
 
-	//NOTE: dataSetSize here is used as the number of datasets, rather than the number of data instances
-
 	private int currentPosition = 0;
 
 	public WrappingNonResamplingDataSetFactory(int dataSetSize) {
@@ -38,7 +36,8 @@ public class WrappingNonResamplingDataSetFactory extends EnsembleDataSetFactory 
 	@Override
 	public EnsembleDataSet getNewDataSet() {
 		EnsembleDataSet ds = new EnsembleDataSet(dataSource.getInputSize(), dataSource.getIdealSize());
-		for (int i = currentPosition; i < currentPosition + dataSource.size() / dataSetSize; i++)
+		//make sure we don't go beyond the end of the dataset
+		for (int i = currentPosition; i < currentPosition +  dataSetSize; i++)
 		{
 			ds.add(dataSource.get(i % this.dataSource.size()));
 		}
