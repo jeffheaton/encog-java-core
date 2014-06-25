@@ -134,7 +134,7 @@ public abstract class Ensemble {
 		do {
 			mlFactory.reInit(current.getMl());
 			current.train(targetError, maxIterations, verbose);
-			if (verbose) {System.out.println("test MSE: " + current.getError(selectionSet));};
+			if (verbose) {System.out.println("test MSE: " + current.getError(selectionSet) + " on " + selectionSet.size() + " data points");};
 			attempt++;
 			if (attempt > maxLoops) {
 				throw new TrainingAborted("Too many attempts at training ensemble member");
