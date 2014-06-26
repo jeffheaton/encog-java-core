@@ -132,9 +132,15 @@ public abstract class Ensemble {
 	public void trainMember(EnsembleML current, double targetError, double selectionError, int maxIterations, int maxLoops, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
 		int attempt = 0;
 		do {
+			long startTime = System.nanoTime();
 			mlFactory.reInit(current.getMl());
 			current.train(targetError, maxIterations, verbose);
-			if (verbose) {System.out.println("test MSE: " + current.getError(selectionSet) + " on " + selectionSet.size() + " data points");};
+			long endTime = System.nanoTime();
+			if (verbose)
+			{
+				System.out.println("training took " + ((double)(endTime - startTime) / 1000000000.0));
+				System.out.println("test MSE: " + current.getError(selectionSet) + " on " + selectionSet.size() + " data points");
+			};
 			attempt++;
 			if (attempt > maxLoops) {
 				throw new TrainingAborted("Too many attempts at training ensemble member");
