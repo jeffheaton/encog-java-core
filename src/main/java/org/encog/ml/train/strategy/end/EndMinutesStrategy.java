@@ -36,7 +36,7 @@ public class EndMinutesStrategy implements EndTrainingStrategy {
 
 	final private static Logger LOG = getLogger(RobbedEndMinutesStrategy.class);
 	
-	public RobbedEndMinutesStrategy(int minutes)
+	public EndMinutesStrategy(int minutes)
 	{
 		this.minutes = minutes;
 		started = false;
