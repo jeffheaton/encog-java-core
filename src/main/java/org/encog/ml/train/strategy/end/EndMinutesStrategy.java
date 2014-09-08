@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.encog.ml.train.MLTrain;
 
-public class RobbedEndMinutesStrategy implements EndTrainingStrategy {
+public class EndMinutesStrategy implements EndTrainingStrategy {
 
 	private final int minutes;
 	private long startedTime;
