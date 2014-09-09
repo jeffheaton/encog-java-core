@@ -34,7 +34,6 @@ org.encog.mathutil.Convert
 org.encog.mathutil.EncogMath
 org.encog.mathutil.EncogMathError
 org.encog.mathutil.Equilateral
-org.encog.mathutil.LinearCongruentialGenerator
 org.encog.mathutil.MathConst
 org.encog.mathutil.matrices.BiPolarUtil
 org.encog.mathutil.matrices.decomposition.CholeskyDecomposition

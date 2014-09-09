@@ -24,6 +24,7 @@
 package org.encog.util.csv;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -155,17 +156,27 @@ public class ReadCSV {
 	 * @param delim
 	 *            The delimiter.
 	 */
-	public ReadCSV(final String filename, final boolean headers,
+	public ReadCSV(final File file, final boolean headers,
 			final char delim) {
 		try {
 			final CSVFormat format = new CSVFormat(CSVFormat
 					.getDecimalCharacter(), delim);
 			this.parseLine = new ParseCSVLine(format);
-			this.reader = new BufferedReader(new FileReader(filename));
+			this.reader = new BufferedReader(new FileReader(file));
 			begin(headers, format);
 		} catch (final IOException e) {
 			throw new EncogError(e);
 		}
+	}
+	
+	public ReadCSV(final String filename, final boolean headers,
+			final char delim) {
+		this(new File(filename),headers,delim);
+	}
+	
+	public ReadCSV(final String filename, final boolean headers,
+			final CSVFormat format) {
+		this(new File(filename),headers,format);
 	}
 
 	/**
@@ -179,10 +190,10 @@ public class ReadCSV {
 	 * @param format
 	 *            The format.
 	 */
-	public ReadCSV(final String filename, final boolean headers,
+	public ReadCSV(final File file, final boolean headers,
 			final CSVFormat format) {
 		try {
-			this.reader = new BufferedReader(new FileReader(filename));
+			this.reader = new BufferedReader(new FileReader(file));
 			this.parseLine = new ParseCSVLine(format);
 			begin(headers, format);
 		} catch (final IOException e) {
