@@ -628,7 +628,6 @@ public class BasicNetwork extends BasicML implements ContainsFlat, MLContext,
 	@Override
 	public void reset(final int seed) {
 		Randomizer randomizer = getRandomizer();
-		randomizer.setSeed(seed);
 		randomizer.randomize(this);
 	}
 	
