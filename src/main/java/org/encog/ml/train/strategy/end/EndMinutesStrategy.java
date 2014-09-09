@@ -23,6 +23,7 @@
  */
 package org.encog.ml.train.strategy.end;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.encog.ml.train.MLTrain;
@@ -33,8 +34,6 @@ public class EndMinutesStrategy implements EndTrainingStrategy {
 	private long startedTime;
 	private boolean started;
 	private final AtomicInteger minutesLeft = new AtomicInteger(0);
-
-	final private static Logger LOG = getLogger(RobbedEndMinutesStrategy.class);
 	
 	public EndMinutesStrategy(int minutes)
 	{
@@ -51,7 +50,7 @@ public class EndMinutesStrategy implements EndTrainingStrategy {
 		final boolean timeUp = getMinutesLeft() <= 0;
 		
 		if (timeUp) {
-			LOG.info("Max training minutes exceed.");
+			//LOG.info("Max training minutes exceed.");
 		}
 		
 		return started && timeUp;
@@ -75,7 +74,7 @@ public class EndMinutesStrategy implements EndTrainingStrategy {
         final long minutesPassed = (now - this.startedTime) / TimeUnit.MINUTES.toMillis(1);
 
 		this.minutesLeft.set((int) Math.ceil(getMinutes() - minutesPassed));
-		LOG.info("Number of minutes remaining to termination by time: " + this.minutesLeft.get());
+		//LOG.info("Number of minutes remaining to termination by time: " + this.minutesLeft.get());
 	}
 
 	/**
