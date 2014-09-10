@@ -30,7 +30,7 @@ public class MatrixMLDataSet implements MLDataSet {
 		 */
 		@Override
 		public final boolean hasNext() {
-			return this.currentIndex < MatrixMLDataSet.this.data.length;
+			return this.currentIndex < MatrixMLDataSet.this.size();
 		}
 
 		/**
@@ -44,7 +44,7 @@ public class MatrixMLDataSet implements MLDataSet {
 
 			BasicMLData input = new BasicMLData(MatrixMLDataSet.this.calculatedInputSize);
 			BasicMLData ideal = new BasicMLData(MatrixMLDataSet.this.calculatedIdealSize);
-			double[] dataRow = MatrixMLDataSet.this.data[this.currentIndex];
+			double[] dataRow = lookupDataRow(this.currentIndex);
 			
 			EngineArray.arrayCopy(dataRow, 0, input.getData(), 0, MatrixMLDataSet.this.calculatedInputSize);
 			EngineArray.arrayCopy(dataRow, MatrixMLDataSet.this.calculatedInputSize, 
@@ -68,6 +68,7 @@ public class MatrixMLDataSet implements MLDataSet {
 	private int calculatedInputSize = -1;
 	private int calculatedIdealSize = -1;
 	private double[][] data;
+	private int[] mask;
 	
 	public MatrixMLDataSet() {
 		
@@ -77,6 +78,14 @@ public class MatrixMLDataSet implements MLDataSet {
 		this.data = theData;
 		this.calculatedInputSize = theCalculatedInputSize;
 		this.calculatedIdealSize = theCalculatedIdealSize;
+	}
+
+	public MatrixMLDataSet(double[][] theData, int inputCount, int idealCount,
+			int[] theMask) {
+		this.data = theData;
+		this.calculatedInputSize = inputCount;
+		this.calculatedIdealSize = idealCount;
+		this.mask = theMask;
 	}
 
 	@Override
@@ -101,18 +110,29 @@ public class MatrixMLDataSet implements MLDataSet {
 
 	@Override
 	public long getRecordCount() {
-		return this.data.length;
+		if( this.mask==null ) {
+			return this.data.length;
+		}
+		return this.mask.length;
 	}
 
 	@Override
 	public void getRecord(long index, MLDataPair pair) {
-		double[] dataRow = MatrixMLDataSet.this.data[(int)index];
+		double[] dataRow = lookupDataRow((int)index);
 		
 		EngineArray.arrayCopy(dataRow, 0, pair.getInputArray(), 0, MatrixMLDataSet.this.calculatedInputSize);
 		EngineArray.arrayCopy(dataRow, MatrixMLDataSet.this.calculatedInputSize, 
 				pair.getIdealArray(), 0, MatrixMLDataSet.this.calculatedIdealSize);
 		
 
+	}
+	
+	private double[] lookupDataRow(int index) {
+		if( this.mask!=null) {
+			return this.data[this.mask[index]];
+		} else {
+			return this.data[index];
+		}
 	}
 
 	@Override
@@ -146,8 +166,7 @@ public class MatrixMLDataSet implements MLDataSet {
 
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (int)getRecordCount();
 	}
 
 	@Override

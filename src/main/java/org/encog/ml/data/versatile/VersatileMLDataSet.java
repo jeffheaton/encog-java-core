@@ -1,5 +1,9 @@
 package org.encog.ml.data.versatile;
 
+import java.util.List;
+
+import org.encog.mathutil.randomize.generate.GenerateRandom;
+
 
 public class VersatileMLDataSet extends MatrixMLDataSet {
 	
@@ -124,6 +128,13 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 	 */
 	public void setNormHelper(NormalizationHelper helper) {
 		this.helper = helper;
+	}
+
+	public void divide(List<DataDivision> dataDivisionList, boolean shuffle,
+			GenerateRandom rnd) {
+		PerformDataDivision divide = new PerformDataDivision(shuffle,rnd);
+		divide.perform(dataDivisionList,getData(),getCalculatedInputSize(),getCalculatedIdealSize());
+		
 	}
 	
 	
