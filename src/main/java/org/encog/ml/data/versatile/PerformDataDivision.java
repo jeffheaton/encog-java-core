@@ -28,7 +28,7 @@ public class PerformDataDivision {
 	private void createDividedDatasets(List<DataDivision> dataDivisionList,
 			double[][] data, int inputCount, int idealCount) {
 		for (DataDivision division : dataDivisionList) {
-			MLDataSet dataset = new MatrixMLDataSet(data, inputCount,
+			MatrixMLDataSet dataset = new MatrixMLDataSet(data, inputCount,
 					idealCount, division.getMask());
 			division.setDataset(dataset);
 		}

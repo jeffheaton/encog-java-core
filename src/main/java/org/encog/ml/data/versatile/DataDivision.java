@@ -5,7 +5,7 @@ import org.encog.ml.data.MLDataSet;
 public class DataDivision {
 	private int count;
 	private final double percent;
-	private MLDataSet dataset;
+	private MatrixMLDataSet dataset;
 	private int[] mask;
 	
 	public DataDivision(double thePercent) {
@@ -29,14 +29,14 @@ public class DataDivision {
 	/**
 	 * @return the dataset
 	 */
-	public MLDataSet getDataset() {
+	public MatrixMLDataSet getDataset() {
 		return dataset;
 	}
 
 	/**
 	 * @param dataset the dataset to set
 	 */
-	public void setDataset(MLDataSet dataset) {
+	public void setDataset(MatrixMLDataSet dataset) {
 		this.dataset = dataset;
 	}
 

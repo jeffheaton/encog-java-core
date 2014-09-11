@@ -44,13 +44,15 @@ public class MatrixMLDataSet implements MLDataSet {
 
 			BasicMLData input = new BasicMLData(MatrixMLDataSet.this.calculatedInputSize);
 			BasicMLData ideal = new BasicMLData(MatrixMLDataSet.this.calculatedIdealSize);
+			MLDataPair pair = new BasicMLDataPair(input,ideal);
+			
 			double[] dataRow = lookupDataRow(this.currentIndex);
 			
 			EngineArray.arrayCopy(dataRow, 0, input.getData(), 0, MatrixMLDataSet.this.calculatedInputSize);
 			EngineArray.arrayCopy(dataRow, MatrixMLDataSet.this.calculatedInputSize, 
 					ideal.getData(), 0, MatrixMLDataSet.this.calculatedIdealSize);
 			
-			MLDataPair pair = new BasicMLDataPair(input,ideal);
+			
 			this.currentIndex++;
 			
 			return pair;
@@ -86,6 +88,17 @@ public class MatrixMLDataSet implements MLDataSet {
 		this.calculatedInputSize = inputCount;
 		this.calculatedIdealSize = idealCount;
 		this.mask = theMask;
+	}
+
+	public MatrixMLDataSet(MatrixMLDataSet data, int[] mask) {
+		this.data = data.getData();
+		this.calculatedInputSize = data.getCalculatedInputSize();
+		this.calculatedIdealSize = data.getCalculatedIdealSize();
+		this.mask = mask;
+	}
+
+	public int[] getMask() {
+		return this.mask;
 	}
 
 	@Override
@@ -137,7 +150,7 @@ public class MatrixMLDataSet implements MLDataSet {
 
 	@Override
 	public MLDataSet openAdditional() {
-		return new MatrixMLDataSet(this.data,this.calculatedInputSize, this.calculatedIdealSize);
+		return new MatrixMLDataSet(this.data,this.calculatedInputSize, this.calculatedIdealSize, this.mask);
 	}
 
 	@Override
