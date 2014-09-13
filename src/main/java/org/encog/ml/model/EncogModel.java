@@ -8,6 +8,8 @@ import java.util.Map;
 import org.encog.EncogError;
 import org.encog.mathutil.randomize.generate.MersenneTwisterGenerateRandom;
 import org.encog.ml.MLMethod;
+import org.encog.ml.MLRegression;
+import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.cross.DataFold;
 import org.encog.ml.data.cross.KFoldCrossvalidation;
@@ -19,9 +21,12 @@ import org.encog.ml.factory.MLMethodFactory;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.model.config.FeedforwardConfig;
 import org.encog.ml.model.config.MethodConfig;
+import org.encog.ml.model.config.NEATConfig;
+import org.encog.ml.model.config.RBFNetworkConfig;
 import org.encog.ml.model.config.SVMConfig;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.end.SimpleEarlyStoppingStrategy;
+import org.encog.util.simple.EncogUtility;
 
 public class EncogModel {
 	
@@ -41,6 +46,8 @@ public class EncogModel {
 		this.dataset = theDataset;
 		this.methodConfigurations.put(MLMethodFactory.TYPE_FEEDFORWARD, new FeedforwardConfig());
 		this.methodConfigurations.put(MLMethodFactory.TYPE_SVM, new SVMConfig());
+		this.methodConfigurations.put(MLMethodFactory.TYPE_RBFNETWORK, new RBFNetworkConfig());
+		this.methodConfigurations.put(MLMethodFactory.TYPE_NEAT, new NEATConfig());
 	}
 
 	/**
@@ -77,15 +84,25 @@ public class EncogModel {
 		MLMethod method = this.createMethod();
 		MLTrain train = this.createTrainer(method,fold.getTraining());
 		
-		SimpleEarlyStoppingStrategy earlyStop = new SimpleEarlyStoppingStrategy(fold.getValidation());
-		train.addStrategy(earlyStop);
-		
-		while(!train.isTrainingDone()) {
+		if( train.getImplementationType()==TrainingImplementationType.Iterative) {
+			SimpleEarlyStoppingStrategy earlyStop = new SimpleEarlyStoppingStrategy(fold.getValidation());
+			train.addStrategy(earlyStop);
+			
+			while(!train.isTrainingDone()) {
+				train.iteration();
+				System.out.println("Iteration #"+ train.getIteration() + ", Training Error: " + train.getError()+", Validation Error:" + earlyStop.getValidationError() );
+			}
+			fold.setScore(earlyStop.getValidationError());
+			fold.setMethod(method);
+		} else if( train.getImplementationType()==TrainingImplementationType.OnePass) { 
 			train.iteration();
-			System.out.println("Iteration #"+ train.getIteration() + ", Training Error: " + train.getError()+", Validation Error:" + earlyStop.getValidationError() );
+			double validationError = EncogUtility.calculateRegressionError((MLRegression)method, fold.getValidation());
+			System.out.println("Trained, Training Error: " + train.getError() + ", Validatoin Error: " + validationError);
+			fold.setScore(validationError);
+			fold.setMethod(method);
+		} else {
+			throw new EncogError("Unsupported training type for EncogModel: " + train.getImplementationType());
 		}
-		fold.setScore(earlyStop.getValidationError());
-		fold.setMethod(method);
 	}
 	
 	private MLTrain createTrainer(MLMethod method,MLDataSet dataset) {
@@ -190,7 +207,7 @@ public class EncogModel {
 		
 	}
 	
-	public void selectTraining(VersatileMLDataSet dataset) {
+	public void selectTrainingType(VersatileMLDataSet dataset) {
 		if( this.methodType==null) {
 			throw new EncogError("Please select your training method, before your training type.");
 		}
