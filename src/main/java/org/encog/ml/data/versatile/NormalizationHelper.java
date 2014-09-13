@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLData;
+import org.encog.ml.model.config.MethodConfig;
 
 public class NormalizationHelper {
 	private List<ColumnDefinition> sourceColumns = new ArrayList<ColumnDefinition>();
@@ -138,5 +139,8 @@ public class NormalizationHelper {
 		
 		return result;
 		
+	}
+	public void setStrategy(NormalizationStrategy strat) {
+		this.normStrategy = strat;
 	}
 }

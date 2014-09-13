@@ -12,10 +12,8 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 
 	private int analyzedRows;
 
-	public VersatileMLDataSet(VersatileDataSource theSource,
-			NormalizationStrategy theStrategy) {
+	public VersatileMLDataSet(VersatileDataSource theSource) {
 		this.source = theSource;
-		this.helper.setNormStrategy(theStrategy);
 	}
 
 	public void analyze() {
@@ -97,7 +95,7 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 			for (ColumnDefinition colDef : this.helper.getOutputColumns()) {
 				int index = this.helper.getSourceColumns().indexOf(colDef);
 				String value = line[index];
-				column = strat.normalizeColumn(colDef, true, value,
+				column = strat.normalizeColumn(colDef, false, value,
 						getData()[row], column);
 			}
 			row++;

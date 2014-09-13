@@ -1,8 +1,11 @@
 package org.encog.ml.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.encog.EncogError;
 import org.encog.mathutil.randomize.generate.MersenneTwisterGenerateRandom;
 import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
@@ -12,10 +15,13 @@ import org.encog.ml.data.versatile.ColumnDefinition;
 import org.encog.ml.data.versatile.DataDivision;
 import org.encog.ml.data.versatile.MatrixMLDataSet;
 import org.encog.ml.data.versatile.VersatileMLDataSet;
+import org.encog.ml.factory.MLMethodFactory;
+import org.encog.ml.factory.MLTrainFactory;
+import org.encog.ml.model.config.FeedforwardConfig;
+import org.encog.ml.model.config.MethodConfig;
+import org.encog.ml.model.config.SVMConfig;
+import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.end.SimpleEarlyStoppingStrategy;
-import org.encog.neural.networks.ContainsFlat;
-import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
-import org.encog.util.simple.EncogUtility;
 
 public class EncogModel {
 	
@@ -25,9 +31,16 @@ public class EncogModel {
 	private MatrixMLDataSet trainingDataset;
 	private MatrixMLDataSet validationDataset;
 	private MLMethod method;
+	private final Map<String,MethodConfig> methodConfigurations = new HashMap<String,MethodConfig>();
+	private String methodType;
+	private String methodArgs;
+	private String trainingType; 
+	private String trainingArgs;
 	
 	public EncogModel(VersatileMLDataSet theDataset) {
 		this.dataset = theDataset;
+		this.methodConfigurations.put(MLMethodFactory.TYPE_FEEDFORWARD, new FeedforwardConfig());
+		this.methodConfigurations.put(MLMethodFactory.TYPE_SVM, new SVMConfig());
 	}
 
 	/**
@@ -51,14 +64,6 @@ public class EncogModel {
 		return predictedFeatures;
 	}
 	
-	
-	public void createModel() {
-		this.dataset.normalize();
-		int modelInputCount = this.dataset.getInputSize();
-		int modelOutputCount = this.dataset.getIdealSize();
-		this.method = EncogUtility.simpleFeedForward(modelInputCount, 10, 0, modelOutputCount, true);
-	}
-	
 	public void holdBackValidation(double validationPercent,boolean shuffle, int seed) {
 		List<DataDivision> dataDivisionList = new ArrayList<DataDivision>();
 		dataDivisionList.add(new DataDivision(1.0-validationPercent));// Training
@@ -68,33 +73,40 @@ public class EncogModel {
 		this.validationDataset = dataDivisionList.get(1).getDataset();
 	}
 	
-	public void fitFold(DataFold fold, MLMethod method) {
-		ResilientPropagation rprop = new ResilientPropagation((ContainsFlat)method,fold.getTraining());
-		SimpleEarlyStoppingStrategy earlyStop = new SimpleEarlyStoppingStrategy(fold.getValidation());
-		rprop.addStrategy(earlyStop);
+	public void fitFold(DataFold fold) {
+		MLMethod method = this.createMethod();
+		MLTrain train = this.createTrainer(method,fold.getTraining());
 		
-		while(!rprop.isTrainingDone()) {
-			rprop.iteration();
-			System.out.println("Iteration #"+ rprop.getIteration() + ", Training Error: " + rprop.getError()+", Validation Error:" + earlyStop.getValidationError() );
+		SimpleEarlyStoppingStrategy earlyStop = new SimpleEarlyStoppingStrategy(fold.getValidation());
+		train.addStrategy(earlyStop);
+		
+		while(!train.isTrainingDone()) {
+			train.iteration();
+			System.out.println("Iteration #"+ train.getIteration() + ", Training Error: " + train.getError()+", Validation Error:" + earlyStop.getValidationError() );
 		}
 		fold.setScore(earlyStop.getValidationError());
 		fold.setMethod(method);
 	}
 	
-	public MLMethod crossvalidate(int k, boolean shuffle) {
-		int modelInputCount = this.dataset.getInputSize();
-		int modelOutputCount = this.dataset.getIdealSize();
-		
+	private MLTrain createTrainer(MLMethod method,MLDataSet dataset) {
+
+		if( this.trainingType==null ) {
+			throw new EncogError("Please call selectTraining first to choose how to train.");
+		}
+		MLTrainFactory trainFactory = new MLTrainFactory();		
+		MLTrain train = trainFactory.create(method,dataset,this.trainingType, this.trainingArgs);
+		return train;
+	}
+
+	public MLMethod crossvalidate(int k, boolean shuffle) {		
 		KFoldCrossvalidation cross = new KFoldCrossvalidation(this.trainingDataset,k);
 		cross.process(shuffle);
 		
 		int foldNumber = 0;
-		double sumValidationError = 0;
 		for(DataFold fold:cross.getFolds()) {
 			foldNumber++;
 			System.out.println("Fold #" + foldNumber);
-			MLMethod model = EncogUtility.simpleFeedForward(modelInputCount, 10, 0, modelOutputCount, true);
-			fitFold(fold, model);
+			fitFold(fold);
 		}
 		
 		double sum = 0;
@@ -139,6 +151,70 @@ public class EncogModel {
 	public void setValidationDataset(MatrixMLDataSet validationDataset) {
 		this.validationDataset = validationDataset;
 	}
+	
+	public void selectMethod(VersatileMLDataSet dataset, String methodType, String methodArgs, 
+			String trainingType, String trainingArgs) {
+		
+		if( !this.methodConfigurations.containsKey(methodType) ) {
+			throw new EncogError("Don't know how to autoconfig method: " + methodType);
+		}
+		this.methodType = methodType;
+		this.methodArgs = methodArgs;
+		dataset.getNormHelper().setStrategy(this.methodConfigurations.get(methodType).suggestNormalizationStrategy(
+				dataset, methodArgs));
+		
+	}
+	
+	public MLMethod createMethod() {
+		if( this.methodType==null ) {
+			throw new EncogError("Please call selectMethod first to choose what type of method you wish to use.");
+		}
+		MLMethodFactory methodFactory = new MLMethodFactory();		
+		MLMethod method = methodFactory.create(methodType, methodArgs, 
+				dataset.getNormHelper().calculateNormalizedInputCount(), 
+				dataset.getNormHelper().calculateNormalizedOutputCount());
+		return method;
+	}
+	
+
+	public void selectMethod(VersatileMLDataSet dataset, String methodType) {
+		if( !this.methodConfigurations.containsKey(methodType) ) {
+			throw new EncogError("Don't know how to autoconfig method: " + methodType);
+		}
+		
+		MethodConfig config = this.methodConfigurations.get(methodType);
+		this.methodType = methodType;
+		this.methodArgs = config.suggestModelArchitecture(dataset);
+		dataset.getNormHelper().setStrategy(this.methodConfigurations.get(methodType).suggestNormalizationStrategy(
+				dataset, methodArgs));
+		
+	}
+	
+	public void selectTraining(VersatileMLDataSet dataset) {
+		if( this.methodType==null) {
+			throw new EncogError("Please select your training method, before your training type.");
+		}
+		MethodConfig config = this.methodConfigurations.get(methodType);
+		selectTraining(dataset,config.suggestTrainingType(),config.suggestTrainingArgs(trainingType));
+	}
+	
+	public void selectTraining(VersatileMLDataSet dataset, String trainingType, String trainingArgs) {
+		if( this.methodType==null) {
+			throw new EncogError("Please select your training method, before your training type.");
+		}
+		
+		this.trainingType = trainingType;
+		this.trainingArgs = trainingArgs;
+	}
+
+	/**
+	 * @return the methodConfigurations
+	 */
+	public Map<String, MethodConfig> getMethodConfigurations() {
+		return methodConfigurations;
+	}
+	
+	
 	
 	
 	
