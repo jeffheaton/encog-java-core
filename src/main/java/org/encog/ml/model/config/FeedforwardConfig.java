@@ -70,4 +70,9 @@ public class FeedforwardConfig implements MethodConfig {
 	public String suggestTrainingArgs(String trainingType) {
 		return "";
 	}
+
+	@Override
+	public int determineOutputCount(VersatileMLDataSet dataset) {
+		return dataset.getNormHelper().calculateNormalizedOutputCount();
+	}
 }

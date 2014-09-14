@@ -275,6 +275,9 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	@Override
 	public double calculateError(final MLDataSet data) {
 		updateBestNetwork();
+		if( this.bestNetwork==null ) {
+			return Double.POSITIVE_INFINITY;
+		}
 		return this.bestNetwork.calculateError(data);
 	}
 

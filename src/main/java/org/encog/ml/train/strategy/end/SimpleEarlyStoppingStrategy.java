@@ -105,7 +105,7 @@ public class SimpleEarlyStoppingStrategy implements EndTrainingStrategy {
 		this.lastCheck++;
 		this.trainingError = this.train.getError();
 
-		if( this.lastCheck>this.checkFrequency ) {
+		if( this.lastCheck>this.checkFrequency || Double.isInfinite(this.lastValidationError) ) {
 			this.lastCheck = 0;
 			
 			double currentValidationError = this.calc.calculateError(this.validationSet);

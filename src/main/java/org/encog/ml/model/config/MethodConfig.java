@@ -15,4 +15,6 @@ public interface MethodConfig {
 
 	String suggestTrainingArgs(String trainingType);
 
+	int determineOutputCount(VersatileMLDataSet dataset);
+
 }

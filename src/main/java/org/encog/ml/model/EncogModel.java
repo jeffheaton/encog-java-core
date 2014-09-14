@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.encog.EncogError;
 import org.encog.mathutil.randomize.generate.MersenneTwisterGenerateRandom;
+import org.encog.ml.MLClassification;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
 import org.encog.ml.TrainingImplementationType;
@@ -14,6 +15,7 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.cross.DataFold;
 import org.encog.ml.data.cross.KFoldCrossvalidation;
 import org.encog.ml.data.versatile.ColumnDefinition;
+import org.encog.ml.data.versatile.ColumnType;
 import org.encog.ml.data.versatile.DataDivision;
 import org.encog.ml.data.versatile.MatrixMLDataSet;
 import org.encog.ml.data.versatile.VersatileMLDataSet;
@@ -22,6 +24,7 @@ import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.model.config.FeedforwardConfig;
 import org.encog.ml.model.config.MethodConfig;
 import org.encog.ml.model.config.NEATConfig;
+import org.encog.ml.model.config.PNNConfig;
 import org.encog.ml.model.config.RBFNetworkConfig;
 import org.encog.ml.model.config.SVMConfig;
 import org.encog.ml.train.MLTrain;
@@ -37,6 +40,7 @@ public class EncogModel {
 	private MatrixMLDataSet validationDataset;
 	private MLMethod method;
 	private final Map<String,MethodConfig> methodConfigurations = new HashMap<String,MethodConfig>();
+	private MethodConfig config;
 	private String methodType;
 	private String methodArgs;
 	private String trainingType; 
@@ -48,6 +52,7 @@ public class EncogModel {
 		this.methodConfigurations.put(MLMethodFactory.TYPE_SVM, new SVMConfig());
 		this.methodConfigurations.put(MLMethodFactory.TYPE_RBFNETWORK, new RBFNetworkConfig());
 		this.methodConfigurations.put(MLMethodFactory.TYPE_NEAT, new NEATConfig());
+		this.methodConfigurations.put(MLMethodFactory.TYPE_PNN, new PNNConfig());
 	}
 
 	/**
@@ -96,13 +101,24 @@ public class EncogModel {
 			fold.setMethod(method);
 		} else if( train.getImplementationType()==TrainingImplementationType.OnePass) { 
 			train.iteration();
-			double validationError = EncogUtility.calculateRegressionError((MLRegression)method, fold.getValidation());
+			double validationError = calculateError(method, fold.getValidation());
 			System.out.println("Trained, Training Error: " + train.getError() + ", Validatoin Error: " + validationError);
 			fold.setScore(validationError);
 			fold.setMethod(method);
 		} else {
 			throw new EncogError("Unsupported training type for EncogModel: " + train.getImplementationType());
 		}
+	}
+	
+	public double calculateError(MLMethod method, MLDataSet data) {
+		if( this.dataset.getNormHelper().getOutputColumns().size()==1) {
+			ColumnDefinition cd = this.dataset.getNormHelper().getOutputColumns().get(0);
+			if( cd.getDataType()==ColumnType.nominal) {
+				return EncogUtility.calculateClassificationError((MLClassification)method, data); 
+			}
+		}
+		
+		return EncogUtility.calculateRegressionError((MLRegression)method, data);
 	}
 	
 	private MLTrain createTrainer(MLMethod method,MLDataSet dataset) {
@@ -189,7 +205,7 @@ public class EncogModel {
 		MLMethodFactory methodFactory = new MLMethodFactory();		
 		MLMethod method = methodFactory.create(methodType, methodArgs, 
 				dataset.getNormHelper().calculateNormalizedInputCount(), 
-				dataset.getNormHelper().calculateNormalizedOutputCount());
+				this.config.determineOutputCount(dataset));
 		return method;
 	}
 	
@@ -199,10 +215,10 @@ public class EncogModel {
 			throw new EncogError("Don't know how to autoconfig method: " + methodType);
 		}
 		
-		MethodConfig config = this.methodConfigurations.get(methodType);
+		this.config = this.methodConfigurations.get(methodType);
 		this.methodType = methodType;
-		this.methodArgs = config.suggestModelArchitecture(dataset);
-		dataset.getNormHelper().setStrategy(this.methodConfigurations.get(methodType).suggestNormalizationStrategy(
+		this.methodArgs = this.config.suggestModelArchitecture(dataset);
+		dataset.getNormHelper().setStrategy(this.config.suggestNormalizationStrategy(
 				dataset, methodArgs));
 		
 	}
