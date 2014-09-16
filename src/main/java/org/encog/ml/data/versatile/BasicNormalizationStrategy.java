@@ -7,6 +7,7 @@ import org.encog.EncogError;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.versatile.normalizers.OneOfNNormalizer;
 import org.encog.ml.data.versatile.normalizers.RangeNormalizer;
+import org.encog.ml.data.versatile.normalizers.RangeOrdinal;
 
 public class BasicNormalizationStrategy implements NormalizationStrategy {
 
@@ -20,11 +21,11 @@ public class BasicNormalizationStrategy implements NormalizationStrategy {
 	public BasicNormalizationStrategy(double inputLow, double inputHigh, double outputLow, double outputHigh) {
 		assignInputNormalizer(ColumnType.continuous,new RangeNormalizer(inputLow,inputHigh));
 		assignInputNormalizer(ColumnType.nominal,new OneOfNNormalizer(inputLow,inputHigh));
-		assignInputNormalizer(ColumnType.ordinal,new OneOfNNormalizer(inputLow,inputHigh));
+		assignInputNormalizer(ColumnType.ordinal,new RangeOrdinal(inputLow,inputHigh));
 		
 		assignOutputNormalizer(ColumnType.continuous,new RangeNormalizer(outputLow,outputHigh));
 		assignOutputNormalizer(ColumnType.nominal,new OneOfNNormalizer(outputLow,outputHigh));
-		assignOutputNormalizer(ColumnType.ordinal,new OneOfNNormalizer(outputLow,outputHigh));
+		assignOutputNormalizer(ColumnType.ordinal,new RangeOrdinal(outputLow,outputHigh));
 	}
 	
 	public void assignInputNormalizer(ColumnType colType, Normalizer norm) {
