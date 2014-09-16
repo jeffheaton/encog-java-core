@@ -1,10 +1,14 @@
 package org.encog.ml.data.versatile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.encog.EncogError;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLData;
+import org.encog.ml.data.versatile.missing.MissingHandler;
 import org.encog.util.csv.CSVFormat;
 
 public class NormalizationHelper {
@@ -14,6 +18,7 @@ public class NormalizationHelper {
 	private NormalizationStrategy normStrategy;
 	private CSVFormat format = CSVFormat.ENGLISH;
 	private List<String> unknownValues = new ArrayList<String>();
+	private Map<ColumnDefinition,MissingHandler> missingHandlers = new HashMap<ColumnDefinition,MissingHandler>();
 	
 	/**
 	 * @return the sourceColumns
@@ -183,22 +188,38 @@ public class NormalizationHelper {
 	}
 	
 	public int normalizeToVector(ColumnDefinition colDef, int outputColumn, double[] output, boolean isInput, String value) {
+		MissingHandler handler = null;
+		
+		if( this.unknownValues.contains(value)) {
+			if( !this.missingHandlers.containsKey(colDef)) {
+				throw new EncogError("Do not know how to process missing value \""+value+"\" in field: " + colDef.getName() );
+			}
+			handler = this.missingHandlers.get(colDef);
+		}
 		
 		if( colDef.getDataType()==ColumnType.continuous) {
 			double d = parseDouble(value);
+			if( handler!=null ) {
+				d = handler.process(colDef,d);
+			}
 			return this.normStrategy.normalizeColumn(colDef, isInput, d,
 					output, outputColumn);
 		} else {
+			if( handler!=null ) {
+				value = handler.process(colDef,value);
+			}
 			return this.normStrategy.normalizeColumn(colDef, isInput, value,
 					output, outputColumn);	
 		}
 	}
 	
 	public double parseDouble(String str) {
-		if( this.unknownValues.contains(str)) {
-			return Double.NaN;
-		}
 		return this.format.parse(str);
+	}
+	
+	public void defineMissingHandler(ColumnDefinition colDef, MissingHandler handler) {
+		this.missingHandlers.put(colDef, handler);
+		handler.init(this);
 	}
 	
 	
