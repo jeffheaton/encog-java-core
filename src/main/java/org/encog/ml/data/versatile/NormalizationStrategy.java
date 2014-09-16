@@ -14,4 +14,7 @@ public interface NormalizationStrategy {
 	String denormalizeColumn(ColumnDefinition colDef, boolean b, MLData output,
 			int idx);
 
+	int normalizeColumn(ColumnDefinition colDef, boolean isInput, double value,
+			double[] outpuData, int outputColumn);
+
 }

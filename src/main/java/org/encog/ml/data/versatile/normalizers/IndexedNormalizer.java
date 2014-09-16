@@ -31,4 +31,10 @@ public class IndexedNormalizer implements Normalizer {
 		return colDef.getClasses().get((int)data.getData(dataColumn));
 	}
 
+	@Override
+	public int normalizeColumn(ColumnDefinition colDef, double value,
+			double[] outputData, int outputColumn) {
+		throw new EncogError("Can't use an indexed normalizer on a continuous value: " + value);
+	}
+
 }

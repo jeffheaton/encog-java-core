@@ -49,7 +49,7 @@ public class CSVDataSource implements VersatileDataSource {
 		this.headers = headers;
 		this.format = format;
 	}
-	
+
 	@Override
 	public String[] readLine() {
 		if( this.reader==null) {

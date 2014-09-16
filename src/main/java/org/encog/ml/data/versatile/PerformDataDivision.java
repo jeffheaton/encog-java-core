@@ -3,7 +3,6 @@ package org.encog.ml.data.versatile;
 import java.util.List;
 
 import org.encog.mathutil.randomize.generate.GenerateRandom;
-import org.encog.ml.data.MLDataSet;
 
 public class PerformDataDivision {
 	private final boolean shuffle;
@@ -99,7 +98,7 @@ public class PerformDataDivision {
 		// Adjust any remaining count
 		int remaining = totalCount - countSofar;
 		while (remaining-- > 0) {
-			int idx = this.rnd.nextInt(totalCount);
+			int idx = this.rnd.nextInt(dataDivisionList.size());
 			DataDivision div = dataDivisionList.get(idx);
 			div.setCount(div.getCount() + 1);
 		}

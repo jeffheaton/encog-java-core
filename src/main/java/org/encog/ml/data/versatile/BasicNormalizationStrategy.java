@@ -71,6 +71,13 @@ public class BasicNormalizationStrategy implements NormalizationStrategy {
 		Normalizer norm = findNormalizer(colDef,isInput);
 		return norm.normalizeColumn(colDef,value,outputData,outputColumn);
 	}
+	
+	@Override
+	public int normalizeColumn(ColumnDefinition colDef, boolean isInput,
+			double value, double[] outputData, int outputColumn) {
+		Normalizer norm = findNormalizer(colDef,isInput);
+		return norm.normalizeColumn(colDef,value,outputData,outputColumn);
+	}
 
 	/**
 	 * @return the inputNormalizers
@@ -92,7 +99,4 @@ public class BasicNormalizationStrategy implements NormalizationStrategy {
 		Normalizer norm = findNormalizer(colDef,isInput);
 		return norm.denormalizeColumn(colDef,data,dataColumn);
 	}
-	
-	
-
 }

@@ -9,7 +9,12 @@ public interface Normalizer {
 	int normalizeColumn(ColumnDefinition colDef, String value,
 			double[] outputData, int outputColumn);
 
+	int normalizeColumn(ColumnDefinition colDef, double value,
+			double[] outputData, int outputColumn);
+	
 	String denormalizeColumn(ColumnDefinition colDef, MLData data,
 			int dataColumn);
+
+
 
 }

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.EncogError;
+import org.encog.NullStatusReportable;
+import org.encog.StatusReportable;
 import org.encog.mathutil.randomize.generate.MersenneTwisterGenerateRandom;
 import org.encog.ml.MLClassification;
 import org.encog.ml.MLMethod;
@@ -29,6 +31,7 @@ import org.encog.ml.model.config.RBFNetworkConfig;
 import org.encog.ml.model.config.SVMConfig;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.end.SimpleEarlyStoppingStrategy;
+import org.encog.util.Format;
 import org.encog.util.simple.EncogUtility;
 
 public class EncogModel {
@@ -45,6 +48,7 @@ public class EncogModel {
 	private String methodArgs;
 	private String trainingType; 
 	private String trainingArgs;
+	private StatusReportable report = new NullStatusReportable();
 	
 	public EncogModel(VersatileMLDataSet theDataset) {
 		this.dataset = theDataset;
@@ -85,7 +89,7 @@ public class EncogModel {
 		this.validationDataset = dataDivisionList.get(1).getDataset();
 	}
 	
-	public void fitFold(DataFold fold) {
+	public void fitFold(int k, int foldNum, DataFold fold) {
 		MLMethod method = this.createMethod();
 		MLTrain train = this.createTrainer(method,fold.getTraining());
 		
@@ -93,16 +97,28 @@ public class EncogModel {
 			SimpleEarlyStoppingStrategy earlyStop = new SimpleEarlyStoppingStrategy(fold.getValidation());
 			train.addStrategy(earlyStop);
 			
+			StringBuilder line = new StringBuilder();
 			while(!train.isTrainingDone()) {
 				train.iteration();
-				System.out.println("Iteration #"+ train.getIteration() + ", Training Error: " + train.getError()+", Validation Error:" + earlyStop.getValidationError() );
+				line.setLength(0);
+				line.append("Fold #");
+				line.append(foldNum);
+				line.append("/");
+				line.append(k);
+				line.append(": Iteration #");
+				line.append(train.getIteration());
+				line.append(", Training Error: ");
+				line.append(Format.formatDouble(train.getError(), 8));
+				line.append(", Validation Error: ");
+				line.append(Format.formatDouble(earlyStop.getValidationError(), 8));
+				report.report(k, foldNum, line.toString());
 			}
 			fold.setScore(earlyStop.getValidationError());
 			fold.setMethod(method);
 		} else if( train.getImplementationType()==TrainingImplementationType.OnePass) { 
 			train.iteration();
 			double validationError = calculateError(method, fold.getValidation());
-			System.out.println("Trained, Training Error: " + train.getError() + ", Validatoin Error: " + validationError);
+			this.report.report(k,k,"Trained, Training Error: " + train.getError() + ", Validatoin Error: " + validationError);
 			fold.setScore(validationError);
 			fold.setMethod(method);
 		} else {
@@ -138,8 +154,8 @@ public class EncogModel {
 		int foldNumber = 0;
 		for(DataFold fold:cross.getFolds()) {
 			foldNumber++;
-			System.out.println("Fold #" + foldNumber);
-			fitFold(fold);
+			report.report(k, foldNumber, "Fold #" + foldNumber);
+			fitFold(k, foldNumber, fold);
 		}
 		
 		double sum = 0;
@@ -153,7 +169,7 @@ public class EncogModel {
 			}
 		}
 		sum=sum/cross.getFolds().size();
-		System.out.println("Cross-validated score:" + sum);
+		report.report(k, k, "Cross-validated score:" + sum);
 		return bestMethod;
 	}
 
@@ -245,6 +261,20 @@ public class EncogModel {
 	 */
 	public Map<String, MethodConfig> getMethodConfigurations() {
 		return methodConfigurations;
+	}
+
+	/**
+	 * @return the report
+	 */
+	public StatusReportable getReport() {
+		return report;
+	}
+
+	/**
+	 * @param report the report to set
+	 */
+	public void setReport(StatusReportable report) {
+		this.report = report;
 	}
 	
 	

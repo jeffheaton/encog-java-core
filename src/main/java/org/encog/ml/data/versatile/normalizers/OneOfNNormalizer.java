@@ -1,5 +1,6 @@
 package org.encog.ml.data.versatile.normalizers;
 
+import org.encog.EncogError;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.versatile.ColumnDefinition;
 import org.encog.ml.data.versatile.Normalizer;
@@ -50,6 +51,12 @@ public class OneOfNNormalizer implements Normalizer {
 		}
 		
 		return colDef.getClasses().get(bestIndex);
+	}
+
+	@Override
+	public int normalizeColumn(ColumnDefinition colDef, double value,
+			double[] outputData, int outputColumn) {
+		throw new EncogError("Can't use a one-of-n normalizer on a continuous value: " + value);
 	}
 
 }

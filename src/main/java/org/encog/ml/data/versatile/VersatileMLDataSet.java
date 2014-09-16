@@ -48,7 +48,7 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 				ColumnDefinition colDef = this.helper.getSourceColumns().get(i);
 				String value = line[i];
 				if (colDef.getDataType() == ColumnType.continuous) {
-					double d = Double.parseDouble(value);
+					double d = this.helper.parseDouble(value);
 					d = colDef.getMean() - d;
 					d = d * d;
 					colDef.setSd(colDef.getSd() + d);
@@ -67,6 +67,11 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 
 	public void normalize() {
 		NormalizationStrategy strat = this.helper.getNormStrategy();
+		
+		if( strat==null ) {
+			throw new EncogError("Please choose a model type first, with selectMethod.");
+		}
+		
 		int normalizedRows = strat.calculateTotalRows(this.analyzedRows);
 		int normalizedInputColumns = this.helper
 				.calculateNormalizedInputCount();
@@ -88,15 +93,15 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 			for (ColumnDefinition colDef : this.helper.getInputColumns()) {
 				int index = this.helper.getSourceColumns().indexOf(colDef);
 				String value = line[index];
-				column = strat.normalizeColumn(colDef, true, value,
-						getData()[row], column);
+				
+				column = this.helper.normalizeToVector(colDef, column, getData()[row], true, value);
 			}
 
 			for (ColumnDefinition colDef : this.helper.getOutputColumns()) {
 				int index = this.helper.getSourceColumns().indexOf(colDef);
 				String value = line[index];
-				column = strat.normalizeColumn(colDef, false, value,
-						getData()[row], column);
+				
+				column = this.helper.normalizeToVector(colDef, column, getData()[row], false, value);
 			}
 			row++;
 		}
@@ -139,10 +144,9 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 		for (ColumnDefinition colDef : this.helper.getSourceColumns()) {
 			if (colDef == outputColumn) {
 				this.helper.getOutputColumns().add(colDef);
-			} else {
+			} else if(colDef.getDataType()!=ColumnType.ignore) {
 				this.helper.getInputColumns().add(colDef);
 			}
 		}
 	}
-
 }

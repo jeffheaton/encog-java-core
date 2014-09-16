@@ -111,7 +111,7 @@ public class KFoldCrossvalidation {
 			int trainingSize = 0;
 			int validationSize = 0;
 			for(int j=0;j<foldContents.size();j++) {
-				int foldSize = foldContents.get(i).length;
+				int foldSize = foldContents.get(j).length;
 				if( j==i ) {
 					validationSize+=foldSize;
 				} else {
@@ -130,6 +130,7 @@ public class KFoldCrossvalidation {
 					EngineArray.arrayCopy(source, 0, trainingMask, trainingIndex, source.length);
 					trainingIndex+=source.length;
 				}
+				
 			}
 			// Build the set
 			MatrixMLDataSet training = new MatrixMLDataSet(this.baseDataset,trainingMask);

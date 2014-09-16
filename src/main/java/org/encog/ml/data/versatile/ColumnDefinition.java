@@ -15,6 +15,7 @@ public class ColumnDefinition {
 	private double sd;
 	private int count;
 	private final List<String> classes = new ArrayList<String>();
+	private NormalizationHelper owner;
 	
 	public ColumnDefinition(String theName, ColumnType theDataType) {
 		this.name = theName;
@@ -144,12 +145,12 @@ public class ColumnDefinition {
 
 	private void analyzeOrdinal(String value) {
 		if(!this.classes.contains(value)) {
-			throw(new EncogError("Undefined ordinal value: " + value));
+			throw(new EncogError("You must predefine any ordinal values (in order). Undefined ordinal value: " + value));
 		}
 	}
 
 	private void analyzeContinuous(String value) {
-		double d = Double.parseDouble(value);
+		double d = this.owner.getFormat().parse(value);
 		if( this.count<0) {
 			this.low = d;
 			this.high = d;
@@ -196,5 +197,19 @@ public class ColumnDefinition {
 		}
 		result.append("]");
 		return result.toString();
+	}
+
+	public void defineClass(String str) {
+		this.classes.add(str);
 	}	
+	
+	public void defineClass(String[] str) {
+		for(String s: str) {
+			defineClass(s);
+		}
+	}
+
+	public void setOwner(NormalizationHelper theOwner) {
+		this.owner = theOwner;
+	}
 }

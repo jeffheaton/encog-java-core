@@ -20,5 +20,10 @@ public enum ColumnType {
 	 * A continuous (non-discrete) value is simply floating point numeric.  These values are 
 	 * orderable and dense.
 	 */
-	continuous
+	continuous, 
+	
+	/**
+	 * This field is ignored.
+	 */
+	ignore
 }

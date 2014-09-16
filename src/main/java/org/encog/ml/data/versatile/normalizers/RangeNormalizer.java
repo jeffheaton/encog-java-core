@@ -1,5 +1,6 @@
 package org.encog.ml.data.versatile.normalizers;
 
+import org.encog.EncogError;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.versatile.ColumnDefinition;
 import org.encog.ml.data.versatile.Normalizer;
@@ -22,9 +23,14 @@ public class RangeNormalizer implements Normalizer {
 	@Override
 	public int normalizeColumn(ColumnDefinition colDef, String value,
 			double[] outputData, int outputColumn) {
-		
-		double d = Double.parseDouble(value);
-		double result = ((d - colDef.getLow()) / (colDef.getHigh() - colDef.getLow()))
+		throw new EncogError("Can't range-normalize a string value: " + value);
+
+	}
+	
+	@Override
+	public int normalizeColumn(ColumnDefinition colDef, double value,
+			double[] outputData, int outputColumn) {
+		double result = ((value - colDef.getLow()) / (colDef.getHigh() - colDef.getLow()))
 				* (this.normalizedHigh - this.normalizedLow)
 				+ this.normalizedLow;
 		
@@ -56,5 +62,4 @@ public class RangeNormalizer implements Normalizer {
 		}
 		return ""+result;
 	}
-
 }

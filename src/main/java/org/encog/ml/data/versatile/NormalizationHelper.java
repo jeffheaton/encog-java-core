@@ -5,13 +5,16 @@ import java.util.List;
 
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLData;
-import org.encog.ml.model.config.MethodConfig;
+import org.encog.util.csv.CSVFormat;
 
 public class NormalizationHelper {
 	private List<ColumnDefinition> sourceColumns = new ArrayList<ColumnDefinition>();
 	private List<ColumnDefinition> inputColumns = new ArrayList<ColumnDefinition>();
 	private List<ColumnDefinition> outputColumns = new ArrayList<ColumnDefinition>();
 	private NormalizationStrategy normStrategy;
+	private CSVFormat format = CSVFormat.ENGLISH;
+	private List<String> unknownValues = new ArrayList<String>();
+	
 	/**
 	 * @return the sourceColumns
 	 */
@@ -61,9 +64,14 @@ public class NormalizationHelper {
 		this.normStrategy = normStrategy;
 	}
 	
+	public void addSourceColumn(ColumnDefinition def) {
+		this.sourceColumns.add(def);
+		def.setOwner(this);
+	}
+	
 	public ColumnDefinition defineSourceColumn(String name, ColumnType colType) {
 		ColumnDefinition result = new ColumnDefinition(name,colType);
-		this.sourceColumns.add(result);
+		addSourceColumn(result);
 		return result;
 	}
 	
@@ -119,11 +127,19 @@ public class NormalizationHelper {
 	public MLData allocateInputVector() {
 		return new BasicMLData(calculateNormalizedInputCount());
 	}
-	public void normalizeInputVector(String[] line, MLData inputVector) {
+	public void normalizeInputVector(String[] line, MLData inputVector, boolean originalOrder) {
 		int outputIndex=0;
+		int i = 0;
 		for(ColumnDefinition colDef: this.inputColumns) {
-			int idx = this.sourceColumns.indexOf(colDef);
-			outputIndex = this.normStrategy.normalizeColumn(colDef, true, line[idx], inputVector.getData(), outputIndex);
+			int idx;
+			
+			if( originalOrder ) {
+				idx = this.sourceColumns.indexOf(colDef);
+			} else {
+				idx = i;
+			}
+			outputIndex = normalizeToVector(colDef, outputIndex, inputVector.getData(), false, line[idx]);
+			i++;
 		}
 		
 	}
@@ -143,4 +159,47 @@ public class NormalizationHelper {
 	public void setStrategy(NormalizationStrategy strat) {
 		this.normStrategy = strat;
 	}
+	/**
+	 * @return the format
+	 */
+	public CSVFormat getFormat() {
+		return format;
+	}
+	/**
+	 * @param format the format to set
+	 */
+	public void setFormat(CSVFormat format) {
+		this.format = format;
+	}
+	/**
+	 * @return the unknownValues
+	 */
+	public List<String> getUnknownValues() {
+		return unknownValues;
+	}
+	
+	public void defineUnknownValue(String str) {
+		this.unknownValues.add(str);
+	}
+	
+	public int normalizeToVector(ColumnDefinition colDef, int outputColumn, double[] output, boolean isInput, String value) {
+		
+		if( colDef.getDataType()==ColumnType.continuous) {
+			double d = parseDouble(value);
+			return this.normStrategy.normalizeColumn(colDef, isInput, d,
+					output, outputColumn);
+		} else {
+			return this.normStrategy.normalizeColumn(colDef, isInput, value,
+					output, outputColumn);	
+		}
+	}
+	
+	public double parseDouble(String str) {
+		if( this.unknownValues.contains(str)) {
+			return Double.NaN;
+		}
+		return this.format.parse(str);
+	}
+	
+	
 }
