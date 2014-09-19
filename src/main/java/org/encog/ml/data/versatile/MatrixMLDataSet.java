@@ -13,7 +13,7 @@ import org.encog.util.EngineArray;
 public class MatrixMLDataSet implements MLDataSet {
 	
 	/**
-	 * An iterator to be used with the BasicMLDataSet. This iterator does not
+	 * An iterator to be used with the MatrixMLDataSet. This iterator does not
 	 * support removes.
 	 * 
 	 * @author jheaton
@@ -71,6 +71,8 @@ public class MatrixMLDataSet implements MLDataSet {
 	private int calculatedIdealSize = -1;
 	private double[][] data;
 	private int[] mask;
+	private int lagWindowSize = 1;
+	private int leadWindowSize = 1;
 	
 	public MatrixMLDataSet() {
 		
@@ -108,12 +110,12 @@ public class MatrixMLDataSet implements MLDataSet {
 
 	@Override
 	public int getIdealSize() {
-		return this.calculatedIdealSize;
+		return this.calculatedIdealSize*this.leadWindowSize;
 	}
 
 	@Override
 	public int getInputSize() {
-		return this.calculatedInputSize;
+		return this.calculatedInputSize*this.lagWindowSize;
 	}
 
 	@Override
@@ -150,7 +152,14 @@ public class MatrixMLDataSet implements MLDataSet {
 
 	@Override
 	public MLDataSet openAdditional() {
-		return new MatrixMLDataSet(this.data,this.calculatedInputSize, this.calculatedIdealSize, this.mask);
+		MatrixMLDataSet result = new MatrixMLDataSet(
+				this.data,
+				this.calculatedInputSize, 
+				this.calculatedIdealSize, 
+				this.mask);
+		result.setLagWindowSize(getLagWindowSize());
+		result.setLeadWindowSize(getLeadWindowSize());
+		return result;
 	}
 
 	@Override
@@ -228,6 +237,34 @@ public class MatrixMLDataSet implements MLDataSet {
 	 */
 	public void setData(double[][] data) {
 		this.data = data;
+	}
+
+	/**
+	 * @return the lagWindowSize
+	 */
+	public int getLagWindowSize() {
+		return lagWindowSize;
+	}
+
+	/**
+	 * @param lagWindowSize the lagWindowSize to set
+	 */
+	public void setLagWindowSize(int lagWindowSize) {
+		this.lagWindowSize = lagWindowSize;
+	}
+
+	/**
+	 * @return the leadWindowSize
+	 */
+	public int getLeadWindowSize() {
+		return leadWindowSize;
+	}
+
+	/**
+	 * @param leadWindowSize the leadWindowSize to set
+	 */
+	public void setLeadWindowSize(int leadWindowSize) {
+		this.leadWindowSize = leadWindowSize;
 	}
 	
 	
