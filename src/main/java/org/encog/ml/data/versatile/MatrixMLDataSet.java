@@ -10,8 +10,26 @@ import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.util.EngineArray;
 
+/**
+ * 
+ * Lag 0; Lead 0 [10 rows] 1->1 2->2 3->3 4->4 5->5 6->6 7->7 8->8 9->9 10->10
+ * 
+ * Lag 0; Lead 1 [9 rows] 1->2 2->3 3->4 4->5 5->6 6->7 7->8 8->9 9->10
+ * 
+ * Lag 1; Lead 0 [9 rows, not useful] 1,2->1 2,3->2 3,4->3 4,5->4 5,6->5 6,7->6
+ * 7,8->7 8,9->8 9,10->9
+ * 
+ * Lag 1; Lead 1 [8 rows] 1,2->3 2,3->4 3,4->5 4,5->6 5,6->7 6,7->8 7,8->9
+ * 8,9->10
+ * 
+ * Lag 1; Lead 2 [7 rows] 1,2->3,4 2,3->4,5 3,4->5,6 4,5->6,7 5,6->7,8 6,7->8,9
+ * 7,8->9,10
+ * 
+ * Lag 2; Lead 1 [7 rows] 1,2,3->4 2,3,4->5 3,4,5->6 4,5,6->7 5,6,7->8 6,7,8->9
+ * 7,8,9->10
+ */
 public class MatrixMLDataSet implements MLDataSet {
-	
+
 	/**
 	 * An iterator to be used with the MatrixMLDataSet. This iterator does not
 	 * support removes.
@@ -42,19 +60,16 @@ public class MatrixMLDataSet implements MLDataSet {
 				return null;
 			}
 
-			BasicMLData input = new BasicMLData(MatrixMLDataSet.this.calculatedInputSize);
-			BasicMLData ideal = new BasicMLData(MatrixMLDataSet.this.calculatedIdealSize);
-			MLDataPair pair = new BasicMLDataPair(input,ideal);
+			BasicMLData input = new BasicMLData(
+					MatrixMLDataSet.this.calculatedInputSize);
+			BasicMLData ideal = new BasicMLData(
+					MatrixMLDataSet.this.calculatedIdealSize);
+			MLDataPair pair = new BasicMLDataPair(input, ideal);
 			
-			double[] dataRow = lookupDataRow(this.currentIndex);
-			
-			EngineArray.arrayCopy(dataRow, 0, input.getData(), 0, MatrixMLDataSet.this.calculatedInputSize);
-			EngineArray.arrayCopy(dataRow, MatrixMLDataSet.this.calculatedInputSize, 
-					ideal.getData(), 0, MatrixMLDataSet.this.calculatedIdealSize);
-			
-			
+			MatrixMLDataSet.this.getRecord(this.currentIndex, pair);
+
 			this.currentIndex++;
-			
+
 			return pair;
 		}
 
@@ -66,19 +81,20 @@ public class MatrixMLDataSet implements MLDataSet {
 			throw new EncogError("Called remove, unsupported operation.");
 		}
 	}
-	
+
 	private int calculatedInputSize = -1;
 	private int calculatedIdealSize = -1;
 	private double[][] data;
 	private int[] mask;
-	private int lagWindowSize = 1;
-	private int leadWindowSize = 1;
-	
+	private int lagWindowSize = 0;
+	private int leadWindowSize = 0;
+
 	public MatrixMLDataSet() {
-		
+
 	}
-	
-	public MatrixMLDataSet(double[][] theData,int theCalculatedInputSize, int theCalculatedIdealSize) {
+
+	public MatrixMLDataSet(double[][] theData, int theCalculatedInputSize,
+			int theCalculatedIdealSize) {
 		this.data = theData;
 		this.calculatedInputSize = theCalculatedInputSize;
 		this.calculatedIdealSize = theCalculatedIdealSize;
@@ -110,40 +126,63 @@ public class MatrixMLDataSet implements MLDataSet {
 
 	@Override
 	public int getIdealSize() {
-		return this.calculatedIdealSize*this.leadWindowSize;
+		return this.calculatedIdealSize * Math.min(this.leadWindowSize, 1);
 	}
 
 	@Override
 	public int getInputSize() {
-		return this.calculatedInputSize*this.lagWindowSize;
+		return this.calculatedInputSize * this.lagWindowSize;
 	}
 
 	@Override
 	public boolean isSupervised() {
-		return getIdealSize()==0;
+		return getIdealSize() == 0;
 	}
 
 	@Override
 	public long getRecordCount() {
-		if( this.mask==null ) {
-			return this.data.length;
+		if (this.mask == null) {
+			return this.data.length
+					- (this.lagWindowSize + this.leadWindowSize);
 		}
-		return this.mask.length;
+		return this.mask.length - (this.lagWindowSize + this.leadWindowSize);
 	}
 
 	@Override
 	public void getRecord(long index, MLDataPair pair) {
-		double[] dataRow = lookupDataRow((int)index);
-		
-		EngineArray.arrayCopy(dataRow, 0, pair.getInputArray(), 0, MatrixMLDataSet.this.calculatedInputSize);
-		EngineArray.arrayCopy(dataRow, MatrixMLDataSet.this.calculatedInputSize, 
-				pair.getIdealArray(), 0, MatrixMLDataSet.this.calculatedIdealSize);
-		
+
+		// Copy the input, account for time windows.
+		for (int i = 0; i < MatrixMLDataSet.this.lagWindowSize; i++) {
+			double[] dataRow = lookupDataRow((int) (index + i));
+
+			EngineArray.arrayCopy(dataRow, 0, pair.getInput().getData(), i
+					* MatrixMLDataSet.this.calculatedInputSize,
+					MatrixMLDataSet.this.calculatedInputSize);
+		}
+
+		// Copy the output, account for time windows.
+		int start = (MatrixMLDataSet.this.leadWindowSize > 0) ? 1 : 0;
+		int size = (MatrixMLDataSet.this.leadWindowSize <= 1) ? 1
+				: MatrixMLDataSet.this.leadWindowSize;
+		for (int i = start; i < size; i++) {
+			double[] dataRow = lookupDataRow((int) (index + i));
+			EngineArray.arrayCopy(dataRow, 0, pair.getIdealArray(), i
+					* MatrixMLDataSet.this.calculatedIdealSize,
+					MatrixMLDataSet.this.calculatedIdealSize);
+		}
+
+		double[] dataRow = lookupDataRow((int) index);
+
+		EngineArray.arrayCopy(dataRow, 0, pair.getInputArray(), 0,
+				MatrixMLDataSet.this.calculatedInputSize);
+		EngineArray.arrayCopy(dataRow,
+				MatrixMLDataSet.this.calculatedInputSize, pair.getIdealArray(),
+				0, MatrixMLDataSet.this.calculatedIdealSize);
 
 	}
-	
+
 	private double[] lookupDataRow(int index) {
-		if( this.mask!=null) {
+		if (this.mask != null) {
 			return this.data[this.mask[index]];
 		} else {
 			return this.data[index];
@@ -152,11 +191,8 @@ public class MatrixMLDataSet implements MLDataSet {
 
 	@Override
 	public MLDataSet openAdditional() {
-		MatrixMLDataSet result = new MatrixMLDataSet(
-				this.data,
-				this.calculatedInputSize, 
-				this.calculatedIdealSize, 
-				this.mask);
+		MatrixMLDataSet result = new MatrixMLDataSet(this.data,
+				this.calculatedInputSize, this.calculatedIdealSize, this.mask);
 		result.setLagWindowSize(getLagWindowSize());
 		result.setLeadWindowSize(getLeadWindowSize());
 		return result;
@@ -165,30 +201,30 @@ public class MatrixMLDataSet implements MLDataSet {
 	@Override
 	public void add(MLData data1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void add(MLData inputData, MLData idealData) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void add(MLDataPair inputData) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void close() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public int size() {
-		return (int)getRecordCount();
+		return (int) getRecordCount();
 	}
 
 	@Override
@@ -205,7 +241,8 @@ public class MatrixMLDataSet implements MLDataSet {
 	}
 
 	/**
-	 * @param calculatedInputSize the calculatedInputSize to set
+	 * @param calculatedInputSize
+	 *            the calculatedInputSize to set
 	 */
 	public void setCalculatedInputSize(int calculatedInputSize) {
 		this.calculatedInputSize = calculatedInputSize;
@@ -219,7 +256,8 @@ public class MatrixMLDataSet implements MLDataSet {
 	}
 
 	/**
-	 * @param calculatedIdealSize the calculatedIdealSize to set
+	 * @param calculatedIdealSize
+	 *            the calculatedIdealSize to set
 	 */
 	public void setCalculatedIdealSize(int calculatedIdealSize) {
 		this.calculatedIdealSize = calculatedIdealSize;
@@ -233,7 +271,8 @@ public class MatrixMLDataSet implements MLDataSet {
 	}
 
 	/**
-	 * @param data the data to set
+	 * @param data
+	 *            the data to set
 	 */
 	public void setData(double[][] data) {
 		this.data = data;
@@ -247,7 +286,8 @@ public class MatrixMLDataSet implements MLDataSet {
 	}
 
 	/**
-	 * @param lagWindowSize the lagWindowSize to set
+	 * @param lagWindowSize
+	 *            the lagWindowSize to set
 	 */
 	public void setLagWindowSize(int lagWindowSize) {
 		this.lagWindowSize = lagWindowSize;
@@ -261,12 +301,11 @@ public class MatrixMLDataSet implements MLDataSet {
 	}
 
 	/**
-	 * @param leadWindowSize the leadWindowSize to set
+	 * @param leadWindowSize
+	 *            the leadWindowSize to set
 	 */
 	public void setLeadWindowSize(int leadWindowSize) {
 		this.leadWindowSize = leadWindowSize;
 	}
-	
-	
 
 }
