@@ -147,12 +147,22 @@ public class MatrixMLDataSet implements MLDataSet {
 		}
 		return this.mask.length - (this.lagWindowSize + this.leadWindowSize);
 	}
+	
+	private int calculateLagCount() {
+		return (MatrixMLDataSet.this.lagWindowSize <= 0) ? 1: (this.lagWindowSize+1);
+	}
+	
+	private int calculateLeadCount() {
+		return (this.leadWindowSize <= 1) ? 1
+				: this.leadWindowSize;
+	}
 
 	@Override
 	public void getRecord(long index, MLDataPair pair) {
 
 		// Copy the input, account for time windows.
-		for (int i = 0; i < MatrixMLDataSet.this.lagWindowSize; i++) {
+		int inputSize = calculateLagCount();
+		for (int i = 0; i < inputSize; i++) {
 			double[] dataRow = lookupDataRow((int) (index + i));
 
 			EngineArray.arrayCopy(dataRow, 0, pair.getInput().getData(), i
@@ -161,24 +171,14 @@ public class MatrixMLDataSet implements MLDataSet {
 		}
 
 		// Copy the output, account for time windows.
-		int start = (MatrixMLDataSet.this.leadWindowSize > 0) ? 1 : 0;
-		int size = (MatrixMLDataSet.this.leadWindowSize <= 1) ? 1
-				: MatrixMLDataSet.this.leadWindowSize;
-		for (int i = start; i < size; i++) {
-			double[] dataRow = lookupDataRow((int) (index + i));
-			EngineArray.arrayCopy(dataRow, 0, pair.getIdealArray(), i
+		int outputStart = (this.leadWindowSize > 0) ? 1 : 0;
+		int outputSize = calculateLeadCount();
+		for (int i = 0; i < outputSize; i++) {
+			double[] dataRow = lookupDataRow((int) (index + i+outputStart));
+			EngineArray.arrayCopy(dataRow, this.calculatedInputSize, pair.getIdealArray(), i
 					* MatrixMLDataSet.this.calculatedIdealSize,
 					MatrixMLDataSet.this.calculatedIdealSize);
 		}
-
-		double[] dataRow = lookupDataRow((int) index);
-
-		EngineArray.arrayCopy(dataRow, 0, pair.getInputArray(), 0,
-				MatrixMLDataSet.this.calculatedInputSize);
-		EngineArray.arrayCopy(dataRow,
-				MatrixMLDataSet.this.calculatedInputSize, pair.getIdealArray(),
-				0, MatrixMLDataSet.this.calculatedIdealSize);
-
 	}
 
 	private double[] lookupDataRow(int index) {
@@ -229,8 +229,19 @@ public class MatrixMLDataSet implements MLDataSet {
 
 	@Override
 	public MLDataPair get(int index) {
-		// TODO Auto-generated method stub
-		return null;
+		if (index>size()) {
+			return null;
+		}
+
+		BasicMLData input = new BasicMLData(
+				MatrixMLDataSet.this.calculatedInputSize*calculateLagCount());
+		BasicMLData ideal = new BasicMLData(
+				MatrixMLDataSet.this.calculatedIdealSize*calculateLeadCount());
+		MLDataPair pair = new BasicMLDataPair(input, ideal);
+		
+		MatrixMLDataSet.this.getRecord(index, pair);
+
+		return pair;
 	}
 
 	/**
