@@ -13,22 +13,24 @@ public class PerformDataDivision {
 		this.rnd = theRandom;
 	}
 
-	public void perform(List<DataDivision> dataDivisionList, double[][] data,
+	public void perform(List<DataDivision> dataDivisionList, VersatileMLDataSet dataset,
 			int inputCount, int idealCount) {
-		generateCounts(dataDivisionList, data.length);
+		generateCounts(dataDivisionList, dataset.getData().length);
 		generateMasks(dataDivisionList);
 		if (this.shuffle) {
-			performShuffle(dataDivisionList, data.length);
+			performShuffle(dataDivisionList, dataset.getData().length);
 		}
-		createDividedDatasets(dataDivisionList, data, inputCount, idealCount);
+		createDividedDatasets(dataDivisionList, dataset, inputCount, idealCount);
 
 	}
 
 	private void createDividedDatasets(List<DataDivision> dataDivisionList,
-			double[][] data, int inputCount, int idealCount) {
+			VersatileMLDataSet parentDataset, int inputCount, int idealCount) {
 		for (DataDivision division : dataDivisionList) {
-			MatrixMLDataSet dataset = new MatrixMLDataSet(data, inputCount,
+			MatrixMLDataSet dataset = new MatrixMLDataSet(parentDataset.getData(), inputCount,
 					idealCount, division.getMask());
+			dataset.setLagWindowSize(parentDataset.getLagWindowSize());
+			dataset.setLeadWindowSize(parentDataset.getLeadWindowSize());
 			division.setDataset(dataset);
 		}
 	}

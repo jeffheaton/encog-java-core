@@ -129,26 +129,14 @@ public class NormalizationHelper {
 		
 		return normalizedOutputColumns;
 	}
-	
 	public MLData allocateInputVector() {
-		return new BasicMLData(calculateNormalizedInputCount());
+		return allocateInputVector(1);
 	}
-	public void normalizeInputVector(String[] line, MLData inputVector, boolean originalOrder) {
-		int outputIndex=0;
-		int i = 0;
-		for(ColumnDefinition colDef: this.inputColumns) {
-			int idx;
-			
-			if( originalOrder ) {
-				idx = this.sourceColumns.indexOf(colDef);
-			} else {
-				idx = i;
-			}
-			outputIndex = normalizeToVector(colDef, outputIndex, inputVector.getData(), false, line[idx]);
-			i++;
-		}
-		
+	
+	public MLData allocateInputVector(int multiplier) {
+		return new BasicMLData(calculateNormalizedInputCount()*multiplier);
 	}
+
 	public String[] denormalizeOutputVectorToString(MLData output) {
 		String[] result = new String[this.outputColumns.size()];
 		
@@ -222,6 +210,20 @@ public class NormalizationHelper {
 		this.missingHandlers.put(colDef, handler);
 		handler.init(this);
 	}
-	
-	
+	public void normalizeInputVector(String[] line, double[] data,
+			boolean originalOrder) {
+		int outputIndex=0;
+		int i = 0;
+		for(ColumnDefinition colDef: this.inputColumns) {
+			int idx;
+			
+			if( originalOrder ) {
+				idx = this.sourceColumns.indexOf(colDef);
+			} else {
+				idx = i;
+			}
+			outputIndex = normalizeToVector(colDef, outputIndex, data, false, line[idx]);
+			i++;
+		}
+	}	
 }

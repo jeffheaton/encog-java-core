@@ -276,9 +276,4 @@ public class EncogModel {
 	public void setReport(StatusReportable report) {
 		this.report = report;
 	}
-	
-	
-	
-	
-	
 }

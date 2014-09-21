@@ -149,7 +149,7 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 		}
 		
 		PerformDataDivision divide = new PerformDataDivision(shuffle, rnd);
-		divide.perform(dataDivisionList, getData(), getCalculatedInputSize(),
+		divide.perform(dataDivisionList, this, getCalculatedInputSize(),
 				getCalculatedIdealSize());
 
 	}

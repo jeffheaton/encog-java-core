@@ -27,6 +27,9 @@ import org.encog.ml.MLError;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
 
+/**
+ * A simple early stopping strategy that halts training when the validation set no longer improves.
+ */
 public class SimpleEarlyStoppingStrategy implements EndTrainingStrategy {
 	/**
 	 * The validation set.
@@ -135,6 +138,9 @@ public class SimpleEarlyStoppingStrategy implements EndTrainingStrategy {
 	}
 
 
+	/**
+	 * @return The validation error.
+	 */
 	public double getValidationError() {
 		return this.lastValidationError;
 	}

@@ -47,6 +47,7 @@ import org.encog.ml.data.buffer.MemoryDataLoader;
 import org.encog.ml.data.buffer.codec.CSVDataCODEC;
 import org.encog.ml.data.buffer.codec.DataSetCODEC;
 import org.encog.ml.data.specific.CSVNeuralDataSet;
+import org.encog.ml.data.versatile.MatrixMLDataSet;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.training.SVMTrain;
 import org.encog.ml.train.MLTrain;
@@ -461,5 +462,73 @@ public final class EncogUtility {
 		BufferedMLDataSet binary = new BufferedMLDataSet(f);
 		binary.load(data);
 		data.close();		
+	}
+
+	public static void explainErrorMSE(MLRegression method,
+			MatrixMLDataSet training) {
+		StringBuilder line = new StringBuilder();
+		double sum = 0;
+		int count = 0;
+		int itemNum = 0;
+		
+		for (final MLDataPair pair : training) {
+			final MLData output = method.compute(pair.getInput());
+			double dsum = 0;
+			for(int i=0;i<output.size();i++) { 
+				double diff = output.getData()[i] - pair.getIdeal().getData(i);
+				dsum+=diff*diff;
+				count++;
+			}
+			sum+=dsum;
+			
+			line.setLength(0);
+			line.append("Item #");
+			line.append(itemNum++);
+			line.append(", Actual=");
+			line.append(EncogUtility.formatNeuralData(output));
+			line.append(", Ideal=");
+			line.append(EncogUtility.formatNeuralData(pair.getIdeal()));
+			line.append(", Delta=");
+			line.append(Format.formatDouble(dsum, 4));
+			line.append(", Count=");
+			line.append(count);
+			line.append(", MSE=");
+			line.append(Format.formatDouble(sum/count, 4));
+			System.out.println(line.toString());
+		}
+	}
+	
+	public static void explainErrorRMS(MLRegression method,
+			MatrixMLDataSet training) {
+		StringBuilder line = new StringBuilder();
+		double sum = 0;
+		int count = 0;
+		int itemNum = 0;
+		
+		for (final MLDataPair pair : training) {
+			final MLData output = method.compute(pair.getInput());
+			double dsum = 0;
+			for(int i=0;i<output.size();i++) { 
+				double diff = output.getData()[i] - pair.getIdeal().getData(i);
+				dsum+=diff*diff;
+				count++;
+			}
+			sum+=dsum;
+			
+			line.setLength(0);
+			line.append("Item #");
+			line.append(itemNum++);
+			line.append(", Actual=");
+			line.append(EncogUtility.formatNeuralData(output));
+			line.append(", Ideal=");
+			line.append(EncogUtility.formatNeuralData(pair.getIdeal()));
+			line.append(", Delta=");
+			line.append(Format.formatDouble(dsum, 4));
+			line.append(", Count=");
+			line.append(count);
+			line.append(", RMS=");
+			line.append(Format.formatDouble(Math.sqrt(sum/count), 4));
+			System.out.println(line.toString());
+		}
 	}
 }
