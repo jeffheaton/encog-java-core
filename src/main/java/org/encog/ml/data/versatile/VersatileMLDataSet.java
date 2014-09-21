@@ -15,6 +15,21 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 	public VersatileMLDataSet(VersatileDataSource theSource) {
 		this.source = theSource;
 	}
+	
+	private int findIndex(ColumnDefinition colDef) {
+		if( colDef.getIndex()!=-1 ) {
+			return colDef.getIndex();
+		}
+		
+		int index = this.source.columnIndex(colDef.getName());
+		colDef.setIndex(index);
+		
+		if( index==-1 ) {
+			throw new EncogError("Can't find column");
+		}
+		
+		return index;
+	}
 
 	public void analyze() {
 		String[] line;
@@ -26,7 +41,8 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 			c++;
 			for (int i = 0; i < this.helper.getSourceColumns().size(); i++) {
 				ColumnDefinition colDef = this.helper.getSourceColumns().get(i);
-				String value = line[i];
+				int index = findIndex(colDef);
+				String value = line[index];
 				colDef.analyze(value);
 			}
 		}
@@ -91,14 +107,14 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 		while ((line = this.source.readLine()) != null) {
 			int column = 0;
 			for (ColumnDefinition colDef : this.helper.getInputColumns()) {
-				int index = this.helper.getSourceColumns().indexOf(colDef);
+				int index = findIndex(colDef);
 				String value = line[index];
 				
 				column = this.helper.normalizeToVector(colDef, column, getData()[row], true, value);
 			}
 
 			for (ColumnDefinition colDef : this.helper.getOutputColumns()) {
-				int index = this.helper.getSourceColumns().indexOf(colDef);
+				int index = findIndex(colDef);
 				String value = line[index];
 				
 				column = this.helper.normalizeToVector(colDef, column, getData()[row], false, value);
@@ -107,8 +123,8 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 		}
 	}
 
-	public ColumnDefinition defineSourceColumn(String name, ColumnType colType) {
-		return this.helper.defineSourceColumn(name, colType);
+	public ColumnDefinition defineSourceColumn(String name, int index, ColumnType colType) {
+		return this.helper.defineSourceColumn(name, index, colType);
 	}
 
 	/**
@@ -137,17 +153,30 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 				getCalculatedIdealSize());
 
 	}
+	
+	public void defineOutput(ColumnDefinition col) {
+		this.helper.getOutputColumns().add(col);
+	}
+	
+	public void defineInput(ColumnDefinition col) {
+		this.helper.getInputColumns().add(col);
+	}
 
 	public void defineSingleOutputOthersInput(ColumnDefinition outputColumn) {
 		this.helper.clearInputOutput();
 
 		for (ColumnDefinition colDef : this.helper.getSourceColumns()) {
 			if (colDef == outputColumn) {
-				this.helper.getOutputColumns().add(colDef);
+				defineOutput(colDef);
 			} else if(colDef.getDataType()!=ColumnType.ignore) {
-				this.helper.getInputColumns().add(colDef);
+				defineInput(colDef);
 			}
 		}
+	}
+
+	public ColumnDefinition defineSourceColumn(String name,
+			ColumnType colType) {
+		return this.helper.defineSourceColumn(name, -1, colType);
 	}
 
 }

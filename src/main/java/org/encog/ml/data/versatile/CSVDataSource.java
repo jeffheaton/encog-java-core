@@ -1,6 +1,8 @@
 package org.encog.ml.data.versatile;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.encog.EncogError;
 import org.encog.util.csv.CSVFormat;
@@ -12,6 +14,7 @@ public class CSVDataSource implements VersatileDataSource {
 	private final File file;
 	private final boolean headers;
 	private final CSVFormat format;
+	private final Map<String,Integer> headerIndex = new HashMap<String,Integer>();
 
 	/**
 	 * Construct a CSV reader from a filename. The format parameter specifies
@@ -72,6 +75,20 @@ public class CSVDataSource implements VersatileDataSource {
 	@Override
 	public void rewind() {
 		this.reader = new ReadCSV(this.file,this.headers,this.format);
+		if( this.headerIndex.size()==0 ) {
+			for(int i=0;i<this.reader.getColumnNames().size();i++) {
+				this.headerIndex.put(this.reader.getColumnNames().get(i), i);
+			}
+		}
+	}
+
+	@Override
+	public int columnIndex(String name) {
+		String name2 = name.toLowerCase();
+		if(!this.headerIndex.containsKey(name2)) {
+			return -1;
+		}
+		return this.headerIndex.get(name2);
 	}
 
 }

@@ -74,8 +74,9 @@ public class NormalizationHelper {
 		def.setOwner(this);
 	}
 	
-	public ColumnDefinition defineSourceColumn(String name, ColumnType colType) {
+	public ColumnDefinition defineSourceColumn(String name, int index, ColumnType colType) {
 		ColumnDefinition result = new ColumnDefinition(name,colType);
+		result.setIndex(index);
 		addSourceColumn(result);
 		return result;
 	}

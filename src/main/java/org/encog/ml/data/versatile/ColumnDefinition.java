@@ -14,6 +14,7 @@ public class ColumnDefinition {
 	private double mean;
 	private double sd;
 	private int count;
+	private int index;
 	private final List<String> classes = new ArrayList<String>();
 	private NormalizationHelper owner;
 	
@@ -212,4 +213,20 @@ public class ColumnDefinition {
 	public void setOwner(NormalizationHelper theOwner) {
 		this.owner = theOwner;
 	}
+
+	/**
+	 * @return the index
+	 */
+	public int getIndex() {
+		return index;
+	}
+
+	/**
+	 * @param index the index to set
+	 */
+	public void setIndex(int index) {
+		this.index = index;
+	}
+	
+	
 }

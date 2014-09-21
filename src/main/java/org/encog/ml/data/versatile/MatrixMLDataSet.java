@@ -60,17 +60,7 @@ public class MatrixMLDataSet implements MLDataSet {
 				return null;
 			}
 
-			BasicMLData input = new BasicMLData(
-					MatrixMLDataSet.this.calculatedInputSize);
-			BasicMLData ideal = new BasicMLData(
-					MatrixMLDataSet.this.calculatedIdealSize);
-			MLDataPair pair = new BasicMLDataPair(input, ideal);
-			
-			MatrixMLDataSet.this.getRecord(this.currentIndex, pair);
-
-			this.currentIndex++;
-
-			return pair;
+			return MatrixMLDataSet.this.get(this.currentIndex++);
 		}
 
 		/**
@@ -141,6 +131,10 @@ public class MatrixMLDataSet implements MLDataSet {
 
 	@Override
 	public long getRecordCount() {
+		if( this.data==null ) {
+			throw new EncogError("You must normalize the dataset before using it.");
+		}
+		
 		if (this.mask == null) {
 			return this.data.length
 					- (this.lagWindowSize + this.leadWindowSize);
@@ -159,7 +153,10 @@ public class MatrixMLDataSet implements MLDataSet {
 
 	@Override
 	public void getRecord(long index, MLDataPair pair) {
-
+		if( this.data==null ) {
+			throw new EncogError("You must normalize the dataset before using it.");
+		}
+		
 		// Copy the input, account for time windows.
 		int inputSize = calculateLagCount();
 		for (int i = 0; i < inputSize; i++) {

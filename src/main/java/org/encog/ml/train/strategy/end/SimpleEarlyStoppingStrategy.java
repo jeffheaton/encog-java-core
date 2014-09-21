@@ -110,7 +110,7 @@ public class SimpleEarlyStoppingStrategy implements EndTrainingStrategy {
 			
 			double currentValidationError = this.calc.calculateError(this.validationSet);
 
-			if( currentValidationError>this.lastValidationError ) {
+			if( currentValidationError>=this.lastValidationError ) {
 				stop = true;
 			}
 			
