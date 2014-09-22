@@ -11,6 +11,13 @@ import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.util.EngineArray;
 
 /**
+ * The MatrixMLDataSet can use a large 2D matrix of doubles to internally hold
+ * data. It supports several advanced features such as the ability to mask and
+ * time-box. Masking allows several datasets to use the same backing array,
+ * however use different parts.
+ * 
+ * Time boxing allows time-series data to be represented for prediction. The
+ * following shows how data is laid out for different lag and lead settings.
  * 
  * Lag 0; Lead 0 [10 rows] 1->1 2->2 3->3 4->4 5->5 6->6 7->7 8->8 9->9 10->10
  * 
@@ -72,17 +79,49 @@ public class MatrixMLDataSet implements MLDataSet {
 		}
 	}
 
+	/**
+	 * The number of inputs.
+	 */
 	private int calculatedInputSize = -1;
+	
+	/**
+	 * The number of ideal values.
+	 */
 	private int calculatedIdealSize = -1;
+	
+	/**
+	 * The backing data.
+	 */
 	private double[][] data;
+	
+	/**
+	 * The mask to the data.
+	 */
 	private int[] mask;
+	
+	/**
+	 * The lag window size.
+	 */
 	private int lagWindowSize = 0;
+	
+	/**
+	 * The lead window size.
+	 */
 	private int leadWindowSize = 0;
 
+	/**
+	 * The default constructor.
+	 */
 	public MatrixMLDataSet() {
 
 	}
 
+	/**
+	 * Construct the dataset with no mask.
+	 * @param theData The backing array.
+	 * @param theCalculatedInputSize The input size.
+	 * @param theCalculatedIdealSize The ideal size.
+	 */
 	public MatrixMLDataSet(double[][] theData, int theCalculatedInputSize,
 			int theCalculatedIdealSize) {
 		this.data = theData;
@@ -90,6 +129,13 @@ public class MatrixMLDataSet implements MLDataSet {
 		this.calculatedIdealSize = theCalculatedIdealSize;
 	}
 
+	/**
+	 * Construct the dataset from a 2D double array..
+	 * @param theData The data.
+	 * @param inputCount The input count.
+	 * @param idealCount The ideal count.
+	 * @param theMask The mask.
+	 */
 	public MatrixMLDataSet(double[][] theData, int inputCount, int idealCount,
 			int[] theMask) {
 		this.data = theData;
@@ -98,6 +144,13 @@ public class MatrixMLDataSet implements MLDataSet {
 		this.mask = theMask;
 	}
 
+	/**
+	 * Construct the dataset from another matrix dataset.
+	 * @param theData The data.
+	 * @param inputCount The input count.
+	 * @param idealCount The ideal count.
+	 * @param theMask The mask.
+	 */
 	public MatrixMLDataSet(MatrixMLDataSet data, int[] mask) {
 		this.data = data.getData();
 		this.calculatedInputSize = data.getCalculatedInputSize();
@@ -105,58 +158,81 @@ public class MatrixMLDataSet implements MLDataSet {
 		this.mask = mask;
 	}
 
+	/**
+	 * @return The mask.
+	 */
 	public int[] getMask() {
 		return this.mask;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Iterator<MLDataPair> iterator() {
 		return new MatrixMLDataSetIterator();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getIdealSize() {
 		return this.calculatedIdealSize * Math.min(this.leadWindowSize, 1);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getInputSize() {
 		return this.calculatedInputSize * this.lagWindowSize;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isSupervised() {
 		return getIdealSize() == 0;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public long getRecordCount() {
-		if( this.data==null ) {
-			throw new EncogError("You must normalize the dataset before using it.");
+		if (this.data == null) {
+			throw new EncogError(
+					"You must normalize the dataset before using it.");
 		}
-		
+
 		if (this.mask == null) {
 			return this.data.length
 					- (this.lagWindowSize + this.leadWindowSize);
 		}
 		return this.mask.length - (this.lagWindowSize + this.leadWindowSize);
 	}
-	
+
 	private int calculateLagCount() {
-		return (MatrixMLDataSet.this.lagWindowSize <= 0) ? 1: (this.lagWindowSize+1);
-	}
-	
-	private int calculateLeadCount() {
-		return (this.leadWindowSize <= 1) ? 1
-				: this.leadWindowSize;
+		return (MatrixMLDataSet.this.lagWindowSize <= 0) ? 1
+				: (this.lagWindowSize + 1);
 	}
 
+	private int calculateLeadCount() {
+		return (this.leadWindowSize <= 1) ? 1 : this.leadWindowSize;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void getRecord(long index, MLDataPair pair) {
-		if( this.data==null ) {
-			throw new EncogError("You must normalize the dataset before using it.");
+		if (this.data == null) {
+			throw new EncogError(
+					"You must normalize the dataset before using it.");
 		}
-		
+
 		// Copy the input, account for time windows.
 		int inputSize = calculateLagCount();
 		for (int i = 0; i < inputSize; i++) {
@@ -171,13 +247,19 @@ public class MatrixMLDataSet implements MLDataSet {
 		int outputStart = (this.leadWindowSize > 0) ? 1 : 0;
 		int outputSize = calculateLeadCount();
 		for (int i = 0; i < outputSize; i++) {
-			double[] dataRow = lookupDataRow((int) (index + i+outputStart));
-			EngineArray.arrayCopy(dataRow, this.calculatedInputSize, pair.getIdealArray(), i
-					* MatrixMLDataSet.this.calculatedIdealSize,
+			double[] dataRow = lookupDataRow((int) (index + i + outputStart));
+			EngineArray.arrayCopy(dataRow, this.calculatedInputSize,
+					pair.getIdealArray(), i
+							* MatrixMLDataSet.this.calculatedIdealSize,
 					MatrixMLDataSet.this.calculatedIdealSize);
 		}
 	}
 
+	/**
+	 * Find a row, using the mask.
+	 * @param index The index we seek.
+	 * @return The row.
+	 */
 	private double[] lookupDataRow(int index) {
 		if (this.mask != null) {
 			return this.data[this.mask[index]];
@@ -186,6 +268,9 @@ public class MatrixMLDataSet implements MLDataSet {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public MLDataSet openAdditional() {
 		MatrixMLDataSet result = new MatrixMLDataSet(this.data,
@@ -195,47 +280,65 @@ public class MatrixMLDataSet implements MLDataSet {
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void add(MLData data1) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void add(MLData inputData, MLData idealData) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void add(MLDataPair inputData) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void close() {
 		// TODO Auto-generated method stub
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int size() {
 		return (int) getRecordCount();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public MLDataPair get(int index) {
-		if (index>size()) {
+		if (index > size()) {
 			return null;
 		}
 
 		BasicMLData input = new BasicMLData(
-				MatrixMLDataSet.this.calculatedInputSize*calculateLagCount());
+				MatrixMLDataSet.this.calculatedInputSize * calculateLagCount());
 		BasicMLData ideal = new BasicMLData(
-				MatrixMLDataSet.this.calculatedIdealSize*calculateLeadCount());
+				MatrixMLDataSet.this.calculatedIdealSize * calculateLeadCount());
 		MLDataPair pair = new BasicMLDataPair(input, ideal);
-		
+
 		MatrixMLDataSet.this.getRecord(index, pair);
 
 		return pair;

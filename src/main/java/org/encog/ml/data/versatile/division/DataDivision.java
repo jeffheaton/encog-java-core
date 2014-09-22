@@ -1,13 +1,36 @@
-package org.encog.ml.data.versatile;
+package org.encog.ml.data.versatile.division;
 
-import org.encog.ml.data.MLDataSet;
+import org.encog.ml.data.versatile.MatrixMLDataSet;
 
+/**
+ * A division of data inside of a versatile data set.
+ */
 public class DataDivision {
+	
+	/**
+	 * The count of items in this partition.
+	 */
 	private int count;
+	
+	/**
+	 * The percent of items in this partition.
+	 */
 	private final double percent;
+	
+	/**
+	 * The dataset that we are dividing.
+	 */
 	private MatrixMLDataSet dataset;
+	
+	/**
+	 * The mask of items we are to use.
+	 */
 	private int[] mask;
 	
+	/**
+	 * Construct a division.
+	 * @param thePercent The desired percentage in this division.
+	 */
 	public DataDivision(double thePercent) {
 		this.percent = thePercent;
 	}
@@ -47,6 +70,10 @@ public class DataDivision {
 		return percent;
 	}
 
+	/**
+	 * Allocat space to hold the mask.
+	 * @param theSize The mask size.
+	 */
 	public void allocateMask(int theSize) {
 		this.mask = new int[theSize];
 	}

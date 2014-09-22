@@ -1,4 +1,4 @@
-package org.encog.ml.data.versatile;
+package org.encog.ml.data.versatile.sources;
 
 import java.io.File;
 import java.util.HashMap;
@@ -8,16 +8,38 @@ import org.encog.EncogError;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
+/**
+ * Allow a CSV file to serve as a source for the versatile data source.
+ */
 public class CSVDataSource implements VersatileDataSource {
 	
+	/**
+	 * The CSV reader.
+	 */
 	private ReadCSV reader;
+	
+	/**
+	 * The file to read.
+	 */
 	private final File file;
+	
+	/**
+	 * True, if the file has headers.
+	 */
 	private final boolean headers;
+	
+	/**
+	 * The CSV format of the file.
+	 */
 	private final CSVFormat format;
+	
+	/**
+	 * The index values for each header, if we have headers.
+	 */
 	private final Map<String,Integer> headerIndex = new HashMap<String,Integer>();
 
 	/**
-	 * Construct a CSV reader from a filename. The format parameter specifies
+	 * Construct a CSV source from a filename. The format parameter specifies
 	 * the separator character to use, as well as the number format.
 	 * 
 	 * @param filename
@@ -36,7 +58,7 @@ public class CSVDataSource implements VersatileDataSource {
 	}
 
 	/**
-	 * Construct a CSV reader from a filename. Allows a delimiter character to
+	 * Construct a CSV source from a filename. Allows a delimiter character to
 	 * be specified.
 	 * 
 	 * @param filename
@@ -53,6 +75,9 @@ public class CSVDataSource implements VersatileDataSource {
 		this.format = format;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String[] readLine() {
 		if( this.reader==null) {
@@ -72,6 +97,9 @@ public class CSVDataSource implements VersatileDataSource {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void rewind() {
 		this.reader = new ReadCSV(this.file,this.headers,this.format);
@@ -82,6 +110,9 @@ public class CSVDataSource implements VersatileDataSource {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int columnIndex(String name) {
 		String name2 = name.toLowerCase();

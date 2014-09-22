@@ -4,6 +4,12 @@ import java.util.List;
 
 import org.encog.EncogError;
 import org.encog.mathutil.randomize.generate.GenerateRandom;
+import org.encog.ml.data.versatile.columns.ColumnDefinition;
+import org.encog.ml.data.versatile.columns.ColumnType;
+import org.encog.ml.data.versatile.division.DataDivision;
+import org.encog.ml.data.versatile.division.PerformDataDivision;
+import org.encog.ml.data.versatile.normalizers.strategies.NormalizationStrategy;
+import org.encog.ml.data.versatile.sources.VersatileDataSource;
 
 public class VersatileMLDataSet extends MatrixMLDataSet {
 
@@ -88,7 +94,6 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 			throw new EncogError("Please choose a model type first, with selectMethod.");
 		}
 		
-		int normalizedRows = strat.calculateTotalRows(this.analyzedRows);
 		int normalizedInputColumns = this.helper
 				.calculateNormalizedInputCount();
 		int normalizedOutputColumns = this.helper
@@ -99,7 +104,7 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 		setCalculatedIdealSize(normalizedOutputColumns);
 		setCalculatedInputSize(normalizedInputColumns);
 
-		setData(new double[normalizedRows][normalizedColumns]);
+		setData(new double[this.analyzedRows][normalizedColumns]);
 
 		this.source.rewind();
 		String[] line;

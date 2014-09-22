@@ -1,6 +1,7 @@
-package org.encog.ml.data.versatile;
+package org.encog.ml.data.versatile.columns;
 
 /**
+ * The type of column, defined using level of measurement.
  * http://en.wikipedia.org/wiki/Level_of_measurement
  */
 public enum ColumnType {

@@ -8,7 +8,10 @@ import java.util.Map;
 import org.encog.EncogError;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLData;
+import org.encog.ml.data.versatile.columns.ColumnDefinition;
+import org.encog.ml.data.versatile.columns.ColumnType;
 import org.encog.ml.data.versatile.missing.MissingHandler;
+import org.encog.ml.data.versatile.normalizers.strategies.NormalizationStrategy;
 import org.encog.util.csv.CSVFormat;
 
 public class NormalizationHelper {
@@ -189,13 +192,13 @@ public class NormalizationHelper {
 		if( colDef.getDataType()==ColumnType.continuous) {
 			double d = parseDouble(value);
 			if( handler!=null ) {
-				d = handler.process(colDef,d);
+				d = handler.processDouble(colDef);
 			}
 			return this.normStrategy.normalizeColumn(colDef, isInput, d,
 					output, outputColumn);
 		} else {
 			if( handler!=null ) {
-				value = handler.process(colDef,value);
+				value = handler.processString(colDef);
 			}
 			return this.normStrategy.normalizeColumn(colDef, isInput, value,
 					output, outputColumn);	

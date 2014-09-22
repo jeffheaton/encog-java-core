@@ -1,13 +1,13 @@
 package org.encog.ml.model.config;
 
 import org.encog.EncogError;
-import org.encog.ml.data.versatile.BasicNormalizationStrategy;
-import org.encog.ml.data.versatile.ColumnType;
-import org.encog.ml.data.versatile.NormalizationStrategy;
 import org.encog.ml.data.versatile.VersatileMLDataSet;
+import org.encog.ml.data.versatile.columns.ColumnType;
 import org.encog.ml.data.versatile.normalizers.IndexedNormalizer;
 import org.encog.ml.data.versatile.normalizers.OneOfNNormalizer;
 import org.encog.ml.data.versatile.normalizers.RangeNormalizer;
+import org.encog.ml.data.versatile.normalizers.strategies.BasicNormalizationStrategy;
+import org.encog.ml.data.versatile.normalizers.strategies.NormalizationStrategy;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.ml.factory.MLTrainFactory;
 

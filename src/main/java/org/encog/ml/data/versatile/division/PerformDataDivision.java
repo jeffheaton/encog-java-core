@@ -1,18 +1,42 @@
-package org.encog.ml.data.versatile;
+package org.encog.ml.data.versatile.division;
 
 import java.util.List;
 
 import org.encog.mathutil.randomize.generate.GenerateRandom;
+import org.encog.ml.data.versatile.MatrixMLDataSet;
+import org.encog.ml.data.versatile.VersatileMLDataSet;
 
+/**
+ * Perform a data division.
+ */
 public class PerformDataDivision {
+	/**
+	 * True, if we should shuffle during division.
+	 */
 	private final boolean shuffle;
+	
+	/**
+	 * A random number generator.
+	 */
 	private final GenerateRandom rnd;
 
+	/**
+	 * Construct the data division processor.
+	 * @param theShuffle Should we shuffle?
+	 * @param theRandom Random number generator, often seeded to be consistent. 
+	 */
 	public PerformDataDivision(boolean theShuffle, GenerateRandom theRandom) {
 		this.shuffle = theShuffle;
 		this.rnd = theRandom;
 	}
 
+	/**
+	 * Perform the split. 
+	 * @param dataDivisionList The list of data divisions.
+	 * @param dataset The dataset to split.
+	 * @param inputCount The input count.
+	 * @param idealCount The ideal count.
+	 */
 	public void perform(List<DataDivision> dataDivisionList, VersatileMLDataSet dataset,
 			int inputCount, int idealCount) {
 		generateCounts(dataDivisionList, dataset.getData().length);
@@ -24,6 +48,13 @@ public class PerformDataDivision {
 
 	}
 
+	/**
+	 * Create the datasets that we will divide into.
+	 * @param dataDivisionList The list of divisions.
+	 * @param parentDataset The data set to divide.
+	 * @param inputCount The input count.
+	 * @param idealCount The ideal count.
+	 */
 	private void createDividedDatasets(List<DataDivision> dataDivisionList,
 			VersatileMLDataSet parentDataset, int inputCount, int idealCount) {
 		for (DataDivision division : dataDivisionList) {
@@ -50,6 +81,12 @@ public class PerformDataDivision {
 		}
 	}
 
+	/**
+	 * Swap two items, across all divisions.
+	 * @param dataDivisionList The division list
+	 * @param a The index of the first item to swap.
+	 * @param b The index of the second item to swap.
+	 */
 	private void virtualSwap(List<DataDivision> dataDivisionList, int a, int b) {
 		DataDivision divA = null;
 		DataDivision divB = null;
@@ -77,6 +114,10 @@ public class PerformDataDivision {
 		divB.getMask()[offsetB] = temp;
 	}
 
+	/**
+	 * Generate the masks, for all divisions.
+	 * @param dataDivisionList The divisions.
+	 */
 	private void generateMasks(List<DataDivision> dataDivisionList) {
 		int idx = 0;
 		for (DataDivision division : dataDivisionList) {
@@ -87,6 +128,11 @@ public class PerformDataDivision {
 		}
 	}
 
+	/**
+	 * Generate the counts for all divisions, give remaining items to final division.
+	 * @param dataDivisionList The division list.
+	 * @param totalCount The total count.
+	 */
 	private void generateCounts(List<DataDivision> dataDivisionList,
 			int totalCount) {
 

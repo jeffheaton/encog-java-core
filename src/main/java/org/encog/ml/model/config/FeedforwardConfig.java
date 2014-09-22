@@ -2,9 +2,9 @@ package org.encog.ml.model.config;
 
 import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.ml.data.versatile.BasicNormalizationStrategy;
-import org.encog.ml.data.versatile.NormalizationStrategy;
 import org.encog.ml.data.versatile.VersatileMLDataSet;
+import org.encog.ml.data.versatile.normalizers.strategies.BasicNormalizationStrategy;
+import org.encog.ml.data.versatile.normalizers.strategies.NormalizationStrategy;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.neural.networks.BasicNetwork;
 

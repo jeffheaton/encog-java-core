@@ -2,24 +2,45 @@ package org.encog.ml.data.versatile.normalizers;
 
 import org.encog.EncogError;
 import org.encog.ml.data.MLData;
-import org.encog.ml.data.versatile.ColumnDefinition;
-import org.encog.ml.data.versatile.Normalizer;
+import org.encog.ml.data.versatile.columns.ColumnDefinition;
 
+/**
+ * A a range normalizer forces a value to fall in a specific range.
+ *
+ */
 public class RangeNormalizer implements Normalizer {
 
-	private double normalizedLow; 
+	/**
+	 * The normalized low value.
+	 */
+	private double normalizedLow;
+	
+	/**
+	 * The normalized high value.
+	 */
 	private double normalizedHigh;
 	
+	/**
+	 * Construct the range normalizer.
+	 * @param theNormalizedLow The normalized low value.
+	 * @param theNormalizedHigh The normalized high value.
+	 */
 	public RangeNormalizer(double theNormalizedLow, double theNormalizedHigh) {
 		this.normalizedLow = theNormalizedLow;
 		this.normalizedHigh = theNormalizedHigh;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int outputSize(ColumnDefinition colDef) {
 		return 1;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int normalizeColumn(ColumnDefinition colDef, String value,
 			double[] outputData, int outputColumn) {
@@ -27,6 +48,9 @@ public class RangeNormalizer implements Normalizer {
 
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int normalizeColumn(ColumnDefinition colDef, double value,
 			double[] outputData, int outputColumn) {
@@ -45,6 +69,9 @@ public class RangeNormalizer implements Normalizer {
 		return outputColumn+1;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String denormalizeColumn(ColumnDefinition colDef, MLData data,
 			int dataColumn) {

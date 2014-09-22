@@ -1,7 +1,7 @@
 package org.encog.ml.model.config;
 
-import org.encog.ml.data.versatile.NormalizationStrategy;
 import org.encog.ml.data.versatile.VersatileMLDataSet;
+import org.encog.ml.data.versatile.normalizers.strategies.NormalizationStrategy;
 
 public interface MethodConfig {
 

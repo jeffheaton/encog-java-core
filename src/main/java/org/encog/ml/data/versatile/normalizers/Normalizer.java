@@ -1,6 +1,7 @@
-package org.encog.ml.data.versatile;
+package org.encog.ml.data.versatile.normalizers;
 
 import org.encog.ml.data.MLData;
+import org.encog.ml.data.versatile.columns.ColumnDefinition;
 
 /**
  * The normalizer interface defines how to normalize a column.  The source of the

@@ -1,23 +1,42 @@
-package org.encog.ml.data.versatile;
+package org.encog.ml.data.versatile.normalizers.strategies;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.encog.EncogError;
 import org.encog.ml.data.MLData;
+import org.encog.ml.data.versatile.columns.ColumnDefinition;
+import org.encog.ml.data.versatile.columns.ColumnType;
+import org.encog.ml.data.versatile.normalizers.Normalizer;
 import org.encog.ml.data.versatile.normalizers.OneOfNNormalizer;
 import org.encog.ml.data.versatile.normalizers.RangeNormalizer;
 import org.encog.ml.data.versatile.normalizers.RangeOrdinal;
 
+/**
+ * Provides a basic normalization strategy that will work with most models built into Encog.
+ * This is often used as a starting point for building more customized models, as this 
+ * normalizer works mainly by using maps to define which normalizer to use for what 
+ * data type.
+ */
 public class BasicNormalizationStrategy implements NormalizationStrategy {
 
+	/**
+	 * Mapping to all of the input normalizers.
+	 */
 	private final Map<ColumnType,Normalizer> inputNormalizers = new HashMap<ColumnType,Normalizer>();
-	private final Map<ColumnType,Normalizer> outputNormalizers = new HashMap<ColumnType,Normalizer>();
-
-	public BasicNormalizationStrategy() {
-		
-	}
 	
+	/**
+	 * Mapping to all of the output normalizers.
+	 */
+	private final Map<ColumnType,Normalizer> outputNormalizers = new HashMap<ColumnType,Normalizer>();
+	
+	/**
+	 * Construct the basic normalization strategy.
+	 * @param inputLow The desired low to normalize input into.
+	 * @param inputHigh The desired high to normalize input into.
+	 * @param outputLow The desired low to normalize output into.
+	 * @param outputHigh The desired high to normalize output into.
+	 */
 	public BasicNormalizationStrategy(double inputLow, double inputHigh, double outputLow, double outputHigh) {
 		assignInputNormalizer(ColumnType.continuous,new RangeNormalizer(inputLow,inputHigh));
 		assignInputNormalizer(ColumnType.nominal,new OneOfNNormalizer(inputLow,inputHigh));
@@ -28,19 +47,36 @@ public class BasicNormalizationStrategy implements NormalizationStrategy {
 		assignOutputNormalizer(ColumnType.ordinal,new RangeOrdinal(outputLow,outputHigh));
 	}
 	
+	/**
+	 * Default constructor.
+	 */
+	public BasicNormalizationStrategy() {
+	}
+
+	/**
+	 * Assign a normalizer to the specified column type for output.
+	 * @param colType The column type.
+	 * @param norm The normalizer.
+	 */
 	public void assignInputNormalizer(ColumnType colType, Normalizer norm) {
 		this.inputNormalizers.put(colType, norm);
 	}
 	
+	/**
+	 * Assign a normalizer to the specified column type for output.
+	 * @param colType The column type.
+	 * @param norm The normalizer.
+	 */
 	public void assignOutputNormalizer(ColumnType colType, Normalizer norm) {
 		this.outputNormalizers.put(colType, norm);
 	}
 	
-	@Override
-	public int calculateTotalRows(int analyzedRows) {
-		return analyzedRows;
-	}
-	
+	/**
+	 * Find a normalizer for the specified column definition, and if it is input or output.
+	 * @param colDef The column definition.
+	 * @param isInput True if the column is input.
+	 * @return The normalizer to use.
+	 */
 	private Normalizer findNormalizer(ColumnDefinition colDef, boolean isInput) {
 		Normalizer norm = null;
 		
@@ -60,12 +96,18 @@ public class BasicNormalizationStrategy implements NormalizationStrategy {
 		return norm;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int normalizedSize(ColumnDefinition colDef, boolean isInput) {
 		Normalizer norm = findNormalizer(colDef,isInput);
 		return norm.outputSize(colDef);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int normalizeColumn(ColumnDefinition colDef, boolean isInput,
 			String value, double[] outputData, int outputColumn) {
@@ -73,6 +115,9 @@ public class BasicNormalizationStrategy implements NormalizationStrategy {
 		return norm.normalizeColumn(colDef,value,outputData,outputColumn);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int normalizeColumn(ColumnDefinition colDef, boolean isInput,
 			double value, double[] outputData, int outputColumn) {
@@ -94,6 +139,9 @@ public class BasicNormalizationStrategy implements NormalizationStrategy {
 		return outputNormalizers;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String denormalizeColumn(ColumnDefinition colDef, boolean isInput,
 			MLData data, int dataColumn) {
