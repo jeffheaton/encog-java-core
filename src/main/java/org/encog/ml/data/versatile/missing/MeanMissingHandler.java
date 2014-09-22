@@ -1,5 +1,7 @@
 package org.encog.ml.data.versatile.missing;
 
+import java.io.Serializable;
+
 import org.encog.EncogError;
 import org.encog.ml.data.versatile.NormalizationHelper;
 import org.encog.ml.data.versatile.columns.ColumnDefinition;
@@ -7,7 +9,7 @@ import org.encog.ml.data.versatile.columns.ColumnDefinition;
 /**
  * Handle missing data by using the mean value of that column.
  */
-public class MeanMissingHandler implements MissingHandler {
+public class MeanMissingHandler implements MissingHandler, Serializable {
 
 	/**
 	 * {@inheritDoc}

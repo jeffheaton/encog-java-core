@@ -11,32 +11,60 @@ import org.encog.ml.data.versatile.division.PerformDataDivision;
 import org.encog.ml.data.versatile.normalizers.strategies.NormalizationStrategy;
 import org.encog.ml.data.versatile.sources.VersatileDataSource;
 
+/**
+ * The versatile dataset supports several advanced features. 1. it can directly
+ * read and normalize from a CSV file. 2. It supports virtual time-boxing for
+ * time series data (the data is NOT expanded in memory). 3. It can easily be
+ * segmented into smaller datasets.
+ */
 public class VersatileMLDataSet extends MatrixMLDataSet {
 
+	/**
+	 * The source that data is being pulled from.
+	 */
 	private VersatileDataSource source;
+	
+	/**
+	 * The normalization helper.
+	 */
 	private NormalizationHelper helper = new NormalizationHelper();
 
+	/**
+	 * The number of rows that were analyzed.
+	 */
 	private int analyzedRows;
 
+	/**
+	 * Construct the data source. 
+	 * @param theSource The data source.
+	 */
 	public VersatileMLDataSet(VersatileDataSource theSource) {
 		this.source = theSource;
 	}
-	
+
+	/**
+	 * Find the index of a column.
+	 * @param colDef The column.
+	 * @return The column index.
+	 */
 	private int findIndex(ColumnDefinition colDef) {
-		if( colDef.getIndex()!=-1 ) {
+		if (colDef.getIndex() != -1) {
 			return colDef.getIndex();
 		}
-		
+
 		int index = this.source.columnIndex(colDef.getName());
 		colDef.setIndex(index);
-		
-		if( index==-1 ) {
+
+		if (index == -1) {
 			throw new EncogError("Can't find column");
 		}
-		
+
 		return index;
 	}
 
+	/**
+	 * Analyze the input and determine max, min, mean, etc.
+	 */
 	public void analyze() {
 		String[] line;
 
@@ -87,13 +115,17 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 		}
 	}
 
+	/**
+	 * Normalize the data set, and allocate memory to hold it.
+	 */
 	public void normalize() {
 		NormalizationStrategy strat = this.helper.getNormStrategy();
-		
-		if( strat==null ) {
-			throw new EncogError("Please choose a model type first, with selectMethod.");
+
+		if (strat == null) {
+			throw new EncogError(
+					"Please choose a model type first, with selectMethod.");
 		}
-		
+
 		int normalizedInputColumns = this.helper
 				.calculateNormalizedInputCount();
 		int normalizedOutputColumns = this.helper
@@ -114,21 +146,31 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 			for (ColumnDefinition colDef : this.helper.getInputColumns()) {
 				int index = findIndex(colDef);
 				String value = line[index];
-				
-				column = this.helper.normalizeToVector(colDef, column, getData()[row], true, value);
+
+				column = this.helper.normalizeToVector(colDef, column,
+						getData()[row], true, value);
 			}
 
 			for (ColumnDefinition colDef : this.helper.getOutputColumns()) {
 				int index = findIndex(colDef);
 				String value = line[index];
-				
-				column = this.helper.normalizeToVector(colDef, column, getData()[row], false, value);
+
+				column = this.helper.normalizeToVector(colDef, column,
+						getData()[row], false, value);
 			}
 			row++;
 		}
 	}
 
-	public ColumnDefinition defineSourceColumn(String name, int index, ColumnType colType) {
+	/**
+	 * Define a source column. Used when the file does not contain headings.
+	 * @param name The name of the column.
+	 * @param index The index of the column.
+	 * @param colType The column type.
+	 * @return The column definition.
+	 */
+	public ColumnDefinition defineSourceColumn(String name, int index,
+			ColumnType colType) {
 		return this.helper.defineSourceColumn(name, index, colType);
 	}
 
@@ -147,40 +189,64 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 		this.helper = helper;
 	}
 
+	/**
+	 * Divide, and optionally shuffle, the dataset.
+	 * @param dataDivisionList The desired divisions.
+	 * @param shuffle True, if we should shuffle.
+	 * @param rnd Random number generator, often with a specific seed.
+	 */
 	public void divide(List<DataDivision> dataDivisionList, boolean shuffle,
 			GenerateRandom rnd) {
-		if( getData()==null ) {
-			throw new EncogError("Can't divide, data has not yet been generated/normalized.");
+		if (getData() == null) {
+			throw new EncogError(
+					"Can't divide, data has not yet been generated/normalized.");
 		}
-		
+
 		PerformDataDivision divide = new PerformDataDivision(shuffle, rnd);
 		divide.perform(dataDivisionList, this, getCalculatedInputSize(),
 				getCalculatedIdealSize());
 
 	}
-	
+
+	/**
+	 * Define an output column.
+	 * @param col The output column.
+	 */
 	public void defineOutput(ColumnDefinition col) {
 		this.helper.getOutputColumns().add(col);
 	}
-	
+
+	/**
+	 * Define an input column.
+	 * @param col The input column.
+	 */
 	public void defineInput(ColumnDefinition col) {
 		this.helper.getInputColumns().add(col);
 	}
 
+	/**
+	 * Define a single column as an output column, all others as inputs.
+	 * @param outputColumn The output column.
+	 */
 	public void defineSingleOutputOthersInput(ColumnDefinition outputColumn) {
 		this.helper.clearInputOutput();
 
 		for (ColumnDefinition colDef : this.helper.getSourceColumns()) {
 			if (colDef == outputColumn) {
 				defineOutput(colDef);
-			} else if(colDef.getDataType()!=ColumnType.ignore) {
+			} else if (colDef.getDataType() != ColumnType.ignore) {
 				defineInput(colDef);
 			}
 		}
 	}
 
-	public ColumnDefinition defineSourceColumn(String name,
-			ColumnType colType) {
+	/**
+	 * Define a source column.
+	 * @param name The name of the source column.
+	 * @param colType The column type.
+	 * @return The column definition.
+	 */
+	public ColumnDefinition defineSourceColumn(String name, ColumnType colType) {
 		return this.helper.defineSourceColumn(name, -1, colType);
 	}
 

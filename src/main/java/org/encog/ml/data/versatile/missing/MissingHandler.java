@@ -1,12 +1,14 @@
 package org.encog.ml.data.versatile.missing;
 
+import java.io.Serializable;
+
 import org.encog.ml.data.versatile.NormalizationHelper;
 import org.encog.ml.data.versatile.columns.ColumnDefinition;
 
 /**
  * Specifies how to handle missing data.
  */
-public interface MissingHandler {
+public interface MissingHandler extends Serializable {
 
 	/**
 	 * Called by the normalizer to setup this handler.

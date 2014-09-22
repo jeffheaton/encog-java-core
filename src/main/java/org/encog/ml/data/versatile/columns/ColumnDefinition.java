@@ -1,5 +1,6 @@
 package org.encog.ml.data.versatile.columns;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import org.encog.util.Format;
 /**
  * Defines a column definition.
  */
-public class ColumnDefinition {
+public class ColumnDefinition implements Serializable {
 	/**
 	 * The name of the column.
 	 */
