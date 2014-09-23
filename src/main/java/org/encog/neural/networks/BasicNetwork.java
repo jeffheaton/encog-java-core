@@ -29,6 +29,7 @@ import org.encog.engine.network.activation.ActivationElliottSymmetric;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
+import org.encog.mathutil.randomize.ConsistentRandomizer;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.mathutil.randomize.Randomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
@@ -619,16 +620,12 @@ public class BasicNetwork extends BasicML implements ContainsFlat, MLContext,
 
 	/**
 	 * Reset the weight matrix and the bias values. This will use a
-	 * Nguyen-Widrow randomizer with a range between -1 and 1. If the network
-	 * does not have an input, output or hidden layers, then Nguyen-Widrow
-	 * cannot be used and a simple range randomize between -1 and 1 will be
-	 * used. Use the specified seed.
+	 * RangeRandomizer with a range between -1 and 1. 
 	 * 
 	 */
 	@Override
 	public void reset(final int seed) {
-		Randomizer randomizer = getRandomizer();
-		randomizer.randomize(this);
+		(new ConsistentRandomizer(-1,1,seed)).randomize(this);
 	}
 	
 	/**
