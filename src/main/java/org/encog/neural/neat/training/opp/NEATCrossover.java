@@ -116,14 +116,17 @@ public class NEATCrossover implements EvolutionaryOperator {
 
 	/**
 	 * Choose a parent to favor.
-	 * 
+	 *
+	 * @param rnd
+	 *            A random number generator.
 	 * @param mom
 	 *            The mother.
 	 * @param dad
 	 *            The father.
 	 * @return The parent to favor.
 	 */
-	private NEATGenome favorParent(final NEATGenome mom, final NEATGenome dad) {
+	private NEATGenome favorParent(final Random rnd, final NEATGenome mom,
+			final NEATGenome dad) {
 
 		// first determine who is more fit, the mother or the father?
 		// see if mom and dad are the same fitness
@@ -133,7 +136,7 @@ public class NEATCrossover implements EvolutionaryOperator {
 				// if mom and dad are the same fitness and have the same number
 				// of genes,
 				// then randomly pick mom or dad as the most fit.
-				if (Math.random() > 0) {
+				if (rnd.nextDouble() < 0.5) {
 					return mom;
 				} else {
 					return dad;
@@ -219,7 +222,7 @@ public class NEATCrossover implements EvolutionaryOperator {
 		final NEATGenome mom = (NEATGenome) parents[parentIndex + 0];
 		final NEATGenome dad = (NEATGenome) parents[parentIndex + 1];
 
-		final NEATGenome best = favorParent(mom, dad);
+		final NEATGenome best = favorParent(rnd, mom, dad);
 		final NEATGenome notBest = (best == mom) ? mom : dad;
 
 		final List<NEATLinkGene> selectedLinks = new ArrayList<NEATLinkGene>();
