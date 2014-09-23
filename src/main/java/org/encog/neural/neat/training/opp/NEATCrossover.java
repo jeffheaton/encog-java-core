@@ -223,7 +223,7 @@ public class NEATCrossover implements EvolutionaryOperator {
 		final NEATGenome dad = (NEATGenome) parents[parentIndex + 1];
 
 		final NEATGenome best = favorParent(rnd, mom, dad);
-		final NEATGenome notBest = (best == mom) ? mom : dad;
+		final NEATGenome notBest = (best != mom) ? mom : dad;
 
 		final List<NEATLinkGene> selectedLinks = new ArrayList<NEATLinkGene>();
 		final List<NEATNeuronGene> selectedNeurons = new ArrayList<NEATNeuronGene>();
