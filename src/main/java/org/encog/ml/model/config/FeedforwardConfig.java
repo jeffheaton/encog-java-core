@@ -8,13 +8,22 @@ import org.encog.ml.data.versatile.normalizers.strategies.NormalizationStrategy;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.neural.networks.BasicNetwork;
 
+/**
+ * Config class for EncogModel to use a feedforward neural network.
+ */
 public class FeedforwardConfig implements MethodConfig {
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getMethodName() {
 		return MLMethodFactory.TYPE_FEEDFORWARD;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String suggestModelArchitecture(VersatileMLDataSet dataset) {
 		int inputColumns = dataset.getNormHelper().getInputColumns().size();
@@ -27,6 +36,9 @@ public class FeedforwardConfig implements MethodConfig {
 		return result.toString();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public NormalizationStrategy suggestNormalizationStrategy(VersatileMLDataSet dataset, String architecture) {
 		double inputLow = -1;
@@ -60,17 +72,26 @@ public class FeedforwardConfig implements MethodConfig {
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String suggestTrainingType() {
 		return "rprop";
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String suggestTrainingArgs(String trainingType) {
 		return "";
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int determineOutputCount(VersatileMLDataSet dataset) {
 		return dataset.getNormHelper().calculateNormalizedOutputCount();

@@ -41,19 +41,70 @@ import org.encog.util.simple.EncogUtility;
  */
 public class EncogModel {
 
+	/**
+	 * The dataset to use.
+	 */
 	private final VersatileMLDataSet dataset;
+	
+	/**
+	 * The input features.
+	 */
 	private final List<ColumnDefinition> inputFeatures = new ArrayList<ColumnDefinition>();
+	
+	/**
+	 * The predicted features.
+	 */
 	private final List<ColumnDefinition> predictedFeatures = new ArrayList<ColumnDefinition>();
+	
+	/**
+	 * The training dataset.
+	 */
 	private MatrixMLDataSet trainingDataset;
+	
+	/**
+	 * The validation dataset.
+	 */
 	private MatrixMLDataSet validationDataset;
+	
+	/**
+	 * The standard configrations for each method type.
+	 */
 	private final Map<String, MethodConfig> methodConfigurations = new HashMap<String, MethodConfig>();
+	
+	/**
+	 * The current method configuration, determined by the selected model.
+	 */
 	private MethodConfig config;
+	
+	/**
+	 * The selected method type.
+	 */
 	private String methodType;
+	
+	/**
+	 * The method arguments for the selected method.
+	 */
 	private String methodArgs;
+	
+	/**
+	 * The selected training type.
+	 */
 	private String trainingType;
+	
+	/**
+	 * The training arguments for the selected training type.
+	 */
 	private String trainingArgs;
+	
+	/**
+	 * The report.
+	 */
 	private StatusReportable report = new NullStatusReportable();
 
+	/**
+	 * Construct a model for the specified dataset.
+	 * @param theDataset The dataset.
+	 */
 	public EncogModel(VersatileMLDataSet theDataset) {
 		this.dataset = theDataset;
 		this.methodConfigurations.put(MLMethodFactory.TYPE_FEEDFORWARD,
@@ -89,6 +140,12 @@ public class EncogModel {
 		return predictedFeatures;
 	}
 
+	/**
+	 * Specify a validation set to hold back.
+	 * @param validationPercent The percent to use for validation.
+	 * @param shuffle True to shuffle.
+	 * @param seed The seed for random generation.
+	 */
 	public void holdBackValidation(double validationPercent, boolean shuffle,
 			int seed) {
 		List<DataDivision> dataDivisionList = new ArrayList<DataDivision>();
@@ -100,7 +157,13 @@ public class EncogModel {
 		this.validationDataset = dataDivisionList.get(1).getDataset();
 	}
 
-	public void fitFold(int k, int foldNum, DataFold fold) {
+	/**
+	 * Fit the model using cross validation.
+	 * @param k The number of folds total.
+	 * @param foldNum The current fold.
+	 * @param fold The current fold.
+	 */
+	private void fitFold(int k, int foldNum, DataFold fold) {
 		MLMethod method = this.createMethod();
 		MLTrain train = this.createTrainer(method, fold.getTraining());
 
@@ -143,6 +206,12 @@ public class EncogModel {
 		}
 	}
 
+	/**
+	 * Calculate the error for the given method and dataset.
+	 * @param method The method to use.
+	 * @param data The data to use.
+	 * @return The error.
+	 */
 	public double calculateError(MLMethod method, MLDataSet data) {
 		if (this.dataset.getNormHelper().getOutputColumns().size() == 1) {
 			ColumnDefinition cd = this.dataset.getNormHelper()
@@ -157,6 +226,12 @@ public class EncogModel {
 				data);
 	}
 
+	/**
+	 * Create a trainer.
+	 * @param method The method to train.
+	 * @param dataset The dataset.
+	 * @return The trainer.
+	 */
 	private MLTrain createTrainer(MLMethod method, MLDataSet dataset) {
 
 		if (this.trainingType == null) {
@@ -169,6 +244,12 @@ public class EncogModel {
 		return train;
 	}
 
+	/**
+	 * Crossvalidate and fit.
+	 * @param k The number of folds.
+	 * @param shuffle True if we should shuffle.
+	 * @return The trained method.
+	 */
 	public MLMethod crossvalidate(int k, boolean shuffle) {
 		KFoldCrossvalidation cross = new KFoldCrossvalidation(
 				this.trainingDataset, k);
@@ -226,6 +307,14 @@ public class EncogModel {
 		this.validationDataset = validationDataset;
 	}
 
+	/**
+	 * Select the method to use.
+	 * @param dataset The dataset.
+	 * @param methodType The type of method.
+	 * @param methodArgs The method arguments.
+	 * @param trainingType The training type.
+	 * @param trainingArgs The training arguments.
+	 */
 	public void selectMethod(VersatileMLDataSet dataset, String methodType,
 			String methodArgs, String trainingType, String trainingArgs) {
 
@@ -241,6 +330,10 @@ public class EncogModel {
 
 	}
 
+	/**
+	 * Create the selected method.
+	 * @return The created method.
+	 */
 	public MLMethod createMethod() {
 		if (this.methodType == null) {
 			throw new EncogError(
@@ -253,6 +346,11 @@ public class EncogModel {
 		return method;
 	}
 
+	/**
+	 * Select the method to create.
+	 * @param dataset The dataset.
+	 * @param methodType The method type.
+	 */
 	public void selectMethod(VersatileMLDataSet dataset, String methodType) {
 		if (!this.methodConfigurations.containsKey(methodType)) {
 			throw new EncogError("Don't know how to autoconfig method: "
@@ -267,6 +365,10 @@ public class EncogModel {
 
 	}
 
+	/**
+	 * Select the training type.
+	 * @param dataset The dataset.
+	 */
 	public void selectTrainingType(VersatileMLDataSet dataset) {
 		if (this.methodType == null) {
 			throw new EncogError(
@@ -277,6 +379,12 @@ public class EncogModel {
 				config.suggestTrainingArgs(trainingType));
 	}
 
+	/**
+	 * Select the training to use.
+	 * @param dataset The dataset.
+	 * @param trainingType The type of training.
+	 * @param trainingArgs The training arguments.
+	 */
 	public void selectTraining(VersatileMLDataSet dataset, String trainingType,
 			String trainingArgs) {
 		if (this.methodType == null) {

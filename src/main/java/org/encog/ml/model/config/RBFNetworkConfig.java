@@ -8,13 +8,22 @@ import org.encog.ml.data.versatile.normalizers.strategies.BasicNormalizationStra
 import org.encog.ml.data.versatile.normalizers.strategies.NormalizationStrategy;
 import org.encog.ml.factory.MLMethodFactory;
 
+/**
+ * Config class for EncogModel to use a RBF neural network.
+ */
 public class RBFNetworkConfig implements MethodConfig {
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getMethodName() {
 		return MLMethodFactory.TYPE_RBFNETWORK;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String suggestModelArchitecture(VersatileMLDataSet dataset) {
 		int inputColumns = dataset.getNormHelper().getInputColumns().size();
@@ -28,6 +37,9 @@ public class RBFNetworkConfig implements MethodConfig {
 		return result.toString();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public NormalizationStrategy suggestNormalizationStrategy(VersatileMLDataSet dataset, String architecture) {
 		int outputColumns = dataset.getNormHelper().getOutputColumns().size();
@@ -46,17 +58,26 @@ public class RBFNetworkConfig implements MethodConfig {
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String suggestTrainingType() {
 		return "rprop";
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String suggestTrainingArgs(String trainingType) {
 		return "";
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int determineOutputCount(VersatileMLDataSet dataset) {
 		return dataset.getNormHelper().calculateNormalizedOutputCount();

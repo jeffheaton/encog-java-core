@@ -11,14 +11,23 @@ import org.encog.ml.data.versatile.normalizers.strategies.NormalizationStrategy;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.ml.factory.MLTrainFactory;
 
+/**
+ * Config class for EncogModel to use an SVM.
+ */
 public class SVMConfig implements MethodConfig {
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getMethodName() {
 		return MLMethodFactory.TYPE_SVM;
 	}
 	
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String suggestModelArchitecture(VersatileMLDataSet dataset) {
 		int outputColumns = dataset.getNormHelper().getOutputColumns().size();
@@ -39,6 +48,9 @@ public class SVMConfig implements MethodConfig {
 		return result.toString();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public NormalizationStrategy suggestNormalizationStrategy(VersatileMLDataSet dataset, String architecture) {
 		int outputColumns = dataset.getNormHelper().getOutputColumns().size();
@@ -61,6 +73,9 @@ public class SVMConfig implements MethodConfig {
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String suggestTrainingType() {
 		return MLTrainFactory.TYPE_SVM;
