@@ -21,7 +21,6 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-
 package org.encog.mathutil.randomize.generate;
 
 /**

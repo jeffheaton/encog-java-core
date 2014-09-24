@@ -1,17 +1,9 @@
 /*
-<<<<<<< HEAD
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
-=======
- * Encog(tm) Core v3.1 - Java Version
- * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
- 
- * Copyright 2008-2012 Heaton Research, Inc.
->>>>>>> 40b2a096b2a7776b47f9b091e882bba5fab03fb9
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
