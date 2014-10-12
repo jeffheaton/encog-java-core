@@ -57,7 +57,7 @@ public final class Encog {
 	/**
 	 * The current engog version, this should be read from the properties.
 	 */
-	public static final String VERSION = "3.3.0";
+	public static final String VERSION = "3.4.0";
 	
 	/**
 	 * The current engog version, this should be read from the properties.
