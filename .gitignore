@@ -2,6 +2,7 @@
 .project
 .settings
 .DS_Store
+.gradle
 target
 local.properties
 encog.*
