@@ -32,7 +32,7 @@ package org.encog.engine.network.activation;
  * might be more suitable to classification tasks than predictions tasks.
  * 
  * Elliott, D.L. "A better activation function for artificial neural networks", 1993
- * http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.46.7204&rep=rep1&type=pdf
+ * <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.46.7204&rep=rep1&type=pdf"></a>
  */
 public class ActivationElliottSymmetric implements ActivationFunction {
 

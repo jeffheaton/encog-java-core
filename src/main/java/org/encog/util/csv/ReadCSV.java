@@ -149,8 +149,8 @@ public class ReadCSV {
 	 * Construct a CSV reader from a filename. The format parameter specifies
 	 * the separator character to use, as well as the number format.
 	 * 
-	 * @param filename
-	 *            The filename.
+	 * @param file
+	 *            The file.
 	 * @param headers
 	 *            The headers.
 	 * @param delim
@@ -183,8 +183,8 @@ public class ReadCSV {
 	 * Construct a CSV reader from a filename. Allows a delimiter character to
 	 * be specified.
 	 * 
-	 * @param filename
-	 *            The filename.
+	 * @param file
+	 *            The file.
 	 * @param headers
 	 *            The headers.
 	 * @param format

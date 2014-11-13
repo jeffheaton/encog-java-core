@@ -54,7 +54,7 @@ public class RowComparator implements Comparator<LoadedRow> {
 	 *            The first object to compare.
 	 * @param y
 	 *            The second object to compare.
-	 * @return 0 if the same, <0 x is less, >0 y is less.
+	 * @return 0 if the same,&lt;0 x is less, &gt;0 y is less.
 	 */
 	@Override
 	public int compare(final LoadedRow x, final LoadedRow y) {

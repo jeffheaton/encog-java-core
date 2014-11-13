@@ -29,9 +29,9 @@ import org.encog.mathutil.matrices.MatrixError;
 /**
  * LU Decomposition.
  * <P>
- * For an m-by-n matrix A with m >= n, the LU decomposition is an m-by-n unit
+ * For an m-by-n matrix A with m ≥ n, the LU decomposition is an m-by-n unit
  * lower triangular matrix L, an n-by-n upper triangular matrix U, and a
- * permutation vector piv of length m so that A(piv,:) = L*U. If m < n, then L
+ * permutation vector piv of length m so that A(piv,:) = L*U. If m &lt; n, then L
  * is m-by-m and U is m-by-n.
  * <P>
  * The LU decompostion with pivoting always exists, even if the matrix is
@@ -40,7 +40,7 @@ import org.encog.mathutil.matrices.MatrixError;
  * equations. This will fail if isNonsingular() returns false.
  * 
  * This file based on a class from the public domain JAMA package.
- * http://math.nist.gov/javanumerics/jama/
+ * <a href="http://math.nist.gov/javanumerics/jama/"></a>
  */
 
 public class LUDecomposition {
@@ -338,8 +338,8 @@ public class LUDecomposition {
 	}
 	
     /**
-     * Solves a set of equation systems of type <c>A * X = B</c>.
-     * @return Matrix <c>X</c> so that <c>L * U * X = B</c>.
+     * Solves a set of equation systems of type <pre>A * X = B</pre>.
+     * @return Matrix <pre>X</pre> so that <pre>L * U * X = B</pre>.
      */
     public double[][] inverse()
     {

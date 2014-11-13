@@ -48,7 +48,7 @@ import org.encog.ml.hmm.distributions.StateDistribution;
  * simple example might be the state of the economy. There are three hidden
  * states, such as bull market, bear market and level. We do not know which
  * state we are currently in. However, there are observations that can be made
- * such as interest rate and the level of the S&P500. The HMM learns what state
+ * such as interest rate and the level of the S&amp;P500. The HMM learns what state
  * we are in by seeing how the observations change over time.
  * 
  * The HMM is only in one state at a given time. There is a percent probability

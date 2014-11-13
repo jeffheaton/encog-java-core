@@ -53,7 +53,7 @@ import org.encog.util.simple.EncogUtility;
  * 
  * Advanced Algorithms for Neural Networks: A C++ Sourcebook
  * 
- * by Timothy Masters, PhD (http://www.timothymasters.info/) John Wiley & Sons
+ * by Timothy Masters, PhD (<a href="http://www.timothymasters.info/"></a>) John Wiley and Sons
  * Inc (Computers); April 3, 1995, ISBN: 0471105880
  */
 public class BasicPNN extends AbstractPNN implements MLRegression, MLError, MLClassification {

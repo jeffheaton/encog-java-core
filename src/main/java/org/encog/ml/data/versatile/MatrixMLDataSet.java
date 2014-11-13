@@ -42,21 +42,21 @@ import org.encog.util.EngineArray;
  * Time boxing allows time-series data to be represented for prediction. The
  * following shows how data is laid out for different lag and lead settings.
  * 
- * Lag 0; Lead 0 [10 rows] 1->1 2->2 3->3 4->4 5->5 6->6 7->7 8->8 9->9 10->10
+ * Lag 0; Lead 0 [10 rows] 1→1 2→2 3→3 4→4 5→5 6→6 7→7 8→8 9→9 10→10
  * 
- * Lag 0; Lead 1 [9 rows] 1->2 2->3 3->4 4->5 5->6 6->7 7->8 8->9 9->10
+ * Lag 0; Lead 1 [9 rows] 1→2 2→3 3→4 4→5 5→6 6→7 7→8 8→9 9→10
  * 
- * Lag 1; Lead 0 [9 rows, not useful] 1,2->1 2,3->2 3,4->3 4,5->4 5,6->5 6,7->6
- * 7,8->7 8,9->8 9,10->9
+ * Lag 1; Lead 0 [9 rows, not useful] 1,2→1 2,3→2 3,4→3 4,5→4 5,6→5 6,7→6
+ * 7,8→7 8,9→8 9,10→9
  * 
- * Lag 1; Lead 1 [8 rows] 1,2->3 2,3->4 3,4->5 4,5->6 5,6->7 6,7->8 7,8->9
- * 8,9->10
+ * Lag 1; Lead 1 [8 rows] 1,2→3 2,3→4 3,4→5 4,5→6 5,6→7 6,7→8 7,8→9
+ * 8,9→10
  * 
- * Lag 1; Lead 2 [7 rows] 1,2->3,4 2,3->4,5 3,4->5,6 4,5->6,7 5,6->7,8 6,7->8,9
- * 7,8->9,10
+ * Lag 1; Lead 2 [7 rows] 1,2→3,4 2,3→4,5 3,4→5,6 4,5→6,7 5,6→7,8 6,7→8,9
+ * 7,8→9,10
  * 
- * Lag 2; Lead 1 [7 rows] 1,2,3->4 2,3,4->5 3,4,5->6 4,5,6->7 5,6,7->8 6,7,8->9
- * 7,8,9->10
+ * Lag 2; Lead 1 [7 rows] 1,2,3→4 2,3,4→5 3,4,5→6 4,5,6→7 5,6,7→8 6,7,8→9
+ * 7,8,9→10
  */
 public class MatrixMLDataSet implements MLDataSet {
 
@@ -169,10 +169,8 @@ public class MatrixMLDataSet implements MLDataSet {
 
 	/**
 	 * Construct the dataset from another matrix dataset.
-	 * @param theData The data.
-	 * @param inputCount The input count.
-	 * @param idealCount The ideal count.
-	 * @param theMask The mask.
+	 * @param data The data.
+	 * @param mask The mask.
 	 */
 	public MatrixMLDataSet(MatrixMLDataSet data, int[] mask) {
 		this.data = data.getData();

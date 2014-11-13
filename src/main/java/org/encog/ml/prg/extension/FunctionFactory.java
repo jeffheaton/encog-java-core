@@ -193,8 +193,8 @@ public class FunctionFactory implements Serializable {
 	}
 
 	/**
-	 * This method is used when parsing an expression. Consider x>=2. The parser
-	 * first sees the > symbol. But it must also consider the =. So we first
+	 * This method is used when parsing an expression. Consider x≥2. The parser
+	 * first sees the &gt; symbol. But it must also consider the =. So we first
 	 * look for a 2-char operator, in this case there is one.
 	 * 
 	 * @param ch1

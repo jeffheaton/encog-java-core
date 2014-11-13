@@ -35,7 +35,7 @@ import org.encog.util.logging.EncogLogging;
  * Some of the algorithms in this class are based on C++ code from:
  * 
  * Advanced Algorithms for Neural Networks: A C++ Sourcebook by Timothy Masters
- * John Wiley & Sons Inc (Computers); April 3, 1995 ISBN: 0471105880
+ * John Wiley and Sons Inc (Computers); April 3, 1995 ISBN: 0471105880
  */
 public class DeriveMinimum {
 
