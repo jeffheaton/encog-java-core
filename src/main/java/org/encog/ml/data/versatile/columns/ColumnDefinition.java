@@ -264,6 +264,30 @@ public class ColumnDefinition implements Serializable {
 		return classes;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		boolean result;
+		if ( obj instanceof ColumnDefinition ) {
+			ColumnDefinition that = (ColumnDefinition) obj;
+			// Ignores the this.owner association.
+			// Compares floating point values with exact equality, with no delta.
+			result = ((this.name == that.name) || ((null != this.name) && this.name.equals(that.name)))
+					&& (this.dataType == that.dataType )
+					&& Double.valueOf(this.low).equals( that.low )
+					&& Double.valueOf(this.high).equals( that.high )
+					&& Double.valueOf(this.mean).equals( that.mean )
+					&& Double.valueOf(this.sd).equals( that.sd )
+					&& (this.count == that.count)
+					&& (this.index == that.index)
+					&& this.classes.equals( that.classes );
+			// Equality ignores owner.
+		} else {
+			result = false;
+		}
+		
+		return result;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -331,6 +355,5 @@ public class ColumnDefinition implements Serializable {
 	public void setIndex(int index) {
 		this.index = index;
 	}
-	
 	
 }

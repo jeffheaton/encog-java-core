@@ -42,6 +42,7 @@ import org.encog.ml.data.versatile.normalizers.RangeOrdinal;
  * data type.
  */
 public class BasicNormalizationStrategy implements NormalizationStrategy {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Mapping to all of the input normalizers.
@@ -76,6 +77,23 @@ public class BasicNormalizationStrategy implements NormalizationStrategy {
 	public BasicNormalizationStrategy() {
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		boolean result;
+		
+		if ( obj instanceof BasicNormalizationStrategy ) {
+			BasicNormalizationStrategy that = (BasicNormalizationStrategy) obj;
+			
+			result = this.inputNormalizers.equals( that.inputNormalizers )
+					&& this.outputNormalizers.equals( that.outputNormalizers );
+		
+		} else {
+			result = false;
+		}
+		
+		return result;
+	}
+	
 	/**
 	 * Assign a normalizer to the specified column type for output.
 	 * @param colType The column type.

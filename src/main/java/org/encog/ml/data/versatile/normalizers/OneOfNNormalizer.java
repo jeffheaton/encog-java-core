@@ -32,6 +32,7 @@ import org.encog.ml.data.versatile.columns.ColumnDefinition;
  * becomes 1,0,0 and 0,1,0 and 0,0,1 etc. Assuming 0 and 1 were the min/max.
  */
 public class OneOfNNormalizer implements Normalizer {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * The normalized low.
@@ -53,6 +54,21 @@ public class OneOfNNormalizer implements Normalizer {
 		this.normalizedHigh = theNormalizedHigh;
 	}
 
+ 	@Override
+ 	public boolean equals(Object obj) {
+ 		boolean result;
+ 		
+ 		if ( obj instanceof OneOfNNormalizer ) {
+ 			OneOfNNormalizer that = (OneOfNNormalizer) obj;
+ 			result = Double.valueOf( this.normalizedHigh ).equals( that.normalizedHigh )
+ 					&& Double.valueOf( this.normalizedLow ).equals( that.normalizedLow );
+ 		} else {
+ 			result = false;
+ 		}
+ 		
+ 		return result;
+ 	}
+ 	
 	/**
 	 * {@inheritDoc}
 	 */

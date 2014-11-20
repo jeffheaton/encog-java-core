@@ -33,7 +33,13 @@ import org.encog.ml.data.versatile.columns.ColumnDefinition;
  * 0,1,2.
  */
 public class IndexedNormalizer implements Normalizer {
+ 	private static final long serialVersionUID = 1L;
 
+ 	@Override
+ 	public boolean equals(Object obj) {
+ 		return ( obj instanceof IndexedNormalizer );
+ 	}
+ 	
 	/**
 	 * {@inheritDoc}
 	 */

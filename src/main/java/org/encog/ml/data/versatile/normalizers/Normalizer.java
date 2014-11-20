@@ -23,6 +23,8 @@
  */
 package org.encog.ml.data.versatile.normalizers;
 
+import java.io.Serializable;
+
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.versatile.columns.ColumnDefinition;
 
@@ -30,7 +32,7 @@ import org.encog.ml.data.versatile.columns.ColumnDefinition;
  * The normalizer interface defines how to normalize a column.  The source of the
  * normalization can be either string or double.
  */
-public interface Normalizer {
+public interface Normalizer extends Serializable {
 
 	/**
 	 * Determine the normalized size of the specified column.

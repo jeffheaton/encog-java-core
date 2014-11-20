@@ -31,7 +31,13 @@ import org.encog.ml.data.versatile.columns.ColumnDefinition;
  * A normalizer that simply passes the value through unnormalized.
  */
 public class PassThroughNormalizer implements Normalizer {
+	private static final long serialVersionUID = 1L;
 
+ 	@Override
+ 	public boolean equals(Object obj) {
+ 		return ( obj instanceof PassThroughNormalizer );
+ 	}
+ 	
 	/**
 	 * {@inheritDoc}
 	 */
