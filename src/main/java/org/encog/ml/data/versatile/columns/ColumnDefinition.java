@@ -94,6 +94,7 @@ public class ColumnDefinition implements Serializable {
 		this.name = theName;
 		this.dataType = theDataType;
 		this.count = -1;
+		this.index = -1;
 		this.low = this.high = this.mean = this.sd = Double.NaN;
 	}
 
