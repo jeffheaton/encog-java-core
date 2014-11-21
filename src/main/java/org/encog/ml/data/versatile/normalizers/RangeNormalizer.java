@@ -56,7 +56,7 @@ public class RangeNormalizer implements Normalizer {
 	
 
  	@Override
- 	public boolean equals(Object obj) {
+ 	public boolean equals(Object obj) { 
  		boolean result;
  		
  		if ( obj instanceof RangeNormalizer ) {

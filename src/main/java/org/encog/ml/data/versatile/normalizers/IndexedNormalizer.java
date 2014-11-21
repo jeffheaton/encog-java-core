@@ -37,7 +37,7 @@ public class IndexedNormalizer implements Normalizer {
 
  	@Override
  	public boolean equals(Object obj) {
- 		return ( obj instanceof IndexedNormalizer );
+ 		return ( obj instanceof IndexedNormalizer ); 
  	}
  	
 	/**

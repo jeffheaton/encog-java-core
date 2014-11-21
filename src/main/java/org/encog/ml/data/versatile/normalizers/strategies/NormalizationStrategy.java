@@ -31,7 +31,7 @@ import org.encog.ml.data.versatile.columns.ColumnDefinition;
 /**
  * Defines the interface to a normalization strategy.
  */
-public interface NormalizationStrategy extends Serializable {
+public interface NormalizationStrategy extends Serializable { 
 
 	/**
 	 * Calculate how many elements a column will normalize into.

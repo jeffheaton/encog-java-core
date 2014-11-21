@@ -265,7 +265,7 @@ public class ColumnDefinition implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(Object obj) { 
 		boolean result;
 		if ( obj instanceof ColumnDefinition ) {
 			ColumnDefinition that = (ColumnDefinition) obj;

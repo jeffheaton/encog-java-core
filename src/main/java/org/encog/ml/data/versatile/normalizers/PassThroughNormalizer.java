@@ -34,7 +34,7 @@ public class PassThroughNormalizer implements Normalizer {
 	private static final long serialVersionUID = 1L;
 
  	@Override
- 	public boolean equals(Object obj) {
+ 	public boolean equals(Object obj) { 
  		return ( obj instanceof PassThroughNormalizer );
  	}
  	

@@ -12,7 +12,7 @@ import org.encog.util.SerializeRoundTrip;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TestNormalizationHelper {
+public class TestNormalizationHelper { 
 	@Test
 	public void testDefaultSerial() throws ClassNotFoundException, IOException {
 		NormalizationHelper out = new NormalizationHelper();
