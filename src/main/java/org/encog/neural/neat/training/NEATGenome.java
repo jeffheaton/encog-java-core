@@ -190,11 +190,10 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		}
 
 		// and now links
+		boolean haveInputOutputLink = false;
 		for (int i = 0; i < inputCount + 1; i++) {
 			for (int j = 0; j < outputCount; j++) {
-				// make sure we have at least one connection
-				if (this.linksList.size() < 1
-						|| rnd.nextDouble() < connectionDensity) {
+				if (rnd.nextDouble() < connectionDensity) {
 					long fromID = this.neuronsList.get(i).getId();
 					long toID = this.neuronsList.get(inputCount + j + 1)
 							.getId();
@@ -203,8 +202,27 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 					NEATLinkGene gene = new NEATLinkGene(fromID, toID, true,
 							innovationID++, w);
 					this.linksList.add(gene);
+
+					if (i != 0) { // if not bias node
+						haveInputOutputLink = true;
+					}
 				}
 			}
+		}
+
+		// make sure we have at least one connection between inputs and outputs
+		if (!haveInputOutputLink) {
+			// choose a random input/output pair
+			int inputIndex = (int) (rnd.nextDouble() * inputCount) + 1;
+			int outputIndex = (int) (rnd.nextDouble() * outputCount)
+					+ inputCount + 1;
+			long fromID = this.neuronsList.get(inputIndex).getId();
+			long toID = this.neuronsList.get(outputIndex).getId();
+			double w = RangeRandomizer.randomize(rnd, -pop.getWeightRange(),
+					pop.getWeightRange());
+			NEATLinkGene gene = new NEATLinkGene(fromID, toID, true,
+					innovationID, w);
+			this.linksList.add(gene);
 		}
 
 	}

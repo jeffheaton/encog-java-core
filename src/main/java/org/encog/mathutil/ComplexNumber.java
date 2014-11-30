@@ -169,7 +169,7 @@ public class ComplexNumber {
 	/**
 	    Principal branch of the Complex logarithm of this Complex number.
 	    (doesn't change this Complex number).
-	    The principal branch is the branch with -pi < arg <= pi.
+	    The principal branch is the branch with -pi &lt; arg &lt;= pi.
 	    @return log(z) where z is this Complex number.
 	*/
 	public ComplexNumber log() {
@@ -179,7 +179,7 @@ public class ComplexNumber {
 	/**
 	    Complex square root (doesn't change this complex number).
 	    Computes the principal branch of the square root, which 
-	    is the value with 0 <= arg < pi.
+	    is the value with 0 &lt;= arg &lt; pi.
 	    @return sqrt(z) where z is this Complex number.
 	*/
 	public ComplexNumber sqrt() {

@@ -103,6 +103,17 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	public static final String PROPERTY_CYCLES = "cycles";
 
 	/**
+	 * Default link weight range for NEAT networks.
+	 */
+	public static final double DEFAULT_NEAT_WEIGHT_RANGE = 1.0;
+
+
+	/**
+	 * Default link weight range for HyperNEAT networks.
+	 */
+	public static final double DEFAULT_HYPERNEAT_WEIGHT_RANGE = 5.0;
+
+	/**
 	 * Change the weight, do not allow the weight to go out of the weight range.
 	 * 
 	 * @param w
@@ -146,7 +157,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	/**
 	 * The weight range. Weights will be between -weight and +weight.
 	 */
-	private final double weightRange = 5;
+	private double weightRange = DEFAULT_NEAT_WEIGHT_RANGE;
 
 	/**
 	 * The best genome that we've currently decoded into the bestNetwork
@@ -252,6 +263,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 		this.substrate = theSubstrate;
 		this.inputCount = 6;
 		this.outputCount = 2;
+		this.weightRange = DEFAULT_HYPERNEAT_WEIGHT_RANGE;
 		HyperNEATGenome.buildCPPNActivationFunctions(this.activationFunctions);
 	}
 
@@ -521,6 +533,14 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	 */
 	public void setSurvivalRate(final double theSurvivalRate) {
 		this.survivalRate = theSurvivalRate;
+	}
+
+	/**
+	 * Sets the weight range for links in genomes in this population.
+	 * @param weightRange The link weight range.
+	 */
+	public void setWeightRange(final double weightRange) {
+		this.weightRange = weightRange;
 	}
 
 	/**

@@ -184,8 +184,8 @@ public class Tag implements Cloneable {
 	}
 
 	/**
-	 * Convert this tag back into string form, with the beginning < and ending
-	 * >.
+	 * Convert this tag back into string form, with the beginning &lt; and ending
+	 * &gt;.
 	 * 
 	 * @return The Attribute object that was found.
 	 */

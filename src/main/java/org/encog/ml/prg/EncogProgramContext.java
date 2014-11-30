@@ -47,7 +47,7 @@ import org.encog.util.csv.CSVFormat;
  * be parsed/rendered to.
  * 
  * The functions, or opcodes, that are available to the program. This defines
- * the set of functions & operators that a program might use. For an Encog
+ * the set of functions and operators that a program might use. For an Encog
  * Program all operators are treated as functions internally. A operator is
  * essentially a shortcut notation for common functions.
  * 
@@ -71,7 +71,7 @@ public class EncogProgramContext implements Serializable {
 
 	/**
 	 * The functions, or opcodes, that are available to the program. This
-	 * defines the set of functions & operators that a program might use. For an
+	 * defines the set of functions and operators that a program might use. For an
 	 * Encog Program all operators are treated as functions internally. A
 	 * operator is essentially a shortcut notation for common functions.
 	 */
@@ -323,7 +323,7 @@ public class EncogProgramContext implements Serializable {
 
 	/**
 	 * @return The functions, or opcodes, that are available to the program.
-	 *         This defines the set of functions & operators that a program
+	 *         This defines the set of functions and operators that a program
 	 *         might use. For an Encog Program all operators are treated as
 	 *         functions internally. A operator is essentially a shortcut
 	 *         notation for common functions.
