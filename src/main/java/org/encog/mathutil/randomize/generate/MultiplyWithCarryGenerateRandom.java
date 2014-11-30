@@ -29,12 +29,10 @@ package org.encog.mathutil.randomize.generate;
  * from two to many thousands of randomly chosen seed values. The main advantages of the MWC method are that it
  * invokes simple computer integer arithmetic and leads to very fast generation of sequences of random numbers
  * with immense periods.
- * <p/>
- * <p/>
+ *
  * This class was implemented using information from the following sources:
- * <p/>
- * http://www.javaprogrammingforums.com/blogs/helloworld922/11-complimentary-multiply-carry-better-way-generate-pseudo-random-numbers.html
- * http://en.wikipedia.org/wiki/Multiply-with-carry
+ * @see <a href="http://www.javaprogrammingforums.com/blogs/helloworld922/11-complimentary-multiply-carry-better-way-generate-pseudo-random-numbers.html"></a>
+ * @see <a href="http://en.wikipedia.org/wiki/Multiply-with-carry"></a>
  */
 public class MultiplyWithCarryGenerateRandom extends AbstractBoxMuller {
     private long c;

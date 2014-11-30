@@ -26,13 +26,11 @@ package org.encog.mathutil.randomize.generate;
 /**
  * The Mersenne twister is a pseudo random number generator developed in 1997 by Makoto Matsumoto and
  * Takuji Nishimura that is based on a matrix linear recurrence over a finite binary field F2.
- * <p/>
+ *
  * References:
- * <p/>
- * http://www.cs.gmu.edu/~sean/research/
- * <p/>
- * http://en.wikipedia.org/wiki/Mersenne_twister
- * <p/>
+ * @see <a href="http://www.cs.gmu.edu/~sean/research/"></a>
+ * @see <a href="http://en.wikipedia.org/wiki/Mersenne_twister/"></a>
+ *
  * Makato Matsumoto and Takuji Nishimura, "Mersenne Twister: A 623-Dimensionally Equidistributed Uniform
  * Pseudo-Random Number Generator", ACM Transactions on Modeling and. Computer Simulation,
  * Vol. 8, No. 1, January 1998, pp 3--30.

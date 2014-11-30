@@ -55,7 +55,7 @@ public class YahooDownload implements MarketLoader, QuantTask {
 	public static final String INDEX_DJIA = "^dji";
 	
 	/**
-	 * The S&P 500.
+	 * The S&amp;P 500.
 	 */
 	public static final String INDEX_SP500 = "^gspc";
 	

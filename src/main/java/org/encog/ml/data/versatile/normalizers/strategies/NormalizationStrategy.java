@@ -57,9 +57,8 @@ public interface NormalizationStrategy extends Serializable {
 	 * Normalize a column, with a double input.
 	 * @param colDef The column definition.
 	 * @param isInput True, if this is an input column.
-	 * @param value The value to normalize.
-	 * @param outpuData The output data.
-	 * @param outputColumn The element to begin outputing to.
+	 * @param output The output data.
+	 * @param idx The element to begin outputing to.
 	 * @return The new output element, advanced by the correct amount.
 	 */
 	String denormalizeColumn(ColumnDefinition colDef, boolean isInput, MLData output,

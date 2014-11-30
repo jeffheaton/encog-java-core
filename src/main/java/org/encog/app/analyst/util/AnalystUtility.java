@@ -175,7 +175,7 @@ public class AnalystUtility {
 
 	/**
 	 * Load a CSV file into an MLDataSet.
-	 * @param file The file to load.
+	 * @param filename The name of file to load.
 	 * @return The loaded data set.
 	 */
 	public MLDataSet loadCSV(String filename) {

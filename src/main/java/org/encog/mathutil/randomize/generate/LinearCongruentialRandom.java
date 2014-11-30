@@ -27,8 +27,8 @@ package org.encog.mathutil.randomize.generate;
  * A Linear Congruential random number generator.  A Linear Congruential Generator (LCG) yields a sequence of
  * randomized numbers calculated with a linear equation. The method represents one of the oldest and best-known
  * pseudorandom number generator algorithms. Most programming languages use this technique.
- * <p/>
- * http://en.wikipedia.org/wiki/Linear_congruential_generator
+ *
+ * @see <a href="http://en.wikipedia.org/wiki/Linear_congruential_generator/"></a>
  * Donald Knuth, The Art of Computer Programming, Volume 3, Section 3.2.1
  */
 public class LinearCongruentialRandom extends AbstractBoxMuller {

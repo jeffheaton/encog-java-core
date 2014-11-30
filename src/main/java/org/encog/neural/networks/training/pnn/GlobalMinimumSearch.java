@@ -32,7 +32,7 @@ package org.encog.neural.networks.training.pnn;
  * Some of the algorithms in this class are based on C++ code from:
  * 
  * Advanced Algorithms for Neural Networks: A C++ Sourcebook by Timothy Masters
- * John Wiley & Sons Inc (Computers); April 3, 1995 ISBN: 0471105880
+ * John Wiley and Sons Inc (Computers); April 3, 1995 ISBN: 0471105880
  */
 public class GlobalMinimumSearch {
 
@@ -81,7 +81,7 @@ public class GlobalMinimumSearch {
 	 * @param eps
 	 *            The approximate machine precision.
 	 * @param tol
-	 *            Brent's tolerance, must be >= sqrt( eps )
+	 *            Brent's tolerance, must be ≥ sqrt( eps )
 	 * @param network
 	 *            The network to obtain the error from.
 	 * @param y
