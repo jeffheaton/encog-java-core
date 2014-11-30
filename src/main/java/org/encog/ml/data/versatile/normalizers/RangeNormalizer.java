@@ -32,6 +32,7 @@ import org.encog.ml.data.versatile.columns.ColumnDefinition;
  *
  */
 public class RangeNormalizer implements Normalizer {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * The normalized low value.
@@ -52,6 +53,22 @@ public class RangeNormalizer implements Normalizer {
 		this.normalizedLow = theNormalizedLow;
 		this.normalizedHigh = theNormalizedHigh;
 	}
+	
+
+ 	@Override
+ 	public boolean equals(Object obj) { 
+ 		boolean result;
+ 		
+ 		if ( obj instanceof RangeNormalizer ) {
+ 			RangeNormalizer that = (RangeNormalizer) obj;
+ 			result = Double.valueOf( this.normalizedHigh ).equals( that.normalizedHigh )
+ 					&& Double.valueOf( this.normalizedLow ).equals( that.normalizedLow );
+ 		} else {
+ 			result = false;
+ 		}
+ 		
+ 		return result;
+ 	}
 	
 	/**
 	 * {@inheritDoc}

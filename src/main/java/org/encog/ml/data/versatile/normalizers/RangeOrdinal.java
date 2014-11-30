@@ -33,6 +33,7 @@ import org.encog.ml.data.versatile.columns.ColumnDefinition;
  * "senior". These values are mapped to an increasing index.
  */
 public class RangeOrdinal implements Normalizer {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * The low range of the normalized data.
@@ -49,6 +50,21 @@ public class RangeOrdinal implements Normalizer {
 		this.normalizedHigh = theNormalizedHigh;
 	}
 
+ 	@Override
+ 	public boolean equals(Object obj) { 
+ 		boolean result;
+ 		
+ 		if ( obj instanceof RangeOrdinal ) {
+ 			RangeOrdinal that = (RangeOrdinal) obj;
+ 			result = Double.valueOf( this.normalizedHigh ).equals( that.normalizedHigh )
+ 					&& Double.valueOf( this.normalizedLow ).equals( that.normalizedLow );
+ 		} else {
+ 			result = false;
+ 		}
+ 		
+ 		return result;
+ 	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
