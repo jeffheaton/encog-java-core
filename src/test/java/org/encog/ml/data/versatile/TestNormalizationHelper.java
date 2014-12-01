@@ -3,7 +3,6 @@ package org.encog.ml.data.versatile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import org.encog.ml.data.versatile.columns.ColumnDefinition;
 import org.encog.ml.data.versatile.columns.ColumnType;
