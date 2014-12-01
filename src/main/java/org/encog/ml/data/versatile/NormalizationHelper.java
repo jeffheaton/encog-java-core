@@ -410,7 +410,7 @@ public class NormalizationHelper implements Serializable {
 			} else {
 				idx = i;
 			}
-			outputIndex = normalizeToVector(colDef, outputIndex, data, false,
+			outputIndex = normalizeToVector(colDef, outputIndex, data, true,
 					line[idx]);
 			i++;
 		}
