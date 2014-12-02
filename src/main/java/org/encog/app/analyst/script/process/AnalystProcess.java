@@ -38,7 +38,7 @@ public class AnalystProcess {
 
 	/**
 	 * The fields.
-	 * @return
+	 * @return The fields.
 	 */
 	public List<ProcessField> getFields() {
 		return fields;

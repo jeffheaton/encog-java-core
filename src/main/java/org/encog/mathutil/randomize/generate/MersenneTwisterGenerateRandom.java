@@ -28,8 +28,8 @@ package org.encog.mathutil.randomize.generate;
  * Takuji Nishimura that is based on a matrix linear recurrence over a finite binary field F2.
  *
  * References:
- * @see <a href="http://www.cs.gmu.edu/~sean/research/"></a>
- * @see <a href="http://en.wikipedia.org/wiki/Mersenne_twister/"></a>
+ * http://www.cs.gmu.edu/~sean/research
+ * http://en.wikipedia.org/wiki/Mersenne_twister/
  *
  * Makato Matsumoto and Takuji Nishimura, "Mersenne Twister: A 623-Dimensionally Equidistributed Uniform
  * Pseudo-Random Number Generator", ACM Transactions on Modeling and. Computer Simulation,

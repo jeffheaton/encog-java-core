@@ -460,10 +460,10 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 	}
 
 	/**
-	 * True if this event is given or conditionally dependant on the others.
+	 * True if this event is given or conditionally dependent on the others.
 	 * @param given The others to check.
 	 * @param e The event to check.
-	 * @return
+	 * @return True, if the node is given or descendant.
 	 */
 	private boolean isGivenOrDescendant(BayesianEvent[] given, BayesianEvent e) {
 		for (BayesianEvent e2 : given) {
