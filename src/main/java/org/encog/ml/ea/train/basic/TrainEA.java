@@ -41,11 +41,6 @@ import org.encog.neural.networks.training.propagation.TrainingContinuation;
  * Provides a MLTrain compatible class that can be used to train genomes.
  */
 public class TrainEA extends BasicEA implements MLTrain {
-
-	/**
-	 * The serial ID.
-	 */
-	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * The training strategies to use.
