@@ -52,6 +52,7 @@ public class SimpleIntensityDownsample extends RGBDownsample {
 			final int width) {
 
 		processImage(image);
+		validate(height, width);
 
 		final double[] result = new double[height * width * 3];
 
