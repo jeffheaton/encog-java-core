@@ -2,7 +2,7 @@
  * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
- 
+
  * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +16,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *   
- * For more information on Heaton Research copyrights, licenses 
+ *
+ * For more information on Heaton Research copyrights, licenses
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
@@ -27,24 +27,21 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.encog.ml.ea.exception.EACompileError;
-import org.encog.ml.prg.EncogProgramContext;
-
 /**
  * Holds all known EPL opcodes. Extension programs should add new opcodes here.
  * The FunctionFactory selects a subset of opcodes from here that will be run.
- * 
+ *
  * An opcode is identified by its name, and the number of parameters it accepts.
  * It is okay to add an opcode multiple times, the new opcode replaces the
  * previous.
- * 
+ *
  */
 public enum EncogOpcodeRegistry {
 	INSTANCE;
 
 	/**
 	 * Construct a lookup key for the hash map.
-	 * 
+	 *
 	 * @param functionName
 	 *            The name of the opcode.
 	 * @param argCount
@@ -120,7 +117,7 @@ public enum EncogOpcodeRegistry {
 
 	/**
 	 * Add an opcode. User programs should add opcodes here.
-	 * 
+	 *
 	 * @param ext
 	 *            The opcode to add.
 	 */
@@ -136,7 +133,7 @@ public enum EncogOpcodeRegistry {
 
 	/**
 	 * Find the specified opcode.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the opcode.
 	 * @param args

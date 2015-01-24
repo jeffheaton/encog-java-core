@@ -2,7 +2,7 @@
  * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
- 
+
  * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,14 +16,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *   
- * For more information on Heaton Research copyrights, licenses 
+ *
+ * For more information on Heaton Research copyrights, licenses
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
 package org.encog.ml.data.auto;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -126,7 +125,7 @@ public class AutoFloatDataSet implements Serializable, MLDataSet {
 
 	@Override
 	public void getRecord(long index, MLDataPair pair) {
-		
+
 		int columnID = 0;
 
 		// copy the input
@@ -198,8 +197,8 @@ public class AutoFloatDataSet implements Serializable, MLDataSet {
 	public MLDataPair get(int index) {
 		if( index>=size() ) {
 			return null;
-		} 
-		
+		}
+
 		MLDataPair result = BasicMLDataPair.createPair(getInputSize(),
 				this.getIdealSize());
 		getRecord(index, result);
@@ -211,7 +210,7 @@ public class AutoFloatDataSet implements Serializable, MLDataSet {
 		this.columns.add(column);
 
 	}
-	
+
 	public void loadCSV(String filename, boolean headers, CSVFormat format, int[] input, int[] ideal) {
 		// first, just size it up
 		ReadCSV csv = new ReadCSV(filename,headers,format);
@@ -220,27 +219,27 @@ public class AutoFloatDataSet implements Serializable, MLDataSet {
 			lineCount++;
 		}
 		csv.close();
-		
+
 		// allocate space to hold it
 		float[][] data = new float[input.length+ideal.length][lineCount];
-		
+
 		// now read the data in
 		csv = new ReadCSV(filename,headers,format);
 		int rowIndex = 0;
 		while(csv.next()) {
 			int columnIndex = 0;
-			
+
 			for(int i=0;i<input.length;i++) {
 				data[columnIndex++][rowIndex] = (float)csv.getDouble(input[i]);
 			}
 			for(int i=0;i<ideal.length;i++) {
 				data[columnIndex++][rowIndex] = (float)csv.getDouble(ideal[i]);
 			}
-			
+
 			rowIndex++;
 		}
 		csv.close();
-		
+
 		// now add the columns
 		for(int i=0;i<data.length;i++) {
 			addColumn(data[i]);
@@ -290,8 +289,8 @@ public class AutoFloatDataSet implements Serializable, MLDataSet {
 	public void setNormalizationEnabled(boolean normalizationEnabled) {
 		this.normalizationEnabled = normalizationEnabled;
 	}
-	
-	
-	
+
+
+
 
 }
