@@ -119,7 +119,7 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 		while ((line = this.source.readLine()) != null) {
 			for (int i = 0; i < this.helper.getSourceColumns().size(); i++) {
 				ColumnDefinition colDef = this.helper.getSourceColumns().get(i);
-				String value = line[i];
+				String value = line[colDef.getIndex()];
 				if (colDef.getDataType() == ColumnType.continuous) {
 					double d = this.helper.parseDouble(value);
 					d = colDef.getMean() - d;
@@ -271,6 +271,29 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 	 */
 	public ColumnDefinition defineSourceColumn(String name, ColumnType colType) {
 		return this.helper.defineSourceColumn(name, -1, colType);
+	}
+
+	/**
+	 * Define multiple output columns, all others as inputs.
+	 * @param outputColumn The output column.
+	 */
+	public void defineMultipleOutputsOthersInput(ColumnDefinition[] outputColumns) {
+		this.helper.clearInputOutput();
+
+		for (ColumnDefinition colDef : this.helper.getSourceColumns()) {
+			boolean isOutput = false;
+			for(ColumnDefinition col : outputColumns) {
+				if( col==colDef) {
+					isOutput = true;
+				}
+			}
+			
+			if (  isOutput) {
+				defineOutput(colDef);
+			} else if (colDef.getDataType() != ColumnType.ignore) {
+				defineInput(colDef);
+			}
+		}
 	}
 
 }
