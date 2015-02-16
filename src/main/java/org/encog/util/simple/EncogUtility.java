@@ -67,6 +67,81 @@ import org.encog.util.logging.EncogLogging;
  * General utility class for Encog. Provides for some common Encog procedures.
  */
 public final class EncogUtility {
+	
+	static public class FalsePositiveReport {
+		private final int truePositive;
+		private final int trueNegative;
+		private final int negativeCount;
+		private final int positiveCount;
+		
+		public int getCount() {
+			return this.negativeCount + this.positiveCount;
+		}
+
+		public int getTruePositive() {
+			return truePositive;
+		}
+
+
+
+		public int getTrueNegative() {
+			return trueNegative;
+		}
+
+
+
+		public int getNegativeCount() {
+			return negativeCount;
+		}
+
+
+
+		public int getPositiveCount() {
+			return positiveCount;
+		}
+
+
+
+		public FalsePositiveReport(int truePositive,
+				int trueNegative, int positiveCount, int negativeCount) {
+			super();
+			this.truePositive = truePositive;
+			this.trueNegative = trueNegative;
+			this.positiveCount = positiveCount;
+			this.negativeCount = negativeCount;
+			
+		}
+		
+		public String toString() {
+			StringBuilder result = new StringBuilder();
+			result.append("(True Positive Correct=");
+			result.append(this.truePositive);
+			result.append("/");
+			result.append(this.positiveCount);
+			result.append("(");
+			result.append(Format.formatPercent(((double)this.truePositive)/this.positiveCount));
+			result.append(")");
+			result.append(",True Negative Correct=");
+			result.append(this.trueNegative);
+			result.append("/");
+			result.append(this.trueNegative);
+			result.append("(");
+			result.append(Format.formatPercent(((double)this.trueNegative)/this.negativeCount));
+			result.append(")");
+			result.append(",Total Correct=");
+			result.append(this.truePositive+this.trueNegative);
+			result.append("/");
+			result.append(this.positiveCount+this.negativeCount);
+			result.append("(");
+			result.append(Format.formatPercent(((double)this.truePositive+this.trueNegative)/getCount()));
+			result.append(")");
+			result.append(")");
+			
+			
+			return result.toString();
+		}
+		
+	}
 
 	/**
 	 * Convert a CSV file to a binary training file.
@@ -530,5 +605,33 @@ public final class EncogUtility {
 			line.append(Format.formatDouble(Math.sqrt(sum/count), 4));
 			System.out.println(line.toString());
 		}
+	}
+
+	public static FalsePositiveReport calculatePositiveNegative(MLRegression method,
+			MatrixMLDataSet data) {
+		int truePositive = 0;
+		int trueNegative = 0; 
+		int negativeCount = 0; 
+		int positiveCount = 0;
+		
+		for(MLDataPair pair : data ) {
+			MLData actual = method.compute(pair.getInput());
+			boolean actualPositive = actual.getData(0)>actual.getData(1);
+			boolean idealPositive = pair.getIdeal().getData(0)>pair.getIdeal().getData(1);
+			
+			if( idealPositive ) {
+				if( actualPositive ) {
+					truePositive++;
+				}
+				positiveCount++;
+			} else {
+				if( !actualPositive ) { 
+					trueNegative++;
+				}
+				negativeCount++;
+			}
+			
+		}
+		return new FalsePositiveReport(truePositive, trueNegative, positiveCount, negativeCount);
 	}
 }

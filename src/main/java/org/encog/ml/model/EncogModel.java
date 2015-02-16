@@ -53,6 +53,7 @@ import org.encog.ml.model.config.PNNConfig;
 import org.encog.ml.model.config.RBFNetworkConfig;
 import org.encog.ml.model.config.SVMConfig;
 import org.encog.ml.train.MLTrain;
+import org.encog.ml.train.strategy.StopTrainingStrategy;
 import org.encog.ml.train.strategy.end.SimpleEarlyStoppingStrategy;
 import org.encog.util.Format;
 import org.encog.util.simple.EncogUtility;
@@ -347,6 +348,7 @@ public class EncogModel {
 		}
 		this.methodType = methodType;
 		this.methodArgs = methodArgs;
+		this.config = this.methodConfigurations.get(methodType);
 		dataset.getNormHelper().setStrategy(
 				this.methodConfigurations.get(methodType)
 						.suggestNormalizationStrategy(dataset, methodArgs));
@@ -440,4 +442,65 @@ public class EncogModel {
 	public void setReport(StatusReportable report) {
 		this.report = report;
 	}
+
+	public MLRegression train(boolean shuffle) {
+		MLMethod method = this.createMethod();
+		MLTrain train = this.createTrainer(method, this.trainingDataset);
+
+		if (train.getImplementationType() == TrainingImplementationType.Iterative) {
+			StopTrainingStrategy earlyStop = new StopTrainingStrategy(0.01,10);
+			train.addStrategy(earlyStop);
+
+			StringBuilder line = new StringBuilder();
+			while (!train.isTrainingDone()) {
+				train.iteration();
+				line.setLength(0);
+				line.append("Iteration #");
+				line.append(train.getIteration());
+				line.append(", Training Error: ");
+				line.append(Format.formatDouble(train.getError(), 8));
+				report.report(0, 0, line.toString());
+			}
+		} else if (train.getImplementationType() == TrainingImplementationType.OnePass) {
+			train.iteration();
+			this.report.report(0, 0,
+					"Trained, Training Error: " + train.getError());
+		} else {
+			throw new EncogError("Unsupported training type for EncogModel: "
+					+ train.getImplementationType());
+		}
+		return (MLRegression)method;
+	}
+
+	public MLRegression train(int iterations, boolean shuffle) {
+		MLMethod method = this.createMethod();
+		MLTrain train = this.createTrainer(method, this.trainingDataset);
+
+		if (train.getImplementationType() == TrainingImplementationType.Iterative) {
+			StopTrainingStrategy earlyStop = new StopTrainingStrategy(0.01,10);
+			train.addStrategy(earlyStop);
+
+			StringBuilder line = new StringBuilder();
+			for(int i=1;i<=iterations;i++) {
+				train.iteration();
+				line.setLength(0);
+				line.append("Iteration #");
+				line.append(train.getIteration());
+				line.append("/");
+				line.append(iterations);
+				line.append(", Training Error: ");
+				line.append(Format.formatDouble(train.getError(), 8));
+				report.report(0, 0, line.toString());
+			}
+		} else if (train.getImplementationType() == TrainingImplementationType.OnePass) {
+			train.iteration();
+			this.report.report(0, 0,
+					"Trained, Training Error: " + train.getError());
+		} else {
+			throw new EncogError("Unsupported training type for EncogModel: "
+					+ train.getImplementationType());
+		}
+		return (MLRegression)method;
+	}
+
 }
