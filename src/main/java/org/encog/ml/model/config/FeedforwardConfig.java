@@ -77,12 +77,23 @@ public class FeedforwardConfig implements MethodConfig {
 			throw new EncogError("Neural network does not have an output layer.");
 		}
 		
+		// check output function
 		ActivationFunction outputFunction = network.getActivation(network.getLayerCount()-1);
 		
 		double[] d = { -1000, -100, -50 };
 		outputFunction.activationFunction(d, 0, d.length);
 		
 		if( d[0]>0 && d[1]>0 && d[2]>0 ) {
+			outputLow=0;
+		}
+		
+		// check input function
+		ActivationFunction inputFunction = network.getActivation(1);
+		
+		double[] d2 = { -1000, -100, -50 };
+		inputFunction.activationFunction(d2, 0, d2.length);
+		
+		if( d2[0]>0 && d2[1]>0 && d2[2]>0 ) {
 			inputLow=0;
 		}
 		
