@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.encog.util.obj.ActivationUtil;
  * The step activation function is a very simple activation function. It is the
  * activation function that was used by the original perceptron. Using the
  * default parameters it will return 1 if the input is 0 or greater. Otherwise
- * it will return 1.
+ * it will return 0.
  * 
  * The center, low and high properties allow you to define how this activation
  * function works. If the input is equal to center or higher the high property

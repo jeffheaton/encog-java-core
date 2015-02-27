@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ package org.encog.neural.networks.training.propagation.manhattan;
 
 import java.util.Random;
 
+import org.encog.EncogError;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.LearningRate;
@@ -66,7 +67,6 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 */
 	private double learningRate;
 
-
 	/**
 	 * Construct a Manhattan propagation training object.
 	 * 
@@ -103,6 +103,7 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
+
 
 	/**
 	 * This training type does not support training continue.
@@ -144,6 +145,31 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 */
 	@Override
 	public double updateWeight(final double[] gradients,
+			final double[] lastGradient, final int index) {
+		if (Math.abs(gradients[index]) < this.zeroTolerance) {
+			return 0;
+		} else if (gradients[index] > 0) {
+			return this.learningRate;
+		} else {
+			return -this.learningRate;
+		}
+	}
+	
+	/**
+	 * Calculate the amount to change the weight by using dropout.
+	 * 
+	 * @param gradients
+	 *            The gradients.
+	 * @param lastGradient
+	 *            The last gradients.
+	 * @param index
+	 *            The index to update.
+	 * @param dropoutRate
+	 * 			  The dropout rate.
+	 * @return The amount to change the weight by.
+	 */
+	@Override
+	public double updateWeight(final double[] gradients,
 			final double[] lastGradient, final int index, double dropoutRate) {
 		
 		if (dropoutRate > 0 && dropoutRandomSource.nextDouble() < dropoutRate) {
@@ -164,5 +190,14 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 */
 	public void initOthers() {
 		
+	}
+	
+	/**
+	 * Do not allow batch sizes other than 0, not supported.
+	 */
+	public void setBatchSize(int theBatchSize) {
+		if( theBatchSize!=0 ) {
+			throw new EncogError("Online training is not supported for:" + this.getClass().getSimpleName());
+		}
 	}
 }

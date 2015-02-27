@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,14 +65,14 @@ public class TestYahooDownload extends TestCase {
 				"date,time,open price,high price,low price,close price,volume,adjusted price",
 				tr.readLine());
 		Assert.assertEquals(
-				"20000110,0,432.5,451.25,420,436.06,61022400,109.01",
+				"20000110,0,432.5,451.25,420,436.06,61022400,109.02",
 				tr.readLine());
 		Assert.assertEquals("20000107,0,366.75,408,363,407.25,48999600,101.81",
 				tr.readLine());
 		Assert.assertEquals("20000106,0,406.25,413,361,368.19,71301200,92.05",
 				tr.readLine());
 		Assert.assertEquals(
-				"20000105,0,430.5,431.13,402,410.5,83194800,102.62",
+				"20000105,0,430.5,431.12,402,410.5,83194800,102.62",
 				tr.readLine());
 		tr.close();
 	}

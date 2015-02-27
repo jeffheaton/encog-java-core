@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
+import org.encog.util.csv.CSVFormat;
 
 /**
  * This class represents a field that the Encog Analyst is in the process of
@@ -71,6 +72,11 @@ public class AnalyzedField extends DataField {
 	private final AnalystScript script;
 
 	/**
+	 * The numeric format.
+	 */
+	private CSVFormat fmt;
+
+	/**
 	 * Construct an analyzed field.
 	 * @param theScript The script being analyzed.
 	 * @param name The name of the field.
@@ -79,6 +85,7 @@ public class AnalyzedField extends DataField {
 		super(name);
 		this.instances = 0;
 		this.script = theScript;
+		this.fmt = this.script.determineFormat();
 	}
 
 	/**
@@ -98,8 +105,8 @@ public class AnalyzedField extends DataField {
 		this.instances++;
 
 		if (isReal()) {
-			if (this.script.determineFormat().isValid(str)) {
-				final double d = this.script.determineFormat().parse(str);
+			if (this.fmt.isValid(str)) {
+				final double d = this.fmt.parse(str);
 				setMax(Math.max(d, getMax()));
 				setMin(Math.min(d, getMin()));
 				this.total += d;
@@ -165,7 +172,7 @@ public class AnalyzedField extends DataField {
 
 		if (isReal() || isInteger()) {
 			if (!str.equals("") && !str.equals("?")) {
-				final double d = this.script.determineFormat().parse(str);
+				final double d = this.fmt.parse(str);
 				this.devTotal += Math.pow((d - getMean()), 2);
 			}
 		}

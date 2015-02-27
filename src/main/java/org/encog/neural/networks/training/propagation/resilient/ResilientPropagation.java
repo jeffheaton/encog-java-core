@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,6 +50,11 @@ import org.encog.util.EngineArray;
  * these defaults are acceptable. This makes the resilient propagation algorithm
  * one of the easiest and most efficient training algorithms available.
  * 
+ * It is also important to note that RPROP does not work well with online training.
+ * You should always use a batch size bigger than one.  Typically the larger the better.
+ * By default a batch size of zero is used, zero means to include the entire training
+ * set in the batch.
+ * 
  * The optional parameters are:
  * 
  * zeroTolerance - How close to zero can a number be to be considered zero. The
@@ -91,6 +96,13 @@ public class ResilientPropagation extends Propagation {
 	private RPROPType rpropType = RPROPType.RPROPp;
 	
 	private double[] lastWeightChange;
+	
+	/**
+	 * The value error at the beginning of the previous training iteration.  
+	 * This value is compared with the error at the beginning of the current
+	 * iteration to determine if an improvement is occuring.
+	 */
+	private double lastError = Double.POSITIVE_INFINITY;
 
 
 	/**
@@ -246,6 +258,43 @@ public class ResilientPropagation extends Propagation {
 		
 	}
 
+	/**
+	 * Calculate the amount to change the weight by.
+	 * 
+	 * @param gradients
+	 *            The gradients.
+	 * @param lastGradient
+	 *            The last gradients.
+	 * @param index
+	 *            The index to update.
+	 * @return The amount to change the weight by.
+	 */
+	@Override
+	public double updateWeight(final double[] gradients,
+			final double[] lastGradient, final int index) {
+		double weightChange = 0;
+		
+		switch(this.rpropType) {
+			case RPROPp:
+				weightChange = updateWeightPlus(gradients,lastGradient,index);
+				break;
+			case RPROPm:
+				weightChange = updateWeightMinus(gradients,lastGradient,index);
+				break;
+			case iRPROPp:
+				weightChange = updateiWeightPlus(gradients,lastGradient,index);
+				break;
+			case iRPROPm:
+				weightChange = updateiWeightMinus(gradients,lastGradient,index);
+				break;
+			default:
+				throw new TrainingError("Unknown RPROP type: " + this.rpropType);
+		}
+		
+		this.lastWeightChange[index] = weightChange;
+		return weightChange;
+	}
+	
 	/**
 	 * Calculate the amount to change the weight by.
 	 * 
@@ -428,6 +477,15 @@ public class ResilientPropagation extends Propagation {
 		// apply the weight change, if any
 		return weightChange;
 	}	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void postIteration() {
+		super.postIteration();
+		this.lastError = getError();
+	}
 
 	/**
 	 * @return The RPROP update values.
@@ -435,5 +493,4 @@ public class ResilientPropagation extends Propagation {
 	public double[] getUpdateValues() {
 		return updateValues;
 	}
-
 }

@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,17 +21,18 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+
 package org.encog.ensemble;
 
 import java.util.ArrayList;
 
-import org.encog.ensemble.aggregator.WeightedAveraging.WeightMismatchException;
 import org.encog.ensemble.data.EnsembleDataSet;
 import org.encog.ensemble.data.factories.EnsembleDataSetFactory;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
+import org.encog.ensemble.aggregator.WeightedAveraging.WeightMismatchException;
 
 public abstract class Ensemble {
 
@@ -64,12 +65,12 @@ public abstract class Ensemble {
 		private static final long serialVersionUID = -5074472788684621859L;
 		
 	}
-	
+
 	/**
-	 * Initialize ensemble components
+	 * Initialise ensemble components
 	 */
 	abstract public void initMembers();
-	
+
 	public EnsembleML generateNewMember() {
 		GenericEnsembleML newML = new GenericEnsembleML(mlFactory.createML(this.dataSetFactory.getInputCount(), this.dataSetFactory.getOutputCount()),mlFactory.getLabel());
 		newML.setTrainingSet(dataSetFactory.getNewDataSet());
@@ -83,22 +84,25 @@ public abstract class Ensemble {
 	
 	public void initMembersBySplits(int splits)
 	{
-		if ((this.dataSetFactory != null) && 
+		if ((this.dataSetFactory != null) &&
 			(splits > 0) &&
 			(this.dataSetFactory.hasSource()))
 		{
 			for (int i = 0; i < splits; i++)
 			{
-				addNewMember();
+				GenericEnsembleML newML = new GenericEnsembleML(mlFactory.createML(this.dataSetFactory.getInputCount(), this.dataSetFactory.getOutputCount()),mlFactory.getLabel());
+				newML.setTrainingSet(dataSetFactory.getNewDataSet());
+				newML.setTraining(trainFactory.getTraining(newML.getMl(), newML.getTrainingSet()));
+				members.add(newML);
 			}
-			if(aggregator.needsTraining()) 
+			if(aggregator.needsTraining())
 				aggregatorDataSet = dataSetFactory.getNewDataSet();
 		}
 	}
-	
+
 	/**
 	 * Set the training method to use for this ensemble
-	 * @param newTrain
+	 * @param newTrainFactory The training factory.
 	 */
 	public void setTrainingMethod(EnsembleTrainFactory newTrainFactory) {
 		this.trainFactory = newTrainFactory;
@@ -113,7 +117,6 @@ public abstract class Ensemble {
 		dataSetFactory.setInputData(data);
 		initMembers();
 	}
-
 
 	/**
 	 * Set which dataSetFactory to use to create the correct tranining sets

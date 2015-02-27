@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -184,8 +184,8 @@ public class Tag implements Cloneable {
 	}
 
 	/**
-	 * Convert this tag back into string form, with the beginning < and ending
-	 * >.
+	 * Convert this tag back into string form, with the beginning &lt; and ending
+	 * &gt;.
 	 * 
 	 * @return The Attribute object that was found.
 	 */

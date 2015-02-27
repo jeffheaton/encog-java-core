@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -134,6 +134,11 @@ public class LevenbergMarquardtTraining extends BasicTraining implements MultiTh
 	 * The training elements.
 	 */
 	private final MLDataPair pair;
+	
+	/**
+	 * Is the init complete?
+	 */
+	private boolean initComplete;
 
 	/**
 	 * Construct the LMA object.
@@ -177,9 +182,6 @@ public class LevenbergMarquardtTraining extends BasicTraining implements MultiTh
 		this.pair = new BasicMLDataPair(input, ideal);
 		
 		this.hessian = h;
-		this.hessian.init(network, training);
-
-
 	}
 
 	private void saveDiagonal() {
@@ -229,6 +231,10 @@ public class LevenbergMarquardtTraining extends BasicTraining implements MultiTh
 	 */
 	@Override
 	public void iteration() {
+		if( !initComplete ) {
+			this.hessian.init(network, getTraining());
+			this.initComplete = true;
+		}
 
 		LUDecomposition decomposition = null;
 		preIteration();
@@ -316,7 +322,7 @@ public class LevenbergMarquardtTraining extends BasicTraining implements MultiTh
 		if( this.hessian instanceof MultiThreadable ) {
 			return ((MultiThreadable)this.hessian).getThreadCount();
 		} else {
-			throw new TrainingError("The Hessian object in use("+this.hessian.getClass().toString()+") does not support multi-threaded mode.");
+			return 1;
 		}
 	}
 
@@ -324,7 +330,7 @@ public class LevenbergMarquardtTraining extends BasicTraining implements MultiTh
 	public void setThreadCount(int numThreads) {
 		if( this.hessian instanceof MultiThreadable ) {
 			((MultiThreadable)this.hessian).setThreadCount(numThreads);
-		} else {
+		} else if(numThreads!=1 && numThreads!=0) {
 			throw new TrainingError("The Hessian object in use("+this.hessian.getClass().toString()+") does not support multi-threaded mode.");
 		}
 	}	

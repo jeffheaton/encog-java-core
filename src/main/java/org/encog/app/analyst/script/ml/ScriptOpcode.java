@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,49 +25,51 @@ package org.encog.app.analyst.script.ml;
 
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 
+/**
+ * An opcode, stored in the script.
+ */
 public class ScriptOpcode {
-	private String name;
-	private int argCount;
-	
-	public ScriptOpcode(String name, int argCount) {
+
+	/**
+	 * The name of the opcode.
+	 */
+	private final String name;
+
+	/**
+	 * The argument count of the opcode.
+	 */
+	private final int argCount;
+
+	public ScriptOpcode(final ProgramExtensionTemplate temp) {
+		this(temp.getName(), temp.getChildNodeCount());
+	}
+
+	/**
+	 * Construct the opcode.
+	 * 
+	 * @param name
+	 *            The name of the opcode.
+	 * @param argCount
+	 *            The argument count.
+	 */
+	public ScriptOpcode(final String name, final int argCount) {
 		super();
 		this.name = name;
 		this.argCount = argCount;
-	}
-
-	public ScriptOpcode(ProgramExtensionTemplate temp) {
-		this(temp.getName(),temp.getChildNodeCount());
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	/**
 	 * @return the argCount
 	 */
 	public int getArgCount() {
-		return argCount;
+		return this.argCount;
 	}
 
 	/**
-	 * @param argCount the argCount to set
+	 * @return the name
 	 */
-	public void setArgCount(int argCount) {
-		this.argCount = argCount;
+	public String getName() {
+		return this.name;
 	}
-	
-	
-	
-	
+
 }

@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
  */
 package org.encog.mathutil.randomize;
 
-import org.encog.mathutil.LinearCongruentialGenerator;
+import org.encog.mathutil.randomize.generate.LinearCongruentialRandom;
 import org.encog.neural.networks.BasicNetwork;
 
 /**
@@ -34,7 +34,7 @@ public class ConsistentRandomizer extends BasicRandomizer {
 	/**
 	 * The generator.
 	 */
-	private final LinearCongruentialGenerator rand;
+	private LinearCongruentialRandom rand;
 
 	/**
 	 * The minimum value for the random range.
@@ -77,7 +77,7 @@ public class ConsistentRandomizer extends BasicRandomizer {
 		this.max = max;
 		this.min = min;
 		this.seed = seed;
-		this.rand = new LinearCongruentialGenerator(seed);
+		this.rand = new LinearCongruentialRandom(seed);
 	}
 
 
@@ -89,7 +89,7 @@ public class ConsistentRandomizer extends BasicRandomizer {
 	 * @return The random number.
 	 */
 	public double randomize(final double d) {
-		return this.rand.range(this.min, this.max);
+		return this.rand.nextDouble(this.min, this.max);
 	}
 	
 	/**
@@ -97,7 +97,7 @@ public class ConsistentRandomizer extends BasicRandomizer {
 	 * @param network The network to randomize.
 	 */
 	public void randomize(final BasicNetwork network) {
-		this.rand.setSeed(this.seed);
+		this.rand = new LinearCongruentialRandom(seed);
 		super.randomize(network);
 	}
 

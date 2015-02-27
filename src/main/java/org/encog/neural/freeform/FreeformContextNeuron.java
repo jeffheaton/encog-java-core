@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ package org.encog.neural.freeform;
 import org.encog.neural.freeform.basic.BasicFreeformNeuron;
 
 /**
- * Defines a freeform contexst neuron.
+ * Defines a freeform context neuron.
  *
  */
 public class FreeformContextNeuron extends BasicFreeformNeuron {
@@ -47,6 +47,7 @@ public class FreeformContextNeuron extends BasicFreeformNeuron {
 	 */
 	public FreeformContextNeuron(final FreeformNeuron theContextSource) {
 		super(null);
+		this.contextSource = theContextSource;
 	}
 
 	/**
@@ -67,6 +68,19 @@ public class FreeformContextNeuron extends BasicFreeformNeuron {
 	@Override
 	public void updateContext() {
 		setActivation(this.contextSource.getActivation());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[FreeformContextNeuron: ");
+		result.append("outputCount=");
+		result.append(this.getOutputs().size());
+		result.append("]");
+		return result.toString();
 	}
 
 }

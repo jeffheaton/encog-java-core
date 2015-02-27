@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,6 +109,7 @@ public class RGBDownsample implements Downsample {
 			final int width) {
 
 		processImage(image);
+		validate(height, width);
 
 		final double[] result = new double[height * width * 3];
 
@@ -159,6 +160,11 @@ public class RGBDownsample implements Downsample {
 
 		endX = Math.min(this.imageWidth, endX);
 		endY = Math.min(this.imageHeight, endY);
+
+		// sample at least one pixel (for instance if down-sample size is the
+		// same as regular size)
+		endX = Math.max(startX + 1, endX);
+		endY = Math.max(startY + 1, endY);
 
 		int redTotal = 0;
 		int greenTotal = 0;
@@ -338,15 +344,19 @@ public class RGBDownsample implements Downsample {
 
 	/**
 	 * Set the current blue average.
-	 * @param currentBlue The current blue average.
+	 * 
+	 * @param currentBlue
+	 *            The current blue average.
 	 */
 	public void setCurrentBlue(final int currentBlue) {
 		this.currentBlue = currentBlue;
 	}
-	
+
 	/**
 	 * Set the current green average.
-	 * @param currentGreen The current green average.
+	 * 
+	 * @param currentGreen
+	 *            The current green average.
 	 */
 	public void setCurrentGreen(final int currentGreen) {
 		this.currentGreen = currentGreen;
@@ -354,7 +364,9 @@ public class RGBDownsample implements Downsample {
 
 	/**
 	 * Set the current red average.
-	 * @param currentRed The current red average.
+	 * 
+	 * @param currentRed
+	 *            The current red average.
 	 */
 	public void setCurrentRed(final int currentRed) {
 		this.currentRed = currentRed;
@@ -362,7 +374,9 @@ public class RGBDownsample implements Downsample {
 
 	/**
 	 * Set the pixel map.
-	 * @param pixelMap The pixel map.
+	 * 
+	 * @param pixelMap
+	 *            The pixel map.
 	 */
 	public void setPixelMap(final int[] pixelMap) {
 		this.pixelMap = pixelMap;
@@ -382,6 +396,14 @@ public class RGBDownsample implements Downsample {
 			}
 		}
 		return true;
+	}
+
+	public void validate(final int height, final int width) {
+		if (height > this.imageHeight || width > this.imageWidth) {
+			throw new EncogError("Can't upsample.  You can't downsample a "
+					+ this.imageWidth + "x" + this.imageHeight + " to " + width
+					+ "x" + height);
+		}
 	}
 
 }

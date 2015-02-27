@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -199,17 +199,17 @@ public class GradientWorker implements EngineTask {
 	 *            The ideal values.      
 	 * @param s   The significance.
 	 */
-	private void process(final double[] input, final double[] ideal, double s) {
-		this.network.compute(input, this.actual);
+	private void process(final MLDataPair pair) {
+		this.network.compute(pair.getInputArray(), this.actual);
 
-		this.errorCalculation.updateError(this.actual, ideal, s);
-		this.errorFunction.calculateError(ideal, actual, this.layerDelta);
+		this.errorCalculation.updateError(this.actual, pair.getIdealArray(), pair.getSignificance());
+		this.errorFunction.calculateError(pair.getIdealArray(), actual, this.layerDelta);
 
 		for (int i = 0; i < this.actual.length; i++) {
 
 			this.layerDelta[i] = ((this.network.getActivationFunctions()[0]
 					.derivativeFunction(this.layerSums[i],this.layerOutput[i]) + this.flatSpot[0]))
-					* (this.layerDelta[i] * s);
+					* (this.layerDelta[i] * pair.getSignificance());
 		}
 
 		for (int i = this.network.getBeginTraining(); i < this.network
@@ -236,21 +236,27 @@ public class GradientWorker implements EngineTask {
 		final double currentFlatSpot = this.flatSpot[currentLevel + 1];
 
 		// handle weights
+		// array references are made method local to avoid one indirection
+		final double[] layerDelta = this.layerDelta;
+		final double[] weights = this.weights;
+		final double[] gradients = this.gradients;
+		final double[] layerOutput = this.layerOutput;
+		final double[] layerSums = this.layerSums;
 		int yi = fromLayerIndex;
 		for (int y = 0; y < fromLayerSize; y++) {
-			final double output = this.layerOutput[yi];
+			final double output = layerOutput[yi];
 			double sum = 0;
-			int xi = toLayerIndex;
+
 			int wi = index + y;
-			for (int x = 0; x < toLayerSize; x++) {
-				this.gradients[wi] += output * this.layerDelta[xi];
-				sum += this.weights[wi] * this.layerDelta[xi];
-				wi += fromLayerSize;
-				xi++;
+			final int loopEnd = toLayerIndex+toLayerSize;
+			for (int xi = toLayerIndex; xi < loopEnd; xi++, wi += fromLayerSize) {
+				gradients[wi] += output * layerDelta[xi];
+				sum += weights[wi] * layerDelta[xi];
 			}
 
-			this.layerDelta[yi] = sum
-					* (activation.derivativeFunction(this.layerSums[yi],this.layerOutput[yi])+currentFlatSpot);
+			layerDelta[yi] = sum
+					* (activation.derivativeFunction(layerSums[yi], layerOutput[yi])+currentFlatSpot);
+
 			yi++;
 		}
 	}
@@ -263,7 +269,7 @@ public class GradientWorker implements EngineTask {
 			this.errorCalculation.reset();
 			for (int i = this.low; i <= this.high; i++) {
 				this.training.getRecord(i, this.pair);
-				process(this.pair.getInputArray(), this.pair.getIdealArray(),pair.getSignificance());
+				process(pair);
 			}
 			final double error = this.errorCalculation.calculate();
 			this.owner.report(this.gradients, error, null);
@@ -272,5 +278,18 @@ public class GradientWorker implements EngineTask {
 			this.owner.report(null, 0, ex);
 		}
 	}
+	
+	public final void run(int index) {
+		this.training.getRecord(index, this.pair);
+		process(pair);
+		this.owner.report(this.gradients, 0, null);
+		EngineArray.fill(this.gradients, 0);
+	}
 
+	public ErrorCalculation getErrorCalculation() {
+		return errorCalculation;
+	}
+
+	
+	
 }

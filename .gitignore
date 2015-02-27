@@ -1,11 +1,16 @@
 .classpath
 .project
 .settings
+<<<<<<< HEAD
 *.class
 *.o
 *.so
 !libaparapi_x86_64.so
 cache.bin
+=======
+.DS_Store
+.gradle
+>>>>>>> refs/remotes/choose_remote_name/master
 target
 local.properties
 encog.*

@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,8 +124,16 @@ public class PersistBasicNetwork implements EncogPersistor {
 					ActivationFunction af = null;
 					final List<String> cols = EncogFileSection
 							.splitColumns(line);
-					final String name = "org.encog.engine.network.activation."
-							+ cols.get(0);
+					
+					// if this is a class name with a path, then do not default to inside of the Encog package.
+					String name;
+					if( cols.get(0).indexOf('.')!=-1 ) {
+						name = cols.get(0);
+					} else {
+						name = "org.encog.engine.network.activation."
+								+ cols.get(0);
+					}
+					
 					try {
 						final Class<?> clazz = Class.forName(name);
 						af = (ActivationFunction) clazz.newInstance();
@@ -148,7 +156,7 @@ public class PersistBasicNetwork implements EncogPersistor {
 		}
 
 		result.getStructure().setFlat(flat);
-
+		result.updateProperties();
 		return result;
 	}
 
@@ -190,7 +198,13 @@ public class PersistBasicNetwork implements EncogPersistor {
 				flat.getBiasActivation());
 		out.addSubSection("ACTIVATION");
 		for (final ActivationFunction af : flat.getActivationFunctions()) {
-			out.addColumn(af.getClass().getSimpleName());
+			String sn = af.getClass().getSimpleName();
+			// if this is an Encog class then only add the simple name, so it works with C#
+			if( sn.startsWith("org.encog.") ) {
+				out.addColumn(sn);
+			} else {
+				out.addColumn(af.getClass().getName());
+			}
 			for (int i = 0; i < af.getParams().length; i++) {
 				out.addColumn(af.getParams()[i]);
 			}

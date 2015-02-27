@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,7 +117,6 @@ public class ScaledConjugateGradient extends Propagation {
 	 * Should the initial gradients be calculated.
 	 */
 	private boolean mustInit;
-
 	
 	/**
 	 * Construct a training class.
@@ -177,6 +176,196 @@ public class ScaledConjugateGradient extends Propagation {
 	public void resume(final TrainingContinuation state) {
 		
 	}
+
+	
+	/**
+	 * Calculate the gradients. They are normalized as well.
+	 */
+	@Override
+	public void calculateGradients() {
+
+		final int outCount = this.network.getFlat().getOutputCount();
+
+		super.calculateGradients();
+
+		// normalize
+
+		final double factor = -2D / this.gradients.length / outCount;
+
+		for (int i = 0; i < this.gradients.length; i++) {
+			this.gradients[i] *= factor;
+		}
+
+	}
+	
+	/**
+	 * Calculate the starting set of gradients.
+	 */
+	private void init() {
+		final int numWeights = this.weights.length;
+
+		calculateGradients();
+
+		this.k = 1;
+
+		for (int i = 0; i < numWeights; ++i) {
+			this.p[i] = this.r[i] = -this.gradients[i];
+		}
+
+		this.mustInit = false;
+	}
+
+	/**
+	 * Perform one iteration.
+	 */
+	@Override
+	public void iteration() {
+
+		if (this.mustInit) {
+			init();
+		}
+		
+		preIteration();
+		
+		rollIteration();
+		
+		final int numWeights = this.weights.length;
+		// Storage space for previous iteration values.
+
+		if (this.restart) {
+			// First time through, set initial values for SCG parameters.
+			this.lambda = ScaledConjugateGradient.FIRST_LAMBDA;
+			this.lambda2 = 0;
+			this.k = 1;
+			this.success = true;
+			this.restart = false;
+		}
+
+		// If an error reduction is possible, calculate 2nd order info.
+		if (this.success) {
+
+			// If the search direction is small, stop.
+			this.magP = EngineArray.vectorProduct(this.p, this.p);
+
+			final double sigma = ScaledConjugateGradient.FIRST_SIGMA
+					/ Math.sqrt(this.magP);
+
+			// In order to compute the new step, we need a new gradient.
+			// First, save off the old data.
+			EngineArray.arrayCopy(this.gradients, this.oldGradient);
+			EngineArray.arrayCopy(this.weights, this.oldWeights);
+			this.oldError = getError();
+
+			// Now we move to the new point in weight space.
+			for (int i = 0; i < numWeights; ++i) {
+				this.weights[i] += sigma * this.p[i];
+			}
+
+			EngineArray.arrayCopy(this.weights, this.network.getFlat().getWeights());
+
+			// And compute the new gradient.
+			calculateGradients();
+
+			// Now we have the new gradient, and we continue the step
+			// computation.
+			this.delta = 0;
+			for (int i = 0; i < numWeights; ++i) {
+				final double step = (this.gradients[i] - this.oldGradient[i])
+						/ sigma;
+				this.delta += this.p[i] * step;
+			}
+		}
+
+		// Scale delta.
+		this.delta += (this.lambda - this.lambda2) * this.magP;
+
+		// If delta <= 0, make Hessian positive definite.
+		if (this.delta <= 0) {
+			this.lambda2 = 2 * (this.lambda - this.delta / this.magP);
+			this.delta = this.lambda * this.magP - this.delta;
+			this.lambda = this.lambda2;
+		}
+
+		// Calculate step size.
+		final double mu = EngineArray.vectorProduct(this.p, this.r);
+		final double alpha = mu / this.delta;
+
+		// Calculate the comparison parameter.
+		// We must compute a new gradient, but this time we do not
+		// want to keep the old values. They were useful only for
+		// approximating the Hessian.
+		for (int i = 0; i < numWeights; ++i) {
+			this.weights[i] = this.oldWeights[i] + alpha * this.p[i];
+		}
+
+		EngineArray.arrayCopy(this.weights, this.network.getFlat().getWeights());
+
+		calculateGradients();
+
+		final double gdelta = 2 * this.delta * (this.oldError - getError())
+				/ (mu * mu);
+
+		// If gdelta >= 0, a successful reduction in error is possible.
+		if (gdelta >= 0) {
+			// Product of r(k+1) by r(k)
+			double rsum = 0;
+
+			// Now r = r(k+1).
+			for (int i = 0; i < numWeights; ++i) {
+				final double tmp = -this.gradients[i];
+				rsum += tmp * this.r[i];
+				this.r[i] = tmp;
+			}
+			this.lambda2 = 0;
+			this.success = true;
+
+			// Do we need to restart?
+			if (this.k >= numWeights) {
+				this.restart = true;
+				EngineArray.arrayCopy(this.r, this.p);
+
+			} else {
+				// Compute new conjugate direction.
+				final double beta = (EngineArray.vectorProduct(this.r, this.r) - rsum)
+						/ mu;
+
+				// Update direction vector.
+				for (int i = 0; i < numWeights; ++i) {
+					this.p[i] = this.r[i] + beta * this.p[i];
+				}
+
+				this.restart = false;
+			}
+
+			if (gdelta >= 0.75D) {
+				this.lambda *= 0.25D;
+			}
+
+		} else {
+			// A reduction in error was not possible.
+			// under_tolerance = false;
+
+			// Go back to w(k) since w(k) + alpha*p(k) is not better.
+			EngineArray.arrayCopy(this.oldWeights, this.weights);
+			this.setError( this.oldError );
+			this.lambda2 = this.lambda;
+			this.success = false;
+		}
+
+		if (gdelta < 0.25D) {
+			this.lambda += this.delta * (1 - gdelta) / this.magP;
+		}
+
+		this.lambda = BoundNumbers.bound(this.lambda);
+
+		++this.k;
+
+		EngineArray.arrayCopy(this.weights, this.network.getFlat().getWeights());
+		
+		postIteration();
+	}
+
+<<<<<<< HEAD
 	
 	/**
 	 * Calculate the gradients. They are normalized as well.
@@ -371,6 +560,20 @@ public class ScaledConjugateGradient extends Propagation {
 	@Override
 	public double updateWeight(final double[] gradients,
 			final double[] lastGradient, final int index, double dropoutRate) {
+		return 0;
+	}
+
+
+	/**
+	 * Update the weights.
+	 * @param gradients The current gradients.
+	 * @param lastGradient The last gradients.
+	 * @param index The weight index being updated.
+	 * @return The new weight value.
+	 */
+	@Override
+	public double updateWeight(final double[] gradients,
+			final double[] lastGradient, final int index) {
 		return 0;
 	}
 

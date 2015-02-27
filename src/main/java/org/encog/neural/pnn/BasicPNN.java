@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ import org.encog.util.simple.EncogUtility;
  * 
  * Advanced Algorithms for Neural Networks: A C++ Sourcebook
  * 
- * by Timothy Masters, PhD (http://www.timothymasters.info/) John Wiley & Sons
+ * by Timothy Masters, PhD (<a href="http://www.timothymasters.info/"></a>) John Wiley and Sons
  * Inc (Computers); April 3, 1995, ISBN: 0471105880
  */
 public class BasicPNN extends AbstractPNN implements MLRegression, MLError, MLClassification {

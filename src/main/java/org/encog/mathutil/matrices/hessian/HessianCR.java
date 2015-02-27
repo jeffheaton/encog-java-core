@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.encog.mathutil.IntRange;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.util.EngineArray;
 import org.encog.util.concurrency.DetermineWorkload;
 import org.encog.util.concurrency.EngineConcurrency;
 import org.encog.util.concurrency.MultiThreadable;
@@ -118,7 +119,7 @@ public class HessianCR extends BasicHessian implements MultiThreadable {
 				for(int i=0;i<weightCount;i++) {
 					this.gradients[i] += worker.getGradients()[i];
 				}
-				updateHessian(worker.getDerivative());
+				EngineArray.arrayAdd(this.getHessian(),worker.getHessian());
 			}
 		}
 		

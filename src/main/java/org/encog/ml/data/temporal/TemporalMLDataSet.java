@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
+import org.encog.ml.data.temporal.TemporalDataDescription.Type;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.util.time.TimeSpan;
@@ -329,7 +330,7 @@ public class TemporalMLDataSet extends BasicNeuralDataSet implements Serializabl
 	private double formatData(final TemporalDataDescription desc,
 			final int index) {
 		final double[] result = new double[1];
-
+		
 		switch (desc.getType()) {
 		case DELTA_CHANGE:
 			result[0] = getDataDeltaChange(desc, index);
@@ -356,6 +357,7 @@ public class TemporalMLDataSet extends BasicNeuralDataSet implements Serializabl
 	 */
 	public void generate() {
 		sortPoints();
+		// add one to the start index so we are "one ahead", needed to calculate DELTA, if that encoding is chosen.
 		final int start = calculateStartIndex() + 1;
 		final int setSize = calculateActualSetSize();
 		final int range = start + setSize - this.predictWindowSize
@@ -379,11 +381,6 @@ public class TemporalMLDataSet extends BasicNeuralDataSet implements Serializabl
 	 * @return The input neural data generated.
 	 */
 	public BasicNeuralData generateInputNeuralData(final int index) {
-		if (index + this.inputWindowSize > this.points.size()) {
-			throw new TemporalError("Can't generate input temporal data "
-					+ "beyond the end of provided data.");
-		}
-
 		final BasicNeuralData result = new BasicNeuralData(
 				this.inputNeuronCount);
 		int resultIndex = 0;
@@ -487,6 +484,9 @@ public class TemporalMLDataSet extends BasicNeuralDataSet implements Serializabl
 	 */
 	private double getDataRAW(final TemporalDataDescription desc,
 			final int index) {
+		// Note: The reason that we subtract 1 from the index is because we are always one ahead.
+		// This allows the DELTA change formatter to work.  DELTA change requires two timeslices,
+		// so we have to be one ahead.  RAW only requires one, so we shift backwards.
 		final TemporalPoint point = this.points.get(index-1);
 		return point.getData(desc.getIndex());
 	}

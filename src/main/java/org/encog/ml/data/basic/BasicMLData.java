@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,6 @@ public class BasicMLData implements MLData,
 	 * The data held by this object.
 	 */
 	private double[] data;
-
 
 	/**
 	 * Construct this object with the specified data.
@@ -222,7 +221,14 @@ public class BasicMLData implements MLData,
 		
 		return result;
 	}
-	
+
+	/**
+	 * Apply a thresholding function to the data elements. This does not modify the object.
+	 * @param thesdholdValue the value to which elements are compared
+	 * @param lowValue the value to use if <= threshold
+	 * @param highValue the value to use if > threshold
+	 * @return The result.
+	 */
 	public MLData threshold(double thresholdValue, double lowValue, double highValue)
 	{
 		MLData result = new BasicMLData(size());

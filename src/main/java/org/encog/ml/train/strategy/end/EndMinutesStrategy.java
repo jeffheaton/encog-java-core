@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,13 @@
  */
 package org.encog.ml.train.strategy.end;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.encog.ml.train.MLTrain;
 
 public class EndMinutesStrategy implements EndTrainingStrategy {
-	
+
 	private final int minutes;
 	private long startedTime;
 	private boolean started;
@@ -46,7 +47,13 @@ public class EndMinutesStrategy implements EndTrainingStrategy {
 	 */
 	@Override
 	public boolean shouldStop() {
-		return started && this.minutesLeft.get()>=0;
+		final boolean timeUp = getMinutesLeft() <= 0;
+		
+		if (timeUp) {
+			//LOG.info("Max training minutes exceed.");
+		}
+		
+		return started && timeUp;
 	}
 
 	/**
@@ -63,8 +70,11 @@ public class EndMinutesStrategy implements EndTrainingStrategy {
 	 */
 	@Override
 	public void postIteration() {
-		long now = System.currentTimeMillis();
-		this.minutesLeft.set((int)((now - this.startedTime)/60000));
+		final long now = System.currentTimeMillis();
+        final long minutesPassed = (now - this.startedTime) / TimeUnit.MINUTES.toMillis(1);
+
+		this.minutesLeft.set((int) Math.ceil(getMinutes() - minutesPassed));
+		//LOG.info("Number of minutes remaining to termination by time: " + this.minutesLeft.get());
 	}
 
 	/**
@@ -87,6 +97,5 @@ public class EndMinutesStrategy implements EndTrainingStrategy {
 	public int getMinutes() {
 		return minutes;
 	}
-	
-	
+
 }

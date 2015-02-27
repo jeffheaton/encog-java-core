@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,19 +41,49 @@ public class FreeformResilientPropagation extends FreeformPropagationTraining
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Temp value #0: the gradient.
+	 */
 	public static final int TEMP_GRADIENT = 0;
+	
+	/**
+	 * Temp value #1: the last gradient.
+	 */
 	public static final int TEMP_LAST_GRADIENT = 1;
+	
+	/**
+	 * Temp value #2: the update.
+	 */
 	public static final int TEMP_UPDATE = 2;
+	
+	/**
+	 * Temp value #3: the the last weight delta.
+	 */
 	public static final int TEMP_LAST_WEIGHT_DELTA = 3;
 
+	/**
+	 * The max step.
+	 */
 	private final double maxStep;
 
+	/**
+	 * Construct the RPROP trainer, Use default intiial update and max step.
+	 * @param theNetwork The network to train.
+	 * @param theTraining The training set.
+	 */
 	public FreeformResilientPropagation(final FreeformNetwork theNetwork,
 			final MLDataSet theTraining) {
 		this(theNetwork, theTraining, RPROPConst.DEFAULT_INITIAL_UPDATE,
 				RPROPConst.DEFAULT_MAX_STEP);
 	}
 
+	/**
+	 * Construct the RPROP trainer.
+	 * @param theNetwork The network to train.
+	 * @param theTraining The training set.
+	 * @param initialUpdate The initial update.
+	 * @param theMaxStep The max step.
+	 */
 	public FreeformResilientPropagation(final FreeformNetwork theNetwork,
 			final MLDataSet theTraining, final double initialUpdate,
 			final double theMaxStep) {
@@ -69,6 +99,9 @@ public class FreeformResilientPropagation extends FreeformPropagationTraining
 		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void learnConnection(final FreeformConnection connection) {
 
@@ -136,12 +169,18 @@ public class FreeformResilientPropagation extends FreeformPropagationTraining
 				weightChange);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public TrainingContinuation pause() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void resume(final TrainingContinuation state) {
 		// TODO Auto-generated method stub

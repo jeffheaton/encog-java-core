@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,12 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+
 package org.encog.neural.networks.training.propagation.quick;
 
 import java.util.Random;
 
+import org.encog.EncogError;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.LearningRate;
@@ -247,7 +249,6 @@ public class QuickPropagation extends Propagation implements
 		this.shrink = this.learningRate / (1.0 + this.learningRate);
 				
 	}
-	
 	/**
 	 * Update a weight.
 	 * 
@@ -257,6 +258,70 @@ public class QuickPropagation extends Propagation implements
 	 *            The last gradients.
 	 * @param index
 	 *            The index.
+	 * @return The weight delta.
+	 */
+	@Override
+	public double updateWeight(final double[] gradients,
+			final double[] lastGradient, final int index) {
+
+		final double w = this.network.getFlat().getWeights()[index];
+		final double d = this.lastDelta[index];
+		final double s = -this.gradients[index] + this.decay * w;
+		final double p = -lastGradient[index];
+		double nextStep = 0.0;
+
+		// The step must always be in direction opposite to the slope.
+		if (d < 0.0) {
+			// If last step was negative...
+			if (s > 0.0) {
+				// Add in linear term if current slope is still positive.
+				nextStep -= this.eps * s;
+			}
+			// If current slope is close to or larger than prev slope...
+			if (s >= (this.shrink * p)) {
+				// Take maximum size negative step.
+				nextStep += this.learningRate * d;
+			} else {
+				// Else, use quadratic estimate.
+				nextStep += d * s / (p - s);
+			}
+		} else if (d > 0.0) {
+			// If last step was positive...
+			if (s < 0.0) {
+				// Add in linear term if current slope is still negative.
+				nextStep -= this.eps * s;
+			}
+			// If current slope is close to or more neg than prev slope...
+			if (s <= (this.shrink * p)) {
+				// Take maximum size negative step.
+				nextStep += this.learningRate * d; 
+			} else {
+				// Else, use quadratic estimate.
+				nextStep += d * s / (p - s); 
+			}
+		} else {
+			// Last step was zero, so use only linear term. 
+			nextStep -= this.eps * s;
+		}
+
+		// update global data arrays
+		this.lastDelta[index] = nextStep;
+		this.getLastGradient()[index] = gradients[index];
+
+		return nextStep;
+	}
+	
+	/**
+	 * Update a weight with droput.
+	 * 
+	 * @param gradients
+	 *            The gradients.
+	 * @param lastGradient
+	 *            The last gradients.
+	 * @param index
+	 *            The index.
+	 * @param dropoutRate
+	 * 			  The dropout rate.
 	 * @return The weight delta.
 	 */
 	@Override
@@ -312,5 +377,14 @@ public class QuickPropagation extends Propagation implements
 		this.getLastGradient()[index] = gradients[index];
 
 		return nextStep;
+	}
+
+	/**
+	 * Do not allow batch sizes other than 0, not supported.
+	 */
+	public void setBatchSize(int theBatchSize) {
+		if( theBatchSize!=0 ) {
+			throw new EncogError("Online training is not supported for:" + this.getClass().getSimpleName());
+		}
 	}
 }

@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@
 package org.encog.util.csv;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -148,41 +149,51 @@ public class ReadCSV {
 	 * Construct a CSV reader from a filename. The format parameter specifies
 	 * the separator character to use, as well as the number format.
 	 * 
-	 * @param filename
-	 *            The filename.
+	 * @param file
+	 *            The file.
 	 * @param headers
 	 *            The headers.
 	 * @param delim
 	 *            The delimiter.
 	 */
-	public ReadCSV(final String filename, final boolean headers,
+	public ReadCSV(final File file, final boolean headers,
 			final char delim) {
 		try {
 			final CSVFormat format = new CSVFormat(CSVFormat
 					.getDecimalCharacter(), delim);
 			this.parseLine = new ParseCSVLine(format);
-			this.reader = new BufferedReader(new FileReader(filename));
+			this.reader = new BufferedReader(new FileReader(file));
 			begin(headers, format);
 		} catch (final IOException e) {
 			throw new EncogError(e);
 		}
+	}
+	
+	public ReadCSV(final String filename, final boolean headers,
+			final char delim) {
+		this(new File(filename),headers,delim);
+	}
+	
+	public ReadCSV(final String filename, final boolean headers,
+			final CSVFormat format) {
+		this(new File(filename),headers,format);
 	}
 
 	/**
 	 * Construct a CSV reader from a filename. Allows a delimiter character to
 	 * be specified.
 	 * 
-	 * @param filename
-	 *            The filename.
+	 * @param file
+	 *            The file.
 	 * @param headers
 	 *            The headers.
 	 * @param format
 	 *            The format.
 	 */
-	public ReadCSV(final String filename, final boolean headers,
+	public ReadCSV(final File file, final boolean headers,
 			final CSVFormat format) {
 		try {
-			this.reader = new BufferedReader(new FileReader(filename));
+			this.reader = new BufferedReader(new FileReader(file));
 			this.parseLine = new ParseCSVLine(format);
 			begin(headers, format);
 		} catch (final IOException e) {

@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,6 @@
  */
 package org.encog.neural.networks.training.propagation;
 
-import java.util.Random;
-
 import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationSigmoid;
@@ -37,6 +35,7 @@ import org.encog.neural.error.ErrorFunction;
 import org.encog.neural.error.LinearErrorFunction;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.networks.ContainsFlat;
+import org.encog.neural.networks.training.BatchSize;
 import org.encog.neural.networks.training.Train;
 import org.encog.util.EncogValidate;
 import org.encog.util.EngineArray;
@@ -55,8 +54,18 @@ import org.encog.util.logging.EncogLogging;
  * 
  */
 public abstract class Propagation extends BasicTraining implements Train,
-		MultiThreadable {
+		MultiThreadable, BatchSize {
 
+	/**
+	 * Used to generate randomness for dropout
+	 */
+	protected Random dropoutRandomSource = new Random();
+
+	/**
+	 * The Dropout rate, between 0 and 1
+	 */
+	private double dropoutRate = 0;
+	
 	/**
 	 * The current flat network we are using for training, or null for none.
 	 */
@@ -98,11 +107,6 @@ public abstract class Propagation extends BasicTraining implements Train,
 	private double totalError;
 
 	/**
-	 * The last error.
-	 */
-	protected double lastError;
-
-	/**
 	 * Reported exception from the threads.
 	 */
 	private Throwable reportedException;
@@ -121,26 +125,18 @@ public abstract class Propagation extends BasicTraining implements Train,
 	 * Should we fix flat spots.
 	 */
 	private boolean shouldFixFlatSpot;
-	
-	/**
-	 * The Dropout rate, between 0 and 1
-	 */
-	private double dropoutRate = 0;
-	
-	/**
-	 * Finalized training
-	 */
-	private boolean finalized = false;
 
 	/**
 	 * The error function.
 	 */
 	private ErrorFunction ef = new LinearErrorFunction();
-	
+
 	/**
-	 * Used to generate randomness for dropout
+	 * The batch size. Specify 1 for pure online training. Specify 0 for pure
+	 * batch training (complete training set in one batch). Otherwise specify
+	 * the batch size for batch training.
 	 */
-	protected Random dropoutRandomSource = new Random();
+	private int batchSize = 0;
 
 	/**
 	 * Construct a propagation object.
@@ -164,7 +160,7 @@ public abstract class Propagation extends BasicTraining implements Train,
 		this.reportedException = null;
 		this.shouldFixFlatSpot = true;
 	}
-
+	
 	/**
 	 * Change the dropout rate
 	 * @param rate
@@ -181,7 +177,6 @@ public abstract class Propagation extends BasicTraining implements Train,
 	public double getDropoutRate() {
 		return this.dropoutRate;
 	}
-	
 	/**
 	 * Should be called after training has completed and the iteration method
 	 * will not be called any further.
@@ -221,12 +216,62 @@ public abstract class Propagation extends BasicTraining implements Train,
 	public void iteration() {
 		iteration(1);
 	}
-	
+
 	/**
 	 * Increase the iteration by one.
 	 */
 	public void rollIteration() {
 		this.iteration++;
+	}
+
+	/**
+	 * Process as pure batch (size 0). Batch size equal to training set size.
+	 */
+	private void processPureBatch() {
+		calculateGradients();
+
+		if (this.currentFlatNetwork.isLimited()) {
+			learnLimited();
+		} else {
+			learn();
+		}
+	}
+
+	private void processBatches() {
+		if (this.workers == null) {
+			init();
+		}
+
+		if (this.currentFlatNetwork.getHasContext()) {
+			this.workers[0].getNetwork().clearContext();
+		}
+
+		this.workers[0].getErrorCalculation().reset();
+
+		int lastLearn = 0;
+
+		for (int i = 0; i < this.getTraining().size(); i++) {
+			this.workers[0].run(i);
+
+			lastLearn++;
+
+			if (lastLearn++ >= this.batchSize) {
+				if (this.currentFlatNetwork.isLimited()) {
+					learnLimited();
+				} else {
+					learn();
+					lastLearn = 0;
+				}
+			}
+		}
+		
+		// handle any remaining learning
+		if( lastLearn>0 ) {
+			learn();
+		}
+
+		this.setError(this.workers[0].getErrorCalculation().calculate());
+
 	}
 
 	/**
@@ -247,15 +292,11 @@ public abstract class Propagation extends BasicTraining implements Train,
 
 				rollIteration();
 
-				calculateGradients();
-
-				if (this.currentFlatNetwork.isLimited()) {
-					learnLimited();
+				if (this.batchSize == 0) {
+					processPureBatch();
 				} else {
-					learn();
+					processBatches();
 				}
-
-				this.lastError = this.getError();
 
 				for (final GradientWorker worker : this.workers) {
 					EngineArray.arrayCopy(this.currentFlatNetwork.getWeights(),
@@ -302,13 +343,14 @@ public abstract class Propagation extends BasicTraining implements Train,
 	}
 
 	/**
-	 * Default is true.  Call this with false to disable flat spot fix.
+	 * Default is true. Call this with false to disable flat spot fix.
 	 * 
 	 * For more info on flat spot:
 	 * 
 	 * http://www.heatonresearch.com/wiki/Flat_Spot
 	 * 
-	 * @param b True to fix flat spots, false otherwise.
+	 * @param b
+	 *            True to fix flat spots, false otherwise.
 	 */
 	public void fixFlatSpot(boolean b) {
 		this.shouldFixFlatSpot = b;
@@ -395,14 +437,27 @@ public abstract class Propagation extends BasicTraining implements Train,
 		}
 
 		// setup workers
+
+		// Do not use multi-threading for non-pure batch training.
+		//
+		// At some point it would be good to add multi-threading
+		// for batch-sizes that are large enough.
+		//
+		// Multi-threading cannot be added for pure (size 1)
+		// online training.
+		if (this.batchSize != 0) {
+			this.numThreads = 1;
+		}
+
 		final DetermineWorkload determine = new DetermineWorkload(
 				this.numThreads, (int) this.indexable.getRecordCount());
 
-		this.workers = new GradientWorker[determine.getThreadCount()];
+		int actualThreadCount = determine.getThreadCount();
+
+		this.workers = new GradientWorker[actualThreadCount];
 
 		int index = 0;
 
-		// handle CPU
 		for (final IntRange r : determine.calculateWorkers()) {
 			this.workers[index++] = new GradientWorker(
 					this.currentFlatNetwork.clone(), this,
@@ -443,37 +498,19 @@ public abstract class Propagation extends BasicTraining implements Train,
 	 */
 	protected void learn() {
 		final double[] weights = this.currentFlatNetwork.getWeights();
-		for (int i = 0; i < this.gradients.length; i++) {
-			weights[i] += updateWeight(this.gradients, this.lastGradient, i, this.dropoutRate);
-			this.gradients[i] = 0;
+		if(this.dropoutRate > 0) {
+			for (int i = 0; i < this.gradients.length; i++) {
+				weights[i] += updateWeight(this.gradients, this.lastGradient, i, this.dropoutRate);
+				this.gradients[i] = 0;
+			}			
+		} else {
+			for (int i = 0; i < this.gradients.length; i++) {
+				weights[i] += updateWeight(this.gradients, this.lastGradient, i);
+				this.gradients[i] = 0;
+			}			
 		}
 	}
 
-	/**
-	 * Apply and learn.
-	 */
-	/*
-	protected void learnOnGPU() {
-		final double[] gradients = this.gradients;
-		final double[] weights = this.currentFlatNetwork.getWeights();
-		final double[] lastGradient = this.lastGradient;
-		final double dropoutRate = this.dropoutRate;
-		final double
-		Kernel k = new Kernel()
-		{
-			@Override
-			public void run()
-			{
-				int i = getGlobalId();
-				weights[i] += updateWeightOnGPU(gradients, lastGradient, i, dropoutRate);
-				gradients[i] = 0;
-			}
-		};
-		Range r = Range.create(gradients.length);
-		k.execute(r);
-	}
-	*/
-	
 	/**
 	 * Apply and learn. This is the same as learn, but it checks to see if any
 	 * of the weights are below the limit threshold. In this case, these weights
@@ -483,13 +520,26 @@ public abstract class Propagation extends BasicTraining implements Train,
 	protected void learnLimited() {
 		final double limit = this.currentFlatNetwork.getConnectionLimit();
 		final double[] weights = this.currentFlatNetwork.getWeights();
+		if(this.dropoutRate > 0) {
+			for (int i = 0; i < this.gradients.length; i++) {
+				if (Math.abs(weights[i]) < limit) {
+					weights[i] = 0;
+				} else {
+					weights[i] += updateWeight(this.gradients, this.lastGradient, i, this.dropoutRate);
+				}
+				this.gradients[i] = 0;
+			}			
+		} else {
+			for (int i = 0; i < this.gradients.length; i++) {
+				if (Math.abs(weights[i]) < limit) {
+					weights[i] = 0;
+				} else {
+					weights[i] += updateWeight(this.gradients, this.lastGradient, i);
+				}
+				this.gradients[i] = 0;
+			}			
+		}
 		for (int i = 0; i < this.gradients.length; i++) {
-			if (Math.abs(weights[i]) < limit) {
-				weights[i] = 0;
-			} else {
-				weights[i] += updateWeight(this.gradients, this.lastGradient, i, this.dropoutRate);
-			}
-			this.gradients[i] = 0;
 		}
 	}
 
@@ -508,11 +558,11 @@ public abstract class Propagation extends BasicTraining implements Train,
 	 * @return The update value.
 	 */
 	public abstract double updateWeight(double[] gradients,
-			double[] lastGradient, int index, double dropoutRate);
-	
+			double[] lastGradient, int index);
+
 	/**
-	 * Update a weight, the means by which weights are updated vary depending on
-	 * the training, in a GPU-safe manner.
+	 * Update a weight using dropout, the means by which weights are updated vary depending on
+	 * the training.
 	 * 
 	 * @param gradients
 	 *            The gradients.
@@ -520,12 +570,12 @@ public abstract class Propagation extends BasicTraining implements Train,
 	 *            The last gradients.
 	 * @param index
 	 *            The index.
+	 * @param dropoutRate
+	 * 			  The dropout rate
 	 * @return The update value.
 	 */
-	/*
-	public abstract double updateWeightOnGPU(double[] gradients, double[] lastGradient,
-			int index, double dropoutRate);
-	*/
+	public abstract double updateWeight(double[] gradients,
+			double[] lastGradient, int index, double dropoutRate);
 
 	/**
 	 * @return the lastGradient
@@ -534,5 +584,19 @@ public abstract class Propagation extends BasicTraining implements Train,
 		return lastGradient;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getBatchSize() {
+		return this.batchSize;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setBatchSize(int theBatchSize) {
+		this.batchSize = theBatchSize;
+	}
+>>>>>>> refs/remotes/choose_remote_name/master
 
 }

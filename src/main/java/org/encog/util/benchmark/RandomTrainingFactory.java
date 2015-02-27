@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
  */
 package org.encog.util.benchmark;
 
-import org.encog.mathutil.LinearCongruentialGenerator;
+import org.encog.mathutil.randomize.generate.LinearCongruentialRandom;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
@@ -59,21 +59,21 @@ public final class RandomTrainingFactory {
 			final int count, final int inputCount,
 			final int idealCount, final double min, final double max) {
 		
-		LinearCongruentialGenerator rand = 
-			new LinearCongruentialGenerator(seed);
+		LinearCongruentialRandom rand = 
+			new LinearCongruentialRandom(seed);
 		
 		final BasicMLDataSet result = new BasicMLDataSet();
 		for (int i = 0; i < count; i++) {
 			final MLData inputData = new BasicMLData(inputCount);
 
 			for (int j = 0; j < inputCount; j++) {
-				inputData.setData(j, rand.range(min, max));
+				inputData.setData(j, rand.nextDouble(min, max));
 			}
 
 			final MLData idealData = new BasicMLData(idealCount);
 
 			for (int j = 0; j < idealCount; j++) {
-				idealData.setData(j, rand.range(min, max));
+				idealData.setData(j, rand.nextDouble(min, max));
 			}
 
 			final BasicMLDataPair pair = new BasicMLDataPair(inputData,
@@ -97,8 +97,8 @@ public final class RandomTrainingFactory {
 			final int count, 
 			final double min, final double max) {
 		
-		LinearCongruentialGenerator rand 
-			= new LinearCongruentialGenerator(seed);
+		LinearCongruentialRandom rand 
+			= new LinearCongruentialRandom(seed);
 		
 		int inputCount = training.getInputSize();
 		int idealCount = training.getIdealSize();
@@ -107,13 +107,13 @@ public final class RandomTrainingFactory {
 			final MLData inputData = new BasicMLData(inputCount);
 
 			for (int j = 0; j < inputCount; j++) {
-				inputData.setData(j, rand.range(min, max));
+				inputData.setData(j, rand.nextDouble(min, max));
 			}
 
 			final MLData idealData = new BasicMLData(idealCount);
 
 			for (int j = 0; j < idealCount; j++) {
-				idealData.setData(j, rand.range(min, max));
+				idealData.setData(j, rand.nextDouble(min, max));
 			}
 
 			final BasicMLDataPair pair = new BasicMLDataPair(inputData,

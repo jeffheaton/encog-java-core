@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,19 +77,24 @@ public class HessianFD extends BasicHessian {
 	private int pointCount;
 	
 	/**
+	 * The weight count.
+	 */
+	private int weightCount;
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	public void init(BasicNetwork theNetwork, MLDataSet theTraining) {
 		
 		super.init(theNetwork,theTraining);
-		int weightCount = theNetwork.getStructure().getFlat().getWeights().length;
+		this.weightCount = theNetwork.getStructure().getFlat().getWeights().length;
 		
 		this.center = this.pointsPerSide+1;
 		this.pointCount = (this.pointsPerSide*2)+1;
 		this.dCoeff = createCoefficients();
-		this.dStep = new double[weightCount];
+		this.dStep = new double[this.weightCount];
 		
-		for (int i = 0; i < weightCount; i++) {
+		for (int i = 0; i < this.weightCount; i++) {
 			this.dStep[i] = this.INITIAL_STEP;
 		}
 
@@ -111,10 +116,12 @@ public class HessianFD extends BasicHessian {
 
 		int row = 0;
 		ErrorCalculation error = new ErrorCalculation();
-		EngineArray.fill(this.derivative, 0);
-
+		
+		double[] derivative = new double[weightCount];
+		
 		// Loop over every training element
 		for (final MLDataPair pair : this.training) {
+			EngineArray.fill(derivative, 0);
 			final MLData networkOutput = this.network.compute(pair.getInput());
 
 			e = pair.getIdeal().getData(outputNeuron) - networkOutput.getData(outputNeuron);			
@@ -137,7 +144,7 @@ public class HessianFD extends BasicHessian {
 					}
 			
 					this.gradients[currentWeight] += jc *e;
-					this.derivative[currentWeight] += jc;
+					derivative[currentWeight] = jc;
 					currentWeight++;
 				}
 			}
@@ -148,15 +155,16 @@ public class HessianFD extends BasicHessian {
 						pair.getInput(), outputNeuron, currentWeight,
 						this.dStep,
 						networkOutput.getData(outputNeuron), row);
-				this.derivative[currentWeight] += jc;
+				derivative[currentWeight] = jc;
 				this.gradients[currentWeight] += jc *e;
 				currentWeight++;
 			}
 
 			row++;
+			updateHessian(derivative);
 		}
 		
-		updateHessian(this.derivative);
+		
 
 		sse+= error.calculateESS();
 	}

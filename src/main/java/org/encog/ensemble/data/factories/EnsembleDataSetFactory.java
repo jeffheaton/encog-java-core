@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+
 package org.encog.ensemble.data.factories;
 
 import java.util.ArrayList;
@@ -36,26 +37,30 @@ public abstract class EnsembleDataSetFactory {
 	public EnsembleDataSetFactory(int dataSetSize) {
 		setDataSetSize(dataSetSize);
 	}
-	
+
 	public void setInputData(MLDataSet dataSource) {
 		this.dataSource = dataSource;
 		this.reload();
 	}
-	
+
 	abstract public EnsembleDataSet getNewDataSet();
-	
+
 	public boolean hasSource() {
 		return (dataSource != null);
 	}
-	
+
 	public MLDataSet getInputData() {
 		return this.dataSource;
 	}
-	
+
 	public int getDataSetSize() {
 		return dataSetSize;
 	}
-	
+
+	public void setDataSetSize(int dataSetSize) {
+		this.dataSetSize = dataSetSize;
+	}
+
 	public int getDataSourceSize() {
 		return this.dataSource.size();
 	}
@@ -64,14 +69,10 @@ public abstract class EnsembleDataSetFactory {
 		return this.dataSource;
 	}
 	
-	public void setDataSetSize(int dataSetSize) {
-		this.dataSetSize = dataSetSize;
-	}
-	
 	public int getInputCount() {
 		return this.dataSource.getInputSize();
 	}
-	
+
 	public int getOutputCount() {
 		return this.dataSource.getIdealSize();
 	}
@@ -87,7 +88,6 @@ public abstract class EnsembleDataSetFactory {
 			res.add(dataSource.get(i).getSignificance());
 		return res;
 	}
-
 	public void reload() {
 	}
 

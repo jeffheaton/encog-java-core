@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,13 @@
 package org.encog.persist;
 
 import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
 import org.encog.Encog;
+import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.util.csv.CSVFormat;
@@ -59,7 +61,7 @@ public class EncogWriteHelper {
 	/**
 	 * The file to write to.
 	 */
-	private final PrintWriter out;
+	private final PrintStream out;
 
 	/**
 	 * The current line.
@@ -78,7 +80,11 @@ public class EncogWriteHelper {
 	 *            The stream to write to.
 	 */
 	public EncogWriteHelper(final OutputStream stream) {
-		this.out = new PrintWriter(stream);
+		try {
+			this.out = new PrintStream(stream, true, Encog.DEFAULT_ENCODING);
+		} catch (UnsupportedEncodingException e) {
+			throw new EncogError(e);
+		}
 	}
 
 	/**

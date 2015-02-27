@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,14 @@
 package org.encog.ensemble.adaboost;
 
 import java.util.ArrayList;
+
 import org.encog.ensemble.Ensemble;
+import org.encog.ensemble.EnsembleAggregator;
 import org.encog.ensemble.EnsembleML;
 import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.EnsembleTypes;
 import org.encog.ensemble.EnsembleTypes.ProblemType;
-import org.encog.ensemble.EnsembleWeightedAggregator;
 import org.encog.ensemble.GenericEnsembleML;
 import org.encog.ensemble.data.EnsembleDataSet;
 import org.encog.ensemble.data.factories.ResamplingDataSetFactory;
@@ -59,7 +60,7 @@ public class AdaBoost extends Ensemble {
 		this.aggregator = aggregator;
 		this.D = new ArrayList<Double>();
 	}
-	
+
 	private void createMember(double targetAccuracy, double selectionError, int maxIterations, int maxLoops, EnsembleDataSet testset, boolean verbose) throws TrainingAborted {
 		dataSetFactory.setSignificance(D);
 		MLDataSet thisSet = dataSetFactory.getNewDataSet();
@@ -96,7 +97,7 @@ public class AdaBoost extends Ensemble {
 		}
 		T = newSize;
 	}
-
+	
 	@Override
 	public void train(double targetAccuracy, double selectionError, int maxIterations, int maxLoops, EnsembleDataSet testset, boolean verbose) throws TrainingAborted {
 		for (int i = 0; i < T; i++) {

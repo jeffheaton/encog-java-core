@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
-import org.encog.neural.networks.training.TrainingError;
+import org.encog.ml.train.strategy.end.EndTrainingStrategy;
 import org.encog.neural.networks.training.TrainingSetScore;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
@@ -46,6 +46,11 @@ public class TrainEA extends BasicEA implements MLTrain {
 	 * The serial ID.
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * The training strategies to use.
+	 */
+	private final List<Strategy> strategies = new ArrayList<Strategy>();
 
 	/**
 	 * Create a trainer for a score function.
@@ -78,8 +83,16 @@ public class TrainEA extends BasicEA implements MLTrain {
 	/**
 	 * @return True if training can progress no further.
 	 */
-	@Override
 	public boolean isTrainingDone() {
+		for (Strategy strategy : this.strategies) {
+			if (strategy instanceof EndTrainingStrategy) {
+				EndTrainingStrategy end = (EndTrainingStrategy)strategy;
+				if( end.shouldStop() ) {
+					return true;
+				}
+			}
+		}
+		
 		return false;
 	}
 
@@ -124,15 +137,15 @@ public class TrainEA extends BasicEA implements MLTrain {
 	}
 
 	/**
-	 * Not supported, will throw an error.
+	 * Training strategies can be added to improve the training results. There
+	 * are a number to choose from, and several can be used at once.
 	 * 
 	 * @param strategy
-	 *            Not used.
+	 *            The strategy to add.
 	 */
-	@Override
 	public void addStrategy(final Strategy strategy) {
-		throw new TrainingError(
-				"Strategies are not supported by this training method.");
+		strategy.init(this);
+		this.strategies.add(strategy);
 	}
 
 	/**
@@ -171,12 +184,34 @@ public class TrainEA extends BasicEA implements MLTrain {
 	}
 
 	/**
-	 * Returns an empty list, strategies are not supported.
-	 * 
-	 * @return The strategies in use(none).
+	 * @return The strategies to use.
 	 */
-	@Override
 	public List<Strategy> getStrategies() {
-		return new ArrayList<Strategy>();
+		return this.strategies;
+	}
+	
+	@Override
+	public void iteration() {
+		preIteration();
+		super.iteration();
+		postIteration();
+	}
+	
+	/**
+	 * Call the strategies after an iteration.
+	 */
+	public void postIteration() {
+		for (final Strategy strategy : this.strategies) {
+			strategy.postIteration();
+		}
+	}
+
+	/**
+	 * Call the strategies before an iteration.
+	 */
+	public void preIteration() {
+		for (final Strategy strategy : this.strategies) {
+			strategy.preIteration();
+		}
 	}
 }

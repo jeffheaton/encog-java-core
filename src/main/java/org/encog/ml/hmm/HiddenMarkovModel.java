@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ import org.encog.ml.hmm.distributions.StateDistribution;
  * simple example might be the state of the economy. There are three hidden
  * states, such as bull market, bear market and level. We do not know which
  * state we are currently in. However, there are observations that can be made
- * such as interest rate and the level of the S&P500. The HMM learns what state
+ * such as interest rate and the level of the S&amp;P500. The HMM learns what state
  * we are in by seeing how the observations change over time.
  * 
  * The HMM is only in one state at a given time. There is a percent probability

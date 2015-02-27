@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,11 +66,6 @@ public abstract class BasicHessian implements ComputeHessian {
 	protected double[][] hessian;
 	
 	/**
-	 * The derivatives.
-	 */
-	protected double[] derivative;
-	
-	/**
 	 * The flat network.
 	 */
 	protected FlatNetwork flat;
@@ -87,7 +82,6 @@ public abstract class BasicHessian implements ComputeHessian {
 		this.gradients = new double[weightCount];	
 		this.hessianMatrix = new Matrix(weightCount,weightCount);
 		this.hessian = this.hessianMatrix.getData();
-		this.derivative = new double[weightCount];
 	}
 	
 	/**
@@ -135,7 +129,7 @@ public abstract class BasicHessian implements ComputeHessian {
 		int weightCount = this.network.getFlat().getWeights().length;
 		for(int i=0;i<weightCount;i++) {
 			for(int j=0;j<weightCount;j++) {
-				this.hessian[i][j]+=2*d[i]*d[j];
+				this.hessian[i][j]+=d[i]*d[j];
 			}
 		}
 	}

@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,14 @@ import org.encog.util.simple.EncogUtility;
 public class GenerateCS extends AbstractGenerator {
 
 	private boolean embed;
+	
+	private String useCSName(final String str) {
+		String result = str.trim();
+		if( Character.isLowerCase(str.charAt(0))) {
+			result = Character.toUpperCase(result.charAt(0)) + result.substring(1);
+		}
+		return result;
+	}
 
 	private void embedNetwork(final EncogProgramNode node) {
 		addBreak();
@@ -70,7 +78,7 @@ public class GenerateCS extends AbstractGenerator {
 
 		final StringBuilder line = new StringBuilder();
 		line.append("public static IMLMethod ");
-		line.append(node.getName());
+		line.append(useCSName(node.getName()));
 		line.append("()");
 		addLine(line.toString());
 		indentLine("{");
@@ -111,7 +119,8 @@ public class GenerateCS extends AbstractGenerator {
 
 		final File dataFile = (File) node.getArgs().get(0).getValue();
 		final MLDataSet data = EncogUtility.loadEGB2Memory(dataFile);
-
+		addInclude("Encog.ML.Data.Basic");
+		
 		// generate the input data
 
 		indentLine("public static readonly double[][] INPUT_DATA = {");
@@ -240,7 +249,7 @@ public class GenerateCS extends AbstractGenerator {
 
 		final StringBuilder line = new StringBuilder();
 		line.append("public static void ");
-		line.append(node.getName());
+		line.append(useCSName(node.getName()));
 		line.append("() {");
 		indentLine(line.toString());
 
@@ -266,7 +275,7 @@ public class GenerateCS extends AbstractGenerator {
 			line.append(" = ");
 		}
 
-		line.append(node.getName());
+		line.append(this.useCSName(node.getName()));
 		line.append("();");
 		addLine(line.toString());
 	}
@@ -291,7 +300,7 @@ public class GenerateCS extends AbstractGenerator {
 		final File methodFile = (File) node.getArgs().get(0).getValue();
 
 		final StringBuilder line = new StringBuilder();
-		line.append("public static MLDataSet createTraining() {");
+		line.append("public static IMLDataSet CreateTraining() {");
 		indentLine(line.toString());
 
 		line.setLength(0);
@@ -301,7 +310,7 @@ public class GenerateCS extends AbstractGenerator {
 			line.append("IMLDataSet result = new BasicMLDataSet(INPUT_DATA,IDEAL_DATA);");
 		} else {
 			addInclude("Encog.Util.Simple");
-			line.append("IMLDataSet result = EncogUtility.LoadEGB2Memory(new File(\"");
+			line.append("IMLDataSet result = EncogUtility.LoadEGB2Memory(new FileInfo(@\"");
 			line.append(methodFile.getAbsolutePath());
 			line.append("\"));");
 		}
@@ -371,7 +380,7 @@ public class GenerateCS extends AbstractGenerator {
 		indentLine("{");
 
 		line.setLength(0);
-		line.append("IMLMethod result = (IMLMethod)EncogDirectoryPersistence.LoadObject(new File(\"");
+		line.append("IMLMethod result = (IMLMethod)EncogDirectoryPersistence.LoadObject(new FileInfo(@\"");
 		line.append(methodFile.getAbsolutePath());
 		line.append("\"));");
 		addLine(line.toString());

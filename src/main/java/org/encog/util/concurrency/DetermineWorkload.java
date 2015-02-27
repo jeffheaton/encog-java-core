@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,10 +72,14 @@ public class DetermineWorkload {
 		if (threads == 0) {
 			int num = Runtime.getRuntime().availableProcessors();
 
+			// NOTE: This was tested on a Intel i7 4 cores 8 threads with
+			// Encog Benchmark. Ca 15% higher performance with exactly 8 threads.
+
 			// if there is more than one processor, use processor count +1
-			if (num != 1) {
-				num++;
-			}
+			// if (num != 1) {
+			//	num++;
+			// }
+
 			// if there is a single processor, just use one thread
 
 			// Now see how big the training sets are going to be.
@@ -85,8 +89,8 @@ public class DetermineWorkload {
 			final long recordCount = this.workloadSize;
 			final long workPerThread = recordCount / num;
 
-			if (workPerThread < 1000) {
-				num = Math.max(1, (int) (recordCount / 1000));
+			if (workPerThread < 100) {
+				num = Math.max(1, (int) (recordCount / 100));
 			}
 
 			this.threadCount = num;

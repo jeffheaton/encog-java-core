@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,16 +26,22 @@ package org.encog.app.analyst.script.process;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Script holder for Encog Analyst preprocessing.
+ */
 public class AnalystProcess {
-	private List<ProcessField> fields = new ArrayList<ProcessField>();
+	
+	/**
+	 * The fields.
+	 */
+	private final List<ProcessField> fields = new ArrayList<ProcessField>();
 
+	/**
+	 * The fields.
+	 * @return The fields.
+	 */
 	public List<ProcessField> getFields() {
 		return fields;
 	}
-
-	public void setFields(List<ProcessField> fields) {
-		this.fields = fields;
-	}
-	
 	
 }

@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,21 +49,21 @@ import org.encog.neural.networks.BasicNetwork;
  * Input1Output and Input2Output are both provided.
  *
  * Synapse 1: Input to Hidden Hidden1Activation = (Input1Output *
- * Input1->Hidden1Weight) + (Input2Output * Input2->Hidden1Weight) +
+ * Input1→Hidden1Weight) + (Input2Output * Input2→Hidden1Weight) +
  * (HiddenBiasActivation * Hidden1BiasWeight)
  *
  * Hidden1Output = calculate(Hidden1Activation, HiddenActivationFunction)
  *
- * Hidden2Activation = (Input1Output * Input1->Hidden2Weight) + (Input2Output *
- * Input2->Hidden2Weight) + (HiddenBiasActivation * Hidden2BiasWeight)
+ * Hidden2Activation = (Input1Output * Input1→Hidden2Weight) + (Input2Output *
+ * Input2→Hidden2Weight) + (HiddenBiasActivation * Hidden2BiasWeight)
  *
  * Hidden2Output = calculate(Hidden2Activation, HiddenActivationFunction)
  *
  * Synapse 2: Hidden to Output
  *
- * Output1Activation = (Hidden1Output * Hidden1->Output1Weight)
+ * Output1Activation = (Hidden1Output * Hidden1→Output1Weight)
  * + (Hidden2Output *
- * Hidden2->Output1Weight) + (OutputBiasActivation * Output1BiasWeight)
+ * Hidden2→Output1Weight) + (OutputBiasActivation * Output1BiasWeight)
  *
  * Output1Output = calculate(Output1Activation, OutputActivationFunction)
  *

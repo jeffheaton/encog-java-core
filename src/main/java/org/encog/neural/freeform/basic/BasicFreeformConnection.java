@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -192,5 +192,22 @@ public class BasicFreeformConnection implements FreeformConnection,
 	@Override
 	public void setWeight(final double weight) {
 		this.weight = weight;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[BasicFreeformConnection: ");
+		result.append("source=");
+		result.append(this.source.toString());
+		result.append(",target=");
+		result.append(this.target.toString());
+		result.append(",weight=");
+		result.append(this.weight);
+		result.append("]");
+		return result.toString();
 	}
 }

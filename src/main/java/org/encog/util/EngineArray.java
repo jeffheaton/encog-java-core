@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -455,6 +455,15 @@ public final class EngineArray {
 	public static void arrayCopy(int[] source, int sourcePos, int[] target,
 			int targetPos, int length) {
 		System.arraycopy(source, sourcePos, target, targetPos, length);
+		
+	}
+
+	public static void arrayAdd(double[][] target, double[][] h) {
+		for(int row=0;row<target.length;row++) {
+			for(int col=0;col<target[row].length;col++) {
+				target[row][col]+=h[row][col];
+			}
+		}
 		
 	}
 }

@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.Encog;
+import org.encog.EncogError;
 import org.encog.util.EngineArray;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
@@ -71,7 +74,12 @@ public class EncogReadHelper {
 	 * @param is The input stream.
 	 */
 	public EncogReadHelper(final InputStream is) {
-		this.reader = new BufferedReader(new InputStreamReader(is));
+		try {
+			this.reader = new BufferedReader(new InputStreamReader(
+				    is, Encog.DEFAULT_ENCODING));
+		} catch (UnsupportedEncodingException e) {
+			throw new EncogError(e);
+		}
 	}
 
 	/**

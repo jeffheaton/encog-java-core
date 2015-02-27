@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,8 +82,8 @@ public class Backpropagation extends Propagation implements Momentum,
 	 * The last delta values.
 	 */
 	private double[] lastDelta;
-
-
+	
+	
 	/**
 	 * Create a class to train using backpropagation. Use auto learn rate and
 	 * momentum. Use the CPU to train.
@@ -247,12 +247,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 */
 	@Override
 	public double updateWeight(final double[] gradients,
-			final double[] lastGradient, final int index, double dropoutRate) {
-		
-		if (dropoutRate > 0 && dropoutRandomSource.nextDouble() > dropoutRate) {
-			return 0;
-		};
-		
+			final double[] lastGradient, final int index) {
 		final double delta = (gradients[index] * this.learningRate)
 				+ (this.lastDelta[index] * this.momentum);
 		this.lastDelta[index] = delta;
@@ -260,7 +255,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	}
 
 	/**
-	 * Update a weight in a GPU-safe manner.
+	 * Update a weight.
 	 * 
 	 * @param gradients
 	 *            The gradients.
@@ -268,11 +263,12 @@ public class Backpropagation extends Propagation implements Momentum,
 	 *            The last gradients.
 	 * @param index
 	 *            The index.
+	 * @param dropoutRate
+	 * 			  The dropout rate.
 	 * @return The weight delta.
 	 */
-	/*
 	@Override
-	public double updateWeightOnGPU(final double[] gradients,
+	public double updateWeight(final double[] gradients,
 			final double[] lastGradient, final int index, double dropoutRate) {
 		
 		if (dropoutRate > 0 && dropoutRandomSource.nextDouble() > dropoutRate) {
@@ -283,10 +279,7 @@ public class Backpropagation extends Propagation implements Momentum,
 				+ (this.lastDelta[index] * this.momentum);
 		this.lastDelta[index] = delta;
 		return delta;
-	}
-	*/
-	
-	/**
+	}	/**
 	 * Perform training method specific init.
 	 */
 	public void initOthers() {

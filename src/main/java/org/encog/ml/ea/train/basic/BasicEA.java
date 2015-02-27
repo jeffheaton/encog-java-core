@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -298,9 +298,6 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 				}
 				return true;
 			} else {
-				if (isValidationMode()) {
-					throw new EncogError("Population overflow");
-				}
 				return false;
 			}
 		}
@@ -420,14 +417,19 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	 */
 	@Override
 	public double getError() {
+		// do we have a best genome, and does it have an error?
 		if (this.bestGenome != null) {
-			return this.bestGenome.getScore();
-		} else {
-			if (getScoreFunction().shouldMinimize()) {
-				return Double.POSITIVE_INFINITY;
-			} else {
-				return Double.NEGATIVE_INFINITY;
+			double err = this.bestGenome.getScore();
+			if( !Double.isNaN(err) ) {
+				return err;
 			}
+		} 
+		
+		// otherwise, assume the worst!
+		if (getScoreFunction().shouldMinimize()) {
+			return Double.POSITIVE_INFINITY;
+		} else {
+			return Double.NEGATIVE_INFINITY;
 		}
 	}
 
@@ -618,13 +620,6 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 
 		// validate, if requested
 		if (isValidationMode()) {
-			final int currentPopSize = this.newPopulation.size();
-			final int targetPopSize = getPopulation().getPopulationSize();
-			if (currentPopSize != targetPopSize) {
-				throw new EncogError("Population size of " + currentPopSize
-						+ " is outside of the target size of " + targetPopSize);
-			}
-
 			if (this.oldBestGenome != null
 					&& !this.newPopulation.contains(this.oldBestGenome)) {
 				throw new EncogError(
@@ -643,6 +638,9 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 		}
 
 		this.speciation.performSpeciation(this.newPopulation);
+		
+        // purge invalid genomes
+        this.population.purgeInvalidGenomes();
 	}
 
 	/**
@@ -706,7 +704,9 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 		// speciate
 		final List<Genome> genomes = getPopulation().flatten();
 		this.speciation.performSpeciation(genomes);
-
+		
+		// purge invalid genomes
+        this.population.purgeInvalidGenomes();
 	}
 
 	/**

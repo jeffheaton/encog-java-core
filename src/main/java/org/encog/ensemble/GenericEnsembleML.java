@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+
 package org.encog.ensemble;
 
 import org.encog.ensemble.data.EnsembleDataSet;
@@ -78,6 +79,22 @@ public class GenericEnsembleML implements EnsembleML {
 	}
 
 	@Override
+	public void train(double targetError) {
+		train(targetError, false);
+	}
+
+	@Override
+	public void train(double targetError, int maxIterations) {
+		train(targetError, maxIterations, false);
+	}
+
+	@Override
+	public void train(double targetError, boolean verbose) {
+		train(targetError, DEFAULT_MAX_ITERATIONS, verbose);
+		
+	}
+
+	@Override
 	public void setMl(MLMethod newMl) {
 		ml = (BasicNetwork) newMl;
 	}
@@ -105,11 +122,6 @@ public class GenericEnsembleML implements EnsembleML {
 	@Override
 	public int getOutputCount() {
 		return ml.getOutputCount();
-	}
-
-	@Override
-	public void train(double targetError) {
-		train(targetError, false);
 	}
 
 	public int winner(MLData output) {
@@ -140,16 +152,4 @@ public class GenericEnsembleML implements EnsembleML {
 	public double getError(EnsembleDataSet testset) {
 		return ml.calculateError(testset);
 	}
-
-	@Override
-	public void train(double targetError, int maxIterations) {
-		train(targetError, maxIterations, false);
-	}
-
-	@Override
-	public void train(double targetError, boolean verbose) {
-		train(targetError, DEFAULT_MAX_ITERATIONS, verbose);
-		
-	}
-
 }

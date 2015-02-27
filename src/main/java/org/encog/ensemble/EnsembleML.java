@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+
 package org.encog.ensemble;
 
 import org.encog.ensemble.data.EnsembleDataSet;
@@ -59,6 +60,12 @@ public interface EnsembleML extends MLMethod, MLClassification, MLRegression {
 
 	/**
 	 * Train the ML to a certain accuracy.
+	 * @param targetError The target error.
+	 */
+	public void train(double targetError);
+
+	/**
+	 * Train the ML to a certain accuracy.
 	 * @param targetError Target error.
 	 * @param verbose Verbose mode.
 	 * @param maxIterations Stop after this number of iterations
@@ -80,12 +87,6 @@ public interface EnsembleML extends MLMethod, MLClassification, MLRegression {
 	 * @param verbose Verbose mode.
 	 */
 	public void train(double targetError, boolean verbose);
-
-	/**
-	 * Train the ML to a certain accuracy.
-	 * @param targetError Target error.
-	 */
-	public void train(double targetError);
 
 	/**
 	 * Get the error for this ML on the dataset

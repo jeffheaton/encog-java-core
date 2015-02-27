@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -414,7 +414,7 @@ public class AnalystWizard {
 				throw new AnalystError(
 						"Can't determine target field automatically, "
 								+ "please specify one.\nThis can also happen if you "
-								+ "specified the wrong file format.");
+								+ "specified the wrong file format.\nNote: If your file has no headers, specify \"field:1\" - \"field:n\".");
 			}
 		} else {
 			this.targetField = this.script
@@ -438,6 +438,8 @@ public class AnalystWizard {
 				final int countPer = field.getMinClassCount();
 				this.script.getProperties().setProperty(
 						ScriptProperties.BALANCE_CONFIG_COUNT_PER, countPer);
+			} else {
+				throw new AnalystError("Balance currently may only be used on a nominal/class field, not a numeric field.");
 			}
 		}
 
@@ -457,8 +459,17 @@ public class AnalystWizard {
 				}
 			}
 
+			/* If we found the output field, then flip its status to output */
 			if (af != null) {
 				af.setOutput(true);
+				/* However, if we are including the target field in the input, for time series,
+				 * then we must create an input field for it.
+				 */
+				if( this.includeTargetField ) {
+					AnalystField af2 = new AnalystField(af);
+					af.setOutput(false);
+					this.script.getNormalize().getNormalizedFields().add(af2);
+				}
 			}
 		}
 
@@ -489,8 +500,7 @@ public class AnalystWizard {
 		// generate the inputs for the new list
 		for (final AnalystField field : oldList) {
 			if (!field.isIgnored()) {
-
-				if (this.includeTargetField || field.isInput()) {
+				if (field.isInput()) {
 					for (int i = 0; i < this.lagWindowSize; i++) {
 						final AnalystField newField = new AnalystField(field);
 						newField.setTimeSlice(-i);
@@ -539,7 +549,12 @@ public class AnalystWizard {
 	 */
 	private void generateFeedForward(final int inputColumns,
 			final int outputColumns) {
-		final int hidden = (int) ((inputColumns*Math.max(this.lagWindowSize,1)) * 1.5);
+		int hidden = (int) ((inputColumns*Math.max(this.lagWindowSize,1)) * 1.5);
+		if( hidden<0 ) {
+			// Usual cause of this is zero inputs, which is in turn caused by not including the predicted field in the input.
+			throw new AnalystError("Can't have zero hidden neurons, make sure you have both input fields defined.\n "
+					+ "You might need to include the predicted field in the input.");
+		}
 
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_TYPE,
@@ -556,7 +571,7 @@ public class AnalystWizard {
 		}
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
-				"rprop");
+				MLTrainFactory.TYPE_RPROP);
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_TRAIN_TARGET_ERROR, this.maxError);
 	}
@@ -968,10 +983,10 @@ public class AnalystWizard {
 
 		if (outputColumns > 1) {
 			this.script.getProperties().setProperty(
-					ScriptProperties.ML_TRAIN_TYPE, "rprop");
+					ScriptProperties.ML_TRAIN_TYPE, MLTrainFactory.TYPE_RPROP);
 		} else {
 			this.script.getProperties().setProperty(
-					ScriptProperties.ML_TRAIN_TYPE, "svd");
+					ScriptProperties.ML_TRAIN_TYPE, MLTrainFactory.TYPE_SVD);
 		}
 
 		this.script.getProperties().setProperty(
@@ -1173,7 +1188,15 @@ public class AnalystWizard {
 			arch.append("R");
 		}
 		arch.append("(kernel=gaussian)->");
-		arch.append(this.targetField.getClasses().size());
+		
+		// If we are using regression, then output size is output columns.
+		if( this.getGoal()==AnalystGoal.Classification) {
+			arch.append(this.targetField.getClasses().size());
+		} else if( this.getGoal()==AnalystGoal.Regression)  {
+			arch.append(outputColumns);
+		} else {
+			throw new AnalystError("Unsupported goal type for PNN: " + this.getGoal().toString() );
+		}
 
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_TYPE, MLMethodFactory.TYPE_PNN);

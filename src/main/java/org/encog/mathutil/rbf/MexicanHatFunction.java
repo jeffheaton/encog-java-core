@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,12 +98,13 @@ public class MexicanHatFunction extends BasicRBF {
 	public final double calculate(final double[] x) {
 
 		final double[] center = getCenters();
+		final double width = getWidth();
 
 		// calculate the "norm", but don't take square root
 		// don't square because we are just going to square it
 		double norm = 0;
 		for (int i = 0; i < center.length; i++) {
-			norm += Math.pow(x[i] - center[i], 2);
+			norm += Math.pow(x[i] - center[i], 2)/ (2.0 * width * width);
 		}
 
 		// calculate the value

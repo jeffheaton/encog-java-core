@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,12 +58,12 @@ import org.encog.mathutil.matrices.Matrix;
 /**
  * Singular Value Decomposition.
  * <P>
- * For an m-by-n matrix A with m >= n, the singular value decomposition is an
+ * For an m-by-n matrix A with m ≥ n, the singular value decomposition is an
  * m-by-n orthogonal matrix U, an n-by-n diagonal matrix S, and an n-by-n
  * orthogonal matrix V so that A = U*S*V'.
  * <P>
- * The singular values, sigma[k] = S[k][k], are ordered so that sigma[0] >=
- * sigma[1] >= ... >= sigma[n-1].
+ * The singular values, sigma[k] = S[k][k], are ordered so that sigma[0] ≥
+ * sigma[1] ≥ ... ≥ sigma[n-1].
  * <P>
  * The singular value decompostion always exists, so the constructor will never
  * fail. The matrix condition number and the effective numerical rank can be

@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -193,8 +193,8 @@ public class FunctionFactory implements Serializable {
 	}
 
 	/**
-	 * This method is used when parsing an expression. Consider x>=2. The parser
-	 * first sees the > symbol. But it must also consider the =. So we first
+	 * This method is used when parsing an expression. Consider x≥2. The parser
+	 * first sees the &gt; symbol. But it must also consider the =. So we first
 	 * look for a 2-char operator, in this case there is one.
 	 * 
 	 * @param ch1

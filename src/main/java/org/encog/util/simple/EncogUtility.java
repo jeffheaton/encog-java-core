@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,7 @@ import org.encog.ml.data.buffer.MemoryDataLoader;
 import org.encog.ml.data.buffer.codec.CSVDataCODEC;
 import org.encog.ml.data.buffer.codec.DataSetCODEC;
 import org.encog.ml.data.specific.CSVNeuralDataSet;
+import org.encog.ml.data.versatile.MatrixMLDataSet;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.training.SVMTrain;
 import org.encog.ml.train.MLTrain;
@@ -66,6 +67,81 @@ import org.encog.util.logging.EncogLogging;
  * General utility class for Encog. Provides for some common Encog procedures.
  */
 public final class EncogUtility {
+	
+	static public class FalsePositiveReport {
+		private final int truePositive;
+		private final int trueNegative;
+		private final int negativeCount;
+		private final int positiveCount;
+		
+		public int getCount() {
+			return this.negativeCount + this.positiveCount;
+		}
+
+		public int getTruePositive() {
+			return truePositive;
+		}
+
+
+
+		public int getTrueNegative() {
+			return trueNegative;
+		}
+
+
+
+		public int getNegativeCount() {
+			return negativeCount;
+		}
+
+
+
+		public int getPositiveCount() {
+			return positiveCount;
+		}
+
+
+
+		public FalsePositiveReport(int truePositive,
+				int trueNegative, int positiveCount, int negativeCount) {
+			super();
+			this.truePositive = truePositive;
+			this.trueNegative = trueNegative;
+			this.positiveCount = positiveCount;
+			this.negativeCount = negativeCount;
+			
+		}
+		
+		public String toString() {
+			StringBuilder result = new StringBuilder();
+			result.append("(True Positive Correct=");
+			result.append(this.truePositive);
+			result.append("/");
+			result.append(this.positiveCount);
+			result.append("(");
+			result.append(Format.formatPercent(((double)this.truePositive)/this.positiveCount));
+			result.append(")");
+			result.append(",True Negative Correct=");
+			result.append(this.trueNegative);
+			result.append("/");
+			result.append(this.trueNegative);
+			result.append("(");
+			result.append(Format.formatPercent(((double)this.trueNegative)/this.negativeCount));
+			result.append(")");
+			result.append(",Total Correct=");
+			result.append(this.truePositive+this.trueNegative);
+			result.append("/");
+			result.append(this.positiveCount+this.negativeCount);
+			result.append("(");
+			result.append(Format.formatPercent(((double)this.truePositive+this.trueNegative)/getCount()));
+			result.append(")");
+			result.append(")");
+			
+			
+			return result.toString();
+		}
+		
+	}
 
 	/**
 	 * Convert a CSV file to a binary training file.
@@ -461,5 +537,101 @@ public final class EncogUtility {
 		BufferedMLDataSet binary = new BufferedMLDataSet(f);
 		binary.load(data);
 		data.close();		
+	}
+
+	public static void explainErrorMSE(MLRegression method,
+			MatrixMLDataSet training) {
+		StringBuilder line = new StringBuilder();
+		double sum = 0;
+		int count = 0;
+		int itemNum = 0;
+		
+		for (final MLDataPair pair : training) {
+			final MLData output = method.compute(pair.getInput());
+			double dsum = 0;
+			for(int i=0;i<output.size();i++) { 
+				double diff = output.getData()[i] - pair.getIdeal().getData(i);
+				dsum+=diff*diff;
+				count++;
+			}
+			sum+=dsum;
+			
+			line.setLength(0);
+			line.append("Item #");
+			line.append(itemNum++);
+			line.append(", Actual=");
+			line.append(EncogUtility.formatNeuralData(output));
+			line.append(", Ideal=");
+			line.append(EncogUtility.formatNeuralData(pair.getIdeal()));
+			line.append(", Delta=");
+			line.append(Format.formatDouble(dsum, 4));
+			line.append(", Count=");
+			line.append(count);
+			line.append(", MSE=");
+			line.append(Format.formatDouble(sum/count, 4));
+			System.out.println(line.toString());
+		}
+	}
+	
+	public static void explainErrorRMS(MLRegression method,
+			MatrixMLDataSet training) {
+		StringBuilder line = new StringBuilder();
+		double sum = 0;
+		int count = 0;
+		int itemNum = 0;
+		
+		for (final MLDataPair pair : training) {
+			final MLData output = method.compute(pair.getInput());
+			double dsum = 0;
+			for(int i=0;i<output.size();i++) { 
+				double diff = output.getData()[i] - pair.getIdeal().getData(i);
+				dsum+=diff*diff;
+				count++;
+			}
+			sum+=dsum;
+			
+			line.setLength(0);
+			line.append("Item #");
+			line.append(itemNum++);
+			line.append(", Actual=");
+			line.append(EncogUtility.formatNeuralData(output));
+			line.append(", Ideal=");
+			line.append(EncogUtility.formatNeuralData(pair.getIdeal()));
+			line.append(", Delta=");
+			line.append(Format.formatDouble(dsum, 4));
+			line.append(", Count=");
+			line.append(count);
+			line.append(", RMS=");
+			line.append(Format.formatDouble(Math.sqrt(sum/count), 4));
+			System.out.println(line.toString());
+		}
+	}
+
+	public static FalsePositiveReport calculatePositiveNegative(MLRegression method,
+			MatrixMLDataSet data) {
+		int truePositive = 0;
+		int trueNegative = 0; 
+		int negativeCount = 0; 
+		int positiveCount = 0;
+		
+		for(MLDataPair pair : data ) {
+			MLData actual = method.compute(pair.getInput());
+			boolean actualPositive = actual.getData(0)>actual.getData(1);
+			boolean idealPositive = pair.getIdeal().getData(0)>pair.getIdeal().getData(1);
+			
+			if( idealPositive ) {
+				if( actualPositive ) {
+					truePositive++;
+				}
+				positiveCount++;
+			} else {
+				if( !actualPositive ) { 
+					trueNegative++;
+				}
+				negativeCount++;
+			}
+			
+		}
+		return new FalsePositiveReport(truePositive, trueNegative, positiveCount, negativeCount);
 	}
 }

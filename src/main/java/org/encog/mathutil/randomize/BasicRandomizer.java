@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ package org.encog.mathutil.randomize;
 import java.util.Random;
 
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.randomize.generate.GenerateRandom;
+import org.encog.mathutil.randomize.generate.MersenneTwisterGenerateRandom;
 import org.encog.ml.MLEncodable;
 import org.encog.ml.MLMethod;
 import org.encog.neural.networks.BasicNetwork;
@@ -41,21 +43,21 @@ public abstract class BasicRandomizer implements Randomizer {
 	/**
 	 * The random number generator.
 	 */
-	private Random random;
+	private GenerateRandom random;
 
 	/**
 	 * Construct a random number generator with a random(current time) seed. If
 	 * you want to set your own seed, just call "getRandom().setSeed".
 	 */
 	public BasicRandomizer() {
-		this.random = new Random(System.nanoTime());
+		this.random = new MersenneTwisterGenerateRandom(System.nanoTime());
 	}
 
 	/**
 	 * @return The random number generator in use. Use this to set the seed, if
 	 *         desired.
 	 */
-	public final Random getRandom() {
+	public final GenerateRandom getRandom() {
 		return this.random;
 	}
 
@@ -196,12 +198,7 @@ public abstract class BasicRandomizer implements Randomizer {
 	 * @param theRandom
 	 *            the random to set
 	 */
-	public final void setRandom(final Random theRandom) {
+	public final void setRandom(final GenerateRandom theRandom) {
 		this.random = theRandom;
-	}
-	
-	
-	public final void setSeed(long seed) {
-		this.random.setSeed(seed);
 	}
 }

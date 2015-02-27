@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,9 +92,9 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 			final int hidden1, final int output, final ActivationFunction af) {
 
 		final FreeformNetwork network = new FreeformNetwork();
-		final FreeformLayer inputLayer = network.createInputLayer(2);
-		final FreeformLayer hiddenLayer1 = network.createLayer(3);
-		final FreeformLayer outputLayer = network.createOutputLayer(1);
+		final FreeformLayer inputLayer = network.createInputLayer(input);
+		final FreeformLayer hiddenLayer1 = network.createLayer(hidden1);
+		final FreeformLayer outputLayer = network.createOutputLayer(output);
 
 		network.connectLayers(inputLayer, hiddenLayer1, af, 1.0, false);
 		network.connectLayers(hiddenLayer1, outputLayer, af, 1.0, false);

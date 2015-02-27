@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.2 - Java Version
+ * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2013 Heaton Research, Inc.
+ * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -218,6 +218,25 @@ public class BasicFreeformNeuron implements FreeformNeuron, Serializable {
 	public void updateContext() {
 		// nothing to do for a non-context neuron
 
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[BasicFreeformNeuron: ");
+		result.append("inputCount=");
+		if( this.inputSummation==null ) {
+			result.append("null");
+		} else {
+			result.append(this.inputSummation.list().size());
+		}
+		result.append(",outputCount=");
+		result.append(this.outputConnections.size());
+		result.append("]");
+		return result.toString();
 	}
 
 }
