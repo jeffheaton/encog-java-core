@@ -23,6 +23,8 @@
  */
 package org.encog.neural.networks.training.propagation;
 
+import java.util.Random;
+
 import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationSigmoid;
@@ -137,6 +139,8 @@ public abstract class Propagation extends BasicTraining implements Train,
 	 * the batch size for batch training.
 	 */
 	private int batchSize = 0;
+
+	private boolean finalized = false;
 
 	/**
 	 * Construct a propagation object.
@@ -597,6 +601,4 @@ public abstract class Propagation extends BasicTraining implements Train,
 	public void setBatchSize(int theBatchSize) {
 		this.batchSize = theBatchSize;
 	}
->>>>>>> refs/remotes/choose_remote_name/master
-
 }
