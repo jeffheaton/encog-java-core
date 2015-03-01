@@ -32,6 +32,7 @@ import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.EnsembleTypes;
 import org.encog.ensemble.EnsembleTypes.ProblemType;
+import org.encog.ensemble.EnsembleWeightedAggregator;
 import org.encog.ensemble.GenericEnsembleML;
 import org.encog.ensemble.data.EnsembleDataSet;
 import org.encog.ensemble.data.factories.ResamplingDataSetFactory;

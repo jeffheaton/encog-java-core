@@ -33,6 +33,7 @@ import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.EnsembleTypes;
 import org.encog.ensemble.EnsembleTypes.ProblemType;
+import org.encog.ensemble.data.factories.ResamplingDataSetFactory;
 import org.encog.ensemble.data.factories.WrappingNonResamplingDataSetFactory;
 
 public class Stacking extends Ensemble {

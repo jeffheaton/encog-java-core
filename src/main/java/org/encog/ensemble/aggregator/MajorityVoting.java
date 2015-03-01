@@ -43,7 +43,7 @@ public class MajorityVoting implements EnsembleAggregator {
 		}
 
 		acc = (BasicMLData) acc.times(1.0 / outputs.size());
-		return threshold(acc, threshold, lowValue, highValue);
+		return acc.threshold(threshold, lowValue, highValue);
 	}
 	
 	@Override
