@@ -29,15 +29,18 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.training.propagation.resilient.RPROPType;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 
 public class ResilientPropagationFactory implements EnsembleTrainFactory {
 
 	private double dropoutRate = 0;
+	private RPROPType type;
 	
 	@Override
 	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData) {
 		ResilientPropagation rp = new ResilientPropagation((BasicNetwork) mlMethod, trainingData);
+		rp.setRPROPType(this.type);
 		rp.setDroupoutRate(dropoutRate);
 		return (MLTrain) rp;
 	}
@@ -55,6 +58,14 @@ public class ResilientPropagationFactory implements EnsembleTrainFactory {
 	@Override
 	public void setDropoutRate(double rate) {
 		dropoutRate = rate;
+	}
+
+	public RPROPType getRPROPType() {
+		return type;
+	}
+
+	public void setRPROPType(RPROPType type) {
+		this.type = type;
 	}
 
 }
