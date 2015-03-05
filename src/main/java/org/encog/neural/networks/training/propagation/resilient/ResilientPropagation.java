@@ -93,7 +93,7 @@ public class ResilientPropagation extends Propagation {
 	 */
 	private final double maxStep;
 	
-	private RPROPType rpropType = RPROPType.RPROPp;
+	private static RPROPType rpropType = RPROPType.RPROPp;
 	
 	private double[] lastWeightChange;
 	
