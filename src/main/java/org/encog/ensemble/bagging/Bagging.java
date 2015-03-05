@@ -32,15 +32,23 @@ import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.EnsembleTypes;
 import org.encog.ensemble.EnsembleTypes.ProblemType;
+import org.encog.ensemble.data.factories.EnsembleDataSetFactory;
 import org.encog.ensemble.data.factories.ResamplingDataSetFactory;
 
 public class Bagging extends Ensemble {
 
 	private int splits;
 
-	public Bagging(int splits, int dataSetSize, EnsembleMLMethodFactory mlFactory, EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator)
+	public Bagging(int splits, int dataSetSize, EnsembleMLMethodFactory mlFactory,
+			EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator)
 	{
-		this.dataSetFactory = new ResamplingDataSetFactory(dataSetSize);
+		this(splits,dataSetSize,mlFactory,trainFactory,aggregator,new ResamplingDataSetFactory(dataSetSize));
+	}
+	
+	public Bagging(int splits, int dataSetSize, EnsembleMLMethodFactory mlFactory, 
+			EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator, EnsembleDataSetFactory edf)
+	{
+		this.dataSetFactory = edf;
 		this.splits = splits;
 		this.mlFactory = mlFactory;
 		this.trainFactory = trainFactory;
@@ -48,7 +56,7 @@ public class Bagging extends Ensemble {
 		this.aggregator = aggregator;
 		initMembers();
 	}
-
+	
 	@Override
 	public void initMembers()
 	{
