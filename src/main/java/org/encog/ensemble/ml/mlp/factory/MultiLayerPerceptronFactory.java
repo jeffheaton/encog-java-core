@@ -23,7 +23,7 @@
  */
 package org.encog.ensemble.ml.mlp.factory;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ensemble.EnsembleMLMethodFactory;
@@ -33,29 +33,58 @@ import org.encog.neural.networks.layers.BasicLayer;
 
 public class MultiLayerPerceptronFactory implements EnsembleMLMethodFactory {
 
-	Collection<Integer> layers;
+	List<Integer> layers;
+	List<Double> dropoutRates;
 	ActivationFunction activation;
 	ActivationFunction lastLayerActivation;
 	int sizeMultiplier = 1;
 
-	public void setParameters(Collection<Integer> layers, ActivationFunction activation, ActivationFunction lastLayerActivation){
+	public void setParameters(List<Integer> layers, ActivationFunction activation,
+			ActivationFunction lastLayerActivation, List<Double> dropoutRates) {
 		this.layers=layers;
 		this.activation=activation;
 		this.lastLayerActivation=lastLayerActivation;
+		this.dropoutRates = dropoutRates;
 	}
 
-	public void setParameters(Collection<Integer> layers, ActivationFunction activation){
-		setParameters(layers,activation,activation);
+	public void setParameters(List<Integer> layers, ActivationFunction activation,
+			ActivationFunction lastLayerActivation){
+		setParameters(layers,activation,lastLayerActivation,null);
+	}
+	
+	public void setParameters(List<Integer> layers, ActivationFunction activation){
+		setParameters(layers,activation,activation, null);
+	}
+
+	public void setParameters(List<Integer> layers, ActivationFunction activation, List<Double> dropoutRates){
+		setParameters(layers,activation,activation, dropoutRates);
 	}
 
 	@Override
 	public MLMethod createML(int inputs, int outputs) {
 		BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(activation,false,inputs)); //(inputs));
-		for (Integer layerSize: layers)
-			network.addLayer(new BasicLayer(activation,true,layerSize * sizeMultiplier));
-		network.addLayer(new BasicLayer(lastLayerActivation,true,outputs));
-		network.getStructure().finalizeStructure();
+		if(this.dropoutRates != null)
+		{
+			network.addLayer(new BasicLayer(activation,false,inputs, dropoutRates.get(0))); //(inputs));
+		} else {
+			network.addLayer(new BasicLayer(activation,false,inputs)); //(inputs));			
+		}
+		for (int i = 0; i < layers.size(); i++)
+		{
+			if(this.dropoutRates != null)
+			{
+				network.addLayer(new BasicLayer(activation,true,layers.get(i) * sizeMultiplier, dropoutRates.get(i + 1)));				
+			} else {
+				network.addLayer(new BasicLayer(activation,true,layers.get(i) * sizeMultiplier));				
+			}
+		}
+		
+		if(dropoutRates != null) {
+			network.addLayer(new BasicLayer(lastLayerActivation,true,outputs, dropoutRates.get(dropoutRates.size() - 1)));			
+		} else {
+			network.addLayer(new BasicLayer(lastLayerActivation,true,outputs));
+		}
+		network.getStructure().finalizeStructure(dropoutRates != null);
 		network.reset();
 		return network;
 	}

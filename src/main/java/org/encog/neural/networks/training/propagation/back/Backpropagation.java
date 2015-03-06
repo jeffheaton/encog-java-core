@@ -23,8 +23,6 @@
  */
 package org.encog.neural.networks.training.propagation.back;
 
-import java.util.Random;
-
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.LearningRate;
@@ -271,7 +269,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	public double updateWeight(final double[] gradients,
 			final double[] lastGradient, final int index, double dropoutRate) {
 		
-		if (dropoutRate > 0 && dropoutRandomSource.nextDouble() > dropoutRate) {
+		if (dropoutRate > 0 && dropoutRandomSource.nextDouble() < dropoutRate) {
 			return 0;
 		};
 		

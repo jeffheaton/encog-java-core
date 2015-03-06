@@ -23,6 +23,8 @@
  */
 package org.encog.neural.networks.training.propagation;
 
+import java.util.Random;
+
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.ml.data.MLDataPair;
@@ -38,6 +40,11 @@ import org.encog.util.concurrency.EngineTask;
  */
 public class GradientWorker implements EngineTask {
 
+	/**
+	 * Used to generate randomness for dropout
+	 */
+	protected Random dropoutRandomSource = new Random();
+	
 	/**
 	 * The network to train.
 	 */
@@ -133,6 +140,8 @@ public class GradientWorker implements EngineTask {
 	 */
 	private final ErrorFunction errorFunction;
 
+	private double[] layerDropoutRates;
+
 	/**
 	 * Construct a gradient worker.
 	 * 
@@ -167,6 +176,7 @@ public class GradientWorker implements EngineTask {
 		this.weights = network.getWeights();
 		this.layerIndex = network.getLayerIndex();
 		this.layerCounts = network.getLayerCounts();
+		this.layerDropoutRates = network.getLayerDropoutRates();
 		this.weightIndex = network.getWeightIndex();
 		this.layerOutput = network.getLayerOutput();
 		this.layerSums = network.getLayerSums();
@@ -229,6 +239,10 @@ public class GradientWorker implements EngineTask {
 		final int toLayerIndex = this.layerIndex[currentLevel];
 		final int fromLayerSize = this.layerCounts[currentLevel + 1];
 		final int toLayerSize = this.layerFeedCounts[currentLevel];
+		double dropoutRate = 0;
+		if(this.layerDropoutRates.length > currentLevel && this.layerDropoutRates[currentLevel] != 0) {
+			dropoutRate = this.layerDropoutRates[currentLevel];
+		}
 
 		final int index = this.weightIndex[currentLevel];
 		final ActivationFunction activation = this.network
@@ -249,14 +263,17 @@ public class GradientWorker implements EngineTask {
 
 			int wi = index + y;
 			final int loopEnd = toLayerIndex+toLayerSize;
-			for (int xi = toLayerIndex; xi < loopEnd; xi++, wi += fromLayerSize) {
-				gradients[wi] += output * layerDelta[xi];
-				sum += weights[wi] * layerDelta[xi];
+			if(dropoutRate == 0 || dropoutRandomSource.nextDouble() > dropoutRate)
+			{
+				for (int xi = toLayerIndex; xi < loopEnd; xi++, wi += fromLayerSize) {
+					gradients[wi] += output * layerDelta[xi];
+					sum += weights[wi] * layerDelta[xi];
+				}
+				layerDelta[yi] = sum
+						* (activation.derivativeFunction(layerSums[yi], layerOutput[yi])+currentFlatSpot);
+			} else {
+				layerDelta[yi] = 0;
 			}
-
-			layerDelta[yi] = sum
-					* (activation.derivativeFunction(layerSums[yi], layerOutput[yi])+currentFlatSpot);
-
 			yi++;
 		}
 	}
