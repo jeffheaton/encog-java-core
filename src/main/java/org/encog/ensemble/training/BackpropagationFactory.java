@@ -36,6 +36,12 @@ public class BackpropagationFactory implements EnsembleTrainFactory {
 	
 	@Override
 	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData) {
+		return this.getTraining(mlMethod, trainingData, this.dropoutRate);
+
+	}
+
+	@Override
+	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData, double dropoutRate) {
 		Backpropagation bp = new Backpropagation((BasicNetwork) mlMethod, trainingData);
 		bp.setDroupoutRate(dropoutRate);
 		return (MLTrain) bp;

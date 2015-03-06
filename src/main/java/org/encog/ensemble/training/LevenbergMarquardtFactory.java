@@ -33,8 +33,15 @@ import org.encog.neural.networks.training.lma.LevenbergMarquardtTraining;
 
 public class LevenbergMarquardtFactory implements EnsembleTrainFactory {
 
+	
 	@Override
 	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData) {
+		return this.getTraining(mlMethod, trainingData, 0);
+
+	}
+	
+	@Override
+	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData, double dropoutRate) {
 		return (MLTrain) new LevenbergMarquardtTraining((BasicNetwork) mlMethod, trainingData);
 	}
 

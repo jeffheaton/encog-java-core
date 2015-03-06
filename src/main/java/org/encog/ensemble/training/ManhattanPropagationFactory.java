@@ -46,6 +46,12 @@ public class ManhattanPropagationFactory implements EnsembleTrainFactory {
 
 	@Override
 	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData) {
+		return this.getTraining(mlMethod, trainingData, this.dropoutRate);
+
+	}
+	
+	@Override
+	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData, double dropoutRate) {
 		ManhattanPropagation mp = new ManhattanPropagation((BasicNetwork) mlMethod, trainingData, 0.01);
 		mp.setDroupoutRate(dropoutRate);
 		return (MLTrain) mp;

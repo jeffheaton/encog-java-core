@@ -41,10 +41,17 @@ public class ResilientPropagationFactory implements EnsembleTrainFactory {
 	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData) {
 		ResilientPropagation rp = new ResilientPropagation((BasicNetwork) mlMethod, trainingData);
 		rp.setRPROPType(this.type);
+		rp.setDroupoutRate(this.dropoutRate);
+		return (MLTrain) rp;
+	}
+	
+	@Override
+	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData, double dropoutRate) {
+		ResilientPropagation rp = new ResilientPropagation((BasicNetwork) mlMethod, trainingData);
+		rp.setRPROPType(this.type);
 		rp.setDroupoutRate(dropoutRate);
 		return (MLTrain) rp;
 	}
-
 	@Override
 	public String getLabel() {
 		String l = "resprop";
