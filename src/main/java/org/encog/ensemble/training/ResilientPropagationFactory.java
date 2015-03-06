@@ -35,7 +35,7 @@ import org.encog.neural.networks.training.propagation.resilient.ResilientPropaga
 public class ResilientPropagationFactory implements EnsembleTrainFactory {
 
 	private double dropoutRate = 0;
-	private RPROPType type;
+	private RPROPType type = RPROPType.RPROPp;
 	
 	@Override
 	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData) {
