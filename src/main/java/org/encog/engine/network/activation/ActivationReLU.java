@@ -42,7 +42,7 @@ public class ActivationReLU implements ActivationFunction {
 	/**
 	 * The ramp low parameter.
 	 */
-	public static final int PARAM_RELU_LOW = 1;
+	public static final int PARAM_RELU_LOW = 0;
 
 	/**
 	 * The serial ID.
@@ -83,7 +83,7 @@ public class ActivationReLU implements ActivationFunction {
 	public final void activationFunction(final double[] x, final int start,
 			final int size) {
 		for (int i = start; i < start + size; i++) {
-			if (x[i] < this.params[ActivationReLU.PARAM_RELU_LOW_THRESHOLD]) {
+			if (x[i] <= this.params[ActivationReLU.PARAM_RELU_LOW_THRESHOLD]) {
 				x[i] = this.params[ActivationReLU.PARAM_RELU_LOW];
 			}
 		}
@@ -107,7 +107,7 @@ public class ActivationReLU implements ActivationFunction {
 	 */
 	@Override
 	public final double derivativeFunction(final double b, final double a) {
-		if(a <= 0)
+		if(a <= this.params[ActivationReLU.PARAM_RELU_LOW_THRESHOLD])
 		{
 			return 0;
 		}
