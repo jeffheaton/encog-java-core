@@ -35,7 +35,7 @@ public class TestRGBDownsample {
 	public void testSameSize() {
 		Image image = new BufferedImage(320,200,BufferedImage.TYPE_INT_RGB);
 		RGBDownsample ds = new RGBDownsample();
-		double[] d = ds.downSample(image, 320, 200);
+		double[] d = ds.downSample(image, 200, 320);
 		Assert.assertEquals(192000, d.length);
 	}
 	
