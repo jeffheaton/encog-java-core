@@ -67,7 +67,7 @@ public class ActivationSoftMax implements ActivationFunction {
 			 * on very large numbers, just set it to something so we can get
 			 * zeroes out of the activation
 			 */
-			sum = 0.000_000_000_001;
+			sum = 0.000000000001;
 		}
 		for (int i = start; i < start + size; i++) {
 			x[i] = x[i] / sum;
