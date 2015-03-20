@@ -37,29 +37,39 @@ public class MultiLayerPerceptronFactory implements EnsembleMLMethodFactory {
 	List<Double> dropoutRates;
 	ActivationFunction activation;
 	ActivationFunction lastLayerActivation;
+	ActivationFunction firstLayerActivation;
 	int sizeMultiplier = 1;
 
-	public void setParameters(List<Integer> layers, ActivationFunction activation,
+	public void setParameters(List<Integer> layers, ActivationFunction firstLayerActivation, ActivationFunction activation,
 			ActivationFunction lastLayerActivation, List<Double> dropoutRates) {
 		this.layers=layers;
 		this.activation=activation;
+		this.firstLayerActivation=firstLayerActivation;
 		this.lastLayerActivation=lastLayerActivation;
 		this.dropoutRates = dropoutRates;
 	}
 
-	public void setParameters(List<Integer> layers, ActivationFunction activation,
+	public void setParameters(List<Integer> layers, ActivationFunction firstLayerActivation, ActivationFunction activation,
 			ActivationFunction lastLayerActivation){
-		setParameters(layers,activation,lastLayerActivation,null);
+		setParameters(layers,firstLayerActivation,activation,lastLayerActivation,null);
 	}
 	
-	public void setParameters(List<Integer> layers, ActivationFunction activation){
-		setParameters(layers,activation,activation, null);
+	public void setParameters(List<Integer> layers, ActivationFunction firstLayerActivation, ActivationFunction activation){
+		setParameters(layers,firstLayerActivation,activation,activation, null);
+	}
+
+	public void setParameters(List<Integer> layers, ActivationFunction firstLayerActivation, ActivationFunction activation, List<Double> dropoutRates){
+		setParameters(layers,firstLayerActivation,activation,activation, dropoutRates);
 	}
 
 	public void setParameters(List<Integer> layers, ActivationFunction activation, List<Double> dropoutRates){
-		setParameters(layers,activation,activation, dropoutRates);
+		setParameters(layers,activation,activation,activation, dropoutRates);
 	}
-
+	
+	public void setParameters(List<Integer> layers, ActivationFunction activation){
+		setParameters(layers,activation,activation,activation, null);
+	}
+	
 	@Override
 	public MLMethod createML(int inputs, int outputs) {
 		BasicNetwork network = new BasicNetwork();
@@ -67,7 +77,7 @@ public class MultiLayerPerceptronFactory implements EnsembleMLMethodFactory {
 		{
 			network.addLayer(new BasicLayer(activation,false,inputs, dropoutRates.get(0))); //(inputs));
 		} else {
-			network.addLayer(new BasicLayer(activation,false,inputs)); //(inputs));			
+			network.addLayer(new BasicLayer(activation,false,inputs)); //(inputs));
 		}
 		for (int i = 0; i < layers.size(); i++)
 		{
