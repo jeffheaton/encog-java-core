@@ -51,5 +51,10 @@ public enum RPROPType {
 	/**
 	 * iRPROP- : New RPROP without weight back tracking. 
 	 */
-	iRPROPm
+	iRPROPm,
+	
+	/**
+	 * ARPROP : Non-linear Jacobi RPROP.
+	 */
+	ARPROP
 }

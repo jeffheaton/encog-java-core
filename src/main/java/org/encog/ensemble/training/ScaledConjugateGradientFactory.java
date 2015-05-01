@@ -37,6 +37,12 @@ public class ScaledConjugateGradientFactory implements EnsembleTrainFactory {
 	
 	@Override
 	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData) {
+		return this.getTraining(mlMethod, trainingData, this.dropoutRate);
+
+	}
+
+	@Override
+	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData, double dropoutRate) {
 		ScaledConjugateGradient scg = new ScaledConjugateGradient((BasicNetwork) mlMethod, trainingData);
 		scg.setDroupoutRate(dropoutRate);
 		return (MLTrain) scg;

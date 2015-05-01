@@ -46,6 +46,11 @@ public class FlatLayer {
 	 * The bias activation, usually 1 for bias or 0 for no bias.
 	 */
 	private double biasActivation;
+	
+	/**
+	 * The dropout rate
+	 */
+	private double dropoutRate;
 
 	/**
 	 * The layer that feeds this layer's context.
@@ -71,10 +76,15 @@ public class FlatLayer {
 	 */
 	public FlatLayer(final ActivationFunction activation, final int count,
 			final double biasActivation) {
+		this(activation,count,biasActivation,0);
+	}
+	public FlatLayer(final ActivationFunction activation, final int count,
+			final double biasActivation, double dropoutRate) {
 		this.activation = activation;
 		this.count = count;
 		this.biasActivation = biasActivation;
 		this.contextFedBy = null;
+		this.dropoutRate = dropoutRate;
 	}
 
 	/**
@@ -195,6 +205,14 @@ public class FlatLayer {
 		}
 		result.append("]");
 		return result.toString();
+	}
+
+	public double getDropoutRate() {
+		return dropoutRate;
+	}
+
+	public void setDropoutRate(double dropoutRate) {
+		this.dropoutRate = dropoutRate;
 	}
 
 }

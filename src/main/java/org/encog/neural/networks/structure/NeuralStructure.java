@@ -141,7 +141,7 @@ public class NeuralStructure implements Serializable {
 	 * you are done adding layers to a network, or change the network's logic
 	 * property.
 	 */
-	public final void finalizeStructure() {
+	public final void finalizeStructure(boolean dropout) {
 
 		if (this.layers.size() < 2) {
 			throw new NeuralNetworkError(
@@ -159,13 +159,15 @@ public class NeuralStructure implements Serializable {
 			flatLayers[i] = layer;
 		}
 
-		this.flat = new FlatNetwork(flatLayers);
+		this.flat = new FlatNetwork(flatLayers, dropout);
 
 		finalizeLimit();
 		this.layers.clear();
 		enforceLimit();
 	}
-
+	public final void finalizeStructure() {
+		finalizeStructure(false);
+	}
 	/**
 	 * @return The connection limit.
 	 */

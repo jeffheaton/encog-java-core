@@ -232,7 +232,6 @@ public class BasicNetwork extends BasicML implements ContainsFlat, MLContext,
 	 */
 	@Override
 	public void clearContext() {
-
 		if (this.structure.getFlat() != null) {
 			this.structure.getFlat().clearContext();
 		}

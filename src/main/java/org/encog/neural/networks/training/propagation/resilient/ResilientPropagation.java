@@ -93,7 +93,7 @@ public class ResilientPropagation extends Propagation {
 	 */
 	private final double maxStep;
 	
-	private RPROPType rpropType = RPROPType.RPROPp;
+	private static RPROPType rpropType = RPROPType.RPROPp;
 	
 	private double[] lastWeightChange;
 	
@@ -115,6 +115,11 @@ public class ResilientPropagation extends Propagation {
 	 */
 	public static final String UPDATE_VALUES = "UPDATE_VALUES";
 
+	/**
+	 * Denominator for ARPROP adaptive weight change
+	 */
+	private static double q = 1;
+	
 	/**
 	 * Construct an RPROP trainer, allows an OpenCL device to be specified. Use
 	 * the defaults for all training parameters. Usually this is the constructor
@@ -287,6 +292,9 @@ public class ResilientPropagation extends Propagation {
 			case iRPROPm:
 				weightChange = updateiWeightMinus(gradients,lastGradient,index);
 				break;
+			case ARPROP:
+				weightChange = updateJacobiWeight(gradients,lastGradient,index);
+				break;
 			default:
 				throw new TrainingError("Unknown RPROP type: " + this.rpropType);
 		}
@@ -327,6 +335,9 @@ public class ResilientPropagation extends Propagation {
 				break;
 			case iRPROPm:
 				weightChange = updateiWeightMinus(gradients,lastGradient,index);
+				break;
+			case ARPROP:
+				weightChange = updateJacobiWeight(gradients,lastGradient,index);
 				break;
 			default:
 				throw new TrainingError("Unknown RPROP type: " + this.rpropType);
@@ -477,6 +488,52 @@ public class ResilientPropagation extends Propagation {
 		// apply the weight change, if any
 		return weightChange;
 	}	
+	
+	public double updateJacobiWeight(final double[] gradients,
+			final double[] lastGradient, final int index) {
+		
+		// multiply the current and previous gradient, and take the
+		// sign. We want to see if the gradient has changed its sign.
+		final int change = EncogMath.sign(gradients[index] * lastGradient[index]);
+		double weightChange = 0;
+
+		// if the gradient has retained its sign, then we increase the
+		// delta so that it will converge faster
+		double delta = this.updateValues[index];
+		if (change > 0) {
+			delta = this.updateValues[index]
+					* RPROPConst.POSITIVE_ETA;
+			delta = Math.min(delta, this.maxStep);
+			weightChange = EncogMath.sign(gradients[index]) * delta;
+			this.updateValues[index] = delta;
+			lastGradient[index] = gradients[index];
+		} else if (change < 0) {
+			// if change<0, then the sign has changed, and the last
+			// delta was too big
+			delta = this.updateValues[index]
+					* RPROPConst.NEGATIVE_ETA;
+			delta = Math.max(delta, RPROPConst.DELTA_MIN);
+			this.updateValues[index] = delta;
+			weightChange = -this.lastWeightChange[index];
+			// set the previous gradient to zero so that there will be no
+			// adjustment the next iteration
+			lastGradient[index] = 0;
+		} else if (change == 0) {
+			// if change==0 then there is no change to the delta
+			delta = this.updateValues[index];
+			weightChange = EncogMath.sign(gradients[index]) * delta;
+			lastGradient[index] = gradients[index];
+		}
+		if(this.getError() > this.lastError) {
+			weightChange = (1 / (2*q)) * delta; 
+			q++;
+		} else {
+			q = 1;
+		}
+
+		// apply the weight change, if any
+		return weightChange;
+	}
 	
 	/**
 	 * {@inheritDoc}
