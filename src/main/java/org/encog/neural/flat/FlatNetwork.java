@@ -398,7 +398,12 @@ public class FlatNetwork implements Serializable, Cloneable {
 		final int outputIndex = this.layerIndex[currentLayer - 1];
 		final int inputSize = this.layerCounts[currentLayer];
 		final int outputSize = this.layerFeedCounts[currentLayer - 1];
-		final double dropoutRate = this.layerDropoutRates[currentLayer - 1];
+		final double dropoutRate;
+		if(this.layerDropoutRates.length > currentLayer - 1) {
+			dropoutRate = this.layerDropoutRates[currentLayer - 1];
+		} else {
+			dropoutRate = 0;
+		}
 
 		int index = this.weightIndex[currentLayer - 1];
 
