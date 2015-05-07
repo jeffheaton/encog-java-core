@@ -215,4 +215,9 @@ public class ActivationStep implements ActivationFunction {
 	public String getFactoryCode() {
 		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_STEP, this);
 	}
+	
+	@Override
+	public String getLabel() {
+		return "step";
+	}
 }

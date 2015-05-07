@@ -247,4 +247,8 @@ public class ActivationRamp implements ActivationFunction {
 		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_RAMP, this);
 	}
 
+	@Override
+	public String getLabel() {
+		return "ramp";
+	}
 }

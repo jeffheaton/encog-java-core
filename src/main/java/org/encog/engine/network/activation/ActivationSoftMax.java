@@ -131,4 +131,8 @@ public class ActivationSoftMax implements ActivationFunction {
 		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_SOFTMAX, this);
 	}
 
+	@Override
+	public String getLabel() {
+		return "softmax";
+	}
 }

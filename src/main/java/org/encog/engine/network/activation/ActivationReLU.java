@@ -189,4 +189,8 @@ public class ActivationReLU implements ActivationFunction {
 		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_RELU, this);
 	}
 
+	@Override
+	public String getLabel() {
+		return "relu";
+	}
 }

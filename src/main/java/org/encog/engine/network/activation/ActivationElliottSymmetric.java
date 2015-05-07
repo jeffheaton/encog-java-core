@@ -120,4 +120,8 @@ public class ActivationElliottSymmetric implements ActivationFunction {
 		return null;
 	}
 
+	@Override
+	public String getLabel() {
+		return "elliottsymmetric";
+	}
 }

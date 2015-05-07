@@ -99,16 +99,27 @@ public class MultiLayerPerceptronFactory implements EnsembleMLMethodFactory {
 		return network;
 	}
 
+	private String getLayerLabel(int i)
+	{
+		//dropoutRates contains the first and last layers as well
+		if(dropoutRates != null && dropoutRates.size() > i + 2)
+		{
+			return layers.get(i).toString() + ":" + dropoutRates.get(i + 1).toString();
+		}
+		else
+		{
+			return layers.get(i).toString();
+		}
+	}
 	@Override
 	public String getLabel() {
 		String ret = "mlp{";
 		for (int i=0; i < layers.size() - 1; i++)
-			ret = ret + layers.get(i) + ":" + dropoutRates.get(i) + ",";
-		return ret + layers.get(layers.size() - 1) + ":"
-				   + dropoutRates.get(layers.size() - 1) + "}" 
-				   + "-" + firstLayerActivation.toString() + ","
-				   + activation.toString() + "," 
-				   + lastLayerActivation.toString();
+			ret = ret + getLayerLabel(i) + ",";
+		return ret + getLayerLabel(layers.size() - 1) + "}" 
+				   + "-" + firstLayerActivation.getLabel() + ","
+				   + activation.getLabel() + ","
+				   + lastLayerActivation.getLabel();
 	}
 
 	@Override
