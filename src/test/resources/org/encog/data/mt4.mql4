@@ -1,0 +1,261 @@
+//+------------------------------------------------------------------+
+//|                                                 EncogExample.mq4 |
+//|                                                  Heaton Research |
+//|                              http://www.heatonresearch.com/encog |
+//+------------------------------------------------------------------+
+#property copyright "Heaton Research"
+#property link      "http://www.heatonresearch.com/encog"
+
+#property indicator_separate_window
+#property  indicator_buffers 1
+#property  indicator_color1  Silver
+
+
+//--- input parameters
+extern bool      Export=false;
+
+//--- buffers
+double ExtMapBuffer1[];
+
+int iHandle = -1;
+int iErrorCode;
+
+// begin Encog main config
+~~MAIN-BLOCK
+// end Encog main config
+
+
+//+------------------------------------------------------------------+
+//| Custom indicator initialization function                         |
+//+------------------------------------------------------------------+
+int init()
+  {
+  IndicatorBuffers(1);
+  SetIndexStyle(0,DRAW_LINE);
+   SetIndexBuffer(0,ExtMapBuffer1);
+   
+   IndicatorShortName("Encog Generated Indicator" );
+   SetIndexLabel(0,"Line1");
+   
+      if( Export )
+      {
+         iHandle = FileOpen(EXPORT_FILENAME,FILE_CSV|FILE_WRITE,',');
+         if(iHandle < 1)
+         {
+            iErrorCode = GetLastError();
+            Print("Error updating file: ",iErrorCode);
+            return(false);
+         }
+      
+~~HEADERS
+      }
+      else
+      {
+         iHandle = -1;
+      }
+
+   return(0);
+  }
+
+void ActivationTANH(double& x[], int start, int size)
+{
+   for (int i = start; i < start + size; i++)
+   {
+      x[i] = 2.0 / (1.0 + MathExp(-2.0 * x[i])) - 1.0;
+   }
+}
+		
+void ActivationSigmoid(double& x[], int start, int size)
+{
+   for (int i = start; i < start + size; i++)
+   {
+      x[i] = 1.0/(1.0 + MathExp(-1*x[i]));
+   }
+}
+		
+void ActivationElliottSymmetric(double& x[], int start, int size)
+{
+   for (int i = start; i < start + size; i++)
+   {
+      double s = _p[0];
+      x[i] = (x[i] * s) / (1 + MathAbs(x[i] * s));
+   }
+}
+		
+void ActivationElliott(double& x[], int start, int size)
+{
+   for (int i = start; i < start + size; i++)
+   {
+      double s = _p[0];
+      x[i] = ((x[i]*s)/2)/(1 + MathAbs(x[i]*s)) + 0.5;
+   }
+}
+
+void ComputeLayer(int currentLayer)
+{
+   int x,y;
+   int inputIndex = _layerIndex[currentLayer];
+   int outputIndex = _layerIndex[currentLayer - 1];
+   int inputSize = _layerCounts[currentLayer];
+   int outputSize = _layerFeedCounts[currentLayer - 1];
+
+   int index = _weightIndex[currentLayer - 1];
+
+   int limitX = outputIndex + outputSize;
+   int limitY = inputIndex + inputSize;
+
+   // weight values
+   for (x = outputIndex; x < limitX; x++)
+   {
+      double sum = 0;
+      for (y = inputIndex; y < limitY; y++)
+      {
+         sum += _weights[index] *_layerOutput[y];
+         index++;  
+      }
+      
+      _layerOutput[x] = sum;
+      _layerSums[x] = sum;
+   }
+      
+
+   switch(_activation[currentLayer - 1] )
+   {
+      case 0: // linear
+         break;
+      case 1:
+         ActivationTANH(_layerOutput, outputIndex, outputSize);
+			break;
+      case 2:
+         ActivationSigmoid(_layerOutput, outputIndex, outputSize);
+         break;
+      case 3:
+         ActivationElliottSymmetric(_layerOutput, outputIndex, outputSize);
+         break;
+      case 4:
+         ActivationElliott(_layerOutput, outputIndex, outputSize);
+        	break;
+   }
+			
+   // update context values
+   int offset = _contextTargetOffset[currentLayer];
+
+   for (x = 0; x < _contextTargetSize[currentLayer]; x++)
+   {
+      _layerOutput[offset + x] = _layerOutput[outputIndex + x];
+   }
+}
+
+		
+void Compute(double input[], double& output[])
+{
+   int i,x;
+   int sourceIndex = _neuronCount
+      - _layerCounts[_layerCount - 1];
+
+   ArrayCopy(_layerOutput,input,sourceIndex,0,_inputCount);
+			
+   for(i = _layerCount - 1; i > 0; i--)
+	{
+	  ComputeLayer(i);
+   }
+
+   // update context values
+	int offset = _contextTargetOffset[0];
+
+   for(x = 0; x < _contextTargetSize[0]; x++)
+	{
+	  _layerOutput[offset + x] = _layerOutput[x];
+   }
+
+   ArrayCopy(output,_layerOutput,0,0,_outputCount);
+}
+
+
+//+------------------------------------------------------------------+
+//| Custom indicator deinitialization function                       |
+//+------------------------------------------------------------------+
+int deinit()
+  {
+//----
+      if( iHandle>0 ) 
+      {
+         FileClose(iHandle);
+      }
+   
+//----
+   return(0);
+  }
+  
+  string PadInt(int num, int digits)
+{
+   string result = num;
+   while( StringLen(result)<digits )
+   {
+      result="0" + result;
+   }
+   return (result);
+}
+
+void WriteExportLine(int pos) 
+{
+   datetime dt = Time[pos];
+   string when = 
+      PadInt(TimeYear(dt),4) + 
+      PadInt(TimeMonth(dt),2) + 
+      PadInt(TimeDay(dt),2) + 
+      PadInt(TimeHour(dt),2) + 
+      PadInt(TimeMinute(dt),2) + 
+      PadInt(TimeSeconds(dt),2);
+~~OBTAIN
+}
+
+double Norm(double x,double normalizedHigh, double normalizedLow, double dataHigh, double dataLow)
+{
+	return (((x - dataLow) 
+		/ (dataHigh - dataLow))
+		* (normalizedHigh - normalizedLow) + normalizedLow);
+}
+		
+double DeNorm(double x,double normalizedHigh, double normalizedLow, double dataHigh, double dataLow) {
+	return (((dataLow - dataHigh) * x - normalizedHigh
+		* dataLow + dataHigh * normalizedLow)
+		/ (normalizedLow - normalizedHigh));
+}
+  
+  
+//+------------------------------------------------------------------+
+//| Custom indicator iteration function                              |
+//+------------------------------------------------------------------+
+int start()
+  {
+   int countedBars = IndicatorCounted();
+   //---- check for possible errors
+   if (countedBars<0) return(-1);
+   //---- last counted bar will be recounted
+   if (countedBars>0) countedBars--;
+   
+   int pos=Bars-countedBars-1;
+   
+   static datetime Close_Time;
+   
+   // only do this on a new bar
+   if ( Close_Time != Time[0])
+   {
+      Close_Time = Time[0];
+      while(pos>1)
+      {
+~~CALC      
+         if( Export )
+         {
+            WriteExportLine(pos);
+         }
+         pos--;
+      }
+   }
+//----
+   
+//----
+   return(0);
+  }
+//+------------------------------------------------------------------+
