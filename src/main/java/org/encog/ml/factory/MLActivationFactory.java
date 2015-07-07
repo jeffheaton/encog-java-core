@@ -42,7 +42,6 @@ public class MLActivationFactory {
 	public static final String AF_SOFTMAX = "softmax";
 	public static final String AF_STEP = "step";
 	public static final String AF_TANH = "tanh";
-	public static final String AF_RELU = "relu";
 
 	public ActivationFunction create(String fn) {
 		
