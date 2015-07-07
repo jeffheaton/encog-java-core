@@ -30,5 +30,9 @@ public interface EnsembleMLMethodFactory {
 	public MLMethod createML(int inputs, int outputs);
 	public void reInit(MLMethod ml);
 	public String getLabel();
-
+	/*
+	 * This may be needed in some cases where we want to increase the size of the learner's memory
+	 * (e.g more neurons for bigger aggregation)
+	 */
+	public void setSizeMultiplier(int sizeMultiplier);
 }

@@ -21,6 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+
 package org.encog.ensemble;
 
 import org.encog.ensemble.data.EnsembleDataSet;
@@ -36,6 +37,7 @@ public class GenericEnsembleML implements EnsembleML {
 	private BasicNetwork ml;
 	private MLTrain trainer;
 	private String label;
+	private final int DEFAULT_MAX_ITERATIONS = 2000;
 
 	public GenericEnsembleML(MLMethod fromML, String description) {
 		setMl(fromML);
@@ -53,10 +55,10 @@ public class GenericEnsembleML implements EnsembleML {
 	}
 
 	@Override
-	public void train(double targetError, boolean verbose) {
+	public void train(double targetError, int maxIterations, boolean verbose) {
 		double error = 0;
-		double previouserror = 0;
-		double errordelta = 0;
+		double previouserror = 1;
+		double errordelta = 1;
 		int iteration = 0;
 		do {
 			trainer.iteration();
@@ -71,10 +73,25 @@ public class GenericEnsembleML implements EnsembleML {
 			if (verbose) System.out.println(iteration + " " + error);
 		} while ((error > targetError) &&
 				 trainer.canContinue() &&
-				 errordelta > -0.1 &&
-				 //make this a parameter
-				 iteration < 2000);
+				 //errordelta / previouserror < 2 &&
+				 iteration < maxIterations);
 		trainer.finishTraining();
+	}
+
+	@Override
+	public void train(double targetError) {
+		train(targetError, false);
+	}
+
+	@Override
+	public void train(double targetError, int maxIterations) {
+		train(targetError, maxIterations, false);
+	}
+
+	@Override
+	public void train(double targetError, boolean verbose) {
+		train(targetError, DEFAULT_MAX_ITERATIONS, verbose);
+		
 	}
 
 	@Override
@@ -105,11 +122,6 @@ public class GenericEnsembleML implements EnsembleML {
 	@Override
 	public int getOutputCount() {
 		return ml.getOutputCount();
-	}
-
-	@Override
-	public void train(double targetError) {
-		train(targetError, false);
 	}
 
 	public int winner(MLData output) {

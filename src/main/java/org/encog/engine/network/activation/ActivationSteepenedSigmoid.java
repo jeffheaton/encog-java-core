@@ -120,5 +120,10 @@ public class ActivationSteepenedSigmoid implements ActivationFunction {
 	public String getFactoryCode() {
 		return null;
 	}
+	
+	@Override
+	public String getLabel() {
+		return "steepenedsigmoid";
+	}
 
 }

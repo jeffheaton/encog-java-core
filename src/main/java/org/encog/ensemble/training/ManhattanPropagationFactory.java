@@ -21,6 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+
 package org.encog.ensemble.training;
 
 import org.encog.ensemble.EnsembleTrainFactory;
@@ -33,7 +34,8 @@ import org.encog.neural.networks.training.propagation.manhattan.ManhattanPropaga
 public class ManhattanPropagationFactory implements EnsembleTrainFactory {
 
 	private double learningRate = 0.01;
-
+	private double dropoutRate = 0;
+	
 	public void setLearningRate(double learningRate) {
 		this.learningRate = learningRate;
 	}
@@ -44,12 +46,30 @@ public class ManhattanPropagationFactory implements EnsembleTrainFactory {
 
 	@Override
 	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData) {
-		return (MLTrain) new ManhattanPropagation((BasicNetwork) mlMethod, trainingData, 0.01);
+		return this.getTraining(mlMethod, trainingData, this.dropoutRate);
+
+	}
+	
+	@Override
+	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData, double dropoutRate) {
+		ManhattanPropagation mp = new ManhattanPropagation((BasicNetwork) mlMethod, trainingData, 0.01);
+		mp.setDroupoutRate(dropoutRate);
+		return (MLTrain) mp;
 	}
 
 	@Override
 	public String getLabel() {
-		return "resprop";
+		String l = "manhattanprop" + learningRate;
+		if(dropoutRate > 0)
+		{
+			l += "=" + dropoutRate;
+		}
+		return l;
+	}
+
+	@Override
+	public void setDropoutRate(double rate) {
+		dropoutRate = rate;
 	}
 
 }

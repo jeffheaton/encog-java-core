@@ -21,6 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+
 package org.encog.ensemble;
 
 import org.encog.ensemble.data.EnsembleDataSet;
@@ -62,6 +63,23 @@ public interface EnsembleML extends MLMethod, MLClassification, MLRegression {
 	 * @param targetError The target error.
 	 */
 	public void train(double targetError);
+
+	/**
+	 * Train the ML to a certain accuracy.
+	 * @param targetError Target error.
+	 * @param verbose Verbose mode.
+	 * @param maxIterations Stop after this number of iterations
+	 * @throws Exception 
+	 */
+	public void train(double targetError, int maxIterations, boolean verbose);
+
+
+	/**
+	 * Train the ML to a certain accuracy.
+	 * @param targetError Target error.
+	 * @param maxIterations Stop after this number of iterations
+	 */
+	public void train(double targetError, int maxIterations);
 
 	/**
 	 * Train the ML to a certain accuracy.

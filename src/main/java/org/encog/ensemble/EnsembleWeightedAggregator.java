@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.3 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2014 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,27 +21,12 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+package org.encog.ensemble;
 
-package org.encog.ensemble.data.factories;
+import java.util.List;
 
-import org.encog.ensemble.data.EnsembleDataSet;
+public interface EnsembleWeightedAggregator extends EnsembleAggregator {
 
-public class WrappingNonResamplingDataSetFactory extends EnsembleDataSetFactory {
-
-	private int currentPosition = 0;
-
-	public WrappingNonResamplingDataSetFactory(int dataSetSize) {
-		super(dataSetSize);
-	}
-
-	@Override
-	public EnsembleDataSet getNewDataSet() {
-		EnsembleDataSet ds = new EnsembleDataSet(dataSource.getInputSize(), dataSource.getIdealSize());
-		//make sure we don't go beyond the end of the dataset
-		for (int i = currentPosition; i < currentPosition +  dataSetSize; i++)
-		{
-			ds.add(dataSource.get(i % this.dataSource.size()));
-		}
-		return ds;
-	}
+	public void setWeights(List<Double> weights);
+	public List<Double> getWeights();
 }

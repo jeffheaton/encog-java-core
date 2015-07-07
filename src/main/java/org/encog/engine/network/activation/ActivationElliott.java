@@ -124,4 +124,8 @@ public class ActivationElliott implements ActivationFunction {
 		return null;
 	}
 
+	@Override
+	public String getLabel() {
+		return "elliott";
+	}
 }

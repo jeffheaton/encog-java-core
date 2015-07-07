@@ -125,4 +125,9 @@ public class ActivationLinear implements ActivationFunction {
 	public String getFactoryCode() {
 		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_LINEAR, this);
 	}
+	
+	@Override
+	public String getLabel() {
+		return "linear";
+	}
 }

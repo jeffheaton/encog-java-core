@@ -23,6 +23,8 @@
  */
 package org.encog.neural.networks.training.propagation;
 
+import java.util.Random;
+
 import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationSigmoid;
@@ -56,6 +58,16 @@ import org.encog.util.logging.EncogLogging;
 public abstract class Propagation extends BasicTraining implements Train,
 		MultiThreadable, BatchSize {
 
+	/**
+	 * Used to generate randomness for dropout
+	 */
+	protected Random dropoutRandomSource = new Random();
+
+	/**
+	 * The Dropout rate, between 0 and 1
+	 */
+	private double dropoutRate = 0;
+	
 	/**
 	 * The current flat network we are using for training, or null for none.
 	 */
@@ -128,6 +140,8 @@ public abstract class Propagation extends BasicTraining implements Train,
 	 */
 	private int batchSize = 0;
 
+	private boolean finalized = false;
+
 	/**
 	 * Construct a propagation object.
 	 * 
@@ -150,13 +164,42 @@ public abstract class Propagation extends BasicTraining implements Train,
 		this.reportedException = null;
 		this.shouldFixFlatSpot = true;
 	}
-
+	
+	/**
+	 * Change the dropout rate
+	 * @param rate
+	 * 			The dropout rate.
+	 */
+	public void setDroupoutRate(double rate) {
+		this.dropoutRate = rate;
+	}
+	
+	/**
+	 * @return the current dropout rate
+	 * 
+	 */
+	public double getDropoutRate() {
+		return this.dropoutRate;
+	}
 	/**
 	 * Should be called after training has completed and the iteration method
 	 * will not be called any further.
 	 */
 	@Override
 	public void finishTraining() {
+		finishTraining(this.dropoutRate);
+	}
+	public void finishTraining(double dropoutRate) {
+		if(!this.finalized) {
+			final double[] weights = this.currentFlatNetwork.getWeights();
+			if(dropoutRate > 0)
+			{
+				for (int i = 0; i < weights.length; i++) {
+					weights[i] *= (1 - dropoutRate);
+				}
+			}
+			this.finalized = true;
+		}
 		super.finishTraining();
 	}
 
@@ -462,9 +505,16 @@ public abstract class Propagation extends BasicTraining implements Train,
 	 */
 	protected void learn() {
 		final double[] weights = this.currentFlatNetwork.getWeights();
-		for (int i = 0; i < this.gradients.length; i++) {
-			weights[i] += updateWeight(this.gradients, this.lastGradient, i);
-			this.gradients[i] = 0;
+		if(this.dropoutRate > 0) {
+			for (int i = 0; i < this.gradients.length; i++) {
+				weights[i] += updateWeight(this.gradients, this.lastGradient, i, this.dropoutRate);
+				this.gradients[i] = 0;
+			}			
+		} else {
+			for (int i = 0; i < this.gradients.length; i++) {
+				weights[i] += updateWeight(this.gradients, this.lastGradient, i);
+				this.gradients[i] = 0;
+			}			
 		}
 	}
 
@@ -477,13 +527,26 @@ public abstract class Propagation extends BasicTraining implements Train,
 	protected void learnLimited() {
 		final double limit = this.currentFlatNetwork.getConnectionLimit();
 		final double[] weights = this.currentFlatNetwork.getWeights();
+		if(this.dropoutRate > 0) {
+			for (int i = 0; i < this.gradients.length; i++) {
+				if (Math.abs(weights[i]) < limit) {
+					weights[i] = 0;
+				} else {
+					weights[i] += updateWeight(this.gradients, this.lastGradient, i, this.dropoutRate);
+				}
+				this.gradients[i] = 0;
+			}			
+		} else {
+			for (int i = 0; i < this.gradients.length; i++) {
+				if (Math.abs(weights[i]) < limit) {
+					weights[i] = 0;
+				} else {
+					weights[i] += updateWeight(this.gradients, this.lastGradient, i);
+				}
+				this.gradients[i] = 0;
+			}			
+		}
 		for (int i = 0; i < this.gradients.length; i++) {
-			if (Math.abs(weights[i]) < limit) {
-				weights[i] = 0;
-			} else {
-				weights[i] += updateWeight(this.gradients, this.lastGradient, i);
-			}
-			this.gradients[i] = 0;
 		}
 	}
 
@@ -505,6 +568,23 @@ public abstract class Propagation extends BasicTraining implements Train,
 			double[] lastGradient, int index);
 
 	/**
+	 * Update a weight using dropout, the means by which weights are updated vary depending on
+	 * the training.
+	 * 
+	 * @param gradients
+	 *            The gradients.
+	 * @param lastGradient
+	 *            The last gradients.
+	 * @param index
+	 *            The index.
+	 * @param dropoutRate
+	 * 			  The dropout rate
+	 * @return The update value.
+	 */
+	public abstract double updateWeight(double[] gradients,
+			double[] lastGradient, int index, double dropoutRate);
+
+	/**
 	 * @return the lastGradient
 	 */
 	public double[] getLastGradient() {
@@ -524,5 +604,4 @@ public abstract class Propagation extends BasicTraining implements Train,
 	public void setBatchSize(int theBatchSize) {
 		this.batchSize = theBatchSize;
 	}
-
 }

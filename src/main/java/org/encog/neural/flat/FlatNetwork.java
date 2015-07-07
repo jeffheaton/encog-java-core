@@ -78,6 +78,11 @@ public class FlatNetwork implements Serializable, Cloneable {
 	 * The number of neurons in each of the layers.
 	 */
 	private int[] layerCounts;
+	
+	/**
+	 * The dropout rate for each layer.
+	 */
+	private double[] layerDropoutRates;
 
 	/**
 	 * The number of context neurons in each layer. These context neurons will
@@ -188,7 +193,10 @@ public class FlatNetwork implements Serializable, Cloneable {
 	 *            The layers.
 	 */
 	public FlatNetwork(final FlatLayer[] layers) {
-		init(layers);
+		init(layers,false);
+	}
+	public FlatNetwork(final FlatLayer[] layers, boolean dropout) {
+		init(layers,dropout);
 	}
 
 	/**
@@ -245,7 +253,7 @@ public class FlatNetwork implements Serializable, Cloneable {
 		this.isLimited = false;
 		this.connectionLimit = 0.0;
 
-		init(layers);
+		init(layers,false);
 	}
 
 	/**
@@ -339,6 +347,7 @@ public class FlatNetwork implements Serializable, Cloneable {
 		result.outputCount = this.outputCount;
 		result.weightIndex = this.weightIndex;
 		result.weights = this.weights;
+		result.layerDropoutRates = EngineArray.arrayCopy(this.layerDropoutRates);
 
 		result.activationFunctions = new ActivationFunction[this.activationFunctions.length];
 		for (int i = 0; i < result.activationFunctions.length; i++) {
@@ -389,6 +398,12 @@ public class FlatNetwork implements Serializable, Cloneable {
 		final int outputIndex = this.layerIndex[currentLayer - 1];
 		final int inputSize = this.layerCounts[currentLayer];
 		final int outputSize = this.layerFeedCounts[currentLayer - 1];
+		final double dropoutRate;
+		if(this.layerDropoutRates.length > currentLayer - 1) {
+			dropoutRate = this.layerDropoutRates[currentLayer - 1];
+		} else {
+			dropoutRate = 0;
+		}
 
 		int index = this.weightIndex[currentLayer - 1];
 
@@ -399,7 +414,7 @@ public class FlatNetwork implements Serializable, Cloneable {
 		for (int x = outputIndex; x < limitX; x++) {
 			double sum = 0;
 			for (int y = inputIndex; y < limitY; y++) {
-				sum += this.weights[index++] * this.layerOutput[y];
+				sum += this.weights[index++] * this.layerOutput[y] * (1 - dropoutRate);
 			}
 			this.layerSums[x] = sum;
 			this.layerOutput[x] = sum;
@@ -612,7 +627,7 @@ public class FlatNetwork implements Serializable, Cloneable {
 	 * @param layers
 	 *            The layers of the network to create.
 	 */
-	public void init(final FlatLayer[] layers) {
+	public void init(final FlatLayer[] layers, boolean dropout) {
 
 		final int layerCount = layers.length;
 
@@ -623,6 +638,11 @@ public class FlatNetwork implements Serializable, Cloneable {
 		this.layerContextCount = new int[layerCount];
 		this.weightIndex = new int[layerCount];
 		this.layerIndex = new int[layerCount];
+		if(dropout){
+			this.layerDropoutRates = new double[layerCount];
+		} else {
+			this.layerDropoutRates = new double[0];
+		}
 		this.activationFunctions = new ActivationFunction[layerCount];
 		this.layerFeedCounts = new int[layerCount];
 		this.contextTargetOffset = new int[layerCount];
@@ -647,6 +667,10 @@ public class FlatNetwork implements Serializable, Cloneable {
 			this.layerFeedCounts[index] = layer.getCount();
 			this.layerContextCount[index] = layer.getContextCount();
 			this.activationFunctions[index] = layer.getActivation();
+			if(dropout)
+			{
+				this.layerDropoutRates[index] = layer.getDropoutRate(); 
+			}
 
 			neuronCount += layer.getTotalCount();
 
@@ -875,6 +899,13 @@ public class FlatNetwork implements Serializable, Cloneable {
 		this.layerSums = EngineArray.arrayCopy(d);
 		
 	}
-	
+
+	public double[] getLayerDropoutRates() {
+		return layerDropoutRates;
+	}
+
+	public void setLayerDropoutRates(double[] layerDropoutRates) {
+		this.layerDropoutRates = layerDropoutRates;
+	}
 	
 }

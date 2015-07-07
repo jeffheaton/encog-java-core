@@ -26,6 +26,7 @@ package org.encog.neural.networks.layers;
 import java.io.Serializable;
 
 import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.neural.flat.FlatLayer;
 import org.encog.neural.networks.BasicNetwork;
@@ -90,14 +91,20 @@ public class BasicLayer extends FlatLayer implements Layer, Serializable {
 	 *            How many neurons in this layer.
 	 * @param hasBias
 	 *            True if this layer has a bias.
+	 * @param dropoutRate
+	 * 			  The dropout rate for this layer
 	 */
 	public BasicLayer(final ActivationFunction activationFunction,
+			final boolean hasBias, final int neuronCount, double dropoutRate) {
+		super(activationFunction, neuronCount,
+				hasBias?1.0:0.0,dropoutRate);
+	}
+	public BasicLayer(final ActivationFunction activationFunction,
 			final boolean hasBias, final int neuronCount) {
-		
 		super(activationFunction, neuronCount,
 				hasBias?1.0:0.0);
 	}
-
+	
 	/**
 	 * Construct this layer with a sigmoid activation function.
 	 *
@@ -105,7 +112,7 @@ public class BasicLayer extends FlatLayer implements Layer, Serializable {
 	 *            How many neurons in this layer.
 	 */
 	public BasicLayer(final int neuronCount) {
-		this(new ActivationTANH(), true, neuronCount);
+		this(new ActivationSigmoid(), true, neuronCount);
 	}
 
 	/**

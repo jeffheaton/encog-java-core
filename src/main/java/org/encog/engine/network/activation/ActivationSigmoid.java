@@ -118,4 +118,9 @@ public class ActivationSigmoid implements ActivationFunction {
 	public String getFactoryCode() {
 		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_SIGMOID, this);
 	}
+
+	@Override
+	public String getLabel() {
+		return "sigmoid";
+	}
 }

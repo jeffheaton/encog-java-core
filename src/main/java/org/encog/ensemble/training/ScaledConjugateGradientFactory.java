@@ -21,6 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+
 package org.encog.ensemble.training;
 
 import org.encog.ensemble.EnsembleTrainFactory;
@@ -32,14 +33,34 @@ import org.encog.neural.networks.training.propagation.scg.ScaledConjugateGradien
 
 public class ScaledConjugateGradientFactory implements EnsembleTrainFactory {
 
+	private double dropoutRate = 0;
+	
 	@Override
 	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData) {
-		return (MLTrain) new ScaledConjugateGradient((BasicNetwork) mlMethod, trainingData);
+		return this.getTraining(mlMethod, trainingData, this.dropoutRate);
+
+	}
+
+	@Override
+	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData, double dropoutRate) {
+		ScaledConjugateGradient scg = new ScaledConjugateGradient((BasicNetwork) mlMethod, trainingData);
+		scg.setDroupoutRate(dropoutRate);
+		return (MLTrain) scg;
 	}
 
 	@Override
 	public String getLabel() {
-		return "scg";
+		String l = "scg";
+		if(dropoutRate > 0)
+		{
+			l += "-" + dropoutRate;
+		}
+		return l;
+	}
+
+	@Override
+	public void setDropoutRate(double rate) {
+		dropoutRate = rate;
 	}
 
 }
