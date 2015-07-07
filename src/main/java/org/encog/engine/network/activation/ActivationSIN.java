@@ -1,4 +1,5 @@
 /*
+
  * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
@@ -126,4 +127,8 @@ public class ActivationSIN implements ActivationFunction {
 		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_SIN, this);
 	}
 
+	@Override
+	public String getLabel() {
+		return "sin";
+	}
 }

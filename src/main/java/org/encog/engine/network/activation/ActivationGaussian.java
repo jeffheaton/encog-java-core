@@ -129,4 +129,9 @@ public class ActivationGaussian implements ActivationFunction {
 	public String getFactoryCode() {
 		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_GAUSSIAN, this);
 	}
+	
+	@Override
+	public String getLabel() {
+		return "gaussian";
+	}
 }

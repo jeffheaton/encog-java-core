@@ -120,4 +120,8 @@ public class ActivationTANH implements ActivationFunction {
 		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_TANH, this);
 	}
 
+	@Override
+	public String getLabel() {
+		return "tanh";
+	}
 }

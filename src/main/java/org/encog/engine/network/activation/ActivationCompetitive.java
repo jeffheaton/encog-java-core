@@ -177,4 +177,9 @@ public class ActivationCompetitive implements ActivationFunction {
 	public String getFactoryCode() {
 		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_COMPETITIVE, this);
 	}
+	
+	@Override
+	public String getLabel() {
+		return "competitive";
+	}
 }

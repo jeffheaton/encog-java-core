@@ -21,6 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+
 package org.encog.ensemble.data.factories;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public abstract class EnsembleDataSetFactory {
 
 	public void setInputData(MLDataSet dataSource) {
 		this.dataSource = dataSource;
+		this.reload();
 	}
 
 	abstract public EnsembleDataSet getNewDataSet();
@@ -59,6 +61,14 @@ public abstract class EnsembleDataSetFactory {
 		this.dataSetSize = dataSetSize;
 	}
 
+	public int getDataSourceSize() {
+		return this.dataSource.size();
+	}
+	
+	public MLDataSet getDataSource() {
+		return this.dataSource;
+	}
+	
 	public int getInputCount() {
 		return this.dataSource.getInputSize();
 	}
@@ -77,6 +87,8 @@ public abstract class EnsembleDataSetFactory {
 		for (int i = 0; i < dataSource.size(); i++)
 			res.add(dataSource.get(i).getSignificance());
 		return res;
+	}
+	public void reload() {
 	}
 
 }

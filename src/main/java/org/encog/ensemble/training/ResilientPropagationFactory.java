@@ -21,6 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+
 package org.encog.ensemble.training;
 
 import org.encog.ensemble.EnsembleTrainFactory;
@@ -28,18 +29,50 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.training.propagation.resilient.RPROPType;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 
 public class ResilientPropagationFactory implements EnsembleTrainFactory {
 
+	private double dropoutRate = 0;
+	private RPROPType type = RPROPType.RPROPp;
+	
 	@Override
 	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData) {
-		return (MLTrain) new ResilientPropagation((BasicNetwork) mlMethod, trainingData);
+		ResilientPropagation rp = new ResilientPropagation((BasicNetwork) mlMethod, trainingData);
+		rp.setRPROPType(this.type);
+		rp.setDroupoutRate(this.dropoutRate);
+		return (MLTrain) rp;
+	}
+	
+	@Override
+	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData, double dropoutRate) {
+		ResilientPropagation rp = new ResilientPropagation((BasicNetwork) mlMethod, trainingData);
+		rp.setRPROPType(this.type);
+		rp.setDroupoutRate(dropoutRate);
+		return (MLTrain) rp;
+	}
+	@Override
+	public String getLabel() {
+		String l = "resprop";
+		if(dropoutRate > 0)
+		{
+			l += "-" + dropoutRate;
+		}
+		return l;
 	}
 
 	@Override
-	public String getLabel() {
-		return "resprop";
+	public void setDropoutRate(double rate) {
+		dropoutRate = rate;
+	}
+
+	public RPROPType getRPROPType() {
+		return type;
+	}
+
+	public void setRPROPType(RPROPType type) {
+		this.type = type;
 	}
 
 }

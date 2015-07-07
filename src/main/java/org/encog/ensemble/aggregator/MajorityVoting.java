@@ -21,6 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+
 package org.encog.ensemble.aggregator;
 
 import java.util.ArrayList;
@@ -37,26 +38,14 @@ public class MajorityVoting implements EnsembleAggregator {
 		BasicMLData acc = new BasicMLData(outputSize);
 		for (MLData out: outputs)
 		{
-			MLData thresholdedOut = threshold(out, threshold, lowValue, highValue);
+			BasicMLData thresholdedOut = (BasicMLData) ((BasicMLData) out).threshold(threshold, lowValue, highValue);
 			acc = (BasicMLData) acc.plus(thresholdedOut);
 		}
 
 		acc = (BasicMLData) acc.times(1.0 / outputs.size());
-		return threshold(acc, threshold, lowValue, highValue);
+		return acc.threshold(threshold, lowValue, highValue);
 	}
 	
-	private MLData threshold(MLData d, double threshold, double lowValue, double highValue) {
-		MLData result = new BasicMLData(d.size());
-		for(int i=0;i<d.size();i++) {
-			if( d.getData(i)>=threshold ) {
-				result.setData(i, highValue);
-			} else {
-				result.setData(i, lowValue);
-			}
-		}
-		return result;
-	}
-
 	@Override
 	public MLData evaluate(ArrayList<MLData> outputs) {
 		return evaluate(outputs, 0.5, 0.0, 1.0);
@@ -80,6 +69,11 @@ public class MajorityVoting implements EnsembleAggregator {
 	@Override
 	public boolean needsTraining() {
 		return false;
+	}
+
+	@Override
+	public void setNumberOfMembers(int members) {
+		//does nothing
 	}
 
 }

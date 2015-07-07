@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.3 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2014 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,31 +24,72 @@
 package org.encog.ensemble.aggregator;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import org.encog.ensemble.EnsembleAggregator;
+import org.encog.ensemble.EnsembleWeightedAggregator;
 import org.encog.ensemble.data.EnsembleDataSet;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLData;
 
-public class Averaging implements EnsembleAggregator {
+public class WeightedAveraging implements EnsembleWeightedAggregator {
+
+	private ArrayList<Double> weights;
+	
+	public class WeightMismatchException extends Exception {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 327652547599703252L;
+		
+	}
+	
+	public WeightedAveraging(List<Double> weights)
+	{
+		this.weights = (ArrayList<Double>) weights;
+	}
+	
+	@Override
+	public void setWeights(List<Double> weights)
+	{
+		this.weights = (ArrayList<Double>) weights;
+	}
 
 	@Override
-	public MLData evaluate(ArrayList<MLData> outputs) {
+	public List<Double> getWeights()
+	{
+		return this.weights;
+	}	
+	
+	@Override
+	public MLData evaluate(ArrayList<MLData> outputs) throws WeightMismatchException {
 		int outputSize = outputs.get(0).size();
-		BasicMLData acc = new BasicMLData(outputSize);
-		for (MLData out: outputs)
+		double weightSum = 0;
+		if (weights == null || weights.size() != outputs.size())
 		{
+			throw new WeightMismatchException();
+		}
+		BasicMLData acc = new BasicMLData(outputSize);
+		for (int i = 0; i < outputs.size(); i++)
+		{
+			BasicMLData out = (BasicMLData) outputs.get(i);
+			out = (BasicMLData) out.times(weights.get(i));
 			acc = (BasicMLData) acc.plus(out);
+			weightSum += weights.get(i);
 		}
 
-		acc = (BasicMLData) acc.times(1.0 / outputs.size());
+		if(weightSum == 0)
+		{
+			weightSum = 1;
+		}
+		acc = (BasicMLData) acc.times(1.0 / weightSum);
 		return 	acc;
 
 	}
 
 	@Override
 	public String getLabel() {
-		return "averaging";
+		return "weightedaveraging";
 	}
 
 	@Override

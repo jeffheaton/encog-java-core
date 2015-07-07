@@ -21,6 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+
 package org.encog.ensemble.aggregator;
 
 import java.util.ArrayList;
@@ -40,46 +41,89 @@ public class MetaClassifier implements EnsembleAggregator {
 	EnsembleMLMethodFactory mlFact;
 	EnsembleTrainFactory etFact;
 	double trainError;
+	int members;
+	boolean adaptiveError = false;
 
-	public MetaClassifier(double trainError, EnsembleMLMethodFactory mlFact, EnsembleTrainFactory etFact) {
+	public MetaClassifier(double trainError, EnsembleMLMethodFactory mlFact, EnsembleTrainFactory etFact, boolean adaptiveError)
+	{
 		this.trainError = trainError;
 		this.mlFact = mlFact;
 		this.etFact = etFact;
+		this.adaptiveError = adaptiveError;
+		members = 1;
+	}
+
+	public MetaClassifier(double trainError, EnsembleMLMethodFactory mlFact, EnsembleTrainFactory etFact)
+	{
+		this(trainError, mlFact, etFact, false);
+	}
+
+	public double getTrainingError()
+	{
+		return trainError;
+	}
+	
+	public void setTrainingError(double trainError)
+	{
+		this.trainError = trainError;
 	}
 
 	@Override
+	public void setNumberOfMembers(int members)
+	{
+		this.members = members;
+	}
+	
+	@Override
 	public MLData evaluate(ArrayList<MLData> outputs) {
 		BasicMLData merged_outputs = new BasicMLData(classifier.getInputCount());
-		int index = 0;
-		for(MLData output:outputs)
+		for(MLData output:outputs) {
+			int index = 0;
 			for(double val:output.getData()) {
 				merged_outputs.add(index++,val);
 			}
+		}
 		return classifier.compute(merged_outputs);
 	}
 
 	@Override
-	public String getLabel() {
-		return "metaclassifier-" + mlFact.getLabel() + "-" + trainError;
+	public String getLabel()
+	{
+		String ret = "metaclassifier-" + mlFact.getLabel() + "-" + trainError + "-" + etFact.getLabel();
+		if(adaptiveError)
+		{
+			ret += "-adaptive";
+		}
+		return ret;
 	}
 
+
 	@Override
-	public void train() {
+	public void train()
+	{
 		if (classifier != null)
-			classifier.train(trainError);
+		{
+			double targetError = adaptiveError ? trainError / members : trainError; 
+			classifier.train(targetError);
+		}
 		else
+		{
 			System.err.println("Trying to train a null classifier in MetaClassifier");
+		}
 	}
 
 	@Override
-	public void setTrainingSet(EnsembleDataSet trainingSet) {
+	public void setTrainingSet(EnsembleDataSet trainingSet)
+	{
+		mlFact.setSizeMultiplier(members);
 		classifier = new GenericEnsembleML(mlFact.createML(trainingSet.getInputSize(), trainingSet.getIdealSize()),mlFact.getLabel());
 		classifier.setTraining(etFact.getTraining(classifier.getMl(), trainingSet));
 		classifier.setTrainingSet(trainingSet);
 	}
 
 	@Override
-	public boolean needsTraining() {
+	public boolean needsTraining()
+	{
 		return true;
 	}
 }

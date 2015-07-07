@@ -32,27 +32,17 @@ import org.encog.util.obj.ActivationUtil;
  * low value is exceeded another fixed value is returned.
  * 
  */
-public class ActivationRamp implements ActivationFunction {
-
-	/**
-	 * The ramp high threshold parameter.
-	 */
-	public static final int PARAM_RAMP_HIGH_THRESHOLD = 0;
+public class ActivationReLU implements ActivationFunction {
 
 	/**
 	 * The ramp low threshold parameter.
 	 */
-	public static final int PARAM_RAMP_LOW_THRESHOLD = 1;
-
-	/**
-	 * The ramp high parameter.
-	 */
-	public static final int PARAM_RAMP_HIGH = 2;
+	public static final int PARAM_RELU_LOW_THRESHOLD = 0;
 
 	/**
 	 * The ramp low parameter.
 	 */
-	public static final int PARAM_RAMP_LOW = 3;
+	public static final int PARAM_RELU_LOW = 0;
 
 	/**
 	 * The serial ID.
@@ -67,30 +57,23 @@ public class ActivationRamp implements ActivationFunction {
 	/**
 	 * Default constructor.
 	 */
-	public ActivationRamp() {
-		this(1, 0, 1, 0);
+	public ActivationReLU() {
+		this(0, 0);
 	}
 
 	/**
 	 * Construct a ramp activation function.
 	 * 
-	 * @param thresholdHigh
-	 *            The high threshold value.
 	 * @param thresholdLow
 	 *            The low threshold value.
-	 * @param high
-	 *            The high value, replaced if the high threshold is exceeded.
 	 * @param low
 	 *            The low value, replaced if the low threshold is exceeded.
 	 */
-	public ActivationRamp(final double thresholdHigh,
-			final double thresholdLow, final double high, final double low) {
+	public ActivationReLU(final double thresholdLow, final double low) {
 
-		this.params = new double[4];
-		this.params[ActivationRamp.PARAM_RAMP_HIGH_THRESHOLD] = thresholdHigh;
-		this.params[ActivationRamp.PARAM_RAMP_LOW_THRESHOLD] = thresholdLow;
-		this.params[ActivationRamp.PARAM_RAMP_HIGH] = high;
-		this.params[ActivationRamp.PARAM_RAMP_LOW] = low;
+		this.params = new double[2];
+		this.params[ActivationReLU.PARAM_RELU_LOW_THRESHOLD] = thresholdLow;
+		this.params[ActivationReLU.PARAM_RELU_LOW] = low;
 	}
 
 	/**
@@ -99,16 +82,9 @@ public class ActivationRamp implements ActivationFunction {
 	@Override
 	public final void activationFunction(final double[] x, final int start,
 			final int size) {
-		final double slope = (this.params[ActivationRamp.PARAM_RAMP_HIGH_THRESHOLD] - this.params[ActivationRamp.PARAM_RAMP_LOW_THRESHOLD])
-				/ (this.params[ActivationRamp.PARAM_RAMP_HIGH] - this.params[ActivationRamp.PARAM_RAMP_LOW]);
-
 		for (int i = start; i < start + size; i++) {
-			if (x[i] < this.params[ActivationRamp.PARAM_RAMP_LOW_THRESHOLD]) {
-				x[i] = this.params[ActivationRamp.PARAM_RAMP_LOW];
-			} else if (x[i] > this.params[ActivationRamp.PARAM_RAMP_HIGH_THRESHOLD]) {
-				x[i] = this.params[ActivationRamp.PARAM_RAMP_HIGH];
-			} else {
-				x[i] = (slope * x[i]);
+			if (x[i] <= this.params[ActivationReLU.PARAM_RELU_LOW_THRESHOLD]) {
+				x[i] = this.params[ActivationReLU.PARAM_RELU_LOW];
 			}
 		}
 
@@ -121,11 +97,9 @@ public class ActivationRamp implements ActivationFunction {
 	 */
 	@Override
 	public final ActivationFunction clone() {
-		return new ActivationRamp(
-				this.params[ActivationRamp.PARAM_RAMP_HIGH_THRESHOLD],
-				this.params[ActivationRamp.PARAM_RAMP_LOW_THRESHOLD],
-				this.params[ActivationRamp.PARAM_RAMP_HIGH],
-				this.params[ActivationRamp.PARAM_RAMP_LOW]);
+		return new ActivationReLU(
+				this.params[ActivationReLU.PARAM_RELU_LOW_THRESHOLD],
+				this.params[ActivationReLU.PARAM_RELU_LOW]);
 	}
 
 	/**
@@ -133,21 +107,18 @@ public class ActivationRamp implements ActivationFunction {
 	 */
 	@Override
 	public final double derivativeFunction(final double b, final double a) {
+		if(a <= this.params[ActivationReLU.PARAM_RELU_LOW_THRESHOLD])
+		{
+			return 0;
+		}
 		return 1.0;
-	}
-
-	/**
-	 * @return the high
-	 */
-	public final double getHigh() {
-		return this.params[ActivationRamp.PARAM_RAMP_HIGH];
 	}
 
 	/**
 	 * @return the low
 	 */
 	public final double getLow() {
-		return this.params[ActivationRamp.PARAM_RAMP_LOW];
+		return this.params[ActivationReLU.PARAM_RELU_LOW];
 	}
 
 	/**
@@ -155,8 +126,7 @@ public class ActivationRamp implements ActivationFunction {
 	 */
 	@Override
 	public final String[] getParamNames() {
-		final String[] result = { "thresholdHigh", "thresholdLow", "high",
-				"low" };
+		final String[] result = {"thresholdLow", "low" };
 		return result;
 	}
 
@@ -169,17 +139,10 @@ public class ActivationRamp implements ActivationFunction {
 	}
 
 	/**
-	 * @return the thresholdHigh
-	 */
-	public final double getThresholdHigh() {
-		return this.params[ActivationRamp.PARAM_RAMP_HIGH_THRESHOLD];
-	}
-
-	/**
 	 * @return the thresholdLow
 	 */
 	public final double getThresholdLow() {
-		return this.params[ActivationRamp.PARAM_RAMP_LOW_THRESHOLD];
+		return this.params[ActivationReLU.PARAM_RELU_LOW_THRESHOLD];
 	}
 
 	/**
@@ -191,24 +154,13 @@ public class ActivationRamp implements ActivationFunction {
 	}
 
 	/**
-	 * Set the high value.
-	 * 
-	 * @param d
-	 *            The high value.
-	 */
-	public final void setHigh(final double d) {
-		setParam(ActivationRamp.PARAM_RAMP_HIGH, d);
-
-	}
-
-	/**
 	 * Set the low value.
 	 * 
 	 * @param d
 	 *            The low value.
 	 */
 	public final void setLow(final double d) {
-		setParam(ActivationRamp.PARAM_RAMP_LOW, d);
+		setParam(ActivationReLU.PARAM_RELU_LOW, d);
 	}
 
 	/**
@@ -220,23 +172,13 @@ public class ActivationRamp implements ActivationFunction {
 	}
 
 	/**
-	 * Set the threshold high.
-	 * 
-	 * @param d
-	 *            The threshold high.
-	 */
-	public final void setThresholdHigh(final double d) {
-		setParam(ActivationRamp.PARAM_RAMP_HIGH_THRESHOLD, d);
-	}
-
-	/**
 	 * Set the threshold low.
 	 * 
 	 * @param d
 	 *            The threshold low.
 	 */
 	public final void setThresholdLow(final double d) {
-		setParam(ActivationRamp.PARAM_RAMP_LOW_THRESHOLD, d);
+		setParam(ActivationReLU.PARAM_RELU_LOW_THRESHOLD, d);
 	}
 	
 	/**
@@ -244,11 +186,11 @@ public class ActivationRamp implements ActivationFunction {
 	 */
 	@Override
 	public String getFactoryCode() {
-		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_RAMP, this);
+		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_RELU, this);
 	}
 
 	@Override
 	public String getLabel() {
-		return "ramp";
+		return "relu";
 	}
 }

@@ -114,5 +114,10 @@ public interface ActivationFunction extends Serializable, Cloneable {
 	 * to be support for creating of your activation through factory.
 	 */
 	String getFactoryCode();
+	
+	/**
+	 * @return The human-friendly name for this activation
+	 */
+	String getLabel();
 
 }

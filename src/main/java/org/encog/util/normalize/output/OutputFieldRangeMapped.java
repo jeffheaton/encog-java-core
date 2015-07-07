@@ -101,10 +101,13 @@ public class OutputFieldRangeMapped extends BasicOutputField implements
 	 * @return The calculated value.
 	 */
 	public double calculate(final int subfield) {
-		return ((this.field.getCurrentValue() - this.field.getMin()) 
-				/ (this.field
-				.getMax() - this.field.getMin()))
-				* (this.high - this.low) + this.low;
+		if (this.field.getMax() == this.field.getMin()) {
+			return 0;
+		} else {
+			return ((this.field.getCurrentValue() - this.field.getMin()) 
+					/ (this.field.getMax() - this.field.getMin()))
+					* (this.high - this.low) + this.low;
+		}
 	}
 
 	/**

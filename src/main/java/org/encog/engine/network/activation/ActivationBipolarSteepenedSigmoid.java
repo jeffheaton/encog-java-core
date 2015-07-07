@@ -107,5 +107,8 @@ public class ActivationBipolarSteepenedSigmoid implements ActivationFunction {
 	public String getFactoryCode() {
 		return null;
 	}
-
+	@Override
+	public String getLabel() {
+		return "bipolar-steepenedsigmoid";
+	}
 }

@@ -48,7 +48,6 @@ public class BasicMLData implements MLData,
 	 */
 	private double[] data;
 
-
 	/**
 	 * Construct this object with the specified data.
 	 *
@@ -220,6 +219,24 @@ public class BasicMLData implements MLData,
 		for (int i = 0; i < size(); i++)
 			result.setData(i,  getData(i) - o.getData(i));
 		
+		return result;
+	}
+
+	/**
+	 * Apply a thresholding function to the data elements. This does not modify the object.
+	 * @param thesdholdValue the value to which elements are compared
+	 * @param lowValue the value to use if <= threshold
+	 * @param highValue the value to use if > threshold
+	 * @return The result.
+	 */
+	public MLData threshold(double thresholdValue, double lowValue, double highValue)
+	{
+		MLData result = new BasicMLData(size());
+		for (int i = 0; i < size(); i++)
+			if (getData(i) > thresholdValue)
+				result.setData(i,highValue);
+			else
+				result.setData(i,lowValue);
 		return result;
 	}
 }

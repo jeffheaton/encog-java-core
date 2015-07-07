@@ -21,6 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+
 package org.encog.ensemble.training;
 
 import org.encog.ensemble.EnsembleTrainFactory;
@@ -32,14 +33,25 @@ import org.encog.neural.networks.training.lma.LevenbergMarquardtTraining;
 
 public class LevenbergMarquardtFactory implements EnsembleTrainFactory {
 
+	
 	@Override
 	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData) {
+		return this.getTraining(mlMethod, trainingData, 0);
+
+	}
+	
+	@Override
+	public MLTrain getTraining(MLMethod mlMethod, MLDataSet trainingData, double dropoutRate) {
 		return (MLTrain) new LevenbergMarquardtTraining((BasicNetwork) mlMethod, trainingData);
 	}
 
 	@Override
 	public String getLabel() {
-		return "resprop";
+		return "LMQ";
 	}
 
+	@Override
+	public void setDropoutRate(double rate) {
+		throw new RuntimeException("LMQ does not support dropout rates");
+	}
 }

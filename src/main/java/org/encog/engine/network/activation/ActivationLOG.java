@@ -135,4 +135,9 @@ public class ActivationLOG implements ActivationFunction {
 	public String getFactoryCode() {
 		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_LOG, this);
 	}
+	
+	@Override
+	public String getLabel() {
+		return "log";
+	}
 }

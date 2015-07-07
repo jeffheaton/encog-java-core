@@ -124,4 +124,9 @@ public class ActivationBiPolar implements ActivationFunction {
 	public String getFactoryCode() {
 		return ActivationUtil.generateActivationFactory(MLActivationFactory.AF_BIPOLAR, this);
 	}
+
+	@Override
+	public String getLabel() {
+		return "bipolar";
+	}
 }

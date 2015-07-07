@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.3 - Java Version
+ * Encog(tm) Core v3.2 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
  
- * Copyright 2008-2014 Heaton Research, Inc.
+ * Copyright 2008-2013 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.ensemble.bagging;
+package org.encog.ensemble.dropout;
 
 import java.util.ArrayList;
 
@@ -32,23 +32,16 @@ import org.encog.ensemble.EnsembleMLMethodFactory;
 import org.encog.ensemble.EnsembleTrainFactory;
 import org.encog.ensemble.EnsembleTypes;
 import org.encog.ensemble.EnsembleTypes.ProblemType;
-import org.encog.ensemble.data.factories.EnsembleDataSetFactory;
-import org.encog.ensemble.data.factories.ResamplingDataSetFactory;
+import org.encog.ensemble.data.factories.NonResamplingDataSetFactory;
 
-public class Bagging extends Ensemble {
+public class Dropout extends Ensemble {
 
 	private int splits;
 
-	public Bagging(int splits, int dataSetSize, EnsembleMLMethodFactory mlFactory,
-			EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator)
+	public Dropout(int splits, int dataSetSize, EnsembleMLMethodFactory mlFactory, EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator)
 	{
-		this(splits,dataSetSize,mlFactory,trainFactory,aggregator,new ResamplingDataSetFactory(dataSetSize));
-	}
-	
-	public Bagging(int splits, int dataSetSize, EnsembleMLMethodFactory mlFactory, 
-			EnsembleTrainFactory trainFactory, EnsembleAggregator aggregator, EnsembleDataSetFactory edf)
-	{
-		this.dataSetFactory = edf;
+		int dataSplits = aggregator.needsTraining() ? splits + 1 : splits;
+		this.dataSetFactory = new NonResamplingDataSetFactory(dataSetSize);
 		this.splits = splits;
 		this.mlFactory = mlFactory;
 		this.trainFactory = trainFactory;
@@ -56,7 +49,7 @@ public class Bagging extends Ensemble {
 		this.aggregator = aggregator;
 		initMembers();
 	}
-	
+
 	@Override
 	public void initMembers()
 	{
@@ -67,7 +60,7 @@ public class Bagging extends Ensemble {
 	public ProblemType getProblemType() {
 		return EnsembleTypes.ProblemType.CLASSIFICATION;
 	}
-
+	
 	@Override
 	public EnsembleML getMember(int memberNumber) {
 		return members.get(memberNumber);
@@ -79,6 +72,5 @@ public class Bagging extends Ensemble {
 			current.trainStep();
 		}
 	}
-
 
 }

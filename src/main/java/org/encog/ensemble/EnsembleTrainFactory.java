@@ -30,6 +30,8 @@ import org.encog.ml.train.MLTrain;
 public interface EnsembleTrainFactory {
 
 	public MLTrain getTraining(MLMethod method, MLDataSet trainingData);
+	public MLTrain getTraining(MLMethod method, MLDataSet trainingData, double dropoutRate);
 	public String getLabel();
+	void setDropoutRate(double rate);
 
 }

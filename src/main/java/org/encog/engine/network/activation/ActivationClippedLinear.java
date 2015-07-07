@@ -111,4 +111,8 @@ public class ActivationClippedLinear implements ActivationFunction {
 		return null;
 	}
 
+	@Override
+	public String getLabel() {
+		return "clippedlinear";
+	}
 }

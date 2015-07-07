@@ -117,7 +117,6 @@ public class ScaledConjugateGradient extends Propagation {
 	 * Should the initial gradients be calculated.
 	 */
 	private boolean mustInit;
-
 	
 	/**
 	 * Construct a training class.
@@ -177,6 +176,7 @@ public class ScaledConjugateGradient extends Propagation {
 	public void resume(final TrainingContinuation state) {
 		
 	}
+
 	
 	/**
 	 * Calculate the gradients. They are normalized as well.
@@ -364,7 +364,7 @@ public class ScaledConjugateGradient extends Propagation {
 		
 		postIteration();
 	}
-
+	
 	/**
 	 * Update the weights.
 	 * @param gradients The current gradients.
@@ -378,6 +378,21 @@ public class ScaledConjugateGradient extends Propagation {
 		return 0;
 	}
 
+	/**
+	 * Update the weights.
+	 * @param gradients The current gradients.
+	 * @param lastGradient The last gradients.
+	 * @param index The weight index being updated.
+	 * @param dropoutRate The dropout rate
+	 * @return The new weight value.
+	 */
+	@Override
+	public double updateWeight(final double[] gradients,
+			final double[] lastGradient, final int index, double dropoutRate) {
+		return 0;
+	}
+
+	
 	/**
 	 * Unused.
 	 */
