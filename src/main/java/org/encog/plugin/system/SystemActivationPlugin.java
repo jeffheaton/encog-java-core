@@ -31,6 +31,7 @@ import org.encog.engine.network.activation.ActivationGaussian;
 import org.encog.engine.network.activation.ActivationLOG;
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.activation.ActivationRamp;
+import org.encog.engine.network.activation.ActivationRelu;
 import org.encog.engine.network.activation.ActivationSIN;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationSoftMax;
@@ -120,6 +121,10 @@ public class SystemActivationPlugin implements EncogPluginService1 {
 		
 		if( name.equalsIgnoreCase(MLActivationFactory.AF_SSIGMOID)) {
 			return new ActivationSteepenedSigmoid();
+		}
+		
+		if( name.equalsIgnoreCase(MLActivationFactory.AF_RELU)) {
+			return new ActivationRelu();
 		}
 
 		return null;
