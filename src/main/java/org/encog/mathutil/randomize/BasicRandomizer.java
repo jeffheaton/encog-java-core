@@ -2,7 +2,7 @@
  * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
- 
+
  * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,14 +16,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *   
- * For more information on Heaton Research copyrights, licenses 
+ *
+ * For more information on Heaton Research copyrights, licenses
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
 package org.encog.mathutil.randomize;
-
-import java.util.Random;
 
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.randomize.generate.GenerateRandom;
@@ -34,9 +32,9 @@ import org.encog.neural.networks.BasicNetwork;
 
 /**
  * Provides basic functionality that most randomizers will need.
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public abstract class BasicRandomizer implements Randomizer {
 
@@ -70,7 +68,7 @@ public abstract class BasicRandomizer implements Randomizer {
 
 	/**
 	 * Generate a random number in the specified range.
-	 * 
+	 *
 	 * @param min
 	 *            The minimum value.
 	 * @param max
@@ -84,13 +82,13 @@ public abstract class BasicRandomizer implements Randomizer {
 
 	/**
 	 * Randomize one level of a neural network.
-	 * 
+	 *
 	 * @param network
 	 *            The network to randomize
 	 * @param fromLayer
 	 *            The from level to randomize.
 	 */
-	public void randomize(final BasicNetwork network, 
+	public void randomize(final BasicNetwork network,
 			final int fromLayer) {
 		final int fromCount = network.getLayerTotalNeuronCount(fromLayer);
 		final int toCount = network.getLayerNeuronCount(fromLayer + 1);
@@ -107,7 +105,7 @@ public abstract class BasicRandomizer implements Randomizer {
 	/**
 	 * Randomize the array based on an array, modify the array. Previous values
 	 * may be used, or they may be discarded, depending on the randomizer.
-	 * 
+	 *
 	 * @param d
 	 *            An array to randomize.
 	 */
@@ -119,7 +117,7 @@ public abstract class BasicRandomizer implements Randomizer {
 	/**
 	 * Randomize the array based on an array, modify the array. Previous values
 	 * may be used, or they may be discarded, depending on the randomizer.
-	 * 
+	 *
 	 * @param d
 	 *            An array to randomize.
 	 * @param begin
@@ -128,7 +126,7 @@ public abstract class BasicRandomizer implements Randomizer {
 	 *            The size of the array to copy.
 	 */
 	@Override
-	public void randomize(final double[] d, final int begin, 
+	public void randomize(final double[] d, final int begin,
 				final int size) {
 		for (int i = 0; i < size; i++) {
 			d[begin + i] = randomize(d[begin + i]);
@@ -139,7 +137,7 @@ public abstract class BasicRandomizer implements Randomizer {
 	 * Randomize the 2d array based on an array, modify the array. Previous
 	 * values may be used, or they may be discarded, depending on the
 	 * randomizer.
-	 * 
+	 *
 	 * @param d
 	 *            An array to randomize.
 	 */
@@ -155,7 +153,7 @@ public abstract class BasicRandomizer implements Randomizer {
 	/**
 	 * Randomize the matrix based on an array, modify the array. Previous values
 	 * may be used, or they may be discarded, depending on the randomizer.
-	 * 
+	 *
 	 * @param m
 	 *            A matrix to randomize.
 	 */
@@ -173,7 +171,7 @@ public abstract class BasicRandomizer implements Randomizer {
 	 * Randomize the synapses and biases in the basic network based on an array,
 	 * modify the array. Previous values may be used, or they may be discarded,
 	 * depending on the randomizer.
-	 * 
+	 *
 	 * @param method
 	 *            A network to randomize.
 	 */

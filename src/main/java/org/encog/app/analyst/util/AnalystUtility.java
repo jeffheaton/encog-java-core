@@ -2,7 +2,7 @@
  * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
- 
+
  * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,14 +16,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *   
- * For more information on Heaton Research copyrights, licenses 
+ *
+ * For more information on Heaton Research copyrights, licenses
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
 package org.encog.app.analyst.util;
-
-import java.io.File;
 
 import org.encog.EncogError;
 import org.encog.app.analyst.AnalystFileFormat;
@@ -31,7 +29,6 @@ import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.analyze.PerformAnalysis;
 import org.encog.app.analyst.csv.TimeSeriesUtil;
 import org.encog.app.analyst.csv.normalize.AnalystNormalizeCSV;
-import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.ml.data.MLData;
@@ -44,6 +41,8 @@ import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 import org.encog.util.logging.EncogLogging;
 
+import java.io.File;
+
 /**
  * Provides an interface to the analyst usually used by other programs.
  */
@@ -52,7 +51,7 @@ public class AnalystUtility {
 	 * The analyst we are using.
 	 */
 	final private EncogAnalyst analyst;
-	
+
 	/**
 	 * Construct the analyst utility.
 	 * @param theAnalyst The analyst that we are using.
@@ -60,7 +59,7 @@ public class AnalystUtility {
 	public AnalystUtility(EncogAnalyst theAnalyst) {
 		this.analyst = theAnalyst;
 	}
-	
+
 	/**
 	 * Encode fields, using the analyst.
 	 * @param includeInput Should we include the input fields.
@@ -71,26 +70,26 @@ public class AnalystUtility {
 	public void encode(
 			boolean includeInput,
 			boolean includeOutput,
-			double[] rawData, 
+			double[] rawData,
 			MLData encodedData) {
 		int rawIndex = 0;
 		int outputIndex = 0;
-		
+
 		for (final AnalystField stat : analyst.getScript().getNormalize()
 				.getNormalizedFields()) {
 
 			if (stat.isIgnored()) {
 				continue;
 			}
-			
+
 			if (stat.isOutput() && !includeOutput ) {
 				continue;
 			}
-			
+
 			if( stat.isInput() && !includeInput ) {
 				continue;
 			}
-			
+
 			if (stat.getAction() == NormalizationAction.Normalize) {
 				encodedData.setData(outputIndex++, stat.normalize(rawData[rawIndex++]));
 			} else if (stat.getAction() == NormalizationAction.PassThrough) {
@@ -103,7 +102,7 @@ public class AnalystUtility {
 			}
 		}
 	}
-	
+
 	/**
 	 * Load a CSV file into an MLDataSet.
 	 * @param file The file to load.
@@ -114,23 +113,23 @@ public class AnalystUtility {
 			throw new EncogError(
 					"Can't normalize yet, file has not been analyzed.");
 		}
-		
+
 		MLDataSet result = new BasicMLDataSet();
-		
+
 		int inputCount = this.analyst.determineInputCount();
 		int outputCount = this.analyst.determineOutputCount();
 		int totalCount = inputCount+outputCount;
-		
+
 		boolean headers = this.analyst.getScript().getProperties()
 				.getPropertyBoolean(ScriptProperties.SETUP_CONFIG_INPUT_HEADERS);
-		
+
 		final CSVFormat format = this.analyst.getScript().determineFormat();
 
 		CSVHeaders analystHeaders = new CSVHeaders(file, headers,
 				format);
-		
+
 		ReadCSV csv = new ReadCSV(file.toString(), headers, format);
-		
+
 		for (final AnalystField field : analyst.getScript().getNormalize()
 				.getNormalizedFields()) {
 			field.init();
@@ -138,7 +137,7 @@ public class AnalystUtility {
 
 		TimeSeriesUtil series = new TimeSeriesUtil(analyst,true,
 				analystHeaders.getHeaders());
-		
+
 
 		try {
 			// write file contents
@@ -192,26 +191,26 @@ public class AnalystUtility {
 	public void decode(
 			boolean includeInput,
 			boolean includeOutput,
-			double[] rawData, 
+			double[] rawData,
 			MLData encodedData) {
 		int rawIndex = 0;
 		int outputIndex = 0;
-		
+
 		for (final AnalystField stat : analyst.getScript().getNormalize()
 				.getNormalizedFields()) {
 
 			if (stat.isIgnored()) {
 				continue;
 			}
-			
+
 			if (stat.isOutput() && !includeOutput ) {
 				continue;
 			}
-			
+
 			if( stat.isInput() && !includeInput ) {
 				continue;
 			}
-			
+
 			if (stat.getAction() == NormalizationAction.Normalize) {
 				rawData[rawIndex++] = stat.deNormalize(encodedData.getData(outputIndex++));
 			} else if (stat.getAction() == NormalizationAction.PassThrough) {
@@ -226,14 +225,14 @@ public class AnalystUtility {
 	public void analyze(File theFilename) {
 		final boolean headers = this.analyst.getScript().getProperties().getPropertyBoolean(ScriptProperties.SETUP_CONFIG_INPUT_HEADERS);
 		final AnalystFileFormat fmt = this.analyst.getScript().getProperties().getPropertyFormat(ScriptProperties.SETUP_CONFIG_CSV_FORMAT);
-		
-		
+
+
 		PerformAnalysis analyze = new PerformAnalysis(
 				this.analyst.getScript(),
-				theFilename.toString(), 
+				theFilename.toString(),
 				headers,
 				fmt);
-		
+
 		analyze.process(this.analyst);
 	}
 }
