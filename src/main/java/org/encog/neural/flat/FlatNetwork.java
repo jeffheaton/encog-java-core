@@ -183,7 +183,7 @@ public class FlatNetwork implements Serializable, Cloneable {
 	 * Default constructor.
 	 */
 	public FlatNetwork() {
-
+		this.layerDropoutRates = new double[0];
 	}
 
 	/**
