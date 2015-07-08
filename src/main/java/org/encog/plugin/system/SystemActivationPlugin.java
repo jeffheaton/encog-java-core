@@ -161,14 +161,16 @@ public class SystemActivationPlugin implements EncogPluginService1 {
 			return null;
 		}
 
-		if (af.getParamNames().length != params.length) {
-			throw new EncogError(name + " expected "
-					+ af.getParamNames().length + ", but " + params.length
-					+ " were provided.");
-		}
+		if (params.length > 0) {
+			if (af.getParamNames().length != params.length) {
+				throw new EncogError(name + " expected "
+						+ af.getParamNames().length + ", but " + params.length
+						+ " were provided.");
+			}
 
-		for (int i = 0; i < af.getParamNames().length; i++) {
-			af.setParam(i, params[i]);
+			for (int i = 0; i < af.getParamNames().length; i++) {
+				af.setParam(i, params[i]);
+			}
 		}
 
 		return af;

@@ -107,7 +107,7 @@ public class ActivationReLU implements ActivationFunction {
 	 */
 	@Override
 	public final double derivativeFunction(final double b, final double a) {
-		if(a <= this.params[ActivationReLU.PARAM_RELU_LOW_THRESHOLD])
+		if(b <= this.params[ActivationReLU.PARAM_RELU_LOW_THRESHOLD])
 		{
 			return 0;
 		}
