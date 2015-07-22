@@ -93,5 +93,9 @@ public class Stopwatch {
 		this.stopTime = System.nanoTime();
 		this.stopped = true;
 	}
+	
+	public String toString() {
+		return Format.formatTimeSpan((int)(this.getElapsedMilliseconds()/1000));
+	}
 
 }
