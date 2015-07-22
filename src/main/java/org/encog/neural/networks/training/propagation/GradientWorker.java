@@ -213,21 +213,20 @@ public class GradientWorker implements EngineTask {
 		this.network.compute(pair.getInputArray(), this.actual);
 
 		this.errorCalculation.updateError(this.actual, pair.getIdealArray(), pair.getSignificance());
-		this.errorFunction.calculateError(pair.getIdealArray(), actual, this.layerDelta);
-
-		for (int i = 0; i < this.actual.length; i++) {
-
-			this.layerDelta[i] = ((this.network.getActivationFunctions()[0]
-					.derivativeFunction(this.layerSums[i],this.layerOutput[i]) + this.flatSpot[0]))
-					* (this.layerDelta[i] * pair.getSignificance());
-		}
-
+		
+		// Calculate error for the output layer.
+		this.errorFunction.calculateError(
+				this.network.getActivationFunctions()[0], this.layerSums,this.layerOutput,
+				pair.getIdeal().getData(), this.actual, this.layerDelta, this.flatSpot[0], 
+				pair.getSignificance());
+		
+		// Propagate backwards (chain rule from calculus).
 		for (int i = this.network.getBeginTraining(); i < this.network
 				.getEndTraining(); i++) {
 			processLevel(i);
 		}
 	}
-
+	
 	/**
 	 * Process one level.
 	 * 

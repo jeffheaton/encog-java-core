@@ -23,6 +23,8 @@
  */
 package org.encog.neural.error;
 
+import org.encog.engine.network.activation.ActivationFunction;
+
 /**
  * An error function.  This is used to calculate the errors for the
  * output layer during propagation training.
@@ -31,9 +33,12 @@ package org.encog.neural.error;
 public interface ErrorFunction {
 	/**
 	 * Calculate the error.
+	 * @param activationFunction The activation function used at the output layer.
 	 * @param ideal The ideal values.
 	 * @param actual
 	 * @param error
 	 */
-	void calculateError(double[] ideal, double[] actual, double[] error);
+	public void calculateError(ActivationFunction af, double[] b, double[] a,
+			double[] ideal, double[] actual, double[] error, double derivShift, 
+			double significance);
 }

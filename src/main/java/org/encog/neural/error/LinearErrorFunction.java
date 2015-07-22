@@ -23,6 +23,8 @@
  */
 package org.encog.neural.error;
 
+import org.encog.engine.network.activation.ActivationFunction;
+
 /**
  * The standard linear error function, simply returns the difference 
  * between the actual and ideal.
@@ -33,11 +35,13 @@ public class LinearErrorFunction implements ErrorFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void calculateError(double[] ideal, double[] actual, double[] error) {
-		for(int i=0;i<actual.length;i++) {
-			error[i] = ideal[i] - actual[i];
-		}
+	public void calculateError(ActivationFunction af, double[] b, double[] a,
+			double[] ideal, double[] actual, double[] error, double derivShift, 
+			double significance) {
 		
+		for(int i=0;i<actual.length;i++) {
+			double deriv = af.derivativeFunction(b[i],a[i]);// + derivShift;
+			error[i] = ((ideal[i] - actual[i]) *significance) * deriv;
+		}		
 	}
-
 }

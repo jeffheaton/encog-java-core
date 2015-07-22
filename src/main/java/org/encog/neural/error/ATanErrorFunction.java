@@ -23,6 +23,8 @@
  */
 package org.encog.neural.error;
 
+import org.encog.engine.network.activation.ActivationFunction;
+
 /**
  * An ATan based error function.  This is often used either with QuickProp
  * or alone.  This can improve the training time of a propagation
@@ -35,10 +37,13 @@ public class ATanErrorFunction implements ErrorFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void calculateError(final double[] ideal, final double[] actual,
-			final double[] error) {
-		for (int i = 0; i < actual.length; i++) {
-			error[i] = Math.atan(ideal[i] - actual[i]);
-		}
+	public void calculateError(ActivationFunction af, double[] b, double[] a,
+			double[] ideal, double[] actual, double[] error, double derivShift, 
+			double significance) {
+		
+		for(int i=0;i<actual.length;i++) {
+			double deriv = af.derivativeFunction(b[i],a[i]);// + derivShift;
+			error[i] = (Math.atan(ideal[i] - actual[i]) *significance) * deriv;
+		}		
 	}
 }

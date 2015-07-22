@@ -1,5 +1,7 @@
 package org.encog.neural.error;
 
+import org.encog.engine.network.activation.ActivationFunction;
+
 /**
  * Implements a cross entropy error function.  This can be used with backpropagation to
  * sometimes provide better performance than the standard linear error function.
@@ -12,10 +14,13 @@ public class CrossEntropyErrorFunction implements ErrorFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void calculateError(double[] ideal, double[] actual, double[] error) {
+	public void calculateError(ActivationFunction af, double[] b, double[] a,
+			double[] ideal, double[] actual, double[] error, double derivShift, 
+			double significance) {
+		
 		for(int i=0;i<actual.length;i++) {
-			error[i] = -ideal[i] * Math.log(actual[i]) + (1-ideal[i])*Math.log(1-actual[i]); 
-		}
+			error[i] = (ideal[i] - actual[i]) *significance;
+		}		
 	}
 
 }

@@ -23,13 +23,22 @@
  */
 package org.encog.neural.error;
 
+import org.encog.engine.network.activation.ActivationFunction;
+
 public class OutputErrorFunction implements ErrorFunction {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void calculateError(double[] ideal, double[] actual, double[] error) {
+	public void calculateError(ActivationFunction af, double[] b, double[] a,
+			double[] ideal, double[] actual, double[] error, double derivShift, 
+			double significance) {
+		
 		for(int i=0;i<actual.length;i++) {
-			error[i] = actual[i];
-		}	
+			double deriv = af.derivativeFunction(b[i],a[i]) + derivShift;
+			error[i] = ((ideal[i] - actual[i]) *significance) * deriv;
+		}		
 	}
 
 }
