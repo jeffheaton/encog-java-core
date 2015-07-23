@@ -23,6 +23,7 @@
  */
 package org.encog.engine.network.activation;
 
+import org.encog.Encog;
 import org.encog.mathutil.BoundMath;
 import org.encog.ml.factory.MLActivationFactory;
 import org.encog.util.obj.ActivationUtil;
@@ -62,15 +63,14 @@ public class ActivationSoftMax implements ActivationFunction {
 			x[i] = BoundMath.exp(x[i]);
 			sum += x[i];
 		}
-		if(Double.isNaN(sum) || sum == 0) {
-			/* If all values sum to zero because of Math.exp's behaviour
-			 * on very large numbers, just set it to something so we can get
-			 * zeroes out of the activation
-			 */
-			sum = 0.000000000001;
-		}
-		for (int i = start; i < start + size; i++) {
-			x[i] = x[i] / sum;
+		if(Double.isNaN(sum) || sum <Encog.DEFAULT_DOUBLE_EQUAL ) {
+			for (int i = start; i < start + size; i++) {
+				x[i] = 1.0/size;
+			}
+		} else {
+			for (int i = start; i < start + size; i++) {
+				x[i] = x[i] / sum;
+			}
 		}
 	}
 
@@ -87,7 +87,7 @@ public class ActivationSoftMax implements ActivationFunction {
 	 */
 	@Override
 	public final double derivativeFunction(final double b, final double a) {
-		return 1.0;
+		return a * (1.0 - a);
 	}
 
 	/**

@@ -604,4 +604,5 @@ public abstract class Propagation extends BasicTraining implements Train,
 	public void setBatchSize(int theBatchSize) {
 		this.batchSize = theBatchSize;
 	}
+	
 }

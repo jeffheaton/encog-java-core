@@ -209,7 +209,7 @@ public class GradientWorker implements EngineTask {
 	 *            The ideal values.      
 	 * @param s   The significance.
 	 */
-	private void process(final MLDataPair pair) {
+	public void process(final MLDataPair pair) {
 		this.network.compute(pair.getInputArray(), this.actual);
 
 		this.errorCalculation.updateError(this.actual, pair.getIdealArray(), pair.getSignificance());
@@ -304,6 +304,13 @@ public class GradientWorker implements EngineTask {
 
 	public ErrorCalculation getErrorCalculation() {
 		return errorCalculation;
+	}
+
+	/**
+	 * @return the gradients
+	 */
+	public double[] getGradients() {
+		return gradients;
 	}
 
 	
