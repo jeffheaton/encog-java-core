@@ -56,7 +56,7 @@ import org.encog.util.logging.EncogLogging;
  * 
  */
 public abstract class Propagation extends BasicTraining implements Train,
-		MultiThreadable, BatchSize {
+		MultiThreadable, BatchSize, GradientWorkerOwner {
 
 	/**
 	 * Used to generate randomness for dropout
@@ -139,6 +139,16 @@ public abstract class Propagation extends BasicTraining implements Train,
 	 * the batch size for batch training.
 	 */
 	private int batchSize = 0;
+	
+	/**
+	 * How much to apply l1 regularization penalty, 0 (default) for none.
+	 */
+	private double l1;
+	
+	/**
+	 * How much to apply l2 regularization penalty, 0 (default) for none.
+	 */
+	private double l2;
 
 	private boolean finalized = false;
 
@@ -476,15 +486,9 @@ public abstract class Propagation extends BasicTraining implements Train,
 	}
 
 	/**
-	 * Called by the worker threads to report the progress at each step.
-	 * 
-	 * @param gradients
-	 *            The gradients from that worker.
-	 * @param error
-	 *            The error for that worker.
-	 * @param ex
-	 *            The exception.
+	 * {@inheritDoc}
 	 */
+	@Override
 	public void report(final double[] gradients, final double error,
 			final Throwable ex) {
 		synchronized (this) {
@@ -604,5 +608,37 @@ public abstract class Propagation extends BasicTraining implements Train,
 	public void setBatchSize(int theBatchSize) {
 		this.batchSize = theBatchSize;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public double getL1() {
+		return l1;
+	}
+
+	/**
+	 * @param l1 How much to apply l1 regularization penalty, 0 (default) for none.
+	 */
+	public void setL1(double l1) {
+		this.l1 = l1;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public double getL2() {
+		return l2;
+	}
+
+	/**
+	 * @param l2 How much to apply l2 regularization penalty, 0 (default) for none.
+	 */
+	public void setL2(double l2) {
+		this.l2 = l2;
+	}
+	
+	
 	
 }

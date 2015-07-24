@@ -27,11 +27,13 @@ import java.util.Random;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.error.ErrorCalculation;
+import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.neural.error.ErrorFunction;
 import org.encog.neural.flat.FlatNetwork;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.util.EngineArray;
 import org.encog.util.concurrency.EngineTask;
 
@@ -128,7 +130,7 @@ public class GradientWorker implements EngineTask {
 	/**
 	 * The owner.
 	 */
-	private final Propagation owner;
+	private final GradientWorkerOwner owner;
 	
 	/**
 	 * Derivative add constant.  Used to combat flat spot.
@@ -157,7 +159,7 @@ public class GradientWorker implements EngineTask {
 	 *            The high index to use in the training data.
 	 */
 	public GradientWorker(final FlatNetwork theNetwork,
-			final Propagation theOwner,
+			final GradientWorkerOwner theOwner,
 			final MLDataSet theTraining, final int theLow, 
 			final int theHigh, final double[] flatSpot, 
 			ErrorFunction ef) {
@@ -312,7 +314,23 @@ public class GradientWorker implements EngineTask {
 	public double[] getGradients() {
 		return gradients;
 	}
+	
+	public void calculateRegularizationPenalty(double[] l) {
+		for (int i = 0; i < network.getLayerCounts().length - 1; i++) {
+			layerRegularizationPenalty(i, l);
+		}
+	}
+	
+	public void layerRegularizationPenalty(final int fromLayer, final double[] l) {
+		final int fromCount = network.getLayerTotalNeuronCount(fromLayer);
+		final int toCount = network.getLayerNeuronCount(fromLayer + 1);
 
-	
-	
+		for (int fromNeuron = 0; fromNeuron < fromCount; fromNeuron++) {
+			for (int toNeuron = 0; toNeuron < toCount; toNeuron++) {
+				double w = this.network.getWeight(fromLayer, fromNeuron, toNeuron);
+				l[0]+=Math.abs(w);
+				l[1]+=w*w;
+			}
+		}
+	}
 }

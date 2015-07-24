@@ -38,6 +38,7 @@ import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataPair;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.util.EngineArray;
 
@@ -908,4 +909,69 @@ public class FlatNetwork implements Serializable, Cloneable {
 		this.layerDropoutRates = layerDropoutRates;
 	}
 	
+	/**
+	 * Get the weight between the two layers.
+	 * @param fromLayer The from layer.
+	 * @param fromNeuron The from neuron.
+	 * @param toNeuron The to neuron.
+	 * @return The weight value.
+	 */
+	public double getWeight(final int fromLayer, 
+			final int fromNeuron,
+			final int toNeuron) {
+		validateNeuron(fromLayer, fromNeuron);
+		validateNeuron(fromLayer + 1, toNeuron);
+		final int fromLayerNumber = this.layerContextCount.length - fromLayer - 1;
+		final int toLayerNumber = fromLayerNumber - 1;
+
+		if (toLayerNumber < 0) {
+			throw new NeuralNetworkError(
+					"The specified layer is not connected to another layer: "
+							+ fromLayer);
+		}
+
+		final int weightBaseIndex 
+			= this.weightIndex[toLayerNumber];
+		final int count 
+			= this.layerCounts[fromLayerNumber];
+		final int weightIndex = weightBaseIndex + fromNeuron
+				+ (toNeuron * count);
+
+		return this.weights[weightIndex];
+	}
+	
+	/**
+	 * Validate the the specified targetLayer and neuron are valid.
+	 * @param targetLayer The target layer.
+	 * @param neuron The target neuron.
+	 */
+	public void validateNeuron(final int targetLayer, final int neuron) {
+		if ((targetLayer < 0) || (targetLayer >= this.layerCounts.length)) {
+			throw new NeuralNetworkError("Invalid layer count: " + targetLayer);
+		}
+
+		if ((neuron < 0) || (neuron >= getLayerTotalNeuronCount(targetLayer))) {
+			throw new NeuralNetworkError("Invalid neuron number: " + neuron);
+		}
+	}
+	
+	/**
+	 * Get the total (including bias and context) neuron cont for a layer.
+	 * @param l The layer.
+	 * @return The count.
+	 */
+	public int getLayerTotalNeuronCount(final int l) {
+		final int layerNumber = this.layerCounts.length - l - 1;
+		return this.layerCounts[layerNumber];
+	}
+	
+	/**
+	 * Get the neuron count.
+	 * @param l The layer.
+	 * @return The neuron count.
+	 */
+	public int getLayerNeuronCount(final int l) {
+		final int layerNumber = this.layerCounts.length - l - 1;
+		return this.layerFeedCounts[layerNumber];
+	}
 }

@@ -578,25 +578,7 @@ public class BasicNetwork extends BasicML implements ContainsFlat, MLContext,
 			final int fromNeuron,
 			final int toNeuron) {
 		this.structure.requireFlat();
-		validateNeuron(fromLayer, fromNeuron);
-		validateNeuron(fromLayer + 1, toNeuron);
-		final int fromLayerNumber = getLayerCount() - fromLayer - 1;
-		final int toLayerNumber = fromLayerNumber - 1;
-
-		if (toLayerNumber < 0) {
-			throw new NeuralNetworkError(
-					"The specified layer is not connected to another layer: "
-							+ fromLayer);
-		}
-
-		final int weightBaseIndex 
-			= this.structure.getFlat().getWeightIndex()[toLayerNumber];
-		final int count 
-			= this.structure.getFlat().getLayerCounts()[fromLayerNumber];
-		final int weightIndex = weightBaseIndex + fromNeuron
-				+ (toNeuron * count);
-
-		return this.structure.getFlat().getWeights()[weightIndex];
+		return this.getFlat().getWeight(fromLayer, fromNeuron, toNeuron);
 	}
 
 	/**
@@ -821,13 +803,8 @@ public class BasicNetwork extends BasicML implements ContainsFlat, MLContext,
 	 * @param neuron The target neuron.
 	 */
 	public void validateNeuron(final int targetLayer, final int neuron) {
-		if ((targetLayer < 0) || (targetLayer >= getLayerCount())) {
-			throw new NeuralNetworkError("Invalid layer count: " + targetLayer);
-		}
-
-		if ((neuron < 0) || (neuron >= getLayerTotalNeuronCount(targetLayer))) {
-			throw new NeuralNetworkError("Invalid neuron number: " + neuron);
-		}
+		getStructure().requireFlat();
+		getFlat().validateNeuron(targetLayer, neuron);
 	}
 
 	/**
