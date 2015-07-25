@@ -25,15 +25,14 @@ package org.encog.neural.networks.training.propagation;
 
 import java.util.Random;
 
+import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.error.ErrorCalculation;
-import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.neural.error.ErrorFunction;
 import org.encog.neural.flat.FlatNetwork;
-import org.encog.neural.networks.BasicNetwork;
 import org.encog.util.EngineArray;
 import org.encog.util.concurrency.EngineTask;
 
@@ -221,6 +220,17 @@ public class GradientWorker implements EngineTask {
 				this.network.getActivationFunctions()[0], this.layerSums,this.layerOutput,
 				pair.getIdeal().getData(), this.actual, this.layerDelta, this.flatSpot[0], 
 				pair.getSignificance());
+		
+		// Apply regularization, if requested.
+		if( this.owner.getL1()>Encog.DEFAULT_DOUBLE_EQUAL 
+				|| this.owner.getL1()>Encog.DEFAULT_DOUBLE_EQUAL  ) {
+			double[] lp = new double[2];
+			calculateRegularizationPenalty(lp);
+			for(int i=0;i<this.actual.length;i++) {
+				double p = (lp[0]*this.owner.getL1()) + (lp[1]*this.owner.getL2());
+				this.layerDelta[i]+=p;
+			}
+		}
 		
 		// Propagate backwards (chain rule from calculus).
 		for (int i = this.network.getBeginTraining(); i < this.network
