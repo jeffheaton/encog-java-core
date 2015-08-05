@@ -304,16 +304,16 @@ public final class EncogUtility {
 			final BasicNetwork network, final MLDataSet trainingSet,
 			final int minutes) {
 
-		long remaining;
+		long current, elapsed, remaining;
 
 		System.out.println("Beginning training...");
 		final long start = System.currentTimeMillis();
 		do {
 			train.iteration();
 
-			final long current = System.currentTimeMillis();
-			final long elapsed = (current - start) / 1000;// seconds
-			remaining = minutes - elapsed / 60;
+			current = System.currentTimeMillis();
+			elapsed = (current - start) / 1000;// seconds
+			remaining = (minutes * 60) - elapsed;
 
 			int iteration = train.getIteration();
 			
@@ -321,7 +321,7 @@ public final class EncogUtility {
 					+ " Error:" + Format.formatPercent(train.getError())
 					+ " elapsed time = " + Format.formatTimeSpan((int) elapsed)
 					+ " time left = "
-					+ Format.formatTimeSpan((int) remaining * 60));
+					+ Format.formatTimeSpan((int) remaining));
 
 		} while (remaining > 0);
 		train.finishTraining();
