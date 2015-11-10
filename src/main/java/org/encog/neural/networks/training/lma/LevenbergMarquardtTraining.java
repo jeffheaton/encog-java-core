@@ -160,6 +160,8 @@ public class LevenbergMarquardtTraining extends BasicTraining implements MultiTh
 	 *            The network to train. Must have a single output neuron.
 	 * @param training
 	 *            The training data to use. Must be indexable.
+	 * @param h
+	 *            Utility class to compute the Hessian.
 	 */
 	public LevenbergMarquardtTraining(final BasicNetwork network,
 			final MLDataSet training, final ComputeHessian h) {

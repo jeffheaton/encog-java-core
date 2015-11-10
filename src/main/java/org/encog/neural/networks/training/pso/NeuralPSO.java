@@ -494,7 +494,7 @@ public class NeuralPSO extends BasicTraining {
      * Keep a reference to the passed population of networks.
      * This population is not copied, it will evolve during training.  
      * 
-     * @param initialPopulation
+     * @param initialPopulation the initial population of networks.
      */
     public void setInitialPopulation(BasicNetwork[] initialPopulation) {
         m_networks = initialPopulation;

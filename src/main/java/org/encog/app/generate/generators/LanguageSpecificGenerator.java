@@ -39,7 +39,7 @@ public interface LanguageSpecificGenerator {
 	/**
 	 * Write the generated code to a file.
 	 * 
-	 * @param targetFile
+	 * @param targetFile the output file
 	 */
 	void writeContents(File targetFile);
 }

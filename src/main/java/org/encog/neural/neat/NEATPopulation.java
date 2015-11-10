@@ -256,7 +256,7 @@ public class NEATPopulation extends BasicPopulation implements Serializable,
 	 * 
 	 * @param theSubstrate
 	 *            The substrate ID.
-	 * @param populationSize
+	 * @param populationSize The population size.
 	 */
 	public NEATPopulation(final Substrate theSubstrate, final int populationSize) {
 		super(populationSize, new FactorHyperNEATGenome());

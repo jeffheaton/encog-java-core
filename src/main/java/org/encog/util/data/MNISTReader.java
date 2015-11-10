@@ -15,7 +15,7 @@ import org.encog.ml.data.basic.BasicMLDataSet;
  * This reads the MNIST dataset of handwritten digits into an Encog data set.
  * The MNIST dataset is found at http://yann.lecun.com/exdb/mnist/.
  * 
- * Adapted from a class by Gabe Johnson <johnsogg@cmu.edu>.
+ * Adapted from a class by Gabe Johnson &lt;johnsogg@cmu.edu&gt;.
  * https://code.google.com
  * /p/pen-ui/source/browse/trunk/skrui/src/org/six11/skrui
  * /charrec/MNISTReader.java?r=185

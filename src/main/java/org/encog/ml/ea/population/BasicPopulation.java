@@ -84,6 +84,7 @@ public class BasicPopulation extends BasicML implements Population,
 	 * 
 	 * @param thePopulationSize
 	 *            The population size.
+	 * @param theGenomeFactory  factory that can be used to store create genomes.
 	 */
 	public BasicPopulation(final int thePopulationSize,
 			final GenomeFactory theGenomeFactory) {

@@ -627,6 +627,8 @@ public class FlatNetwork implements Serializable, Cloneable {
 	 * 
 	 * @param layers
 	 *            The layers of the network to create.
+	 * @param dropout
+	 *            Flag to enable dropout rate for each layer.
 	 */
 	public void init(final FlatLayer[] layers, boolean dropout) {
 

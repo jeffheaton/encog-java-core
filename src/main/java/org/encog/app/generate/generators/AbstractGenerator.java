@@ -89,7 +89,7 @@ public abstract class AbstractGenerator implements ProgramGenerator {
 	/**
 	 * Add to the beginning of the file. This is good for includes.
 	 * 
-	 * @param str
+	 * @param str the string to insert
 	 */
 	public void addToBeginning(final String str) {
 		this.contents.insert(0, str);

@@ -275,7 +275,7 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 
 	/**
 	 * Define multiple output columns, all others as inputs.
-	 * @param outputColumn The output column.
+	 * @param outputColumns The output columns.
 	 */
 	public void defineMultipleOutputsOthersInput(ColumnDefinition[] outputColumns) {
 		this.helper.clearInputOutput();

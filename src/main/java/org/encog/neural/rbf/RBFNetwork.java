@@ -242,6 +242,8 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 	 *            The minimum position neurons should be centered. Typically 0.
 	 * @param maxPosition
 	 *            The maximum position neurons should be centered. Typically 1
+	 * @param t
+	 *            The RBF Function to use for this layer.
 	 * @param volumeNeuronRBFWidth
 	 *            The neuron width of neurons within the mesh.
 	 * @param useWideEdgeRBFs

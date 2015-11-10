@@ -34,7 +34,7 @@ public class EACompileError extends EAError {
 
 	/**
 	 * Construct the error.
-	 * @param msg
+	 * @param msg The message.
 	 */
 	public EACompileError(final String msg) {
 		super(msg);

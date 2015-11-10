@@ -224,9 +224,9 @@ public class BasicMLData implements MLData,
 
 	/**
 	 * Apply a thresholding function to the data elements. This does not modify the object.
-	 * @param thesdholdValue the value to which elements are compared
-	 * @param lowValue the value to use if <= threshold
-	 * @param highValue the value to use if > threshold
+	 * @param thresholdValue the value to which elements are compared
+	 * @param lowValue the value to use if &le; threshold
+	 * @param highValue the value to use if &ge; threshold
 	 * @return The result.
 	 */
 	public MLData threshold(double thresholdValue, double lowValue, double highValue)

@@ -177,12 +177,14 @@ public abstract class Ensemble {
 	
 	/**
 	 * Train the ensemble to a target accuracy
-	 * @param targetAccuracy
+	 * @param targetError The target error.
+	 * @param selectionError The selection error.
+	 * @param maxIterations
+	 * @param maxLoops
+	 * @param selectionSet
 	 * @param verbose
-	 * @param selectionSet 
-	 * @return
-	 * @throws TrainingAborted 
-	 */
+     * @throws TrainingAborted
+     */
 	public void train(double targetError, double selectionError, int maxIterations, int maxLoops, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
 		
 		for (EnsembleML current : members)
@@ -202,7 +204,7 @@ public abstract class Ensemble {
 	 * @param targetError The target error.
 	 * @param selectionError The selection error.
 	 * @param testset The test set.
-	 * @throws TraningAborted 
+	 * @throws TrainingAborted
 	 */
 	public void train(double targetError, double selectionError, EnsembleDataSet testset) throws TrainingAborted {
 		train(targetError, selectionError, testset, false);
