@@ -125,7 +125,7 @@ public interface MLTrain {
 	/**
 	 * Get the current best machine learning method from the training.
 	 * 
-	 * @return The best machine learningm method.
+	 * @return The best machine learning method.
 	 */
 	MLMethod getMethod();
 
