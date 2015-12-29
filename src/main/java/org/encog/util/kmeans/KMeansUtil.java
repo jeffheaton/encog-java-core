@@ -117,32 +117,27 @@ public class KMeansUtil<K extends CentroidFactory<? super K>> {
 	 * Perform the cluster.
 	 */
 	public void process() {
+	  ArrayList<Cluster<K>> newclusters = new ArrayList<Cluster<K>>();
 
-		boolean done;
-		do {
-			done = true;
+	  for (int i=0; i<k; i++) newclusters.add( new Cluster<K>());
 
-			for (int i = 0; i < k; i++) {
-				Cluster<K> thisCluster = clusters.get(i);
-				List<K> thisElements = thisCluster.getContents();
+	  for (int i = 0; i < k; i++)
+	  {
+	  Cluster<K> thisCluster = clusters.get( i );
+	  List<K> thisElements = thisCluster.getContents();
 
-				for (int j = 0; j < thisElements.size(); j++) {
-					K thisElement = thisElements.get(j);
+	     for (int j = 0; j < thisElements.size(); j++)
+	     {
+	     K thisElement = thisElements.get( j );
+	     int nearestCluster = nearestClusterIndex( thisElement );
 
-					// don't make a cluster empty
-					if (thisCluster.centroid().distance(thisElement) > 0) {
-						Cluster<K> nearestCluster = nearestCluster(thisElement);
+	       newclusters.get( nearestCluster ).add( thisElement );
+	     }
+	  }
 
-						// move to nearer cluster
-						if (thisCluster != nearestCluster) {
-							nearestCluster.add(thisElement);
-							thisCluster.remove(j);
-							done = false;
-						}
-					}
-				}
-			}
-		} while (!done);
+	  clusters.clear();
+	  for ( Cluster<K> c : newclusters )
+	     clusters.add( c );
 	}
 
 	/**
@@ -151,19 +146,26 @@ public class KMeansUtil<K extends CentroidFactory<? super K>> {
 	 * @return The nearest cluster.
 	 */
 	private Cluster<K> nearestCluster(K element) {
-		double distance = Double.MAX_VALUE;
-		Cluster<K> result = null;
+		    return clusters.get( nearestClusterIndex( element ));
+  	}
+  
+	 private int nearestClusterIndex( K element )
+	 {
+	 double distance = Double.MAX_VALUE;
+	 int result = -1;
 
-		for (int i = 0; i < clusters.size(); i++) {
-			double thisDistance = clusters.get(i).centroid().distance(element);
+	  for (int i = 0; i < clusters.size(); i++)
+	  {
+	  double thisDistance = clusters.get( i ).centroid().distance( element );
 
-			if (distance > thisDistance) {
-				distance = thisDistance;
-				result = clusters.get(i);
-			}
-		}
+	   if (distance > thisDistance)
+	   {
+	      distance = thisDistance;
+	     result = i;
+	    }
+	  }
 
-		return result;
+	  return result;
 	}
 
 	/**
