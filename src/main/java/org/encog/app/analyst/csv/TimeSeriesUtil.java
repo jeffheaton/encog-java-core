@@ -82,6 +82,7 @@ public class TimeSeriesUtil {
 	/**
 	 * Construct the time-series utility.
 	 * @param theAnalyst The analyst to use.
+	 * @param includeOutput whether the output columns will be included in input
 	 * @param headings The column headings.
 	 */
 	public TimeSeriesUtil(final EncogAnalyst theAnalyst, boolean includeOutput,

@@ -140,6 +140,7 @@ public class VectorAlgebra {
      * thread-safety depends on Random.nextDouble().
      * 
      * @param v     an array of doubles
+     * @param maxValue the max value
      */
     public void randomise(double[] v, double maxValue) {
         for (int i = 0; i < v.length; i++) {

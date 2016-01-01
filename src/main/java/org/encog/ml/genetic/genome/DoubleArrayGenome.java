@@ -52,7 +52,7 @@ public class DoubleArrayGenome extends BasicGenome implements ArrayGenome {
 	
 	/**
 	 * Construct a genome based on another genome.
-	 * @param other
+	 * @param other the genome to clone
 	 */
 	public DoubleArrayGenome(DoubleArrayGenome other) {
 		this.data = other.getData().clone();

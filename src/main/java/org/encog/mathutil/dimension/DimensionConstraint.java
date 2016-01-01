@@ -47,7 +47,9 @@ public class DimensionConstraint {
 	 * @param n
 	 *            The number of dimensions.
 	 * @param theLower
+	 *            The lower bound for each dimension.
 	 * @param theUpper
+	 *            The upper bound for each dimension.
 	 */
 	public DimensionConstraint(int n, int theLower, int theUpper) {
 		this.lower = new MultiDimension(n);

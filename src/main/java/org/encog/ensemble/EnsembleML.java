@@ -69,7 +69,6 @@ public interface EnsembleML extends MLMethod, MLClassification, MLRegression {
 	 * @param targetError Target error.
 	 * @param verbose Verbose mode.
 	 * @param maxIterations Stop after this number of iterations
-	 * @throws Exception 
 	 */
 	public void train(double targetError, int maxIterations, boolean verbose);
 
@@ -90,6 +89,7 @@ public interface EnsembleML extends MLMethod, MLClassification, MLRegression {
 
 	/**
 	 * Get the error for this ML on the dataset
+	 * @param testset The dataset.
 	 */
 	public double getError(EnsembleDataSet testset);
 

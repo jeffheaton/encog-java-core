@@ -33,10 +33,17 @@ import org.encog.engine.network.activation.ActivationFunction;
 public interface ErrorFunction {
 	/**
 	 * Calculate the error.
-	 * @param activationFunction The activation function used at the output layer.
+	 * @param af The activation function used at the output layer.
+	 * @param b
+	 *            The number to calculate the derivative of, the number "before" the
+	 *            activation function was applied.
+	 * @param a
+	 *            The number "after" an activation function has been applied.
 	 * @param ideal The ideal values.
-	 * @param actual
-	 * @param error
+	 * @param actual The actual values.
+	 * @param error The resulting error values.
+	 * @param derivShift The amount to shift af derivativeFunction by
+	 * @param significance Weighting to apply to ideal[i] - actual[i]
 	 */
 	public void calculateError(ActivationFunction af, double[] b, double[] a,
 			double[] ideal, double[] actual, double[] error, double derivShift, 

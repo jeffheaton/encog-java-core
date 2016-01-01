@@ -204,11 +204,7 @@ public class GradientWorker implements EngineTask {
 	/**
 	 * Process one training set element.
 	 * 
-	 * @param input
-	 *            The network input.
-	 * @param ideal
-	 *            The ideal values.      
-	 * @param s   The significance.
+	 * @param pair the training data information
 	 */
 	public void process(final MLDataPair pair) {
 		this.network.compute(pair.getInputArray(), this.actual);

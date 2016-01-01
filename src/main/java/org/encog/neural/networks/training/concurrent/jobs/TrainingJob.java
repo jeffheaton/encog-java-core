@@ -87,6 +87,7 @@ public abstract class TrainingJob {
 
 	/**
 	 * Create a trainer to use.
+	 * @param singleThreaded Whether training is single threaded
 	 */
 	public abstract void createTrainer(boolean singleThreaded);
 

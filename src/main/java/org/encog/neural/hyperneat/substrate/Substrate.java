@@ -97,7 +97,7 @@ public class Substrate implements Serializable {
 	 * Construct a substrate with the specified number of dimensions in the
 	 * input/output layers.
 	 * 
-	 * @param theDimensions
+	 * @param theDimensions The dimensions of the network.
 	 */
 	public Substrate(int theDimensions) {
 		this.dimensions = theDimensions;
