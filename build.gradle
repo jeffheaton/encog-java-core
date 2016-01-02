@@ -1,9 +1,20 @@
 apply plugin: 'java'
+
+buildscript {
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.6.1'
+  }
+}
+
 apply plugin: 'eclipse'
 apply plugin: 'maven'
+apply plugin: 'nexus'
 
-sourceCompatibility=1.6
-targetCompatibility=1.6
+sourceCompatibility=1.7
+targetCompatibility=1.7
 
 def props = new Properties();
 def localProperties = new File("local.properties")
@@ -20,6 +31,8 @@ repositories {
    mavenCentral()
 }
 
+apply from: 'publish.gradle'
+
 dependencies {
     testCompile 'junit:junit:4.10'
     testCompile 'org.hsqldb:hsqldb:2.0.0'
@@ -27,32 +40,6 @@ dependencies {
     deployerJars 'org.apache.maven.wagon:wagon-ssh:2.1'
 }
 
-task sourcesJar(type: Jar, dependsOn:classes) {
-	classifier = 'sources'
-	from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn:javadoc) {
-	classifier = 'javadoc'
-	from javadoc.destinationDir
-}
-
-artifacts {
-	archives sourcesJar
-	archives javadocJar
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            configuration = configurations.deployerJars
-            repository(url: props.get('maven.repository.url')) {
-                authentication(userName: props.get('maven.repository.user'), password: props.get('maven.repository.password'))
-            }
-        }
-    }
-}
-
 task createWrapper(type: Wrapper) {
-    gradleVersion = '2.1'
+    gradleVersion = '2.10'
 }

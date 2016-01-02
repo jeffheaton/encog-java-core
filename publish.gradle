@@ -1,0 +1,42 @@
+apply plugin: 'nexus'
+
+modifyPom {
+  project {
+    name 'encog-core'
+    description 'Encog Machine Learning Framework.'
+    url 'http://www.heatonresearch.com/encog/'
+    packaging 'jar'
+    organization {
+      name 'Heaton Research, Inc.'
+      url 'http://www.heatonresearch.com'
+    }
+    licenses {
+      license {
+        name 'The Apache Software License, Version 2.0'
+        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+        distribution 'repo'
+      }
+    }
+    scm {
+      url 'https://github.com/encog/encog-java-core.git'
+      connection 'git@github.com:encog/encog-java-core.git'
+      developerConnection 'git@github.com:encog/encog-java-core.git'
+    }
+    developers {
+      developer {
+        id 'jeffheatondotcom'
+        name 'Jeff Heaton'
+		email 'jheaton@heatonresearch.com'
+      }
+    }
+  }
+}
+
+nexus {
+  attachJavadoc = true
+  attachSources = true
+  attachTests = true
+  sign = true
+  repositoryUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
+  snapshotRepositoryUrl = 'https://oss.sonatype.org/content/repositories/snapshots'
+}
