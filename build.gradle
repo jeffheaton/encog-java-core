@@ -47,5 +47,5 @@ task createWrapper(type: Wrapper) {
 }
 
 task getVersion << {
-  println version
+  println '3.4.0-SNAPSHOT'
 }
