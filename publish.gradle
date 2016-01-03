@@ -4,6 +4,7 @@ modifyPom {
   project {
     name 'encog-core'
     groupId 'org.encog'
+    artifactId 'encog-core'
     version '3.4.0-SNAPSHOT'
     description 'Encog Machine Learning Framework.'
     url 'http://www.heatonresearch.com/encog/'
