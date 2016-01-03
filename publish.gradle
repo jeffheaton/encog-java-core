@@ -3,6 +3,7 @@ apply plugin: 'nexus'
 modifyPom {
   project {
     name 'encog-core'
+    group 'org.encog'
     description 'Encog Machine Learning Framework.'
     url 'http://www.heatonresearch.com/encog/'
     packaging 'jar'
