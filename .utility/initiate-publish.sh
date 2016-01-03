@@ -4,7 +4,8 @@ echo -e "Starting Sonatype publish script...\n"
 
 if [ "$TRAVIS_REPO_SLUG" == "encog/encog-java-core" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
   if [[ $(./gradlew -q getVersion) != *SNAPSHOT* ]]; then
-      echo 'Travis can only publish snapshots.'
+      echo 'Travis can only publish snapshots, not:'
+      ./gradlew -q getVersion
       return 0
   fi
 
