@@ -1,7 +1,6 @@
 #!/bin/bash
 
 echo -e "Starting Sonatype publish script...\n"
-echo -e "Val: $TRAVIS_REPO_SLUG\n"
 
 if [ "$TRAVIS_REPO_SLUG" == "encog/encog-java-core" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
   if [[ $(./gradlew -q getVersion) != *SNAPSHOT* ]]; then
