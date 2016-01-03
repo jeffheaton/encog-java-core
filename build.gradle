@@ -16,6 +16,7 @@ apply plugin: 'nexus'
 sourceCompatibility=1.7
 targetCompatibility=1.7
 version='3.4.0-SNAPSHOT'
+group='org.encog'
 
 def props = new Properties();
 def localProperties = new File("local.properties")
