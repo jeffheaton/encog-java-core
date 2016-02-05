@@ -59,59 +59,40 @@ public class KMeansUtil<K extends CentroidFactory<? super K>> {
 	 * Create random clusters.
 	 * @param elements The elements to cluster.
 	 */
-	private void initRandomClusters(List<? extends K> elements) {
+	  private void initRandomClusters( List<? extends K> elements )
+  	  {
+	    for (int i=0; i<k; i++) clusters.add(new Cluster<K>());
 
-		int clusterIndex = 0;
-		int elementIndex = 0;
+	    // straight random assignment sometimes leaves a cluster empty
+	    // which may cause problems later, hence the more complicated approach
+	  int amountLeft = elements.size(), place = -1;
 
-		// first simply fill out the clusters, until we run out of clusters
-		while ((elementIndex < elements.size()) && (clusterIndex < k)
-				&& (elements.size() - elementIndex > k - clusterIndex)) {
-			K element = elements.get(elementIndex);
+	    for ( K e : elements )
+    	    {
+	      	if (amountLeft-- == k)  // we have just enough elements left for one per cluster
+        	place = 0;  // place elements in all empty clusters
 
-			boolean added = false;
+	      if (place >= 0)
+	      {
+	        for (; place<clusters.size(); place++)
+	        {
+	        Cluster<K> c = clusters.get( place );
 
-			// if this element is identical to another, add it to this cluster
-			for (int i = 0; i < clusterIndex; i++) {
-				Cluster<K> cluster = clusters.get(i);
+	          if (c.getContents().isEmpty())
+	          {
+	            c.add( e );
+	            break;
+	          }
+	        }
+	        if (place == clusters.size()) // e was not placed, place it randomly
+	          place = -1;
+	        else
+	          continue;  // only continue if e was placed
+	      }
 
-				if (cluster.centroid().distance(element) == 0) {
-					cluster.add(element);
-					added = true;
-					break;
-				}
-			}
-
-			if (!added) {
-				clusters.add(new Cluster<K>(elements.get(elementIndex)));
-				clusterIndex++;
-			}
-			elementIndex++;
-		}
-
-		// create
-		while (clusterIndex < k && elementIndex < elements.size()) {
-			clusters.add(new Cluster<K>(elements.get(elementIndex)));
-			elementIndex++;
-			clusterIndex++;
-		}
-
-		// handle case where there were not enough clusters created, 
-		// create empty ones.
-		while (clusterIndex < k) {
-			clusters.add(new Cluster<K>());
-			clusterIndex++;
-		}
-
-		// otherwise, handle case where there were still unassigned elements
-		// add them to the nearest clusters.
-		while (elementIndex < elements.size()) {
-			K element = elements.get(elementIndex);
-			nearestCluster(element).add(element);
-			elementIndex++;
-		}
-
-	}
+	      clusters.get( (int) Math.floor( Math.random()*k ) ).add( e );
+	    }
+	  }
 
 	/**
 	 * Perform the cluster.
