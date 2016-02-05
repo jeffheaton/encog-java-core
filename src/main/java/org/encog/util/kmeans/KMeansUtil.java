@@ -137,12 +137,16 @@ public class KMeansUtil<K extends CentroidFactory<? super K>> {
 
 	  for (int i = 0; i < clusters.size(); i++)
 	  {
-	  double thisDistance = clusters.get( i ).centroid().distance( element );
+	  Centroid<? super K> c = clusters.get( i ).centroid();
+    
+	    if (null == c) continue;
+    
+	  double thisDistance = c.distance( element );
 
 	   if (distance > thisDistance)
 	   {
 	      distance = thisDistance;
-	     result = i;
+	      result = i;
 	    }
 	  }
 
