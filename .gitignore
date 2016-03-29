@@ -19,3 +19,7 @@ test.*
 xor.bin
 build
 bin
+
+*.iml
+.idea
+
