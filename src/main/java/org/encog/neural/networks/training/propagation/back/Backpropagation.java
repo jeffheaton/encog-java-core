@@ -80,6 +80,11 @@ public class Backpropagation extends Propagation implements Momentum,
 	 * The last delta values.
 	 */
 	private double[] lastDelta;
+
+    /**
+     * Should Nesterov momentum be used?
+     */
+    private boolean nesterovUpdate;
 	
 	
 	/**
@@ -252,6 +257,24 @@ public class Backpropagation extends Propagation implements Momentum,
 		return delta;
 	}
 
+    /**
+     * Update a weight.
+     *
+     * @param gradients
+     *            The gradients.
+     * @param lastGradient
+     *            The last gradients.
+     * @param index
+     *            The index.
+     * @param dropoutRate
+     * 			  The dropout rate.
+     * @return The weight delta.
+     */
+    @Override
+    public double updateWeight(final double[] gradients,
+                               final double[] lastGradient, final int index, double dropoutRate) {
+    }
+
 	/**
 	 * Update a weight.
 	 * 
@@ -265,8 +288,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 * 			  The dropout rate.
 	 * @return The weight delta.
 	 */
-	@Override
-	public double updateWeight(final double[] gradients,
+	private double updateWeightNormal(final double[] gradients,
 			final double[] lastGradient, final int index, double dropoutRate) {
 		
 		if (dropoutRate > 0 && dropoutRandomSource.nextDouble() < dropoutRate) {
@@ -277,10 +299,51 @@ public class Backpropagation extends Propagation implements Momentum,
 				+ (this.lastDelta[index] * this.momentum);
 		this.lastDelta[index] = delta;
 		return delta;
-	}	/**
+	}
+
+    /**
+     * Update a weight (Nesterov).
+     *
+     * @param gradients
+     *            The gradients.
+     * @param lastGradient
+     *            The last gradients.
+     * @param index
+     *            The index.
+     * @param dropoutRate
+     * 			  The dropout rate.
+     * @return The weight delta.
+     */
+    private double updateWeightNesterov(final double[] gradients,
+                                      final double[] lastGradient, final int index, double dropoutRate) {
+
+        if (dropoutRate > 0 && dropoutRandomSource.nextDouble() < dropoutRate) {
+            return 0;
+        };
+
+
+        double prevNesterov = this.lastDelta[i];
+
+        this.lastDelta[index] = (this.momentum * prevNesterov)
+                + (this.gradients[index] * this.learningRate);
+        final double delta = (this.momentum * prevNesterov) - ((1+this.momentum)*this.lastDelta[i]);
+
+        this.lastDelta[index] = delta;
+        return delta;
+    }
+
+    /**
 	 * Perform training method specific init.
 	 */
 	public void initOthers() {
 		
 	}
+
+    public boolean isNesterovUpdate() {
+        return nesterovUpdate;
+    }
+
+    public void setNesterovUpdate(boolean nesterovUpdate) {
+        this.nesterovUpdate = nesterovUpdate;
+    }
 }
