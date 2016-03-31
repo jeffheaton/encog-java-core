@@ -273,6 +273,11 @@ public class Backpropagation extends Propagation implements Momentum,
     @Override
     public double updateWeight(final double[] gradients,
                                final double[] lastGradient, final int index, double dropoutRate) {
+        if(this.nesterovUpdate) {
+            return updateWeightNesterov(gradients,lastGradient,index,dropoutRate);
+        } else {
+            return updateWeightNormal(gradients,lastGradient,index,dropoutRate);
+        }
     }
 
 	/**
@@ -322,11 +327,11 @@ public class Backpropagation extends Propagation implements Momentum,
         };
 
 
-        double prevNesterov = this.lastDelta[i];
+        double prevNesterov = this.lastDelta[index];
 
         this.lastDelta[index] = (this.momentum * prevNesterov)
                 + (this.gradients[index] * this.learningRate);
-        final double delta = (this.momentum * prevNesterov) - ((1+this.momentum)*this.lastDelta[i]);
+        final double delta = (this.momentum * prevNesterov) - ((1+this.momentum)*this.lastDelta[index]);
 
         this.lastDelta[index] = delta;
         return delta;
