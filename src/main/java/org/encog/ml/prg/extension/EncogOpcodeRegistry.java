@@ -93,6 +93,7 @@ public enum EncogOpcodeRegistry {
 		add(StandardExtensions.EXTENSION_LOG10);
 		add(StandardExtensions.EXTENSION_MAX);
 		add(StandardExtensions.EXTENSION_MIN);
+		add(StandardExtensions.EXTENSION_PDIV);
 		add(StandardExtensions.EXTENSION_POWFN);
 		add(StandardExtensions.EXTENSION_RANDOM);
 		add(StandardExtensions.EXTENSION_ROUND);
