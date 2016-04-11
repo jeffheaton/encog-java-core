@@ -24,6 +24,7 @@
 package org.encog.ml.prg.train.rewrite;
 
 import org.encog.Encog;
+import org.encog.EncogError;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.rules.RewriteRule;
 import org.encog.ml.prg.EncogProgram;
@@ -42,6 +43,51 @@ public class RewriteAlgebraic implements RewriteRule {
 	 * Has the expression been rewritten.
 	 */
 	private boolean rewritten;
+
+    /**
+     * Has this rewrite rule been validated?  Are the required operators present?
+     */
+    private boolean validated;
+
+    /**
+     * Validate that the required operators are present for this rewrite rule.
+     * @param g A genome.
+     */
+    private void validate(final Genome g) {
+        if( !(g instanceof EncogProgram) ) {
+            throw new EncogError("RewriteAlgebraic can only be used with EncogProgram genomes.");
+        }
+
+        final EncogProgram prg = (EncogProgram) g;
+
+        if( !prg.getContext().getFunctions().isDefined("^",2)  ) {
+            throw new EncogError("Must have power(^) operator to use RewriteAlgebraic");
+        }
+
+        if( !prg.getContext().getFunctions().isDefined("+",2)  ) {
+            throw new EncogError("Must have addition(+) operator to use RewriteAlgebraic");
+        }
+
+        if( !prg.getContext().getFunctions().isDefined("-",1)  ) {
+            throw new EncogError("Must have negative(-) operator to use RewriteAlgebraic");
+        }
+
+        if( !prg.getContext().getFunctions().isDefined("-",2)  ) {
+            throw new EncogError("Must have subtraction(-) operator to use RewriteAlgebraic");
+        }
+
+        if( !prg.getContext().getFunctions().isDefined("*",2)  ) {
+            throw new EncogError("Must have multiplication(*) operator to use RewriteAlgebraic");
+        }
+
+        if( !prg.getContext().getFunctions().isDefined("/",2) && !prg.getContext().getFunctions().isDefined("%",2)  ) {
+            throw new EncogError("Must have division(/ or %) operator to use RewriteAlgebraic");
+        }
+
+        if( !prg.getContext().getFunctions().isDefined("#var",0)   ) {
+            throw new EncogError("Must have variables(#var) operator to use RewriteAlgebraic");
+        }
+    }
 
 	/**
 	 * Create an floating point numeric constant.
@@ -124,6 +170,14 @@ public class RewriteAlgebraic implements RewriteRule {
 	 */
 	@Override
 	public boolean rewrite(final Genome g) {
+
+        // Validate that the program has needed operators.
+        if( !this.validated ) {
+            validate(g);
+            this.validated = true;
+        }
+
+        // Attempt the rule.
 		this.rewritten = false;
 		final EncogProgram program = (EncogProgram) g;
 		final ProgramNode node = program.getRootNode();

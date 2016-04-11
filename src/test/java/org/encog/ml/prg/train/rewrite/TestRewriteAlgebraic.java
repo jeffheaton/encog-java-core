@@ -26,6 +26,7 @@ package org.encog.ml.prg.train.rewrite;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.encog.EncogError;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.ea.score.adjust.ComplexityAdjustedScore;
 import org.encog.ml.ea.train.basic.TrainEA;
@@ -33,15 +34,23 @@ import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.EncogProgramContext;
 import org.encog.ml.prg.PrgCODEC;
 import org.encog.ml.prg.expvalue.DivisionByZeroError;
+import org.encog.ml.prg.extension.FunctionFactory;
+import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.ml.prg.opp.SubtreeCrossover;
 import org.encog.ml.prg.opp.SubtreeMutation;
 import org.encog.ml.prg.train.PrgPopulation;
 import org.encog.ml.prg.train.ZeroEvalScoreFunction;
 import org.encog.parse.expression.common.RenderCommonExpression;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestRewriteAlgebraic extends TestCase {
-	
+
 	public void eval(String start, String expect) {
 		EncogProgramContext context = new EncogProgramContext();
 		StandardExtensions.createNumericOperators(context);
@@ -63,6 +72,67 @@ public class TestRewriteAlgebraic extends TestCase {
 		genetic.getRules().rewrite(expression);
 		Assert.assertEquals(expect, render.render(expression));
 	}
+
+	public static void checkMissingOperator(EncogProgramContext context) {
+
+
+        PrgPopulation pop = new PrgPopulation(context,1);
+        CalculateScore score = new ZeroEvalScoreFunction();
+
+        TrainEA genetic = new TrainEA(pop, score);
+        genetic.setValidationMode(true);
+        genetic.setCODEC(new PrgCODEC());
+        genetic.addOperation(0.95, new SubtreeCrossover());
+        genetic.addOperation(0.05, new SubtreeMutation(context,4));
+        genetic.addScoreAdjuster(new ComplexityAdjustedScore());
+        genetic.getRules().addRewriteRule(new RewriteConstants());
+        genetic.getRules().addRewriteRule(new RewriteAlgebraic());
+
+        EncogProgram expression = new EncogProgram(context);
+        expression.compileExpression("1");
+        RenderCommonExpression render = new RenderCommonExpression();
+        genetic.getRules().rewrite(expression);
+        Assert.assertEquals("1", render.render(expression));
+    }
+
+    @Test
+    public void testRequiredExtensions() {
+
+        List<ProgramExtensionTemplate> required = new ArrayList<ProgramExtensionTemplate>();
+        required.add(StandardExtensions.EXTENSION_VAR_SUPPORT);
+        required.add(StandardExtensions.EXTENSION_CONST_SUPPORT);
+        required.add(StandardExtensions.EXTENSION_NEG);
+        required.add(StandardExtensions.EXTENSION_ADD);
+        required.add(StandardExtensions.EXTENSION_SUB);
+        required.add(StandardExtensions.EXTENSION_MUL);
+        required.add(StandardExtensions.EXTENSION_PDIV);
+        required.add(StandardExtensions.EXTENSION_POWER);
+
+        // try to rewrite with each of the above missing
+        for(ProgramExtensionTemplate missing: required) {
+            // build a set, with the specified template missing
+            EncogProgramContext context = new EncogProgramContext();
+
+            FunctionFactory factory = context.getFunctions();
+
+
+
+            for(ProgramExtensionTemplate temp: required) {
+                if( temp!= missing ) {
+                    factory.addExtension(temp);
+                }
+            }
+
+            // Should throw an exception
+            try {
+                TestRewriteAlgebraic.checkMissingOperator(context);
+                Assert.fail("Did not throw error on missing: " + missing.toString());
+            } catch(EncogError e) {
+                // Should happen
+            }
+
+        }
+    }
 	
 	public void testMinusZero() {
 		eval("x-0","x");
