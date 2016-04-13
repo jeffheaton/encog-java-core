@@ -109,7 +109,7 @@ public class RenderLatexExpression {
 				result.append(b);
                 result.append("}");
 				result.append(temp.getName());
-                result.append("{")
+                result.append("{");
 				result.append(a);
 				result.append("})");
 			}
