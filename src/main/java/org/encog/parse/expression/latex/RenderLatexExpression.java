@@ -27,15 +27,18 @@ import org.encog.ml.ea.exception.EACompileError;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
+import org.encog.ml.prg.expvalue.ValueType;
 import org.encog.ml.prg.extension.NodeType;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;
 import org.encog.parse.expression.ExpressionNodeType;
+import org.encog.util.Format;
 
 // "x=\\frac{-b \\pm \\sqrt {b^2-4ac}}{2a}";
 
 public class RenderLatexExpression {
 	private EncogProgram program;
+	private int roundDigits = 2;
 
 	public RenderLatexExpression() {
 	}
@@ -47,7 +50,11 @@ public class RenderLatexExpression {
 
 	private String handleConst(ProgramNode node) {
 		ExpressionValue v = node.getData()[0];
-		return v.toStringValue();
+        if( v.getExpressionType()== ValueType.floatingType ) {
+            return Format.formatDouble(v.toFloatValue(),this.roundDigits);
+        } else {
+            return v.toStringValue();
+        }
 	}
 
 	private String handleVar(ProgramNode node) {
@@ -98,11 +105,13 @@ public class RenderLatexExpression {
 				result.append(a);
 				result.append(")");
 			} else {
-				result.append("(");
+				result.append("({");
 				result.append(b);
+                result.append("}");
 				result.append(temp.getName());
+                result.append("{")
 				result.append(a);
-				result.append(")");
+				result.append("})");
 			}
 
 		} else if (temp.getChildNodeCount() == 1) {
@@ -145,4 +154,12 @@ public class RenderLatexExpression {
 		}
 		throw new EACompileError("Uknown node type: " + node.toString());
 	}
+
+    public int getRoundDigits() {
+        return roundDigits;
+    }
+
+    public void setRoundDigits(int roundDigits) {
+        this.roundDigits = roundDigits;
+    }
 }
