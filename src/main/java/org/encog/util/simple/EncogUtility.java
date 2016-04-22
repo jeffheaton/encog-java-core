@@ -457,11 +457,15 @@ public final class EncogUtility {
 		if( method instanceof MLContext )
 			((MLContext)method).clearContext();
 
-		for (final MLDataPair pair : data) {
-			final MLData actual = method.compute(pair.getInput());
-			errorCalculation.updateError(actual.getData(), pair.getIdeal()
-					.getData(),pair.getSignificance());
-		}
+        try {
+            for (final MLDataPair pair : data) {
+                final MLData actual = method.compute(pair.getInput());
+                errorCalculation.updateError(actual.getData(), pair.getIdeal()
+                        .getData(), pair.getSignificance());
+            }
+        } catch(EncogError e) {
+            return Double.NaN;
+        }
 		return errorCalculation.calculate();
 	}
 
