@@ -57,6 +57,6 @@ public class TestErrorCalculation {
 
     @AfterClass
     public static void teardown() {
-        ErrorCalculation.setMode(ErrorCalculationMode.ESS);
+        ErrorCalculation.setMode(ErrorCalculationMode.MSE);
     }
 }
