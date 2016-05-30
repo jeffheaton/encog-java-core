@@ -23,6 +23,8 @@
  */
 package org.encog.mathutil.error;
 
+import org.encog.Encog;
+
 /**
  * Calculate the error of a neural network. Encog currently supports three error
  * calculation modes. See ErrorCalculationMode for more info.
@@ -92,6 +94,8 @@ public class ErrorCalculation {
 			return calculateMSE();
 		case ESS:
 			return calculateESS();
+		case LOGLOSS:
+			return calculateLogLoss();
 		default:
 			return calculateMSE();
 		}
@@ -139,6 +143,10 @@ public class ErrorCalculation {
 		return err;
 	}
 
+	public final double calculateLogLoss() {
+		return this.globalError*(-1.0/this.setSize);
+	}
+
 	/**
 	 * Reset the error accumulation to zero.
 	 */
@@ -156,12 +164,14 @@ public class ErrorCalculation {
 	 *            The ideal value.
 	 */
 	public final void updateError(final double actual, final double ideal) {
-
-		double delta = ideal - actual;
-
-		this.globalError += delta * delta;
-
-		this.setSize++;
+		if(ErrorCalculation.getMode()==ErrorCalculationMode.LOGLOSS || ErrorCalculation.getMode()==ErrorCalculationMode.HOT_LOGLOSS ) {
+			this.globalError += Math.log(actual) * ideal;
+			this.setSize++;
+		} else {
+			double delta = ideal - actual;
+			this.globalError += delta * delta;
+			this.setSize++;
+		}
 
 	}
 
@@ -174,13 +184,25 @@ public class ErrorCalculation {
 	 *            The ideal number.
 	 */
 	public final void updateError(final double[] actual, final double[] ideal, final double significance) {
-		for (int i = 0; i < actual.length; i++) {
-			double delta = (ideal[i] - actual[i]) * significance;
+		if (ErrorCalculation.getMode()==ErrorCalculationMode.HOT_LOGLOSS) {
+			this.setSize++;
+			for (int i = 0; i < actual.length; i++) {
+				// Only do the log if needed (for performance)
+				if( ideal[i]> Encog.DEFAULT_DOUBLE_EQUAL ) {
+					this.globalError += Math.log(actual[i]) * ideal[i];
+				}
+			}
+		} else if (ErrorCalculation.getMode()==ErrorCalculationMode.LOGLOSS) {
+			this.setSize++;
+			this.globalError += Math.log(actual[(int)ideal[0]]);
+		} else {
+			for (int i = 0; i < actual.length; i++) {
+				double delta = (ideal[i] - actual[i]) * significance;
 
-			this.globalError += delta * delta;
+				this.globalError += delta * delta;
+			}
+			this.setSize += ideal.length;
 		}
-
-		this.setSize += ideal.length;
 	}
 
 }

@@ -40,6 +40,14 @@ public enum ErrorCalculationMode {
 	/**
 	 * Sum of Squares error.
 	 */
-	ESS
+	ESS,
+	/**
+	 * Log loss (one-hot encoding/one-of-n encoding) Use for neural networks.
+	 */
+	HOT_LOGLOSS,
+	/**
+	 * Log loss (one-hot encoding/one-of-n encoding) Use for models other than neural networks.
+	 */
+	LOGLOSS
 
 }
