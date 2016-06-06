@@ -322,8 +322,6 @@ public class GenerateEncogJavaScript extends AbstractGenerator {
 				result.append("ENCOG.ActivationLinear.create()");
 			} else if (af instanceof ActivationElliott) {
 				result.append("ENCOG.ActivationElliott.create()");
-			} else if (af instanceof ActivationElliott) {
-				result.append("ENCOG.ActivationElliott.create()");
 			} else {
 				throw new AnalystCodeGenerationError(
 						"Unsupported activatoin function for code generation: "
