@@ -304,10 +304,12 @@ public class NeuralPSO extends BasicTraining {
      */
     protected void updateGlobalBestPosition() {
         boolean bestUpdated = false;
+        double currentBestError = getError();
         for (int i = 0; i < m_populationSize; i++) {
-            if ((m_bestVectorIndex == -1) || isScoreBetter(m_bestErrors[i], m_bestErrors[m_bestVectorIndex])) {
+            if ((m_bestVectorIndex == -1) || isScoreBetter(m_bestErrors[i], currentBestError)) {
                 m_bestVectorIndex = i;
                 bestUpdated = true;
+                currentBestError = m_bestErrors[i];
             }
         }
         if (bestUpdated) {
