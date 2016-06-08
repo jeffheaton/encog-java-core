@@ -77,6 +77,10 @@ public class ErrorCalculation {
 	 */
 	private int setSize;
 
+	private double sum;
+	private double min;
+	private double max;
+
 	/**
 	 * Returns the root mean square error for a complete training set.
 	 * 
@@ -87,18 +91,23 @@ public class ErrorCalculation {
 			return 0;
 		}
 
-		switch (ErrorCalculation.getMode()) {
-		case RMS:
-			return calculateRMS();
-		case MSE:
-			return calculateMSE();
-		case ESS:
-			return calculateESS();
-		case LOGLOSS:
-			return calculateLogLoss();
-		default:
-			return calculateMSE();
-		}
+        switch (ErrorCalculation.getMode()) {
+            case RMS:
+                return calculateRMS();
+            case MSE:
+                return calculateMSE();
+            case ESS:
+                return calculateESS();
+            case LOGLOSS:
+                return calculateLogLoss();
+            case NRMSE_MEAN:
+                return calculateMeanNRMSE();
+            case NRMSE_RANGE:
+                return calculateRangeNRMSE();
+
+            default:
+                return calculateMSE();
+        }
 
 	}
 
@@ -127,7 +136,14 @@ public class ErrorCalculation {
 		}
 		final double err = this.globalError / 2;
 		return err;
+	}
 
+	public final double calculateMeanNRMSE() {
+		return calculateRMS()/(this.sum/this.setSize);
+	}
+
+	public final double calculateRangeNRMSE() {
+		return calculateRMS()/(this.max-this.min);
 	}
 
 	/**
@@ -170,6 +186,15 @@ public class ErrorCalculation {
 		} else {
 			double delta = ideal - actual;
 			this.globalError += delta * delta;
+			this.sum+=ideal;
+
+			if( this.setSize==0) {
+				this.min = this.max = actual;
+			} else {
+				this.min = Math.min(actual,this.min);
+				this.max = Math.max(actual,this.max);
+			}
+
 			this.setSize++;
 		}
 
@@ -198,6 +223,16 @@ public class ErrorCalculation {
 		} else {
 			for (int i = 0; i < actual.length; i++) {
 				double delta = (ideal[i] - actual[i]) * significance;
+
+				// Do not apply significance to sum, min, max, they are only used for normalized RMSE.
+				this.sum+=ideal[i];
+
+				if( this.setSize==0) {
+					this.min = this.max = actual[i];
+				} else {
+					this.min = Math.min(actual[i],this.min);
+					this.max = Math.max(actual[i],this.max);
+				}
 
 				this.globalError += delta * delta;
 			}

@@ -48,6 +48,8 @@ public enum ErrorCalculationMode {
 	/**
 	 * Log loss (one-hot encoding/one-of-n encoding) Use for models other than neural networks.
 	 */
-	LOGLOSS
+	LOGLOSS,
+	NRMSE_MEAN,
+	NRMSE_RANGE
 
 }
