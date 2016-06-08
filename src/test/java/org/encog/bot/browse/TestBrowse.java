@@ -38,9 +38,9 @@ public class TestBrowse extends TestCase {
 	public void testBrowse() throws Throwable
 	{
 		Browser b = new Browser();
-		b.navigate(new URL("http://www.httprecipes.com"));
+		b.navigate(new URL("http://www.heatonresearch.com"));
 		WebPage page = b.getCurrentPage();
-		Assert.assertTrue( page.getTitle().getTextOnly().indexOf("HTTP")!=-1 );
+		Assert.assertTrue( page.getTitle().getTextOnly().indexOf("Books")!=-1 );
 	}
 
 }

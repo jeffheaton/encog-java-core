@@ -33,12 +33,12 @@ public class TestBotUtil extends TestCase {
 	public void testLoadPage() throws Throwable
 	{
 		// test good web site
-		String str = BotUtil.loadPage(new URL("http://www.httprecipes.com/"));
-		Assert.assertTrue(str.indexOf("Recipes")!=-1);
+		String str = BotUtil.loadPage(new URL("http://www.heatonresearch.com/"));
+		Assert.assertTrue(str.indexOf("Heaton")!=-1);
 		// test bad website
 		try
 		{
-			str = BotUtil.loadPage(new URL("http://www.httprecipes.com/sdhfuishdfui"));
+			str = BotUtil.loadPage(new URL("http://www.heatonresearch.com/sdhfuishdfui"));
 			Assert.assertFalse(true);
 		}
 		catch(Exception e)
