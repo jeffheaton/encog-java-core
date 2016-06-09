@@ -85,6 +85,7 @@ public class RandomChoice implements Serializable {
 	
 	/**
 	 * Generate a random choice, based on the probabilities provided to the constructor.
+	 * @param theGenerator The random number generator.
 	 * @return The random choice.
 	 */
 	public int generate(Random theGenerator) {
@@ -109,6 +110,7 @@ public class RandomChoice implements Serializable {
 
 	/**
 	 * Generate a random choice, but skip one of the choices.
+	 * @param theGenerator The random number generator.
 	 * @param skip The choice to skip.
 	 * @return The random choice.
 	 */

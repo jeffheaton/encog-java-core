@@ -239,7 +239,8 @@ public class EnumerationQuery extends BasicQuery implements Serializable {
 	
 	/**
 	 * Roll the enumeration events forward by one.
-	 * 
+	 * @param enumerationEvents The enumeration events.
+	 * @param args The arguments.
 	 * @return False if there are no more values to roll into, which means we're
 	 *         done.
 	 */

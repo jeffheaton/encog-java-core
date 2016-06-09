@@ -95,7 +95,7 @@ public interface Randomizer {
 	
 	/**
 	 * Explicitly set the Random source
-	 * @param theRandom
+	 * @param theRandom Random number generator.
 	 */
 	void setRandom(GenerateRandom theRandom);
 	/**

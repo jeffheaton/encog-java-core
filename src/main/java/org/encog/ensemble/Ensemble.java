@@ -179,11 +179,11 @@ public abstract class Ensemble {
 	 * Train the ensemble to a target accuracy
 	 * @param targetError The target error.
 	 * @param selectionError The selection error.
-	 * @param maxIterations
-	 * @param maxLoops
-	 * @param selectionSet
-	 * @param verbose
-     * @throws TrainingAborted
+	 * @param maxIterations Max iterations.
+	 * @param maxLoops Max loops.
+	 * @param selectionSet Selection set.
+	 * @param verbose Verbose.
+     * @throws TrainingAborted Training was aborted.
      */
 	public void train(double targetError, double selectionError, int maxIterations, int maxLoops, EnsembleDataSet selectionSet, boolean verbose) throws TrainingAborted {
 		
@@ -204,7 +204,7 @@ public abstract class Ensemble {
 	 * @param targetError The target error.
 	 * @param selectionError The selection error.
 	 * @param testset The test set.
-	 * @throws TrainingAborted
+	 * @throws TrainingAborted Training aborted.
 	 */
 	public void train(double targetError, double selectionError, EnsembleDataSet testset) throws TrainingAborted {
 		train(targetError, selectionError, testset, false);
@@ -216,7 +216,7 @@ public abstract class Ensemble {
 
 	/**
 	 * Extract a specific training set from the Ensemble
-	 * @param setNumber
+	 * @param setNumber The set number.
 	 * @return The training set.
 	 */
 	public MLDataSet getTrainingSet(int setNumber) {
@@ -225,7 +225,7 @@ public abstract class Ensemble {
 
 	/**
 	 * Extract a specific MLMethod
-	 * @param memberNumber
+	 * @param memberNumber The member number.
 	 * @return The MLMethod.
 	 */
 	public EnsembleML getMember(int memberNumber) {
@@ -234,8 +234,8 @@ public abstract class Ensemble {
 
 	/**
 	 * Add a member to the ensemble
-	 * @param newMember
-	 * @throws NotPossibleInThisMethod
+	 * @param newMember The new member.
+	 * @throws NotPossibleInThisMethod Not possible in this method.
 	 */
 	public void addMember(EnsembleML newMember) throws NotPossibleInThisMethod {
 		members.add(newMember);
@@ -243,9 +243,9 @@ public abstract class Ensemble {
 
 	/**
 	 * Compute the output for a specific input
-	 * @param input
+	 * @param input The input.
 	 * @return The data.
-	 * @throws WeightMismatchException 
+	 * @throws WeightMismatchException Weight mismatch exception.
 	 */
 	public MLData compute(MLData input) throws WeightMismatchException {
 		ArrayList<MLData> outputs = new ArrayList<MLData>();
@@ -266,7 +266,7 @@ public abstract class Ensemble {
 
 	/**
 	 * Sets the ensemble aggregation method
-	 * @param aggregator
+	 * @param aggregator The aggregator.
 	 */
 	public void setAggregator(EnsembleAggregator aggregator) {
 		this.aggregator = aggregator;

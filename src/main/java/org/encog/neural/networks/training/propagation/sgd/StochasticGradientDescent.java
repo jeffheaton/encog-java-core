@@ -82,6 +82,8 @@ public class StochasticGradientDescent extends Propagation implements Momentum,
 	 *            The network that is to be trained
 	 * @param training
 	 *            The training set
+	 * @param batchSize
+	 * 			  The size of the minibatch.
 	 * @param theLearnRate
 	 *            The rate at which the weight matrix will be adjusted based on
 	 *            learning.

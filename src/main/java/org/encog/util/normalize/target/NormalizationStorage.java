@@ -39,6 +39,7 @@ public interface NormalizationStorage extends Serializable {
 
 	/**
 	 * Close the storage.
+	 * @param norm The data normalization.
 	 */
 	void open(DataNormalization norm);
 

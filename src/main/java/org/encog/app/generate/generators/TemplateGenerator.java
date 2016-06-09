@@ -35,7 +35,7 @@ public interface TemplateGenerator extends LanguageSpecificGenerator {
 	/**
 	 * Generate the template based on Encog Analyst script.
 	 * 
-	 * @param analyst
+	 * @param analyst The Encog analyst to use.
 	 */
 	void generate(EncogAnalyst analyst);
 

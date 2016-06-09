@@ -60,6 +60,8 @@ public class SparseMLData implements MLData, Serializable, Cloneable {
 	 *
 	 * @param d
 	 *            The data to construct this object with.
+	 * @param i
+	 * 			The index.
 	 */
 	public SparseMLData(final double[] d, int[] i) {
 		this(d.length);

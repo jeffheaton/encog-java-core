@@ -534,8 +534,8 @@ public final class EncogUtility {
 
 	/**
 	 * Save a training set to an EGB file.
-	 * @param f
-	 * @param data
+	 * @param f The file.
+	 * @param data The data.
 	 */
 	public static void saveEGB(File f, MLDataSet data) {
 		BufferedMLDataSet binary = new BufferedMLDataSet(f);

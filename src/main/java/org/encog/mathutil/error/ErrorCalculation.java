@@ -207,6 +207,7 @@ public class ErrorCalculation {
 	 *            The actual number.
 	 * @param ideal
 	 *            The ideal number.
+	 * @param significance The signficance.
 	 */
 	public final void updateError(final double[] actual, final double[] ideal, final double significance) {
 		if (ErrorCalculation.getMode()==ErrorCalculationMode.HOT_LOGLOSS) {

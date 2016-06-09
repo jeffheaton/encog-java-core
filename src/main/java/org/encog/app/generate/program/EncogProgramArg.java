@@ -66,7 +66,7 @@ public class EncogProgramArg {
 	/**
 	 * Construct a floating point arguement from an integer.
 	 * 
-	 * @param value
+	 * @param value The value.
 	 */
 	public EncogProgramArg(final int value) {
 		this(EncogArgType.Float, "" + value);

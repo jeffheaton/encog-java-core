@@ -274,6 +274,7 @@ public class EncogDirectoryPersistence {
 	/**
 	 * Save a file to the directory that this object refers to.
 	 * @param name The name to load.
+	 * @param obj The object to save.
 	 */
 	public final void saveToDirectory(final String name, final Object obj) {
 		final File path = new File(this.parent, name);

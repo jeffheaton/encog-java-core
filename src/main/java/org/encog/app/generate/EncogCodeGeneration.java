@@ -261,7 +261,7 @@ public class EncogCodeGeneration {
 	/**
 	 * Save the contents to the specified file.
 	 * 
-	 * @param file
+	 * @param file The file to save to.
 	 */
 	public void save(final File file) {
 		this.generator.writeContents(file);
