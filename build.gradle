@@ -1,4 +1,9 @@
 apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+apply plugin: 'nexus'
+
+group = "org.encog"
 
 buildscript {
   repositories {
@@ -9,21 +14,8 @@ buildscript {
   }
 }
 
-apply plugin: 'eclipse'
-apply plugin: 'maven'
-apply plugin: 'nexus'
-
 sourceCompatibility=1.7
 targetCompatibility=1.7
-version='3.4.0-SNAPSHOT'
-group='org.encog'
-
-def props = new Properties();
-def localProperties = new File("local.properties")
-if (localProperties.exists()) localProperties.withInputStream { props.load(it) }
-
-group = props.get('group')
-version = props.get('version')
 
 configurations {
     deployerJars
