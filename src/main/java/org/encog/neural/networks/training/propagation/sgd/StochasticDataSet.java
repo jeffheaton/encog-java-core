@@ -19,9 +19,16 @@ public class StochasticDataSet implements MLDataSet {
 		this.random = theRandom;
 		setBatchSize(500);
 	}
-	
+
+	/**
+	 * @param theSize Set the batch size, but not larger than the dataset.
+     */
 	public void setBatchSize(int theSize) {
-		this.randomSample = new int[theSize];
+		this.randomSample = new int[Math.min(theSize,this.dataset.size())];
+	}
+
+	public int getBatchSize() {
+		return this.randomSample.length;
 	}
 	
 	public void resample() {

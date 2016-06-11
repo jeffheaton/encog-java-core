@@ -53,7 +53,7 @@ public class XaiverRandomizer implements Randomizer {
 
 	/**
 	 * Compute a Gaussian random number.
-	 * 
+	 *
 	 * @param m
 	 *            The mean.
 	 * @param s

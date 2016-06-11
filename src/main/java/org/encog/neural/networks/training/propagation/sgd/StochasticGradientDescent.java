@@ -59,22 +59,7 @@ public class StochasticGradientDescent extends Propagation implements Momentum,
 	private double[] lastDelta;
 	
 	private StochasticDataSet dataset;
-	
-	
-	/**
-	 * Create a class to train using backpropagation. Use auto learn rate and
-	 * momentum. Use the CPU to train.
-	 * 
-	 * @param network
-	 *            The network that is to be trained.
-	 * @param training
-	 *            The training data to be used for backpropagation.
-	 */
-	public StochasticGradientDescent(final ContainsFlat network, final MLDataSet training) {
-		this(network, training, 600, 0.001, 0.9);
-		addStrategy(new SmartLearningRate());
-		addStrategy(new SmartMomentum());
-	}
+
 
 	/**
 	 * 
@@ -100,7 +85,10 @@ public class StochasticGradientDescent extends Propagation implements Momentum,
 		this.momentum = theMomentum;
 		this.learningRate = theLearnRate;
 		this.lastDelta = new double[network.getFlat().getWeights().length];
-		this.setBatchSize(0);
+		this.dataset.setBatchSize(batchSize);
+		// Lower level class should use entire dataset,
+		// the StochasticDataSet ensures that it is the mini-batch size.
+		super.setBatchSize(0);
 
 	}
 
@@ -270,5 +258,19 @@ public class StochasticGradientDescent extends Propagation implements Momentum,
 	public void preIteration() {
 		super.preIteration();
 		this.dataset.resample();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getBatchSize() {
+		return this.dataset.getBatchSize();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setBatchSize(int theBatchSize) {
+		this.dataset.setBatchSize(theBatchSize);
 	}
 }

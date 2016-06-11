@@ -87,7 +87,7 @@ public class ActivationSoftMax implements ActivationFunction {
 	 */
 	@Override
 	public final double derivativeFunction(final double b, final double a) {
-		return a * (1.0 - a);
+		return 1;
 	}
 
 	/**

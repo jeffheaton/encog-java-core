@@ -24,6 +24,7 @@
 package org.encog.util.data;
 
 import org.encog.mathutil.EncogFunction;
+import org.encog.mathutil.randomize.generate.GenerateRandom;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
@@ -47,6 +48,25 @@ public class GenerationUtil {
 			current[0]+=step;
 		}
 		
+		return result;
+	}
+
+	public static MLDataSet generateRandom(GenerateRandom rnd, EncogFunction task, int size, double low, double high) {
+		BasicMLDataSet result = new BasicMLDataSet();
+
+
+		for(int i=0;i<size;i++) {
+            double[] current = new double[task.size()];
+            for(int j=0;j<current.length;j++) {
+                current[j] = rnd.nextDouble(low,high);
+            }
+
+			MLData input = new BasicMLData(current);
+			MLData ideal = new BasicMLData(1);
+			ideal.setData(0, task.fn(current));
+			result.add(input,ideal);
+		}
+
 		return result;
 	}
 }

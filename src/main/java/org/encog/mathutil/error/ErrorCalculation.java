@@ -99,6 +99,7 @@ public class ErrorCalculation {
             case ESS:
                 return calculateESS();
             case LOGLOSS:
+			case HOT_LOGLOSS:
                 return calculateLogLoss();
             case NRMSE_MEAN:
                 return calculateMeanNRMSE();
