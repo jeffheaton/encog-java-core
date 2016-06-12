@@ -23,13 +23,9 @@
  */
 package org.encog.util.obj;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import org.encog.EncogError;
+
+import java.io.*;
 
 /**
  * Load or save an object using Java serialization.
@@ -78,6 +74,25 @@ public final class SerializeObject {
 		out = new ObjectOutputStream(fos);
 		out.writeObject(object);
 		out.close();
+	}
+
+	public static Serializable serializeClone(Serializable source) {
+		try {
+			ByteArrayOutputStream store = new ByteArrayOutputStream();
+			ObjectOutputStream serializeOut = new ObjectOutputStream(store);
+			serializeOut.writeObject(source);
+			serializeOut.close();
+
+			ByteArrayInputStream readStore = new ByteArrayInputStream(store.toByteArray());
+			ObjectInputStream serializeIn = new ObjectInputStream(readStore);
+			Serializable result = (Serializable) serializeIn.readObject();
+			serializeIn.close();
+			return result;
+		} catch (IOException ex) {
+			throw new EncogError(ex);
+		} catch (ClassNotFoundException ex) {
+			throw new EncogError(ex);
+		}
 	}
 
 	/**
