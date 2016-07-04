@@ -73,6 +73,11 @@ public class ParallelScore implements MultiThreadable {
 	private int actualThreads;
 
 	/**
+	 * An error from one of the threads.
+	 */
+	private Exception reportedError;
+
+	/**
 	 * Construct the parallel score calculation object.
 	 * @param thePopulation The population to score.
 	 * @param theCODEC The CODEC to use.
@@ -145,6 +150,10 @@ public class ParallelScore implements MultiThreadable {
 		} catch (InterruptedException e) {
 			throw new GeneticError(e);
 		}
+
+		if( this.reportedError!=null ) {
+			throw new GeneticError(this.reportedError);
+		}
 	}
 
 	/**
@@ -168,5 +177,9 @@ public class ParallelScore implements MultiThreadable {
 	@Override
 	public void setThreadCount(int numThreads) {
 		this.threads = numThreads;
+	}
+
+	public void reportError(Exception ex) {
+		this.reportedError = ex;
 	}
 }
