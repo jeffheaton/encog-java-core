@@ -1,8 +1,10 @@
+package org.encog.ml.train.strategy.end;
+
 /*
  * Encog(tm) Core v3.3 - Java Version
  * http://www.heatonresearch.com/encog/
  * https://github.com/encog/encog-java-core
- 
+
  * Copyright 2008-2014 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,45 +18,29 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *   
- * For more information on Heaton Research copyrights, licenses 
+ *
+ * For more information on Heaton Research copyrights, licenses
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.ml.train.strategy.end;
 
-import org.encog.ml.MLError;
+import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
+import org.encog.ml.train.strategy.end.EndTrainingStrategy;
+import org.encog.util.obj.SerializeObject;
+import org.encog.util.simple.EncogUtility;
+
+import java.io.Serializable;
 
 /**
- * Stop early when validation set no longer improves.
- * 
- * Based on the following paper:
- * 
- * techreport{Prechelt94c,
- * author    = {Lutz Prechelt},
- * title     = {{PROBEN1} --- {A} Set of Benchmarks and Benchmarking
- *              Rules for Neural Network Training Algorithms},
- * institution = {Fakult\"at f\"ur Informatik, Universit\"at Karlsruhe},
- * year      = {1994},
- * number    = {21/94},
- * address   = {D-76128 Karlsruhe, Germany},
- * month     = sep,
- * note      = {Anonymous FTP: /pub/pa\-pers/tech\-reports/1994/1994-21.ps.Z
- *              on ftp.ira.uka.de},
- * }
+ * A simple early stopping strategy that halts training when the validation set no longer improves.
  */
 public class EarlyStoppingStrategy implements EndTrainingStrategy {
 	/**
 	 * The validation set.
 	 */
 	private MLDataSet validationSet;
-
-	/**
-	 * The test set.
-	 */
-	private MLDataSet testSet;
 
 	/**
 	 * The trainer.
@@ -72,78 +58,52 @@ public class EarlyStoppingStrategy implements EndTrainingStrategy {
 	private double trainingError;
 
 	/**
-	 * Current test error.
-	 */
-	private double testError;
-
-	/**
 	 * Current validation error.
 	 */
-	private double validationError;
+	private double lastValidationError;
 
 	/**
-	 * The error calculation.
+	 * The model that is being trained.
 	 */
-	private MLError calc;
+	private MLRegression model;
 
 	/**
-	 * eOpt value, calculated for early stopping.  
-	 * The lowest validation error so far.
+	 * The frequency to check the validation set.
 	 */
-	private double eOpt;
+	private int checkFrequency;
 
 	/**
-	 * gl value, calculated for early stopping.
-	 */
-	private double gl;
-
-	/**
-	 * Alpha value, calculated for early stopping. Once "gl" is above alpha, training will stop.
-	 */
-	private double alpha;
-
-	/**
-	 * The last time the test set was checked.
+	 * How many iterations since the validation set was last checked.
 	 */
 	private int lastCheck;
 
 	/**
-	 * Validation strip length.
+	 * The number of iterations that the validation is allowed to remain stagnant/degrading for.
 	 */
-	private int stripLength;
+	private int allowedStagnantIterations;
 
-	private double stripOpt;
-	private double stripTotal;
-	private double stripEfficiency;
-	private double minEfficiency;
+	private int stagnantIterations;
+
+	private double minimumImprovement;
 
 	/**
-	 * Construct the early stopping strategy.
-	 * Use default operating parameters.
-	 * @param theValidationSet The validation set.
-	 * @param theTestSet The test set.
+	 * The best model so far.
 	 */
-	public EarlyStoppingStrategy(MLDataSet theValidationSet,
-			MLDataSet theTestSet) {
-		this(theValidationSet, theTestSet, 5, 5, 0.1);
+	private MLRegression bestModel;
+
+	private boolean saveBest;
+
+	public EarlyStoppingStrategy(MLDataSet theValidationSet) {
+		this(theValidationSet, 5, 50, 0.01);
 	}
 
-	/**
-	 * Construct the early stopping strategy.
-	 * @param theValidationSet
-	 * @param theTestSet
-	 * @param theStripLength The number of training set elements to validate.
-	 * @param theAlpha Stop once GL is below this value.
-	 * @param theMinEfficiency The minimum training efficiency to stop.
-	 */
+
 	public EarlyStoppingStrategy(MLDataSet theValidationSet,
-			MLDataSet theTestSet, int theStripLength, double theAlpha,
-			double theMinEfficiency) {
+										  int theCheckFrequency, int theAllowedStagnantIterations, double theMinimumImprovement) {
 		this.validationSet = theValidationSet;
-		this.testSet = theTestSet;
-		this.alpha = theAlpha;
-		this.stripLength = theStripLength;
-		this.minEfficiency = theMinEfficiency;
+		this.checkFrequency = theCheckFrequency;
+		this.allowedStagnantIterations = theAllowedStagnantIterations;
+		this.minimumImprovement = theMinimumImprovement;
 	}
 
 	/**
@@ -152,11 +112,10 @@ public class EarlyStoppingStrategy implements EndTrainingStrategy {
 	@Override
 	public void init(MLTrain theTrain) {
 		this.train = theTrain;
-		this.calc = (MLError) train.getMethod();
-		this.eOpt = Double.POSITIVE_INFINITY;
-		this.stripOpt = Double.POSITIVE_INFINITY;
+		this.model = (MLRegression) train.getMethod();
 		this.stop = false;
 		this.lastCheck = 0;
+		this.lastValidationError = Double.POSITIVE_INFINITY;
 	}
 
 	/**
@@ -164,7 +123,6 @@ public class EarlyStoppingStrategy implements EndTrainingStrategy {
 	 */
 	@Override
 	public void preIteration() {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -176,27 +134,26 @@ public class EarlyStoppingStrategy implements EndTrainingStrategy {
 		this.lastCheck++;
 		this.trainingError = this.train.getError();
 
-		this.stripOpt = Math.min(this.stripOpt, this.trainingError);
-		this.stripTotal += this.trainingError;
+		if( this.lastCheck>this.checkFrequency || Double.isInfinite(this.lastValidationError) ) {
+			double currentValidationError = EncogUtility.calculateRegressionError(this.model, this.validationSet);
 
-		if (this.lastCheck > this.stripLength) {
-			this.validationError = this.calc.calculateError(this.validationSet);
-			this.testError = this.calc.calculateError(this.testSet);
-			this.eOpt = Math.min(this.validationError, eOpt);
-			this.gl = 100.0 * ((this.validationError / this.eOpt) - 1.0);
+			if( Double.isInfinite(currentValidationError) || Double.isNaN(currentValidationError) ) {
+				stop = true;
+			} else if( (this.lastValidationError-currentValidationError)<this.minimumImprovement ) {
+				// error did not drop by required amount
+				this.stagnantIterations+=this.lastCheck;
+				if(this.stagnantIterations>this.allowedStagnantIterations) {
+					stop = true;
+				}
+			} else {
+				if( this.saveBest ) {
+					this.bestModel = (MLRegression) SerializeObject.serializeClone((Serializable) this.model);
+				}
+				this.stagnantIterations=0;
+			}
 
-			this.stripEfficiency = (this.stripTotal)
-					/ (this.stripLength * this.stripOpt);
-
-			//System.out.println("eff=" + this.stripEfficiency + ", gl=" + this.gl);
-
-			// setup for next time
-			this.stripTotal = 0;
+			this.lastValidationError = currentValidationError;
 			this.lastCheck = 0;
-
-			// should we stop?
-			stop = (this.gl > this.alpha)
-					|| (this.stripEfficiency < this.minEfficiency);
 		}
 	}
 
@@ -215,60 +172,39 @@ public class EarlyStoppingStrategy implements EndTrainingStrategy {
 		return trainingError;
 	}
 
-	/**
-	 * @return the testError
-	 */
-	public double getTestError() {
-		return testError;
-	}
 
 	/**
-	 * @return the validationError
+	 * @return The validation error.
 	 */
 	public double getValidationError() {
-		return validationError;
+		return this.lastValidationError;
 	}
 
-	/**
-	 * @return the eOpt
-	 */
-	public double geteOpt() {
-		return eOpt;
+	public int getStagnantIterations() {
+		return stagnantIterations;
 	}
 
-	/**
-	 * @return the gl
-	 */
-	public double getGl() {
-		return gl;
+	public void setStagnantIterations(int stagnantIterations) {
+		this.stagnantIterations = stagnantIterations;
 	}
 
-	/**
-	 * @return the stripLength
-	 */
-	public int getStripLength() {
-		return stripLength;
+	public int getAllowedStagnantIterations() {
+		return allowedStagnantIterations;
 	}
 
-	/**
-	 * @return the stripOpt
-	 */
-	public double getStripOpt() {
-		return stripOpt;
+	public void setAllowedStagnantIterations(int allowedStagnantIterations) {
+		this.allowedStagnantIterations = allowedStagnantIterations;
 	}
 
-	/**
-	 * @return the stripEfficiency
-	 */
-	public double getStripEfficiency() {
-		return stripEfficiency;
+	public boolean isSaveBest() {
+		return saveBest;
 	}
 
-	/**
-	 * @return the minEfficiency
-	 */
-	public double getMinEfficiency() {
-		return minEfficiency;
+	public void setSaveBest(boolean saveBest) {
+		this.saveBest = saveBest;
 	}
 
+	public MLRegression getBestModel() {
+		return bestModel;
+	}
 }

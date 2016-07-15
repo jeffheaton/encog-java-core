@@ -80,7 +80,7 @@ public class ChooseObject<T> implements Serializable {
 	
 	/**
 	 * Choose a random object.
-	 * @param theGenerator
+	 * @param theGenerator Random number generator.
 	 * @return The random choice.
 	 */
 	public T pick(Random theGenerator) {

@@ -156,6 +156,8 @@ public class GradientWorker implements EngineTask {
 	 *            The low index to use in the training data.
 	 * @param theHigh
 	 *            The high index to use in the training data.
+	 * @param flatSpot The flatspot additions for each layer
+	 * @param ef Error function
 	 */
 	public GradientWorker(final FlatNetwork theNetwork,
 			final GradientWorkerOwner theOwner,

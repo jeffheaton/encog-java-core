@@ -54,7 +54,7 @@ import org.encog.ml.model.config.RBFNetworkConfig;
 import org.encog.ml.model.config.SVMConfig;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.StopTrainingStrategy;
-import org.encog.ml.train.strategy.end.SimpleEarlyStoppingStrategy;
+import org.encog.ml.train.strategy.end.EarlyStoppingStrategy;
 import org.encog.util.Format;
 import org.encog.util.simple.EncogUtility;
 
@@ -192,7 +192,7 @@ public class EncogModel {
 		MLTrain train = this.createTrainer(method, fold.getTraining());
 
 		if (train.getImplementationType() == TrainingImplementationType.Iterative) {
-			SimpleEarlyStoppingStrategy earlyStop = new SimpleEarlyStoppingStrategy(
+			EarlyStoppingStrategy earlyStop = new EarlyStoppingStrategy(
 					fold.getValidation());
 			train.addStrategy(earlyStop);
 

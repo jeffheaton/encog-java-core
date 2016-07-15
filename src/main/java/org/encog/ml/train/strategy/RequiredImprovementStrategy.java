@@ -103,10 +103,10 @@ public class RequiredImprovementStrategy implements Strategy {
 	}
 
 	/**
-	 * Reset if there is not at least a 1% improvement for 5 cycles. Don't reset
+	 * Reset if there is not at least a 1% improvement for n cycles. Don't reset
 	 * if below 10%.
 	 * 
-	 * @param cycles
+	 * @param cycles The number of cycles.
 	 */
 	public RequiredImprovementStrategy(final int cycles) {
 		this(0.01, 0.10, cycles);
