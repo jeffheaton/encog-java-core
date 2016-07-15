@@ -26,8 +26,7 @@ package org.encog.util.downsample;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TestRGBDownsample {

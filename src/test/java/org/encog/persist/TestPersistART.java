@@ -26,14 +26,15 @@ package org.encog.persist;
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
+import org.encog.Encog;
 import org.encog.neural.art.ART1;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestPersistART extends TestCase {
+public class TestPersistART {
 	
 	public final TempDir TEMP_DIR = new TempDir();
 	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
@@ -46,7 +47,8 @@ public class TestPersistART extends TestCase {
 		network.getWeightsF2toF1().set(2, 2, 3.0);
 		return network;
 	}
-	
+
+	@Test
 	public void testPersistEG()
 	{
 		ART1 network = create();
@@ -56,7 +58,8 @@ public class TestPersistART extends TestCase {
 
 		validate(network2);
 	}
-	
+
+	@Test
 	public void testPersistSerial() throws IOException, ClassNotFoundException
 	{
 		ART1 network = create();
@@ -73,18 +76,17 @@ public class TestPersistART extends TestCase {
 		Assert.assertEquals(3, network.getF2Count());
 		Assert.assertEquals(18, network.getWeightsF1toF2().size());
 		Assert.assertEquals(18, network.getWeightsF2toF1().size());
-		Assert.assertEquals(2.0, network.getWeightsF1toF2().get(1, 1));
-		Assert.assertEquals(3.0, network.getWeightsF2toF1().get(2, 2));
-		Assert.assertEquals(1.0, network.getA1());
-		Assert.assertEquals(1.5, network.getB1());
-		Assert.assertEquals(5.0, network.getC1());
-		Assert.assertEquals(0.9, network.getD1());
-		Assert.assertEquals(0.9, network.getVigilance());
+		Assert.assertEquals(2.0, network.getWeightsF1toF2().get(1, 1), Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(3.0, network.getWeightsF2toF1().get(2, 2), Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(1.0, network.getA1(), Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(1.5, network.getB1(), Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(5.0, network.getC1(), Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(0.9, network.getD1(), Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(0.9, network.getVigilance(), Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		TEMP_DIR.dispose();
 	}
 	

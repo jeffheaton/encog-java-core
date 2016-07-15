@@ -26,14 +26,14 @@ package org.encog.persist;
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.neural.som.SOM;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestPersistSOM extends TestCase {
+public class TestPersistSOM {
 	
 	public final TempDir TEMP_DIR = new TempDir();
 	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
@@ -44,7 +44,8 @@ public class TestPersistSOM extends TestCase {
 		SOM network = new SOM(4,2);
 		return network;
 	}
-	
+
+	@Test
 	public void testPersistEG()
 	{
 		SOM network = create();
@@ -54,7 +55,8 @@ public class TestPersistSOM extends TestCase {
 		
 		validate(network2);
 	}
-	
+
+    @Test
 	public void testPersistSerial() throws IOException, ClassNotFoundException
 	{
 		SOM network = create();		
@@ -71,9 +73,8 @@ public class TestPersistSOM extends TestCase {
 		Assert.assertEquals(8, network.getWeights().toPackedArray().length);
 	}
 	
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		TEMP_DIR.dispose();
 	}
 }

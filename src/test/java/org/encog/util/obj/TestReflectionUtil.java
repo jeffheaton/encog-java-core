@@ -23,12 +23,13 @@
  */
 package org.encog.util.obj;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.engine.network.activation.ActivationSigmoid;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestReflectionUtil extends TestCase {
+public class TestReflectionUtil {
+
+	@Test
 	public void testResolve() {
 		Class<?> c = ReflectionUtil.resolveEncogClass("ActivationSigmoid");
 		Assert.assertTrue(c==ActivationSigmoid.class);

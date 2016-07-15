@@ -23,9 +23,6 @@
  */
 package org.encog.neural.freeform;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
@@ -35,9 +32,12 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NetworkUtil;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.layers.BasicLayer;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestFreeform extends TestCase {
-	
+public class TestFreeform {
+
+	@Test
 	public void testCreation() {
 		// create a neural network, without using a factory
 		BasicNetwork basicNetwork = new BasicNetwork();
@@ -56,7 +56,8 @@ public class TestFreeform extends TestCase {
 		Assert.assertEquals(basicNetwork.encodedArrayLength(),
 				freeformNetwork.encodedArrayLength());
 	}
-	
+
+	@Test
 	public void testEncode() {
 		
 		// train (and test) a network

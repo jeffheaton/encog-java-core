@@ -23,15 +23,17 @@
  */
 package org.encog.parse.expression.common;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.encog.Encog;
 import org.encog.ml.ea.exception.EAError;
 import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.expvalue.ExpressionValue;
+import org.junit.Test;
 
-public class TestExpression extends TestCase {
+public class TestExpression {
+
+	@Test
 	public void testConst() {
 		Assert.assertEquals( 1, EncogProgram.parseFloat("1"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( -1, EncogProgram.parseFloat("-1"),Encog.DEFAULT_DOUBLE_EQUAL);
@@ -49,7 +51,8 @@ public class TestExpression extends TestCase {
 		Assert.assertEquals( -0.0015, EncogProgram.parseFloat("-1.5e-3"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( 1.2345678, EncogProgram.parseFloat("1.2345678"),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
-	
+
+    @Test
 	public void testTypes() {
 		ExpressionValue exp = EncogProgram.parseExpression("cint(1.2345678)");
 		Assert.assertTrue(exp.isInt());
@@ -64,23 +67,27 @@ public class TestExpression extends TestCase {
 		Assert.assertEquals( "1.2345678", exp.toStringValue());
 		
 	}
-	
+
+    @Test
 	public void testPrecedence() {
 		Assert.assertEquals( -2.5, EncogProgram.parseFloat("1.0+2.0*3.0/4.0-5.0"),Encog.DEFAULT_DOUBLE_EQUAL);		
 	}
-	
+
+    @Test
 	public void testAdd() {
 		Assert.assertEquals( 5, EncogProgram.parseFloat("2+3"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( 3, EncogProgram.parseFloat("5+-2"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( 6, EncogProgram.parseFloat("1+2+3"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( 10, EncogProgram.parseFloat("1+2+3+4"),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
-	
+
+    @Test
 	public void testSub() {
 		Assert.assertEquals( -1, EncogProgram.parseFloat("2-3"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( 7, EncogProgram.parseFloat("5--2"),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
-	
+
+    @Test
 	public void testMul() {
 		Assert.assertEquals( -6, EncogProgram.parseFloat("-2*3"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( 6, EncogProgram.parseFloat("2*3"),Encog.DEFAULT_DOUBLE_EQUAL);
@@ -88,27 +95,33 @@ public class TestExpression extends TestCase {
 		Assert.assertEquals( 24, EncogProgram.parseFloat("2*3*4"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( 120, EncogProgram.parseFloat("2*3*4*5"),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
-	
+
+    @Test
 	public void testPower() {
 		Assert.assertEquals( 8, EncogProgram.parseFloat("2^3"),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
-	
+
+    @Test
 	public void testParen1() {
 		Assert.assertEquals( 14, EncogProgram.parseFloat("2*(3+4)"),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
-	
+
+    @Test
 	public void testParen2() {
 		Assert.assertEquals( 10, EncogProgram.parseFloat("(2*3)+4"),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
-	
+
+    @Test
 	public void testParen3() {
 		Assert.assertEquals( 100, EncogProgram.parseFloat("(2*3)^2+(4*2)^2"),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
-	
+
+    @Test
 	public void testParen4() {
 		Assert.assertEquals( 4, EncogProgram.parseFloat("2^(1+1)"),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
-	
+
+    @Test
 	public void testBad() {
 		try {
 			Assert.assertEquals( 0, EncogProgram.parseFloat("2*(3+4"),Encog.DEFAULT_DOUBLE_EQUAL);

@@ -26,19 +26,21 @@ package org.encog.persist;
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
+import org.encog.Encog;
 import org.encog.neural.thermal.BoltzmannMachine;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestPersistBoltzmann extends TestCase {
+public class TestPersistBoltzmann {
 	
 	public final TempDir TEMP_DIR = new TempDir();
 	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
 	public final File SERIAL_FILENAME = TEMP_DIR.createFile("encogtest.ser");
-		
+
+	@Test
 	public void testPersistEG()
 	{
 		BoltzmannMachine network = new BoltzmannMachine(4);
@@ -50,7 +52,8 @@ public class TestPersistBoltzmann extends TestCase {
 		
 		validateHopfield(network2);
 	}
-	
+
+	@Test
 	public void testPersistSerial() throws IOException, ClassNotFoundException
 	{
 		BoltzmannMachine network = new BoltzmannMachine(4);
@@ -69,13 +72,12 @@ public class TestPersistBoltzmann extends TestCase {
 		Assert.assertEquals(4, network.getNeuronCount());
 		Assert.assertEquals(4, network.getCurrentState().size());
 		Assert.assertEquals(16, network.getWeights().length);
-		Assert.assertEquals(1.0,network.getWeight(1, 1));
-		Assert.assertEquals(2.0,network.getThreshold()[2]);
+		Assert.assertEquals(1.0,network.getWeight(1, 1), Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(2.0,network.getThreshold()[2], Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 	
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		TEMP_DIR.dispose();
 	}
 }

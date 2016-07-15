@@ -26,9 +26,6 @@ package org.encog.persist;
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.svm.KernelType;
@@ -38,8 +35,11 @@ import org.encog.ml.svm.training.SVMTrain;
 import org.encog.neural.networks.XOR;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestPersistSVM extends TestCase {
+public class TestPersistSVM {
 	
 	public final TempDir TEMP_DIR = new TempDir();
 	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
@@ -53,7 +53,8 @@ public class TestPersistSVM extends TestCase {
 		train.iteration();
 		return result;
 	}
-	
+
+	@Test
 	public void testPersistEG()
 	{
 		SVM network = create();
@@ -62,7 +63,8 @@ public class TestPersistSVM extends TestCase {
 		SVM network2 = (SVM)EncogDirectoryPersistence.loadObject((EG_FILENAME));
 		validate(network2);
 	}
-	
+
+	@Test
 	public void testPersistSerial() throws IOException, ClassNotFoundException
 	{
 		SVM network = create();
@@ -72,7 +74,7 @@ public class TestPersistSVM extends TestCase {
 				
 		validate(network2);
 	}
-		
+
 	private void validate(SVM svm)
 	{
 		Assert.assertEquals(KernelType.RadialBasisFunction, svm.getKernelType());
@@ -80,9 +82,8 @@ public class TestPersistSVM extends TestCase {
 		Assert.assertEquals(4, svm.getModel().SV.length);
 	}
 	
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		TEMP_DIR.dispose();
 	}
 }

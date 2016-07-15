@@ -23,13 +23,13 @@
  */
 package org.encog.ml.prg;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.parse.expression.common.RenderCommonExpression;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestProgramClone extends TestCase {
-	
+public class TestProgramClone {
+
+	@Test
 	public void testSimpleClone() {
 		
 		EncogProgramContext context = new EncogProgramContext();
@@ -42,7 +42,8 @@ public class TestProgramClone extends TestCase {
 		Assert.assertEquals("((1*2)*3)", render.render(prg1));
 		Assert.assertEquals("((1*2)*3)", render.render(prg2));
 	}
-	
+
+	@Test
 	public void testCloneVar() {
 		
 		EncogProgramContext context = new EncogProgramContext();
@@ -56,7 +57,8 @@ public class TestProgramClone extends TestCase {
 		Assert.assertEquals("((x*2)*3)", render.render(prg1));
 		Assert.assertEquals("((x*2)*3)", render.render(prg2));
 	}
-	
+
+	@Test
 	public void testCloneComplex() {
 		
 		EncogProgramContext context = new EncogProgramContext();

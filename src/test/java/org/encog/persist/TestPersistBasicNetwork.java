@@ -26,9 +26,6 @@ package org.encog.persist;
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.XOR;
@@ -36,8 +33,11 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.util.EngineArray;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestPersistBasicNetwork extends TestCase {
+public class TestPersistBasicNetwork {
 	
 	public final TempDir TEMP_DIR = new TempDir();
 	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
@@ -59,7 +59,8 @@ public class TestPersistBasicNetwork extends TestCase {
 		network.clearContext();
 		XOR.verifyXOR(network, 0.1);
 	}
-	
+
+	@Test
 	public void testPersistEG()
 	{
 		BasicNetwork network = create();
@@ -69,7 +70,8 @@ public class TestPersistBasicNetwork extends TestCase {
 
 		validate(network2);
 	}
-	
+
+	@Test
 	public void testPersistMediumEG()
 	{
 		BasicNetwork network = new BasicNetwork();
@@ -87,7 +89,8 @@ public class TestPersistBasicNetwork extends TestCase {
 		
 		Assert.assertTrue(d<0.01);
 	}
-	
+
+	@Test
 	public void testPersistLargeEG()
 	{
 		BasicNetwork network = new BasicNetwork();
@@ -106,7 +109,8 @@ public class TestPersistBasicNetwork extends TestCase {
 		
 		Assert.assertTrue(d<0.01);
 	}
-	
+
+	@Test
 	public void testPersistSerial() throws IOException, ClassNotFoundException
 	{
 		BasicNetwork network = create();
@@ -117,9 +121,8 @@ public class TestPersistBasicNetwork extends TestCase {
 		validate(network2);
 	}
 	
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		TEMP_DIR.dispose();
 	}
 

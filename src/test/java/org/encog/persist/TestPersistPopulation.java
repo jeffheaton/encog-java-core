@@ -26,9 +26,7 @@ package org.encog.persist;
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
+import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationStep;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.data.MLDataSet;
@@ -41,8 +39,11 @@ import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.training.TrainingSetScore;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestPersistPopulation extends TestCase {
+public class TestPersistPopulation {
 	
 	public final TempDir TEMP_DIR = new TempDir();
 	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
@@ -63,7 +64,8 @@ public class TestPersistPopulation extends TestCase {
 		
 		return (NEATPopulation)train.getPopulation();
 	}
-	
+
+	@Test
 	public void testPersistEG()
 	{
 		Population pop = generate();
@@ -73,7 +75,8 @@ public class TestPersistPopulation extends TestCase {
 		
 		validate(pop2);
 	}
-	
+
+	@Test
 	public void testPersistSerial() throws IOException, ClassNotFoundException
 	{
 		NEATPopulation pop = generate();
@@ -88,7 +91,7 @@ public class TestPersistPopulation extends TestCase {
 	private void validate(NEATPopulation pop)
 	{
 		Assert.assertEquals(10,pop.getPopulationSize());
-		Assert.assertEquals(0.2,pop.getSurvivalRate());
+		Assert.assertEquals(0.2,pop.getSurvivalRate(), Encog.DEFAULT_DOUBLE_EQUAL);
 		
 		// see if the population can actually be used to train
 		MLDataSet trainingSet = new BasicMLDataSet(XOR.XOR_INPUT, XOR.XOR_IDEAL);		
@@ -98,9 +101,8 @@ public class TestPersistPopulation extends TestCase {
 
 	}
 	
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		TEMP_DIR.dispose();
 	}
 }

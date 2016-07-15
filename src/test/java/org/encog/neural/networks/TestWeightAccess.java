@@ -23,16 +23,17 @@
  */
 package org.encog.neural.networks;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
+import org.encog.Encog;
 import org.encog.mathutil.randomize.FanInRandomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.util.EngineArray;
 import org.encog.util.simple.EncogUtility;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestWeightAccess extends TestCase {
-	
+public class TestWeightAccess {
+
+	@Test
 	public void testTracks()
 	{		
 		BasicNetwork network = EncogUtility.simpleFeedForward(5,10,15,20, true);
@@ -46,7 +47,8 @@ public class TestWeightAccess extends TestCase {
 		}
 		
 	}
-	
+
+	@Test
 	public void testFanIn()
 	{		
 		BasicNetwork network = EncogUtility.simpleFeedForward(5,10,15,20, true);
@@ -60,7 +62,8 @@ public class TestWeightAccess extends TestCase {
 		}
 		
 	}
-	
+
+	@Test
 	public void testWeights()
 	{
 		BasicNetwork network = EncogUtility.simpleFeedForward(2, 3, 0, 1, true);
@@ -71,19 +74,19 @@ public class TestWeightAccess extends TestCase {
 			weights[i] = i;
 		}
 		
-		Assert.assertEquals(0.0, network.getWeight(1, 0, 0) );
-		Assert.assertEquals(1.0, network.getWeight(1, 1, 0) );
-		Assert.assertEquals(2.0, network.getWeight(1, 2, 0) );
-		Assert.assertEquals(3.0, network.getWeight(1, 3, 0) );
-		Assert.assertEquals(4.0, network.getWeight(0, 0, 0) );
-		Assert.assertEquals(5.0, network.getWeight(0, 1, 0) );
-		Assert.assertEquals(6.0, network.getWeight(0, 2, 0) );		
-		Assert.assertEquals(7.0, network.getWeight(0, 0, 1) );
-		Assert.assertEquals(8.0, network.getWeight(0, 1, 1) );
-		Assert.assertEquals(9.0, network.getWeight(0, 2, 1) );		
-		Assert.assertEquals(10.0, network.getWeight(0, 0, 2) );
-		Assert.assertEquals(11.0, network.getWeight(0, 1, 2) );
-		Assert.assertEquals(12.0, network.getWeight(0, 2, 2) );
+		Assert.assertEquals(0.0, network.getWeight(1, 0, 0), Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(1.0, network.getWeight(1, 1, 0), Encog.DEFAULT_DOUBLE_EQUAL );
+		Assert.assertEquals(2.0, network.getWeight(1, 2, 0), Encog.DEFAULT_DOUBLE_EQUAL );
+		Assert.assertEquals(3.0, network.getWeight(1, 3, 0), Encog.DEFAULT_DOUBLE_EQUAL );
+		Assert.assertEquals(4.0, network.getWeight(0, 0, 0), Encog.DEFAULT_DOUBLE_EQUAL );
+		Assert.assertEquals(5.0, network.getWeight(0, 1, 0), Encog.DEFAULT_DOUBLE_EQUAL );
+		Assert.assertEquals(6.0, network.getWeight(0, 2, 0), Encog.DEFAULT_DOUBLE_EQUAL );
+		Assert.assertEquals(7.0, network.getWeight(0, 0, 1), Encog.DEFAULT_DOUBLE_EQUAL );
+		Assert.assertEquals(8.0, network.getWeight(0, 1, 1), Encog.DEFAULT_DOUBLE_EQUAL );
+		Assert.assertEquals(9.0, network.getWeight(0, 2, 1), Encog.DEFAULT_DOUBLE_EQUAL );
+		Assert.assertEquals(10.0, network.getWeight(0, 0, 2), Encog.DEFAULT_DOUBLE_EQUAL );
+		Assert.assertEquals(11.0, network.getWeight(0, 1, 2), Encog.DEFAULT_DOUBLE_EQUAL );
+		Assert.assertEquals(12.0, network.getWeight(0, 2, 2), Encog.DEFAULT_DOUBLE_EQUAL );
 		
 	}
 }

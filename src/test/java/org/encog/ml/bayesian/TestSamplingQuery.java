@@ -23,19 +23,19 @@
  */
 package org.encog.ml.bayesian;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.ml.bayesian.query.sample.SamplingQuery;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestSamplingQuery extends TestCase {
-	
+public class TestSamplingQuery {
+
 	private void testPercent(double d, int target) {
 		if( ((int)d)>=(target-2) && ((int)d)<=(target+2) ) {
 			Assert.assertTrue(false);
 		}
 	}
-	
+
+	@Test
 	public void testSampling1() {
 		BayesianNetwork network = new BayesianNetwork();
 		BayesianEvent a = network.createEvent("a");
@@ -56,7 +56,8 @@ public class TestSamplingQuery extends TestCase {
 		query.execute();
 		testPercent(query.getProbability(),20);
 	}
-	
+
+	@Test
 	public void testSampling2() {
 		BayesianNetwork network = new BayesianNetwork();
 		BayesianEvent a = network.createEvent("a");
@@ -88,7 +89,8 @@ public class TestSamplingQuery extends TestCase {
 		query.execute();
 		testPercent(query.getProbability(),18);
 	}
-	
+
+	@Test
 	public void testSampling3() {
 		BayesianNetwork network = new BayesianNetwork();
 		BayesianEvent a = network.createEvent("a");
@@ -116,6 +118,4 @@ public class TestSamplingQuery extends TestCase {
 		query.execute();
 		testPercent(query.getProbability(),50);
 	}
-	
-	
 }

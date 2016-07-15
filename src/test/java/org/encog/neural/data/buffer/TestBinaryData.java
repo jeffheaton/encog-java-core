@@ -25,17 +25,17 @@ package org.encog.neural.data.buffer;
 
 import java.io.File;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.ml.data.buffer.BinaryDataLoader;
 import org.encog.ml.data.buffer.codec.ArrayDataCODEC;
 import org.encog.ml.data.buffer.codec.CSVDataCODEC;
 import org.encog.neural.networks.XOR;
 import org.encog.util.csv.CSVFormat;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestBinaryData extends TestCase {
-	
+public class TestBinaryData {
+
+	@Test
 	public void testArrayCODEC() throws Exception
 	{
 		ArrayDataCODEC codec = new ArrayDataCODEC(XOR.XOR_INPUT,XOR.XOR_IDEAL);
@@ -63,7 +63,8 @@ public class TestBinaryData extends TestCase {
 		}
 		
 	}
-	
+
+	@Test
 	public void testCSV()
 	{
 		ArrayDataCODEC codec = new ArrayDataCODEC(XOR.XOR_INPUT,XOR.XOR_IDEAL);
@@ -97,8 +98,5 @@ public class TestBinaryData extends TestCase {
 				Assert.assertEquals(ideal[i][j], XOR.XOR_IDEAL[i][j], 0.01);
 			}
 		}
-
-		
 	}
-	
 }

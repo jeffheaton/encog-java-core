@@ -23,12 +23,13 @@
  */
 package org.encog.util.text;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestBagOfWords extends TestCase {
-	public static final String SAMPLE1 = "Now is the time for all good men to come to the aid of their country.";	
-	
+public class TestBagOfWords {
+	public static final String SAMPLE1 = "Now is the time for all good men to come to the aid of their country.";
+
+	@Test
 	public void testCount() {
 		BagOfWords bag = new BagOfWords();
 		bag.process(SAMPLE1);

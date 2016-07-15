@@ -28,14 +28,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.GregorianCalendar;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.app.quant.ninja.NinjaStreamWriter;
 import org.encog.util.csv.CSVFormat;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestNinjaStreamWriter extends TestCase {
+public class TestNinjaStreamWriter {
 
+	@Test
 	public void testWrite() throws IOException {
 		NinjaStreamWriter nsw = new NinjaStreamWriter();
 

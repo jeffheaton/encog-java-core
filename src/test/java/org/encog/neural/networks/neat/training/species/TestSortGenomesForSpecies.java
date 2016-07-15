@@ -27,9 +27,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.ml.CalculateScore;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
@@ -40,9 +37,10 @@ import org.encog.neural.neat.NEATUtil;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.training.TrainingSetScore;
+import org.junit.Assert;
 import org.junit.Test;
 
-public class TestSortGenomesForSpecies extends TestCase {
+public class TestSortGenomesForSpecies {
 	
 	@Test
 	public void testSort1() {

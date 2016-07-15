@@ -27,8 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.species.Species;
 import org.encog.ml.prg.EncogProgram;
@@ -39,6 +37,7 @@ import org.encog.parse.expression.common.RenderCommonExpression;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TestPersistEPLPopulation {

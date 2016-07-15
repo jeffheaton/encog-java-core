@@ -23,10 +23,12 @@
  */
 package org.encog.util.csv;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestNumberList extends TestCase {
+public class TestNumberList {
+
+	@Test
 	public void testToList() throws Exception
 	{
 		StringBuilder result = new StringBuilder();
@@ -37,7 +39,8 @@ public class TestNumberList extends TestCase {
 		NumberList.toList(CSVFormat.DECIMAL_COMMA, result, doubleData);
 		Assert.assertEquals("0,5;10000;10,5", result.toString());
 	}
-	
+
+	@Test
 	public void testFromList() throws Exception
 	{
 		double[] d = NumberList.fromList(CSVFormat.DECIMAL_POINT, "1,2.5,3000");
@@ -51,5 +54,4 @@ public class TestNumberList extends TestCase {
 		Assert.assertEquals(2.5, d2[1], 0.1);
 		Assert.assertEquals(3000, d2[2], 0.1);
 	}
-	
 }

@@ -23,18 +23,19 @@
  */
 package org.encog.parse.expression.common;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.ml.prg.EncogProgram;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestBoolean extends TestCase {
-	
+public class TestBoolean {
+
+	@Test
 	public void testBooleanConst() {
 		Assert.assertEquals( true, EncogProgram.parseBoolean("true") );
 		Assert.assertEquals( false, EncogProgram.parseBoolean("false") );	
 	}
-	
+
+	@Test
 	public void testCompare() {
 		Assert.assertEquals( false, EncogProgram.parseBoolean("3>5") );
 		Assert.assertEquals( true, EncogProgram.parseBoolean("3<5") );
@@ -45,7 +46,8 @@ public class TestBoolean extends TestCase {
 		Assert.assertEquals( false, EncogProgram.parseBoolean("3>=5") );
 		Assert.assertEquals( true, EncogProgram.parseBoolean("5>=5") );
 	}
-	
+
+	@Test
 	public void testLogic() {
 		Assert.assertEquals( true, EncogProgram.parseBoolean("true&true") );
 		Assert.assertEquals( false, EncogProgram.parseBoolean("true&false") );
@@ -53,6 +55,4 @@ public class TestBoolean extends TestCase {
 		Assert.assertEquals( true, EncogProgram.parseBoolean("true|false") );
 		Assert.assertEquals( false, EncogProgram.parseBoolean("false|false") );
 	}
-	
-	
 }

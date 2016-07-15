@@ -26,14 +26,15 @@ package org.encog.persist;
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
+import org.encog.Encog;
 import org.encog.neural.bam.BAM;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestPersistBAM extends TestCase {
+public class TestPersistBAM {
 	
 	public final TempDir TEMP_DIR = new TempDir();
 	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
@@ -46,7 +47,8 @@ public class TestPersistBAM extends TestCase {
 		network.getWeightsF2toF1().set(2, 2, 3.0);
 		return network;
 	}
-	
+
+	@Test
 	public void testPersistEG()
 	{
 		BAM network = create();
@@ -56,7 +58,8 @@ public class TestPersistBAM extends TestCase {
 
 		validateBAM(network2);
 	}
-	
+
+	@Test
 	public void testPersistSerial() throws IOException, ClassNotFoundException
 	{
 		BAM network = create();
@@ -66,20 +69,19 @@ public class TestPersistBAM extends TestCase {
 				
 		validateBAM(network2);
 	}
-	
+
 	private void validateBAM(BAM network)
 	{
 		Assert.assertEquals(6, network.getF1Count());
 		Assert.assertEquals(3, network.getF2Count());
 		Assert.assertEquals(18, network.getWeightsF1toF2().size());
 		Assert.assertEquals(18, network.getWeightsF2toF1().size());
-		Assert.assertEquals(2.0, network.getWeightsF1toF2().get(1, 1));
-		Assert.assertEquals(3.0, network.getWeightsF2toF1().get(2, 2));
+		Assert.assertEquals(2.0, network.getWeightsF1toF2().get(1, 1), Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(3.0, network.getWeightsF2toF1().get(2, 2), Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 	
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		TEMP_DIR.dispose();
 	}
 }

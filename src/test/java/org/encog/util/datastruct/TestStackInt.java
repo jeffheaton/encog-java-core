@@ -23,21 +23,21 @@
  */
 package org.encog.util.datastruct;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.EncogError;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestStackInt extends TestCase {
-	
+public class TestStackInt {
+
+	@Test
 	public void testToString() {
 		StackInt stack = new StackInt(5);
 		stack.push(3);
 		stack.push(4);
 		Assert.assertEquals("[StackInt: 4 3 ]", stack.toString());
 	}
-	
-	
+
+	@Test
 	public void testStackAdd() {
 		StackInt stack = new StackInt(5);
 		stack.push(3);
@@ -45,7 +45,8 @@ public class TestStackInt extends TestCase {
 		stack.add();
 		Assert.assertEquals(7, stack.pop());
 	}
-	
+
+	@Test
 	public void testStackSub() {
 		StackInt stack = new StackInt(5);
 		stack.push(3);
@@ -53,7 +54,8 @@ public class TestStackInt extends TestCase {
 		Assert.assertEquals(-1, stack.sub());
 		Assert.assertEquals(-1, stack.pop());
 	}
-	
+
+	@Test
 	public void testStackMul() {
 		StackInt stack = new StackInt(5);
 		stack.push(3);
@@ -61,7 +63,8 @@ public class TestStackInt extends TestCase {
 		Assert.assertEquals(12, stack.mul());
 		Assert.assertEquals(12, stack.pop());
 	}
-	
+
+	@Test
 	public void testStackDiv() {
 		StackInt stack = new StackInt(5);
 		stack.push(3);
@@ -69,7 +72,8 @@ public class TestStackInt extends TestCase {
 		Assert.assertEquals(0, stack.div());
 		Assert.assertEquals(0, stack.pop());
 	}
-	
+
+	@Test
 	public void testStackMax() {
 		StackInt stack = new StackInt(5);
 		stack.push(1);
@@ -79,7 +83,8 @@ public class TestStackInt extends TestCase {
 		Assert.assertEquals(4, stack.max(4));
 		Assert.assertEquals(4, stack.pop());
 	}
-	
+
+	@Test
 	public void testStackMin() {
 		StackInt stack = new StackInt(5);
 		stack.push(1);
@@ -89,7 +94,8 @@ public class TestStackInt extends TestCase {
 		Assert.assertEquals(1, stack.min(4));
 		Assert.assertEquals(1, stack.pop());
 	}
-	
+
+	@Test
 	public void testUnderflow() {
 		try {
 			StackInt stack = new StackInt(5);
@@ -103,7 +109,8 @@ public class TestStackInt extends TestCase {
 			// error expected
 		}
 	}
-	
+
+	@Test
 	public void testOverflow() {
 		try {
 			StackInt stack = new StackInt(2);
@@ -115,7 +122,8 @@ public class TestStackInt extends TestCase {
 			// error expected
 		}
 	}
-	
+
+	@Test
 	public void testSize() {
 		StackInt stack = new StackInt(5);
 		stack.push(0);

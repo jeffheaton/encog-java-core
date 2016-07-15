@@ -26,14 +26,14 @@ package org.encog.persist;
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.neural.cpn.CPN;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestPersistCPN extends TestCase {
+public class TestPersistCPN {
 	
 	public final TempDir TEMP_DIR = new TempDir();
 	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
@@ -43,7 +43,8 @@ public class TestPersistCPN extends TestCase {
 		CPN result = new CPN(5, 4, 3, 2);
 		return result;
 	}
-	
+
+	@Test
 	public void testPersistEG()
 	{
 		CPN network = create();
@@ -53,7 +54,8 @@ public class TestPersistCPN extends TestCase {
 
 		validate(network2);
 	}
-	
+
+	@Test
 	public void testPersistSerial() throws IOException, ClassNotFoundException
 	{
 		CPN network = create();
@@ -76,9 +78,8 @@ public class TestPersistCPN extends TestCase {
 		Assert.assertEquals(3, cpn.getWeightsInstarToOutstar().getCols());
 	}
 	
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		TEMP_DIR.dispose();
 	}
 }

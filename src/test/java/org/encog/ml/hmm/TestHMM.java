@@ -23,9 +23,6 @@
  */
 package org.encog.ml.hmm;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.ml.data.MLSequenceSet;
 import org.encog.ml.hmm.alog.KullbackLeiblerDistanceCalculator;
 import org.encog.ml.hmm.alog.MarkovGenerator;
@@ -33,8 +30,10 @@ import org.encog.ml.hmm.distributions.ContinousDistribution;
 import org.encog.ml.hmm.distributions.DiscreteDistribution;
 import org.encog.ml.hmm.train.bw.TrainBaumWelch;
 import org.encog.ml.hmm.train.kmeans.TrainKMeans;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestHMM extends TestCase {
+public class TestHMM {
 	
 	static HiddenMarkovModel buildContHMM()
 	{	
@@ -123,7 +122,8 @@ public class TestHMM extends TestCase {
 		
 		return hmm;
 	}
-	
+
+	@Test
 	public void testDiscBWL() {
 		
 		HiddenMarkovModel hmm = buildDiscHMM();
@@ -144,7 +144,8 @@ public class TestHMM extends TestCase {
 		double e = klc.distance(learntHmm, hmm);
 		Assert.assertTrue(e<0.01);
 	}
-	
+
+	@Test
 	public void testContBWL() {
 		
 		HiddenMarkovModel hmm = buildContHMM();
@@ -164,7 +165,8 @@ public class TestHMM extends TestCase {
 		double e = klc.distance(learntHmm, hmm);
 		Assert.assertTrue(e<0.01);
 	}
-	
+
+	@Test
 	public void testDiscKMeans() {
 		
 		HiddenMarkovModel hmm = buildDiscHMM();
@@ -184,5 +186,4 @@ public class TestHMM extends TestCase {
 		double e = klc.distance(learntHmm, hmm);
 		Assert.assertTrue(e<0.05);
 	}
-
 }

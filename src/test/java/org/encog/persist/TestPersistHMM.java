@@ -26,17 +26,16 @@ package org.encog.persist;
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.ml.hmm.HiddenMarkovModel;
 import org.encog.ml.hmm.alog.KullbackLeiblerDistanceCalculator;
 import org.encog.ml.hmm.distributions.ContinousDistribution;
 import org.encog.ml.hmm.distributions.DiscreteDistribution;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
+import org.junit.After;
+import org.junit.Assert;
 
-public class TestPersistHMM extends TestCase {
+public class TestPersistHMM {
 	
 	public final TempDir TEMP_DIR = new TempDir();
 	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
@@ -134,9 +133,8 @@ public class TestPersistHMM extends TestCase {
 		validate(resultHMM,sourceHMM);
 	}
 	
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		TEMP_DIR.dispose();
 	}
 

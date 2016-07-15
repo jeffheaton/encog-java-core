@@ -23,24 +23,24 @@
  */
 package org.encog.ml.kmeans;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.ml.MLCluster;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestKMeans extends TestCase {
+public class TestKMeans {
 	public static final double[][] DATA = {
         {28,15,22},
         {16,15,32},
         {32,20,44},
         {1,2,3},
         {3,2,1} };
-	
+
+    @Test
     public void testCluster (){
                 
         BasicMLDataSet set = new BasicMLDataSet();

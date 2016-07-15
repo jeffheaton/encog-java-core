@@ -23,11 +23,12 @@
  */
 package org.encog.ml.bayesian;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestBayesNet extends TestCase {
-	
+public class TestBayesNet {
+
+	@Test
 	public void testCount() {
 		BayesianNetwork network = new BayesianNetwork();
 		BayesianEvent a = network.createEvent("a");
@@ -42,7 +43,8 @@ public class TestBayesNet extends TestCase {
 		network.finalizeStructure();
 		Assert.assertEquals(16, network.calculateParameterCount());
 	}
-	
+
+	@Test
 	public void testIndependant() {
 		BayesianNetwork network = new BayesianNetwork();
 		BayesianEvent a = network.createEvent("a");
@@ -61,7 +63,8 @@ public class TestBayesNet extends TestCase {
 		Assert.assertFalse(  network.isCondIndependent(a,c,e) );
 		Assert.assertTrue(  network.isCondIndependent(a,c,b) );
 	}
-	
+
+	@Test
 	public void testIndependant2() {
 		BayesianNetwork network = new BayesianNetwork();
 		BayesianEvent a = network.createEvent("a");

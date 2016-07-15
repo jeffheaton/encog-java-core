@@ -26,19 +26,21 @@ package org.encog.persist;
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
+import org.encog.Encog;
 import org.encog.neural.thermal.HopfieldNetwork;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestPersistLargeHopfield extends TestCase {
+public class TestPersistLargeHopfield {
 	
 	public final TempDir TEMP_DIR = new TempDir();
 	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
 	public final File SERIAL_FILENAME = TEMP_DIR.createFile("encogtest.ser");
-	
+
+	@Test
 	public void testPersistEG()
 	{
 		HopfieldNetwork network = new HopfieldNetwork(1000);
@@ -50,7 +52,8 @@ public class TestPersistLargeHopfield extends TestCase {
 		
 		validateHopfield(network2);
 	}
-	
+
+    @Test
 	public void testPersistSerial() throws IOException, ClassNotFoundException
 	{
 		HopfieldNetwork network = new HopfieldNetwork(1000);
@@ -67,12 +70,11 @@ public class TestPersistLargeHopfield extends TestCase {
 		Assert.assertEquals(1000, network.getNeuronCount());
 		Assert.assertEquals(1000, network.getCurrentState().size());
 		Assert.assertEquals(1000000, network.getWeights().length);
-		Assert.assertEquals(1.0,network.getWeight(1, 1));
+		Assert.assertEquals(1.0,network.getWeight(1, 1), Encog.DEFAULT_DOUBLE_EQUAL);
 	}
 	
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		TEMP_DIR.dispose();
 	}
 }

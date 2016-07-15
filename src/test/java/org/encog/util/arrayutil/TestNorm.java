@@ -26,17 +26,17 @@ package org.encog.util.arrayutil;
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestNorm extends TestCase {
+public class TestNorm {
 	
 	public final TempDir TEMP_DIR = new TempDir();
 	public final File SERIAL_FILENAME = TEMP_DIR.createFile("encogtest.ser");
-	
+
+	@Test
 	public void testRoundTrip1() {
 		NormalizedField field = new NormalizedField(NormalizationAction.Normalize, null, 10, 0, -1, 1);
 		double d = 5;
@@ -46,7 +46,8 @@ public class TestNorm extends TestCase {
 		Assert.assertTrue( ((int)d) == ((int)d3) );
 
 	}
-	
+
+    @Test
 	public void testRoundTrip2() {
 		NormalizedField field = new NormalizedField(NormalizationAction.Normalize, null, 10, -10, -1, 1);
 		double d = 5;
@@ -55,7 +56,8 @@ public class TestNorm extends TestCase {
 
 		Assert.assertTrue( ((int)d) == ((int)d3) );
 	}
-	
+
+    @Test
 	public void testSerialize() throws IOException, ClassNotFoundException {
 		NormalizedField field = new NormalizedField(NormalizationAction.Normalize, null, 10, -10, -1, 1);
 		SerializeObject.save(SERIAL_FILENAME, field);

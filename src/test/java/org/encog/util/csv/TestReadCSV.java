@@ -23,17 +23,18 @@
  */
 package org.encog.util.csv;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
-public class TestReadCSV extends TestCase {
+public class TestReadCSV {
 	
 	public static final String INPUT_NAME = "test.csv";
 
+	@Test
 	public void testCSVComma() throws IOException
 	{
 		PrintWriter out = new PrintWriter(new FileWriter(INPUT_NAME));
@@ -55,7 +56,8 @@ public class TestReadCSV extends TestCase {
 		Assert.assertFalse(csv.next());
 		csv.close();
 	}
-	
+
+    @Test
 	public void testCSVSpace() throws IOException
 	{
 		PrintWriter out = new PrintWriter(new FileWriter(INPUT_NAME));

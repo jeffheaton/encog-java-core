@@ -23,9 +23,6 @@
  */
 package org.encog.ml.prg.train.rewrite;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.EncogError;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.ea.score.adjust.ComplexityAdjustedScore;
@@ -42,6 +39,7 @@ import org.encog.ml.prg.opp.SubtreeMutation;
 import org.encog.ml.prg.train.PrgPopulation;
 import org.encog.ml.prg.train.ZeroEvalScoreFunction;
 import org.encog.parse.expression.common.RenderCommonExpression;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -49,7 +47,7 @@ import org.junit.rules.ExpectedException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestRewriteAlgebraic extends TestCase {
+public class TestRewriteAlgebraic {
 
 	public void eval(String start, String expect) {
 		EncogProgramContext context = new EncogProgramContext();
@@ -133,19 +131,22 @@ public class TestRewriteAlgebraic extends TestCase {
 
         }
     }
-	
+
+	@Test
 	public void testMinusZero() {
 		eval("x-0","x");
 		eval("0-0","0");
 		eval("10-0","10");
 	}
 
+	@Test
 	public void testZeroMul() {
 		eval("0*0","0");
 		eval("1*0","0");
 		eval("0*1","0");
 	}
-	
+
+	@Test
 	public void testZeroDiv() {
 		try {
 			eval("0/0","(0/0)");
@@ -156,14 +157,16 @@ public class TestRewriteAlgebraic extends TestCase {
 		eval("0/5","0");
 		eval("0/x","0");
 	}
-	
+
+	@Test
 	public void testZeroPlus() {
 		eval("0+0","0");
 		eval("1+0","1");
 		eval("0+1","1");
 		eval("x+0","x");
 	}
-	
+
+	@Test
 	public void testPowerZero() {
 		eval("0^x","0");
 		eval("0^0","1");
@@ -173,34 +176,40 @@ public class TestRewriteAlgebraic extends TestCase {
 		eval("(x+y)^0","1");
 		eval("x+(x+y)^0","(x+1)");
 	}
-	
+
+	@Test
 	public void testOnePower() {
 		eval("1^500","1");
 		eval("1^x","1");
 		eval("1^1","1");
 	}
-	
+
+	@Test
 	public void testDoubleNegative() {
 		eval("--x","x");
 		//eval("-x","-(x)");
 	}
-	
+
+	@Test
 	public void testMinusMinus() {
 		eval("x--3","(x+3)");
 	}
-	
+
+	@Test
 	public void testPlusNeg() {
 		eval("x+-y","(x-y)");
 		eval("x+-1","(x-1)");
 	}
-	
+
+	@Test
 	public void testVarOpVar() {
 		eval("x-x","0");
 		eval("x+x","(2*x)");
 		eval("x*x","(x^2)");
 		eval("x/x","1");
 	}
-	
+
+	@Test
 	public void testMultiple() {
 		eval("((x+-((0-(x+x))))*x)","((x-(0-(2*x)))*x)");
 	}

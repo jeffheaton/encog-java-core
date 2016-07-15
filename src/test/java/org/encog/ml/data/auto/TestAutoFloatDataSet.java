@@ -23,10 +23,9 @@
  */
 package org.encog.ml.data.auto;
 
-import junit.framework.Assert;
-
 import org.encog.Encog;
 import org.encog.ml.data.MLDataPair;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TestAutoFloatDataSet {

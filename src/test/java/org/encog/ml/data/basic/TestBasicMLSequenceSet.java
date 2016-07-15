@@ -23,12 +23,11 @@
  */
 package org.encog.ml.data.basic;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.ml.data.MLDataPair;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestBasicMLSequenceSet extends TestCase {
+public class TestBasicMLSequenceSet {
 	
 	public static MLDataPair TEST1 = new BasicMLDataPair(new BasicMLData(new double[] { 1.0 } ),null);
 	public static MLDataPair TEST2 = new BasicMLDataPair(new BasicMLData(new double[] { 2.0 } ),null);
@@ -36,7 +35,8 @@ public class TestBasicMLSequenceSet extends TestCase {
 	public static MLDataPair TEST4 = new BasicMLDataPair(new BasicMLData(new double[] { 4.0 } ),null);
 	public static MLDataPair TEST5 = new BasicMLDataPair(new BasicMLData(new double[] { 5.0 } ),null);
 	public static int[] CHECK = { 1,2,3,4,1,2,3,2,1 };
-	
+
+	@Test
 	public void testSimple() {
 		BasicMLSequenceSet seq = new BasicMLSequenceSet();
 		seq.startNewSequence();

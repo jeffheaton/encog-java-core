@@ -26,9 +26,6 @@ package org.encog.persist;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.ml.CalculateScore;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.ea.population.Population;
@@ -37,11 +34,14 @@ import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.NEATUtil;
 import org.encog.neural.neat.PersistNEATPopulation;
 import org.encog.neural.networks.training.TrainingSetScore;
+import org.junit.Assert;
+import org.junit.Test;
 
-public final class TestPersistPopulationNPE extends TestCase
+public final class TestPersistPopulationNPE
 {
 	private static double FAKE_DATA[][] = { { 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0 } };
 
+	@Test
 	public void testNPE() throws Exception
 	{
 		final CalculateScore score = new TrainingSetScore(new BasicMLDataSet(FAKE_DATA, FAKE_DATA));
@@ -73,6 +73,7 @@ public final class TestPersistPopulationNPE extends TestCase
 		new PersistNEATPopulation().save(serialized3, training3.getPopulation());
 	}
 
+	@Test
 	public void testSaveRead() throws Exception
 	{
 		final CalculateScore score = new TrainingSetScore(new BasicMLDataSet(FAKE_DATA, FAKE_DATA));
@@ -89,6 +90,6 @@ public final class TestPersistPopulationNPE extends TestCase
 			serialized1.toByteArray()));
 		final ByteArrayOutputStream serialized2 = new ByteArrayOutputStream();
 		new PersistNEATPopulation().save(serialized2, population2);
-		Assert.assertEquals(serialized1.size(), serialized2.size());		
+		Assert.assertEquals(serialized1.size(), serialized2.size());
 	}
 }

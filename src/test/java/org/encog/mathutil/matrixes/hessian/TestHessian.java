@@ -25,9 +25,6 @@ package org.encog.mathutil.matrixes.hessian;
 
 import java.util.Arrays;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.mathutil.matrices.hessian.ComputeHessian;
 import org.encog.mathutil.matrices.hessian.HessianCR;
@@ -38,8 +35,10 @@ import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.layers.BasicLayer;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestHessian extends TestCase {
+public class TestHessian {
 	
 	private void dump(ComputeHessian hess, String name) {
 		System.out.println(name);
@@ -49,7 +48,8 @@ public class TestHessian extends TestCase {
 			System.out.println(Arrays.toString(h[i]));
 		}
 	}
-	
+
+	@Test
 	public void testSingleOutput() {
 		
 		BasicNetwork network = new BasicNetwork();
@@ -74,7 +74,8 @@ public class TestHessian extends TestCase {
 		//dump(testCR, "CR");
 		Assert.assertTrue(testCR.getHessianMatrix().equals(testFD.getHessianMatrix(), 4));
 	}
-	
+
+	@Test
 	public void testDualOutput() {
 		
 		BasicNetwork network = new BasicNetwork();

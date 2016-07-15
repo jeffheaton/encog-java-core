@@ -23,17 +23,19 @@
  */
 package org.encog.parse.expression.common;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.ml.prg.EncogProgram;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestString extends TestCase {
+public class TestString {
+
+	@Test
 	public void testSimple() {
 		Assert.assertEquals( "test", EncogProgram.parseString("\"test\""));
 		Assert.assertEquals( "", EncogProgram.parseString("\"\""));
 	}
-	
+
+	@Test
 	public void testConcat() {
 		Assert.assertEquals( "test:123.0", EncogProgram.parseString("\"test:\"+123.0"));
 		Assert.assertEquals( "helloworld", EncogProgram.parseString("\"hello\"+\"world\""));		

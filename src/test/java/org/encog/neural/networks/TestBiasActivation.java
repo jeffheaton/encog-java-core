@@ -23,9 +23,6 @@
  */
 package org.encog.neural.networks;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.data.MLDataSet;
@@ -36,9 +33,12 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestBiasActivation extends TestCase {
-	
+public class TestBiasActivation {
+
+	@Test
 	public void testLayerOutput()
 	{
 		Layer layer1, layer2;
@@ -60,7 +60,8 @@ public class TestBiasActivation extends TestCase {
 		Assert.assertEquals(-1, layerOutput[5], 2 );
 		Assert.assertEquals(0.5, layerOutput[8], 2 );	
 	}
-	
+
+	@Test
 	public void testLayerOutputPostFinalize()
 	{
 		BasicNetwork network = new BasicNetwork();
@@ -78,10 +79,11 @@ public class TestBiasActivation extends TestCase {
 		
 		Assert.assertNotNull(flat);
 		double[] layerOutput = flat.getLayerOutput();
-		Assert.assertEquals(layerOutput[5], -1.0);
-		Assert.assertEquals(layerOutput[8], 0.5);	
+		Assert.assertEquals(layerOutput[5], -1.0, Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(layerOutput[8], 0.5, Encog.DEFAULT_DOUBLE_EQUAL);
 	}
-	
+
+	@Test
 	public void testTrain()
 	{
 		BasicNetwork network1 = NetworkUtil.createXORNetworkUntrained();

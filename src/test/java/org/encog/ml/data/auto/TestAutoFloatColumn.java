@@ -24,12 +24,10 @@
 package org.encog.ml.data.auto;
 
 import org.encog.Encog;
+import org.junit.Assert;
 import org.junit.Test;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
-public class TestAutoFloatColumn extends TestCase {
+public class TestAutoFloatColumn {
 	@Test
 	public void testColumn() {
 		float[] data = { 0.1f, 0.2f, 0.3f, 0.4f };

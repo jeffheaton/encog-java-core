@@ -23,16 +23,15 @@
  */
 package org.encog.ml.bayesian;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.ml.bayesian.training.BayesianInit;
 import org.encog.ml.bayesian.training.TrainBayesian;
 import org.encog.ml.bayesian.training.search.k2.SearchK2;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestK2 extends TestCase {
+public class TestK2 {
 	
 	public static final double DATA[][] = {
 		{ 1, 0, 0 }, // case 1
@@ -46,7 +45,8 @@ public class TestK2 extends TestCase {
 		{ 1, 1, 1 }, // case 9
 		{ 0, 0, 0 }, // case 10		
 	};
-	
+
+	@Test
 	public void testK2Structure() {
 		String[] labels = { "available", "not" };
 		
@@ -70,7 +70,8 @@ public class TestK2 extends TestCase {
 		Assert.assertEquals(0.714, network.getEvent("x2").getTable().findLine(1, new int[] {1}).getProbability(),0.001);
 		
 	}
-	
+
+	@Test
 	public void testK2Calc() {
 		String[] labels = { "available", "not" };
 		

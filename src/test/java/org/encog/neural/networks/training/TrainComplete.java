@@ -23,9 +23,7 @@
  */
 package org.encog.neural.networks.training;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.encog.mathutil.randomize.ConsistentRandomizer;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
@@ -34,9 +32,12 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.util.simple.EncogUtility;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class TrainComplete extends TestCase {
-	
+
+	@Test
 	public void testCompleteTrain()
 	{
 		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);

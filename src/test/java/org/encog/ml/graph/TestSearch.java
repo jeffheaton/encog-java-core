@@ -23,17 +23,16 @@
  */
 package org.encog.ml.graph;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.ml.graph.search.AStarSearch;
 import org.encog.ml.graph.search.BreadthFirstSearch;
 import org.encog.ml.graph.search.DepthFirstSearch;
 import org.encog.ml.graph.search.EuclideanCostEstimator;
 import org.encog.ml.graph.search.GraphSearch;
 import org.encog.ml.graph.search.SimpleDestinationGoal;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestSearch extends TestCase {
+public class TestSearch {
 	
 	private int countIterations(GraphSearch search) {
 		int result = 0;
@@ -43,7 +42,8 @@ public class TestSearch extends TestCase {
 		}
 		return result;
 	}
-	
+
+	@Test
 	public void testDepthFirstSearch() {
 		BasicNode nodeA = new BasicNode("a");
 		BasicGraph graph = new BasicGraph(nodeA);
@@ -60,7 +60,8 @@ public class TestSearch extends TestCase {
 		Assert.assertEquals(solution.getNodes().get(1).getLabel(), "b");
 		Assert.assertEquals(solution.getNodes().get(2).getLabel(), "d");
 	}
-	
+
+	@Test
 	public void testBredthFirstSearch() {
 		BasicNode nodeA = new BasicNode("a");
 		BasicGraph graph = new BasicGraph(nodeA);
@@ -77,7 +78,8 @@ public class TestSearch extends TestCase {
 		Assert.assertEquals(solution.getNodes().get(1).getLabel(), "b");
 		Assert.assertEquals(solution.getNodes().get(2).getLabel(), "d");
 	}
-	
+
+	@Test
 	public void testAStar() {
 		EuclideanNode nodeA = new EuclideanNode("a", 0, 0);
 		BasicGraph graph = new BasicGraph(nodeA);

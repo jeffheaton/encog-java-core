@@ -25,8 +25,6 @@ package org.encog.app.analyst;
 
 import java.io.File;
 
-import junit.framework.Assert;
-
 import org.encog.app.analyst.report.AnalystReport;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.normalize.AnalystField;
@@ -41,6 +39,7 @@ import org.encog.util.Format;
 import org.encog.util.TempDir;
 import org.encog.util.file.FileUtil;
 import org.encog.util.simple.EncogUtility;
+import org.junit.Assert;
 
 public class AnalystTestingUtility {
 	public static final boolean CONSOLE_OUTPUT = false;

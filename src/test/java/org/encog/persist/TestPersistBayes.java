@@ -26,15 +26,15 @@ package org.encog.persist;
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.ml.bayesian.BayesianEvent;
 import org.encog.ml.bayesian.BayesianNetwork;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestPersistBayes extends TestCase {
+public class TestPersistBayes {
 	
 	public final TempDir TEMP_DIR = new TempDir();
 	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
@@ -59,7 +59,8 @@ public class TestPersistBayes extends TestCase {
 	{
 		Assert.assertEquals(3, network.calculateParameterCount());
 	}
-	
+
+	@Test
 	public void testPersistEG()
 	{
 		BayesianNetwork network = create();
@@ -69,7 +70,8 @@ public class TestPersistBayes extends TestCase {
 
 		validate(network2);
 	}
-	
+
+	@Test
 	public void testPersistSerial() throws IOException, ClassNotFoundException
 	{
 		BayesianNetwork network = create();
@@ -80,9 +82,8 @@ public class TestPersistBayes extends TestCase {
 		validate(network2);
 	}
 	
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		TEMP_DIR.dispose();
 	}
 

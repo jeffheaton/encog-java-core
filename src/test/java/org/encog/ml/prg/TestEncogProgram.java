@@ -23,10 +23,12 @@
  */
 package org.encog.ml.prg;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestEncogProgram extends TestCase {
+public class TestEncogProgram {
+
+	@Test
 	public void testSize() {
 		EncogProgram expression = new EncogProgram("1");
 		Assert.assertEquals(1, expression.getRootNode().size());

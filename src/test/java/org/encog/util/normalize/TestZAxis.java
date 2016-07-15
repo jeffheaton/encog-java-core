@@ -23,9 +23,8 @@
  */
 package org.encog.util.normalize;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
-
+import org.encog.Encog;
 import org.encog.NullStatusReportable;
 import org.encog.util.SerializeRoundTrip;
 import org.encog.util.normalize.input.InputField;
@@ -34,6 +33,8 @@ import org.encog.util.normalize.output.zaxis.OutputFieldZAxis;
 import org.encog.util.normalize.output.zaxis.OutputFieldZAxisSynthetic;
 import org.encog.util.normalize.output.zaxis.ZAxisGroup;
 import org.encog.util.normalize.target.NormalizationStorageArray2D;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class TestZAxis extends TestCase {
 	double[][] SAMPLE1 = {{-10,5,15},{-2,1,3}};
@@ -62,23 +63,25 @@ public class TestZAxis extends TestCase {
 	private void check(DataNormalization norm) {
 		double[][] arrayOutput = ((NormalizationStorageArray2D)norm.getStorage()).getArray();
 
-		Assert.assertEquals(-5.0,arrayOutput[0][0]);
-		Assert.assertEquals(2.5,arrayOutput[0][1]);
-		Assert.assertEquals(7.5,arrayOutput[0][2]);
-		Assert.assertEquals(0.0,arrayOutput[0][3]);
-		Assert.assertEquals(-1.0,arrayOutput[1][0]);
-		Assert.assertEquals(0.5,arrayOutput[1][1]);
-		Assert.assertEquals(1.5,arrayOutput[1][2]);
-		Assert.assertEquals(0.0,arrayOutput[1][3]);
+		Assert.assertEquals(-5.0,arrayOutput[0][0], Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(2.5,arrayOutput[0][1], Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(7.5,arrayOutput[0][2], Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(0.0,arrayOutput[0][3], Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(-1.0,arrayOutput[1][0], Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(0.5,arrayOutput[1][1], Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(1.5,arrayOutput[1][2], Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(0.0,arrayOutput[1][3], Encog.DEFAULT_DOUBLE_EQUAL);
 	}
-	
+
+	@Test
 	public void testAbsolute()
 	{
 		DataNormalization norm = create();
 		norm.process();
 		check(norm);
 	}
-	
+
+    @Test
 	public void testAbsoluteSerial() throws Exception
 	{
 		DataNormalization norm = create();

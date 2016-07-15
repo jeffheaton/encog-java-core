@@ -30,13 +30,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.app.quant.ninja.NinjaFileConvert;
 import org.encog.util.csv.CSVFormat;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestNinjaFileConvert extends TestCase {
+public class TestNinjaFileConvert {
 	
     public static final File INPUT_NAME = new File("test.csv");
     public static final File OUTPUT_NAME = new File("test2.csv");
@@ -57,6 +56,7 @@ public class TestNinjaFileConvert extends TestCase {
         tw.close();
     }
 
+    @Test
     public void testConvert() throws IOException
     {
         generateTestFileHeadings(true);

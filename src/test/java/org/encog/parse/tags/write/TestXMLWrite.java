@@ -23,12 +23,14 @@
  */
 package org.encog.parse.tags.write;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.io.ByteArrayOutputStream;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+public class TestXMLWrite {
 
-public class TestXMLWrite extends TestCase {
+	@Test
 	public void testXMLWrite() throws Throwable
 	{
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();

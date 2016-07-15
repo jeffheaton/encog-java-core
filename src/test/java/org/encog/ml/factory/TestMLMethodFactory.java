@@ -23,23 +23,23 @@
  */
 package org.encog.ml.factory;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.ml.svm.SVM;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.rbf.RBFNetwork;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestMLMethodFactory extends TestCase {
+public class TestMLMethodFactory {
 
 	public static final String TYPE_FEEDFORWARD = "feedforward";
 	public static final String TYPE_RBFNETWORK = "rbfnetwork";
 	public static final String TYPE_SVM = "svm";
 	public static final String TYPE_SOM = "som";
-	
+
+	@Test
 	public void testFactoryFeedforward() {
 		String architecture = "?:B->TANH->3->LINEAR->?:B";
 		MLMethodFactory factory = new MLMethodFactory();
@@ -56,7 +56,7 @@ public class TestMLMethodFactory extends TestCase {
 		Assert.assertEquals(3,network.getLayerNeuronCount(1));
 		Assert.assertEquals(4,network.getLayerNeuronCount(2));
 	}
-	
+
 	private void expectError(String t, String a) {
 		MLMethodFactory factory = new MLMethodFactory();
 		try {
@@ -66,7 +66,8 @@ public class TestMLMethodFactory extends TestCase {
 			// good
 		}
 	}
-	
+
+	@Test
 	public void testFactoryFeedforwardError() {
 		String ARC1 = "?->3->ERROR->?";
 		String ARC2 = "?->?->?";
@@ -77,7 +78,8 @@ public class TestMLMethodFactory extends TestCase {
 		expectError(MLMethodFactory.TYPE_FEEDFORWARD, ARC3);
 
 	}
-	
+
+	@Test
 	public void testFactoryRBF() {
 		String architecture = "?->GAUSSIAN(c=4)->?";
 		MLMethodFactory factory = new MLMethodFactory();
@@ -86,7 +88,8 @@ public class TestMLMethodFactory extends TestCase {
 		Assert.assertEquals(4,network.getOutputCount());
 		Assert.assertEquals(4,network.getRBF().length);	
 	}
-	
+
+	@Test
 	public void testFactorySVM() {
 		String architecture = "?->C(KERNEL=RBF,TYPE=NEW)->?";
 		MLMethodFactory factory = new MLMethodFactory();
@@ -94,9 +97,4 @@ public class TestMLMethodFactory extends TestCase {
 		Assert.assertEquals(4,network.getInputCount());
 		Assert.assertEquals(1,network.getOutputCount());
 	}
-	
-	public void testFactorySOM() {
-		
-	}
-	
 }

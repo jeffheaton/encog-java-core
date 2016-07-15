@@ -25,9 +25,6 @@ package org.encog.neural.networks.training;
 
 import java.io.File;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.Encog;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.data.MLDataSet;
@@ -42,11 +39,14 @@ import org.encog.neural.neat.NEATUtil;
 import org.encog.neural.networks.XOR;
 import org.encog.util.TempDir;
 import org.encog.util.simple.EncogUtility;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestNEAT extends TestCase {
+public class TestNEAT {
 	public final TempDir TEMP_DIR = new TempDir();
 	public final File EGB_FILENAME = TEMP_DIR.createFile("encogtest.egb");
 
+	@Test
 	public void testNEATBuffered() {
 		BufferedMLDataSet buffer = new BufferedMLDataSet(EGB_FILENAME);
 		buffer.beginLoad(2, 1);
@@ -75,7 +75,8 @@ public class TestNEAT extends TestCase {
 		Assert.assertTrue(train.getError()<0.01);
 		Assert.assertTrue(network.calculateError(buffer)<0.01);
 	}
-	
+
+	@Test
 	public void testNEAT() {
 		MLDataSet trainingSet = new BasicMLDataSet(XOR.XOR_INPUT, XOR.XOR_IDEAL);
 		NEATPopulation pop = new NEATPopulation(2,1,1000);

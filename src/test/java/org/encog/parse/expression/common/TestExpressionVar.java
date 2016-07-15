@@ -23,31 +23,35 @@
  */
 package org.encog.parse.expression.common;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.Encog;
 import org.encog.ml.prg.EncogProgram;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestExpressionVar extends TestCase {
+public class TestExpressionVar {
+
+	@Test
 	public void testAssignment() {
 		EncogProgram expression = new EncogProgram("a");
 		expression.getVariables().setVariable("a",5);
 		Assert.assertEquals(5,expression.evaluate().toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
-	
+
+	@Test
 	public void testNegAssignment() {
 		EncogProgram expression = new EncogProgram("-a");
 		expression.getVariables().setVariable("a",5);
 		Assert.assertEquals(-5,expression.evaluate().toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
-	
+
+	@Test
 	public void test2NegAssignment() {
 		EncogProgram expression = new EncogProgram("--a");
 		expression.getVariables().setVariable("a",5);
 		Assert.assertEquals(5,expression.evaluate().toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
-	
+
+	@Test
 	public void testAssignment2() {
 		EncogProgram expression = new EncogProgram("cccc*(aa+bbb)");
 		expression.getVariables().setVariable("aa",1);
@@ -55,7 +59,8 @@ public class TestExpressionVar extends TestCase {
 		expression.getVariables().setVariable("cccc",3);
 		Assert.assertEquals(9,expression.evaluate().toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
-	
+
+	@Test
 	public void testAssignment3() {
 		EncogProgram expression = new EncogProgram("v1+v2+v3");
 		expression.getVariables().setVariable("v1",1);
@@ -63,7 +68,8 @@ public class TestExpressionVar extends TestCase {
 		expression.getVariables().setVariable("v3",3);
 		Assert.assertEquals(6,expression.evaluate().toFloatValue(),Encog.DEFAULT_DOUBLE_EQUAL);
 	}
-	
+
+	@Test
 	public void testVarComplex() {
 		EncogProgram expression = new EncogProgram("(x^((1+((x^-8)-(4^x)))^(((-7/2)-(0--5.8))/x)))");
 		expression.getVariables().setVariable("x",10);

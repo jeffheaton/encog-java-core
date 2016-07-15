@@ -25,22 +25,22 @@ package org.encog.persist;
 
 import java.io.File;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.util.TempDir;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestPersistTrainingContinuation extends TestCase {
+public class TestPersistTrainingContinuation {
 	
 	public final TempDir TEMP_DIR = new TempDir();
 	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
 	public final File SERIAL_FILENAME = TEMP_DIR.createFile("encogtest.ser");
 
+	@Test
 	public void testRPROPCont() {
 		MLDataSet trainingSet = XOR.createXORDataSet();
 		BasicNetwork net1 = XOR.createUnTrainedXOR();
@@ -68,7 +68,8 @@ public class TestPersistTrainingContinuation extends TestCase {
 			Assert.assertEquals(net1.getFlat().getWeights()[i], net2.getFlat().getWeights()[i],0.0001);
 		}
 	}
-	
+
+	@Test
 	public void testRPROPContPersistEG() {
 		MLDataSet trainingSet = XOR.createXORDataSet();
 		BasicNetwork net1 = XOR.createUnTrainedXOR();

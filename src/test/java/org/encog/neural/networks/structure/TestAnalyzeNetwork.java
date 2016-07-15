@@ -23,14 +23,16 @@
  */
 package org.encog.neural.networks.structure;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.util.EngineArray;
 import org.encog.util.simple.EncogUtility;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class TestAnalyzeNetwork extends TestCase {
+
+	@Test
 	public void testAnalyze()
 	{
 		BasicNetwork network = EncogUtility.simpleFeedForward(2, 2, 0, 1, false);

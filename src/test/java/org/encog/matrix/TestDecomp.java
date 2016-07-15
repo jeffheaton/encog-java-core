@@ -23,16 +23,18 @@
  */
 package org.encog.matrix;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
+import org.encog.Encog;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.decomposition.CholeskyDecomposition;
 import org.encog.mathutil.matrices.decomposition.EigenvalueDecomposition;
 import org.encog.mathutil.matrices.decomposition.QRDecomposition;
 import org.encog.mathutil.matrices.decomposition.SingularValueDecomposition;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestDecomp extends TestCase {
+public class TestDecomp {
+
+	@Test
 	public void testSVD()
 	{
 		double m[][] = {
@@ -48,7 +50,8 @@ public class TestDecomp extends TestCase {
 		Assert.assertEquals(4, d.length);
 
 	}
-	
+
+	@Test
 	public void testCholesky()
 	{
 		double m1[][] = {
@@ -70,13 +73,14 @@ public class TestDecomp extends TestCase {
 
 		Matrix mx = c.getL();
 		
-		Assert.assertEquals(1.0, mx.get(0,0));
-		Assert.assertEquals(1.0, mx.get(1,1));
-		Assert.assertEquals(1.0, mx.get(2,2));
+		Assert.assertEquals(1.0, mx.get(0,0), Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(1.0, mx.get(1,1), Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(1.0, mx.get(2,2), Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals(4, mx.getRows());
 		Assert.assertEquals(4, mx.getCols());
 	}
-	
+
+	@Test
 	public void testEigenvalue()
 	{
 		double m1[][] = {
@@ -92,9 +96,9 @@ public class TestDecomp extends TestCase {
 		double[] d2 = e.getRealEigenvalues();
 		Matrix mx = e.getV();
 		
-		Assert.assertEquals(1.0, mx.get(0,0));
-		Assert.assertEquals(1.0, mx.get(1,1));
-		Assert.assertEquals(1.0, mx.get(2,2));
+		Assert.assertEquals(1.0, mx.get(0,0), Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(1.0, mx.get(1,1), Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(1.0, mx.get(2,2), Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals(4, mx.getRows());
 		Assert.assertEquals(4, mx.getCols());
 	}
@@ -114,9 +118,9 @@ public class TestDecomp extends TestCase {
 		double[] d2 = e.getRealEigenvalues();
 		Matrix mx = e.getV();
 		
-		Assert.assertEquals(0.0, mx.get(0,0));
-		Assert.assertEquals(0.0, mx.get(1,1));
-		Assert.assertEquals(1.0, mx.get(2,2));
+		Assert.assertEquals(0.0, mx.get(0,0), Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(0.0, mx.get(1,1), Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(1.0, mx.get(2,2), Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals(4, mx.getRows());
 		Assert.assertEquals(4, mx.getCols());
 	}
@@ -140,9 +144,9 @@ public class TestDecomp extends TestCase {
 		QRDecomposition c = new QRDecomposition(matrix1);
 		Matrix mx = c.solve(matrix2);
 		
-		Assert.assertEquals(17.0, mx.get(0,0));
-		Assert.assertEquals(22.0, mx.get(1,1));
-		Assert.assertEquals(28.0, mx.get(2,2));
+		Assert.assertEquals(17.0, mx.get(0,0), Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(22.0, mx.get(1,1), Encog.DEFAULT_DOUBLE_EQUAL);
+		Assert.assertEquals(28.0, mx.get(2,2), Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals(4, mx.getRows());
 		Assert.assertEquals(4, mx.getCols());
 	}

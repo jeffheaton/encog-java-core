@@ -25,17 +25,18 @@ package org.encog.app.analyst;
 
 import java.io.File;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.util.TempDir;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 import org.encog.util.file.FileUtil;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestAnalystClassification extends TestCase {
+public class TestAnalystClassification {
 	public final TempDir TEMP_DIR = new TempDir();
 
+	@Test
 	public void testClassification() throws Exception {
 		File rawFile = TEMP_DIR.createFile("simple.csv");
 		File egaFile = TEMP_DIR.createFile("simple.ega");
@@ -61,9 +62,8 @@ public class TestAnalystClassification extends TestCase {
 		csv.close();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		TEMP_DIR.dispose();
 	}
 }

@@ -30,15 +30,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.app.quant.indicators.MovingAverage;
 import org.encog.app.quant.indicators.ProcessIndicators;
 import org.encog.app.quant.indicators.predictive.BestClose;
 import org.encog.util.csv.CSVFormat;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestProcessIndicators extends TestCase {
+public class TestProcessIndicators {
 
     public final static File INPUT_NAME = new File("test.csv");
     public final static File OUTPUT_NAME = new File("test2.csv");
@@ -66,6 +65,7 @@ public class TestProcessIndicators extends TestCase {
         tw.close();
     }
 
+    @Test
     public void testIndicatorsHeaders() throws IOException
     {
         generateTestFileHeadings(true);

@@ -23,13 +23,11 @@
  */
 package org.encog.parse.expression.common;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.Encog;
 import org.encog.ml.prg.EncogProgram;
+import org.junit.Assert;
 
-public class TestFunctions extends TestCase {
+public class TestFunctions {
 	public void testBasicFunctions() {
 		Assert.assertEquals( 3, EncogProgram.parseFloat("sqrt(9)"),Encog.DEFAULT_DOUBLE_EQUAL);
 		Assert.assertEquals( 100, EncogProgram.parseFloat("pow(10,2)"),Encog.DEFAULT_DOUBLE_EQUAL);

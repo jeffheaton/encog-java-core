@@ -23,34 +23,37 @@
  */
 package org.encog.parse.expression.rpn;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.ml.prg.EncogProgram;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestRenderRPN extends TestCase {
-	
+public class TestRenderRPN {
+
+	@Test
 	public void testRenderBasic() {
 		EncogProgram expression = new EncogProgram("(2+6)");
 		RenderRPN render = new RenderRPN();
 		String result = render.render(expression);
 		Assert.assertEquals("2 6 [+]", result);
 	}
-	
+
+	@Test
 	public void testRenderComplex() {
 		EncogProgram expression = new EncogProgram("((a+25)^3/25)-((a*3)^4/250)");
 		RenderRPN render = new RenderRPN();
 		String result = render.render(expression);
 		Assert.assertEquals("a 25 [+] 3 [^] 25 [/] a 3 [*] 4 [^] 250 [/] [-]", result);
 	}
-	
+
+	@Test
 	public void testRenderFunction() {
 		EncogProgram expression = new EncogProgram("(sin(x)+cos(x))/2");
 		RenderRPN render = new RenderRPN();
 		String result = render.render(expression);		
 		Assert.assertEquals("x [sin] x [cos] [+] 2 [/]", result);		
 	}
-	
+
+	@Test
 	public void testKnownConst() {
 		EncogProgram expression = new EncogProgram("x*2*PI");
 		RenderRPN render = new RenderRPN();

@@ -23,17 +23,15 @@
  */
 package org.encog.ml.data.folded;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.Encog;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.junit.Assert;
 import org.junit.Test;
 
-public class TestFoldedDataSet extends TestCase {
+public class TestFoldedDataSet {
 	
 	private FoldedDataSet performFoldTest(int recordCount, int foldCount, int testIndex1, int testCount1, int testIndex2, int testCount2) {
 		MLDataSet dataSet = new BasicMLDataSet();
@@ -57,7 +55,7 @@ public class TestFoldedDataSet extends TestCase {
 		
 		return foldedData;
 	}
-	
+
 	private void testFoldedAccess(MLDataSet dataSet, FoldedDataSet foldedDataSet) {
 		int parentIndex = 0;
 

@@ -30,14 +30,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.encog.app.analyst.csv.segregate.SegregateCSV;
 import org.encog.app.analyst.csv.segregate.SegregateTargetPercent;
 import org.encog.util.csv.CSVFormat;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestSegregateCSV extends TestCase {
+public class TestSegregateCSV {
 
 	public static final File INPUT_NAME = new File("test.csv");
     public static final File OUTPUT1_NAME = new File("test2.csv");
@@ -60,6 +59,7 @@ public class TestSegregateCSV extends TestCase {
         tw.close();
     }
 
+    @Test
     public void testFilterCSVHeaders() throws IOException
     {
         generateTestFileHeadings(true);
@@ -88,6 +88,7 @@ public class TestSegregateCSV extends TestCase {
         OUTPUT2_NAME.delete();
     }
 
+    @Test
     public void testFilterCSVNoHeaders() throws IOException
     {
         generateTestFileHeadings(false);
