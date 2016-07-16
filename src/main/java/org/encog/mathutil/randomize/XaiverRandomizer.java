@@ -23,6 +23,7 @@
  */
 package org.encog.mathutil.randomize;
 
+import org.encog.engine.network.activation.ActivationReLU;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.randomize.generate.GenerateRandom;
 import org.encog.mathutil.randomize.generate.MersenneTwisterGenerateRandom;
@@ -52,38 +53,6 @@ public class XaiverRandomizer implements Randomizer {
 	}
 
 	/**
-	 * Compute a Gaussian random number.
-	 *
-	 * @param m
-	 *            The mean.
-	 * @param s
-	 *            The standard deviation.
-	 * @return The random number.
-	 */
-	public double boxMuller(final double m, final double s) {
-		double x1, x2, w, y1;
-
-		// use value from previous call
-		if (this.useLast) {
-			y1 = this.y2;
-			this.useLast = false;
-		} else {
-			do {
-				x1 = 2.0 * rnd.nextDouble() - 1.0;
-				x2 = 2.0 * rnd.nextDouble() - 1.0;
-				w = x1 * x1 + x2 * x2;
-			} while (w >= 1.0);
-
-			w = Math.sqrt((-2.0 * Math.log(w)) / w);
-			y1 = x1 * w;
-			this.y2 = x2 * w;
-			this.useLast = true;
-		}
-
-		return (m + y1 * s);
-	}
-
-	/**
 	 * Generate a random number.
 	 * 
 	 * @param d
@@ -104,13 +73,26 @@ public class XaiverRandomizer implements Randomizer {
 	 */
 	public void randomize(final BasicNetwork network,
 			final int fromLayer) {
-		final int fromCount = network.getLayerTotalNeuronCount(fromLayer);
+		final int fromCount = network.getLayerNeuronCount(fromLayer);
 		final int toCount = network.getLayerNeuronCount(fromLayer + 1);
 
 		for (int fromNeuron = 0; fromNeuron < fromCount; fromNeuron++) {
+			// biases
 			for (int toNeuron = 0; toNeuron < toCount; toNeuron++) {
-				double sigma = Math.sqrt(2.0/(fromCount+toCount));
-				double w = this.boxMuller(0, sigma);
+				network.setWeight(fromLayer, fromCount, toNeuron, 0);
+			}
+
+			// weights
+			for (int toNeuron = 0; toNeuron < toCount; toNeuron++) {
+				double d;
+
+				if( network.getActivation(fromLayer) instanceof ActivationReLU) {
+					d = 2/Math.sqrt(fromCount);
+				} else {
+					d = 2/Math.sqrt((fromCount+toCount));
+				}
+
+				double w = this.rnd.nextDouble(-d,d);
 				network.setWeight(fromLayer, fromNeuron, toNeuron, w);
 			}
 		}
