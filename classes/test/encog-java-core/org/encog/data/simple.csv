@@ -1,0 +1,13 @@
+"feature-1","feature-2","ntype","type"
+10,0,1,type-a
+11,1,1,type-a
+12,2,1,type-a
+11,3,1,type-a
+10,100,2,type-b
+11,101,2,type-b
+12,102,2,type-b
+11,103,2,type-b
+1,200,3,type-c
+2,201,3,type-c
+1,202,3,type-c
+2,203,3,type-c

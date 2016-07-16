@@ -23,26 +23,37 @@
  */
 package org.encog.neural.networks.training.propagation.sgd;
 
+import org.encog.Encog;
+import org.encog.EncogError;
+import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.mathutil.error.ErrorCalculation;
+import org.encog.mathutil.randomize.generate.GenerateRandom;
 import org.encog.mathutil.randomize.generate.MersenneTwisterGenerateRandom;
+import org.encog.ml.MLMethod;
+import org.encog.ml.TrainingImplementationType;
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.train.BasicTraining;
+import org.encog.neural.error.CrossEntropyErrorFunction;
+import org.encog.neural.error.ErrorFunction;
+import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.Momentum;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
+import org.encog.neural.networks.training.propagation.sgd.update.AdamUpdate;
+import org.encog.neural.networks.training.propagation.sgd.update.MomentumUpdate;
+import org.encog.neural.networks.training.propagation.sgd.update.UpdateRule;
 import org.encog.neural.networks.training.strategy.SmartLearningRate;
 import org.encog.neural.networks.training.strategy.SmartMomentum;
+import org.encog.util.EngineArray;
 import org.encog.util.validate.ValidateNetwork;
 
-public class StochasticGradientDescent extends Propagation implements Momentum,
+public class StochasticGradientDescent extends BasicTraining implements Momentum,
 		LearningRate {
 
-	/**
-	 * The resume key for backpropagation.
-	 */
-	public static final String LAST_DELTA = "LAST_DELTA";
-	
 	/**
 	 * The learning rate.
 	 */
@@ -53,99 +64,191 @@ public class StochasticGradientDescent extends Propagation implements Momentum,
 	 */
 	private double momentum;
 
-	/**
+    /**
+     * The gradients.
+     */
+    private final double[] gradients;
+
+    /**
+     * The deltas for each layer.
+     */
+    private final double[] layerDelta;
+
+    /**
+     * L1 regularization.
+     */
+    private double l1;
+
+    /**
+     * L2 regularization.
+     */
+    private double l2;
+
+    /**
+     * The update rule to use.
+     */
+    private UpdateRule updateRule = new AdamUpdate();
+
+    /**
 	 * The last delta values.
 	 */
 	private double[] lastDelta;
-	
-	private StochasticDataSet dataset;
 
+    /**
+     * A flat neural network.
+     */
+    private FlatNetwork flat;
 
-	/**
-	 * 
-	 * @param network
-	 *            The network that is to be trained
-	 * @param training
-	 *            The training set
-	 * @param batchSize
-	 * 			  The size of the minibatch.
-	 * @param theLearnRate
-	 *            The rate at which the weight matrix will be adjusted based on
-	 *            learning.
-	 * @param theMomentum
-	 *            The influence that previous iteration's training deltas will
-	 *            have on the current iteration.
-	 */
+    /**
+     * The error function to use.
+     */
+    private ErrorFunction errorFunction = new CrossEntropyErrorFunction();
+
+    /**
+     * The error calculation.
+     */
+    private ErrorCalculation errorCalculation;
+
+    private GenerateRandom rnd;
+
+    private MLMethod method;
+
+    public StochasticGradientDescent(final ContainsFlat network,
+                                     final MLDataSet training) {
+        this(network,training,new MersenneTwisterGenerateRandom());
+    }
+
 	public StochasticGradientDescent(final ContainsFlat network,
-			final MLDataSet training, final int batchSize, final double theLearnRate,
-			final double theMomentum) {
-		super(network, new StochasticDataSet(training,new MersenneTwisterGenerateRandom()));
-		ValidateNetwork.validateMethodToData(network, training);
-		this.dataset = (StochasticDataSet) getTraining();
-		this.momentum = theMomentum;
-		this.learningRate = theLearnRate;
-		this.lastDelta = new double[network.getFlat().getWeights().length];
-		this.dataset.setBatchSize(batchSize);
-		// Lower level class should use entire dataset,
-		// the StochasticDataSet ensures that it is the mini-batch size.
-		super.setBatchSize(0);
+			final MLDataSet training, final GenerateRandom theRandom) {
+        super(TrainingImplementationType.Iterative);
 
+        setTraining(training);
+
+        if( !(training instanceof BatchDataSet) ) {
+            setBatchSize(25);
+        }
+
+        this.method = network;
+        this.flat = network.getFlat();
+        this.layerDelta = new double[this.flat.getLayerOutput().length];
+        this.gradients = new double[this.flat.getWeights().length];
+        this.errorCalculation = new ErrorCalculation();
+        this.rnd = theRandom;
+        this.learningRate = 0.001;
+        this.momentum = 0.9;
+    }
+
+	public void process(final MLDataPair pair) {
+        errorCalculation = new ErrorCalculation();
+
+        double[] actual = new double[this.flat.getOutputCount()];
+
+        flat.compute(pair.getInputArray(), actual);
+
+		errorCalculation.updateError(actual, pair.getIdealArray(), pair.getSignificance());
+
+		// Calculate error for the output layer.
+		this.errorFunction.calculateError(
+				flat.getActivationFunctions()[0], this.flat.getLayerSums(),this.flat.getLayerOutput(),
+				pair.getIdeal().getData(), actual, this.layerDelta, 0,
+				pair.getSignificance());
+
+		// Apply regularization, if requested.
+		if( this.l1> Encog.DEFAULT_DOUBLE_EQUAL
+				|| this.l2>Encog.DEFAULT_DOUBLE_EQUAL  ) {
+			double[] lp = new double[2];
+			calculateRegularizationPenalty(lp);
+			for(int i=0;i<actual.length;i++) {
+				double p = (lp[0]*this.l1) + (lp[1]*this.l2);
+				this.layerDelta[i]+=p;
+			}
+		}
+
+		// Propagate backwards (chain rule from calculus).
+		for (int i = this.flat.getBeginTraining(); i < this.flat
+				.getEndTraining(); i++) {
+			processLevel(i);
+		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
+    private void processLevel(final int currentLevel) {
+        final int fromLayerIndex = flat.getLayerIndex()[currentLevel + 1];
+        final int toLayerIndex = flat.getLayerIndex()[currentLevel];
+        final int fromLayerSize = flat.getLayerCounts()[currentLevel + 1];
+        final int toLayerSize = flat.getLayerFeedCounts()[currentLevel];
+        double dropoutRate = 0;
+
+        final int index = this.flat.getWeightIndex()[currentLevel];
+        final ActivationFunction activation = this.flat
+                .getActivationFunctions()[currentLevel];
+
+        // handle weights
+        // array references are made method local to avoid one indirection
+        final double[] layerDelta = this.layerDelta;
+        final double[] weights = this.flat.getWeights();
+        final double[] gradients = this.gradients;
+        final double[] layerOutput = this.flat.getLayerOutput();
+        final double[] layerSums = this.flat.getLayerSums();
+        int yi = fromLayerIndex;
+        for (int y = 0; y < fromLayerSize; y++) {
+            final double output = layerOutput[yi];
+            double sum = 0;
+
+            int wi = index + y;
+            final int loopEnd = toLayerIndex+toLayerSize;
+
+            for (int xi = toLayerIndex; xi < loopEnd; xi++, wi += fromLayerSize) {
+                gradients[wi] += output * layerDelta[xi];
+                sum += weights[wi] * layerDelta[xi];
+            }
+            layerDelta[yi] = sum
+                    * (activation.derivativeFunction(layerSums[yi], layerOutput[yi]));
+
+            yi++;
+        }
+    }
+
+
+
+    @Override
+	public void iteration() {
+
+        if( getIteration()==0 ) {
+            this.updateRule.init(this);
+        }
+
+        preIteration();
+
+        EngineArray.fill(this.gradients,0);
+        this.errorCalculation.reset();
+
+        for(int i=0;i<getTraining().size();i++) {
+            process(getTraining().get(i));
+        }
+
+        this.updateRule.update(this.gradients,this.flat.getWeights());
+        setError(this.errorCalculation.calculate());
+        postIteration();
+	}
+
 	@Override
 	public boolean canContinue() {
 		return false;
 	}
 
-	/**
-	 * @return The last delta values.
-	 */
-	public double[] getLastDelta() {
-		return this.lastDelta;
-	}
-
-	/**
-	 * @return The learning rate, this is value is essentially a percent. It is
-	 *         the degree to which the gradients are applied to the weight
-	 *         matrix to allow learning.
-	 */
 	@Override
 	public double getLearningRate() {
 		return this.learningRate;
 	}
 
-	/**
-	 * @return The momentum for training. This is the degree to which changes
-	 *         from which the previous training iteration will affect this
-	 *         training iteration. This can be useful to overcome local minima.
-	 */
 	@Override
 	public double getMomentum() {
 		return this.momentum;
 	}
 
-	/**
-	 * Determine if the specified continuation object is valid to resume with.
-	 * 
-	 * @param state
-	 *            The continuation object to check.
-	 * @return True if the specified continuation object is valid for this
-	 *         training method and network.
-	 */
+
 	public boolean isValidResume(final TrainingContinuation state) {
-		if (!state.getContents().containsKey(StochasticGradientDescent.LAST_DELTA)) {
-			return false;
-		}
-
-		if (!state.getTrainingType().equals(getClass().getSimpleName())) {
-			return false;
-		}
-
-		final double[] d = (double[]) state.get(StochasticGradientDescent.LAST_DELTA);
-		return d.length == ((ContainsFlat) getMethod()).getFlat().getWeights().length;
+		return false;
 	}
 
 	/**
@@ -155,122 +258,94 @@ public class StochasticGradientDescent extends Propagation implements Momentum,
 	 */
 	@Override
 	public TrainingContinuation pause() {
-		final TrainingContinuation result = new TrainingContinuation();
-		result.setTrainingType(this.getClass().getSimpleName());
-		result.set(StochasticGradientDescent.LAST_DELTA, this.lastDelta);
-		return result;
+		return null;
 	}
 
-	/**
-	 * Resume training.
-	 * 
-	 * @param state
-	 *            The training state to return to.
-	 */
 	@Override
 	public void resume(final TrainingContinuation state) {
-		if (!isValidResume(state)) {
-			throw new TrainingError("Invalid training resume data length");
-		}
-
-		this.lastDelta = ((double[]) state.get(StochasticGradientDescent.LAST_DELTA));
-
+		throw new EncogError("Resume not currently supported.");
 	}
 
-	/**
-	 * Set the learning rate, this is value is essentially a percent. It is the
-	 * degree to which the gradients are applied to the weight matrix to allow
-	 * learning.
-	 * 
-	 * @param rate
-	 *            The learning rate.
-	 */
+	@Override
+	public MLMethod getMethod() {
+		return this.method;
+	}
+
 	@Override
 	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
 
-	/**
-	 * Set the momentum for training. This is the degree to which changes from
-	 * which the previous training iteration will affect this training
-	 * iteration. This can be useful to overcome local minima.
-	 * 
-	 * @param m
-	 *            The momentum.
-	 */
 	@Override
 	public void setMomentum(final double m) {
 		this.momentum = m;
 	}
 	
-	/**
-	 * Update a weight.
-	 * 
-	 * @param gradients
-	 *            The gradients.
-	 * @param lastGradient
-	 *            The last gradients.
-	 * @param index
-	 *            The index.
-	 * @return The weight delta.
-	 */
-	@Override
-	public double updateWeight(final double[] gradients,
-			final double[] lastGradient, final int index) {
-		final double delta = (gradients[index] * this.learningRate)
-				+ (this.lastDelta[index] * this.momentum);
-		this.lastDelta[index] = delta;
-		return delta;
-	}
-
-	/**
-	 * Update a weight.
-	 * 
-	 * @param gradients
-	 *            The gradients.
-	 * @param lastGradient
-	 *            The last gradients.
-	 * @param index
-	 *            The index.
-	 * @param dropoutRate
-	 * 			  The dropout rate.
-	 * @return The weight delta.
-	 */
-	@Override
-	public double updateWeight(final double[] gradients,
-			final double[] lastGradient, final int index, double dropoutRate) {
-		
-		if (dropoutRate > 0 && dropoutRandomSource.nextDouble() < dropoutRate) {
-			return 0;
-		};
-		
-		final double delta = (gradients[index] * this.learningRate)
-				+ (this.lastDelta[index] * this.momentum);
-		this.lastDelta[index] = delta;
-		return delta;
-	}	/**
-	 * Perform training method specific init.
-	 */
-	public void initOthers() {
-		
-	}
-	
 	public void preIteration() {
 		super.preIteration();
-		this.dataset.resample();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public int getBatchSize() {
-		return this.dataset.getBatchSize();
+		if( getTraining() instanceof BatchDataSet ) {
+            return ((BatchDataSet)getTraining()).getBatchSize();
+        } else {
+            return 0;
+        }
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void setBatchSize(int theBatchSize) {
-		this.dataset.setBatchSize(theBatchSize);
+        if( getTraining() instanceof BatchDataSet ) {
+            ((BatchDataSet)getTraining()).setBatchSize(theBatchSize);
+        } else {
+            BatchDataSet batchSet = new BatchDataSet(getTraining(),this.rnd);
+            setTraining(batchSet);
+        }
 	}
+
+    public double getL1() {
+        return l1;
+    }
+
+    public void setL1(double l1) {
+        this.l1 = l1;
+    }
+
+    public double getL2() {
+        return l2;
+    }
+
+    public void setL2(double l2) {
+        this.l2 = l2;
+    }
+
+    public void calculateRegularizationPenalty(double[] l) {
+        for (int i = 0; i < this.flat.getLayerCounts().length - 1; i++) {
+            layerRegularizationPenalty(i, l);
+        }
+    }
+
+    public void layerRegularizationPenalty(final int fromLayer, final double[] l) {
+        final int fromCount = this.flat.getLayerTotalNeuronCount(fromLayer);
+        final int toCount = this.flat.getLayerNeuronCount(fromLayer + 1);
+
+        for (int fromNeuron = 0; fromNeuron < fromCount; fromNeuron++) {
+            for (int toNeuron = 0; toNeuron < toCount; toNeuron++) {
+                double w = this.flat.getWeight(fromLayer, fromNeuron, toNeuron);
+                l[0]+=Math.abs(w);
+                l[1]+=w*w;
+            }
+        }
+    }
+
+    public FlatNetwork getFlat() {
+        return this.flat;
+    }
+
+    public UpdateRule getUpdateRule() {
+        return updateRule;
+    }
+
+    public void setUpdateRule(UpdateRule updateRule) {
+        this.updateRule = updateRule;
+    }
 }
