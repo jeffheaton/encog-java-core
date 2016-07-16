@@ -229,6 +229,10 @@ public class StochasticGradientDescent extends BasicTraining implements Momentum
         this.updateRule.update(this.gradients,this.flat.getWeights());
         setError(this.errorCalculation.calculate());
         postIteration();
+
+        if( getTraining() instanceof  BatchDataSet) {
+            ((BatchDataSet)getTraining()).advance();
+        }
 	}
 
 	@Override
