@@ -27,14 +27,66 @@ import java.util.Iterator;
 
 import org.encog.EncogError;
 import org.encog.mathutil.randomize.generate.GenerateRandom;
+import org.encog.mathutil.randomize.generate.MersenneTwisterGenerateRandom;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 
 /**
- * A dataset that mapps a larger dataset into batches.
+ * The BatchDataSet wraps a larger dataset and breaks it up into a series of batches.  This dataset was specifically
+ * created to be used with the StochasticGradientDescent trainer; however, it should work with the others as well.
+ * It is important that the BatchDataSet's advance method be called at the end of each iteration, so that the next
+ * batch can be prepared.  All Encog-provided trainers will detect the BatchDataSet and make this call.
+ *
+ * This dataset can be used in two ways, depending on the setting of the randomSamples property.  If this value is
+ * false (the default), then the first batch starts at the beginning of the dataset, and following batches will start
+ * at the end of the previous batch.  This method ensures that every data item is used  If randomSamples is true, then
+ * each batch will be sampled from the underlying dataset (without replacement).
  */
 public class BatchDataSet implements MLDataSet {
+
+    /**
+     * An iterator to be used with the BasicMLDataSet. This iterator does not
+     * support removes.
+     *
+     * @author jheaton
+     */
+    public class BatchedMLIterator implements Iterator<MLDataPair> {
+
+        /**
+         * The index that the iterator is currently at.
+         */
+        private int currentIndex = 0;
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public final boolean hasNext() {
+            return this.currentIndex < BatchDataSet.this.getBatchSize();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public final MLDataPair next() {
+            if (!hasNext()) {
+                return null;
+            }
+
+            return BatchDataSet.this.get(this.currentIndex++);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public final void remove() {
+            throw new EncogError("Called remove, unsupported operation.");
+        }
+    }
 
     /**
      * The source dataset.
@@ -57,6 +109,16 @@ public class BatchDataSet implements MLDataSet {
     private GenerateRandom random;
 
     /**
+     * Should a random sample be taken for each batch.
+     */
+    private boolean randomBatches;
+
+    /**
+     * Index entries for the current random sample.
+     */
+    private int[] randomSample;
+
+    /**
      * Construct the batch dataset.
      * @param theDataset The source dataset.
      * @param theRandom The random number generator.
@@ -72,6 +134,10 @@ public class BatchDataSet implements MLDataSet {
      */
     public void setBatchSize(int theSize) {
         this.batchSize = Math.min(theSize,this.dataset.size());
+        this.randomSample = new int[this.batchSize];
+        if( this.randomBatches ) {
+            generaterandomSample();
+        }
     }
 
     public int getBatchSize() {
@@ -83,7 +149,8 @@ public class BatchDataSet implements MLDataSet {
      */
     @Override
     public Iterator<MLDataPair> iterator() {
-        throw new EncogError("Unsupported.");
+        final BatchDataSet.BatchedMLIterator result = new BatchDataSet.BatchedMLIterator();
+        return result;
     }
 
     /**
@@ -127,15 +194,21 @@ public class BatchDataSet implements MLDataSet {
     }
 
     /**
-     * {@inheritDoc}
+     * This will open an additional batched dataset.  However, please note, the additional datasets will use a
+     * mersenne twister generator that is seeded by a long sampled from this object's random number
+     * generator.
+     * @return An additional dataset.
      */
     @Override
     public MLDataSet openAdditional() {
-        return this;
+        BatchDataSet result = new BatchDataSet(this.dataset,new MersenneTwisterGenerateRandom(this.random.nextLong()));
+        result.setBatchSize(getBatchSize());
+        return result;
     }
 
     /**
-     * {@inheritDoc}
+     * This operation is not supported by this object.
+     * @param data1 NA
      */
     @Override
     public void add(MLData data1) {
@@ -143,7 +216,9 @@ public class BatchDataSet implements MLDataSet {
     }
 
     /**
-     * {@inheritDoc}
+     * This operation is not supported by this object.
+     * @param inputData NA
+     * @param idealData NA
      */
     @Override
     public void add(MLData inputData, MLData idealData) {
@@ -151,7 +226,8 @@ public class BatchDataSet implements MLDataSet {
     }
 
     /**
-     * {@inheritDoc}
+     * This operation is not supported by this object.
+     * @param inputData NA
      */
     @Override
     public void add(MLDataPair inputData) {
@@ -180,18 +256,78 @@ public class BatchDataSet implements MLDataSet {
      */
     @Override
     public MLDataPair get(int index) {
-        return this.dataset.get((index+this.currentIndex)%this.dataset.size());
+        int resultIndex = (index+this.currentIndex)%this.dataset.size();
+
+        if( this.randomBatches) {
+            resultIndex = this.randomSample[resultIndex];
+        }
+        return this.dataset.get(resultIndex);
     }
 
+    /**
+     * Advance to the next batch.  Should be called at the end of each training iteration.
+     */
     public void advance() {
-        this.currentIndex = (this.currentIndex+this.batchSize)%this.dataset.size();
+        if( this.randomBatches) {
+            generaterandomSample();
+        } else {
+            this.currentIndex = (this.currentIndex + this.batchSize) % this.dataset.size();
+        }
     }
 
+    /**
+     * @return The current index, within a batch.
+     */
     public int getCurrentIndex() {
         return currentIndex;
     }
 
+    /**
+     * Set the current index, within a batch.
+     * @param currentIndex The current index, within a batch.
+     */
     public void setCurrentIndex(int currentIndex) {
         this.currentIndex = currentIndex;
+    }
+
+    /**
+     * @return True, if random batches are being used.
+     */
+    public boolean isRandomBatches() {
+        return randomBatches;
+    }
+
+    /**
+     * Set if random batches should be generated.
+     * @param randomBatches True, if random batches should be used.
+     */
+    public void setRandomBatches(boolean randomBatches) {
+        this.randomBatches = randomBatches;
+    }
+
+    /**
+     * Generate a random sample.
+     */
+    private void generaterandomSample() {
+        for(int i=0;i<this.batchSize;i++) {
+            boolean uniqueFound = true;
+            int t;
+
+            // Generate a unique index
+            do {
+                t = this.random.nextInt(0, this.dataset.size());
+
+                for (int j = 0; j < i; j++) {
+                    if (this.randomSample[j]==t) {
+                        uniqueFound = false;
+                        break;
+                    }
+                }
+            } while(!uniqueFound);
+
+            // Record it
+            this.randomSample[i] = t;
+        }
+
     }
 }
