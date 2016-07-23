@@ -23,6 +23,7 @@
  */
 package org.encog.ml.ea.rules;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.encog.ml.ea.genome.Genome;
@@ -30,7 +31,7 @@ import org.encog.ml.ea.genome.Genome;
 /**
  * Holds a set of rules for an EA.
  */
-public interface RuleHolder {
+public interface RuleHolder extends Serializable {
 	/**
 	 * Add a rewrite rule. Rewrite rules can be used to simplify genomes.
 	 * 

@@ -218,11 +218,6 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	 */
 	private final List<Callable<Object>> threadList = new ArrayList<Callable<Object>>();
 
-	/**
-	 * Holds rewrite and constraint rules.
-	 */
-	private RuleHolder rules;
-	
 	private int maxOperationErrors = 500;
 
 	/**
@@ -239,7 +234,6 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 		this.population = thePopulation;
 		this.scoreFunction = theScoreFunction;
 		this.selection = new TournamentSelection(this, 4);
-		this.rules = new BasicRuleHolder();
 
 		// set the score compare method
 		if (theScoreFunction.shouldMinimize()) {
@@ -328,7 +322,7 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	public void calculateScore(final Genome g) {
 
 		// try rewrite
-		this.rules.rewrite(g);
+		this.population.getRules().rewrite(g);
 
 		// decode
 		final MLMethod phenotype = getCODEC().decode(g);
@@ -485,14 +479,6 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	 */
 	public RandomFactory getRandomNumberFactory() {
 		return this.randomNumberFactory;
-	}
-
-	/**
-	 * @return the rules
-	 */
-	@Override
-	public RuleHolder getRules() {
-		return this.rules;
 	}
 
 	/**
@@ -792,15 +778,6 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	 */
 	public void setRandomNumberFactory(final RandomFactory randomNumberFactory) {
 		this.randomNumberFactory = randomNumberFactory;
-	}
-
-	/**
-	 * @param rules
-	 *            the rules to set
-	 */
-	@Override
-	public void setRules(final RuleHolder rules) {
-		this.rules = rules;
 	}
 
 	/**

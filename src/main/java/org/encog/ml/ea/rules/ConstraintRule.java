@@ -25,10 +25,12 @@ package org.encog.ml.ea.rules;
 
 import org.encog.ml.ea.genome.Genome;
 
+import java.io.Serializable;
+
 /**
  * Defines a constraint.  A constraint specifies if a genome is invalid.
  */
-public interface ConstraintRule {
+public interface ConstraintRule  extends Serializable {
 	/**
 	 * Is this genome valid?
 	 * @param genome The genome.

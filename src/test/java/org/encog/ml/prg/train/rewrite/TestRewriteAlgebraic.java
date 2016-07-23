@@ -61,13 +61,13 @@ public class TestRewriteAlgebraic {
 		genetic.addOperation(0.95, new SubtreeCrossover());
 		genetic.addOperation(0.05, new SubtreeMutation(context,4));
 		genetic.addScoreAdjuster(new ComplexityAdjustedScore());
-		genetic.getRules().addRewriteRule(new RewriteConstants());
-		genetic.getRules().addRewriteRule(new RewriteAlgebraic());
+		pop.getRules().addRewriteRule(new RewriteConstants());
+		pop.getRules().addRewriteRule(new RewriteAlgebraic());
 
 		EncogProgram expression = new EncogProgram(context);
 		expression.compileExpression(start);
 		RenderCommonExpression render = new RenderCommonExpression();
-		genetic.getRules().rewrite(expression);
+		pop.getRules().rewrite(expression);
 		Assert.assertEquals(expect, render.render(expression));
 	}
 
@@ -83,13 +83,13 @@ public class TestRewriteAlgebraic {
         genetic.addOperation(0.95, new SubtreeCrossover());
         genetic.addOperation(0.05, new SubtreeMutation(context,4));
         genetic.addScoreAdjuster(new ComplexityAdjustedScore());
-        genetic.getRules().addRewriteRule(new RewriteConstants());
-        genetic.getRules().addRewriteRule(new RewriteAlgebraic());
+        pop.getRules().addRewriteRule(new RewriteConstants());
+        pop.getRules().addRewriteRule(new RewriteAlgebraic());
 
         EncogProgram expression = new EncogProgram(context);
         expression.compileExpression("1");
         RenderCommonExpression render = new RenderCommonExpression();
-        genetic.getRules().rewrite(expression);
+        pop.getRules().rewrite(expression);
         Assert.assertEquals("1", render.render(expression));
     }
 

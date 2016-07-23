@@ -148,7 +148,7 @@ public class EAWorker implements Callable<Object> {
 				for (Genome child : this.children) {
 					if (child != null) {
 						child.setPopulation(this.parents[0].getPopulation());
-						if (this.train.getRules().isValid(child)) {
+						if (this.train.getPopulation().getRules().isValid(child)) {
 							child.setBirthGeneration(this.train.getIteration());
 
 							this.train.calculateScore(child);

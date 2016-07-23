@@ -58,8 +58,8 @@ public class EPLGAFactory {
 		
 		final CalculateScore score = new TrainingSetScore(training);		
 		TrainEA train = new TrainEA(pop, score);
-		train.getRules().addRewriteRule(new RewriteConstants());
-		train.getRules().addRewriteRule(new RewriteAlgebraic());
+		pop.getRules().addRewriteRule(new RewriteConstants());
+		pop.getRules().addRewriteRule(new RewriteAlgebraic());
 		train.setCODEC(new PrgCODEC());
 		train.addOperation(0.8, new SubtreeCrossover());
 		train.addOperation(0.1, new SubtreeMutation(pop.getContext(),4));

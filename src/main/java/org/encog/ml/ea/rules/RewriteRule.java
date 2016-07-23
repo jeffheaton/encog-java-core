@@ -25,11 +25,13 @@ package org.encog.ml.ea.rules;
 
 import org.encog.ml.ea.genome.Genome;
 
+import java.io.Serializable;
+
 /**
  * Defines a rewrite rule. Rewrite rules are used to rewrite a genome into a
  * more simple, yet equivalent, form.
  */
-public interface RewriteRule {
+public interface RewriteRule  extends Serializable {
 	/**
 	 * Rewrite the specified genome.
 	 * @param genome The genome to rewrite.

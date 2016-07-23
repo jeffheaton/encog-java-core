@@ -30,6 +30,8 @@ import java.util.List;
 import org.encog.ml.BasicML;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
+import org.encog.ml.ea.rules.BasicRuleHolder;
+import org.encog.ml.ea.rules.RuleHolder;
 import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.ml.ea.species.Species;
 
@@ -78,6 +80,11 @@ public class BasicPopulation extends BasicML implements Population,
 	public BasicPopulation() {
 		this.populationSize = 0;
 	}
+
+	/**
+	 * Holds rewrite and constraint rules.
+	 */
+	private RuleHolder rules = new BasicRuleHolder();
 
 	/**
 	 * Construct a population.
@@ -235,6 +242,24 @@ public class BasicPopulation extends BasicML implements Population,
 	public void updateProperties() {
 
 	}
+
+
+    /**
+     * @return the rules
+     */
+    @Override
+    public RuleHolder getRules() {
+        return this.rules;
+    }
+
+    /**
+     * @param rules
+     *            the rules to set
+     */
+    @Override
+    public void setRules(final RuleHolder rules) {
+        this.rules = rules;
+    }
 
 	/**
 	 * Purge any invalid genomes.

@@ -134,11 +134,6 @@ public interface EvolutionaryAlgorithm {
 	Population getPopulation();
 
 	/**
-	 * @return The rules holder, contains rewrite and constraint rules.
-	 */
-	RuleHolder getRules();
-
-	/**
 	 * @return The score adjusters. This allows bonuses and penalties to be
 	 *         applied for desirable or undesirable traits.
 	 */
@@ -200,14 +195,6 @@ public interface EvolutionaryAlgorithm {
 	 *            The population.
 	 */
 	void setPopulation(Population thePopulation);
-
-	/**
-	 * Set the rules holder to use.
-	 * 
-	 * @param rules
-	 *            The rules holder.
-	 */
-	void setRules(RuleHolder rules);
 
 	/**
 	 * Set the selection operator.

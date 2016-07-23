@@ -29,6 +29,7 @@ import java.util.List;
 import org.encog.ml.MLMethod;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
+import org.encog.ml.ea.rules.RuleHolder;
 import org.encog.ml.ea.species.Species;
 
 /**
@@ -120,4 +121,18 @@ public interface Population extends Serializable, MLMethod {
 	 * Purge any invalid genomes.
 	 */
 	void purgeInvalidGenomes();
+
+	/**
+	 * @return The rules holder, contains rewrite and constraint rules.
+	 */
+	RuleHolder getRules();
+
+	/**
+	 * Set the rules holder to use.
+	 *
+	 * @param rules
+	 *            The rules holder.
+	 */
+	void setRules(RuleHolder rules);
+
 }
