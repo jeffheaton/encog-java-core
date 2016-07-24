@@ -237,6 +237,13 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 		return this.rootNode;
 	}
 
+	public double compute(double... x) {
+		MLData data = new BasicMLData(x);
+		MLData result = compute(data);
+		return result.getData(0);
+	}
+
+
 	/**
 	 * Compute the output from the input MLData. The individual values of the
 	 * input will be mapped to the variables defined in the context. The order

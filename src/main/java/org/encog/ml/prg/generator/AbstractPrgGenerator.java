@@ -174,6 +174,10 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 				s = Double.NaN;
 			}
 
+			if( !pop.getRules().isValid(result)) {
+                s = Double.NaN;
+            }
+
 			if (tries < 0) {
 				throw new EncogError("Could not generate a valid genome after "
 						+ this.maxGenerationErrors + " tries.");
