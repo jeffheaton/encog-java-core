@@ -59,15 +59,9 @@ public abstract class AbstractFeatureImportance implements FeatureImportance {
     /**
      * @return The features sorted by importance.
      */
-    public List<FeatureRank> getFeaturesSorted() {
-        ArrayList<FeatureRank> result = new ArrayList<>();
+    public Collection<FeatureRank> getFeaturesSorted() {
+        Set<FeatureRank> result = new TreeSet<>();
         result.addAll(this.features);
-        result.sort(new Comparator<FeatureRank>() {
-            @Override
-            public int compare(FeatureRank o1, FeatureRank o2) {
-                return Double.compare(o2.getImportancePercent(), o1.getImportancePercent());
-            }
-        });
         return result;
     }
 

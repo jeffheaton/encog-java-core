@@ -5,6 +5,7 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLDataSet;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -38,7 +39,7 @@ public interface FeatureImportance {
     /**
      * @return The sorted individual rankings of each feature.
      */
-    List<FeatureRank> getFeaturesSorted();
+    Collection<FeatureRank> getFeaturesSorted();
 
     /**
      * @return The model that was evaluated.
