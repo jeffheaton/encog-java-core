@@ -55,9 +55,9 @@ public class SubstrateFactory {
 		Substrate result = new Substrate(3);
 
 		double inputTick = 2.0 / inputEdgeSize;
-		double outputTick = 2.0 / inputEdgeSize;
+		double outputTick = 2.0 / outputEdgeSize;
 		double inputOrig = -1.0 + (inputTick / 2.0);
-		double outputOrig = -1.0 + (inputTick / 2.0);
+		double outputOrig = -1.0 + (outputTick / 2.0);
 
 		// create the input layer
 
