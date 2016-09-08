@@ -23,8 +23,10 @@
  */
 package org.encog.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Some array functions used by Encog.
@@ -465,5 +467,31 @@ public final class EngineArray {
 			}
 		}
 		
+	}
+
+	public static List<String> string2list(String str) {
+		if( str==null ) {
+			return null;
+		}
+		List<String> result = new ArrayList<String>();
+		String[] list = str.split(",");
+		for(String s:list) {
+			if(s.length()>0) {
+				result.add(s);
+			}
+		}
+
+		return result;
+	}
+
+	public static String list2string(List<String> list) {
+		StringBuilder result = new StringBuilder();
+		for(String str:list) {
+			if( result.length()!=0 ) {
+				result.append(',');
+			}
+			result.append(str);
+		}
+		return result.toString();
 	}
 }
