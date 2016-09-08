@@ -34,6 +34,7 @@ import org.encog.app.analyst.csv.basic.BasicFile;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.mathutil.error.ErrorCalculation;
+import org.encog.mathutil.randomize.generate.GenerateRandom;
 import org.encog.ml.MLClassification;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLMethod;
@@ -42,6 +43,7 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
+import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.data.buffer.BufferedMLDataSet;
 import org.encog.ml.data.buffer.MemoryDataLoader;
 import org.encog.ml.data.buffer.codec.CSVDataCODEC;
@@ -637,5 +639,26 @@ public final class EncogUtility {
 			
 		}
 		return new FalsePositiveReport(truePositive, trueNegative, positiveCount, negativeCount);
+	}
+
+	public static MLDataSet[] splitTrainValidate(MLDataSet trainingSet, GenerateRandom rnd, double trainingPercent) {
+		if( trainingPercent<0 || trainingPercent>1) {
+			throw new EncogError("Training percent must be between 0 and 1.");
+		}
+
+		MLDataSet[] result = new MLDataSet[2];
+		result[0] = new BasicMLDataSet();
+		result[1] = new BasicMLDataSet();
+
+		// initial split
+		for(MLDataPair pair: trainingSet ) {
+			if( rnd.nextDouble()<trainingPercent ) {
+				result[0].add(pair);
+			} else {
+				result[1].add(pair);
+			}
+		}
+
+		return result;
 	}
 }
