@@ -90,6 +90,7 @@ public class FeatureRank implements Comparable<FeatureRank> {
     @Override
     public int compareTo(FeatureRank o) {
         return Double.compare(o.getImportancePercent(),
-                getImportancePercent());
+                getImportancePercent()
+        );
     }
 }
