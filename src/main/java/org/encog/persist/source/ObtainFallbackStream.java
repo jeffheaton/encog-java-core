@@ -22,12 +22,18 @@ public class ObtainFallbackStream implements ObtainInputStream {
     private String path;
 
     /**
+     * The resources.
+     */
+    private Class resources;
+
+    /**
      * Construct the source.
      * @param theDatasetName The filename.
      */
-    public ObtainFallbackStream(String theDatasetName, String thePath) {
+    public ObtainFallbackStream(String thePath, String theDatasetName, Class theResources) {
         this.datasetName = theDatasetName;
         this.path = thePath;
+        this.resources = theResources;
     }
 
 
@@ -37,7 +43,7 @@ public class ObtainFallbackStream implements ObtainInputStream {
     @Override
     public InputStream obtain() {
         File target = null;
-        final InputStream istream = this.getClass().getResourceAsStream("/"+this.datasetName);
+        final InputStream istream = this.resources.getResourceAsStream("/"+this.datasetName);
         if (istream == null) {
             try {
                 target = new File(this.path,this.datasetName);
