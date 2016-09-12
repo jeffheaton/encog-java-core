@@ -21,7 +21,7 @@ public abstract class AbstractFeatureImportance implements FeatureImportance {
     /**
      * The features that were ranked.
      */
-    private final List<FeatureRank> features = new ArrayList<>();
+    private final List<FeatureRank> features = new ArrayList<FeatureRank>();
 
     /**
      * {@inheritDoc}
@@ -60,7 +60,7 @@ public abstract class AbstractFeatureImportance implements FeatureImportance {
      * @return The features sorted by importance.
      */
     public Collection<FeatureRank> getFeaturesSorted() {
-        Set<FeatureRank> result = new TreeSet<>();
+        Set<FeatureRank> result = new TreeSet<FeatureRank>();
         result.addAll(this.features);
         return result;
     }
