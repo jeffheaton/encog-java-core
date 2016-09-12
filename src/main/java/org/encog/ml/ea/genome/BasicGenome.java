@@ -64,6 +64,11 @@ public abstract class BasicGenome implements Genome, Serializable {
 	private Species species;
 
 	/**
+	 * The source of this genome.
+	 */
+	private String source = "unknown";
+
+	/**
 	 * @return The adjusted score, which considers bonuses.
 	 */
 	@Override
@@ -162,6 +167,22 @@ public abstract class BasicGenome implements Genome, Serializable {
 	@Override
 	public void setSpecies(Species s) {
 		this.species = s;
+	}
+
+	/**
+	 * {@inheritDoc}
+     */
+	@Override
+	public String getSource() {
+		return this.source;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setSource(String theSource) {
+		this.source = theSource;
 	}
 
 }

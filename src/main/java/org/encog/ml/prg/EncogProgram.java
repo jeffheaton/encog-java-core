@@ -184,12 +184,19 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 			final EncogProgramVariables theVariables) {
 		this.context = theContext;
 		this.variables = theVariables;
-
-		// define variables
-		for (final VariableMapping v : this.context.getDefinedVariables()) {
-			this.variables.defineVariable(v);
-		}
+        defineVariablesFromContext();
 	}
+
+    /**
+     * Construct an Encog program using the specified expression, but create an
+     * empty context and variable holder.
+     *
+     * @param expression
+     *            The expression.
+     */
+    public EncogProgram(final String expression) {
+        this(new EncogProgramContext(),expression);
+    }
 
 	/**
 	 * Construct an Encog program using the specified expression, but create an
@@ -198,8 +205,12 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 	 * @param expression
 	 *            The expression.
 	 */
-	public EncogProgram(final String expression) {
-		this();
+	public EncogProgram(final EncogProgramContext theContext,
+						final String expression) {
+		this(theContext,new EncogProgramVariables());
+
+        defineVariablesFromContext();
+
 		compileExpression(expression);
 	}
 
@@ -518,4 +529,16 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
 	public void setExtraData(final String name, final Object value) {
 		this.extraData.put(name, value);
 	}
+
+    /**
+     * Define any additional variables from context.
+     */
+    private void defineVariablesFromContext() {
+        // define variables
+        for (final VariableMapping v : this.context.getDefinedVariables()) {
+            if(!this.variables.variableExists(v.getName())) {
+                this.variables.defineVariable(v);
+            }
+        }
+    }
 }

@@ -115,4 +115,16 @@ public interface Genome extends MLMethod {
 	 * @param s The species.
 	 */
 	void setSpecies(Species s);
+
+    /**
+     * @return The source of this genome.
+     */
+	String getSource();
+
+    /**
+     * Set the source of this genome.
+     * @param theSource
+     */
+    void setSource(String theSource);
+
 }
