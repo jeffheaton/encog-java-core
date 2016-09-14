@@ -24,6 +24,7 @@
 package org.encog.ml.prg.extension;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -40,6 +41,11 @@ public interface ProgramExtensionTemplate extends Serializable {
 	 * Defines a very low precidence.
 	 */
 	public static final int NO_PREC = 100;
+
+	/**
+	 * No parameters.
+	 */
+	public static final List<ParamTemplate> NO_PARAMS = new ArrayList<ParamTemplate>();
 
 	/**
 	 * Evaluate the specified actual program node, using this opcode template.

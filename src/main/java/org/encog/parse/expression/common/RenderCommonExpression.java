@@ -43,7 +43,12 @@ public class RenderCommonExpression extends CommonRender {
 	}
 
 	private String renderConst(ProgramNode node) {
-		return node.getData()[0].toStringValue();
+		if( node.getData().length == 0) {
+            // usually a specific constant value.
+            return node.getName();
+        } else {
+            return node.getData()[0].toStringValue();
+        }
 	}
 
 	private String renderVar(ProgramNode node) {
