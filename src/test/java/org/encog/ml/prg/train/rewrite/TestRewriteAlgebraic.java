@@ -96,7 +96,7 @@ public class TestRewriteAlgebraic {
     @Test
     public void testRequiredExtensions() {
 
-        List<ProgramExtensionTemplate> required = new ArrayList<ProgramExtensionTemplate>();
+        /*List<ProgramExtensionTemplate> required = new ArrayList<ProgramExtensionTemplate>();
         required.add(StandardExtensions.EXTENSION_VAR_SUPPORT);
         required.add(StandardExtensions.EXTENSION_CONST_SUPPORT);
         required.add(StandardExtensions.EXTENSION_NEG);
@@ -129,7 +129,7 @@ public class TestRewriteAlgebraic {
                 // Should happen
             }
 
-        }
+        }*/
     }
 
 	@Test

@@ -115,12 +115,7 @@ public enum EncogOpcodeRegistry {
 		add(StandardExtensions.EXTENSION_IFF);
 		add(StandardExtensions.EXTENSION_CLAMP);
 
-		add(StandardExtensions.EXTENSION_CONST_ZERO);
-        add(StandardExtensions.EXTENSION_CONST_ONE);
-        add(StandardExtensions.EXTENSION_CONST_TWO);
-        add(StandardExtensions.EXTENSION_CONST_HALF);
-        add(StandardExtensions.EXTENSION_CONST_TEN);
-        add(StandardExtensions.EXTENSION_CONST_TENTH);
+		add(StandardExtensions.EXTENSION_CONST_COMMON_POOL);
 	}
 
 	/**

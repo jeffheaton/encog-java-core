@@ -46,13 +46,7 @@ import org.encog.ml.prg.expvalue.ValueType;
  */
 public class StandardExtensions {
 
-	public static final ProgramExtensionTemplate EXTENSION_CONST_ZERO = new SpecificConstant(0);
-	public static final ProgramExtensionTemplate EXTENSION_CONST_ONE = new SpecificConstant(1);
-	public static final ProgramExtensionTemplate EXTENSION_CONST_TWO = new SpecificConstant(2);
-	public static final ProgramExtensionTemplate EXTENSION_CONST_HALF = new SpecificConstant(0.5);
-	public static final ProgramExtensionTemplate EXTENSION_CONST_TEN = new SpecificConstant(10);
-	public static final ProgramExtensionTemplate EXTENSION_CONST_TENTH = new SpecificConstant(0.1);
-
+	public static final ProgramExtensionTemplate EXTENSION_CONST_COMMON_POOL = new ConstantPool();
 
 	/**
 	 * Variable support.
