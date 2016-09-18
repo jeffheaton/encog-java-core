@@ -47,7 +47,7 @@ public class RenderCommonExpression extends CommonRender {
             // usually a specific constant value.
             return node.getName();
         } else {
-            return node.getData()[0].toStringValue();
+            return node.evaluate().toStringValue();
         }
 	}
 

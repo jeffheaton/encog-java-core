@@ -40,7 +40,7 @@ public class RenderRPN extends CommonRender {
 	}
 	
 	private String handleConst(ProgramNode node) {
-		return node.getData()[0].toStringValue();
+		return node.evaluate().toStringValue();
 	}
 	
 	private String handleVar(ProgramNode node) {

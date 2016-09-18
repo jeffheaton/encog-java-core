@@ -43,6 +43,26 @@ import org.encog.ml.prg.expvalue.ValueType;
  */
 public class SubtreeCrossover implements EvolutionaryOperator {
 
+    /**
+     * How many crossover points?
+     */
+	final int points;
+
+    /**
+     * Construct the operator.
+     * @param thePoints The number of points.
+     */
+    public SubtreeCrossover(int thePoints) {
+        this.points = thePoints;
+    }
+
+    /**
+     * Construct the operator with 1 crossover point.
+     */
+    public SubtreeCrossover() {
+        this(1);
+    }
+
 	/**
 	 * This method is called reflexivly as we iterate downward. Once we reach
 	 * the desired point (when current level drops to zero), the operation is
@@ -116,6 +136,7 @@ public class SubtreeCrossover implements EvolutionaryOperator {
 
 		boolean done = false;
 		int tries = 100;
+        int pointsNeeded = this.points;
 
 		while (!done) {
 			final int p1Index = rnd.nextInt(size1);
@@ -139,7 +160,10 @@ public class SubtreeCrossover implements EvolutionaryOperator {
 						p2Node);
 				result.replaceNode(resultNode, newInsert);
 				offspring[0] = result;
-				done = true;
+                pointsNeeded--;
+                if( pointsNeeded<1 ) {
+                    done = true;
+                }
 			} else {
 				tries--;
 				if (tries < 0) {

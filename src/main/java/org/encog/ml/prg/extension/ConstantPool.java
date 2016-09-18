@@ -24,8 +24,6 @@ public class ConstantPool implements ProgramExtensionTemplate {
      */
     private final ExpressionValue[] pool;
 
-    int value;
-
     /**
      * The name of the constant.
      */
@@ -77,12 +75,12 @@ public class ConstantPool implements ProgramExtensionTemplate {
      * Construct with common constants, plus 100 random constants between -10 and 10.
      */
     public ConstantPool() {
-        this("CONST_POOL_100",COMMON_CONST, 100,new MersenneTwisterGenerateRandom(42),-10,10);
+        this("#CONST_POOL_100",COMMON_CONST, 100,new MersenneTwisterGenerateRandom(42),-10,10);
     }
 
     @Override
     public ExpressionValue evaluate(ProgramNode actual) {
-        return this.pool[this.value];
+        return this.pool[(int)actual.getData()[0].toIntValue()];
     }
 
     @Override
@@ -132,6 +130,6 @@ public class ConstantPool implements ProgramExtensionTemplate {
 
     @Override
     public void randomize(Random rnd, List<ValueType> desiredType, ProgramNode actual, double minValue, double maxValue) {
-        this.value = rnd.nextInt(this.pool.length);
+        actual.getData()[0] = new ExpressionValue(rnd.nextInt(this.pool.length));
     }
 }

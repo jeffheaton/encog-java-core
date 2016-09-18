@@ -28,6 +28,7 @@ import org.encog.ml.prg.EncogProgram;
 import org.encog.ml.prg.ProgramNode;
 import org.encog.ml.prg.expvalue.ExpressionValue;
 import org.encog.ml.prg.expvalue.ValueType;
+import org.encog.ml.prg.extension.ConstantPool;
 import org.encog.ml.prg.extension.NodeType;
 import org.encog.ml.prg.extension.ProgramExtensionTemplate;
 import org.encog.ml.prg.extension.StandardExtensions;
@@ -49,7 +50,7 @@ public class RenderLatexExpression {
 	}
 
 	private String handleConst(ProgramNode node) {
-		ExpressionValue v = node.getData()[0];
+		ExpressionValue v = node.evaluate();
         if( v.getExpressionType()== ValueType.floatingType ) {
             return Format.formatDouble(v.toFloatValue(),this.roundDigits);
         } else {
@@ -129,7 +130,10 @@ public class RenderLatexExpression {
 	}
 
 	public ExpressionNodeType determineNodeType(ProgramNode node) {
-		if (node.getTemplate() == StandardExtensions.EXTENSION_CONST_SUPPORT) {
+		if( node.getTemplate() instanceof ConstantPool) {
+			return ExpressionNodeType.ConstVal;
+		}
+		else if (node.getTemplate() == StandardExtensions.EXTENSION_CONST_SUPPORT) {
 			return ExpressionNodeType.ConstVal;
 		} else if (node.getTemplate() == StandardExtensions.EXTENSION_VAR_SUPPORT) {
 			return ExpressionNodeType.Variable;
