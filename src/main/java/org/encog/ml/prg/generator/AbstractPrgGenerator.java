@@ -234,10 +234,6 @@ public abstract class AbstractPrgGenerator implements PrgGenerator,
 			// the same time
 			final List<ValueType> childTypes = temp.getParams().get(0)
 					.determineArgumentTypes(types);
-			final ValueType selectedType = childTypes.get(rnd
-					.nextInt(childTypes.size()));
-			childTypes.clear();
-			childTypes.add(selectedType);
 
 			// now create the children of a common type
 			for (int i = 0; i < children.length; i++) {

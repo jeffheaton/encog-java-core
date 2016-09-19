@@ -24,12 +24,17 @@
 package org.encog.parse.expression;
 
 import org.encog.ml.prg.ProgramNode;
+import org.encog.ml.prg.extension.ConstantPool;
 
 /**
  * Common functions for some renders.
  */
 public class CommonRender {
 	public ExpressionNodeType determineNodeType(ProgramNode node) {
+
+		if( node.getTemplate() instanceof ConstantPool) {
+			return ExpressionNodeType.ConstVal;
+		}
 
 		if (node.getName().equals("#const")) {
 			return ExpressionNodeType.ConstVal;

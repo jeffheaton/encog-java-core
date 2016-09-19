@@ -46,6 +46,8 @@ import org.encog.ml.prg.expvalue.ValueType;
  */
 public class StandardExtensions {
 
+	public static final ProgramExtensionTemplate EXTENSION_CONST_COMMON_POOL = new ConstantPool();
+
 	/**
 	 * Variable support.
 	 */

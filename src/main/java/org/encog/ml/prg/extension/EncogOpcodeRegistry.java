@@ -114,6 +114,8 @@ public enum EncogOpcodeRegistry {
 		add(StandardExtensions.EXTENSION_CBOOL);
 		add(StandardExtensions.EXTENSION_IFF);
 		add(StandardExtensions.EXTENSION_CLAMP);
+
+		add(StandardExtensions.EXTENSION_CONST_COMMON_POOL);
 	}
 
 	/**
