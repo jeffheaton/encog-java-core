@@ -51,7 +51,7 @@ public class ParsedEvent {
 	
 	/**
 	 * Construct a parsed even with the specified label.
-	 * @param theLabel
+	 * @param theLabel The label for this event.
 	 */
 	public ParsedEvent(String theLabel) {
 		this.label = theLabel;

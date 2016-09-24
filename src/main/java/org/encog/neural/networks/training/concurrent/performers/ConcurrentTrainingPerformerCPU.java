@@ -61,7 +61,7 @@ public class ConcurrentTrainingPerformerCPU implements
 
 	/**
 	 * Construct the performer.
-	 * @param number
+	 * @param number The number.
 	 */
 	public ConcurrentTrainingPerformerCPU(final int number) {
 		this.number = number;

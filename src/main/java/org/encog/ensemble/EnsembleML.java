@@ -90,6 +90,7 @@ public interface EnsembleML extends MLMethod, MLClassification, MLRegression {
 	/**
 	 * Get the error for this ML on the dataset
 	 * @param testset The dataset.
+	 * @return The error.
 	 */
 	public double getError(EnsembleDataSet testset);
 

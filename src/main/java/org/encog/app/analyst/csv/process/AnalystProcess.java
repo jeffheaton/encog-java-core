@@ -55,10 +55,13 @@ public class AnalystProcess extends BasicFile {
 	private final EncogAnalyst analyst;
 	private final int forwardWindowSize;
 	private final int backwardWindowSize;
-	
-	
+
+
 	/**
-	 * Construct the object.
+	 * Construct the object for time series.
+	 * @param theAnalyst The analyst that this process belongs to.
+	 * @param theBackwardWindowSize The size of the window going back.
+	 * @param theForwardWindowSize The size of the window going forward.
 	 */
 	public AnalystProcess(EncogAnalyst theAnalyst, int theBackwardWindowSize, int theForwardWindowSize) {
 		this.analyst = theAnalyst;

@@ -144,7 +144,7 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 
 	/**
 	 * Get the specified neuron's index.
-	 * 
+	 * @param  target The target genome.
 	 * @param neuronID
 	 *            The neuron id to check for.
 	 * @return The index.
@@ -179,7 +179,7 @@ public abstract class NEATMutation implements EvolutionaryOperator {
 
 	/**
 	 * Determine if this is a duplicate link.
-	 * 
+	 * @param target The target.
 	 * @param fromNeuronID
 	 *            The from neuron id.
 	 * @param toNeuronID

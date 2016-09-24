@@ -122,7 +122,7 @@ public abstract class BasicHessian implements ComputeHessian {
 	
 	/**
 	 * Update the Hessian, sum's with what is in the Hessian already.  Call clear to clear out old Hessian.
-	 * @param d
+	 * @param d Vector to update with.
 	 */
 	public void updateHessian(double[] d) {
 		// update the hessian

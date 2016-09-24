@@ -123,7 +123,7 @@ public interface Genome extends MLMethod {
 
     /**
      * Set the source of this genome.
-     * @param theSource
+     * @param theSource The source.
      */
     void setSource(String theSource);
 

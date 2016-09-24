@@ -786,7 +786,7 @@ public class BayesianNetwork extends BasicML implements MLClassification, MLRese
 
 	/**
 	 * Define a classification structure of the form P(A|B) = P(C)
-	 * @param line
+	 * @param line The line.
 	 */
 	public void defineClassificationStructure(String line) {
 		List<ParsedProbability> list = ParseProbability.parseProbabilityList(this, line);	

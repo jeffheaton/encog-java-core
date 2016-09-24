@@ -95,11 +95,10 @@ public class NEATCrossover implements EvolutionaryOperator {
 
 	/**
 	 * Add a neuron.
-	 * 
-	 * @param nodeID
-	 *            The neuron id.
-	 * @param vec
-	 *            THe list of id's used.
+	 * @param nodeID The ID.
+	 * @param vec The list of ID's used.
+	 * @param best The best node.
+	 * @param notBest Not the best node.
 	 */
 	public void addNeuronID(final long nodeID, final List<NEATNeuronGene> vec,
 			final NEATGenome best, final NEATGenome notBest) {

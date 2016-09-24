@@ -143,7 +143,7 @@ public class ParseProbability {
 	
 	/**
 	 * Parse the given line.
-	 * @param line
+	 * @param line The line to parse.
 	 * @return The parsed probability.
 	 */
 	public ParsedProbability parse(String line) {

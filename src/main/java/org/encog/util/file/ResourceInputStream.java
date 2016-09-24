@@ -39,6 +39,7 @@ public class ResourceInputStream  {
 	 * 
 	 * @param resource
 	 *            The resource to read from.
+	 * @return The stream.
 	 */
 	public static InputStream openResourceInputStream(final String resource) {
 		

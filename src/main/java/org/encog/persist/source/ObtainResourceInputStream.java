@@ -23,6 +23,7 @@ public class ObtainResourceInputStream implements ObtainInputStream {
     /**
      * Construct the source for the specified resource name.
      * @param theResourceName The resource name to read from.
+     * @param theResources Where to pull the resources from.
      */
     public ObtainResourceInputStream(String theResourceName, Class theResources) {
         this.resources = theResources;

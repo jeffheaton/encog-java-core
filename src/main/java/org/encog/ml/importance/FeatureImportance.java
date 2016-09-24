@@ -27,7 +27,7 @@ public interface FeatureImportance {
 
     /**
      * Perform the ranking, using a specific training set.  Not all ranking algorithms can make use of a dataset.
-     * @param theDataset
+     * @param theDataset The dataset.
      */
     void performRanking(MLDataSet theDataset);
 

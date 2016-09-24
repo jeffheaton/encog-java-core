@@ -140,6 +140,7 @@ public class NeuralStructure implements Serializable {
 	 * Build the synapse and layer structure. This method should be called after
 	 * you are done adding layers to a network, or change the network's logic
 	 * property.
+	 * @param dropout Is dropout used?
 	 */
 	public final void finalizeStructure(boolean dropout) {
 

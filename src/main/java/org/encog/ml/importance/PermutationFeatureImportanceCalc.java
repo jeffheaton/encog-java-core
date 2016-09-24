@@ -73,7 +73,6 @@ public class PermutationFeatureImportanceCalc extends AbstractFeatureImportance 
 
     /**
      * {@inheritDoc}
-     * @param theDataset
      */
     @Override
     public void performRanking(MLDataSet theDataset) {

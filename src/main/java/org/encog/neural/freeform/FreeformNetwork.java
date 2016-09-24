@@ -731,7 +731,7 @@ public class FreeformNetwork extends BasicML implements MLContext, Cloneable,
 	 * Perform the specified neuron task. This task will be executed over all
 	 * neurons.
 	 * 
-	 * @param task
+	 * @param task The neuron task to perform.
 	 */
 	public void performNeuronTask(final NeuronTask task) {
 		final Set<FreeformNeuron> visited = new HashSet<FreeformNeuron>();

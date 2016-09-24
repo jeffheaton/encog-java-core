@@ -66,8 +66,8 @@ public class FeatureRank implements Comparable<FeatureRank> {
     }
 
     /**
-     *
-     * @param importancePercent
+     * Set the importance percent.
+     * @param importancePercent The importance percent.
      */
     public void setImportancePercent(double importancePercent) {
         this.importancePercent = importancePercent;

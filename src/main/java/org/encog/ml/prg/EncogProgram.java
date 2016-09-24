@@ -203,16 +203,16 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
      * Construct an Encog program using the specified expression, but create an
      * empty context and variable holder.
      *
-     * @param expression
-     *            The expression.
+     * @param  theContext The context for this program.
+     * @param theExpression The expression.
      */
     public EncogProgram(final EncogProgramContext theContext,
-                        final String expression) {
+                        final String theExpression) {
         this(theContext,new EncogProgramVariables());
 
         defineVariablesFromContext();
 
-        compileExpression(expression);
+        compileExpression(theExpression);
     }
 
     /**

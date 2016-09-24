@@ -148,17 +148,16 @@ public class ExpressionValue implements Serializable {
 
 	/**
 	 * Construct an enum expression.
-	 * 
-	 * @param theValue
-	 *            The value to construct.
+	 * @param theEnumType The type.
+	 * @param theValue The value to construct.
 	 */
-	public ExpressionValue(final int enumType, final long theValue) {
+	public ExpressionValue(final int theEnumType, final long theValue) {
 		this.intValue = theValue;
 		this.expressionType = ValueType.enumType;
 		this.boolValue = false;
 		this.floatValue = 0;
 		this.stringValue = null;
-		this.enumType = enumType;
+		this.enumType = theEnumType;
 	}
 
 	/**

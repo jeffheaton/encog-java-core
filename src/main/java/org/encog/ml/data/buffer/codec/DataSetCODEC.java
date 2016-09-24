@@ -53,6 +53,7 @@ public interface DataSetCODEC {
 	 *            The input data array.
 	 * @param ideal
 	 *            The ideal data array.
+	 * @param significance The significance (full = 1.0)
 	 */
 	void write(double[] input, double[] ideal, double significance);
 

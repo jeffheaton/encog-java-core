@@ -28,7 +28,9 @@ public class ObtainFallbackStream implements ObtainInputStream {
 
     /**
      * Construct the source.
-     * @param theDatasetName The filename.
+     * @param thePath The path.
+     * @param theDatasetName The name of the dataset.
+     * @param theResources Where to pull the resources from.
      */
     public ObtainFallbackStream(String thePath, String theDatasetName, Class theResources) {
         this.datasetName = theDatasetName;
