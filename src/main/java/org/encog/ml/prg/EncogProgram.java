@@ -406,7 +406,7 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
      *         the context.
      */
     private VariableMapping getResultType() {
-        return ((PrgPopulation) getPopulation()).getContext().getResult();
+        return this.context.getResult();
     }
 
     /**
