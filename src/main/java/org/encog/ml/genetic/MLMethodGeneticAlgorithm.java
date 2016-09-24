@@ -207,8 +207,17 @@ public class MLMethodGeneticAlgorithm extends BasicTraining implements
 	public void resume(final TrainingContinuation state) {
 
 	}
+	
+	/* (non-Javadoc)l
+   * @see org.encog.ml.train.BasicTraining#finishTraining()
+   */
+  @Override
+  public void finishTraining() {
+    super.finishTraining();
+    this.genetic.finishTraining();
+  }
 
-	/**
+  /**
 	 * Set the genetic helper class.
 	 * 
 	 * @param genetic
