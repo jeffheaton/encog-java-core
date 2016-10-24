@@ -270,7 +270,8 @@ public class EncogProgram extends BasicGenome implements MLRegression, MLError {
     @Override
     public MLData compute(final MLData input) {
         if (input.size() != getInputCount()) {
-            throw new EACompileError("Invalid input count.");
+            throw new EACompileError("Invalid input count, expected " 
+			+ getInputCount() + ", but got " + input.size());
         }
 
         for (int i = 0; i < input.size(); i++) {
