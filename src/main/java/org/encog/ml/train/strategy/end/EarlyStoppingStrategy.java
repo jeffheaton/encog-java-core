@@ -84,8 +84,6 @@ public class EarlyStoppingStrategy implements EndTrainingStrategy {
 
 	private int stagnantIterations;
 
-	private double minimumImprovement;
-
 	/**
 	 * The best model so far.
 	 */
@@ -96,16 +94,15 @@ public class EarlyStoppingStrategy implements EndTrainingStrategy {
     private double bestValidationError;
 
 	public EarlyStoppingStrategy(MLDataSet theValidationSet) {
-		this(theValidationSet, 5, 50, 0.01);
+		this(theValidationSet, 5, 50);
 	}
 
 
 	public EarlyStoppingStrategy(MLDataSet theValidationSet,
-										  int theCheckFrequency, int theAllowedStagnantIterations, double theMinimumImprovement) {
+										  int theCheckFrequency, int theAllowedStagnantIterations) {
 		this.validationSet = theValidationSet;
 		this.checkFrequency = theCheckFrequency;
 		this.allowedStagnantIterations = theAllowedStagnantIterations;
-		this.minimumImprovement = theMinimumImprovement;
 	}
 
 	/**
@@ -141,13 +138,14 @@ public class EarlyStoppingStrategy implements EndTrainingStrategy {
 
 			if( Double.isInfinite(currentValidationError) || Double.isNaN(currentValidationError) ) {
 				stop = true;
-			} else if( (this.lastValidationError-currentValidationError)<this.minimumImprovement ) {
-				// error did not drop by required amount
+			} else if( this.bestValidationError<currentValidationError && !Double.isInfinite(this.lastValidationError) ) {
+				// No improvement
 				this.stagnantIterations+=this.lastCheck;
 				if(this.stagnantIterations>this.allowedStagnantIterations) {
 					stop = true;
 				}
 			} else {
+                // Improvement
 				if( this.saveBest ) {
 					this.bestModel = (MLRegression) SerializeObject.serializeClone((Serializable) this.model);
 				}
