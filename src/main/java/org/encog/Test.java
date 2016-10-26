@@ -6,6 +6,7 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.encog.ml.importance.PerturbationFeatureImportanceCalc;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
@@ -76,6 +77,8 @@ public class Test {
             System.out.println(pair.getInput().getData(0) + "," + pair.getInput().getData(1)
                     + ", actual=" + output.getData(0) + ",ideal=" + pair.getIdeal().getData(0));
         }
+
+        PerturbationFeatureImportanceCalc d;
 
         Encog.getInstance().shutdown();
     }

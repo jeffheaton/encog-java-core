@@ -93,6 +93,8 @@ public class EarlyStoppingStrategy implements EndTrainingStrategy {
 
 	private boolean saveBest;
 
+    private double bestValidationError;
+
 	public EarlyStoppingStrategy(MLDataSet theValidationSet) {
 		this(theValidationSet, 5, 50, 0.01);
 	}
@@ -149,6 +151,7 @@ public class EarlyStoppingStrategy implements EndTrainingStrategy {
 				if( this.saveBest ) {
 					this.bestModel = (MLRegression) SerializeObject.serializeClone((Serializable) this.model);
 				}
+				this.bestValidationError = currentValidationError;
 				this.stagnantIterations=0;
 			}
 
@@ -207,4 +210,8 @@ public class EarlyStoppingStrategy implements EndTrainingStrategy {
 	public MLRegression getBestModel() {
 		return bestModel;
 	}
+
+    public double getBestValidationError() {
+        return bestValidationError;
+    }
 }

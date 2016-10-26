@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Permutation feature encoding can be used to determine the importance of features for any type of regression or
+ * perturbation  feature encoding can be used to determine the importance of features for any type of regression or
  * classification model, with any compatible dataset.  This method works by evaluating the performance of the model
  * when each of the input's corrisponding data is scrambled.  Features that are more important will result in worse
  * errors when their data are scrambled.
@@ -26,7 +26,7 @@ import java.util.Random;
  * Source:
  * Breiman, L. (2001). Random forests. Machine learning, 45(1), 5-32.
  */
-public class PermutationFeatureImportanceCalc extends AbstractFeatureImportance {
+public class PerturbationFeatureImportanceCalc extends AbstractFeatureImportance {
 
     /**
      * Random number generator.
@@ -76,9 +76,6 @@ public class PermutationFeatureImportanceCalc extends AbstractFeatureImportance 
      */
     @Override
     public void performRanking(MLDataSet theDataset) {
-
-        double baseline = EncogUtility.calculateRegressionError(getModel(),theDataset);
-
         double max = 0;
         for(int i=0;i<getModel().getInputCount();i++) {
             FeatureRank fr = getFeatures().get(i);
