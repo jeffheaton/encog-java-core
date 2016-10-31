@@ -114,9 +114,9 @@ public class StoppingStrategy implements EndTrainingStrategy {
 
         if( Double.isInfinite(trainingError) || Double.isNaN(trainingError) ) {
             stop = true;
-        } else if( this.bestError<trainingError
+        } else if( this.bestError<=trainingError
                 && !Double.isInfinite(this.lastError)
-                && Math.abs(this.bestError-trainingError)<this.minimumImprovement) {
+                && Math.abs(this.bestError-trainingError)>this.minimumImprovement) {
             // No improvement
             this.stagnantIterations++;
             if(this.stagnantIterations>this.allowedStagnantIterations) {

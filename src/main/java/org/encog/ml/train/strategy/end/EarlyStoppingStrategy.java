@@ -141,9 +141,9 @@ public class EarlyStoppingStrategy implements EndTrainingStrategy {
 
 			if( Double.isInfinite(currentValidationError) || Double.isNaN(currentValidationError) ) {
 				stop = true;
-			} else if( this.bestValidationError<currentValidationError
+			} else if( this.bestValidationError<=currentValidationError
                     && !Double.isInfinite(this.lastValidationError)
-                    && Math.abs(this.bestValidationError-currentValidationError)<this.minimumImprovement) {
+                    && Math.abs(this.bestValidationError-currentValidationError)>this.minimumImprovement) {
 				// No improvement
 				this.stagnantIterations+=this.lastCheck;
 				if(this.stagnantIterations>this.allowedStagnantIterations) {
