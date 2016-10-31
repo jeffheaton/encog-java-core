@@ -24,6 +24,7 @@ package org.encog.ml.train.strategy.end;
  * http://www.heatonresearch.com/copyright
  */
 
+import org.encog.Encog;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
@@ -93,6 +94,8 @@ public class EarlyStoppingStrategy implements EndTrainingStrategy {
 
     private double bestValidationError;
 
+	private double minimumImprovement = Encog.DEFAULT_DOUBLE_EQUAL;
+
 	public EarlyStoppingStrategy(MLDataSet theValidationSet) {
 		this(theValidationSet, 5, 50);
 	}
@@ -138,7 +141,9 @@ public class EarlyStoppingStrategy implements EndTrainingStrategy {
 
 			if( Double.isInfinite(currentValidationError) || Double.isNaN(currentValidationError) ) {
 				stop = true;
-			} else if( this.bestValidationError<currentValidationError && !Double.isInfinite(this.lastValidationError) ) {
+			} else if( this.bestValidationError<currentValidationError
+                    && !Double.isInfinite(this.lastValidationError)
+                    && Math.abs(this.bestValidationError-currentValidationError)<this.minimumImprovement) {
 				// No improvement
 				this.stagnantIterations+=this.lastCheck;
 				if(this.stagnantIterations>this.allowedStagnantIterations) {
@@ -211,5 +216,13 @@ public class EarlyStoppingStrategy implements EndTrainingStrategy {
 
     public double getBestValidationError() {
         return bestValidationError;
+    }
+
+    public double getMinimumImprovement() {
+        return minimumImprovement;
+    }
+
+    public void setMinimumImprovement(double minimumImprovement) {
+        this.minimumImprovement = minimumImprovement;
     }
 }

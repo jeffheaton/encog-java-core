@@ -24,6 +24,7 @@ package org.encog.ml.train.strategy.end;
  * http://www.heatonresearch.com/copyright
  */
 
+import org.encog.Encog;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.MLTrain;
@@ -74,6 +75,8 @@ public class StoppingStrategy implements EndTrainingStrategy {
 
     private double bestError;
 
+    private double minimumImprovement = Encog.DEFAULT_DOUBLE_EQUAL;
+
     public StoppingStrategy(MLDataSet theValidationSet) {
         this(50);
     }
@@ -111,7 +114,9 @@ public class StoppingStrategy implements EndTrainingStrategy {
 
         if( Double.isInfinite(trainingError) || Double.isNaN(trainingError) ) {
             stop = true;
-        } else if( this.bestError<trainingError && !Double.isInfinite(this.lastError) ) {
+        } else if( this.bestError<trainingError
+                && !Double.isInfinite(this.lastError)
+                && Math.abs(this.bestError-trainingError)<this.minimumImprovement) {
             // No improvement
             this.stagnantIterations++;
             if(this.stagnantIterations>this.allowedStagnantIterations) {
@@ -164,6 +169,14 @@ public class StoppingStrategy implements EndTrainingStrategy {
 
     public MLRegression getBestModel() {
         return bestModel;
+    }
+
+    public double getMinimumImprovement() {
+        return minimumImprovement;
+    }
+
+    public void setMinimumImprovement(double minimumImprovement) {
+        this.minimumImprovement = minimumImprovement;
     }
 
 }
