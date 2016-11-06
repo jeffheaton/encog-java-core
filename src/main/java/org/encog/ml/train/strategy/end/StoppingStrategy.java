@@ -111,12 +111,14 @@ public class StoppingStrategy implements EndTrainingStrategy {
     @Override
     public void postIteration() {
         double trainingError = this.train.getError();
+        double improve = this.bestError-trainingError;
+        improve = Math.max(improve,0);
 
         if( Double.isInfinite(trainingError) || Double.isNaN(trainingError) ) {
             stop = true;
         } else if( this.bestError<=trainingError
                 && !Double.isInfinite(this.lastError)
-                && Math.abs(this.bestError-trainingError)<this.minimumImprovement) {
+                && improve<this.minimumImprovement) {
             // No improvement
             this.stagnantIterations++;
             if(this.stagnantIterations>this.allowedStagnantIterations) {

@@ -136,14 +136,17 @@ public class EarlyStoppingStrategy implements EndTrainingStrategy {
 		this.lastCheck++;
 		this.trainingError = this.train.getError();
 
+
 		if( this.lastCheck>this.checkFrequency || Double.isInfinite(this.lastValidationError) ) {
 			double currentValidationError = EncogUtility.calculateRegressionError(this.model, this.validationSet);
+            double improve = this.bestValidationError-currentValidationError;
+            improve = Math.max(improve,0);
 
 			if( Double.isInfinite(currentValidationError) || Double.isNaN(currentValidationError) ) {
 				stop = true;
 			} else if( this.bestValidationError<=currentValidationError
                     && !Double.isInfinite(this.lastValidationError)
-                    && Math.abs(this.bestValidationError-currentValidationError)<this.minimumImprovement) {
+                    && improve<this.minimumImprovement) {
 				// No improvement
 				this.stagnantIterations+=this.lastCheck;
 				if(this.stagnantIterations>this.allowedStagnantIterations) {
