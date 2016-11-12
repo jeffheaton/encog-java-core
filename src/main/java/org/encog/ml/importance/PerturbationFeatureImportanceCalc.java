@@ -1,8 +1,10 @@
 package org.encog.ml.importance;
 
 import org.encog.EncogError;
+import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.mathutil.randomize.generate.GenerateRandom;
 import org.encog.mathutil.randomize.generate.MersenneTwisterGenerateRandom;
+import org.encog.ml.MLContext;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
@@ -32,36 +34,7 @@ public class PerturbationFeatureImportanceCalc extends AbstractFeatureImportance
      * Random number generator.
      */
     private GenerateRandom rnd = new MersenneTwisterGenerateRandom();
-
-    /**
-     * Generate a dataset where one of the columns is scrambled/permuted.
-     * @param source The source dataset.
-     * @param column The column to scramble.
-     * @return The resulting dataset.
-     */
-    private MLDataSet generatePermutation(MLDataSet source, int column) {
-        MLDataSet result = new BasicMLDataSet();
-        for(MLDataPair item:source) {
-            BasicMLData input = new BasicMLData(item.getInput().size());
-            BasicMLData ideal = new BasicMLData(item.getIdeal().size());
-            EngineArray.arrayCopy(item.getInputArray(),input.getData());
-            EngineArray.arrayCopy(item.getIdealArray(),ideal.getData());
-            MLDataPair newPair = new BasicMLDataPair(input,ideal);
-            result.add(newPair);
-        }
-
-        for(int i=0;i<result.size();i++) {
-            int r = i + rnd.nextInt(result.size()-i);
-            MLData rowR = result.get(r).getInput();
-            MLData rowI = result.get(i).getInput();
-
-            double t = rowR.getData(column);
-            rowR.setData(column,rowI.getData(column));
-            rowI.setData(column,t);
-        }
-
-        return result;
-    }
+    private double[] shuffleColumn;
 
     /**
      * {@inheritDoc}
@@ -71,16 +44,61 @@ public class PerturbationFeatureImportanceCalc extends AbstractFeatureImportance
         throw new EncogError("This algorithm requires a dataset to measure performance against, please call performRanking with a dataset.");
     }
 
+    private double calculateRegressionError(MLDataSet dataset, int perturbFeature) {
+
+        // init as needed
+        final ErrorCalculation errorCalculation = new ErrorCalculation();
+        if( getModel() instanceof MLContext)
+            ((MLContext)getModel()).clearContext();
+
+        // copy the perturb column
+        for(int i=0;i<dataset.size();i++) {
+            this.shuffleColumn[i] = dataset.get(i).getInput().getData(perturbFeature);
+        }
+
+        // evaluate
+        MLData featureVector = new BasicMLData(dataset.getInputSize());
+
+        try {
+            int n = dataset.size();
+
+            for(int i=0;i<n;i++) {
+                // Get training element
+                MLDataPair pair = dataset.get(i);
+                EngineArray.arrayCopy(pair.getInput().getData(),featureVector.getData());
+
+                // Shuffle
+                if( i!=(n-1)) {
+                    int j = rnd.nextInt(dataset.size() - i);
+                    double t = this.shuffleColumn[i];
+                    this.shuffleColumn[i] = this.shuffleColumn[j];
+                    this.shuffleColumn[j] = t;
+                    featureVector.setData(perturbFeature, this.shuffleColumn[i]);
+                }
+
+                // Evaluate
+                final MLData actual = getModel().compute(featureVector);
+                errorCalculation.updateError(actual.getData(), pair.getIdeal()
+                        .getData(), pair.getSignificance());
+            }
+        } catch(EncogError e) {
+            return Double.NaN;
+        }
+        return errorCalculation.calculate();
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void performRanking(MLDataSet theDataset) {
+        this.shuffleColumn = new double[theDataset.size()];
+
         double max = 0;
         for(int i=0;i<getModel().getInputCount();i++) {
             FeatureRank fr = getFeatures().get(i);
-            MLDataSet p = generatePermutation(theDataset,i);
-            double e = EncogUtility.calculateRegressionError(getModel(),p);
+            //MLDataSet p = generatePermutation(theDataset,i);
+            double e = calculateRegressionError(theDataset,i);
             fr.setTotalWeight(e);
             max = Math.max(max,e);
         }
