@@ -139,4 +139,12 @@ public class CrossValidationKFold extends CrossTraining {
 		
 	}
 
+	/**
+	 * @return the iteration
+	 */
+	@Override
+	public int getIteration() {
+		return this.train.getIteration();
+	}
+
 }
