@@ -87,6 +87,11 @@ public class NormalizationHelper implements Serializable {
 	}
 
 	/**
+	 * Version id.
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * @param sourceColumns
 	 *            the sourceColumns to set
 	 */
