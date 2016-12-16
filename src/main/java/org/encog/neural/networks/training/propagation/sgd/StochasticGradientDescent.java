@@ -40,16 +40,10 @@ import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.Momentum;
-import org.encog.neural.networks.training.TrainingError;
-import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.neural.networks.training.propagation.sgd.update.AdamUpdate;
-import org.encog.neural.networks.training.propagation.sgd.update.MomentumUpdate;
 import org.encog.neural.networks.training.propagation.sgd.update.UpdateRule;
-import org.encog.neural.networks.training.strategy.SmartLearningRate;
-import org.encog.neural.networks.training.strategy.SmartMomentum;
 import org.encog.util.EngineArray;
-import org.encog.util.validate.ValidateNetwork;
 
 public class StochasticGradientDescent extends BasicTraining implements Momentum,
 		LearningRate {
@@ -171,6 +165,15 @@ public class StochasticGradientDescent extends BasicTraining implements Momentum
 		}
 	}
 
+    public void update() {
+        this.updateRule.update(this.gradients,this.flat.getWeights());
+        setError(this.errorCalculation.calculate());
+    }
+
+    public void resetError() {
+        this.errorCalculation.reset();
+    }
+
     private void processLevel(final int currentLevel) {
         final int fromLayerIndex = flat.getLayerIndex()[currentLevel + 1];
         final int toLayerIndex = flat.getLayerIndex()[currentLevel];
@@ -208,8 +211,6 @@ public class StochasticGradientDescent extends BasicTraining implements Momentum
         }
     }
 
-
-
     @Override
 	public void iteration() {
 
@@ -226,8 +227,7 @@ public class StochasticGradientDescent extends BasicTraining implements Momentum
             process(getTraining().get(i));
         }
 
-        this.updateRule.update(this.gradients,this.flat.getWeights());
-        setError(this.errorCalculation.calculate());
+        update();
         postIteration();
 
         if( getTraining() instanceof  BatchDataSet) {
