@@ -166,8 +166,23 @@ public class StochasticGradientDescent extends BasicTraining implements Momentum
 	}
 
     public void update() {
+        if( getIteration()==0 ) {
+            this.updateRule.init(this);
+        }
+
+        preIteration();
+
         this.updateRule.update(this.gradients,this.flat.getWeights());
         setError(this.errorCalculation.calculate());
+
+        postIteration();
+
+        EngineArray.fill(this.gradients,0);
+        this.errorCalculation.reset();
+
+        if( getTraining() instanceof  BatchDataSet) {
+            ((BatchDataSet)getTraining()).advance();
+        }
     }
 
     public void resetError() {
@@ -214,18 +229,15 @@ public class StochasticGradientDescent extends BasicTraining implements Momentum
     @Override
 	public void iteration() {
 
+        for(int i=0;i<getTraining().size();i++) {
+            process(getTraining().get(i));
+        }
+
         if( getIteration()==0 ) {
             this.updateRule.init(this);
         }
 
         preIteration();
-
-        EngineArray.fill(this.gradients,0);
-        this.errorCalculation.reset();
-
-        for(int i=0;i<getTraining().size();i++) {
-            process(getTraining().get(i));
-        }
 
         update();
         postIteration();
