@@ -301,7 +301,7 @@ public class RBFNetwork extends BasicML implements MLError, MLRegression,
 			boolean contains = false;
 
 			for (int z = 0; z < centers[0].length; z++) {
-				if ((centers[i][z] == 1.0) || (centers[i][z] == 0.0)) {
+				if ((centers[i][z] == maxPosition) || (centers[i][z] == minPosition)) {
 					contains = true;
 				}
 			}
