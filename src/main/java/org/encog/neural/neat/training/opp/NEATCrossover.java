@@ -23,6 +23,7 @@
  */
 package org.encog.neural.neat.training.opp;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -86,7 +87,7 @@ import org.encog.neural.neat.training.NEATNeuronGene;
  * Automatic feature selection in neuroevolution
  * 
  */
-public class NEATCrossover implements EvolutionaryOperator {
+public class NEATCrossover implements EvolutionaryOperator, Serializable {
 
 	/**
 	 * The owning object.

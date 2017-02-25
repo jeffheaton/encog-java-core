@@ -23,6 +23,7 @@
  */
 package org.encog.neural.neat.training.opp.links;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -46,7 +47,7 @@ import org.encog.neural.neat.training.NEATLinkGene;
  * 
  * Automatic feature selection in neuroevolution
  */
-public class SelectProportion implements SelectLinks {
+public class SelectProportion implements SelectLinks, Serializable {
 	
 	/**
 	 * The portion of the links to mutate. 0.0 for none, 1.0 for all.

@@ -23,6 +23,7 @@
  */
 package org.encog.neural.neat.training.opp.links;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
@@ -45,7 +46,7 @@ import org.encog.neural.neat.training.NEATLinkGene;
  * 
  * Automatic feature selection in neuroevolution
  */
-public class MutateResetLinkWeight implements MutateLinkWeight {
+public class MutateResetLinkWeight implements MutateLinkWeight, Serializable {
 
 	/**
 	 * The trainer being used.

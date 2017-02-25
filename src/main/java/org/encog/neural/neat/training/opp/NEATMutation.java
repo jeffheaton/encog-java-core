@@ -34,6 +34,8 @@ import org.encog.neural.neat.training.NEATInnovation;
 import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.NEATNeuronGene;
 
+import java.io.Serializable;
+
 /**
  * This class represents a NEAT mutation. NEAT supports several different types
  * of mutations. This class provides common utility needed by any sort of a NEAT
@@ -51,7 +53,7 @@ import org.encog.neural.neat.training.NEATNeuronGene;
  * 
  * Automatic feature selection in neuroevolution
  */
-public abstract class NEATMutation implements EvolutionaryOperator {
+public abstract class NEATMutation implements EvolutionaryOperator, Serializable {
 
 	/**
 	 * The trainer that owns this class.

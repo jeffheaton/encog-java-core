@@ -30,12 +30,14 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.buffer.BufferedMLDataSet;
 import org.encog.util.error.CalculateRegressionError;
 
+import java.io.Serializable;
+
 /**
  * Calculate a score based on a training set. This class allows simulated
  * annealing or genetic algorithms just as you would any other training set
  * based training method.  The method must support regression (MLRegression).
  */
-public class TrainingSetScore implements CalculateScore {
+public class TrainingSetScore implements CalculateScore, Serializable {
 
 	/**
 	 * The training set.

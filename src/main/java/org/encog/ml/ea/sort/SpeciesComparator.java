@@ -23,6 +23,7 @@
  */
 package org.encog.ml.ea.sort;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.encog.ml.ea.species.Species;
@@ -32,7 +33,7 @@ import org.encog.ml.ea.train.EvolutionaryAlgorithm;
  * This comparator is used to compare two species. This is done by comparing the
  * scores of the two leaders.
  */
-public class SpeciesComparator implements Comparator<Species> {
+public class SpeciesComparator implements Comparator<Species>, Serializable {
 
 	/**
 	 * The training method.

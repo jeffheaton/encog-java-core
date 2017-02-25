@@ -164,7 +164,7 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	/**
 	 * The actual thread count.
 	 */
-	private int actualThreadCount = -1;
+	private transient int actualThreadCount;
 
 	/**
 	 * The speciation method.
@@ -211,7 +211,7 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	/**
 	 * The thread pool executor.
 	 */
-	private ExecutorService taskExecutor;
+	private transient ExecutorService taskExecutor;
 
 	/**
 	 * Holds the threads used each iteration.
@@ -550,7 +550,7 @@ public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
 	 */
 	@Override
 	public void iteration() {
-		if (this.actualThreadCount == -1) {
+		if (this.actualThreadCount == 0) {
 			preIteration();
 		}
 

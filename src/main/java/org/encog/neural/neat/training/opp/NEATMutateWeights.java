@@ -23,6 +23,7 @@
  */
 package org.encog.neural.neat.training.opp;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
@@ -49,7 +50,7 @@ import org.encog.neural.neat.training.opp.links.SelectLinks;
  * 
  * Automatic feature selection in neuroevolution
  */
-public class NEATMutateWeights extends NEATMutation {
+public class NEATMutateWeights extends NEATMutation implements Serializable {
 	/**
 	 * The method used to select the links to mutate.
 	 */

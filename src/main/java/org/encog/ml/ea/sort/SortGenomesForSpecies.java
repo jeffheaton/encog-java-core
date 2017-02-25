@@ -23,6 +23,7 @@
  */
 package org.encog.ml.ea.sort;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.encog.ml.ea.genome.Genome;
@@ -32,7 +33,7 @@ import org.encog.ml.ea.train.EvolutionaryAlgorithm;
  * Sort the gnomes for species.  Sort first by score, second by birth generation.
  * This favors younger genomes if scores are equal.
  */
-public class SortGenomesForSpecies implements Comparator<Genome> {
+public class SortGenomesForSpecies implements Comparator<Genome>, Serializable {
 
 	/**
 	 * The trainer.

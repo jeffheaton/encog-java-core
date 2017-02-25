@@ -23,6 +23,7 @@
  */
 package org.encog.neural.neat.training.opp;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
@@ -46,7 +47,7 @@ import org.encog.neural.neat.training.NEATLinkGene;
  * 
  * Automatic feature selection in neuroevolution
  */
-public class NEATMutateRemoveLink extends NEATMutation {
+public class NEATMutateRemoveLink extends NEATMutation implements Serializable {
 
 	/**
 	 * Do not remove from genomes that have fewer than this number of links.

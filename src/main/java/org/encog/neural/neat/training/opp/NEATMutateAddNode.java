@@ -23,6 +23,7 @@
  */
 package org.encog.neural.neat.training.opp;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import org.encog.engine.network.activation.ActivationFunction;
@@ -53,7 +54,7 @@ import org.encog.neural.neat.training.NEATNeuronGene;
  * 
  * Automatic feature selection in neuroevolution
  */
-public class NEATMutateAddNode extends NEATMutation {
+public class NEATMutateAddNode extends NEATMutation implements Serializable {
 
 	/**
 	 * {@inheritDoc}

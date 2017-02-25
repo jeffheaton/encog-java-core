@@ -23,6 +23,7 @@
  */
 package org.encog.neural.neat.training.opp.links;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -47,7 +48,7 @@ import org.encog.neural.neat.training.NEATLinkGene;
  * 
  * Automatic feature selection in neuroevolution
  */
-public class SelectFixed implements SelectLinks {
+public class SelectFixed implements SelectLinks, Serializable {
 
 	/**
 	 * The number of links to choose.

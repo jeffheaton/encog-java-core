@@ -23,6 +23,7 @@
  */
 package org.encog.ml.ea.train.basic;
 
+import java.io.Serializable;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
@@ -35,7 +36,7 @@ import org.encog.ml.ea.species.Species;
 /**
  * A worker thread for an Evolutionary Algorithm.
  */
-public class EAWorker implements Callable<Object> {
+public class EAWorker implements Callable<Object>, Serializable {
 
 	/**
 	 * The species being processed.
