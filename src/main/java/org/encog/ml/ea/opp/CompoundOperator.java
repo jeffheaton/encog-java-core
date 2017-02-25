@@ -23,6 +23,7 @@
  */
 package org.encog.ml.ea.opp;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import org.encog.ml.ea.genome.Genome;
@@ -33,7 +34,7 @@ import org.encog.util.obj.ObjectHolder;
  * A compound operator randomly chooses sub-operators to perform the actual
  * operation. Each of the sub-operators can be provided with a weighting.
  */
-public class CompoundOperator implements EvolutionaryOperator {
+public class CompoundOperator implements EvolutionaryOperator, Serializable {
 
 	/**
 	 * The owner of this operator.
