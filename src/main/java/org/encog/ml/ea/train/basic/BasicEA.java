@@ -23,7 +23,6 @@
  */
 package org.encog.ml.ea.train.basic;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -68,12 +67,7 @@ import org.encog.util.logging.EncogLogging;
  * The EA works from a score function.
  */
 public class BasicEA implements EvolutionaryAlgorithm, MultiThreadable,
-		EncogShutdownTask, Serializable {
-
-	/**
-	 * The serial id.
-	 */
-	private static final long serialVersionUID = 1L;
+		EncogShutdownTask {
 
 	/**
 	 * Calculate the score adjustment, based on adjusters.
