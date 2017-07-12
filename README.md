@@ -1,15 +1,17 @@
-![Encog Machine Learning Framework](/images/encog128.png)
+![Encog Machine Learning Framework](http://www.heatonresearch.com/images/encog128.png)
 
 [![Build Status](https://travis-ci.org/encog/encog-java-core.svg?branch=master)](https://travis-ci.org/encog/encog-java-core)
 
 Encog Machine Learning Framework
 --------------------------------
+Encog is an advanced machine learning framework that supports a variety of advanced algorithms, as well as support classes to normalize and process data. Machine learning algorithms such as Support Vector Machines, Artificial Neural Networks, Bayesian Networks, Hidden Markov Models, Genetic Programming and Genetic Algorithms are supported. Most Encog training algorithms are multi-threaded and scale well to multicore hardware. A GUI based workbench is also provided to help model and train machine learning algorithms. Encog has been in active development since 2008.
 
+For more information: [Encog Website](http://www.encog.org)
 
 Simple Java XOR Example in Encog
 --------------------------------
 
-{% codeblock lang:java %}
+```java
 import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationReLU;
 import org.encog.engine.network.activation.ActivationSigmoid;
@@ -74,4 +76,4 @@ public class XORHelloWorld {
 		Encog.getInstance().shutdown();
 	}
 }
-{% endcodeblock}
+```
