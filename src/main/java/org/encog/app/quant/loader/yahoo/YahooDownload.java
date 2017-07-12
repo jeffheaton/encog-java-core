@@ -36,6 +36,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.encog.Encog;
+import org.encog.EncogError;
 import org.encog.app.quant.QuantTask;
 import org.encog.app.quant.loader.LoaderError;
 import org.encog.app.quant.loader.MarketLoader;
@@ -47,6 +48,7 @@ import org.encog.util.time.NumericDateUtil;
 /**
  * Download financial data from Yahoo.
  */
+@Deprecated
 public class YahooDownload implements MarketLoader, QuantTask {
 
 	/**
@@ -78,7 +80,8 @@ public class YahooDownload implements MarketLoader, QuantTask {
 	 * Construct the object with default precision.
 	 */
 	public YahooDownload() {
-		setPercision(Encog.DEFAULT_PRECISION);
+		throw new EncogError("Downloading of financial information is no longer supported by Yahoo.  See: https://forums.yahoo.net/t5/Yahoo-Finance-help/Is-Yahoo-Finance-API-broken/td-p/250503");
+		//setPercision(Encog.DEFAULT_PRECISION);
 	}
 
 	/**
