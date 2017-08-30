@@ -6,6 +6,13 @@ group = "org.encog"
 archivesBaseName = "encog-core"
 version = "3.4"
 
+if (!hasProperty('ossrhUsername')) {
+	project.ext.ossrhUsername = ''
+}
+
+if (!hasProperty('ossrhPassword')) {
+	project.ext.ossrhPassword = ''
+}
 
 buildscript {
   repositories {
@@ -51,6 +58,7 @@ artifacts {
 }
 
 signing {
+	required { gradle.taskGraph.hasTask("uploadArchives") }
     sign configurations.archives
 }
 
