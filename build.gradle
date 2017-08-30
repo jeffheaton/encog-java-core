@@ -1,20 +1,15 @@
 apply plugin: 'java'
-apply plugin: 'eclipse'
 apply plugin: 'maven'
-apply plugin: 'nexus'
 apply plugin: 'signing'
 
 group = "org.encog"
-archivesBaseName = "encog"
+archivesBaseName = "encog-core"
 version = "3.4"
 
 
 buildscript {
   repositories {
     jcenter()
-  }
-  dependencies {
-    classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.6.1'
   }
 }
 
@@ -28,8 +23,6 @@ configurations {
 repositories {
    mavenCentral()
 }
-
-apply from: 'publish.gradle'
 
 dependencies {
     testCompile 'junit:junit:4.12'
@@ -77,7 +70,7 @@ uploadArchives {
       pom.project {
         name 'Example Application'
         packaging 'jar'
-		artifactId 'encog-core' // optionally artifactId can be defined here 
+		artifactId 'encog-core' // optionally artifactId can be defined here
         description 'Encog Machine Learning Framework.'
         url 'http://www.heatonresearch.com/encog/'
 
@@ -85,7 +78,7 @@ uploadArchives {
 		    connection 'https://github.com/encog/encog-java-core'
     		developerConnection 'git@github.com:encog/encog-java-core.git'
     		url 'http://code.google.com/p/encog-java/source/browse/'
-			
+
         }
 
         licenses {
@@ -108,5 +101,5 @@ uploadArchives {
 }
 
 task getVersion << {
-  println '3.4.0'
+  println '3.4'
 }
