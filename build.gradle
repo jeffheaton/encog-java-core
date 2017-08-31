@@ -4,7 +4,7 @@ apply plugin: 'signing'
 
 group = "org.encog"
 archivesBaseName = "encog-core"
-version = "3.4"
+version = "3.4.1"
 
 if (!hasProperty('ossrhUsername')) {
 	project.ext.ossrhUsername = ''
@@ -109,5 +109,5 @@ uploadArchives {
 }
 
 task getVersion << {
-  println '3.4'
+  println '3.4.1'
 }
