@@ -314,6 +314,7 @@ public class StochasticGradientDescent extends BasicTraining implements Momentum
             ((BatchDataSet)getTraining()).setBatchSize(theBatchSize);
         } else {
             BatchDataSet batchSet = new BatchDataSet(getTraining(),this.rnd);
+            batchSet.setBatchSize(theBatchSize);
             setTraining(batchSet);
         }
 	}
