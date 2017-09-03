@@ -43,7 +43,7 @@ import org.encog.neural.som.SOM;
  * KMeans clustering.
  *
  * This is a technique that I learned of from:
- * Masters, T., & Schwartz, M. (1994). Practical neural network recipes in C. IEEE Transactions
+ * Masters, T., and Schwartz, M. (1994). Practical neural network recipes in C. IEEE Transactions
  * on Neural Networks, 5(5), 853-853.
  */
 public class SOMClusterCopyTraining extends BasicTraining {
