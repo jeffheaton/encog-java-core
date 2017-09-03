@@ -41,7 +41,10 @@ import org.encog.neural.som.SOM;
  * For now, this trainer will only work if you have equal or fewer training elements 
  * to the number of output neurons.  Eventually I hope to expand this by using 
  * KMeans clustering.
- * 
+ *
+ * This is a technique that I learned of from:
+ * Masters, T., & Schwartz, M. (1994). Practical neural network recipes in C. IEEE Transactions
+ * on Neural Networks, 5(5), 853-853.
  */
 public class SOMClusterCopyTraining extends BasicTraining {
 
