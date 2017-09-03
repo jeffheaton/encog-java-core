@@ -24,6 +24,8 @@
 package org.encog.neural.pattern;
 
 import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationLinear;
+import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.MLMethod;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
@@ -35,8 +37,8 @@ import org.encog.neural.networks.layers.BasicLayer;
  * layer and outputs back to the hidden layer. This makes it a recurrent neural
  * network.
  * 
- * The Elman neural network is useful for temporal input data. The specified
- * activation function will be used on all layers. The Elman neural network is
+ * The Elman neural network is useful for temporal input data. Activation functions
+ * can be specified for both the hidden and output layers. The Elman neural network is
  * similar to the Jordan neural network.
  * 
  * @author jheaton
@@ -60,9 +62,14 @@ public class ElmanPattern implements NeuralNetworkPattern {
 	private int hiddenNeurons;
 
 	/**
-	 * The activation function.
+	 * The hidden activation function.
 	 */
-	private ActivationFunction activation;
+	private ActivationFunction activation = new ActivationSigmoid();
+
+	/**
+	 * The output activation function.
+	 */
+	private ActivationFunction activationOutput = new ActivationLinear();
 
 	/**
 	 * Create an object to generate Elman neural networks.
@@ -108,11 +115,14 @@ public class ElmanPattern implements NeuralNetworkPattern {
 		BasicLayer hidden, input;
 
 		final BasicNetwork network = new BasicNetwork();
-		network.addLayer(input = new BasicLayer(this.activation, true,
+
+		// Input layer (no activation layer, as there is no previous layer)
+		network.addLayer(input = new BasicLayer(null, true,
 				this.inputNeurons));
+		// Hidden layer/context layer, use hidden activation.
 		network.addLayer(hidden = new BasicLayer(this.activation, true,
 				this.hiddenNeurons));
-		network.addLayer(new BasicLayer(null, false, this.outputNeurons));
+		network.addLayer(new BasicLayer(this.activationOutput, false, this.outputNeurons));
 		input.setContextFedBy(hidden);
 		network.getStructure().finalizeStructure();
 		network.reset();
@@ -152,4 +162,18 @@ public class ElmanPattern implements NeuralNetworkPattern {
 		this.outputNeurons = count;
 	}
 
+	/**
+	 * @return The activation function for hidden neurons.
+     */
+	public ActivationFunction getActivationOutput() {
+		return activationOutput;
+	}
+
+	/**
+	 * The activation function for the output layer.
+	 * @param activationOutput
+     */
+	public void setActivationOutput(ActivationFunction activationOutput) {
+		this.activationOutput = activationOutput;
+	}
 }

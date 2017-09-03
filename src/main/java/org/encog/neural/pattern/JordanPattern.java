@@ -24,6 +24,8 @@
 package org.encog.neural.pattern;
 
 import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationLinear;
+import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.MLMethod;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
@@ -60,9 +62,14 @@ public class JordanPattern implements NeuralNetworkPattern {
 	private int hiddenNeurons;
 
 	/**
-	 * The activation function.
+	 * The hidden activation function.
 	 */
-	private ActivationFunction activation;
+	private ActivationFunction activation = new ActivationSigmoid();
+
+	/**
+	 * The output activation function.
+	 */
+	private ActivationFunction activationOutput = new ActivationLinear();
 
 	/**
 	 * Construct an object to create a Jordan type neural network.
@@ -114,7 +121,7 @@ public class JordanPattern implements NeuralNetworkPattern {
 				this.inputNeurons));
 		network.addLayer(hidden = new BasicLayer(this.activation, true,
 				this.hiddenNeurons));
-		network.addLayer(output = new BasicLayer(this.activation, false,
+		network.addLayer(output = new BasicLayer(this.activationOutput, false,
 				this.outputNeurons));
 		hidden.setContextFedBy(output);
 		network.getStructure().finalizeStructure();
@@ -153,6 +160,21 @@ public class JordanPattern implements NeuralNetworkPattern {
 	@Override
 	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
+	}
+
+	/**
+	 * @return The activation function for hidden neurons.
+	 */
+	public ActivationFunction getActivationOutput() {
+		return activationOutput;
+	}
+
+	/**
+	 * The activation function for the output layer.
+	 * @param activationOutput
+	 */
+	public void setActivationOutput(ActivationFunction activationOutput) {
+		this.activationOutput = activationOutput;
 	}
 
 }
