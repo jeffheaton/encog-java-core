@@ -216,7 +216,7 @@ public class GradientWorker implements EngineTask {
 		// Calculate error for the output layer.
 		this.errorFunction.calculateError(
 				this.network.getActivationFunctions()[0], this.layerSums,this.layerOutput,
-				pair.getIdeal().getData(), this.actual, this.layerDelta, this.flatSpot[0], 
+				pair.getIdeal().getData(), this.actual, this.layerDelta, this.flatSpot[0],
 				pair.getSignificance());
 		
 		// Apply regularization, if requested.
@@ -255,7 +255,7 @@ public class GradientWorker implements EngineTask {
 
 		final int index = this.weightIndex[currentLevel];
 		final ActivationFunction activation = this.network
-				.getActivationFunctions()[currentLevel];
+				.getActivationFunctions()[currentLevel + 1];
 		final double currentFlatSpot = this.flatSpot[currentLevel + 1];
 
 		// handle weights

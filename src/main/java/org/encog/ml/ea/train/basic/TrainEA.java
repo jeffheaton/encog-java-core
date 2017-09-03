@@ -30,6 +30,7 @@ import org.encog.ml.CalculateScore;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
@@ -170,7 +171,11 @@ public class TrainEA extends BasicEA implements MLTrain {
 	 */
 	@Override
 	public MLMethod getMethod() {
-		return this.getPopulation();
+		Genome g = this.getPopulation().getBestGenome();
+		if(g==null || getCODEC()==null) {
+			return null;
+		}
+		return getCODEC().decode(g);
 	}
 
 	/**
