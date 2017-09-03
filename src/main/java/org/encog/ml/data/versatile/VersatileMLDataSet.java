@@ -100,7 +100,6 @@ public class VersatileMLDataSet extends MatrixMLDataSet {
 				ColumnDefinition colDef = this.helper.getSourceColumns().get(i);
 				int index = findIndex(colDef);
 				String value = line[index];
-				String value = line[colDef.getIndex()];
 				colDef.analyze(value);
 			}
 		}
