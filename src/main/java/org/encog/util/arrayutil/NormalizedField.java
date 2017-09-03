@@ -106,7 +106,7 @@ public class NormalizedField implements Serializable {
 			final double theNormalizedLow) {
 		this.normalizedHigh = theNormalizedHigh;
 		this.normalizedLow = theNormalizedLow;
-		this.actualHigh = Double.MIN_VALUE;
+		this.actualHigh = -Double.MAX_VALUE;
 		this.actualLow = Double.MAX_VALUE;
 		this.action = NormalizationAction.Normalize;
 	}
