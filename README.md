@@ -4,7 +4,14 @@
 
 Encog Machine Learning Framework
 --------------------------------
-Encog is an advanced machine learning framework that supports a variety of advanced algorithms, as well as support classes to normalize and process data. Machine learning algorithms such as Support Vector Machines, Artificial Neural Networks, Bayesian Networks, Hidden Markov Models, Genetic Programming and Genetic Algorithms are supported. Most Encog training algorithms are multi-threaded and scale well to multicore hardware. A GUI based workbench is also provided to help model and train machine learning algorithms. Encog has been in active development since 2008.
+
+Encog is a pure-Java/C# machine learning framework that I created back in 2008 to support genetic programming, NEAT/HyperNEAT, and other neural network technologies.  Originally, Encog was created to support research for my master’s degree and early books.  The neural network aspects of Encog proved popular, and Encog was used by a number of people and is cited by [952 academic papers in Google Scholar](https://scholar.google.com/scholar?hl=en&as_sdt=0%2C26&q=encog&btnG=). I created Encog at a time when there were not so many well developed frameworks, such as [TensorFlow](https://medium.com/tensorflow/standardizing-on-keras-guidance-on-high-level-apis-in-tensorflow-2-0-bad2b04c819a), [Keras](https://keras.io/), [DeepLearning4J](https://deeplearning4j.org/), and many others (these are the frameworks I work with the most these days for neural networks).   
+
+Encog continues to be developed (and bugs fixed) for the types of models not covered by the large frameworks and to provide a pure non-GPU Java/C# implementation of several classic neural networks.  Because it is pure Java, the source code for Encog can be much simpler to adapt for cases where you want to implement the neural network yourself from scratch. Some of the less mainstream technologies supported by Encog include [NEAT](https://en.wikipedia.org/wiki/Neuroevolution_of_augmenting_topologies), [HyperNEAT](https://en.wikipedia.org/wiki/HyperNEAT), and [Genetic Programming](https://en.wikipedia.org/wiki/Genetic_programming). Encog has minimal support for computer vision.  Computer vision is a fascinating topic, but just has never been a research interest of mine.
+
+Encog supports a variety of advanced algorithms, as well as support classes to normalize and process data. Machine learning algorithms such as Support Vector Machines, Neural Networks, Bayesian Networks, Hidden Markov Models, Genetic Programming and Genetic Algorithms are supported. Most Encog training algorithms are multi-threaded and scale well to multicore hardware.
+
+Encog continues to be developed, and is used in my own research, for areas that I need Java and are not covered by Keras.  However, for larger-scale cutting edge work, where I do not need to implement the technology from scratch, I make use of Keras/TensorFlow for my own work.
 
 For more information: [Encog Website](http://www.encog.org)
 
