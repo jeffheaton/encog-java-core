@@ -42,7 +42,7 @@ public class ActivationReLU implements ActivationFunction {
 	/**
 	 * The ramp low parameter.
 	 */
-	public static final int PARAM_RELU_LOW = 0;
+	public static final int PARAM_RELU_LOW = 1;
 
 	/**
 	 * The serial ID.
