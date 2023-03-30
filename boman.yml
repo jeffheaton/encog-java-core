@@ -1,0 +1,14 @@
+Auth:
+#   project_token: "b07830b5-3604-411c-9552-2229076fb7a1"
+#   customer_token:  "1f3dc7b3-cb4e-4eb9-b5ee-c780947f12e3" #devtokens
+  project_token: "5e1f93dc-0e45-4cc4-bf66-709c70f4dadf"
+  customer_token: "4b36ce06-05a1-43f9-a0e9-0c98a26594fa" #devtoken
+ 
+  
+SCA:
+  language: "java" 
+
+SAST:
+  language: "java"
+  target: encog-java-core/dependencies/
+ 
