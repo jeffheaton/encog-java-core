@@ -1,0 +1,14 @@
+on: [push]
+
+jobs:
+  boman_scan:
+    runs-on: ubuntu-latest
+    name: Test Job
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      # Runs a single command using the runners shell
+      - name: Install packages
+        run: sudo pip install boman-cli
+      - name: Run scan  
+        run: sudo boman-cli -a run 
